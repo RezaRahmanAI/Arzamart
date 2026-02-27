@@ -8,7 +8,6 @@ using Serilog;
 // ── 0. Initial Logging for Fatal Startup Errors ──────────────────
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("Logs/startup-fatal-.log", rollingInterval: RollingInterval.Day)
     .CreateBootstrapLogger();
 
 try
@@ -18,10 +17,24 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     // ── 1. Logging (Serilog) ──────────────────────────────────────────
-    builder.Host.UseSerilog((context, services, configuration) => configuration
-        .ReadFrom.Configuration(context.Configuration)
-        .ReadFrom.Services(services)
-        .Enrich.FromLogContext());
+    builder.Host.UseSerilog((context, services, configuration) =>
+    {
+        try
+        {
+            configuration
+                .ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"SERILOG CONFIG ERROR: {ex.Message}");
+            configuration
+                .MinimumLevel.Information()
+                .Enrich.FromLogContext()
+                .WriteTo.Console();
+        }
+    });
 
     // ── 2. Server Configuration ───────────────────────────────────────
     builder.WebHost.ConfigureKestrel(serverOptions =>
