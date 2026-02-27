@@ -77,8 +77,14 @@ builder.Services.AddResponseCaching();
 
 
 // Database with connection resiliency
+var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(defaultConnection))
+{
+    throw new InvalidOperationException("Missing required configuration: ConnectionStrings:DefaultConnection");
+}
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    options.UseSqlServer(defaultConnection,
         sqlOptions => sqlOptions.EnableRetryOnFailure(
             maxRetryCount: 3,
             maxRetryDelay: TimeSpan.FromSeconds(5),
@@ -101,6 +107,15 @@ builder.Services.AddScoped<ECommerce.Core.Interfaces.IAuthService, ECommerce.Inf
 // builder.Services.AddScoped<ECommerce.Core.Interfaces.ITokenService, ECommerce.Infrastructure.Services.TokenService>(); // Deprecated
 
 // JWT Authentication
+var jwtKey = builder.Configuration["Token:Key"];
+var jwtIssuer = builder.Configuration["Token:Issuer"];
+var jwtAudience = builder.Configuration["Token:Audience"];
+
+if (string.IsNullOrWhiteSpace(jwtKey) || string.IsNullOrWhiteSpace(jwtIssuer) || string.IsNullOrWhiteSpace(jwtAudience))
+{
+    throw new InvalidOperationException("Missing required JWT configuration. Ensure Token:Key, Token:Issuer, and Token:Audience are set.");
+}
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
@@ -111,10 +126,10 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Token:Key"]!)),
-        ValidIssuer = builder.Configuration["Token:Issuer"],
+        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtKey)),
+        ValidIssuer = jwtIssuer,
         ValidateIssuer = true,
-        ValidAudience = builder.Configuration["Token:Audience"],
+        ValidAudience = jwtAudience,
         ValidateAudience = true,
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero,
