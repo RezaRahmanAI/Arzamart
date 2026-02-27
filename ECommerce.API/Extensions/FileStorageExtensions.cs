@@ -7,45 +7,55 @@ public static class FileStorageExtensions
     public static string ConfigureExternalMedia(this IApplicationBuilder app, IConfiguration config, IWebHostEnvironment env)
     {
         string externalMediaPath;
+
         try
         {
-            externalMediaPath = config["ExternalMediaPath"] ?? "";
-            
-            if (string.IsNullOrEmpty(externalMediaPath))
-            {
-                var contentRoot = env.ContentRootPath;
-                var parent = Directory.GetParent(contentRoot);
-                
-                externalMediaPath = parent != null 
-                    ? Path.Combine(parent.FullName, "ArzaMedia") 
-                    : Path.Combine(contentRoot, "ArzaMedia");
-            }
-
-            if (!Directory.Exists(externalMediaPath))
-            {
-                Directory.CreateDirectory(externalMediaPath);
-            }
+            externalMediaPath = ResolveMediaPath(config, env);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            externalMediaPath = Path.Combine(env.ContentRootPath, "Media");
-            if (!Directory.Exists(externalMediaPath)) Directory.CreateDirectory(externalMediaPath);
+            Console.Error.WriteLine($"WARNING: External media path resolution failed: {ex.Message}");
+            externalMediaPath = Path.Combine(Path.GetTempPath(), "ArzaMedia");
         }
 
-        app.UseStaticFiles(new StaticFileOptions
+        try
         {
-            FileProvider = new PhysicalFileProvider(externalMediaPath),
-            RequestPath = "/uploads",
-            OnPrepareResponse = ctx =>
-            {
-                ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000,immutable");
-            }
-        });
+            Directory.CreateDirectory(externalMediaPath);
+            EnsureUploadDirectories(externalMediaPath);
 
-        // Ensure subdirectories exist
-        EnsureUploadDirectories(externalMediaPath);
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(externalMediaPath),
+                RequestPath = "/uploads",
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000,immutable");
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            // Never crash app startup because of directory permissions.
+            Console.Error.WriteLine($"WARNING: External media static file host disabled: {ex.Message}");
+        }
 
         return externalMediaPath;
+    }
+
+    private static string ResolveMediaPath(IConfiguration config, IWebHostEnvironment env)
+    {
+        var configuredPath = config["ExternalMediaPath"];
+        if (!string.IsNullOrWhiteSpace(configuredPath))
+        {
+            return configuredPath;
+        }
+
+        var contentRoot = env.ContentRootPath;
+        var parent = Directory.GetParent(contentRoot);
+
+        return parent != null
+            ? Path.Combine(parent.FullName, "ArzaMedia")
+            : Path.Combine(contentRoot, "ArzaMedia");
     }
 
     private static void EnsureUploadDirectories(string rootPath)
