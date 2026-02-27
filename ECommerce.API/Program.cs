@@ -156,7 +156,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         corsBuilder =>
         {
-            corsBuilder.SetIsOriginAllowed(_ => true)
+            corsBuilder.WithOrigins(allowedOrigins)
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials()
@@ -235,6 +235,9 @@ app.UseStaticFiles(new StaticFileOptions
 
 // Response caching
 app.UseResponseCaching();
+
+// CORS must run before authentication/authorization so both preflight and API responses carry headers
+app.UseCors("AllowAll");
 
 // Global exception handling
 app.UseMiddleware<ECommerce.API.Middleware.IpBlockingMiddleware>();
