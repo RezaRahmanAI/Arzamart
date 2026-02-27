@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <DefaultItemExcludes>$(DefaultItemExcludes);wwwroot\**;..\ArzaMedia\**;..\..\ArzaMedia\**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes)</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,11 +26,7 @@
     <ProjectReference Include="..\ECommerce.Core\ECommerce.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!-- Exclude uploads folder from being tracked/watched by VS to prevent crashes -->
-    <Content Remove="wwwroot\uploads\**" />
-    <None Include="wwwroot\uploads\**" Watch="false" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <!-- Explicitly prevent dotnet watch from monitoring the uploads folder -->

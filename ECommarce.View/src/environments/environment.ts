@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: "https://api.arzamart.shop/api",
+  apiBaseUrl: "https://localhost:7201/api",
 };

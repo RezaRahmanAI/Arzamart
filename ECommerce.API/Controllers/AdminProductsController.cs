@@ -40,7 +40,7 @@ public class AdminProductsController : ControllerBase
                 return BadRequest("No files uploaded");
 
             var uploadedUrls = new List<string>();
-            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(Directory.GetParent(Directory.GetParent(_environment.ContentRootPath)!.FullName)!.FullName, "ArzaMedia");
+            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads");
             var uploadsFolder = Path.Combine(externalPath, "products");
             if (!Directory.Exists(uploadsFolder))
             {
@@ -274,7 +274,7 @@ public class AdminProductsController : ControllerBase
         try
         {
             var fileName = Path.GetFileName(imageUrl);
-            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(Directory.GetParent(Directory.GetParent(_environment.ContentRootPath)!.FullName)!.FullName, "ArzaMedia");
+            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads");
             var filePath = Path.Combine(externalPath, "products", fileName);
             if (System.IO.File.Exists(filePath))
             {

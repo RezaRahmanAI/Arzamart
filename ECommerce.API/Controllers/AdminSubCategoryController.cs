@@ -169,7 +169,7 @@ public class AdminSubCategoryController : ControllerBase
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
 
-            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(Directory.GetParent(Directory.GetParent(_environment.ContentRootPath)!.FullName)!.FullName, "ArzaMedia");
+            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads");
             var uploadsFolder = Path.Combine(externalPath, "subcategories");
             if (!Directory.Exists(uploadsFolder))
             {

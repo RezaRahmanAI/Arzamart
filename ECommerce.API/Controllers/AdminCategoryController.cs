@@ -97,7 +97,7 @@ public class AdminCategoryController : ControllerBase
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
 
-            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(Directory.GetParent(Directory.GetParent(_environment.ContentRootPath)!.FullName)!.FullName, "ArzaMedia");
+            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads");
             var uploadsFolder = Path.Combine(externalPath, "categories");
             if (!Directory.Exists(uploadsFolder))
             {
@@ -267,7 +267,7 @@ public class AdminCategoryController : ControllerBase
     private async Task<string> SaveImageAsync(IFormFile image)
     {
         // Create uploads directory if it doesn't exist
-        var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(Directory.GetParent(_environment.ContentRootPath)!.FullName, "ArzaMedia");
+        var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads");
         var uploadsFolder = Path.Combine(externalPath, "categories");
         Directory.CreateDirectory(uploadsFolder);
 
@@ -291,7 +291,7 @@ public class AdminCategoryController : ControllerBase
         try
         {
             var fileName = Path.GetFileName(imageUrl);
-            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(Directory.GetParent(Directory.GetParent(_environment.ContentRootPath)!.FullName)!.FullName, "ArzaMedia");
+            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads");
             var filePath = Path.Combine(externalPath, "categories", fileName);
             if (System.IO.File.Exists(filePath))
             {
