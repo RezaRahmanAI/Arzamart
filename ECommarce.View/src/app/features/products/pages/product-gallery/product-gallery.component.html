@@ -1,0 +1,98 @@
+<main
+  class="mx-auto flex w-full max-w-[1440px] flex-1 flex-col px-6 py-8 lg:px-12 pt-24"
+>
+  <div
+    class="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end"
+  >
+    <div class="max-w-2xl">
+      <h2
+        class="mb-3 text-4xl font-black tracking-tight text-primary lg:text-5xl uppercase"
+      >
+        {{ title }}
+      </h2>
+      <p class="text-lg text-text-sub">
+        Explore our curated collection of {{ title | lowercase }}.
+      </p>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-10 lg:flex-row">
+    <!-- Sidebar (Placeholder for now) -->
+    <aside class="w-full lg:w-64 flex-shrink-0 hidden lg:block">
+      <div class="sticky top-32">
+        <h3 class="text-sm font-bold uppercase tracking-widest mb-6">
+          Filters
+        </h3>
+        <div class="space-y-8">
+          <div>
+            <h4 class="text-[11px] uppercase tracking-wider font-bold mb-4">
+              Availability
+            </h4>
+            <div class="space-y-3">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  class="w-4 h-4 rounded border-gray-300 text-accent focus:ring-accent"
+                />
+                <span
+                  class="text-xs text-text-sub group-hover:text-primary transition-colors"
+                  >In Stock</span
+                >
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  class="w-4 h-4 rounded border-gray-300 text-accent focus:ring-accent"
+                />
+                <span
+                  class="text-xs text-text-sub group-hover:text-primary transition-colors"
+                  >Pre-order</span
+                >
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Grid -->
+    <div class="flex-1">
+      <!-- Skeleton Grid -->
+      <div
+        *ngIf="loading"
+        class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12"
+      >
+        <div *ngFor="let item of skeletonItems" class="animate-pulse">
+          <div class="aspect-[3/4] bg-gray-100 rounded-xl mb-4"></div>
+          <div class="h-4 bg-gray-100 rounded w-3/4 mb-2"></div>
+          <div class="h-4 bg-gray-100 rounded w-1/2"></div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="!loading && products.length === 0"
+        class="flex flex-col items-center justify-center py-20 text-center"
+      >
+        <lucide-icon
+          [img]="icons.Package"
+          class="w-16 h-16 text-gray-200 mb-4"
+        ></lucide-icon>
+        <h3 class="text-xl font-medium text-primary mb-2">No products found</h3>
+        <p class="text-text-sub max-w-xs mx-auto">
+          We couldn't find any products in this category. Try checking other
+          sections.
+        </p>
+      </div>
+
+      <div
+        *ngIf="!loading && products.length > 0"
+        class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12"
+      >
+        <app-product-card
+          *ngFor="let product of products"
+          [product]="product"
+        ></app-product-card>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,44 @@
+<section class="site-container py-16">
+  <!-- Header -->
+  <div
+    class="flex items-baseline justify-between mb-8 border-b border-gray-100 pb-4"
+  >
+    <h2 class="text-3xl md:text-4xl font-serif text-primary">{{ title }}</h2>
+    <a
+      [routerLink]="viewAllLink"
+      class="text-[10px] uppercase tracking-[0.2em] font-bold text-text-sub hover:text-accent transition-colors border-b border-transparent hover:border-accent pb-1"
+    >
+      Explore All
+    </a>
+  </div>
+
+  <!-- Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <ng-container *ngFor="let category of categories">
+      <a
+        [routerLink]="category.href"
+        class="group relative block aspect-[3/4] overflow-hidden bg-gray-100"
+      >
+        <!-- Image -->
+        <div
+          class="absolute inset-0 bg-cover bg-center transition-transform duration-[1000ms] ease-out group-hover:scale-105"
+          [style.backgroundImage]="'url(' + category.imageUrl + ')'"
+        ></div>
+
+        <!-- Gradient Overlay -->
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500"
+        ></div>
+
+        <!-- Content -->
+        <div class="absolute inset-0 flex flex-col justify-end p-6">
+          <h3
+            class="text-white text-xl font-medium tracking-wide transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500"
+          >
+            {{ category.name }}
+          </h3>
+        </div>
+      </a>
+    </ng-container>
+  </div>
+</section>

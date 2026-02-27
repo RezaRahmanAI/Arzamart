@@ -1,0 +1,82 @@
+<main class="flex-1 bg-white">
+  <app-hero></app-hero>
+
+  <div class="space-y-12 pb-32 bg-white">
+    <!-- Product Sections — load immediately (above the fold) -->
+    <app-new-arrivals></app-new-arrivals>
+
+    <!-- Below the fold — only render when scrolled into viewport -->
+    @defer (on viewport) {
+      <app-featured-products></app-featured-products>
+    } @placeholder {
+      <div class="h-96 flex items-center justify-center">
+        <div class="animate-pulse bg-gray-100 rounded-lg w-full h-full"></div>
+      </div>
+    }
+
+    <!-- Category Sections — defer until scrolled into view -->
+    @defer (on viewport) {
+      <ng-container *ngIf="categories$ | async as categories">
+        <app-category-section
+          *ngIf="getCategory(categories, 'men').length"
+          title="Menswear"
+          viewAllLink="/shop/men"
+          [categories]="getCategory(categories, 'men')"
+        >
+        </app-category-section>
+
+        <app-category-section
+          *ngIf="getCategory(categories, 'women').length"
+          title="Womenswear"
+          viewAllLink="/shop/women"
+          [categories]="getCategory(categories, 'women')"
+        >
+        </app-category-section>
+
+        <app-category-section
+          *ngIf="getCategory(categories, 'kids').length"
+          title="Kidswear"
+          viewAllLink="/shop/kids"
+          [categories]="getCategory(categories, 'kids')"
+        >
+        </app-category-section>
+
+        <app-category-section
+          *ngIf="getCategory(categories, 'accessories').length"
+          title="Accessories"
+          viewAllLink="/shop/accessories"
+          [categories]="getCategory(categories, 'accessories')"
+        >
+        </app-category-section>
+      </ng-container>
+    } @placeholder {
+      <div class="h-96 flex items-center justify-center">
+        <div class="animate-pulse bg-gray-100 rounded-lg w-full h-full"></div>
+      </div>
+    }
+
+    @defer (on viewport) {
+      <app-promo-banner></app-promo-banner>
+    } @placeholder {
+      <div class="h-64 animate-pulse bg-gray-100 rounded-lg"></div>
+    }
+
+    @defer (on viewport) {
+      <app-why-choose-us></app-why-choose-us>
+    } @placeholder {
+      <div class="h-64 animate-pulse bg-gray-50 rounded-lg"></div>
+    }
+
+    @defer (on viewport) {
+      <app-testimonials></app-testimonials>
+    } @placeholder {
+      <div class="h-64 animate-pulse bg-gray-50 rounded-lg"></div>
+    }
+
+    @defer (on viewport) {
+      <app-newsletter></app-newsletter>
+    } @placeholder {
+      <div class="h-48 animate-pulse bg-gray-50 rounded-lg"></div>
+    }
+  </div>
+</main>

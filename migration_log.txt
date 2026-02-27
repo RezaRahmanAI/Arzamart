@@ -1,0 +1,60 @@
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Friday, February 27, 2026 5:13:09 PM
+   Source : c:\Users\User\Documents\Personal\Arza\ECommerce.API\wwwroot\uploads\
+     Dest : c:\Users\User\Documents\Personal\Arza\ArzaMedia\
+
+    Files : *.*
+	    
+  Options : *.* /V /S /E /DCOPY:DA /COPY:DAT /MOVE /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   0	c:\Users\User\Documents\Personal\Arza\ECommerce.API\wwwroot\uploads\
+	  New Dir          0	c:\Users\User\Documents\Personal\Arza\ECommerce.API\wwwroot\uploads\banners\
+	  New Dir         15	c:\Users\User\Documents\Personal\Arza\ECommerce.API\wwwroot\uploads\categories\
+	    New File  		  372093	12f8ca0b-a429-44d7-a7f9-5d3416e28194.jpg100%  
+	    New File  		  136599	399e4b61-a22e-41ba-9679-ca709346995e.jpg100%  
+	    New File  		  136599	3a02681e-6903-4a3d-9dc1-efb306e839d4.jpg100%  
+	    New File  		   3.4 m	3f3b5dc0-d1d6-4824-8b50-02286703e206.jpg 29%   58%   87%  100%  
+	    New File  		   3.0 m	4c592671-d97e-4131-b04d-81be05a8e96f.jpg 32%   65%   98%  100%  
+	    New File  		  372093	590ae41b-bba9-4ce6-b3f2-16cd5eaba341.jpg100%  
+	    New File  		  136599	6036a48e-4fef-4b6f-aaa3-3d977803d64c.jpg100%  
+	    New File  		   3.0 m	6238f1cf-2c06-4b3b-a1f4-255bb02fe394.jpg 32%   65%   98%  100%  
+	    New File  		   3.0 m	62b8e1b8-0920-40b6-8f81-98962c17f793.jpg 32%   65%   98%  100%  
+	    New File  		   18698	8fa69a9d-da9f-439e-aa90-5b6c34f19818.png100%  
+	    New File  		   3.4 m	a114ce8e-2ff5-4244-ad37-8b830da41568.jpg 29%   58%   87%  100%  
+	    New File  		   83735	c9753167-e64a-4751-8789-e6e32308a040.jpg100%  
+	    New File  		  222541	cbea48cc-55d2-4a2e-84c2-5500fe73fbf5.jpeg100%  
+	    New File  		   3.0 m	d89e2902-d340-43ed-882f-a7b2134e4f16.jpg 32%   65%   98%  100%  
+	    New File  		   3.0 m	da0c4ba8-e46f-4339-bdea-cce20e4f5321.jpg 32%   65%   98%  100%  
+	  New Dir          5	c:\Users\User\Documents\Personal\Arza\ECommerce.API\wwwroot\uploads\products\
+	    New File  		  128926	2867c424-c096-4cd1-9de4-ae6189bd8e3c.webp 99%  100%  
+	    New File  		  131650	541eb2e7-f988-49a4-86ac-7310679f5755.webp 99%  100%  
+	    New File  		   88091	cb0a4578-8c81-4521-a8e2-d88380225393.jpg 99%  100%  
+	    New File  		  634558	db7151e8-9ee5-4210-9ffe-2792c61f31c5.png 99%  100%  
+	    New File  		   15490	e03297e1-fe7d-45ee-9d60-4ec8567084b1.jpg100%  
+	  New Dir          5	c:\Users\User\Documents\Personal\Arza\ECommerce.API\wwwroot\uploads\settings\
+	    New File  		   31960	logo_639056960311938120.jpg100%  
+	    New File  		  101042	logo_639056976358895127.png100%  
+	    New File  		  376878	logo_639070922637781549.jpeg100%  
+	    New File  		   16785	logo_639076429514471630.png100%  
+	    New File  		   16785	logo_639076430628411596.png100%  
+	  New Dir          0	c:\Users\User\Documents\Personal\Arza\ECommerce.API\wwwroot\uploads\subcategories\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         6         5         1         0         0         0
+   Files :        25        25         0         0         0         0
+   Bytes :   25.03 m   25.03 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           190,211,528 Bytes/sec.
+   Speed :            10,883.991 MegaBytes/min.
+   Ended : Friday, February 27, 2026 5:13:09 PM
+

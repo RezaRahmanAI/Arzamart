@@ -1,0 +1,760 @@
+<div class="max-w-5xl mx-auto space-y-6">
+  <div
+    *ngIf="saveMessage"
+    class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 animate-pulse"
+  >
+    {{ saveMessage }}
+  </div>
+  <div
+    *ngIf="saveError"
+    class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800"
+  >
+    {{ saveError }}
+  </div>
+  <nav class="flex text-sm font-medium text-text-secondary">
+    <a
+      class="hover:text-primary transition-colors"
+      routerLink="/admin/dashboard"
+      >Dashboard</a
+    >
+    <span class="mx-2">/</span>
+    <span class="text-primary font-semibold">Settings</span>
+  </nav>
+  <div
+    class="flex flex-col md:flex-row md:items-start md:justify-between gap-4"
+  >
+    <div>
+      <h1 class="text-3xl font-bold text-text-main tracking-tight">Settings</h1>
+      <p class="text-text-secondary mt-1">
+        Manage store configuration, contact info, and social links.
+      </p>
+    </div>
+    <div class="flex gap-3">
+      <button
+        class="px-4 py-2 bg-white border border-border rounded-lg text-sm font-medium text-text-main shadow-sm hover:bg-background-light transition-colors"
+        type="button"
+        (click)="resetForm()"
+      >
+        Cancel
+      </button>
+      <button
+        class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium shadow-md hover:bg-[#083a4a] transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+        type="button"
+        (click)="saveChanges()"
+        [disabled]="isSaving"
+      >
+        <svg
+          *ngIf="isSaving"
+          class="animate-spin w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+          ></path>
+        </svg>
+        <lucide-icon
+          *ngIf="!isSaving"
+          [img]="icons.Save"
+          class="w-4.5 h-4.5"
+        ></lucide-icon>
+        {{ isSaving ? "Saving..." : "Save Changes" }}
+      </button>
+    </div>
+  </div>
+  <div class="border-b border-border">
+    <nav aria-label="Tabs" class="-mb-px flex space-x-8 overflow-x-auto">
+      <button
+        *ngFor="let tab of tabs"
+        class="whitespace-nowrap py-4 px-1 border-b-2 text-sm"
+        type="button"
+        [ngClass]="
+          activeTab === tab
+            ? 'border-primary text-primary border-b-2 font-semibold'
+            : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300 font-medium'
+        "
+        (click)="setActiveTab(tab)"
+      >
+        {{ tab }}
+      </button>
+    </nav>
+  </div>
+  <div class="space-y-8">
+    <form [formGroup]="settingsForm" class="space-y-8">
+      <section *ngIf="activeTab === 'General'" class="flex flex-col gap-8">
+        <!-- Brand Information -->
+        <div
+          class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
+        >
+          <div class="p-6 border-b border-border">
+            <h3 class="text-lg font-bold text-text-main">Brand Information</h3>
+            <p class="text-sm text-text-secondary">
+              Configure how your brand appears to customers.
+            </p>
+          </div>
+          <div class="p-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="col-span-1">
+                <label class="block text-sm font-medium text-text-main mb-2"
+                  >Store Logo</label
+                >
+                <p class="text-xs text-text-secondary mb-3">
+                  Used on invoices and email headers.
+                </p>
+              </div>
+              <div class="col-span-2">
+                <div class="flex items-center gap-6">
+                  <div
+                    class="size-20 rounded-lg bg-background-light border border-border flex items-center justify-center overflow-hidden relative group"
+                    role="button"
+                    tabindex="0"
+                    (click)="triggerLogoUpload()"
+                  >
+                    <ng-container *ngIf="logoPreviewUrl; else logoPlaceholder">
+                      <img
+                        [src]="logoPreviewUrl"
+                        class="w-full h-full object-contain"
+                        alt="Brand Logo"
+                      />
+                    </ng-container>
+                    <ng-template #logoPlaceholder>
+                      <lucide-icon
+                        [img]="icons.Image"
+                        class="w-10 h-10 text-text-secondary group-hover:hidden"
+                      ></lucide-icon>
+                    </ng-template>
+                    <div
+                      class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer"
+                    >
+                      <lucide-icon
+                        [img]="icons.Edit"
+                        class="w-5 h-5 text-white"
+                      ></lucide-icon>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <div
+                      class="flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:bg-background-light transition-colors cursor-pointer"
+                      (click)="triggerLogoUpload()"
+                    >
+                      <div class="space-y-1 text-center">
+                        <lucide-icon
+                          [img]="icons.Upload"
+                          class="w-8 h-8 text-text-secondary mx-auto mb-2"
+                        ></lucide-icon>
+                        <div class="flex text-sm text-text-secondary">
+                          <label
+                            class="relative cursor-pointer rounded-md font-medium text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
+                            for="file-upload"
+                          >
+                            <span>Upload a file</span>
+                            <input
+                              #fileUpload
+                              class="sr-only"
+                              id="file-upload"
+                              name="file-upload"
+                              type="file"
+                              accept="image/png,image/jpeg,image/gif"
+                              (change)="onLogoSelected($event)"
+                            />
+                          </label>
+                          <p class="pl-1">or drag and drop</p>
+                        </div>
+                        <p class="text-xs text-text-secondary">
+                          PNG, JPG, GIF up to 2MB
+                        </p>
+                      </div>
+                    </div>
+                    <p *ngIf="logoError" class="mt-2 text-xs text-red-600">
+                      {{ logoError }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="border-border" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="col-span-2 md:col-span-1">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="website-name"
+                  >Website Name</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  id="website-name"
+                  type="text"
+                  formControlName="websiteName"
+                />
+              </div>
+              <div class="col-span-2 md:col-span-1">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="contact-email"
+                  >Contact Email</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  id="contact-email"
+                  type="email"
+                  formControlName="contactEmail"
+                />
+              </div>
+              <div class="col-span-2 md:col-span-1">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="contact-phone"
+                  >Contact Phone</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  id="contact-phone"
+                  type="text"
+                  formControlName="contactPhone"
+                />
+              </div>
+              <div class="col-span-2 md:col-span-1">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="whatsapp-number"
+                  >WhatsApp Number</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  id="whatsapp-number"
+                  type="text"
+                  formControlName="whatsAppNumber"
+                />
+              </div>
+              <div class="col-span-2 md:col-span-1">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="currency"
+                  >Currency</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  id="currency"
+                  type="text"
+                  formControlName="currency"
+                />
+              </div>
+              <div class="col-span-2 md:col-span-1">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="free-shipping-threshold"
+                  >Free Shipping Threshold</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  id="free-shipping-threshold"
+                  type="number"
+                  formControlName="freeShippingThreshold"
+                  min="0"
+                />
+              </div>
+              <div class="col-span-2">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="address"
+                  >Address</label
+                >
+                <textarea
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm resize-none"
+                  id="address"
+                  rows="2"
+                  formControlName="address"
+                ></textarea>
+              </div>
+              <div class="col-span-2">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="description"
+                  >Store Description</label
+                >
+                <textarea
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm resize-none"
+                  id="description"
+                  rows="3"
+                  formControlName="description"
+                ></textarea>
+                <p class="mt-2 text-xs text-text-secondary">
+                  Brief description for SEO and footer content.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Links -->
+        <div
+          class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
+        >
+          <div class="p-6 border-b border-border">
+            <h3 class="text-lg font-bold text-text-main">Social Links</h3>
+            <p class="text-sm text-text-secondary">
+              Connect your social media profiles.
+            </p>
+          </div>
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="col-span-1">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="facebook-url"
+                  >Facebook / Messenger URL</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  id="facebook-url"
+                  type="url"
+                  formControlName="facebookUrl"
+                  placeholder="https://facebook.com/yourpage"
+                />
+              </div>
+              <div class="col-span-1">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="instagram-url"
+                  >Instagram URL</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  id="instagram-url"
+                  type="url"
+                  formControlName="instagramUrl"
+                  placeholder="https://instagram.com/yourhandle"
+                />
+              </div>
+              <div class="col-span-1">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="twitter-url"
+                  >Twitter (X) URL</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  id="twitter-url"
+                  type="url"
+                  formControlName="twitterUrl"
+                  placeholder="https://twitter.com/yourhandle"
+                />
+              </div>
+              <div class="col-span-1">
+                <label
+                  class="block text-sm font-medium text-text-main mb-1"
+                  for="youtube-url"
+                  >YouTube URL</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  id="youtube-url"
+                  type="url"
+                  formControlName="youtubeUrl"
+                  placeholder="https://youtube.com/@yourchannel"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics & Retargeting -->
+      <section *ngIf="activeTab === 'General'" class="flex flex-col gap-8">
+        <div
+          class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
+        >
+          <div class="p-6 border-b border-border">
+            <h3 class="text-lg font-bold text-text-main">
+              Analytics & Retargeting
+            </h3>
+            <p class="text-sm text-text-secondary">
+              Configure pixels for tracking and retargeting campaigns.
+            </p>
+          </div>
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="col-span-1">
+                <label class="block text-sm font-medium text-text-main mb-1"
+                  >Facebook Pixel ID</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  type="text"
+                  formControlName="facebookPixelId"
+                  placeholder="e.g. 1234567890"
+                />
+              </div>
+              <div class="col-span-1">
+                <label class="block text-sm font-medium text-text-main mb-1"
+                  >Google Tag Manager / Analytics ID</label
+                >
+                <input
+                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  type="text"
+                  formControlName="googleTagId"
+                  placeholder="e.g. G-XXXXXXXX or GTM-XXXXXX"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Payments Section (Keep as is, binding to payment form group) -->
+      <section
+        *ngIf="activeTab === 'Payments'"
+        class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
+      >
+        <div
+          class="p-6 border-b border-border flex justify-between items-center"
+        >
+          <div>
+            <h3 class="text-lg font-bold text-text-main">Payment Gateways</h3>
+            <p class="text-sm text-text-secondary">
+              Manage how you accept payments.
+            </p>
+          </div>
+        </div>
+        <div
+          class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6"
+          formGroupName="payments"
+        >
+          <!-- Stripe Card -->
+          <div
+            class="border border-border rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-primary transition-colors bg-white"
+          >
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center gap-3">
+                <div
+                  class="size-10 bg-[#635BFF] text-white rounded-lg flex items-center justify-center font-bold text-xl"
+                >
+                  S
+                </div>
+                <div>
+                  <h4 class="font-bold text-text-main">Stripe</h4>
+                  <p class="text-xs text-text-secondary">
+                    Credit Card, Apple Pay
+                  </p>
+                </div>
+              </div>
+              <div
+                class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
+              >
+                <input
+                  class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer checked:right-0 checked:border-primary transition-all duration-300"
+                  id="stripe-toggle"
+                  name="toggle"
+                  type="checkbox"
+                  formControlName="stripeEnabled"
+                />
+                <label
+                  class="toggle-label block overflow-hidden h-5 rounded-full bg-accent cursor-pointer"
+                  for="stripe-toggle"
+                  [ngClass]="stripeEnabled ? '' : 'bg-gray-300'"
+                ></label>
+              </div>
+            </div>
+            <div class="space-y-3 mb-4">
+              <div>
+                <label
+                  class="text-[10px] uppercase font-bold text-text-secondary tracking-wider"
+                  >Publishable Key</label
+                >
+                <div
+                  class="flex items-center bg-background-light rounded border border-border px-2 py-1.5 mt-1"
+                >
+                  <code class="text-xs text-text-main truncate flex-1">{{
+                    stripePublishableKey
+                  }}</code>
+                  <button
+                    class="text-text-secondary hover:text-primary"
+                    type="button"
+                    (click)="copyStripeKey()"
+                  >
+                    <lucide-icon
+                      [img]="icons.Copy"
+                      class="w-4 h-4"
+                    ></lucide-icon>
+                  </button>
+                </div>
+                <p *ngIf="copiedKey" class="mt-1 text-xs text-green-600">
+                  Copied
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paypal Card -->
+          <div
+            class="border border-border rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-primary transition-colors bg-white"
+          >
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center gap-3">
+                <div
+                  class="size-10 bg-[#003087] text-white rounded-lg flex items-center justify-center font-bold text-xl italic"
+                >
+                  P
+                </div>
+                <div>
+                  <h4 class="font-bold text-text-main">PayPal</h4>
+                  <p class="text-xs text-text-secondary">Wallet, Pay Later</p>
+                </div>
+              </div>
+              <div
+                class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
+              >
+                <input
+                  class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300"
+                  id="paypal-toggle"
+                  name="toggle"
+                  type="checkbox"
+                  formControlName="paypalEnabled"
+                />
+                <label
+                  class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"
+                  for="paypal-toggle"
+                  [ngClass]="paypalEnabled ? 'bg-accent' : ''"
+                ></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Shipping Section -->
+      <section *ngIf="activeTab === 'Shipping'" class="flex flex-col gap-6">
+        <!-- Delivery Methods Table -->
+        <div
+          class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
+        >
+          <div
+            class="p-6 border-b border-border flex justify-between items-center"
+          >
+            <div>
+              <h3 class="text-lg font-bold text-text-main">Delivery Methods</h3>
+              <p class="text-sm text-text-secondary">
+                Add multiple delivery options for customers.
+              </p>
+            </div>
+            <button
+              class="px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              type="button"
+              (click)="startAddDelivery()"
+            >
+              <lucide-icon [img]="icons.Plus" class="w-3.5 h-3.5"></lucide-icon>
+              Add Method
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-background-light border-b border-border">
+                  <th
+                    class="px-6 py-3 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                  >
+                    Method Name
+                  </th>
+                  <th
+                    class="px-6 py-3 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                  >
+                    Cost
+                  </th>
+                  <th
+                    class="px-6 py-3 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                  >
+                    Estimated Time
+                  </th>
+                  <th
+                    class="px-6 py-3 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="px-6 py-3 text-xs font-bold text-text-secondary uppercase tracking-wider text-right"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border">
+                <tr
+                  *ngFor="let method of deliveryMethods"
+                  class="hover:bg-background-light/50 transition-colors"
+                >
+                  <td class="px-6 py-4 text-sm font-medium text-text-main">
+                    {{ method.name }}
+                  </td>
+                  <td
+                    class="px-6 py-4 text-sm text-text-secondary font-semibold"
+                  >
+                    ৳{{ method.cost }}
+                  </td>
+                  <td class="px-6 py-4 text-sm text-text-secondary">
+                    {{ method.estimatedDays || "N/A" }}
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-tight"
+                      [ngClass]="
+                        method.isActive
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-gray-100 text-gray-600'
+                      "
+                    >
+                      {{ method.isActive ? "Active" : "Inactive" }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        class="p-1.5 text-text-secondary hover:text-primary transition-colors"
+                        (click)="editDelivery(method)"
+                      >
+                        <lucide-icon
+                          [img]="icons.Edit"
+                          class="w-4 h-4"
+                        ></lucide-icon>
+                      </button>
+                      <button
+                        class="p-1.5 text-text-secondary hover:text-red-600 transition-colors"
+                        (click)="deleteDelivery(method)"
+                      >
+                        <lucide-icon
+                          [img]="icons.Trash2"
+                          class="w-4 h-4"
+                        ></lucide-icon>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="deliveryMethods.length === 0">
+                  <td
+                    colspan="5"
+                    class="px-6 py-10 text-center text-sm text-text-secondary italic"
+                  >
+                    No delivery methods defined. Click "Add Method" to create
+                    one.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Delivery Method Modal -->
+      <div
+        *ngIf="showDeliveryForm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      >
+        <div
+          class="bg-surface w-full max-w-md rounded-2xl shadow-2xl border border-border overflow-hidden animate-in fade-in zoom-in duration-200"
+          [formGroup]="deliveryForm"
+        >
+          <div
+            class="p-6 border-b border-border flex justify-between items-center bg-background-light/30"
+          >
+            <h3 class="text-xl font-bold text-text-main">
+              {{
+                editingDeliveryId
+                  ? "Edit Delivery Method"
+                  : "Add Delivery Method"
+              }}
+            </h3>
+            <button
+              class="text-text-secondary hover:text-text-main transition-colors"
+              (click)="closeDeliveryForm()"
+            >
+              <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+            </button>
+          </div>
+          <div class="p-6 space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-text-main mb-1.5"
+                >Method Name</label
+              >
+              <input
+                class="block w-full rounded-xl border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5"
+                type="text"
+                formControlName="name"
+                placeholder="e.g. Inside Dhaka"
+              />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-text-main mb-1.5"
+                  >Cost (৳)</label
+                >
+                <input
+                  class="block w-full rounded-xl border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5"
+                  type="number"
+                  formControlName="cost"
+                  min="0"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-text-main mb-1.5"
+                  >Est. Days</label
+                >
+                <input
+                  class="block w-full rounded-xl border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5"
+                  type="text"
+                  formControlName="estimatedDays"
+                  placeholder="e.g. 1-2 days"
+                />
+              </div>
+            </div>
+            <div class="flex items-center gap-2 pt-2">
+              <input
+                type="checkbox"
+                id="method-active"
+                formControlName="isActive"
+                class="rounded border-border text-primary focus:ring-primary"
+              />
+              <label
+                for="method-active"
+                class="text-sm font-medium text-text-main"
+                >Set as active</label
+              >
+            </div>
+          </div>
+          <div
+            class="p-6 bg-background-light/30 border-t border-border flex justify-end gap-3"
+          >
+            <button
+              class="px-4 py-2 text-sm font-bold text-text-secondary hover:text-text-main transition-colors"
+              type="button"
+              (click)="closeDeliveryForm()"
+            >
+              Cancel
+            </button>
+            <button
+              class="px-6 py-2 bg-primary text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
+              type="button"
+              (click)="saveDelivery()"
+            >
+              {{ editingDeliveryId ? "Update Method" : "Save Method" }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="mt-12 mb-6 text-center text-xs text-text-secondary">
+    <p>
+      © {{ Math.max(2026, date.getFullYear()) }}
+      {{ settingsForm.controls.websiteName.value || "Admin Console" }}. All
+      rights reserved.
+    </p>
+  </div>
+</div>

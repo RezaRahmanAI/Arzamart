@@ -1,0 +1,45 @@
+<aside class="w-full shrink-0 lg:w-64">
+  <div class="sticky top-28 space-y-8">
+    <div>
+      <h3 class="mb-4 text-sm font-bold uppercase tracking-wider text-primary dark:text-white">Categories</h3>
+      <ul class="space-y-3 text-[15px] font-medium text-gray-600 dark:text-gray-400">
+        <li *ngFor="let category of categoryCounts">
+          <a
+            class="flex items-center justify-between"
+            [ngClass]="
+              category.highlight
+                ? 'text-primary font-bold dark:text-white'
+                : 'hover:text-primary transition-colors'
+            "
+            href="#"
+          >
+            {{ category.label }} <span class="text-xs text-gray-400 font-normal">{{ category.count }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <hr class="border-dashed border-gray-200 dark:border-gray-700" />
+    <div>
+      <h3 class="mb-4 text-sm font-bold uppercase tracking-wider text-primary dark:text-white">Color</h3>
+      <div class="flex flex-wrap gap-3">
+        <button class="h-8 w-8 rounded-full bg-[#062f3c] ring-2 ring-offset-2 ring-transparent hover:ring-gray-300 focus:ring-primary"></button>
+        <button class="h-8 w-8 rounded-full bg-[#cae6d3] ring-2 ring-offset-2 ring-transparent hover:ring-gray-300 focus:ring-primary"></button>
+        <button class="h-8 w-8 rounded-full bg-[#f3d9d6] ring-2 ring-offset-2 ring-transparent hover:ring-gray-300 focus:ring-primary"></button>
+        <button class="h-8 w-8 rounded-full bg-black ring-2 ring-offset-2 ring-transparent hover:ring-gray-300 focus:ring-primary"></button>
+        <button class="h-8 w-8 rounded-full bg-[#e5e5e5] ring-2 ring-offset-2 ring-transparent hover:ring-gray-300 focus:ring-primary"></button>
+      </div>
+    </div>
+    <hr class="border-dashed border-gray-200 dark:border-gray-700" />
+    <div>
+      <h3 class="mb-4 text-sm font-bold uppercase tracking-wider text-primary dark:text-white">Size</h3>
+      <div class="grid grid-cols-3 gap-2">
+        <button class="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400">XS</button>
+        <button class="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400">S</button>
+        <button class="flex h-10 items-center justify-center rounded-lg bg-primary text-sm font-medium text-white shadow-sm">M</button>
+        <button class="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400">L</button>
+        <button class="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400">XL</button>
+        <button class="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400">XXL</button>
+      </div>
+    </div>
+  </div>
+</aside>

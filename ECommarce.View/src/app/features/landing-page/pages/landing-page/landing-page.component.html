@@ -1,0 +1,613 @@
+<div class="min-h-screen bg-[#f5f5f3] font-sans text-[#1a1a1a] pb-20">
+  <!-- Loading State -->
+  <div
+    *ngIf="isLoading"
+    class="flex flex-col items-center justify-center min-h-[60vh] gap-4"
+  >
+    <lucide-icon
+      [img]="icons.Loader2"
+      class="w-12 h-12 text-[#1a1a1a] animate-spin"
+    ></lucide-icon>
+    <p class="text-[#555] font-medium tracking-widest text-xs uppercase">
+      Loading...
+    </p>
+  </div>
+
+  <div
+    *ngIf="product && !isLoading"
+    class="max-w-[1200px] mx-auto px-6 pt-8 lg:pt-16"
+  >
+    <!-- ROW 1: Product Info (Images & Details) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-start">
+      <!-- ##### LEFT: Image Gallery ##### -->
+      <div class="relative">
+        <div
+          class="relative bg-[#ebebeb] overflow-hidden group rounded-2xl shadow-sm"
+          style="aspect-ratio: 3/4"
+        >
+          <!-- Images -->
+          <ng-container *ngFor="let url of gallery; let i = index">
+            <img
+              [src]="imageUrlService.getImageUrl(url)"
+              [alt]="product.name"
+              class="absolute inset-0 w-full h-full object-cover transition-all duration-700"
+              [class.opacity-100]="i === currentImageIndex"
+              [class.scale-100]="i === currentImageIndex"
+              [class.opacity-0]="i !== currentImageIndex"
+              [class.scale-105]="i !== currentImageIndex"
+            />
+          </ng-container>
+
+          <!-- Tier Badge -->
+          <div *ngIf="product.tier" class="absolute top-6 right-6 z-10">
+            <span
+              class="px-4 py-1.5 bg-white/95 backdrop-blur-sm text-[10px] uppercase tracking-[0.3em] font-black text-[#1a1a1a] border border-white/50 rounded-full shadow-lg"
+            >
+              {{ product.tier }}
+            </span>
+          </div>
+
+          <!-- Navigation Arrows -->
+          <button
+            *ngIf="gallery.length > 1"
+            (click)="prevImage()"
+            class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/90 backdrop-blur hover:bg-white flex items-center justify-center shadow-xl transition-all duration-300 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0"
+            type="button"
+          >
+            <lucide-icon
+              [img]="icons.ChevronLeft"
+              class="w-5 h-5"
+            ></lucide-icon>
+          </button>
+
+          <button
+            *ngIf="gallery.length > 1"
+            (click)="nextImage()"
+            class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/90 backdrop-blur hover:bg-white flex items-center justify-center shadow-xl transition-all duration-300 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0"
+            type="button"
+          >
+            <lucide-icon
+              [img]="icons.ChevronRight"
+              class="w-5 h-5"
+            ></lucide-icon>
+          </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div
+          *ngIf="gallery.length > 1"
+          class="flex items-center gap-4 mt-5 px-2"
+        >
+          <span
+            class="text-[10px] font-bold tracking-widest text-[#aaa] font-mono"
+            >{{ currentImageIndex + 1 }} / {{ gallery.length }}</span
+          >
+          <div class="flex-1 h-[3px] bg-[#eee] rounded-full overflow-hidden">
+            <div
+              class="h-full bg-[#1a1a1a] rounded-full transition-all duration-500 ease-out"
+              [style.width.%]="((currentImageIndex + 1) / gallery.length) * 100"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Thumbnails -->
+        <div
+          *ngIf="gallery.length > 1"
+          class="flex gap-3 mt-5 overflow-x-auto pb-2 scrollbar-hide px-1"
+        >
+          <button
+            *ngFor="let url of gallery; let i = index"
+            (click)="goToImage(i)"
+            type="button"
+            class="flex-shrink-0 w-16 h-20 rounded-xl overflow-hidden ring-2 transition-all duration-300"
+            [class.ring-[#1a1a1a]]="i === currentImageIndex"
+            [class.ring-transparent]="i !== currentImageIndex"
+            [class.opacity-60]="i !== currentImageIndex"
+          >
+            <img
+              [src]="imageUrlService.getImageUrl(url)"
+              [alt]="product.name"
+              class="w-full h-full object-cover"
+            />
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== RIGHT: Product Info ===== -->
+      <div class="space-y-10 lg:pl-4">
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <span class="w-12 h-[1px] bg-[#c8922a]"></span>
+            <p
+              class="text-[10px] uppercase tracking-[0.25em] font-black text-[#c8922a]"
+            >
+              Limited Edition
+            </p>
+          </div>
+          <h1
+            class="text-4xl lg:text-5xl font-black text-[#1a1a1a] leading-[1.1] tracking-tight"
+          >
+            {{ product.name }}
+          </h1>
+          <p
+            class="text-sm text-[#555] font-medium leading-relaxed"
+            *ngIf="product.shortDescription"
+          >
+            {{ product.shortDescription }}
+          </p>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <app-price-display
+            class="text-4xl font-black text-[#1a1a1a] tracking-tight"
+            [amount]="currentPrice"
+            size="lg"
+          ></app-price-display>
+          <div
+            class="flex flex-col"
+            *ngIf="
+              currentCompareAtPrice && currentCompareAtPrice > currentPrice
+            "
+          >
+            <app-price-display
+              class="line-through text-[#aaa] text-sm font-bold"
+              [amount]="currentCompareAtPrice"
+              size="sm"
+            ></app-price-display>
+            <span
+              class="text-red-500 text-[10px] font-black uppercase tracking-widest"
+            >
+              Save
+              {{
+                getDiscountPercentage({
+                  price: currentPrice,
+                  compareAtPrice: currentCompareAtPrice,
+                })
+              }}%
+            </span>
+          </div>
+        </div>
+
+        <!-- Selection System -->
+        <div class="space-y-8 pt-4 border-t border-[#eee]">
+          <!-- Colors -->
+          <div *ngIf="uniqueColors.length > 0" class="space-y-4">
+            <div class="flex justify-between items-end">
+              <span
+                class="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]"
+                >Select Color</span
+              >
+              <span class="text-[10px] font-bold text-[#888]">{{
+                checkoutForm.controls.selectedColor.value || "None selected"
+              }}</span>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <button
+                *ngFor="let color of uniqueColors"
+                (click)="selectColor(color.name)"
+                type="button"
+                [title]="color.name"
+                class="group relative w-16 h-20 rounded-xl overflow-hidden ring-2 transition-all duration-300"
+                [class.ring-[#1a1a1a]]="
+                  color.name === checkoutForm.controls.selectedColor.value
+                "
+                [class.ring-transparent]="
+                  color.name !== checkoutForm.controls.selectedColor.value
+                "
+              >
+                <img
+                  *ngIf="getColorImage(color.name) as imgUrl"
+                  [src]="imgUrl"
+                  [alt]="color.name"
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div
+                  *ngIf="!getColorImage(color.name)"
+                  class="w-full h-full flex items-center justify-center bg-slate-100 uppercase text-[9px] font-bold p-1 text-center"
+                >
+                  {{ color.name }}
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sizes -->
+          <div
+            *ngIf="product.variants && product.variants.length > 0"
+            class="space-y-4"
+          >
+            <span
+              class="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]"
+              >Select Size</span
+            >
+            <div class="flex flex-wrap gap-2">
+              <button
+                *ngFor="let v of product.variants"
+                (click)="checkoutForm.patchValue({ selectedSize: v.size })"
+                type="button"
+                class="h-11 px-6 rounded-xl border-2 text-[11px] font-black uppercase tracking-widest transition-all duration-300 min-w-[4rem]"
+                [class.bg-[#1a1a1a]]="
+                  v.size === checkoutForm.controls.selectedSize.value
+                "
+                [class.text-white]="
+                  v.size === checkoutForm.controls.selectedSize.value
+                "
+                [class.border-[#1a1a1a]]="
+                  v.size === checkoutForm.controls.selectedSize.value
+                "
+                [class.bg-white]="
+                  v.size !== checkoutForm.controls.selectedSize.value
+                "
+                [class.text-[#1a1a1a]]="
+                  v.size !== checkoutForm.controls.selectedSize.value
+                "
+                [class.border-[#eee]]="
+                  v.size !== checkoutForm.controls.selectedSize.value
+                "
+                [class.hover:border-[#1a1a1a]]="
+                  v.size !== checkoutForm.controls.selectedSize.value
+                "
+              >
+                {{ v.size }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div
+          class="pt-8 border-t border-[#eee] space-y-4"
+          *ngIf="product.description"
+        >
+          <span
+            class="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]"
+            >Description</span
+          >
+          <p class="text-sm text-[#555] leading-relaxed font-medium">
+            {{ product.description }}
+          </p>
+        </div>
+
+        <!-- Tabs/Accordions -->
+        <div class="pt-2">
+          <div class="divide-y divide-[#eee] border-t border-[#eee]">
+            <details class="group" *ngIf="product.fabricAndCare">
+              <summary
+                class="flex items-center justify-between py-5 cursor-pointer list-none"
+              >
+                <span
+                  class="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]"
+                  >Fabric & Care</span
+                >
+                <lucide-icon
+                  [img]="icons.Plus"
+                  class="w-4 h-4 text-[#888] transition-transform duration-300 group-open:rotate-45"
+                ></lucide-icon>
+              </summary>
+              <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium">
+                {{ product.fabricAndCare }}
+              </div>
+            </details>
+            <details class="group">
+              <summary
+                class="flex items-center justify-between py-5 cursor-pointer list-none"
+              >
+                <span
+                  class="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]"
+                  >Delivery & Returns</span
+                >
+                <lucide-icon
+                  [img]="icons.Plus"
+                  class="w-4 h-4 text-[#888] transition-transform duration-300 group-open:rotate-45"
+                ></lucide-icon>
+              </summary>
+              <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium">
+                {{
+                  product.shippingAndReturns ||
+                    "Express delivery in 24-48 hours. Stress-free returns."
+                }}
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2: Order Form Section -->
+    <div class="mt-20 xl:mt-24 pt-20 border-t-2 border-dashed border-[#ddd]">
+      <div class="max-w-[1000px] mx-auto">
+        <div class="text-center mb-16 space-y-4">
+          <h2
+            class="text-4xl lg:text-5xl font-black text-[#1a1a1a] uppercase tracking-tight"
+          >
+            Complete Your Order
+          </h2>
+          <div class="flex items-center justify-center gap-4">
+            <span class="h-[1px] w-12 bg-[#ddd]"></span>
+            <p class="text-xs font-bold text-[#888] uppercase tracking-[0.2em]">
+              Cash on delivery nationwide
+            </p>
+            <span class="h-[1px] w-12 bg-[#ddd]"></span>
+          </div>
+        </div>
+
+        <div
+          class="bg-white border-2 border-[#1a1a1a] rounded-[2.5rem] p-8 lg:p-12 shadow-2xl shadow-indigo-900/10 relative overflow-hidden"
+        >
+          <!-- Background accent -->
+          <div
+            class="absolute top-0 right-0 w-32 h-32 bg-[#1a1a1a]/5 rounded-bl-[5rem] -mr-8 -mt-8"
+          ></div>
+
+          <form
+            [formGroup]="checkoutForm"
+            (ngSubmit)="placeOrder()"
+            class="relative"
+          >
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
+              <!-- Column 1: Customer Information -->
+              <div class="space-y-8">
+                <div class="flex items-center gap-3 mb-2">
+                  <div
+                    class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center"
+                  >
+                    <lucide-icon
+                      [img]="icons.User"
+                      class="w-4 h-4 text-white"
+                    ></lucide-icon>
+                  </div>
+                  <h3
+                    class="text-xs font-black uppercase tracking-[0.2em] text-[#1a1a1a]"
+                  >
+                    Customer Info
+                  </h3>
+                </div>
+
+                <!-- Name & Phone Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div class="space-y-2">
+                    <label
+                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                      >Full Name</label
+                    >
+                    <input
+                      type="text"
+                      formControlName="fullName"
+                      placeholder="e.g. Abdullah"
+                      class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc]"
+                    />
+                    <p
+                      class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
+                      *ngIf="
+                        checkoutForm.controls.fullName.touched &&
+                        checkoutForm.controls.fullName.invalid
+                      "
+                    >
+                      Required
+                    </p>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label
+                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                      >Mobile Number</label
+                    >
+                    <input
+                      type="tel"
+                      formControlName="phone"
+                      placeholder="01xxxxxxxxx"
+                      class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc]"
+                    />
+                    <p
+                      class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
+                      *ngIf="
+                        checkoutForm.controls.phone.touched &&
+                        checkoutForm.controls.phone.invalid
+                      "
+                    >
+                      Required
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Address -->
+                <div class="space-y-2">
+                  <label
+                    class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                    >Delivery Address</label
+                  >
+                  <textarea
+                    formControlName="address"
+                    rows="4"
+                    placeholder="House, Road, Area, District..."
+                    class="w-full p-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc] resize-none"
+                  ></textarea>
+                  <p
+                    class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
+                    *ngIf="
+                      checkoutForm.controls.address.touched &&
+                      checkoutForm.controls.address.invalid
+                    "
+                  >
+                    Required
+                  </p>
+                </div>
+              </div>
+
+              <!-- Column 2: Order Details -->
+              <div class="space-y-8">
+                <div class="flex items-center gap-3 mb-2">
+                  <div
+                    class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center"
+                  >
+                    <lucide-icon
+                      [img]="icons.Truck"
+                      class="w-4 h-4 text-white"
+                    ></lucide-icon>
+                  </div>
+                  <h3
+                    class="text-xs font-black uppercase tracking-[0.2em] text-[#1a1a1a]"
+                  >
+                    Order Details
+                  </h3>
+                </div>
+
+                <!-- Shipping -->
+                <div class="space-y-4">
+                  <label
+                    class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                    >Shipping Method</label
+                  >
+                  <div class="space-y-3">
+                    <label
+                      *ngFor="let method of deliveryMethods"
+                      class="flex items-center justify-between p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 group"
+                      [ngClass]="
+                        checkoutForm.controls.deliveryMethodId.value ===
+                        method.id
+                          ? 'border-[#1a1a1a] bg-[#1a1a1a]/5'
+                          : 'border-[#eee] hover:border-[#ddd]'
+                      "
+                    >
+                      <div class="flex items-center gap-4">
+                        <div
+                          class="w-5 h-5 rounded-full border-2 border-[#ddd] flex items-center justify-center shadow-inner"
+                          [class.border-[#1a1a1a]]="
+                            checkoutForm.controls.deliveryMethodId.value ===
+                            method.id
+                          "
+                        >
+                          <div
+                            *ngIf="
+                              checkoutForm.controls.deliveryMethodId.value ===
+                              method.id
+                            "
+                            class="w-2.5 h-2.5 rounded-full bg-[#1a1a1a]"
+                          ></div>
+                          <input
+                            type="radio"
+                            formControlName="deliveryMethodId"
+                            [value]="method.id"
+                            class="absolute opacity-0 cursor-pointer"
+                          />
+                        </div>
+                        <div class="flex flex-col">
+                          <span
+                            class="text-xs font-black text-[#1a1a1a] uppercase tracking-wider"
+                            >{{ method.name }}</span
+                          >
+                          <span class="text-[9px] text-[#888] font-bold">{{
+                            method.estimatedDays
+                          }}</span>
+                        </div>
+                      </div>
+                      <span class="text-sm font-black text-[#1a1a1a]"
+                        >৳{{ method.cost }}</span
+                      >
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Quantity & Total -->
+                <div
+                  class="bg-[#f9f9f9] rounded-3xl p-6 border-2 border-dashed border-[#eee] flex items-center justify-between"
+                >
+                  <div class="space-y-1">
+                    <span
+                      class="text-[10px] font-black text-[#888] uppercase tracking-widest"
+                      >Quantity</span
+                    >
+                    <div
+                      class="flex items-center h-12 bg-white border-2 border-[#eee] rounded-xl overflow-hidden shadow-inner"
+                    >
+                      <button
+                        (click)="decreaseQuantity()"
+                        type="button"
+                        class="w-10 h-full flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white transition-all"
+                      >
+                        <lucide-icon
+                          [img]="icons.Minus"
+                          class="w-3 h-3"
+                        ></lucide-icon>
+                      </button>
+                      <div
+                        class="w-10 h-full flex items-center justify-center font-black text-xs text-[#1a1a1a]"
+                      >
+                        {{ checkoutForm.controls.quantity.value }}
+                      </div>
+                      <button
+                        (click)="increaseQuantity()"
+                        type="button"
+                        class="w-10 h-full flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white transition-all"
+                      >
+                        <lucide-icon
+                          [img]="icons.Plus"
+                          class="w-3 h-3"
+                        ></lucide-icon>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="text-right space-y-1">
+                    <span
+                      class="text-[10px] font-black text-[#888] uppercase tracking-widest"
+                      >Total Amount</span
+                    >
+                    <div>
+                      <app-price-display
+                        [amount]="total"
+                        size="lg"
+                        class="text-[#1a1a1a] font-black text-2xl tracking-tighter"
+                      ></app-price-display>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-12 pt-10 border-t border-[#eee]">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button
+                  type="submit"
+                  [disabled]="isOrdering"
+                  class="h-16 bg-[#1a1a1a] text-white text-xs font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group"
+                >
+                  <lucide-icon
+                    *ngIf="isOrdering"
+                    [img]="icons.Loader2"
+                    class="w-5 h-5 animate-spin"
+                  ></lucide-icon>
+                  <span *ngIf="!isOrdering">Confirm Order Now</span>
+                  <lucide-icon
+                    *ngIf="!isOrdering"
+                    [img]="icons.ChevronRight"
+                    class="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                  ></lucide-icon>
+                </button>
+
+                <button
+                  type="button"
+                  (click)="addToCart()"
+                  class="h-16 bg-white border-2 border-[#ddd] hover:border-[#1a1a1a] text-[#1a1a1a] text-xs font-black uppercase tracking-[0.3em] rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
+                >
+                  <lucide-icon
+                    [img]="icons.ShoppingCart"
+                    class="w-5 h-5"
+                  ></lucide-icon>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+              <p
+                *ngIf="errorMessage"
+                class="text-[10px] text-red-500 text-center font-black uppercase tracking-widest mt-6"
+              >
+                {{ errorMessage }}
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

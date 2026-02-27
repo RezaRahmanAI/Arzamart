@@ -1,0 +1,282 @@
+<footer
+  class="bg-primary text-white pt-32 pb-12 site-container border-t border-white/5"
+  *ngIf="settings$ | async as settings"
+>
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-16 mb-28">
+    <!-- Brand Info (Left) -->
+    <div class="md:col-span-4 flex flex-col items-start gap-12">
+      <div class="flex items-center gap-3">
+        <img
+          [src]="
+            settings.logoUrl
+              ? imageUrlService.getImageUrl(settings.logoUrl)
+              : 'assets/logo.svg'
+          "
+          alt="ArzaMart Logo"
+          class="h-9 sm:h-10 md:h-11 lg:h-12 w-auto max-w-[140px] sm:max-w-[160px] md:max-w-[180px] lg:max-w-[200px] object-contain"
+        />
+      </div>
+      <p class="text-gray-400 text-[11px] leading-loose tracking-wide max-w-sm">
+        {{ settings.description || "" }}
+      </p>
+
+      <!-- Socials -->
+      <div class="flex gap-10 mt-2">
+        <a
+          *ngIf="settings.facebookUrl"
+          [href]="settings.facebookUrl"
+          target="_blank"
+          class="hover:text-accent text-white/60 hover:scale-110 transition-all duration-300"
+        >
+          <span class="text-[10px] uppercase tracking-[0.25em] font-medium"
+            >Facebook</span
+          >
+        </a>
+        <a
+          *ngIf="settings.instagramUrl"
+          [href]="settings.instagramUrl"
+          target="_blank"
+          class="hover:text-accent text-white/60 hover:scale-110 transition-all duration-300"
+        >
+          <span class="text-[10px] uppercase tracking-[0.25em] font-medium"
+            >Instagram</span
+          >
+        </a>
+        <a
+          *ngIf="settings.twitterUrl"
+          [href]="settings.twitterUrl"
+          target="_blank"
+          class="hover:text-accent text-white/60 hover:scale-110 transition-all duration-300"
+        >
+          <span class="text-[10px] uppercase tracking-[0.25em] font-medium"
+            >Twitter</span
+          >
+        </a>
+      </div>
+    </div>
+
+    <!-- Navigation Links (Right) - 4 Columns -->
+    <div class="md:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-12">
+      <!-- Legal -->
+      <div class="flex flex-col gap-8">
+        <h4
+          class="text-[9px] uppercase tracking-[0.35em] font-bold text-accent"
+        >
+          Legal
+        </h4>
+        <ul
+          class="flex flex-col gap-4 text-[11px] uppercase tracking-[0.15em] text-gray-400"
+        >
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/shipping-policy"
+              >Shipping Policy</a
+            >
+          </li>
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/terms"
+              >Terms & Conditions</a
+            >
+          </li>
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/privacy"
+              >Privacy Policy</a
+            >
+          </li>
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/payment-policy"
+              >Payment Policy</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Information -->
+      <div class="flex flex-col gap-8">
+        <h4
+          class="text-[9px] uppercase tracking-[0.35em] font-bold text-accent"
+        >
+          Information
+        </h4>
+        <ul
+          class="flex flex-col gap-4 text-[11px] uppercase tracking-[0.15em] text-gray-400"
+        >
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/exchange-refund"
+              >Exchange & Refund</a
+            >
+          </li>
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/size-guide"
+              >Size Guide</a
+            >
+          </li>
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/loyalty"
+              >Loyalty Program</a
+            >
+          </li>
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/stores"
+              >Store Locations</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div class="flex flex-col gap-8">
+        <h4
+          class="text-[9px] uppercase tracking-[0.35em] font-bold text-accent"
+        >
+          Company
+        </h4>
+        <ul
+          class="flex flex-col gap-4 text-[11px] uppercase tracking-[0.15em] text-gray-400"
+        >
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/about"
+              >About Us</a
+            >
+          </li>
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/contact"
+              >Contact Us</a
+            >
+          </li>
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/blog"
+              >Blog</a
+            >
+          </li>
+          <li>
+            <a
+              class="hover:text-white transition-colors duration-300"
+              routerLink="/careers"
+              >Careers</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Service Center -->
+      <div class="flex flex-col gap-8">
+        <h4
+          class="text-[9px] uppercase tracking-[0.35em] font-bold text-accent"
+        >
+          Service Center
+        </h4>
+        <ul
+          class="flex flex-col gap-6 text-[11px] text-gray-400 tracking-wide font-light"
+        >
+          <li class="flex flex-col gap-2" *ngIf="settings.contactPhone">
+            <span class="opacity-50 text-[9px] uppercase tracking-[0.25em]"
+              >Phone</span
+            >
+            <a
+              [href]="'tel:' + settings.contactPhone"
+              class="hover:text-accent transition-colors"
+              >{{ settings.contactPhone }}</a
+            >
+          </li>
+          <li class="flex flex-col gap-2" *ngIf="settings.contactEmail">
+            <span class="opacity-50 text-[9px] uppercase tracking-[0.25em]"
+              >Email</span
+            >
+            <a
+              [href]="'mailto:' + settings.contactEmail"
+              class="hover:text-accent transition-colors"
+              >{{ settings.contactEmail }}</a
+            >
+          </li>
+          <li class="flex flex-col gap-2" *ngIf="settings.address">
+            <span class="opacity-50 text-[9px] uppercase tracking-[0.25em]"
+              >Address</span
+            >
+            <span class="leading-relaxed text-[10px]">{{
+              settings.address
+            }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Methods -->
+  <div class="mb-20 pb-12 border-b border-white/5">
+    <h4
+      class="text-[9px] uppercase tracking-[0.35em] font-bold text-accent mb-8"
+    >
+      You Can Pay By
+    </h4>
+    <div class="flex flex-wrap items-center gap-6">
+      <div
+        class="px-6 py-3 bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-gray-400"
+      >
+        Visa
+      </div>
+      <div
+        class="px-6 py-3 bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-gray-400"
+      >
+        Mastercard
+      </div>
+      <div
+        class="px-6 py-3 bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-gray-400"
+      >
+        bKash
+      </div>
+      <div
+        class="px-6 py-3 bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-gray-400"
+      >
+        Nagad
+      </div>
+      <div
+        class="px-6 py-3 bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-gray-400"
+      >
+        Cash on Delivery
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+    <p class="text-[9px] text-gray-500 uppercase tracking-[0.25em] font-medium">
+      © {{ currentYear }} {{ settings.websiteName || "ArzaMart" }}. All rights
+      reserved.
+    </p>
+    <div
+      class="flex gap-12 text-[9px] text-gray-500 uppercase tracking-[0.25em] font-medium"
+    >
+      <a class="hover:text-white transition-colors" routerLink="/privacy"
+        >Privacy</a
+      >
+      <a class="hover:text-white transition-colors" routerLink="/terms"
+        >Terms</a
+      >
+      <a class="hover:text-white transition-colors" routerLink="/cookies"
+        >Cookies</a
+      >
+    </div>
+  </div>
+</footer>

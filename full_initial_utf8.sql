@@ -1,0 +1,3 @@
+﻿Build started...
+Build succeeded.
+

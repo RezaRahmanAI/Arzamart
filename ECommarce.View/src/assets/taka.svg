@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img">
+  <title>Taka</title>
+  <circle cx="12" cy="12" r="11" fill="#0f766e" />
+  <text
+    x="12"
+    y="16"
+    text-anchor="middle"
+    font-size="12"
+    font-family="Arial, sans-serif"
+    fill="#ffffff"
+  >
+    ৳
+  </text>
+</svg>

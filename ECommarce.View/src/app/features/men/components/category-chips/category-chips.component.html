@@ -1,0 +1,13 @@
+<div class="flex flex-wrap gap-2">
+  <button
+    *ngFor="let category of categories"
+    class="rounded-full px-4 py-2 text-sm font-medium shadow-sm transition-colors"
+    [ngClass]="
+      category === activeCategory
+        ? 'bg-primary text-white hover:bg-primary-light'
+        : 'bg-white border border-border-color text-text-main hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700'
+    "
+  >
+    {{ category }}
+  </button>
+</div>

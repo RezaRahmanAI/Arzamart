@@ -1,0 +1,37 @@
+<div
+  class="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
+>
+  <div class="flex items-center gap-2">
+    <span class="text-sm font-medium text-gray-500 dark:text-gray-400"
+      >Active Filters:</span
+    >
+    <div class="flex gap-2">
+      <span
+        class="inline-flex items-center gap-1 rounded-full bg-[#e7f0f3] px-3 py-1 text-xs font-bold text-primary dark:bg-gray-700 dark:text-white"
+      >
+        Size: M
+        <button class="ml-1 hover:text-red-500">
+          <lucide-icon [img]="icons.X" class="w-3.5 h-3.5"></lucide-icon>
+        </button>
+      </span>
+    </div>
+  </div>
+  <div class="flex items-center gap-4">
+    <span class="text-sm text-gray-500 dark:text-gray-400">Sort by:</span>
+    <div class="relative min-w-[180px]">
+      <select
+        class="w-full appearance-none rounded-lg border-0 bg-[#f8fbfc] py-2.5 pl-4 pr-10 text-sm font-semibold text-primary ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:ring-gray-600"
+      >
+        <option>New Arrivals</option>
+        <option>Price: Low to High</option>
+        <option>Price: High to Low</option>
+        <option>Popularity</option>
+      </select>
+      <div
+        class="pointer-events-none absolute right-3 top-2.5 flex items-center text-primary dark:text-gray-300"
+      >
+        <lucide-icon [img]="icons.ChevronDown" class="w-5 h-5"></lucide-icon>
+      </div>
+    </div>
+  </div>
+</div>

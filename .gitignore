@@ -1,0 +1,34 @@
+## [NEW] [.gitignore](file:///c:/Users/User/Documents/Personal/Arza/.gitignore)
+
+# .NET
+bin/
+obj/
+[Ee]xpress/
+TestResults/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+*.v12.suo
+*.v11.suo
+*.v10.suo
+
+# Angular
+node_modules/
+.angular/
+dist/
+.angular-cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vscode/
+
+# Project Specific
+ECommerce.API/wwwroot/uploads/
+*.log
+api_errors.txt
+build_errors.txt
+*.tmp

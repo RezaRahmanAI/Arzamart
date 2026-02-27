@@ -1,0 +1,634 @@
+<ng-container *ngFor="let vm of [vm$ | async]">
+  <div *ngIf="vm" class="bg-[#f5f5f3] min-h-screen font-sans text-[#1a1a1a]">
+    <!-- Breadcrumb -->
+    <div class="max-w-[1200px] mx-auto px-6 pt-28 pb-4">
+      <nav class="flex items-center gap-2 text-xs text-[#888]">
+        <a
+          routerLink="/"
+          class="hover:text-[#1a1a1a] transition-colors underline underline-offset-2"
+          >Home</a
+        >
+        <span class="text-[#ccc]">/</span>
+        <span class="text-[#1a1a1a]">{{ vm.product.name }}</span>
+        <span
+          *ngIf="vm.product.sku && !vm.product.shortDescription"
+          class="text-[#ccc]"
+          >-</span
+        >
+        <span
+          *ngIf="vm.product.sku && !vm.product.shortDescription"
+          class="text-[#888]"
+          >{{ vm.product.sku }}</span
+        >
+      </nav>
+    </div>
+
+    <!-- Main Product Layout -->
+    <div class="max-w-[1200px] mx-auto px-6 pb-20">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16">
+        <!-- ===== LEFT: Image Gallery ===== -->
+        <div class="relative">
+          <!-- Main Image with Arrows -->
+          <div
+            class="relative bg-[#ebebeb] overflow-hidden group"
+            style="aspect-ratio: 3/4"
+          >
+            <!-- Images -->
+            <ng-container *ngFor="let url of vm.gallery; let i = index">
+              <img
+                [src]="imageUrlService.getImageUrl(url)"
+                [alt]="vm.product.name"
+                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                [class.opacity-100]="i === currentImageIndex"
+                [class.opacity-0]="i !== currentImageIndex"
+              />
+            </ng-container>
+
+            <!-- Tier Badge -->
+            <div *ngIf="vm.product.tier" class="absolute top-4 right-4 z-10">
+              <span
+                class="px-3 py-1 bg-white/90 text-[10px] uppercase tracking-[0.25em] font-semibold text-[#1a1a1a] border border-[#ddd]"
+              >
+                {{ vm.product.tier }}
+              </span>
+            </div>
+
+            <!-- Prev Arrow -->
+            <button
+              *ngIf="vm.gallery.length > 1"
+              (click)="prevImage(vm.gallery)"
+              class="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow transition-all duration-200 opacity-0 group-hover:opacity-100"
+              type="button"
+            >
+              <lucide-icon
+                [img]="icons.ChevronLeft"
+                class="w-5 h-5"
+              ></lucide-icon>
+            </button>
+
+            <!-- Next Arrow -->
+            <button
+              *ngIf="vm.gallery.length > 1"
+              (click)="nextImage(vm.gallery)"
+              class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow transition-all duration-200 opacity-0 group-hover:opacity-100"
+              type="button"
+            >
+              <lucide-icon
+                [img]="icons.ChevronRight"
+                class="w-5 h-5"
+              ></lucide-icon>
+            </button>
+          </div>
+
+          <!-- Image Counter + Progress Bar -->
+          <div
+            *ngIf="vm.gallery.length > 1"
+            class="flex items-center gap-3 mt-3 px-1"
+          >
+            <span class="text-xs text-[#888]"
+              >{{ currentImageIndex + 1 }} / {{ vm.gallery.length }}</span
+            >
+            <div class="flex-1 h-[2px] bg-[#ddd] rounded-full overflow-hidden">
+              <div
+                class="h-full bg-[#1a1a1a] rounded-full transition-all duration-300"
+                [style.width.%]="
+                  ((currentImageIndex + 1) / vm.gallery.length) * 100
+                "
+              ></div>
+            </div>
+          </div>
+
+          <!-- Thumbnail Row -->
+          <div
+            *ngIf="vm.gallery.length > 1"
+            class="flex gap-2 mt-3 overflow-x-auto pb-1"
+          >
+            <button
+              *ngFor="let url of vm.gallery; let i = index"
+              (click)="goToImage(i)"
+              type="button"
+              class="flex-shrink-0 w-16 h-20 overflow-hidden border-2 transition-all duration-200"
+              [class.border-[#1a1a1a]]="i === currentImageIndex"
+              [class.border-transparent]="i !== currentImageIndex"
+            >
+              <img
+                [src]="imageUrlService.getImageUrl(url)"
+                [alt]="vm.product.name + ' ' + (i + 1)"
+                class="w-full h-full object-cover"
+              />
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== RIGHT: Product Info (Sticky) ===== -->
+        <div class="lg:sticky lg:top-24 lg:self-start">
+          <div class="flex flex-col gap-6">
+            <!-- Product Name & SKU -->
+            <div>
+              <h1
+                class="text-2xl md:text-3xl font-semibold text-[#1a1a1a] leading-tight mb-1"
+              >
+                {{ vm.product.name }}
+              </h1>
+              <p
+                class="text-sm text-[#c8922a] font-medium"
+                *ngIf="!vm.product.shortDescription"
+              >
+                Product Code: {{ vm.product.sku }}
+              </p>
+              <p
+                class="text-sm text-[#555] font-medium mb-2"
+                *ngIf="vm.product.shortDescription"
+              >
+                {{ vm.product.shortDescription }}
+              </p>
+            </div>
+
+            <!-- Price -->
+            <div class="flex items-baseline gap-3">
+              <app-price-display
+                class="text-xl font-bold text-[#1a1a1a]"
+                [amount]="vm.currentPrice"
+                size="lg"
+              ></app-price-display>
+              <app-price-display
+                *ngIf="
+                  vm.currentCompareAtPrice &&
+                  vm.currentCompareAtPrice > vm.currentPrice
+                "
+                class="line-through text-[#aaa] text-sm"
+                [amount]="vm.currentCompareAtPrice"
+                size="sm"
+              ></app-price-display>
+              <span
+                *ngIf="
+                  vm.currentCompareAtPrice &&
+                  vm.currentCompareAtPrice > vm.currentPrice
+                "
+                class="text-xs font-bold text-red-500 uppercase tracking-wider"
+              >
+                -{{
+                  getDiscountPercentage({
+                    price: vm.currentPrice,
+                    compareAtPrice: vm.currentCompareAtPrice,
+                  })
+                }}%
+              </span>
+            </div>
+
+            <!-- Color Swatches -->
+            <div *ngIf="vm.uniqueColors.length > 0" class="space-y-2">
+              <p class="text-sm font-medium text-[#1a1a1a]">
+                Color:
+                <span class="font-normal text-[#555]">{{
+                  selectedColorName(vm.product, vm.selectedColor)
+                }}</span>
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  *ngFor="let color of vm.uniqueColors"
+                  (click)="selectColor(color, vm.product)"
+                  type="button"
+                  [title]="color.name"
+                  class="w-16 h-20 overflow-hidden border-2 transition-all duration-200 relative"
+                  [class.border-[#1a1a1a]]="
+                    color.name === vm.selectedColor?.name
+                  "
+                  [class.border-[#ddd]]="color.name !== vm.selectedColor?.name"
+                >
+                  <img
+                    *ngIf="getColorImage(vm.product, color.name) as imgUrl"
+                    [src]="imgUrl"
+                    [alt]="color.name"
+                    class="w-full h-full object-cover"
+                  />
+                  <div
+                    *ngIf="!getColorImage(vm.product, color.name)"
+                    class="w-full h-full flex items-end justify-center pb-1"
+                    [style.backgroundColor]="'#e8e8e8'"
+                  >
+                    <span
+                      class="text-[8px] text-[#555] uppercase tracking-wide text-center leading-tight px-1"
+                      >{{ color.name }}</span
+                    >
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Size Selector -->
+            <div *ngIf="vm.uniqueSizes.length > 0" class="space-y-2">
+              <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-[#1a1a1a]">Select Size</p>
+                <button
+                  (click)="openSizeGuide()"
+                  class="text-xs text-[#555] underline underline-offset-2 hover:text-[#1a1a1a] transition-colors flex items-center gap-1"
+                  type="button"
+                >
+                  Size Guide
+                  <lucide-icon
+                    [img]="icons.Maximize2"
+                    class="w-3 h-3"
+                  ></lucide-icon>
+                </button>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  *ngFor="let size of vm.uniqueSizes"
+                  (click)="selectSize(size || '')"
+                  type="button"
+                  class="px-4 h-10 border text-xs font-medium uppercase tracking-wider transition-all duration-200"
+                  [class.bg-[#1a1a1a]]="size === vm.selectedSize"
+                  [class.text-white]="size === vm.selectedSize"
+                  [class.border-[#1a1a1a]]="size === vm.selectedSize"
+                  [class.bg-white]="size !== vm.selectedSize"
+                  [class.text-[#1a1a1a]]="size !== vm.selectedSize"
+                  [class.border-[#ccc]]="size !== vm.selectedSize"
+                  [class.hover:border-[#1a1a1a]]="size !== vm.selectedSize"
+                >
+                  {{ size }}
+                </button>
+              </div>
+              <p *ngIf="vm.selectedSize" class="text-xs text-[#555] mt-1">
+                Stock: {{ vm.currentStock }}
+              </p>
+            </div>
+
+            <!-- Quantity Selector -->
+            <div class="space-y-2">
+              <p class="text-sm font-medium text-[#1a1a1a]">Quantity</p>
+              <div
+                class="flex items-center w-32 h-12 border border-[#ddd] bg-white"
+              >
+                <button
+                  (click)="decreaseQuantity()"
+                  type="button"
+                  class="flex-1 h-full flex items-center justify-center hover:bg-[#f5f5f3] transition-colors"
+                >
+                  <lucide-icon
+                    [img]="icons.Minus"
+                    class="w-4 h-4"
+                  ></lucide-icon>
+                </button>
+                <div
+                  class="flex-1 h-full flex items-center justify-center font-bold text-sm"
+                >
+                  {{ quantity$ | async }}
+                </div>
+                <button
+                  (click)="increaseQuantity()"
+                  type="button"
+                  class="flex-1 h-full flex items-center justify-center hover:bg-[#f5f5f3] transition-colors"
+                >
+                  <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Error -->
+            <p
+              *ngIf="selectionError"
+              class="text-xs text-red-600 bg-red-50 border border-red-100 px-3 py-2"
+            >
+              {{ selectionError }}
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col gap-3 pt-2">
+              <!-- Add to Bag -->
+              <button
+                (click)="addToCart(vm.product)"
+                [disabled]="!vm.currentStock"
+                type="button"
+                class="w-full h-12 bg-[#1a1a1a] text-white text-sm font-semibold uppercase tracking-[0.15em] hover:bg-[#333] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <lucide-icon
+                  [img]="icons.ShoppingBag"
+                  class="w-4 h-4"
+                ></lucide-icon>
+                {{ vm.currentStock ? "Add to bag" : "Out of Stock" }}
+              </button>
+
+              <!-- Buy Now -->
+              <button
+                (click)="buyNow(vm.product)"
+                [disabled]="!vm.currentStock"
+                type="button"
+                class="w-full h-12 bg-white border border-[#1a1a1a] text-[#1a1a1a] text-sm font-semibold uppercase tracking-[0.15em] hover:bg-[#f5f5f3] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <lucide-icon
+                  [img]="icons.CreditCard"
+                  class="w-4 h-4"
+                ></lucide-icon>
+                Buy It Now
+              </button>
+
+              <!-- WhatsApp Contact -->
+              <a
+                *ngIf="(settings$ | async)?.whatsAppNumber as whatsApp"
+                [href]="getWhatsAppUrl(vm.product, whatsApp)"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full h-12 bg-[#25D366] text-white text-sm font-semibold uppercase tracking-[0.15em] hover:bg-[#1ebe5d] transition-colors flex items-center justify-center gap-2 rounded-sm"
+              >
+                <lucide-icon
+                  [img]="icons.MessageCircle"
+                  class="w-4 h-4"
+                ></lucide-icon>
+                Contact on WhatsApp
+              </a>
+            </div>
+
+            <!-- Description & Details Template -->
+            <ng-template #productDetailsTemplate let-product="product">
+              <!-- Description -->
+              <div
+                *ngIf="product.description"
+                class="pt-2 border-t border-[#e0e0e0]"
+              >
+                <p
+                  class="text-sm text-[#555] leading-relaxed whitespace-pre-line"
+                >
+                  {{ product.description }}
+                </p>
+              </div>
+
+              <!-- Accordions -->
+              <div class="border-t border-[#e0e0e0]">
+                <details
+                  class="group border-b border-[#e0e0e0]"
+                  *ngIf="product.fabricAndCare"
+                >
+                  <summary
+                    class="flex items-center justify-between py-4 cursor-pointer list-none"
+                  >
+                    <span class="text-sm font-semibold text-[#1a1a1a]"
+                      >Details</span
+                    >
+                    <span
+                      class="text-[#888] transition-transform duration-300 group-open:rotate-45"
+                    >
+                      <lucide-icon
+                        [img]="icons.Plus"
+                        class="w-4 h-4"
+                      ></lucide-icon>
+                    </span>
+                  </summary>
+                  <div class="pb-4 text-sm text-[#555] leading-relaxed">
+                    {{ product.fabricAndCare }}
+                  </div>
+                </details>
+
+                <details class="group border-b border-[#e0e0e0]">
+                  <summary
+                    class="flex items-center justify-between py-4 cursor-pointer list-none"
+                  >
+                    <span class="text-sm font-semibold text-[#1a1a1a]"
+                      >Materials</span
+                    >
+                    <span
+                      class="text-[#888] transition-transform duration-300 group-open:rotate-45"
+                    >
+                      <lucide-icon
+                        [img]="icons.Plus"
+                        class="w-4 h-4"
+                      ></lucide-icon>
+                    </span>
+                  </summary>
+                  <div class="pb-4 text-sm text-[#555] leading-relaxed">
+                    Premium quality fabric crafted for comfort and elegance.
+                  </div>
+                </details>
+
+                <details class="group border-b border-[#e0e0e0]">
+                  <summary
+                    class="flex items-center justify-between py-4 cursor-pointer list-none"
+                  >
+                    <span class="text-sm font-semibold text-[#1a1a1a]"
+                      >Care</span
+                    >
+                    <span
+                      class="text-[#888] transition-transform duration-300 group-open:rotate-45"
+                    >
+                      <lucide-icon
+                        [img]="icons.Plus"
+                        class="w-4 h-4"
+                      ></lucide-icon>
+                    </span>
+                  </summary>
+                  <div class="pb-4 text-sm text-[#555] leading-relaxed">
+                    {{
+                      product.shippingAndReturns ||
+                        "Hand wash or dry clean recommended. Do not bleach."
+                    }}
+                  </div>
+                </details>
+              </div>
+            </ng-template>
+
+            <!-- Render Details ONLY ON MOBILE (Right Column) -->
+            <div class="block lg:hidden mt-6">
+              <ng-container
+                *ngTemplateOutlet="
+                  productDetailsTemplate;
+                  context: { product: vm.product }
+                "
+              ></ng-container>
+            </div>
+          </div>
+        </div>
+        <!-- END RIGHT -->
+
+        <!-- Render Details ONLY ON DESKTOP (Left Column, below image) -->
+        <div
+          class="hidden lg:block lg:col-start-1 lg:mt-[-5rem] xl:mt-[-8rem] z-10 max-w-xl"
+        >
+          <ng-container
+            *ngTemplateOutlet="
+              productDetailsTemplate;
+              context: { product: vm.product }
+            "
+          ></ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Reviews Section — only render when scrolled into view ===== -->
+    @defer (on viewport) {
+      <div
+        class="max-w-[1200px] mx-auto px-6 py-16 border-t border-[#e0e0e0]"
+        id="reviews"
+      >
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6"
+        >
+          <div>
+            <p
+              class="text-[10px] uppercase tracking-[0.4em] text-[#c8922a] font-bold mb-2"
+            >
+              Refined Experience
+            </p>
+            <h3 class="text-3xl font-serif italic text-[#1a1a1a]">
+              Customer Testimonies
+            </h3>
+          </div>
+          <button
+            (click)="toggleReviewForm()"
+            class="px-6 py-3 bg-[#1a1a1a] text-white text-xs uppercase tracking-[0.2em] font-semibold hover:bg-[#333] transition-colors"
+          >
+            Write a Review
+          </button>
+        </div>
+
+        <!-- Review Form -->
+        <div
+          *ngIf="isReviewFormOpen"
+          class="mb-12 bg-white p-8 border border-[#e0e0e0]"
+        >
+          <h4 class="text-lg font-semibold text-[#1a1a1a] mb-6">
+            Share your experience
+          </h4>
+          <div class="space-y-5 max-w-xl">
+            <div>
+              <label
+                class="block text-xs uppercase tracking-widest font-semibold text-[#888] mb-2"
+                >Rating</label
+              >
+              <div class="flex gap-1">
+                <button
+                  *ngFor="let star of [1, 2, 3, 4, 5]"
+                  (click)="setRating(star)"
+                  class="transition-colors p-1"
+                  [class.text-[#c8922a]]="star <= reviewRating"
+                  [class.text-[#ddd]]="star > reviewRating"
+                  type="button"
+                >
+                  <lucide-icon
+                    [img]="icons.Star"
+                    class="w-6 h-6"
+                    [class.fill-[#c8922a]]="star <= reviewRating"
+                    [class.fill-transparent]="star > reviewRating"
+                  ></lucide-icon>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label
+                class="block text-xs uppercase tracking-widest font-semibold text-[#888] mb-2"
+                >Your Name</label
+              >
+              <input
+                [(ngModel)]="reviewName"
+                class="w-full border border-[#ddd] bg-[#fafafa] px-3 py-2 text-sm focus:outline-none focus:border-[#1a1a1a] transition-colors"
+                placeholder="Enter your name"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-xs uppercase tracking-widest font-semibold text-[#888] mb-2"
+                >Your Review</label
+              >
+              <textarea
+                [(ngModel)]="reviewComment"
+                rows="4"
+                class="w-full border border-[#ddd] bg-[#fafafa] px-3 py-2 text-sm focus:outline-none focus:border-[#1a1a1a] transition-colors"
+                placeholder="How was your experience?"
+              ></textarea>
+            </div>
+            <div *ngIf="reviewError" class="text-xs text-red-500">
+              {{ reviewError }}
+            </div>
+            <div class="flex gap-3">
+              <button
+                (click)="submitReview(vm.product.id)"
+                [disabled]="isSubmittingReview"
+                class="px-6 py-2 bg-[#1a1a1a] text-white text-xs uppercase tracking-wider font-semibold hover:bg-[#333] transition-colors disabled:opacity-50"
+                type="button"
+              >
+                {{ isSubmittingReview ? "Submitting..." : "Submit" }}
+              </button>
+              <button
+                (click)="toggleReviewForm()"
+                class="px-6 py-2 border border-[#ddd] text-[#555] text-xs uppercase tracking-wider font-semibold hover:border-[#1a1a1a] transition-colors"
+                type="button"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reviews Grid -->
+        <div *ngIf="reviews$ | async as reviews">
+          <div
+            *ngIf="reviews.length === 0"
+            class="text-center py-12 text-sm text-[#888]"
+          >
+            No reviews yet. Be the first to share your thoughts.
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div
+              *ngFor="let review of reviews; trackBy: trackReview"
+              class="bg-white p-6 border border-[#e0e0e0]"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <span class="font-semibold text-sm text-[#1a1a1a]">{{
+                  review.customerName
+                }}</span>
+                <span class="text-xs text-[#aaa]">{{
+                  review.date | date: "mediumDate"
+                }}</span>
+              </div>
+              <div class="flex gap-0.5 text-[#c8922a] mb-3">
+                <ng-container *ngFor="let _ of fullStars(review.rating)">
+                  <lucide-icon
+                    [img]="icons.Star"
+                    class="w-3.5 h-3.5 fill-[#c8922a]"
+                  ></lucide-icon>
+                </ng-container>
+              </div>
+              <p class="text-sm text-[#555] leading-relaxed italic">
+                "{{ review.comment }}"
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @placeholder {
+      <div class="h-48 animate-pulse bg-gray-50"></div>
+    }
+
+    <!-- ===== Related Products — only render when scrolled into view ===== -->
+    @defer (on viewport) {
+      <div
+        *ngIf="vm.relatedProducts && vm.relatedProducts.length > 0"
+        class="max-w-[1200px] mx-auto px-6 py-16 border-t border-[#e0e0e0]"
+      >
+        <div class="text-center mb-12">
+          <p
+            class="text-[10px] uppercase tracking-[0.4em] text-[#c8922a] font-bold mb-2"
+          >
+            Curated for you
+          </p>
+          <h3 class="text-3xl font-serif italic text-[#1a1a1a]">
+            Complete The Look
+          </h3>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <app-product-card
+            *ngFor="let related of vm.relatedProducts"
+            [product]="related"
+          ></app-product-card>
+        </div>
+      </div>
+    } @placeholder {
+      <div class="h-48 animate-pulse bg-gray-50"></div>
+    }
+  </div>
+
+  <!-- Size Guide Modal -->
+  <app-size-guide
+    *ngIf="isSizeGuideOpen"
+    (close)="closeSizeGuide()"
+  ></app-size-guide>
+</ng-container>

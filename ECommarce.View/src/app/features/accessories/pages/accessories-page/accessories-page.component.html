@@ -1,0 +1,269 @@
+<main class="flex-1 w-full max-w-[1440px] mx-auto px-4 lg:px-10 py-8">
+  <div class="flex flex-col gap-4 mb-8">
+    <h1
+      class="text-primary text-4xl md:text-5xl font-black leading-tight tracking-[-0.033em]"
+    >
+      Accessories
+    </h1>
+    <p class="text-secondary-text text-lg max-w-2xl">
+      Complete your modest look with our curated collection of scarves, jewelry,
+      and more. Elegant finishing touches for every occasion.
+    </p>
+  </div>
+  <div class="flex gap-3 mb-10 overflow-x-auto pb-2 scrollbar-hide">
+    <button
+      class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary text-white pl-3 pr-4 shadow-sm transition-transform active:scale-95"
+    >
+      <lucide-icon [img]="icons.LayoutGrid" class="w-4.5 h-4.5"></lucide-icon>
+      <p class="text-sm font-medium">All</p>
+    </button>
+    <button
+      class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
+    >
+      <lucide-icon [img]="icons.Filter" class="w-4.5 h-4.5"></lucide-icon>
+      <p class="text-sm font-medium">Scarves</p>
+    </button>
+    <button
+      class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
+    >
+      <lucide-icon [img]="icons.Shirt" class="w-4.5 h-4.5"></lucide-icon>
+      <p class="text-sm font-medium">Hats</p>
+    </button>
+    <button
+      class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
+    >
+      <lucide-icon [img]="icons.Trophy" class="w-4.5 h-4.5"></lucide-icon>
+      <p class="text-sm font-medium">Belts</p>
+    </button>
+    <button
+      class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
+    >
+      <lucide-icon [img]="icons.Gem" class="w-4.5 h-4.5"></lucide-icon>
+      <p class="text-sm font-medium">Jewelry</p>
+    </button>
+    <button
+      class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
+    >
+      <lucide-icon [img]="icons.ShoppingBag" class="w-4.5 h-4.5"></lucide-icon>
+      <p class="text-sm font-medium">Bags</p>
+    </button>
+  </div>
+  <div class="flex flex-col lg:flex-row gap-10">
+    <aside class="w-full lg:w-64 shrink-0 hidden lg:block space-y-8">
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-bold text-primary">Filters</h3>
+          <button class="text-sm text-secondary-text hover:text-primary">
+            Clear all
+          </button>
+        </div>
+        <div class="space-y-6">
+          <div class="border-b border-accent pb-6">
+            <p
+              class="font-bold text-primary mb-3 text-sm uppercase tracking-wider"
+            >
+              Category
+            </p>
+            <div class="space-y-2">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="rounded border-secondary-text text-primary focus:ring-primary bg-transparent w-4 h-4"
+                  type="checkbox"
+                />
+                <span
+                  class="text-secondary-text group-hover:text-primary transition-colors"
+                  >Hijabs &amp; Scarves</span
+                >
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="rounded border-secondary-text text-primary focus:ring-primary bg-transparent w-4 h-4"
+                  type="checkbox"
+                />
+                <span
+                  class="text-secondary-text group-hover:text-primary transition-colors"
+                  >Pins &amp; Brooches</span
+                >
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="rounded border-secondary-text text-primary focus:ring-primary bg-transparent w-4 h-4"
+                  type="checkbox"
+                />
+                <span
+                  class="text-secondary-text group-hover:text-primary transition-colors"
+                  >Handbags</span
+                >
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="rounded border-secondary-text text-primary focus:ring-primary bg-transparent w-4 h-4"
+                  type="checkbox"
+                />
+                <span
+                  class="text-secondary-text group-hover:text-primary transition-colors"
+                  >Jewelry</span
+                >
+              </label>
+            </div>
+          </div>
+          <div class="border-b border-accent pb-6">
+            <p
+              class="font-bold text-primary mb-3 text-sm uppercase tracking-wider"
+            >
+              Price Range
+            </p>
+            <div
+              class="flex items-center gap-2 text-sm text-primary font-medium mb-4"
+            >
+              <span>0</span>
+              <input
+                class="w-full h-1 bg-accent rounded-lg appearance-none cursor-pointer accent-primary"
+                max="20000"
+                min="0"
+                type="range"
+              />
+              <span>20000+</span>
+            </div>
+            <div class="flex gap-2">
+              <input
+                class="w-full rounded-lg border-none bg-accent text-sm py-2 px-3 text-primary placeholder:text-secondary-text/50"
+                placeholder="Min"
+                type="number"
+              />
+              <input
+                class="w-full rounded-lg border-none bg-accent text-sm py-2 px-3 text-primary placeholder:text-secondary-text/50"
+                placeholder="Max"
+                type="number"
+              />
+            </div>
+          </div>
+          <div>
+            <p
+              class="font-bold text-primary mb-3 text-sm uppercase tracking-wider"
+            >
+              Color
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <button
+                class="w-8 h-8 rounded-full bg-black border border-gray-200 focus:ring-2 ring-primary ring-offset-2"
+              ></button>
+              <button
+                class="w-8 h-8 rounded-full bg-[#2f063c] border border-gray-200 focus:ring-2 ring-primary ring-offset-2"
+              ></button>
+              <button
+                class="w-8 h-8 rounded-full bg-[#e5d0c5] border border-gray-200 focus:ring-2 ring-primary ring-offset-2"
+              ></button>
+              <button
+                class="w-8 h-8 rounded-full bg-[#8b5e3c] border border-gray-200 focus:ring-2 ring-primary ring-offset-2"
+              ></button>
+              <button
+                class="w-8 h-8 rounded-full bg-white border border-gray-300 focus:ring-2 ring-primary ring-offset-2"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <div class="flex-1 flex flex-col">
+      <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+        <p class="text-secondary-text text-sm font-medium">
+          Showing
+          <span class="text-primary font-bold">{{ products.length }}</span>
+          products
+        </p>
+        <div class="flex items-center gap-3 ml-auto">
+          <span class="text-secondary-text text-sm hidden sm:inline"
+            >Sort by:</span
+          >
+          <div class="relative">
+            <select
+              class="appearance-none bg-accent text-primary text-sm font-bold py-2.5 pl-4 pr-10 rounded-lg border-none cursor-pointer focus:ring-1 focus:ring-primary/20"
+            >
+              <option>Popularity</option>
+              <option>Newest Arrivals</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+            </select>
+            <div
+              class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
+            >
+              <lucide-icon
+                [img]="icons.ChevronDown"
+                class="w-5 h-5"
+              ></lucide-icon>
+            </div>
+          </div>
+          <button class="lg:hidden p-2.5 bg-accent rounded-lg text-primary">
+            <lucide-icon
+              [img]="icons.Filter"
+              class="w-5 h-5 block"
+            ></lucide-icon>
+          </button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          *ngFor="let product of products"
+          [routerLink]="['/product', product.slug]"
+          class="group flex flex-col gap-3 cursor-pointer"
+        >
+          <div
+            class="relative overflow-hidden rounded-lg aspect-[3/4] bg-accent"
+          >
+            <div
+              class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105"
+              [attr.data-alt]="product.name"
+              [style.background-image]="
+                'url(' +
+                imageUrlService.getImageUrl(product.imageUrl || '') +
+                ')'
+              "
+            ></div>
+            <button
+              class="absolute bottom-4 right-4 bg-white text-primary p-2 rounded-full shadow-lg translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 hover:bg-primary hover:text-white"
+            >
+              <lucide-icon
+                [img]="icons.Heart"
+                class="w-5 h-5 block"
+              ></lucide-icon>
+            </button>
+          </div>
+          <div>
+            <div class="flex justify-between items-start">
+              <h3
+                class="text-primary text-base font-bold leading-tight line-clamp-2 mb-1 group-hover:underline decoration-1 underline-offset-4"
+              >
+                {{ product.name }}
+              </h3>
+              <app-price-display
+                class="text-primary"
+                [amount]="product.price"
+                size="sm"
+              ></app-price-display>
+            </div>
+            <p class="text-secondary-text text-sm mb-3">
+              {{ product.description }}
+            </p>
+            <button
+              class="w-full py-2.5 rounded-lg border border-primary text-primary font-bold text-sm hover:bg-primary hover:text-white transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              <lucide-icon
+                [img]="icons.ShoppingCart"
+                class="w-4.5 h-4.5"
+              ></lucide-icon>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="mt-12 flex justify-center">
+        <button
+          class="px-8 py-3 bg-accent text-primary font-bold rounded-lg hover:bg-accent/80 transition-colors w-full sm:w-auto"
+        >
+          Load More Products
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

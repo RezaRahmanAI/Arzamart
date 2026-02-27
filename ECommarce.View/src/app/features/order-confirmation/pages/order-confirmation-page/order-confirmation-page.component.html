@@ -1,0 +1,289 @@
+<ng-container *ngIf="order$ | async as order; else loadingOrError">
+  <main class="flex-grow w-full max-w-7xl mx-auto px-4 md:px-8 py-10">
+    <div class="flex flex-col items-center justify-center text-center mb-12">
+      <div
+        class="w-16 h-16 rounded-full bg-accent mb-6 flex items-center justify-center animate-pulse"
+      >
+        <lucide-icon
+          [img]="icons.CheckCircle2"
+          class="text-primary w-8 h-8 font-bold"
+        ></lucide-icon>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold mb-3">
+        Thank you for your order!
+      </h1>
+      <p class="text-gray-600 dark:text-gray-300 max-w-lg text-lg">
+        Your order
+        <span class="font-semibold text-primary dark:text-white"
+          >#{{ order.orderNumber }}</span
+        >
+        has been placed successfully. We will confirm delivery details at
+        <span class="font-medium">{{ order.customerPhone }}</span
+        >.
+      </p>
+      <div class="flex gap-4 mt-8">
+        <button
+          class="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+          type="button"
+          routerLink="/profile"
+        >
+          <lucide-icon [img]="icons.Truck" class="w-5 h-5"></lucide-icon>
+          Track Order
+        </button>
+        <button
+          class="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-primary dark:text-white font-medium rounded-lg transition-colors"
+          type="button"
+          routerLink="/women"
+        >
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+    <div class="max-w-4xl mx-auto mb-12 overflow-x-auto pb-4">
+      <div class="min-w-[600px] flex items-center justify-between px-4">
+        <div class="flex flex-col items-center relative group">
+          <div [class]="stepIconClasses(order, OrderStatus.Confirmed)">
+            <lucide-icon
+              [img]="icons.CheckCircle2"
+              class="w-5 h-5"
+            ></lucide-icon>
+          </div>
+          <p [ngClass]="stepLabelClasses(order, OrderStatus.Confirmed)">
+            Confirmed
+          </p>
+        </div>
+        <div [class]="connectorClasses(order, 0)"></div>
+        <div class="flex flex-col items-center relative group">
+          <div [class]="stepIconClasses(order, OrderStatus.Processing)">
+            <lucide-icon [img]="icons.Package" class="w-5 h-5"></lucide-icon>
+          </div>
+          <p [ngClass]="stepLabelClasses(order, OrderStatus.Processing)">
+            Processing
+          </p>
+        </div>
+        <div [class]="connectorClasses(order, 1)"></div>
+        <div class="flex flex-col items-center relative group">
+          <div [class]="stepIconClasses(order, OrderStatus.Shipped)">
+            <lucide-icon [img]="icons.Truck" class="w-5 h-5"></lucide-icon>
+          </div>
+          <p [ngClass]="stepLabelClasses(order, OrderStatus.Shipped)">
+            Shipped
+          </p>
+        </div>
+        <div [class]="connectorClasses(order, 2)"></div>
+        <div class="flex flex-col items-center relative group">
+          <div [class]="stepIconClasses(order, OrderStatus.Delivered)">
+            <lucide-icon [img]="icons.Home" class="w-5 h-5"></lucide-icon>
+          </div>
+          <p [ngClass]="stepLabelClasses(order, OrderStatus.Delivered)">
+            Delivered
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-6">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"
+        >
+          <div
+            class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800"
+          >
+            <h2 class="font-bold text-lg">Order Summary</h2>
+            <span class="text-sm text-gray-500"
+              >{{ order.items.length }} Items</span
+            >
+          </div>
+          <div class="divide-y divide-gray-100 dark:divide-gray-700">
+            <div
+              class="p-6 flex gap-4 hover:bg-gray-50/30 transition-colors"
+              *ngFor="let item of order.items; trackBy: trackOrderItem"
+            >
+              <div
+                class="w-24 h-32 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 relative"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  [src]="imageUrlService.getImageUrl(item.imageUrl)"
+                  [alt]="item.productName"
+                />
+              </div>
+              <div class="flex flex-col flex-grow justify-between py-1">
+                <div>
+                  <div class="flex justify-between items-start">
+                    <h3 class="font-semibold text-lg">
+                      {{ item.productName }}
+                    </h3>
+                    <app-price-display
+                      class="font-bold"
+                      [amount]="item.unitPrice"
+                      size="sm"
+                    ></app-price-display>
+                  </div>
+                  <p class="text-sm text-gray-500 mt-1">
+                    {{ item.color }} / {{ item.size }}
+                  </p>
+                </div>
+                <div class="flex items-center gap-2 mt-2">
+                  <span
+                    class="text-xs font-medium bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded"
+                    >Qty: {{ item.quantity }}</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-accent/20 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border border-accent/30"
+        >
+          <div class="flex items-center gap-4">
+            <div
+              class="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center shadow-sm"
+            >
+              <lucide-icon
+                [img]="icons.Headphones"
+                class="w-5 h-5"
+              ></lucide-icon>
+            </div>
+            <div>
+              <p class="font-semibold text-primary">
+                Need help with your order?
+              </p>
+              <p class="text-sm text-primary/70">
+                Our support team is here to assist you.
+              </p>
+            </div>
+          </div>
+          <button
+            class="text-sm font-semibold text-primary bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow whitespace-nowrap"
+            type="button"
+          >
+            Contact Support
+          </button>
+        </div>
+      </div>
+      <div class="lg:col-span-1 space-y-6">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
+        >
+          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <lucide-icon
+              [img]="icons.Truck"
+              class="text-gray-400 w-5 h-5"
+            ></lucide-icon>
+            Delivery Details
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <p
+                class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1"
+              >
+                Contact
+              </p>
+              <p class="font-medium">{{ order.customerName }}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-300">
+                {{ order.customerPhone }}
+              </p>
+            </div>
+            <div class="pt-4 border-t border-gray-100 dark:border-gray-700">
+              <p
+                class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1"
+              >
+                Address
+              </p>
+              <p class="text-sm text-gray-600 dark:text-gray-300">
+                {{ order.shippingAddress }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
+        >
+          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <lucide-icon
+              [img]="icons.FileText"
+              class="text-gray-400 w-5 h-5"
+            ></lucide-icon>
+            Order Totals
+          </h3>
+          <div class="space-y-2">
+            <div
+              class="flex justify-between text-sm text-gray-600 dark:text-gray-400"
+            >
+              <span>Subtotal</span>
+              <app-price-display
+                [amount]="order.subTotal"
+                size="sm"
+              ></app-price-display>
+            </div>
+            <div
+              class="flex justify-between text-sm text-gray-600 dark:text-gray-400"
+            >
+              <span>Shipping</span>
+              <span class="text-green-600 font-medium">
+                <ng-container
+                  *ngIf="order.shippingCost === 0; else confirmationShipping"
+                >
+                  Free
+                </ng-container>
+                <ng-template #confirmationShipping>
+                  <app-price-display
+                    [amount]="order.shippingCost"
+                    size="sm"
+                  ></app-price-display>
+                </ng-template>
+              </span>
+            </div>
+
+            <div
+              class="pt-2 mt-2 border-t border-dashed border-gray-200 dark:border-gray-600 flex justify-between items-center"
+            >
+              <span class="font-bold text-lg">Total</span>
+              <app-price-display
+                class="font-bold text-primary dark:text-white"
+                [amount]="order.total"
+                size="lg"
+              ></app-price-display>
+            </div>
+          </div>
+        </div>
+        <button
+          class="w-full py-3 text-primary text-sm font-semibold hover:underline flex items-center justify-center gap-1"
+          type="button"
+        >
+          <lucide-icon [img]="icons.Printer" class="w-4.5 h-4.5"></lucide-icon>
+          Print Invoice
+        </button>
+      </div>
+    </div>
+  </main>
+</ng-container>
+
+<ng-template #loadingOrError>
+  <div
+    class="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center"
+  >
+    <div
+      class="luxury-loading-box max-w-sm w-full p-10 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700"
+    >
+      <div class="animate-pulse space-y-4">
+        <div
+          class="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"
+        ></div>
+        <div
+          class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mx-auto"
+        ></div>
+        <div
+          class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mx-auto"
+        ></div>
+      </div>
+      <p
+        class="mt-8 text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest text-xs"
+      >
+        Finding your order...
+      </p>
+    </div>
+  </div>
+</ng-template>

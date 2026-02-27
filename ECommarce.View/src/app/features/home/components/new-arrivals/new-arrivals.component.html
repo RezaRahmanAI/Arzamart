@@ -1,0 +1,11 @@
+<section class="px-4 py-32 md:px-20 lg:px-40 bg-background-light">
+  <div class="layout-content-container flex flex-col max-w-[1400px] mx-auto text-center">
+    <div class="mb-16">
+      <span class="text-[10px] uppercase tracking-[0.5em] text-accent font-bold mb-4 block">Just In</span>
+      <h2 class="text-4xl md:text-6xl font-serif italic tracking-tighter text-primary">New Arrivals</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
+    </div>
+  </div>
+</section>

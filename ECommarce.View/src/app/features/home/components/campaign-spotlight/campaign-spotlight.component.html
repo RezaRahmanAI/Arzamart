@@ -1,0 +1,42 @@
+<section
+  class="relative w-full h-[70vh] md:h-[85vh] overflow-hidden my-12 md:my-24"
+>
+  <!-- Parallax Background Image -->
+  <div
+    class="absolute inset-0 bg-cover bg-center bg-fixed transition-transform duration-700 hover:scale-105"
+    [style.background-image]="'url(' + spotlight.image + ')'"
+  ></div>
+
+  <!-- Gradient Overlay -->
+  <div
+    class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+  ></div>
+
+  <!-- Content -->
+  <div
+    class="relative h-full flex flex-col items-center justify-end pb-20 md:pb-32 text-center text-white px-6"
+  >
+    <span
+      class="text-[10px] md:text-xs uppercase tracking-[0.4em] font-medium text-accent mb-6 animate-fade-in-up"
+    >
+      Campaign {{ currentYear }}
+    </span>
+    <h2
+      class="text-5xl md:text-7xl lg:text-8xl font-serif italic mb-8 tracking-tighter leading-none animate-fade-in-up delay-100"
+    >
+      {{ spotlight.title }}
+    </h2>
+    <p
+      class="max-w-md mx-auto text-xs md:text-sm uppercase tracking-[0.2em] opacity-80 mb-10 leading-loose animate-fade-in-up delay-200"
+    >
+      {{ spotlight.description }}
+    </p>
+
+    <a
+      [routerLink]="spotlight.link"
+      class="inline-block px-12 py-4 border border-white/30 text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold hover:bg-white hover:text-black hover:border-white transition-all duration-500 animate-fade-in-up delay-300"
+    >
+      Explore Collection
+    </a>
+  </div>
+</section>

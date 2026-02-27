@@ -1,0 +1,458 @@
+<div class="max-w-[1200px] mx-auto flex flex-col gap-6">
+  <!-- Page Heading & Actions -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-bold text-slate-900 dark:text-white">
+        Products
+      </h2>
+      <p class="text-slate-500 dark:text-slate-400 mt-1">
+        Manage your clothing inventory, prices, and stock levels.
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button
+        class="h-10 px-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark text-slate-700 dark:text-slate-200 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2 shadow-sm"
+        type="button"
+        (click)="exportProducts()"
+      >
+        <lucide-icon [img]="icons.FileUp" class="w-5 h-5"></lucide-icon>
+        Export
+      </button>
+      <a
+        class="h-10 px-4 rounded-lg bg-primary text-white text-sm font-medium hover:bg-[#083b4b] transition-colors flex items-center gap-2 shadow-sm"
+        routerLink="/admin/products/create"
+      >
+        <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
+        Add New Product
+      </a>
+    </div>
+  </div>
+  <!-- Filters & Search -->
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+    <!-- Search -->
+    <div class="md:col-span-5">
+      <div class="relative h-11">
+        <div
+          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+        >
+          <lucide-icon
+            [img]="icons.Search"
+            class="w-5 h-5 text-slate-400"
+          ></lucide-icon>
+        </div>
+        <input
+          class="block w-full h-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg leading-5 bg-white dark:bg-surface-dark placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm"
+          placeholder="Search by name, SKU or tag..."
+          type="text"
+          [formControl]="searchControl"
+        />
+      </div>
+    </div>
+    <!-- Category Filter -->
+    <div class="md:col-span-3">
+      <div class="relative h-11">
+        <div
+          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+        >
+          <lucide-icon
+            [img]="icons.Filter"
+            class="w-5 h-5 text-slate-400"
+          ></lucide-icon>
+        </div>
+        <select
+          class="block w-full h-full pl-10 pr-10 py-2 text-base border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-white dark:bg-surface-dark text-slate-700 dark:text-slate-200 appearance-none cursor-pointer"
+          [formControl]="categoryControl"
+        >
+          <option *ngFor="let category of categories">{{ category }}</option>
+        </select>
+        <div
+          class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+        >
+          <lucide-icon
+            [img]="icons.ChevronDown"
+            class="w-4 h-4 text-slate-400"
+          ></lucide-icon>
+        </div>
+      </div>
+    </div>
+    <!-- Status Filter -->
+    <div
+      class="md:col-span-4 flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 no-scrollbar"
+    >
+      <button
+        *ngFor="let tab of statusTabs"
+        class="h-11 px-4 rounded-lg text-sm font-medium whitespace-nowrap shadow-sm"
+        type="button"
+        (click)="setStatusTab(tab)"
+        [ngClass]="
+          selectedStatusTab === tab
+            ? 'bg-primary text-white'
+            : 'bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors'
+        "
+      >
+        {{ tab }}
+      </button>
+    </div>
+  </div>
+  <!-- Product Table -->
+  <div
+    class="bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden flex flex-col"
+  >
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+        <thead class="bg-slate-50 dark:bg-slate-800/50">
+          <tr>
+            <th class="px-6 py-4 text-left" scope="col">
+              <div class="flex items-center">
+                <input
+                  class="h-4 w-4 text-primary focus:ring-primary border-slate-300 rounded cursor-pointer"
+                  type="checkbox"
+                  [checked]="isAllSelected"
+                  [indeterminate]="isIndeterminate"
+                  (change)="toggleSelectAll($event)"
+                />
+              </div>
+            </th>
+            <th
+              class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+              scope="col"
+            >
+              Product
+            </th>
+            <th
+              class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+              scope="col"
+            >
+              SKU
+            </th>
+
+            <th
+              class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+              scope="col"
+            >
+              Price
+            </th>
+            <th
+              class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+              scope="col"
+            >
+              Purchase Rate
+            </th>
+            <th
+              class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+              scope="col"
+            >
+              Status
+            </th>
+            <th
+              class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider"
+              scope="col"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          class="divide-y divide-slate-200 dark:divide-slate-700 bg-white dark:bg-surface-dark"
+        >
+          <!-- Loading State -->
+          <ng-container *ngIf="isLoading">
+            <tr *ngFor="let i of [1, 2, 3, 4, 5]" class="animate-pulse">
+              <td class="px-6 py-4">
+                <div
+                  class="h-4 w-4 bg-slate-100 dark:bg-slate-800 rounded mx-auto"
+                ></div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center">
+                  <div
+                    class="h-10 w-10 bg-slate-100 dark:bg-slate-800 rounded-lg"
+                  ></div>
+                  <div class="ml-4 space-y-2">
+                    <div
+                      class="h-4 w-32 bg-slate-100 dark:bg-slate-800 rounded text-transparent"
+                    >
+                      loading
+                    </div>
+                    <div
+                      class="h-3 w-20 bg-slate-50 dark:bg-slate-800/50 rounded text-transparent"
+                    >
+                      loading
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div
+                  class="h-4 w-16 bg-slate-100 dark:bg-slate-800 rounded text-transparent"
+                >
+                  loading
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div
+                  class="h-4 w-20 bg-slate-100 dark:bg-slate-800 rounded text-transparent"
+                >
+                  loading
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div
+                  class="h-4 w-20 bg-slate-100 dark:bg-slate-800 rounded text-transparent"
+                >
+                  loading
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div
+                  class="h-6 w-16 bg-slate-100 dark:bg-slate-800 rounded-full text-transparent"
+                >
+                  loading
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div
+                  class="h-8 w-8 bg-slate-100 dark:bg-slate-800 rounded-full ml-auto"
+                ></div>
+              </td>
+            </tr>
+          </ng-container>
+
+          <!-- Product Rows -->
+          <ng-container *ngIf="!isLoading">
+            <tr
+              *ngFor="let product of products"
+              class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors"
+              [ngClass]="
+                isOutOfStock(product)
+                  ? 'bg-slate-50/50 dark:bg-slate-800/10'
+                  : ''
+              "
+            >
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <input
+                    class="h-4 w-4 text-primary focus:ring-primary border-slate-300 rounded cursor-pointer"
+                    type="checkbox"
+                    [checked]="isSelected(product.id)"
+                    (change)="toggleSelectProduct(product.id, $event)"
+                  />
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div
+                    class="h-10 w-10 flex-shrink-0 rounded-lg bg-slate-100 bg-cover bg-center border border-slate-200"
+                    [attr.data-alt]="product.name + ' thumbnail'"
+                    [style.background-image]="
+                      'url(' +
+                      imageUrlService.getImageUrl(product.imageUrl) +
+                      ')'
+                    "
+                  ></div>
+                  <div class="ml-4">
+                    <div
+                      class="text-sm font-medium flex items-center gap-2"
+                      [ngClass]="
+                        isOutOfStock(product)
+                          ? 'text-slate-400 dark:text-slate-500'
+                          : 'text-slate-900 dark:text-white'
+                      "
+                    >
+                      {{ product.name }}
+                      <span
+                        *ngIf="product.isFeatured"
+                        class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 uppercase tracking-wider"
+                        title="Featured Product"
+                      >
+                        Featured
+                      </span>
+                      <span
+                        *ngIf="product.isNew"
+                        class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 uppercase tracking-wider"
+                        title="New Arrival"
+                      >
+                        New
+                      </span>
+                    </div>
+                    <div
+                      class="text-xs"
+                      [ngClass]="
+                        isOutOfStock(product)
+                          ? 'text-slate-400 dark:text-slate-600'
+                          : 'text-slate-500'
+                      "
+                    >
+                      {{ product.categoryName }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div
+                  class="text-sm font-mono"
+                  [ngClass]="
+                    isOutOfStock(product) ? 'text-slate-400' : 'text-slate-500'
+                  "
+                >
+                  {{ product.sku }}
+                </div>
+              </td>
+
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div
+                  class="text-sm font-medium"
+                  [ngClass]="
+                    isOutOfStock(product)
+                      ? 'text-slate-400 dark:text-slate-500'
+                      : 'text-slate-900 dark:text-white'
+                  "
+                >
+                  <app-price-display
+                    [amount]="product.price"
+                    size="sm"
+                  ></app-price-display>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div
+                  class="text-sm font-medium"
+                  [ngClass]="
+                    isOutOfStock(product)
+                      ? 'text-slate-400 dark:text-slate-500'
+                      : 'text-slate-900 dark:text-white'
+                  "
+                >
+                  <app-price-display
+                    [amount]="product.purchaseRate ?? 0"
+                    size="sm"
+                  ></app-price-display>
+                </div>
+                <p class="text-xs text-slate-400">Admin only</p>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                  [ngClass]="statusClasses(product)"
+                >
+                  {{ product.status }}
+                </span>
+              </td>
+              <td
+                class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+              >
+                <div class="flex items-center justify-end gap-2">
+                  <a
+                    class="text-slate-400 hover:text-primary dark:hover:text-white transition-colors p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"
+                    [routerLink]="['/lp', product.slug]"
+                    target="_blank"
+                    title="View Landing Page"
+                  >
+                    <lucide-icon
+                      [img]="icons.Rocket"
+                      class="w-4.5 h-4.5"
+                    ></lucide-icon>
+                  </a>
+                  <a
+                    class="text-slate-400 hover:text-primary dark:hover:text-white transition-colors p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"
+                    [routerLink]="['/admin/products', product.id, 'edit']"
+                  >
+                    <lucide-icon
+                      [img]="icons.Edit"
+                      class="w-4.5 h-4.5"
+                    ></lucide-icon>
+                  </a>
+                  <button
+                    class="text-slate-400 hover:text-red-600 transition-colors p-1 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
+                    type="button"
+                    (click)="deleteProduct(product)"
+                  >
+                    <lucide-icon
+                      [img]="icons.Trash2"
+                      class="w-4.5 h-4.5"
+                    ></lucide-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+
+          <!-- Empty State -->
+          <tr *ngIf="!isLoading && products.length === 0">
+            <td colspan="7" class="px-6 py-12 text-center text-slate-500">
+              No products found matching your criteria.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Pagination -->
+    <div
+      class="bg-white dark:bg-surface-dark px-4 py-3 flex items-center justify-between border-t border-slate-200 dark:border-slate-700 sm:px-6"
+    >
+      <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm text-slate-700 dark:text-slate-400">
+            Showing <span class="font-medium">{{ pageStart }}</span> to
+            <span class="font-medium">{{ pageEnd }}</span> of
+            <span class="font-medium">{{ totalResults }}</span> results
+          </p>
+        </div>
+        <div>
+          <nav
+            aria-label="Pagination"
+            class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+          >
+            <button
+              class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-surface-dark text-sm font-medium text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800"
+              type="button"
+              (click)="previousPage()"
+              [disabled]="page === 1"
+            >
+              <span class="sr-only">Previous</span>
+              <lucide-icon
+                [img]="icons.ChevronLeft"
+                class="w-5 h-5"
+              ></lucide-icon>
+            </button>
+            <ng-container *ngFor="let item of paginationItems">
+              <button
+                *ngIf="item !== 'ellipsis'; else ellipsis"
+                class="relative inline-flex items-center px-4 py-2 text-sm font-medium"
+                type="button"
+                [attr.aria-current]="page === item ? 'page' : null"
+                [ngClass]="
+                  page === item
+                    ? 'z-10 bg-primary border-primary text-white'
+                    : 'bg-white dark:bg-surface-dark border-slate-300 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
+                "
+                (click)="setPage(item)"
+              >
+                {{ item }}
+              </button>
+              <ng-template #ellipsis>
+                <span
+                  class="relative inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-surface-dark text-sm font-medium text-slate-700"
+                >
+                  ...
+                </span>
+              </ng-template>
+            </ng-container>
+            <button
+              class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-surface-dark text-sm font-medium text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800"
+              type="button"
+              (click)="nextPage()"
+              [disabled]="page >= totalPages"
+            >
+              <span class="sr-only">Next</span>
+              <lucide-icon
+                [img]="icons.ChevronRight"
+                class="w-5 h-5"
+              ></lucide-icon>
+            </button>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

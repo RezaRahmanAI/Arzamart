@@ -1,0 +1,77 @@
+<section class="site-container py-24 bg-white border-t border-gray-50">
+  <div class="layout-content-container flex flex-col max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <span
+        class="text-[10px] uppercase tracking-[0.4em] text-accent font-bold mb-3 block"
+        >Collective Voice</span
+      >
+      <h2 class="text-4xl font-serif italic tracking-tighter text-primary">
+        Voices of Refinement
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+      <div
+        *ngIf="reviews.length === 0"
+        class="col-span-3 text-center text-gray-400 text-sm tracking-widest uppercase"
+      >
+        No featured reviews yet.
+      </div>
+      <div
+        *ngFor="let review of reviews"
+        class="flex flex-col items-center text-center group"
+      >
+        <div class="mb-8 text-accent">
+          <lucide-icon
+            [img]="icons.Quote"
+            class="w-10 h-10 opacity-40 group-hover:opacity-100 transition-opacity duration-500 font-light"
+          ></lucide-icon>
+        </div>
+
+        <p
+          class="text-text-main font-serif italic text-lg leading-relaxed mb-8 px-4 opacity-80 min-h-[4rem]"
+        >
+          "{{ review.comment }}"
+        </p>
+
+        <div class="flex flex-col items-center gap-3">
+          <div
+            class="h-12 w-12 rounded-full overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500 bg-gray-100"
+          >
+            <img
+              *ngIf="review.customerAvatar"
+              class="h-full w-full object-cover"
+              [alt]="review.customerName"
+              [src]="imageUrlService.getImageUrl(review.customerAvatar)"
+            />
+            <div
+              *ngIf="!review.customerAvatar"
+              class="h-full w-full flex items-center justify-center bg-gray-200 text-gray-400 text-xs font-bold uppercase"
+            >
+              {{ review.customerName.charAt(0) }}
+            </div>
+          </div>
+          <div class="mt-2">
+            <p
+              class="text-[10px] uppercase tracking-[0.3em] font-bold text-primary"
+            >
+              {{ review.customerName }}
+            </p>
+            <div class="flex text-accent scale-75 mt-1 gap-1">
+              <lucide-icon
+                *ngFor="let star of stars"
+                [img]="getStarIcon(review.rating, star)"
+                class="w-3.5 h-3.5 font-light"
+                [ngClass]="{
+                  'fill-accent': review.rating >= star,
+                  'fill-accent/50':
+                    review.rating + 0.5 >= star && review.rating < star,
+                }"
+              ></lucide-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

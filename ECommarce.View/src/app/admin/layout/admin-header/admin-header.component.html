@@ -1,0 +1,41 @@
+<header
+  class="h-20 bg-surface border-b border-[#e7f0f3] px-8 flex items-center justify-between flex-shrink-0 z-10"
+>
+  <div class="flex items-center gap-4">
+    <!-- Mobile Menu Toggle -->
+    <button
+      (click)="sidebarService.toggle()"
+      class="p-2 -ml-2 text-gray-500 hover:bg-background-light rounded-lg transition-colors lg:hidden"
+      type="button"
+    >
+      <lucide-icon [img]="icons.Menu" class="w-6 h-6"></lucide-icon>
+    </button>
+    <h2 class="text-primary text-xl font-bold tracking-tight">
+      {{ pageTitle$ | async }}
+    </h2>
+  </div>
+  <div class="flex items-center gap-6">
+    <div class="relative w-80 hidden md:block">
+      <span
+        class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"
+      >
+        <lucide-icon [img]="icons.Search" class="w-4 h-4"></lucide-icon>
+      </span>
+      <input
+        class="w-full h-10 pl-10 pr-4 rounded-lg bg-background-light border-none text-sm text-[#0e181b] placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20"
+        placeholder="Search orders, products, or customers..."
+        type="text"
+        [formControl]="searchControl"
+      />
+    </div>
+    <button
+      class="relative p-2 text-gray-500 hover:bg-background-light rounded-lg transition-colors"
+      type="button"
+    >
+      <lucide-icon [img]="icons.Bell" class="w-5 h-5"></lucide-icon>
+      <span
+        class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"
+      ></span>
+    </button>
+  </div>
+</header>

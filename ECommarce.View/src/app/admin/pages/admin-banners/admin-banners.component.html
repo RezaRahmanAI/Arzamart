@@ -1,0 +1,303 @@
+<div class="p-8">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Banner Management</h1>
+      <p class="text-gray-500">Manage hero banners for your home page.</p>
+    </div>
+    <button
+      (click)="openAddModal()"
+      class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+    >
+      <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
+      Add New Banner
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div
+      *ngFor="let banner of banners"
+      class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group"
+    >
+      <div class="relative h-40 bg-gray-100">
+        <img
+          [src]="getBannerImageUrl(banner.imageUrl)"
+          [alt]="banner.title"
+          class="w-full h-full object-cover"
+        />
+        <div
+          class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4"
+        >
+          <button
+            (click)="openEditModal(banner)"
+            class="bg-white p-2 rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <lucide-icon
+              [img]="icons.Edit"
+              class="w-4 h-4 text-gray-700"
+            ></lucide-icon>
+          </button>
+          <button
+            (click)="deleteBanner(banner.id)"
+            class="bg-white p-2 rounded-full hover:bg-red-50 transition-colors"
+          >
+            <lucide-icon
+              [img]="icons.Trash2"
+              class="w-4 h-4 text-red-500"
+            ></lucide-icon>
+          </button>
+        </div>
+        <div class="absolute top-2 right-2 flex gap-1">
+          <span
+            class="bg-primary/80 text-white text-[10px] px-2 py-0.5 rounded-full font-bold"
+            >#{{ banner.displayOrder }}</span
+          >
+          <span
+            *ngIf="banner.isActive"
+            class="bg-accent text-primary text-[10px] px-2 py-0.5 rounded-full font-bold"
+            >Active</span
+          >
+        </div>
+      </div>
+      <div class="p-4">
+        <h3 class="font-bold text-gray-800 mb-1 line-clamp-1 text-sm">
+          {{ banner.title || "Untitled Banner" }}
+        </h3>
+        <p class="text-gray-500 text-xs line-clamp-1 mb-2">
+          {{ banner.subtitle }}
+        </p>
+        <div class="flex items-center gap-2">
+          <lucide-icon
+            [img]="icons.Link"
+            class="w-3.5 h-3.5 text-gray-400"
+          ></lucide-icon>
+          <span class="text-[10px] text-gray-400 truncate">{{
+            banner.linkUrl || "No Link"
+          }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div
+    *ngIf="banners.length === 0"
+    class="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200"
+  >
+    <lucide-icon
+      [img]="icons.Image"
+      class="w-16 h-16 text-gray-300 mb-4"
+    ></lucide-icon>
+    <h3 class="text-lg font-medium text-gray-600">No banners found</h3>
+    <p class="text-gray-500 mb-6">
+      Create your first hero banner to engage customers.
+    </p>
+    <button
+      (click)="openAddModal()"
+      class="bg-primary text-white px-6 py-2 rounded-lg font-medium"
+    >
+      Add Banner
+    </button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  *ngIf="isModalOpen"
+  class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+>
+  <div
+    class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in duration-300"
+  >
+    <div
+      class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl"
+    >
+      <h2 class="text-xl font-bold text-gray-800">
+        {{ isEditing ? "Edit Banner" : "Add New Banner" }}
+      </h2>
+      <button
+        (click)="closeModal()"
+        class="p-2 hover:bg-gray-200 rounded-full transition-colors"
+      >
+        <lucide-icon
+          [img]="icons.X"
+          class="w-5 h-5 text-gray-500"
+        ></lucide-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="bannerForm" (ngSubmit)="onSubmit()" class="p-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="col-span-2">
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+            >Title</label
+          >
+          <input
+            type="text"
+            formControlName="title"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+            placeholder="e.g. Summer Collection 2026"
+          />
+        </div>
+
+        <div class="col-span-2">
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+            >Subtitle</label
+          >
+          <input
+            type="text"
+            formControlName="subtitle"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+            placeholder="e.g. Get up to 50% off on all new arrivals"
+          />
+        </div>
+
+        <div>
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+            >Display Order</label
+          >
+          <input
+            type="number"
+            formControlName="displayOrder"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+          />
+        </div>
+
+        <div>
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+            >Button Text</label
+          >
+          <input
+            type="text"
+            formControlName="buttonText"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+            placeholder="e.g. Shop Now"
+          />
+        </div>
+
+        <div class="col-span-2">
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+            >Link URL</label
+          >
+          <input
+            type="text"
+            formControlName="linkUrl"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+            placeholder="e.g. /category/summer-collection"
+          />
+        </div>
+
+        <div class="col-span-2">
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+            >Banner Images</label
+          >
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-4">
+              <p
+                class="text-[10px] text-gray-400 uppercase font-black tracking-widest"
+              >
+                Desktop View
+              </p>
+              <div
+                class="relative h-24 bg-gray-50 rounded-xl border border-dashed border-gray-300 flex items-center justify-center overflow-hidden"
+              >
+                <img
+                  *ngIf="bannerForm.get('imageUrl')?.value"
+                  [src]="getBannerImageUrl(bannerForm.get('imageUrl')?.value!)"
+                  class="w-full h-full object-cover"
+                />
+                <div
+                  *ngIf="!bannerForm.get('imageUrl')?.value"
+                  class="text-gray-400 flex flex-col items-center"
+                >
+                  <lucide-icon
+                    [img]="icons.Image"
+                    class="w-6 h-6"
+                  ></lucide-icon>
+                  <span class="text-[10px]">No image selected</span>
+                </div>
+                <input
+                  type="file"
+                  (change)="onFileSelected($event, 'desktop')"
+                  class="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </div>
+            </div>
+            <div class="space-y-4">
+              <p
+                class="text-[10px] text-gray-400 uppercase font-black tracking-widest"
+              >
+                Mobile View
+              </p>
+              <div
+                class="relative h-24 bg-gray-50 rounded-xl border border-dashed border-gray-300 flex items-center justify-center overflow-hidden"
+              >
+                <img
+                  *ngIf="bannerForm.get('mobileImageUrl')?.value"
+                  [src]="
+                    getBannerImageUrl(bannerForm.get('mobileImageUrl')?.value!)
+                  "
+                  class="w-full h-full object-cover"
+                />
+                <div
+                  *ngIf="!bannerForm.get('mobileImageUrl')?.value"
+                  class="text-gray-400 flex flex-col items-center"
+                >
+                  <lucide-icon
+                    [img]="icons.Smartphone"
+                    class="w-6 h-6"
+                  ></lucide-icon>
+                  <span class="text-[10px]">No image selected</span>
+                </div>
+                <input
+                  type="file"
+                  (change)="onFileSelected($event, 'mobile')"
+                  class="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-span-2 flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="isActive"
+            formControlName="isActive"
+            class="size-5 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <label for="isActive" class="text-sm font-medium text-gray-700"
+            >Banner is Active</label
+          >
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="px-6 py-2.5 rounded-xl text-gray-600 font-medium hover:bg-gray-100 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="px-8 py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+        >
+          <lucide-icon
+            *ngIf="isSubmitting"
+            [img]="icons.Loader2"
+            class="w-5 h-5 animate-spin"
+          ></lucide-icon>
+          {{ isEditing ? "Update Banner" : "Create Banner" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

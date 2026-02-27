@@ -1,0 +1,14 @@
+using System.Collections.Generic;
+using System.Security.Claims;
+using ECommerce.Core.Entities;
+
+namespace ECommerce.Core.Interfaces
+{
+    public interface IJwtTokenService
+    {
+        string GenerateAccessToken(string userId, string? email, string? phone, string role);
+        string GenerateRefreshToken();
+        ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
+        void RevokeAllUserTokens(string userId);
+    }
+}

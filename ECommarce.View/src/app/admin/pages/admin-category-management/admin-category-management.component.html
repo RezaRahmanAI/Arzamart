@@ -1,0 +1,566 @@
+<div class="flex flex-col gap-6">
+  <div
+    class="flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0"
+  >
+    <div class="flex flex-col gap-2">
+      <nav class="flex items-center text-sm text-slate-500 dark:text-slate-400">
+        <a
+          class="hover:text-primary transition-colors"
+          routerLink="/admin/dashboard"
+          >Dashboard</a
+        >
+        <lucide-icon
+          [img]="icons.ChevronRight"
+          class="w-4 h-4 mx-1"
+        ></lucide-icon>
+        <a
+          class="hover:text-primary transition-colors"
+          routerLink="/admin/products"
+          >Products</a
+        >
+        <lucide-icon
+          [img]="icons.ChevronRight"
+          class="w-4 h-4 mx-1"
+        ></lucide-icon>
+        <span class="font-medium text-primary dark:text-white">Categories</span>
+      </nav>
+      <h2
+        class="text-3xl font-bold text-primary dark:text-white tracking-tight"
+      >
+        Category Management
+      </h2>
+      <p class="text-slate-500 dark:text-slate-400 text-sm max-w-2xl">
+        Create and manage product categories to organize your catalog. Drag and
+        drop items to reorder hierarchy.
+      </p>
+    </div>
+    <button
+      class="flex items-center justify-center gap-2 bg-primary hover:bg-[#052630] text-white px-5 py-2.5 rounded-lg shadow-lg shadow-primary/20 transition-all active:scale-95"
+      type="button"
+      (click)="startCreate()"
+    >
+      <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
+      <span class="font-medium">Add Category</span>
+    </button>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-6 items-start h-full">
+    <div class="w-full lg:w-2/3 flex flex-col gap-4">
+      <div class="flex items-center justify-between gap-4 p-1">
+        <div class="relative flex-1 max-w-sm">
+          <lucide-icon
+            [img]="icons.Search"
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400"
+          ></lucide-icon>
+          <input
+            class="w-full pl-9 pr-4 py-2 bg-white dark:bg-[#1a2c32] border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-1 focus:ring-primary focus:border-primary"
+            placeholder="Filter categories..."
+            type="text"
+            [formControl]="filterControl"
+          />
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            class="p-2 text-slate-500 hover:text-primary hover:bg-slate-100 rounded-lg transition-colors"
+            title="Collapse All"
+            type="button"
+            (click)="collapseAll()"
+          >
+            <lucide-icon [img]="icons.ChevronUp" class="w-5 h-5"></lucide-icon>
+          </button>
+          <button
+            class="p-2 text-slate-500 hover:text-primary hover:bg-slate-100 rounded-lg transition-colors"
+            title="Expand All"
+            type="button"
+            (click)="expandAll()"
+          >
+            <lucide-icon
+              [img]="icons.ChevronDown"
+              class="w-5 h-5"
+            ></lucide-icon>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="bg-white dark:bg-[#1a2c32] border border-[#e7f0f3] dark:border-[#2a3c42] rounded-xl shadow-sm overflow-hidden flex flex-col"
+      >
+        <div
+          class="grid grid-cols-12 gap-4 px-6 py-3 bg-slate-50 dark:bg-slate-800/50 border-b border-[#e7f0f3] dark:border-[#2a3c42] text-xs font-semibold uppercase text-slate-500 tracking-wider"
+        >
+          <div class="col-span-8">Name</div>
+          <div class="col-span-2 text-center">Products</div>
+          <div class="col-span-2 text-right">Actions</div>
+        </div>
+
+        <div
+          class="divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto max-h-[600px]"
+        >
+          <!-- Loading State -->
+          <ng-container *ngIf="isLoading">
+            <div
+              *ngFor="let i of [1, 2, 3, 4, 5, 6]"
+              class="px-6 py-4 flex items-center gap-4 animate-pulse"
+            >
+              <div class="w-5 h-5 bg-gray-100 dark:bg-gray-800 rounded"></div>
+              <div class="size-10 bg-gray-100 dark:bg-gray-800 rounded"></div>
+              <div class="flex-1 space-y-2">
+                <div
+                  class="h-4 w-32 bg-gray-100 dark:bg-gray-800 rounded"
+                ></div>
+                <div
+                  class="h-3 w-20 bg-gray-50 dark:bg-gray-800/50 rounded"
+                ></div>
+              </div>
+              <div
+                class="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-full"
+              ></div>
+            </div>
+          </ng-container>
+
+          <!-- Tree State -->
+          <ng-container *ngIf="!isLoading">
+            <ng-container *ngFor="let node of filteredTree">
+              <ng-container
+                *ngTemplateOutlet="
+                  treeNode;
+                  context: { $implicit: node, depth: 0 }
+                "
+              ></ng-container>
+            </ng-container>
+          </ng-container>
+        </div>
+
+        <div
+          class="p-3 bg-slate-50 dark:bg-slate-800/50 border-t border-[#e7f0f3] dark:border-[#2a3c42] flex justify-between items-center text-xs text-slate-500"
+        >
+          <span>Showing {{ rootCount }} root categories</span>
+          <div class="flex gap-1">
+            <span class="px-2 py-1 bg-white border rounded shadow-sm">1</span>
+            <span class="px-2 py-1 hover:bg-white rounded cursor-pointer"
+              >2</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full lg:w-1/3 shrink-0">
+      <div
+        class="bg-white dark:bg-[#1a2c32] rounded-xl border border-[#e7f0f3] dark:border-[#2a3c42] shadow-lg sticky top-0 overflow-hidden"
+      >
+        <div
+          class="px-6 py-4 border-b border-[#e7f0f3] dark:border-[#2a3c42] flex justify-between items-center bg-slate-50 dark:bg-slate-800/20"
+        >
+          <h3
+            class="text-lg font-bold text-primary dark:text-white flex items-center gap-2"
+          >
+            <lucide-icon
+              [img]="icons.Edit"
+              class="w-5 h-5 text-accent"
+            ></lucide-icon>
+            {{ mode === "create" ? "Create Category" : "Edit Category" }}
+          </h3>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-medium text-slate-500">Visible</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                class="sr-only peer"
+                type="checkbox"
+                [formControl]="categoryForm.controls.isActive"
+              />
+              <div
+                class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"
+              ></div>
+            </label>
+          </div>
+        </div>
+
+        <form class="p-6 flex flex-col gap-5" [formGroup]="categoryForm">
+          <div>
+            <label
+              class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              for="cat-name"
+              >Category Name</label
+            >
+            <input
+              class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700/50 text-sm focus:border-primary focus:ring-primary"
+              id="cat-name"
+              type="text"
+              formControlName="name"
+            />
+          </div>
+
+          <div>
+            <label
+              class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              for="cat-slug"
+              >Slug</label
+            >
+            <div class="flex rounded-lg shadow-sm">
+              <span
+                class="px-3 inline-flex items-center min-w-fit rounded-l-md border border-r-0 border-slate-300 bg-slate-50 text-slate-500 text-xs"
+              >
+                store/
+              </span>
+              <input
+                class="block w-full min-w-0 flex-1 rounded-none rounded-r-lg border-slate-300 dark:border-slate-600 text-sm focus:border-primary focus:ring-primary"
+                id="cat-slug"
+                type="text"
+                formControlName="slug"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+              >Category Image</label
+            >
+            <div class="flex items-center gap-4">
+              <div
+                class="size-16 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden bg-cover bg-center relative"
+                data-alt="Current category image preview"
+                [ngStyle]="{
+                  'background-image': getPreviewUrl()
+                    ? 'url(' + getPreviewUrl() + ')'
+                    : 'none',
+                }"
+              >
+                <lucide-icon
+                  *ngIf="!getPreviewUrl()"
+                  [img]="icons.Image"
+                  class="w-8 h-8 text-slate-300"
+                ></lucide-icon>
+                <div
+                  *ngIf="isUploadingImage"
+                  class="absolute inset-0 bg-black/50 flex items-center justify-center"
+                >
+                  <div
+                    class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"
+                  ></div>
+                </div>
+              </div>
+              <div class="flex-1">
+                <label
+                  class="flex justify-center w-full h-16 px-4 transition bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 border-dashed rounded-md appearance-none cursor-pointer hover:border-primary focus:outline-none"
+                  [class.opacity-50]="isUploadingImage"
+                >
+                  <span class="flex items-center space-x-2">
+                    <lucide-icon
+                      [img]="icons.Upload"
+                      class="w-5 h-5 text-slate-400"
+                    ></lucide-icon>
+                    <span
+                      class="font-medium text-slate-600 dark:text-slate-400 text-xs"
+                    >
+                      {{
+                        selectedImageFile
+                          ? selectedImageFile.name
+                          : "Drop files or click to upload"
+                      }}
+                    </span>
+                  </span>
+                  <input
+                    class="hidden"
+                    name="file_upload"
+                    type="file"
+                    accept="image/*"
+                    [disabled]="isUploadingImage"
+                    (change)="handleImageUpload($event)"
+                  />
+                </label>
+                <p
+                  *ngIf="selectedImageFile"
+                  class="text-xs text-slate-500 mt-1"
+                >
+                  Image will be uploaded when you click Save
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-end gap-3 mt-2"
+          >
+            <button
+              class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+              type="button"
+              (click)="cancelEdit()"
+            >
+              Cancel
+            </button>
+            <button
+              class="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-[#052630] rounded-lg shadow-md shadow-primary/20 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              type="button"
+              [disabled]="isUploadingImage"
+              (click)="saveCategory()"
+            >
+              <div
+                *ngIf="isUploadingImage"
+                class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"
+              ></div>
+              <lucide-icon
+                *ngIf="!isUploadingImage"
+                [img]="icons.Save"
+                class="w-4.5 h-4.5"
+              ></lucide-icon>
+              {{ isUploadingImage ? "Uploading..." : "Save Changes" }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div
+        class="mt-4 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30 text-blue-800 dark:text-blue-200 text-xs"
+      >
+        <div class="flex items-start gap-2">
+          <lucide-icon
+            [img]="icons.AlertCircle"
+            class="w-4 h-4 mt-0.5 text-blue-800 dark:text-blue-200"
+          ></lucide-icon>
+          <p>
+            Moving "{{ categoryForm.get("name")?.value || "this category" }}" to
+            a different parent will change its URL structure and may affect SEO
+            rankings.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #treeNode let-node let-depth="depth">
+  <ng-container *ngIf="depth === 0; else childNode">
+    <div
+      class="group relative transition-colors"
+      [ngClass]="
+        isSelected(node.category.id)
+          ? 'bg-[#f0f9ff] dark:bg-white/10 border-l-4 border-primary'
+          : 'hover:bg-slate-50 dark:hover:bg-white/5'
+      "
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop(node.category)"
+    >
+      <div
+        class="grid grid-cols-12 gap-4 px-6 py-4 items-center"
+        (click)="selectCategory(node.category)"
+      >
+        <div class="col-span-8 flex items-center gap-3">
+          <lucide-icon
+            [img]="icons.GripVertical"
+            class="w-5 h-5 cursor-grab"
+            [ngClass]="
+              isSelected(node.category.id)
+                ? 'text-primary'
+                : 'text-slate-300 hover:text-slate-500'
+            "
+            draggable="true"
+            (dragstart)="onDragStart(node.category.id, $event)"
+          ></lucide-icon>
+          <button
+            class="size-6 flex items-center justify-center rounded hover:bg-slate-200 text-slate-500"
+            type="button"
+            [disabled]="node.children.length === 0"
+            (click)="$event.stopPropagation(); toggleExpanded(node.category.id)"
+          >
+            <lucide-icon
+              [img]="
+                node.children.length === 0
+                  ? icons.ChevronRight
+                  : isExpanded(node.category.id)
+                    ? icons.ChevronDown
+                    : icons.ChevronRight
+              "
+              class="w-4 h-4"
+            ></lucide-icon>
+          </button>
+          <div
+            class="size-10 rounded bg-slate-100 shrink-0 bg-cover bg-center"
+            [attr.data-alt]="
+              'Thumbnail for ' + node.category.name + ' category'
+            "
+            [ngStyle]="{
+              'background-image': node.category.imageUrl
+                ? 'url(' + getImageUrl(node.category.imageUrl) + ')'
+                : 'none',
+            }"
+          ></div>
+          <div class="flex flex-col">
+            <span class="font-semibold text-primary dark:text-white">
+              {{ node.category.name }}
+            </span>
+            <span class="text-xs text-slate-400"
+              >/{{ node.category.slug }}</span
+            >
+          </div>
+          <span
+            *ngIf="isSelected(node.category.id)"
+            class="px-2 py-0.5 rounded text-[10px] bg-accent/30 text-primary border border-accent"
+            >EDITING</span
+          >
+        </div>
+        <div class="col-span-2 text-center">
+          <span
+            class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+            [ngClass]="
+              isSelected(node.category.id)
+                ? 'bg-primary text-white'
+                : 'bg-blue-50 text-blue-700'
+            "
+          >
+            {{ node.category.productCount }}
+          </span>
+        </div>
+        <div
+          class="col-span-2 flex justify-end gap-1 transition-opacity"
+          [ngClass]="
+            isSelected(node.category.id)
+              ? ''
+              : 'opacity-0 group-hover:opacity-100'
+          "
+        >
+          <button
+            class="p-1.5 rounded"
+            type="button"
+            (click)="selectCategory(node.category)"
+          >
+            <lucide-icon
+              [img]="icons.Edit"
+              class="w-4.5 h-4.5"
+              [ngClass]="
+                isSelected(node.category.id)
+                  ? 'text-primary'
+                  : 'text-slate-400 hover:text-primary'
+              "
+            ></lucide-icon>
+          </button>
+          <button
+            class="p-1.5 text-slate-400 hover:text-red-500 rounded"
+            type="button"
+            (click)="deleteCategory(node.category)"
+          >
+            <lucide-icon
+              [img]="icons.Trash2"
+              class="w-4.5 h-4.5 text-slate-400 hover:text-red-500"
+            ></lucide-icon>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="border-l-2 border-slate-100 ml-16 pl-0"
+        *ngIf="node.children.length > 0 && isExpanded(node.category.id)"
+        [style.margin-left.px]="depth * 64"
+      >
+        <ng-container *ngFor="let child of node.children">
+          <ng-container
+            *ngTemplateOutlet="
+              treeNode;
+              context: { $implicit: child, depth: depth + 1 }
+            "
+          ></ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #childNode>
+    <div
+      class="grid grid-cols-12 gap-4 px-6 py-3 items-center group/child"
+      [ngClass]="
+        isSelected(node.category.id)
+          ? 'bg-white dark:bg-[#1a2c32] shadow-sm my-1 rounded-l-md border-r-4 border-r-accent relative'
+          : 'hover:bg-slate-50 dark:hover:bg-white/5'
+      "
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop(node.category)"
+      (click)="selectCategory(node.category)"
+    >
+      <div
+        *ngIf="isSelected(node.category.id)"
+        class="absolute -left-[5px] top-1/2 -translate-y-1/2 size-2 bg-primary rounded-full"
+      ></div>
+      <div
+        class="col-span-8 flex items-center gap-3 pl-4"
+        [style.padding-left.px]="depth * 16 + 16"
+      >
+        <div class="w-4 border-b-2 border-slate-200 h-0 mr-1"></div>
+        <lucide-icon
+          [img]="icons.GripVertical"
+          class="w-4.5 h-4.5 text-slate-300 cursor-grab hover:text-slate-500 text-[18px]"
+          draggable="true"
+          (dragstart)="onDragStart(node.category.id, $event)"
+        ></lucide-icon>
+        <span
+          class="text-sm"
+          [ngClass]="
+            isSelected(node.category.id)
+              ? 'font-bold text-primary dark:text-white'
+              : 'font-medium text-slate-700 dark:text-slate-200'
+          "
+          >{{ node.category.name }}</span
+        >
+        <span
+          *ngIf="isSelected(node.category.id)"
+          class="px-2 py-0.5 rounded text-[10px] bg-accent/30 text-primary border border-accent"
+          >EDITING</span
+        >
+      </div>
+      <div class="col-span-2 text-center">
+        <span class="text-xs text-slate-500">{{
+          node.category.productCount
+        }}</span>
+      </div>
+      <div
+        class="col-span-2 flex justify-end gap-1 transition-opacity"
+        [ngClass]="
+          isSelected(node.category.id)
+            ? ''
+            : 'opacity-0 group-hover/child:opacity-100'
+        "
+      >
+        <button
+          class="p-1 rounded"
+          type="button"
+          (click)="selectCategory(node.category)"
+        >
+          <lucide-icon
+            [img]="icons.Edit"
+            class="w-4 h-4"
+            [ngClass]="
+              isSelected(node.category.id)
+                ? 'text-primary'
+                : 'text-slate-400 hover:text-primary'
+            "
+          ></lucide-icon>
+        </button>
+        <button
+          class="p-1 text-slate-400 hover:text-red-500 rounded"
+          type="button"
+          (click)="deleteCategory(node.category)"
+        >
+          <lucide-icon
+            [img]="icons.Trash2"
+            class="w-4 h-4 text-slate-400 hover:text-red-500"
+          ></lucide-icon>
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="border-l-2 border-slate-100 ml-16 pl-0"
+      *ngIf="node.children.length > 0 && isExpanded(node.category.id)"
+      [style.margin-left.px]="depth * 64"
+    >
+      <ng-container *ngFor="let child of node.children">
+        <ng-container
+          *ngTemplateOutlet="
+            treeNode;
+            context: { $implicit: child, depth: depth + 1 }
+          "
+        ></ng-container>
+      </ng-container>
+    </div>
+  </ng-template>
+</ng-template>

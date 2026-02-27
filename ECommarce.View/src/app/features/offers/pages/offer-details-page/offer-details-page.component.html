@@ -1,0 +1,127 @@
+<div class="offer-overlay">
+  <div class="offer-modal">
+    <div class="offer-header">
+      <div>
+        <p class="offer-badge">{{ offer?.badge }}</p>
+        <h1 class="offer-title">{{ offer?.title }}</h1>
+        <p class="offer-subtitle">{{ offer?.subtitle }}</p>
+      </div>
+      <a class="offer-close" routerLink="/" aria-label="Close offer">
+        <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+      </a>
+    </div>
+
+    <div class="offer-content">
+      <div class="offer-media">
+        <img
+          [src]="
+            offer?.imageUrl ? imageUrlService.getImageUrl(offer!.imageUrl) : ''
+          "
+          [alt]="offer?.title"
+        />
+        <div class="offer-price">
+          <app-price-display
+            [amount]="offer?.price ?? 0"
+            size="lg"
+          ></app-price-display>
+          <p class="text-xs text-gray-500">
+            Per set • Taxes calculated at checkout
+          </p>
+        </div>
+      </div>
+
+      <div class="offer-details">
+        <p class="text-gray-600 leading-relaxed">
+          {{ offer?.description }}
+        </p>
+        <div class="share-callout">
+          <p class="text-sm font-semibold text-primary">Shareable offer link</p>
+          <p class="text-xs text-gray-500">
+            Perfect for social ads and promos: /offer/{{ offer?.slug }}
+          </p>
+        </div>
+
+        <form
+          class="offer-form"
+          [formGroup]="orderForm"
+          (ngSubmit)="submitOrder()"
+        >
+          <h2 class="text-lg font-semibold text-primary">Place your order</h2>
+
+          <div class="field-grid">
+            <label>
+              <span>Full name</span>
+              <input
+                type="text"
+                formControlName="fullName"
+                placeholder="Enter your name"
+              />
+            </label>
+            <label>
+              <span>Phone</span>
+              <input
+                type="tel"
+                formControlName="phone"
+                placeholder="e.g. +1 555 123 4567"
+              />
+            </label>
+          </div>
+
+          <label>
+            <span>Delivery address</span>
+            <input
+              type="text"
+              formControlName="address"
+              placeholder="Street, city, country"
+            />
+          </label>
+
+          <div class="field-grid">
+            <label>
+              <span>Quantity</span>
+              <input
+                type="number"
+                formControlName="quantity"
+                min="1"
+                max="10"
+              />
+            </label>
+            <label>
+              <span>Size</span>
+              <select formControlName="size">
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            <span>Additional details</span>
+            <textarea
+              rows="3"
+              formControlName="additionalDetails"
+              placeholder="Add special requests or sizing notes"
+            ></textarea>
+          </label>
+
+          <div class="total-row">
+            <span>Total</span>
+            <app-price-display [amount]="total" size="md"></app-price-display>
+          </div>
+
+          <p *ngIf="errorMessage" class="error-text">{{ errorMessage }}</p>
+          <p *ngIf="successMessage" class="success-text">
+            {{ successMessage }}
+          </p>
+
+          <button type="submit" [disabled]="isLoading">
+            {{ isLoading ? "Placing order..." : "Submit order" }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

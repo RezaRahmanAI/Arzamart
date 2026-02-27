@@ -1,0 +1,249 @@
+<div class="p-8">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Content Pages</h1>
+      <p class="text-gray-500">
+        Manage static pages like Privacy Policy, Terms, and About Us.
+      </p>
+    </div>
+    <button
+      (click)="openAddModal()"
+      class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+    >
+      <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
+      Create New Page
+    </button>
+  </div>
+
+  <div
+    class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+  >
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-gray-50 border-b border-gray-100">
+          <th
+            class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider"
+          >
+            Title
+          </th>
+          <th
+            class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider"
+          >
+            Slug
+          </th>
+          <th
+            class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider"
+          >
+            Status
+          </th>
+          <th
+            class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50">
+        <tr
+          *ngFor="let page of pages"
+          class="hover:bg-gray-50/50 transition-colors group"
+        >
+          <td class="px-6 py-4">
+            <span class="font-medium text-gray-800">{{ page.title }}</span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="text-sm text-gray-500 ml-1">/{{ page.slug }}</span>
+          </td>
+          <td class="px-6 py-4">
+            <span
+              [ngClass]="
+                page.isActive
+                  ? 'bg-accent text-primary'
+                  : 'bg-gray-100 text-gray-500'
+              "
+              class="px-2 py-1 rounded-full text-[10px] font-bold uppercase"
+            >
+              {{ page.isActive ? "Active" : "Draft" }}
+            </span>
+          </td>
+          <td class="px-6 py-4 text-right">
+            <div
+              class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <button
+                (click)="openEditModal(page)"
+                class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                title="Edit Page"
+              >
+                <lucide-icon
+                  [img]="icons.Edit"
+                  class="w-5 h-5 text-gray-500"
+                ></lucide-icon>
+              </button>
+              <button
+                (click)="deletePage(page.id)"
+                class="p-2 hover:bg-red-50 rounded-full transition-colors"
+                title="Delete Page"
+              >
+                <lucide-icon
+                  [img]="icons.Trash2"
+                  class="w-5 h-5 text-red-400"
+                ></lucide-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="pages.length === 0" class="p-12 text-center">
+      <lucide-icon
+        [img]="icons.FileText"
+        class="w-16 h-16 text-gray-200 mb-4 mx-auto"
+      ></lucide-icon>
+      <h3 class="text-lg font-medium text-gray-600">No static pages yet</h3>
+      <p class="text-gray-500 mb-6">
+        Create your first content page to provide info to your users.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  *ngIf="isModalOpen"
+  class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+>
+  <div
+    class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl"
+  >
+    <div
+      class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl"
+    >
+      <h2 class="text-xl font-bold text-gray-800">
+        {{ isEditing ? "Edit Page" : "Create New Page" }}
+      </h2>
+      <button
+        (click)="closeModal()"
+        class="p-2 hover:bg-gray-200 rounded-full transition-colors"
+      >
+        <lucide-icon
+          [img]="icons.X"
+          class="w-5 h-5 text-gray-500"
+        ></lucide-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="pageForm" (ngSubmit)="onSubmit()" class="p-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+            >Page Title</label
+          >
+          <input
+            type="text"
+            formControlName="title"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+            placeholder="e.g. Privacy Policy"
+          />
+        </div>
+
+        <div>
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+            >Slug (URL Path)</label
+          >
+          <div class="flex items-center">
+            <span
+              class="bg-gray-100 px-3 py-3 border border-r-0 border-gray-200 rounded-l-xl text-gray-500 text-sm"
+              >/</span
+            >
+            <input
+              type="text"
+              formControlName="slug"
+              class="w-full px-4 py-3 rounded-r-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+              placeholder="privacy-policy"
+            />
+          </div>
+        </div>
+
+        <div class="col-span-2">
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+            >Content (HTML allowed)</label
+          >
+          <textarea
+            formControlName="content"
+            rows="12"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-mono text-sm"
+            placeholder="Write your page content here..."
+          ></textarea>
+        </div>
+
+        <div class="col-span-2 border-t border-gray-100 pt-6">
+          <h3 class="text-sm font-bold text-gray-800 mb-4">SEO Metadata</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label
+                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1"
+                >Meta Title</label
+              >
+              <input
+                type="text"
+                formControlName="metaTitle"
+                class="w-full px-4 py-2 text-sm rounded-lg border border-gray-200 outline-none"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1"
+                >Meta Description</label
+              >
+              <input
+                type="text"
+                formControlName="metaDescription"
+                class="w-full px-4 py-2 text-sm rounded-lg border border-gray-200 outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-span-2 flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="pageIsActive"
+            formControlName="isActive"
+            class="size-5 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <label for="pageIsActive" class="text-sm font-medium text-gray-700"
+            >Publish this page (Make it active)</label
+          >
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="px-6 py-2.5 rounded-xl text-gray-600 font-medium hover:bg-gray-100 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="px-8 py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+        >
+          <lucide-icon
+            *ngIf="isSubmitting"
+            [img]="icons.Loader2"
+            class="w-5 h-5 animate-spin"
+          ></lucide-icon>
+          {{ isEditing ? "Save Changes" : "Create Page" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

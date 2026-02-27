@@ -1,0 +1,27 @@
+<section class="bg-background-light dark:bg-background-dark min-h-screen py-12">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-primary dark:text-white">Your Orders</h1>
+      <a class="text-sm font-semibold text-primary hover:underline" routerLink="/account">Back to account</a>
+    </div>
+    <div class="space-y-4" *ngIf="orders$ | async as orders">
+      <div
+        class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5 flex items-center justify-between"
+        *ngFor="let order of orders; trackBy: trackByOrder"
+      >
+        <div>
+          <p class="text-sm font-semibold text-primary dark:text-white">Order {{ order.id }}</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">
+            {{ order.items.length }} items · {{ order.status }} ·
+            <app-price-display class="text-slate-500 dark:text-slate-400" [amount]="order.total" size="sm">
+            </app-price-display>
+          </p>
+        </div>
+        <a class="text-sm font-semibold text-primary hover:underline" [routerLink]="['/order-confirmation', order.id]">
+          View
+        </a>
+      </div>
+      <p *ngIf="!orders.length" class="text-sm text-slate-500 dark:text-slate-400">No orders yet.</p>
+    </div>
+  </div>
+</section>

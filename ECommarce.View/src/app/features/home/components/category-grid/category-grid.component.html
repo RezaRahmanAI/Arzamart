@@ -1,0 +1,77 @@
+<section class="bg-background-light py-20 px-4">
+  <div class="max-w-[1600px] mx-auto">
+    <!-- Section Header -->
+    <div class="flex flex-col md:flex-row justify-between items-end mb-16 px-4">
+      <div>
+        <span
+          class="block text-[10px] uppercase tracking-[0.3em] font-medium text-text-sub mb-4"
+        >
+          Curated Collections
+        </span>
+        <h2
+          class="text-4xl md:text-5xl font-serif italic text-primary leading-none"
+        >
+          Explore by Category
+        </h2>
+      </div>
+      <a
+        routerLink="/shop"
+        class="hidden md:inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold border-b border-primary pb-1 hover:text-accent hover:border-accent transition-colors"
+      >
+        View All Collections
+      </a>
+    </div>
+
+    <!-- Bento Grid -->
+    <div
+      class="grid grid-cols-1 md:grid-cols-12 gap-1 md:gap-4 h-auto md:h-[900px]"
+    >
+      <ng-container *ngFor="let category of categories; let i = index">
+        <a
+          [routerLink]="category.href"
+          class="group relative overflow-hidden block w-full h-[400px] md:h-auto"
+          [ngClass]="{
+            'md:col-span-6 md:row-span-2': i === 0,
+            'md:col-span-3 md:row-span-1': i >= 1 && i <= 4,
+          }"
+          *ngIf="i < 5"
+        >
+          <!-- Image -->
+          <div
+            class="absolute inset-0 bg-cover bg-center transition-transform duration-[1500ms] ease-out group-hover:scale-105"
+            [style.backgroundImage]="
+              'url(' + imageUrlService.getImageUrl(category.imageUrl) + ')'
+            "
+          ></div>
+
+          <!-- Gradient Overlay -->
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700"
+          ></div>
+
+          <!-- Content -->
+          <div class="absolute inset-0 flex flex-col justify-end p-8 md:p-12">
+            <div
+              class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-700"
+            >
+              <h3
+                class="text-white text-2xl md:text-3xl font-serif italic tracking-tight mb-2"
+              >
+                {{ category.name }}
+              </h3>
+              <span
+                class="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100"
+              >
+                Shop Now
+                <lucide-icon
+                  [img]="icons.ArrowRight"
+                  class="w-3.5 h-3.5"
+                ></lucide-icon>
+              </span>
+            </div>
+          </div>
+        </a>
+      </ng-container>
+    </div>
+  </div>
+</section>

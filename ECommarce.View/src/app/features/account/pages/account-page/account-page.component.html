@@ -1,0 +1,197 @@
+<section class="bg-background-light dark:bg-background-dark min-h-screen py-10">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" *ngIf="vm$ | async as vm">
+    <div class="flex flex-col gap-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-primary dark:text-white">Account</h1>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Manage your profile, addresses, and orders.</p>
+        </div>
+        <a class="text-sm font-semibold text-primary hover:underline" routerLink="/orders">View all orders</a>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+          <h2 class="text-lg font-semibold text-primary dark:text-white mb-4">Profile details</h2>
+          <form class="space-y-4" [formGroup]="profileForm">
+            <div>
+              <label class="text-sm font-medium text-slate-600 dark:text-slate-300">Full name</label>
+              <input
+                class="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
+                formControlName="name"
+                type="text"
+              />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-slate-600 dark:text-slate-300">Email</label>
+              <input
+                class="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
+                formControlName="email"
+                type="email"
+              />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-slate-600 dark:text-slate-300">Phone</label>
+              <input
+                class="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
+                formControlName="phone"
+                type="text"
+              />
+            </div>
+            <button
+              class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5 text-sm font-semibold"
+              type="button"
+              (click)="saveProfile(vm.profile)"
+            >
+              Save changes
+            </button>
+          </form>
+        </div>
+
+        <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+          <h2 class="text-lg font-semibold text-primary dark:text-white mb-4">Order history</h2>
+          <div *ngIf="vm.orders.length; else emptyOrders" class="space-y-4">
+            <div
+              class="flex items-center justify-between border border-slate-200 dark:border-slate-800 rounded-lg p-4"
+              *ngFor="let order of vm.orders; trackBy: trackOrder"
+            >
+              <div>
+                <p class="text-sm font-semibold text-primary dark:text-white">Order {{ order.id }}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">{{ order.items.length }} items · {{ order.status }}</p>
+              </div>
+              <a
+                class="text-sm font-semibold text-primary hover:underline"
+                [routerLink]="['/order-confirmation', order.id]"
+              >
+                View
+              </a>
+            </div>
+          </div>
+          <ng-template #emptyOrders>
+            <p class="text-sm text-slate-500 dark:text-slate-400">No orders yet.</p>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-primary dark:text-white">Address book</h2>
+            <button class="text-sm font-semibold text-primary hover:underline" type="button" (click)="resetAddressForm()">
+              Add new
+            </button>
+          </div>
+          <div class="space-y-3 mb-6" *ngIf="vm.profile?.addresses?.length; else emptyAddresses">
+            <div
+              class="border border-slate-200 dark:border-slate-800 rounded-lg p-4 flex items-start justify-between gap-4"
+              *ngFor="let address of vm.profile?.addresses"
+            >
+              <div>
+                <p class="text-sm font-semibold text-primary dark:text-white">
+                  {{ address.label }}
+                  <span *ngIf="address.isDefault" class="ml-2 text-xs text-accent font-semibold">Default</span>
+                </p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  {{ address.recipient }} · {{ address.phone }}
+                </p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  {{ address.address }}, {{ address.city }}, {{ address.region }}
+                </p>
+              </div>
+              <div class="flex flex-col gap-2 text-xs">
+                <button class="text-primary hover:underline" type="button" (click)="startEditAddress(address)">Edit</button>
+                <button class="text-slate-500 hover:underline" type="button" (click)="setDefaultAddress(vm.profile, address.id)">
+                  Set default
+                </button>
+                <button class="text-red-500 hover:underline" type="button" (click)="removeAddress(vm.profile, address.id)">Remove</button>
+              </div>
+            </div>
+          </div>
+          <ng-template #emptyAddresses>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">No saved addresses yet.</p>
+          </ng-template>
+
+          <form class="space-y-3" [formGroup]="addressForm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Label" formControlName="label" />
+              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Recipient" formControlName="recipient" />
+            </div>
+            <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Phone" formControlName="phone" />
+            <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Address" formControlName="address" />
+            <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Apartment" formControlName="apartment" />
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="City" formControlName="city" />
+              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="State" formControlName="region" />
+              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Postal" formControlName="postalCode" />
+            </div>
+            <div class="flex items-center gap-2">
+              <input class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox" formControlName="isDefault" />
+              <span class="text-xs text-slate-500 dark:text-slate-400">Set as default</span>
+            </div>
+            <button
+              class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5 text-sm font-semibold"
+              type="button"
+              (click)="submitAddress(vm.profile)"
+            >
+              {{ editingAddressId ? 'Update address' : 'Save address' }}
+            </button>
+          </form>
+        </div>
+
+        <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-primary dark:text-white">Payment methods</h2>
+            <button class="text-sm font-semibold text-primary hover:underline" type="button" (click)="resetPaymentForm()">
+              Add new
+            </button>
+          </div>
+          <div class="space-y-3 mb-6" *ngIf="vm.profile?.paymentMethods?.length; else emptyPayments">
+            <div
+              class="border border-slate-200 dark:border-slate-800 rounded-lg p-4 flex items-start justify-between gap-4"
+              *ngFor="let method of vm.profile?.paymentMethods"
+            >
+              <div>
+                <p class="text-sm font-semibold text-primary dark:text-white">
+                  {{ method.label }}
+                  <span *ngIf="method.isDefault" class="ml-2 text-xs text-accent font-semibold">Default</span>
+                </p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  {{ method.brand }} · **** {{ method.last4 }} · {{ method.expMonth }}/{{ method.expYear }}
+                </p>
+              </div>
+              <div class="flex flex-col gap-2 text-xs">
+                <button class="text-primary hover:underline" type="button" (click)="startEditPayment(method)">Edit</button>
+                <button class="text-slate-500 hover:underline" type="button" (click)="setDefaultPayment(vm.profile, method.id)">
+                  Set default
+                </button>
+                <button class="text-red-500 hover:underline" type="button" (click)="removePayment(vm.profile, method.id)">Remove</button>
+              </div>
+            </div>
+          </div>
+          <ng-template #emptyPayments>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">No saved payment methods yet.</p>
+          </ng-template>
+
+          <form class="space-y-3" [formGroup]="paymentForm">
+            <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Label" formControlName="label" />
+            <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Card number" formControlName="cardNumber" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Exp. month" formControlName="expMonth" />
+              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Exp. year" formControlName="expYear" />
+            </div>
+            <div class="flex items-center gap-2">
+              <input class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox" formControlName="isDefault" />
+              <span class="text-xs text-slate-500 dark:text-slate-400">Set as default</span>
+            </div>
+            <button
+              class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5 text-sm font-semibold"
+              type="button"
+              (click)="submitPayment(vm.profile)"
+            >
+              {{ editingPaymentId ? 'Update payment' : 'Save payment' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

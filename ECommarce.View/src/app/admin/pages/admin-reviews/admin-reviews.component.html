@@ -1,0 +1,199 @@
+<div class="p-8">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-800">Review Moderation</h1>
+    <p class="text-gray-500">
+      Manage and moderate product reviews from your customers.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4">
+    <div
+      *ngFor="let review of reviews"
+      class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6 hover:shadow-md transition-shadow"
+    >
+      <div class="flex-shrink-0 flex items-start gap-4">
+        <div
+          class="size-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden"
+        >
+          <img
+            *ngIf="review.userAvatar"
+            [src]="review.userAvatar"
+            class="w-full h-full object-cover"
+          />
+          <lucide-icon
+            *ngIf="!review.userAvatar"
+            [img]="icons.User"
+            class="w-6 h-6 text-gray-400"
+          ></lucide-icon>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-800">{{ review.userName }}</h3>
+          <div class="flex items-center gap-1 text-xs text-gray-400">
+            <span>{{ review.createdAt | date: "mediumDate" }}</span>
+            <span
+              *ngIf="review.isVerifiedPurchase"
+              class="text-accent font-bold flex items-center gap-0.5"
+            >
+              <lucide-icon
+                [img]="icons.CheckCircle2"
+                class="w-3.5 h-3.5"
+              ></lucide-icon>
+              Verified
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-grow">
+        <div class="flex items-center gap-1 mb-2">
+          <lucide-icon
+            *ngFor="let s of getStars(review.rating)"
+            [img]="icons.Star"
+            class="w-4 h-4 text-yellow-400 fill-yellow-400"
+          ></lucide-icon>
+          <lucide-icon
+            *ngFor="let s of [1, 2, 3, 4, 5].slice(review.rating)"
+            [img]="icons.Star"
+            class="w-4 h-4 text-gray-200"
+          ></lucide-icon>
+        </div>
+        <p class="text-gray-600 text-sm leading-relaxed mb-4">
+          {{ review.comment }}
+        </p>
+        <div
+          class="flex items-center gap-4 text-xs text-gray-400 border-t border-gray-50 pt-4"
+        >
+          <span class="flex items-center gap-1"
+            ><lucide-icon
+              [img]="icons.ShoppingBag"
+              class="w-4 h-4"
+            ></lucide-icon>
+            {{ review.productName }}</span
+          >
+          <span class="flex items-center gap-1"
+            ><lucide-icon [img]="icons.ThumbsUp" class="w-4 h-4"></lucide-icon>
+            {{ review.likes }} Likes</span
+          >
+        </div>
+      </div>
+
+      <div
+        class="flex md:flex-col gap-2 justify-center border-l md:pl-6 border-gray-50"
+      >
+        <button
+          (click)="openEditModal(review)"
+          class="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors text-sm font-medium"
+        >
+          <lucide-icon
+            [img]="icons.Edit"
+            class="w-5 h-5 text-gray-600"
+          ></lucide-icon>
+          Edit
+        </button>
+        <button
+          (click)="deleteReview(review.id)"
+          class="flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 transition-colors text-sm font-medium"
+        >
+          <lucide-icon
+            [img]="icons.Trash2"
+            class="w-5 h-5 text-red-500"
+          ></lucide-icon>
+          Remove
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div
+    *ngIf="reviews.length === 0"
+    class="py-20 text-center bg-gray-50 rounded-3xl border-2 border-dashed border-gray-100"
+  >
+    <lucide-icon
+      [img]="icons.MessageSquare"
+      class="w-16 h-16 text-gray-200 mb-4 mx-auto"
+    ></lucide-icon>
+    <h3 class="text-lg font-medium text-gray-600">No reviews found</h3>
+    <p class="text-gray-500">Reviews from your customers will appear here.</p>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div
+  *ngIf="isModalOpen"
+  class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+>
+  <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl">
+    <div class="p-6 border-b border-gray-50 flex justify-between items-center">
+      <h2 class="text-xl font-bold text-gray-800">Edit Review</h2>
+      <button
+        (click)="closeModal()"
+        class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+      >
+        <lucide-icon
+          [img]="icons.X"
+          class="w-5 h-5 text-gray-500"
+        ></lucide-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="p-8">
+      <div class="mb-6">
+        <label
+          class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"
+          >Rating</label
+        >
+        <div class="flex gap-2">
+          <button
+            type="button"
+            *ngFor="let r of [1, 2, 3, 4, 5]"
+            (click)="reviewForm.patchValue({ rating: r })"
+            class="transition-all"
+            [ngClass]="
+              reviewForm.get('rating')?.value! >= r
+                ? 'text-yellow-400'
+                : 'text-gray-200'
+            "
+          >
+            <lucide-icon
+              [img]="icons.Star"
+              class="w-10 h-10"
+              [ngClass]="{
+                'fill-yellow-400': reviewForm.get('rating')?.value! >= r,
+              }"
+            ></lucide-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <label
+          class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"
+          >Comment</label
+        >
+        <textarea
+          formControlName="comment"
+          rows="4"
+          class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+        ></textarea>
+      </div>
+
+      <div class="flex gap-3">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="flex-1 py-3 rounded-2xl text-gray-600 font-bold hover:bg-gray-50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="flex-1 py-3 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20"
+        >
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

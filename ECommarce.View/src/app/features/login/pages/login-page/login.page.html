@@ -1,0 +1,132 @@
+<div
+  class="bg-background-light dark:bg-background-dark text-primary dark:text-white font-display antialiased flex flex-col min-h-screen"
+>
+  <!-- Main Split Layout -->
+  <main class="flex flex-1 flex-col lg:flex-row">
+    <!-- Left Column: Lifestyle Image -->
+    <div class="hidden lg:block lg:w-1/2 relative bg-background-light">
+      <div
+        class="absolute inset-0 bg-cover bg-center"
+        data-alt="Elegant woman wearing modest beige hijab and long trench coat standing outdoors"
+        style="
+          background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuAOg1GE2ABlu7DruYxT_lWcioAg6fmoLajU9e1_GVYw0VAd6NGnKXvS05svzrBxKvkJirEjoUV9nwxxjCu0Nm7W2t5WTKGhtwdtu_fuH9Ftpq7n1gioct_dUz4y8yvUubHIU0lKZ7eg1kQ7rSzCY6f15eFmrrPq_FjkHdhQ08zYl9X7kyT-yaKNF9bPEB5m9Zc0uTaYNoFVRuxrvtefNurZRhScf_yP6G3o7i0ZBB5PWteLpFceZ6YhHLDJ1gr6pNA6fi_3lEwtqlU&quot;);
+        "
+      ></div>
+      <!-- Gradient Overlay -->
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent"
+      ></div>
+      <!-- Overlay Content -->
+      <div class="absolute bottom-0 left-0 p-12 text-white">
+        <h2 class="text-4xl font-bold mb-4 tracking-tight">
+          Elegance in Every Detail.
+        </h2>
+        <p class="text-lg opacity-90 max-w-md font-light">
+          Join our community and discover a curated collection of modest fashion
+          that speaks to your style.
+        </p>
+      </div>
+    </div>
+    <!-- Right Column: Login Form -->
+    <div
+      class="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-12 lg:p-24 bg-background-light dark:bg-background-dark"
+    >
+      <div class="w-full max-w-[480px]">
+        <!-- Page Heading -->
+        <div class="mb-10">
+          <h1
+            class="text-primary dark:text-white tracking-tight text-[32px] font-bold leading-tight mb-3"
+          >
+            Admin Access
+          </h1>
+          <p
+            class="text-[#4d8799] dark:text-gray-400 text-sm font-normal leading-normal"
+          >
+            Sign in to manage the store dashboard.
+          </p>
+        </div>
+        <!-- Form -->
+        <form
+          class="flex flex-col gap-5"
+          [formGroup]="loginForm"
+          (ngSubmit)="submit()"
+        >
+          <!-- Email Input -->
+          <label class="flex flex-col w-full">
+            <span
+              class="text-[#0e181b] dark:text-gray-200 text-base font-medium leading-normal pb-2"
+              >Email address</span
+            >
+            <input
+              class="form-input w-full rounded-lg text-[#0e181b] dark:text-white bg-[#f8fbfc] dark:bg-gray-800 border border-[#d0e2e7] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 placeholder:text-[#4d8799] text-base"
+              placeholder="Enter your email address"
+              type="email"
+              formControlName="email"
+            />
+            <span
+              class="text-sm text-red-500 mt-2"
+              *ngIf="email.touched && email.invalid"
+              >A valid email is required.</span
+            >
+          </label>
+          <!-- Password Input -->
+          <label class="flex flex-col w-full">
+            <div class="flex justify-between items-center pb-2">
+              <span
+                class="text-[#0e181b] dark:text-gray-200 text-base font-medium leading-normal"
+                >Password</span
+              >
+            </div>
+            <div class="flex w-full items-stretch rounded-lg relative">
+              <input
+                class="form-input w-full rounded-lg text-[#0e181b] dark:text-white bg-[#f8fbfc] dark:bg-gray-800 border border-[#d0e2e7] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 pr-12 placeholder:text-[#4d8799] text-base"
+                placeholder="Enter your password"
+                [type]="isPasswordVisible ? 'text' : 'password'"
+                formControlName="password"
+              />
+              <div
+                class="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-[#4d8799] cursor-pointer hover:text-primary transition-colors"
+                (click)="togglePasswordVisibility()"
+              >
+                <lucide-icon
+                  [img]="isPasswordVisible ? icons.Eye : icons.EyeOff"
+                  class="w-6 h-6"
+                ></lucide-icon>
+              </div>
+            </div>
+            <span
+              class="text-sm text-red-500 mt-2"
+              *ngIf="password.touched && password.invalid"
+              >Password must be at least 6 characters.</span
+            >
+          </label>
+          <!-- Remember Me & Forgot Password -->
+          <div class="flex items-center justify-between mt-1">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                class="h-5 w-5 rounded border-[#d0e2e7] dark:border-gray-600 bg-transparent text-primary checked:bg-primary focus:ring-offset-0 focus:ring-accent"
+                type="checkbox"
+                formControlName="rememberMe"
+              />
+              <span
+                class="text-[#0e181b] dark:text-gray-300 text-base font-normal"
+                >Remember me</span
+              >
+            </label>
+          </div>
+          <!-- Submit Button -->
+          <button
+            class="mt-4 w-full h-14 bg-primary hover:bg-primary/90 text-white text-base font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
+            type="submit"
+            [disabled]="loginForm.invalid || isLoading"
+          >
+            {{ isLoading ? 'Logging in...' : 'Log In' }}
+          </button>
+          <span class="text-sm text-red-500 text-center" *ngIf="errorMessage"
+            >{{ errorMessage }}</span
+          >
+        </form>
+      </div>
+    </div>
+  </main>
+</div>

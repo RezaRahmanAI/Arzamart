@@ -1,0 +1,527 @@
+<main
+  class="w-full flex flex-col items-center"
+  *ngIf="post; else notFoundTemplate"
+>
+  <!-- Article Header Section -->
+  <header
+    class="w-full max-w-[800px] px-6 pt-12 pb-8 text-center flex flex-col gap-4"
+  >
+    <div class="flex items-center justify-center gap-2 mb-2">
+      <span
+        class="px-3 py-1 bg-accent/30 text-primary dark:text-accent rounded-full text-xs font-bold tracking-wider uppercase"
+      >
+        {{ post.category }}
+      </span>
+    </div>
+    <h1
+      class="text-4xl md:text-5xl font-bold leading-tight tracking-tight text-primary dark:text-white"
+    >
+      {{ post.title }}
+    </h1>
+    <div
+      class="flex items-center justify-center gap-4 text-sm text-primary/70 dark:text-gray-400 mt-2 font-sans"
+    >
+      <div class="flex items-center gap-2">
+        <img
+          [alt]="post.authorName + ' Profile'"
+          class="w-8 h-8 rounded-full object-cover"
+          [src]="imageUrlService.getImageUrl(post.authorAvatar)"
+        />
+        <span class="font-medium text-primary dark:text-gray-200">{{
+          post.authorName
+        }}</span>
+      </div>
+      <span>•</span>
+      <time [attr.datetime]="post.publishedAt | date: 'yyyy-MM-dd'">{{
+        post.publishedAt | date: "MMM dd, yyyy"
+      }}</time>
+      <span>•</span>
+      <span>{{ post.readTime }}</span>
+    </div>
+  </header>
+  <!-- Hero Image -->
+  <div class="w-full max-w-[1000px] px-4 md:px-6 mb-12">
+    <div
+      class="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-xl overflow-hidden shadow-sm"
+    >
+      <div
+        class="absolute inset-0 bg-cover bg-center"
+        [style.background-image]="
+          'url(' + imageUrlService.getImageUrl(post.coverImage) + ')'
+        "
+        [attr.data-alt]="post.title"
+      ></div>
+    </div>
+    <p
+      class="mt-3 text-center text-sm text-primary/60 dark:text-gray-500 italic"
+      *ngIf="post.coverImageCaption"
+    >
+      {{ post.coverImageCaption }}
+    </p>
+  </div>
+  <!-- Content Wrapper with Sidebar -->
+  <div
+    class="w-full max-w-[1000px] px-6 flex flex-col lg:flex-row gap-12 relative"
+  >
+    <!-- Share Sidebar (Desktop) -->
+    <aside class="hidden lg:flex flex-col gap-4 sticky top-28 h-fit w-12 pt-2">
+      <button
+        class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-primary dark:text-white hover:bg-accent/20 transition-colors shadow-sm group"
+        type="button"
+        (click)="copyShareLink()"
+      >
+        <lucide-icon
+          [img]="icons.Share2"
+          class="w-5 h-5 group-hover:scale-110 transition-transform"
+        ></lucide-icon>
+      </button>
+      <div class="w-full h-px bg-gray-200 dark:bg-gray-700 my-1"></div>
+      <button
+        class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-[#E60023] hover:bg-red-50 transition-colors shadow-sm"
+        title="Pin it"
+        type="button"
+        (click)="shareOn('pinterest')"
+      >
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+          <path
+            d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.992 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.65 0-5.789 2.738-5.789 5.57 0 1.103.425 2.286.956 2.929.105.128.12.24.089.372-.098.403-.316 1.292-.358 1.472-.057.243-.191.294-.44.178-1.644-.765-2.673-3.165-2.673-5.099 0-4.148 3.016-7.96 8.707-7.96 4.571 0 7.553 3.259 7.553 6.666 0 3.979-2.507 7.182-5.989 7.182-1.168 0-2.266-.606-2.641-1.321l-.718 2.736c-.26.989-.966 2.228-1.439 2.986.969.289 2.016.446 3.103.446 6.627 0 12-5.373 12-12S18.627 0 12 0z"
+          ></path>
+        </svg>
+      </button>
+      <button
+        class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-[#4267B2] hover:bg-blue-50 transition-colors shadow-sm"
+        title="Share on Facebook"
+        type="button"
+        (click)="shareOn('facebook')"
+      >
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+          <path
+            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+          ></path>
+        </svg>
+      </button>
+      <button
+        class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-[#1DA1F2] hover:bg-sky-50 transition-colors shadow-sm"
+        title="Share on Twitter"
+        type="button"
+        (click)="shareOn('twitter')"
+      >
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+          <path
+            d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"
+          ></path>
+        </svg>
+      </button>
+      <p
+        class="text-xs text-primary/70 dark:text-gray-400 text-center"
+        *ngIf="shareMessage"
+      >
+        {{ shareMessage }}
+      </p>
+    </aside>
+    <!-- Main Article Text -->
+    <article
+      class="flex-1 max-w-[700px] mx-auto text-lg leading-relaxed text-primary/90 dark:text-gray-200"
+    >
+      <ng-container *ngFor="let block of contentBlocks; let i = index">
+        <p
+          *ngIf="block.type === 'paragraph'"
+          class="mb-6"
+          [ngClass]="
+            i === 0
+              ? 'drop-cap first-letter:text-5xl first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:mt-[-4px] first-letter:text-primary dark:first-letter:text-accent'
+              : ''
+          "
+        >
+          {{ block.text }}
+        </p>
+        <h2
+          *ngIf="block.type === 'heading'"
+          class="text-2xl font-bold mt-10 mb-4 text-primary dark:text-white"
+        >
+          {{ block.text }}
+        </h2>
+        <blockquote
+          *ngIf="block.type === 'blockquote'"
+          class="border-l-4 border-accent pl-6 py-2 my-8 text-xl font-medium italic text-primary dark:text-gray-300"
+        >
+          {{ block.text }}
+        </blockquote>
+        <div
+          *ngIf="block.type === 'product'"
+          class="my-10 bg-accent/20 dark:bg-gray-800 rounded-lg p-6 flex flex-col sm:flex-row gap-6 items-center"
+        >
+          <div
+            class="w-full sm:w-1/3 aspect-[3/4] rounded-lg overflow-hidden bg-gray-200"
+          >
+            <img
+              [alt]="block.productImageAlt"
+              class="w-full h-full object-cover"
+              [attr.data-alt]="block.productImageAlt"
+              [src]="imageUrlService.getImageUrl(block.productImage)"
+            />
+          </div>
+          <div class="flex-1 text-center sm:text-left">
+            <span
+              class="text-xs font-bold tracking-wider uppercase text-primary/60 dark:text-gray-400"
+              >Shop the Look</span
+            >
+            <h3
+              class="text-xl font-bold text-primary dark:text-white mt-1 mb-2"
+            >
+              {{ block.productName }}
+            </h3>
+            <p class="text-sm text-primary/80 dark:text-gray-300 mb-4">
+              {{ block.productDescription }}
+            </p>
+            <button
+              class="inline-flex items-center justify-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all"
+              [routerLink]="['/product', block.productId]"
+              type="button"
+            >
+              View Product
+            </button>
+          </div>
+        </div>
+      </ng-container>
+      <!-- Tags -->
+      <div class="mt-12 flex flex-wrap gap-2">
+        <a
+          *ngFor="let tag of post.tags"
+          class="px-3 py-1 bg-background-light dark:bg-gray-800 rounded-full text-sm text-primary/70 dark:text-gray-300 hover:bg-accent/30 hover:text-primary transition-colors"
+          [routerLink]="['/blog']"
+          [queryParams]="{ tag: tag }"
+        >
+          #{{ tag }}
+        </a>
+      </div>
+      <!-- Mobile Share (Visible only on small screens) -->
+      <div
+        class="lg:hidden mt-8 pt-6 border-t border-gray-100 dark:border-gray-800"
+      >
+        <p class="text-sm font-bold text-primary dark:text-white mb-3">
+          Share this article
+        </p>
+        <div class="flex gap-4">
+          <button
+            class="w-10 h-10 rounded-full bg-background-light dark:bg-gray-800 flex items-center justify-center text-primary dark:text-white"
+            type="button"
+            (click)="copyShareLink()"
+          >
+            <lucide-icon [img]="icons.Share2" class="w-5 h-5"></lucide-icon>
+          </button>
+          <button
+            class="w-10 h-10 rounded-full bg-background-light dark:bg-gray-800 flex items-center justify-center text-[#E60023]"
+            type="button"
+            (click)="shareOn('pinterest')"
+          >
+            <!-- Pinterest SVG reused -->
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path
+                d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.992 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.65 0-5.789 2.738-5.789 5.57 0 1.103.425 2.286.956 2.929.105.128.12.24.089.372-.098.403-.316 1.292-.358 1.472-.057.243-.191.294-.44.178-1.644-.765-2.673-3.165-2.673-5.099 0-4.148 3.016-7.96 8.707-7.96 4.571 0 7.553 3.259 7.553 6.666 0 3.979-2.507 7.182-5.989 7.182-1.168 0-2.266-.606-2.641-1.321l-.718 2.736c-.26.989-.966 2.228-1.439 2.986.969.289 2.016.446 3.103.446 6.627 0 12-5.373 12-12S18.627 0 12 0z"
+              ></path>
+            </svg>
+          </button>
+          <button
+            class="w-10 h-10 rounded-full bg-background-light dark:bg-gray-800 flex items-center justify-center text-[#4267B2]"
+            type="button"
+            (click)="shareOn('facebook')"
+          >
+            <!-- Facebook SVG reused -->
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path
+                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <p
+          class="mt-3 text-xs text-primary/70 dark:text-gray-400"
+          *ngIf="shareMessage"
+        >
+          {{ shareMessage }}
+        </p>
+      </div>
+      <!-- Author Bio Section -->
+      <div
+        class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 flex items-start gap-4"
+      >
+        <img
+          [alt]="post.authorName"
+          class="w-16 h-16 rounded-full object-cover border-2 border-accent"
+          [src]="imageUrlService.getImageUrl(post.authorAvatar)"
+        />
+        <div>
+          <h4 class="text-lg font-bold text-primary dark:text-white">
+            Written by {{ post.authorName }}
+          </h4>
+          <p
+            class="text-sm text-primary/70 dark:text-gray-400 mt-1 mb-2 font-sans"
+          >
+            {{ post.authorBio }}
+          </p>
+          <a
+            class="text-sm font-medium text-primary hover:underline dark:text-accent"
+            [routerLink]="['/blog']"
+            >View all posts</a
+          >
+        </div>
+      </div>
+    </article>
+  </div>
+  <!-- Comments Section -->
+  <section class="w-full max-w-[800px] px-6 mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-8 text-primary dark:text-white">
+      Comments ({{ totalComments }})
+    </h3>
+    <!-- Comment Form -->
+    <form
+      class="mb-12 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700"
+      [formGroup]="commentForm"
+      (ngSubmit)="onCommentSubmit()"
+    >
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label
+            class="block text-sm font-medium text-primary/70 dark:text-gray-300 mb-1 font-sans"
+            for="name"
+            >Name</label
+          >
+          <input
+            class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 font-sans text-sm bg-background-light dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            id="name"
+            placeholder="Jane Doe"
+            type="text"
+            formControlName="name"
+          />
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-primary/70 dark:text-gray-300 mb-1 font-sans"
+            for="email"
+            >Email</label
+          >
+          <input
+            class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 font-sans text-sm bg-background-light dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            id="email"
+            placeholder="jane@example.com"
+            type="email"
+            formControlName="email"
+          />
+        </div>
+      </div>
+      <div class="mb-4">
+        <label
+          class="block text-sm font-medium text-primary/70 dark:text-gray-300 mb-1 font-sans"
+          for="comment"
+          >Comment</label
+        >
+        <textarea
+          class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 font-sans text-sm bg-background-light dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+          id="comment"
+          placeholder="Share your thoughts..."
+          rows="4"
+          formControlName="comment"
+        ></textarea>
+      </div>
+      <button
+        class="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-6 rounded-md transition-colors text-sm font-sans"
+        type="submit"
+      >
+        Post Comment
+      </button>
+    </form>
+    <!-- Comments List -->
+    <div class="space-y-8">
+      <div class="flex gap-4" *ngFor="let comment of comments">
+        <div
+          *ngIf="comment.avatarUrl; else initialsAvatar"
+          class="flex-shrink-0"
+        >
+          <img
+            [alt]="comment.name"
+            class="w-10 h-10 rounded-full object-cover"
+            [src]="imageUrlService.getImageUrl(comment.avatarUrl)"
+          />
+        </div>
+        <ng-template #initialsAvatar>
+          <div
+            class="flex-shrink-0 w-10 h-10 bg-accent/30 rounded-full flex items-center justify-center text-primary font-bold"
+          >
+            {{ comment.initials }}
+          </div>
+        </ng-template>
+        <div class="flex-1">
+          <div class="flex items-center justify-between mb-1">
+            <h5
+              class="font-bold text-primary dark:text-white text-sm font-sans"
+            >
+              {{ comment.name }}
+            </h5>
+            <span class="text-xs text-gray-500 font-sans">{{
+              comment.createdAt
+            }}</span>
+          </div>
+          <p
+            class="text-primary/80 dark:text-gray-300 text-sm leading-relaxed mb-2"
+          >
+            {{ comment.message }}
+          </p>
+          <button
+            class="text-xs font-bold text-primary/60 hover:text-primary dark:text-gray-400 dark:hover:text-white font-sans"
+            type="button"
+            (click)="onReplyClick()"
+          >
+            Reply
+          </button>
+          <div
+            class="mt-4 flex gap-4 border-l-2 border-gray-200 dark:border-gray-700 pl-4"
+            *ngFor="let reply of comment.replies"
+          >
+            <img
+              [alt]="reply.name"
+              class="w-8 h-8 rounded-full object-cover"
+              [src]="imageUrlService.getImageUrl(reply.avatarUrl)"
+            />
+            <div class="flex-1">
+              <div class="flex items-center justify-between mb-1">
+                <div class="flex items-center gap-2">
+                  <h5
+                    class="font-bold text-primary dark:text-white text-sm font-sans"
+                  >
+                    {{ reply.name }}
+                  </h5>
+                  <span
+                    *ngIf="reply.isAuthor"
+                    class="bg-primary text-white text-[10px] px-1.5 py-0.5 rounded-sm font-sans uppercase tracking-wide"
+                  >
+                    Author
+                  </span>
+                </div>
+                <span class="text-xs text-gray-500 font-sans">{{
+                  reply.createdAt
+                }}</span>
+              </div>
+              <p
+                class="text-primary/80 dark:text-gray-300 text-sm leading-relaxed mb-2"
+              >
+                {{ reply.message }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mt-4 text-xs text-primary/70 dark:text-gray-400"
+      *ngIf="replyMessage"
+    >
+      {{ replyMessage }}
+    </p>
+  </section>
+  <!-- Related Posts Section -->
+  <section
+    class="w-full bg-white dark:bg-[#0c1619] py-16 px-6 lg:px-12 flex justify-center"
+  >
+    <div class="w-full max-w-[1200px]">
+      <div class="flex items-center justify-between mb-8">
+        <h3 class="text-2xl font-bold text-primary dark:text-white">
+          Related Posts
+        </h3>
+        <a
+          class="text-sm font-medium text-primary hover:underline dark:text-accent font-sans"
+          [routerLink]="['/blog']"
+          >View Blog</a
+        >
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <a
+          class="group flex flex-col gap-3"
+          *ngFor="let related of relatedPosts"
+          [routerLink]="['/blog', related.slug]"
+        >
+          <div
+            class="aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-100 relative"
+          >
+            <div
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+              [style.background-image]="
+                'url(' + imageUrlService.getImageUrl(related.coverImage) + ')'
+              "
+              [attr.data-alt]="related.title"
+            ></div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span
+              class="text-xs font-bold text-accent uppercase tracking-wide font-sans"
+              >{{ related.category }}</span
+            >
+            <h4
+              class="text-lg font-bold text-primary dark:text-white leading-tight group-hover:text-primary/80 dark:group-hover:text-gray-300 transition-colors"
+            >
+              {{ related.title }}
+            </h4>
+            <span class="text-xs text-gray-500 font-sans">{{
+              related.publishedAt | date: "MMM dd, yyyy"
+            }}</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+  <!-- Newsletter Section -->
+  <section
+    class="w-full bg-accent/20 dark:bg-primary/20 py-16 px-6 text-center"
+  >
+    <div class="max-w-xl mx-auto">
+      <h3 class="text-2xl font-bold text-primary dark:text-white mb-2">
+        Join Our Community
+      </h3>
+      <p class="text-primary/70 dark:text-gray-300 mb-6 font-sans">
+        Subscribe to receive the latest modest fashion trends, exclusive offers,
+        and styling tips directly to your inbox.
+      </p>
+      <form
+        class="flex flex-col sm:flex-row gap-3"
+        [formGroup]="newsletterForm"
+        (ngSubmit)="onNewsletterSubmit()"
+      >
+        <input
+          class="flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-4 py-3 text-sm focus:border-primary focus:ring-primary font-sans"
+          placeholder="Enter your email address"
+          type="email"
+          formControlName="email"
+        />
+        <button
+          class="bg-primary hover:bg-primary/90 text-white font-medium px-6 py-3 rounded-md transition-colors text-sm font-sans uppercase tracking-wide"
+          type="submit"
+        >
+          Subscribe
+        </button>
+      </form>
+      <p
+        class="mt-4 text-xs text-primary/70 dark:text-gray-300"
+        *ngIf="newsletterMessage"
+      >
+        {{ newsletterMessage }}
+      </p>
+    </div>
+  </section>
+</main>
+
+<ng-template #notFoundTemplate>
+  <section class="mx-auto max-w-[800px] px-6 py-16 text-center">
+    <h2 class="text-3xl font-bold text-primary dark:text-white mb-4">
+      Article Not Found
+    </h2>
+    <p class="text-primary/70 dark:text-gray-300 mb-6">
+      We couldn't find that story. Explore the latest posts instead.
+    </p>
+    <a
+      class="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-bold text-white"
+      [routerLink]="['/blog']"
+    >
+      Back to Blog
+    </a>
+  </section>
+</ng-template>

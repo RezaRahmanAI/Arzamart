@@ -1,0 +1,225 @@
+<div class="p-8">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Navigation Management</h1>
+      <p class="text-gray-500">
+        Manage your website's header and footer menu structures.
+      </p>
+    </div>
+    <button
+      (click)="openAddModal()"
+      class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+    >
+      <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
+      Add Root Menu
+    </button>
+  </div>
+
+  <div
+    class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+  >
+    <div
+      class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between"
+    >
+      <span class="text-xs font-bold text-gray-500 uppercase tracking-widest"
+        >Menu Hierarchy</span
+      >
+      <span class="text-[10px] text-gray-400"
+        >Drag & Drop for reordering coming soon</span
+      >
+    </div>
+
+    <div class="p-6">
+      <ng-container
+        *ngTemplateOutlet="menuTree; context: { $implicit: menus, depth: 0 }"
+      ></ng-container>
+    </div>
+
+    <!-- Recursive Template -->
+    <ng-template #menuTree let-items let-depth="depth">
+      <div class="flex flex-col gap-2" [style.padding-left.px]="depth * 20">
+        <div *ngFor="let item of items" class="group">
+          <div
+            class="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:border-primary/30 hover:bg-primary/[0.02] transition-all group"
+          >
+            <div class="flex items-center gap-3">
+              <lucide-icon
+                [img]="icons.GripVertical"
+                class="w-4 h-4 text-gray-300 drag-handle cursor-move group-hover:text-primary/40"
+              ></lucide-icon>
+              <div class="flex flex-col">
+                <span class="font-bold text-sm text-gray-700">{{
+                  item.name
+                }}</span>
+                <span class="text-[10px] text-gray-400">{{ item.link }}</span>
+              </div>
+            </div>
+            <div
+              class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <button
+                (click)="openAddModal(item.id)"
+                class="p-1.5 hover:bg-primary/10 rounded-lg text-primary transition-colors"
+                title="Add Sub-menu"
+              >
+                <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
+              </button>
+              <button
+                (click)="openEditModal(item)"
+                class="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
+                title="Edit"
+              >
+                <lucide-icon [img]="icons.Edit" class="w-5 h-5"></lucide-icon>
+              </button>
+              <button
+                (click)="deleteMenu(item.id)"
+                class="p-1.5 hover:bg-red-50 rounded-lg text-red-400 transition-colors"
+                title="Delete"
+              >
+                <lucide-icon [img]="icons.Trash2" class="w-5 h-5"></lucide-icon>
+              </button>
+            </div>
+          </div>
+          <div
+            *ngIf="item.childMenus && item.childMenus.length > 0"
+            class="mt-2 ml-4 border-l-2 border-gray-50 pl-4 py-1"
+          >
+            <ng-container
+              *ngTemplateOutlet="
+                menuTree;
+                context: { $implicit: item.childMenus, depth: 0 }
+              "
+            ></ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- Empty State -->
+    <div *ngIf="menus.length === 0" class="p-12 text-center">
+      <lucide-icon
+        [img]="icons.ChevronRight"
+        class="w-12 h-12 text-gray-200 mb-4 mx-auto"
+      ></lucide-icon>
+      <h3 class="text-lg font-medium text-gray-600">No menu items found</h3>
+      <p class="text-gray-500 mb-6">
+        Start building your site navigation structure.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  *ngIf="isModalOpen"
+  class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+>
+  <div
+    class="bg-white rounded-3xl w-full max-w-lg shadow-2xl animate-in fade-in zoom-in duration-300"
+  >
+    <div
+      class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-3xl"
+    >
+      <h2 class="text-xl font-bold text-gray-800">
+        {{ isEditing ? "Edit Menu Item" : "Add New Menu Item" }}
+      </h2>
+      <button
+        (click)="closeModal()"
+        class="p-2 hover:bg-gray-200 rounded-full transition-colors"
+      >
+        <lucide-icon
+          [img]="icons.X"
+          class="w-5 h-5 text-gray-500"
+        ></lucide-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="menuForm" (ngSubmit)="onSubmit()" class="p-8">
+      <div class="space-y-6">
+        <div>
+          <label
+            class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2"
+            >Display Name</label
+          >
+          <input
+            type="text"
+            formControlName="name"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+            placeholder="e.g. New Arrivals"
+          />
+        </div>
+
+        <div>
+          <label
+            class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2"
+            >Link Target</label
+          >
+          <input
+            type="text"
+            formControlName="link"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+            placeholder="e.g. /category/new-arrivals"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2"
+              >Parent Menu</label
+            >
+            <select
+              formControlName="parentMenuId"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none bg-white"
+            >
+              <option [ngValue]="null">None (Root)</option>
+              <option *ngFor="let m of getMenuItems()" [ngValue]="m.id">
+                {{ m.name }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2"
+              >Order</label
+            >
+            <input
+              type="number"
+              formControlName="displayOrder"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="menuIsActive"
+            formControlName="isActive"
+            class="size-5 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <label for="menuIsActive" class="text-sm font-medium text-gray-700"
+            >Menu Item is Active</label
+          >
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-8">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="flex-1 py-3 rounded-2xl text-gray-600 font-bold hover:bg-gray-50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="flex-1 py-3 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20"
+        >
+          {{ isEditing ? "Save" : "Create" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="flex flex-col items-center gap-4 pb-12">
+  <h2
+    class="text-primary text-3xl md:text-4xl font-serif italic tracking-tighter"
+  >
+    {{ title }}
+  </h2>
+  <div class="w-12 h-px bg-accent opacity-50"></div>
+  <a
+    *ngIf="linkUrl"
+    class="text-[10px] uppercase tracking-[0.3em] font-bold text-text-sub hover:text-accent transition-colors flex items-center gap-2"
+    [routerLink]="linkUrl"
+  >
+    {{ linkLabel || "Shop Collection" }}
+    <lucide-icon [img]="icons.ArrowRight" class="w-3.5 h-3.5"></lucide-icon>
+  </a>
+</div>

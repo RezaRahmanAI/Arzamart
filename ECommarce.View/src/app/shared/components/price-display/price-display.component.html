@@ -1,0 +1,13 @@
+<span class="inline-flex items-center gap-1">
+  <img
+    src="assets/taka.svg"
+    alt="Taka"
+    [ngClass]="iconClass"
+  />
+  <span [ngClass]="bdtClass">
+    {{ amount | currency: 'BDT':'code':'1.2-2' }}
+  </span>
+</span>
+<span *ngIf="showUsd" [ngClass]="usdClass">
+  ({{ amount | bdtToUsd | currency: 'USD':'code':'1.2-2' }})
+</span>

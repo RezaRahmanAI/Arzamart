@@ -1,0 +1,215 @@
+<main class="flex-grow">
+  <div class="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Hero Section: Featured Article -->
+    <section class="mb-12" *ngIf="featuredPost">
+      <div
+        class="group relative overflow-hidden rounded-2xl bg-white dark:bg-white/5 shadow-sm transition-shadow hover:shadow-md border border-gray-100 dark:border-white/5"
+      >
+        <div class="flex flex-col md:flex-row">
+          <!-- Image -->
+          <div
+            class="relative h-64 w-full md:h-auto md:w-1/2 lg:w-3/5 overflow-hidden"
+          >
+            <div
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+              [style.background-image]="
+                'url(' +
+                imageUrlService.getImageUrl(featuredPost.coverImage) +
+                ')'
+              "
+              [attr.data-alt]="featuredPost.title"
+            ></div>
+          </div>
+          <!-- Content -->
+          <div class="flex flex-col justify-center p-8 md:w-1/2 lg:w-2/5">
+            <div class="mb-4 flex items-center gap-2">
+              <span
+                class="rounded-full bg-accent/30 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary dark:text-accent"
+              >
+                Editor's Pick
+              </span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">{{
+                featuredPost.publishedAt | date: "MMM dd, yyyy"
+              }}</span>
+            </div>
+            <h1
+              class="font-display text-4xl font-bold leading-tight tracking-tight text-primary dark:text-white mb-4"
+            >
+              {{ featuredPost.title }}
+            </h1>
+            <p class="mb-6 text-base text-gray-600 dark:text-gray-300">
+              {{ featuredPost.excerpt }}
+            </p>
+            <div class="flex items-center gap-4">
+              <button
+                class="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-sm font-bold text-white transition-transform active:scale-95 hover:bg-primary/90 dark:bg-accent dark:text-primary dark:hover:bg-accent/90"
+                [routerLink]="['/blog', featuredPost.slug]"
+              >
+                Read Featured Article
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Toolbar: Categories & Search -->
+    <section
+      class="sticky top-[64px] z-40 -mx-4 mb-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm px-4 py-3 sm:mx-0 sm:rounded-xl sm:px-0"
+    >
+      <div
+        class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-y border-[#e7f0f3] dark:border-white/10 py-4 sm:border-none sm:py-0"
+      >
+        <!-- Chips -->
+        <div
+          class="flex flex-wrap gap-2 sm:gap-3 overflow-x-auto pb-2 sm:pb-0 no-scrollbar"
+        >
+          <button
+            *ngFor="let category of categories"
+            [class]="getCategoryClasses(category.label)"
+            type="button"
+            (click)="onCategorySelect(category.label)"
+          >
+            <lucide-icon
+              [img]="icons[category.icon]"
+              class="w-4.5 h-4.5"
+            ></lucide-icon>
+            {{ category.label }}
+          </button>
+        </div>
+        <!-- Mobile Search (Visible on small screens, hidden on LG since it's in nav) -->
+        <div class="relative w-full md:w-64 lg:hidden">
+          <lucide-icon
+            [img]="icons.Search"
+            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"
+          ></lucide-icon>
+          <input
+            class="h-10 w-full rounded-lg border-none bg-[#e7f0f3] dark:bg-white/10 pl-10 pr-4 text-sm text-primary dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-primary/20 dark:focus:ring-accent/20"
+            placeholder="Search topics..."
+            type="text"
+            [formControl]="searchControl"
+          />
+        </div>
+      </div>
+    </section>
+    <!-- Grid Title -->
+    <div class="mb-6 flex items-baseline justify-between">
+      <h2 class="font-display text-3xl font-bold text-primary dark:text-white">
+        Latest Stories
+      </h2>
+      <a
+        class="hidden text-sm font-semibold text-primary/70 dark:text-accent hover:text-primary dark:hover:text-white sm:block"
+        href="#"
+      >
+        View Archive →
+      </a>
+    </div>
+    <!-- Blog Grid -->
+    <div
+      class="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      <article
+        class="group flex flex-col gap-4 cursor-pointer"
+        *ngFor="let post of posts; trackBy: trackBySlug"
+        [routerLink]="['/blog', post.slug]"
+        role="link"
+        tabindex="0"
+      >
+        <div
+          class="relative overflow-hidden rounded-xl bg-gray-100 aspect-[4/3]"
+        >
+          <div
+            class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+            [style.background-image]="
+              'url(' + imageUrlService.getImageUrl(post.coverImage) + ')'
+            "
+            [attr.data-alt]="post.title"
+          ></div>
+          <div
+            class="absolute right-3 top-3 rounded-md bg-white/90 px-2 py-1 text-xs font-bold uppercase text-primary backdrop-blur-sm"
+          >
+            {{ post.category }}
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div
+            class="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400"
+          >
+            <span>{{ post.authorName }}</span>
+            <span class="h-1 w-1 rounded-full bg-gray-300"></span>
+            <span>{{ post.publishedAt | date: "MMM dd, yyyy" }}</span>
+          </div>
+          <h3
+            class="font-display text-xl font-bold leading-tight text-primary dark:text-white group-hover:text-primary/70 dark:group-hover:text-accent transition-colors"
+          >
+            {{ post.title }}
+          </h3>
+          <p class="line-clamp-2 text-sm text-gray-600 dark:text-gray-300">
+            {{ post.excerpt }}
+          </p>
+          <span
+            class="mt-1 inline-flex items-center text-sm font-bold text-primary dark:text-accent"
+          >
+            Read Article
+            <lucide-icon
+              [img]="icons.ArrowRight"
+              class="ml-1 w-4 h-4"
+            ></lucide-icon>
+          </span>
+        </div>
+      </article>
+    </div>
+    <div class="mt-12 flex justify-center" *ngIf="hasMore">
+      <button
+        class="flex items-center gap-2 rounded-lg border border-gray-300 dark:border-white/10 px-6 py-3 text-sm font-medium text-primary dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+        type="button"
+        (click)="loadMore()"
+      >
+        Load More Stories
+        <lucide-icon
+          [img]="icons.ChevronDown"
+          class="w-4.5 h-4.5"
+        ></lucide-icon>
+      </button>
+    </div>
+  </div>
+</main>
+<!-- Newsletter Section -->
+<section
+  class="bg-primary dark:bg-background-dark py-16 text-white border-t border-white/5"
+>
+  <div class="mx-auto max-w-4xl px-4 text-center sm:px-6">
+    <lucide-icon
+      [img]="icons.Mail"
+      class="mb-4 w-12 h-12 text-accent"
+    ></lucide-icon>
+    <h2 class="font-display text-3xl font-bold sm:text-4xl">
+      Join Our Community
+    </h2>
+    <p class="mx-auto mt-4 max-w-xl text-lg text-gray-300">
+      Get weekly style inspiration, exclusive offers, and the latest stories
+      delivered straight to your inbox.
+    </p>
+    <form
+      class="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row"
+      [formGroup]="newsletterForm"
+      (ngSubmit)="onNewsletterSubmit()"
+    >
+      <input
+        class="flex-1 rounded-lg border-0 bg-white/10 px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-accent"
+        placeholder="Enter your email address"
+        required=""
+        type="email"
+        formControlName="email"
+      />
+      <button
+        class="rounded-lg bg-accent px-6 py-3 text-sm font-bold text-primary transition-transform hover:scale-105 hover:bg-white"
+        type="submit"
+      >
+        Subscribe
+      </button>
+    </form>
+    <p class="mt-4 text-sm text-accent" *ngIf="newsletterMessage">
+      {{ newsletterMessage }}
+    </p>
+  </div>
+</section>

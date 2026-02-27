@@ -1,0 +1,81 @@
+<section class="py-24 bg-background-light site-container">
+  <div class="max-w-7xl mx-auto text-center font-sans">
+    <div class="mb-16">
+      <span
+        class="text-[10px] uppercase tracking-[0.5em] text-accent font-bold mb-4 block"
+        >Why {{ (settings$ | async)?.websiteName || "ArzaMart" }}</span
+      >
+      <h2 class="text-4xl font-serif italic tracking-tighter text-primary">
+        The Art of Excellence
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+      <div class="flex flex-col items-center gap-6">
+        <div
+          class="w-12 h-12 flex items-center justify-center text-primary border border-primary/10 rounded-full"
+        >
+          <lucide-icon
+            [img]="icons.PenTool"
+            class="w-6 h-6 font-light"
+          ></lucide-icon>
+        </div>
+        <h3
+          class="text-[11px] uppercase tracking-[0.3em] font-bold text-primary"
+        >
+          Craftsmanship
+        </h3>
+        <p
+          class="text-text-sub text-[11px] leading-relaxed max-w-xs uppercase tracking-widest opacity-70"
+        >
+          Precision in every detail, ensuring each piece meets our rigorous
+          standards of luxury.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center gap-6">
+        <div
+          class="w-12 h-12 flex items-center justify-center text-primary border border-primary/10 rounded-full"
+        >
+          <lucide-icon
+            [img]="icons.CheckCircle2"
+            class="w-6 h-6 font-light"
+          ></lucide-icon>
+        </div>
+        <h3
+          class="text-[11px] uppercase tracking-[0.3em] font-bold text-primary"
+        >
+          Authenticity
+        </h3>
+        <p
+          class="text-text-sub text-[11px] leading-relaxed max-w-xs uppercase tracking-widest opacity-70"
+        >
+          Transparent sourcing and premium materials that honor the heritage of
+          our designs.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center gap-6">
+        <div
+          class="w-12 h-12 flex items-center justify-center text-primary border border-primary/10 rounded-full"
+        >
+          <lucide-icon
+            [img]="icons.Globe"
+            class="w-6 h-6 font-light"
+          ></lucide-icon>
+        </div>
+        <h3
+          class="text-[11px] uppercase tracking-[0.3em] font-bold text-primary"
+        >
+          Sustainability
+        </h3>
+        <p
+          class="text-text-sub text-[11px] leading-relaxed max-w-xs uppercase tracking-widest opacity-70"
+        >
+          Commitment to practices that preserve the environment while delivering
+          timeless style.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

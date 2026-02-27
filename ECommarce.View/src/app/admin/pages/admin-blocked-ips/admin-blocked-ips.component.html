@@ -1,0 +1,145 @@
+<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 scroll-smooth">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h2
+        class="text-primary dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight"
+      >
+        IP Blocking
+      </h2>
+      <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
+        Manage blacklisted IP addresses to prevent malicious access.
+      </p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Block Form -->
+    <div class="lg:col-span-1">
+      <div
+        class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm"
+      >
+        <h3
+          class="text-lg font-bold text-primary dark:text-white mb-4 flex items-center gap-2"
+        >
+          <lucide-icon
+            [img]="icons.Ban"
+            class="w-5 h-5 text-red-500"
+          ></lucide-icon>
+          Block New IP
+        </h3>
+        <form [formGroup]="blockForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div>
+            <label
+              class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5"
+              >IP Address</label
+            >
+            <input
+              type="text"
+              formControlName="ipAddress"
+              placeholder="e.g. 192.168.1.1"
+              class="w-full px-4 py-2.5 rounded-lg bg-background-light dark:bg-background-dark border-none text-primary dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary/20 text-sm"
+            />
+            <p
+              *ngIf="
+                blockForm.get('ipAddress')?.touched &&
+                blockForm.get('ipAddress')?.errors?.['pattern']
+              "
+              class="text-red-500 text-[10px] mt-1 font-bold"
+            >
+              Please enter a valid IPv4 address.
+            </p>
+          </div>
+          <div>
+            <label
+              class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5"
+              >Reason (Optional)</label
+            >
+            <textarea
+              formControlName="reason"
+              placeholder="Attacking payment gateway, etc."
+              rows="3"
+              class="w-full px-4 py-2.5 rounded-lg bg-background-light dark:bg-background-dark border-none text-primary dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary/20 text-sm resize-none"
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            [disabled]="blockForm.invalid || isLoading"
+            class="w-full py-3 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white rounded-lg font-black text-sm uppercase tracking-widest transition-all transform active:scale-95 shadow-lg shadow-red-600/20"
+          >
+            Block IP Address
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Blocked List -->
+    <div class="lg:col-span-2">
+      <div
+        class="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm flex flex-col min-h-[400px]"
+      >
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr
+                class="border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 text-xs uppercase tracking-wider text-gray-500 font-semibold"
+              >
+                <th class="p-4">IP Address</th>
+                <th class="p-4">Reason</th>
+                <th class="p-4">Blocked At</th>
+                <th class="p-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody
+              class="divide-y divide-gray-100 dark:divide-gray-800 text-sm text-primary dark:text-white"
+            >
+              <tr *ngIf="isLoading">
+                <td colspan="4" class="p-8 text-center text-gray-500">
+                  Loading blocklist...
+                </td>
+              </tr>
+              <tr *ngIf="!isLoading && blockedIps.length === 0">
+                <td colspan="4" class="p-8 text-center text-gray-500 italic">
+                  No IPs are currently blocked.
+                </td>
+              </tr>
+              <tr
+                *ngFor="let ip of blockedIps"
+                class="hover:bg-red-50/30 dark:hover:bg-red-900/10 transition-colors"
+              >
+                <td
+                  class="p-4 font-mono font-bold text-red-600 dark:text-red-400"
+                >
+                  {{ ip.ipAddress }}
+                </td>
+                <td
+                  class="p-4 text-gray-500 dark:text-gray-400 max-w-[200px] truncate"
+                  [title]="ip.reason || 'No reason provided'"
+                >
+                  {{ ip.reason || "—" }}
+                </td>
+                <td class="p-4 text-gray-500 dark:text-gray-400">
+                  <div class="flex flex-col">
+                    <span class="font-medium text-xs">{{
+                      ip.blockedAt | date: "mediumDate"
+                    }}</span>
+                    <span class="text-[10px] opacity-60">{{
+                      ip.blockedAt | date: "shortTime"
+                    }}</span>
+                  </div>
+                </td>
+                <td class="p-4 text-right">
+                  <button
+                    (click)="unblockIp(ip.id)"
+                    class="text-xs font-bold text-green-600 hover:text-green-700 underline"
+                  >
+                    Unblock
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

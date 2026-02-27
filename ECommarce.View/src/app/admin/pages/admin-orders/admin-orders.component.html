@@ -1,0 +1,626 @@
+<div
+  class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth bg-gray-50 dark:bg-[#0b1120] min-h-screen"
+>
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div>
+      <h2
+        class="text-primary dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight"
+      >
+        Orders
+      </h2>
+      <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">
+        Manage and track customer order fulfillment.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <button
+        class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark text-primary dark:text-white text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all shadow-sm"
+        type="button"
+        (click)="printOrders()"
+      >
+        <lucide-icon [img]="icons.Printer" class="w-5 h-5"></lucide-icon>
+        <span>Print List</span>
+      </button>
+      <button
+        class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 bg-primary hover:bg-primary-hover text-white text-sm font-bold shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
+        type="button"
+        (click)="exportOrders()"
+      >
+        <lucide-icon [img]="icons.Download" class="w-5 h-5"></lucide-icon>
+        <span>Export CSV</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+    *ngIf="!isLoading; else loadingStats"
+  >
+    <!-- Total Orders -->
+    <div
+      class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group"
+    >
+      <div class="relative z-10">
+        <p
+          class="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider mb-2"
+        >
+          Total Orders
+        </p>
+        <div class="flex items-baseline gap-2">
+          <h3 class="text-3xl font-black text-primary dark:text-white">
+            {{ stats.totalOrders | number }}
+          </h3>
+        </div>
+      </div>
+      <div
+        class="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-blue-50 to-transparent dark:from-blue-900/10 opacity-50 group-hover:w-32 transition-all duration-500"
+      ></div>
+      <div
+        class="absolute bottom-4 right-4 text-blue-500/10 dark:text-blue-500/20"
+      >
+        <lucide-icon [img]="icons.ShoppingBag" class="w-12 h-12"></lucide-icon>
+      </div>
+    </div>
+
+    <!-- Processing -->
+    <div
+      class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group"
+    >
+      <div class="relative z-10">
+        <p
+          class="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider mb-2"
+        >
+          Pending
+        </p>
+        <div class="flex items-baseline gap-2">
+          <h3 class="text-3xl font-black text-primary dark:text-white">
+            {{ stats.processing | number }}
+          </h3>
+        </div>
+      </div>
+      <div
+        class="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-yellow-50 to-transparent dark:from-yellow-900/10 opacity-50 group-hover:w-32 transition-all duration-500"
+      ></div>
+      <div
+        class="absolute bottom-4 right-4 text-yellow-500/10 dark:text-yellow-500/20"
+      >
+        <lucide-icon [img]="icons.Package" class="w-12 h-12"></lucide-icon>
+      </div>
+    </div>
+
+    <!-- Revenue -->
+    <div
+      class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group"
+    >
+      <div class="relative z-10">
+        <p
+          class="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider mb-2"
+        >
+          Revenue
+        </p>
+        <div class="flex items-baseline gap-2">
+          <app-price-display
+            class="text-3xl font-black text-primary dark:text-white"
+            [amount]="stats.totalRevenue"
+          >
+          </app-price-display>
+        </div>
+      </div>
+      <div
+        class="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-green-50 to-transparent dark:from-green-900/10 opacity-50 group-hover:w-32 transition-all duration-500"
+      ></div>
+      <div
+        class="absolute bottom-4 right-4 text-green-500/10 dark:text-green-500/20"
+      >
+        <lucide-icon [img]="icons.CreditCard" class="w-12 h-12"></lucide-icon>
+      </div>
+    </div>
+
+    <!-- Refunds -->
+    <div
+      class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group"
+    >
+      <div class="relative z-10">
+        <p
+          class="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider mb-2"
+        >
+          Returns
+        </p>
+        <div class="flex items-baseline gap-2">
+          <h3 class="text-3xl font-black text-primary dark:text-white">
+            {{ stats.refundRequests | number }}
+          </h3>
+        </div>
+      </div>
+      <div
+        class="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-red-50 to-transparent dark:from-red-900/10 opacity-50 group-hover:w-32 transition-all duration-500"
+      ></div>
+      <div
+        class="absolute bottom-4 right-4 text-red-500/10 dark:text-red-500/20"
+      >
+        <lucide-icon [img]="icons.RotateCcw" class="w-12 h-12"></lucide-icon>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loadingStats>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div
+        *ngFor="let i of [1, 2, 3, 4]"
+        class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm animate-pulse"
+      >
+        <div class="w-24 h-4 bg-gray-100 dark:bg-gray-800 rounded mb-3"></div>
+        <div class="w-32 h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Main Content Area -->
+  <div class="flex flex-col gap-6">
+    <!-- Filters Toolbar -->
+    <div
+      class="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-white dark:bg-surface-dark p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm"
+    >
+      <!-- Search -->
+      <div class="w-full lg:w-96 relative group">
+        <div
+          class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-primary"
+        >
+          <lucide-icon
+            [img]="icons.Search"
+            class="w-4 h-4 text-gray-400 group-focus-within:text-primary"
+          ></lucide-icon>
+        </div>
+        <input
+          class="block w-full pl-11 pr-4 py-3 border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-background-dark text-primary dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm font-medium"
+          placeholder="Search orders..."
+          type="text"
+          [formControl]="searchControl"
+        />
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="flex flex-wrap gap-3 w-full lg:w-auto">
+        <!-- Status Filter -->
+        <div class="relative" (click)="$event.stopPropagation()">
+          <button
+            class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-95"
+            type="button"
+            (click)="toggleStatusMenu($event)"
+            [class.ring-2]="statusMenuOpen"
+            [class.ring-primary]="statusMenuOpen"
+          >
+            <span class="text-gray-500 dark:text-gray-400 font-medium"
+              >Status:</span
+            >
+            <span>{{ selectedStatus }}</span>
+            <lucide-icon
+              [img]="icons.ChevronDown"
+              class="w-4 h-4 ml-1 transition-transform"
+              [class.rotate-180]="statusMenuOpen"
+            ></lucide-icon>
+          </button>
+
+          <div
+            *ngIf="statusMenuOpen"
+            class="absolute mt-2 w-56 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-surface-dark shadow-xl z-20 py-2 animate-in fade-in zoom-in-95 duration-200"
+            (click)="$event.stopPropagation()"
+          >
+            <button
+              *ngFor="let status of statusOptions"
+              class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between group"
+              [class.text-primary]="selectedStatus === status"
+              [class.dark:text-white]="selectedStatus === status"
+              [class.text-gray-600]="selectedStatus !== status"
+              [class.dark:text-gray-300]="selectedStatus !== status"
+              type="button"
+              (click)="setStatusFilter(status, $event)"
+            >
+              {{ status }}
+              <lucide-icon
+                [img]="icons.Check"
+                *ngIf="selectedStatus === status"
+                class="w-4 h-4 text-primary"
+              ></lucide-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Date Filter -->
+        <div class="relative" (click)="$event.stopPropagation()">
+          <button
+            class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-95"
+            type="button"
+            (click)="toggleDateMenu($event)"
+            [class.ring-2]="dateMenuOpen"
+            [class.ring-primary]="dateMenuOpen"
+          >
+            <span class="text-gray-500 dark:text-gray-400 font-medium"
+              >Period:</span
+            >
+            <span>{{ selectedDateRange }}</span>
+            <lucide-icon
+              [img]="icons.ChevronDown"
+              class="w-4 h-4 ml-1 transition-transform"
+              [class.rotate-180]="dateMenuOpen"
+            ></lucide-icon>
+          </button>
+
+          <div
+            *ngIf="dateMenuOpen"
+            class="absolute mt-2 w-56 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-surface-dark shadow-xl z-20 py-2 animate-in fade-in zoom-in-95 duration-200"
+            (click)="$event.stopPropagation()"
+          >
+            <button
+              *ngFor="let range of dateRanges"
+              class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between"
+              [class.text-primary]="selectedDateRange === range"
+              [class.dark:text-white]="selectedDateRange === range"
+              [class.text-gray-600]="selectedDateRange !== range"
+              [class.dark:text-gray-300]="selectedDateRange !== range"
+              type="button"
+              (click)="setDateRange(range, $event)"
+            >
+              {{ range }}
+              <lucide-icon
+                [img]="icons.Check"
+                *ngIf="selectedDateRange === range"
+                class="w-4 h-4 text-primary"
+              ></lucide-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Table Card -->
+    <div
+      class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm flex flex-col min-h-[500px]"
+    >
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr
+              class="border-b border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-800/50"
+            >
+              <th class="p-5 w-14 text-center">
+                <div class="flex items-center justify-center">
+                  <input
+                    class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20 cursor-pointer"
+                    type="checkbox"
+                    [checked]="isAllVisibleSelected()"
+                    [indeterminate]="isIndeterminate()"
+                    (change)="toggleSelectAll($event)"
+                  />
+                </div>
+              </th>
+              <th
+                class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider"
+              >
+                Order ID
+              </th>
+              <th
+                class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider"
+              >
+                Customer
+              </th>
+              <th
+                class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider"
+              >
+                Date
+              </th>
+              <th
+                class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider"
+              >
+                Total
+              </th>
+              <th
+                class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider"
+              >
+                Status
+              </th>
+              <th
+                class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider text-right"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+            <tr
+              *ngFor="let order of orders; trackBy: trackByOrderId"
+              class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group cursor-pointer"
+              [ngClass]="{
+                'bg-blue-50': selectedOrderIds.has(order.id),
+                'dark:bg-blue-900/10': selectedOrderIds.has(order.id),
+              }"
+              (click)="toggleRowActions(order.id, $event)"
+            >
+              <td class="p-5 text-center" (click)="$event.stopPropagation()">
+                <div class="flex items-center justify-center">
+                  <input
+                    class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20 cursor-pointer"
+                    type="checkbox"
+                    [checked]="selectedOrderIds.has(order.id)"
+                    (change)="toggleSelectOrder(order.id, $event)"
+                  />
+                </div>
+              </td>
+              <td class="p-5">
+                <span
+                  class="font-mono font-medium text-primary dark:text-white"
+                  >{{ order.orderNumber }}</span
+                >
+              </td>
+              <td class="p-5">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shadow-sm"
+                    [ngClass]="avatarClass(order)"
+                  >
+                    {{ getCustomerInitials(order.customerName) }}
+                  </div>
+                  <div class="flex flex-col">
+                    <span
+                      class="text-sm font-semibold text-gray-900 dark:text-white"
+                      >{{ order.customerName }}</span
+                    >
+                    <span class="text-xs text-gray-500"
+                      >{{ order.itemsCount }} item{{
+                        order.itemsCount !== 1 ? "s" : ""
+                      }}</span
+                    >
+                  </div>
+                </div>
+              </td>
+              <td class="p-5">
+                <div class="flex flex-col">
+                  <span
+                    class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >{{ order.createdAt | date: "MMM d, y" }}</span
+                  >
+                  <span class="text-xs text-gray-500">{{
+                    order.createdAt | date: "shortTime"
+                  }}</span>
+                </div>
+              </td>
+              <td class="p-5 font-bold text-gray-900 dark:text-white">
+                <app-price-display
+                  [amount]="order.total"
+                  size="sm"
+                ></app-price-display>
+              </td>
+              <td class="p-5">
+                <span
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-transparent"
+                  [ngClass]="statusClass(order.status)"
+                >
+                  {{ order.status }}
+                </span>
+              </td>
+              <td class="p-5 text-right relative">
+                <div class="flex items-center justify-end gap-1">
+                  <!-- Quick Actions for Pending -->
+                  <ng-container *ngIf="order.status === 'Pending'">
+                    <button
+                      class="text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 p-2 rounded-full transition"
+                      title="Confirm Order"
+                      type="button"
+                      (click)="markNextStatus(order, $event)"
+                    >
+                      <lucide-icon
+                        [img]="icons.Check"
+                        class="w-4 h-4"
+                      ></lucide-icon>
+                    </button>
+                    <button
+                      class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-full transition"
+                      title="Cancel Order"
+                      type="button"
+                      (click)="cancelOrder(order, $event)"
+                    >
+                      <lucide-icon
+                        [img]="icons.XCircle"
+                        class="w-4 h-4"
+                      ></lucide-icon>
+                    </button>
+                  </ng-container>
+
+                  <button
+                    class="text-gray-400 hover:text-primary dark:hover:text-white p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                    type="button"
+                    (click)="toggleRowActions(order.id, $event)"
+                  >
+                    <lucide-icon
+                      [img]="icons.MoreVertical"
+                      class="w-4 h-4"
+                    ></lucide-icon>
+                  </button>
+                </div>
+
+                <!-- Dropdown Action Menu -->
+                <div
+                  *ngIf="actionMenuOpenId === order.id"
+                  class="absolute right-8 top-10 w-52 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-surface-dark shadow-xl z-20 py-2 animate-in fade-in zoom-in-95 duration-200"
+                  (click)="$event.stopPropagation()"
+                >
+                  <div
+                    class="px-4 py-2 border-b border-gray-100 dark:border-gray-700 mb-1"
+                  >
+                    <p class="text-xs font-bold text-gray-500 uppercase">
+                      Actions
+                    </p>
+                  </div>
+
+                  <a
+                    class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    [routerLink]="['/admin/orders', order.id]"
+                    (click)="viewDetails($event)"
+                  >
+                    <lucide-icon
+                      [img]="icons.Eye"
+                      class="w-4 h-4"
+                    ></lucide-icon>
+                    View Details
+                  </a>
+
+                  <button
+                    *ngIf="nextStatusLabel(order)"
+                    class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-primary dark:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    type="button"
+                    (click)="markNextStatus(order, $event)"
+                  >
+                    <lucide-icon
+                      [img]="icons.Forward"
+                      class="w-4 h-4"
+                    ></lucide-icon>
+                    {{ nextStatusLabel(order) }}
+                  </button>
+
+                  <div class="h-px bg-gray-100 dark:bg-gray-700 my-1"></div>
+
+                  <button
+                    class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+                    type="button"
+                    (click)="cancelOrder(order, $event)"
+                  >
+                    <lucide-icon
+                      [img]="icons.XCircle"
+                      class="w-4 h-4"
+                    ></lucide-icon>
+                    Cancel Order
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Loading State -->
+            <ng-container *ngIf="isLoading">
+              <tr *ngFor="let i of [1, 2, 3, 4, 5]">
+                <td class="p-5 text-center">
+                  <div
+                    class="w-4 h-4 bg-gray-100 dark:bg-gray-800 rounded mx-auto animate-pulse"
+                  ></div>
+                </td>
+                <td class="p-5">
+                  <div
+                    class="w-24 h-4 bg-gray-100 dark:bg-gray-800 rounded animate-pulse"
+                  ></div>
+                </td>
+                <td class="p-5">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse"
+                    ></div>
+                    <div
+                      class="w-32 h-4 bg-gray-100 dark:bg-gray-800 rounded animate-pulse"
+                    ></div>
+                  </div>
+                </td>
+                <td class="p-5">
+                  <div
+                    class="w-20 h-4 bg-gray-100 dark:bg-gray-800 rounded animate-pulse"
+                  ></div>
+                </td>
+                <td class="p-5">
+                  <div
+                    class="w-16 h-4 bg-gray-100 dark:bg-gray-800 rounded animate-pulse"
+                  ></div>
+                </td>
+                <td class="p-5">
+                  <div
+                    class="w-20 h-6 bg-gray-100 dark:bg-gray-800 rounded-full animate-pulse"
+                  ></div>
+                </td>
+                <td class="p-5">
+                  <div
+                    class="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-full ml-auto animate-pulse"
+                  ></div>
+                </td>
+              </tr>
+            </ng-container>
+
+            <!-- Empty State -->
+            <tr *ngIf="!isLoading && orders.length === 0">
+              <td
+                colspan="7"
+                class="p-12 text-center text-gray-500 dark:text-gray-400"
+              >
+                <div class="flex flex-col items-center justify-center gap-4">
+                  <div
+                    class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center"
+                  >
+                    <lucide-icon
+                      [img]="icons.Package"
+                      class="w-12 h-12 text-gray-300"
+                    ></lucide-icon>
+                  </div>
+                  <p class="text-lg font-medium">No orders found</p>
+                  <p class="text-sm">Try adjusting your search or filters.</p>
+                  <button
+                    (click)="loadOrders()"
+                    class="text-primary font-bold hover:underline"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        class="border-t border-gray-100 dark:border-gray-800 p-5 bg-white dark:bg-surface-dark mt-auto flex items-center justify-between sticky bottom-0"
+      >
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Showing
+          <span class="font-bold text-primary dark:text-white">{{
+            paginationStart
+          }}</span>
+          to
+          <span class="font-bold text-primary dark:text-white">{{
+            paginationEnd
+          }}</span>
+          of
+          <span class="font-bold text-primary dark:text-white">{{
+            totalResults | number
+          }}</span>
+          results
+        </p>
+        <div class="flex items-center gap-2">
+          <button
+            class="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            type="button"
+            [disabled]="page === 1"
+            (click)="goToPreviousPage()"
+          >
+            <lucide-icon
+              [img]="icons.ChevronLeft"
+              class="w-4 h-4"
+            ></lucide-icon>
+          </button>
+
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400"
+            >Page {{ page }} of {{ totalPages }}</span
+          >
+
+          <button
+            class="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            type="button"
+            [disabled]="page === totalPages"
+            (click)="goToNextPage()"
+          >
+            <lucide-icon
+              [img]="icons.ChevronRight"
+              class="w-4 h-4"
+            ></lucide-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,98 @@
+<a
+  [routerLink]="['/product', product.slug]"
+  class="flex flex-col gap-4 group cursor-pointer text-center"
+>
+  <div class="relative aspect-[3/4] w-full overflow-hidden bg-background-light">
+    <img
+      *ngIf="mainImage"
+      [alt]="product.name"
+      class="h-full w-full object-cover object-center transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+      [src]="imageUrlService.getImageUrl(mainImage)"
+    />
+
+    <!-- Tier Badge (ilyn.global style) -->
+    <div *ngIf="product.tier" class="absolute top-4 right-4">
+      <span
+        class="px-2 py-1 bg-accent/10 border border-accent/30 text-accent text-[8px] uppercase tracking-[0.3em] font-bold backdrop-blur-sm"
+      >
+        {{ product.tier }}
+      </span>
+    </div>
+
+    <!-- Discount Badge -->
+    <div *ngIf="hasDiscount" class="absolute top-4 left-4">
+      <span
+        class="px-2 py-1 bg-primary text-white text-[8px] uppercase tracking-[0.35em] font-bold"
+      >
+        -{{ discountPercentage }}%
+      </span>
+    </div>
+
+    <!-- Subtle Overlay on Hover -->
+    <div
+      class="absolute inset-0 bg-primary/3 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+    ></div>
+
+    <!-- Quick View / Add to Cart Button -->
+    <div
+      class="absolute bottom-6 left-0 right-0 flex justify-center gap-2 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700"
+    >
+      <div
+        class="bg-white/95 backdrop-blur-sm px-6 py-3 text-[9px] uppercase tracking-[0.4em] font-bold text-primary border border-primary/10"
+      >
+        View Details
+      </div>
+      <button
+        (click)="addToCart($event)"
+        class="bg-primary px-4 py-3 text-white border border-primary hover:bg-accent hover:border-accent transition-colors duration-300"
+        title="Add to Cart"
+      >
+        <lucide-icon [img]="icons.ShoppingCart" class="w-4 h-4"></lucide-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-col items-center gap-3 px-2">
+    <h3
+      class="text-[10px] uppercase tracking-[0.25em] font-bold text-text-main group-hover:text-accent transition-colors duration-500"
+    >
+      {{ product.name }}
+    </h3>
+    <div class="flex items-center gap-3">
+      <app-price-display
+        class="text-primary font-serif italic text-lg tracking-tight transition-all duration-300"
+        [amount]="currentPrice"
+        size="md"
+      >
+      </app-price-display>
+      <app-price-display
+        *ngIf="hasDiscount"
+        class="line-through text-gray-300 text-xs opacity-70 transition-all duration-300"
+        [amount]="originalPrice"
+        size="sm"
+      >
+      </app-price-display>
+    </div>
+
+    <!-- Size Selection -->
+    <div
+      *ngIf="availableSizes.length > 0"
+      class="flex flex-wrap items-center justify-center gap-2 mt-1 w-full"
+    >
+      <button
+        *ngFor="let size of availableSizes"
+        (click)="
+          selectSize(size); $event.preventDefault(); $event.stopPropagation()
+        "
+        class="min-w-[32px] h-8 px-2 text-[10px] uppercase font-bold tracking-wider transition-all duration-300 border"
+        [ngClass]="{
+          'bg-primary text-white border-primary': selectedSize === size,
+          'bg-transparent text-text-main border-border hover:border-primary hover:text-primary':
+            selectedSize !== size,
+        }"
+      >
+        {{ size }}
+      </button>
+    </div>
+  </div>
+</a>

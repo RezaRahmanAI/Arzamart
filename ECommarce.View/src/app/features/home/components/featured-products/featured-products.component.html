@@ -1,0 +1,12 @@
+<section class="px-4 py-32 bg-white">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="flex flex-col items-center mb-20 text-center">
+      <span class="text-[10px] uppercase tracking-[0.3em] text-text-sub font-medium mb-4 block">Selected for You</span>
+      <h2 class="text-4xl md:text-6xl font-serif italic text-primary mb-6">Featured Collection</h2>
+      <div class="w-16 h-px bg-accent"></div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+      <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
+    </div>
+  </div>
+</section>
