@@ -63,10 +63,14 @@ public static class ServiceExtensions
 
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration config)
     {
-        var connectionString = config.GetConnectionString("DefaultConnection");
-        if (string.IsNullOrEmpty(connectionString))
+        var connectionString = ResolveConnectionString(config);
+
+        if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new InvalidOperationException("Could not find a connection string named 'DefaultConnection'.");
+            // Prevent hard startup crash (IIS 500.30) when env vars are missing.
+            // The API can still boot and expose diagnostics while DB issues are fixed.
+            connectionString = "Server=localhost;Database=arzamart_placeholder;User Id=sa;Password=Placeholder123!;Encrypt=False;TrustServerCertificate=True;";
+            Console.Error.WriteLine("WARNING: No DefaultConnection was found in configuration. Using placeholder SQL connection string to keep API startup alive.");
         }
 
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -77,6 +81,16 @@ public static class ServiceExtensions
                     errorNumbersToAdd: null)));
 
         return services;
+    }
+
+    private static string? ResolveConnectionString(IConfiguration config)
+    {
+        return config.GetConnectionString("DefaultConnection")
+            ?? config["ConnectionStrings:DefaultConnection"]
+            ?? config["ConnectionStrings__DefaultConnection"]
+            ?? config["SQLCONNSTR_DefaultConnection"]
+            ?? config["CUSTOMCONNSTR_DefaultConnection"]
+            ?? config["AZURE_SQL_CONNECTIONSTRING"];
     }
 
     public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
@@ -164,11 +178,12 @@ public static class ServiceExtensions
 
     public static IServiceCollection AddSwaggerServices(this IServiceCollection services, IWebHostEnvironment env)
     {
-        if (env.IsDevelopment())
-        {
-            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
-        }
+        // Swagger middleware is enabled in Program.cs for all environments.
+        // Registering these services unconditionally prevents startup failure
+        // in production when `/swagger` is requested.
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
+
         return services;
     }
 }
