@@ -1,19 +1,15 @@
-using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Text.Json;
 
 namespace ECommerce.API.Middleware;
 
-/// <summary>
-/// Global exception handling middleware
-/// </summary>
 public class GlobalExceptionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<GlobalExceptionMiddleware> _logger;
-    private readonly IHostEnvironment _env;
+    private readonly IWebHostEnvironment _env;
 
-    public GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger, IHostEnvironment env)
+    public GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger, IWebHostEnvironment env)
     {
         _next = next;
         _logger = logger;
@@ -22,7 +18,7 @@ public class GlobalExceptionMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // 1. Unified CORS & Preflight Handler
+        // 1. Unified CORS & Preflight Handler (First line of defense)
         if (context.Request.Headers.TryGetValue("Origin", out var origin))
         {
             context.Response.Headers["Access-Control-Allow-Origin"] = origin;
@@ -52,49 +48,36 @@ public class GlobalExceptionMiddleware
                 context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
             }
 
-            await HandleExceptionAsync(context, ex, _env);
+            await HandleExceptionAsync(context, ex);
         }
     }
 
-    private static async Task HandleExceptionAsync(HttpContext context, Exception exception, IHostEnvironment env)
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
-        
-        var statusCode = HttpStatusCode.InternalServerError;
-        var message = "An error occurred processing your request";
-        var detail = exception.Message;
+        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-        switch (exception)
-        {
-            case ArgumentNullException:
-            case ArgumentException:
-                statusCode = HttpStatusCode.BadRequest;
-                message = "Invalid request parameters";
-                break;
-            
-            case UnauthorizedAccessException:
-                statusCode = HttpStatusCode.Forbidden;
-                message = "Permission denied: The server process does not have write access. Please check the folder permissions.";
-                break;
-            
-            case KeyNotFoundException:
-                statusCode = HttpStatusCode.NotFound;
-                message = "Requested resource not found";
-                break;
-        }
-
-        context.Response.StatusCode = (int)statusCode;
-
-        var response = new
-        {
-            success = false,
-            message = message,
-            error = env.IsDevelopment() ? detail : null,
-            stackTrace = env.IsDevelopment() ? exception.StackTrace : null
-        };
+        var response = _env.IsDevelopment()
+            ? new ApiExceptionResponse(context.Response.StatusCode, exception.Message, exception.StackTrace?.ToString())
+            : new ApiExceptionResponse(context.Response.StatusCode, "Internal Server Error. Please contact support.");
 
         var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-        var jsonResponse = JsonSerializer.Serialize(response, options);
-        await context.Response.WriteAsync(jsonResponse);
+        var json = JsonSerializer.Serialize(response, options);
+
+        await context.Response.WriteAsync(json);
     }
+}
+
+public class ApiExceptionResponse
+{
+    public ApiExceptionResponse(int statusCode, string message, string? details = null)
+    {
+        StatusCode = statusCode;
+        Message = message;
+        Details = details;
+    }
+
+    public int StatusCode { get; set; }
+    public string Message { get; set; }
+    public string? Details { get; set; }
 }
