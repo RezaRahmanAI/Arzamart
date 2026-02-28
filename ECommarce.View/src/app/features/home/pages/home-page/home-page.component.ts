@@ -1,7 +1,9 @@
 import { Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { CategoryService } from "../../../../core/services/category.service";
+import { ProductService } from "../../../../core/services/product.service";
+import { map } from "rxjs";
+import { ImageUrlService } from "../../../../core/services/image-url.service";
 
 import { HeroComponent } from "../../components/hero/hero.component";
 import { CategoryGridComponent } from "../../components/category-grid/category-grid.component";
@@ -36,9 +38,26 @@ import { CategorySectionComponent } from "../../components/category-section/cate
   styleUrl: "./home-page.component.css",
 })
 export class HomePageComponent {
-  private readonly categoryService = inject(CategoryService);
+  private readonly productService = inject(ProductService);
+  private readonly imageUrlService = inject(ImageUrlService);
 
-  categories$ = this.categoryService.getCategories();
+  homeData$ = this.productService.getHomeData();
+
+  heroSlides$ = this.homeData$.pipe(
+    map((data) =>
+      data.banners.map((b) => ({
+        image: this.imageUrlService.getImageUrl(b.imageUrl),
+        title: b.title,
+        subtitle: b.subtitle,
+        link: b.linkUrl || "/shop",
+        linkText: b.buttonText || "Shop Now",
+      })),
+    ),
+  );
+
+  newArrivals$ = this.homeData$.pipe(map((data) => data.newArrivals));
+  featuredProducts$ = this.homeData$.pipe(map((data) => data.featuredProducts));
+  categories$ = this.homeData$.pipe(map((data) => data.categories));
 
   // Helper methods to filter categories for specific sections
   getCategory(categories: any[], slug: string) {

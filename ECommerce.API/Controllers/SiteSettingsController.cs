@@ -1,8 +1,12 @@
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
+using ECommerce.Infrastructure.Data;
+using ECommerce.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ECommerce.API.Controllers
 {
@@ -11,35 +15,53 @@ namespace ECommerce.API.Controllers
     public class SiteSettingsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public SiteSettingsController(ApplicationDbContext context)
+        public SiteSettingsController(ApplicationDbContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 600)]
         public async Task<ActionResult<SiteSetting>> GetSettings()
         {
+            const string cacheKey = "site_settings";
+
+            if (_cache.TryGetValue(cacheKey, out SiteSetting? cached) && cached != null)
+            {
+                return Ok(cached);
+            }
+
             var settings = await _context.SiteSettings.FirstOrDefaultAsync();
             
             if (settings == null)
             {
-                return Ok(new SiteSetting()); // Return default if not set
+                settings = new SiteSetting();
             }
 
-            // For public API, we might want to return a DTO to hide sensitive info like Stripe Secret Key if it were stored here.
-            // But currently SiteSetting only has public info + pixel IDs which are public in HTML anyway.
-            // Stripe Publishable Key is public.
-            
+            _cache.Set(cacheKey, settings, TimeSpan.FromMinutes(10));
             return Ok(settings);
         }
 
         [HttpGet("delivery-methods")]
+        [ResponseCache(Duration = 600)]
         public async Task<ActionResult<IEnumerable<DeliveryMethod>>> GetDeliveryMethods()
         {
-            return await _context.DeliveryMethods
+            const string cacheKey = "delivery_methods_active";
+
+            if (_cache.TryGetValue(cacheKey, out IEnumerable<DeliveryMethod>? cached) && cached != null)
+            {
+                return Ok(cached);
+            }
+
+            var methods = await _context.DeliveryMethods
                 .Where(m => m.IsActive)
                 .ToListAsync();
+
+            _cache.Set(cacheKey, methods, TimeSpan.FromMinutes(10));
+            return Ok(methods);
         }
     }
 }

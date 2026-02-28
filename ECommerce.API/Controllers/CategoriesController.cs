@@ -24,7 +24,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
-    [ResponseCache(Duration = 300)]
+    [ResponseCache(Duration = 600)]
     public async Task<ActionResult<IReadOnlyList<CategoryDto>>> GetCategories()
     {
         const string cacheKey = "categories_all";
@@ -38,7 +38,7 @@ public class CategoriesController : ControllerBase
         var categories = await _categoryRepo.ListAsync(spec);
         var result = _mapper.Map<IReadOnlyList<CategoryDto>>(categories);
         
-        _cache.Set(cacheKey, result, TimeSpan.FromMinutes(5));
+        _cache.Set(cacheKey, result, TimeSpan.FromMinutes(10));
         return Ok(result);
     }
 }

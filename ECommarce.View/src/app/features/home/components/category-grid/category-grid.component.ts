@@ -1,8 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 
-import { CategoryService } from "../../../../core/services/category.service";
 import { Category } from "../../../../core/models/category";
 import { SectionHeaderComponent } from "../../../../shared/components/section-header/section-header.component";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
@@ -16,20 +15,11 @@ import { LucideAngularModule, ArrowRight } from "lucide-angular";
   templateUrl: "./category-grid.component.html",
   styleUrl: "./category-grid.component.css",
 })
-export class CategoryGridComponent implements OnInit {
+export class CategoryGridComponent {
   readonly icons = {
     ArrowRight,
   };
-  categories: Category[] = [];
+  @Input() categories: Category[] = [];
 
-  constructor(
-    private readonly categoryService: CategoryService,
-    public readonly imageUrlService: ImageUrlService,
-  ) {}
-
-  ngOnInit(): void {
-    this.categoryService.getCategories().subscribe((categories) => {
-      this.categories = categories;
-    });
-  }
+  constructor(public readonly imageUrlService: ImageUrlService) {}
 }

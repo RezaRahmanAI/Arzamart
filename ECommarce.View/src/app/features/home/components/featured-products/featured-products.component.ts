@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { HttpContext } from "@angular/common/http";
 
@@ -14,16 +14,6 @@ import { SHOW_LOADING } from "../../../../core/services/loading.service";
   templateUrl: "./featured-products.component.html",
   styleUrl: "./featured-products.component.css",
 })
-export class FeaturedProductsComponent implements OnInit {
-  products: Product[] = [];
-
-  constructor(private readonly productService: ProductService) {}
-
-  ngOnInit(): void {
-    this.productService
-      .getFeaturedProducts(10, new HttpContext().set(SHOW_LOADING, true))
-      .subscribe((response) => {
-        this.products = response.data;
-      });
-  }
+export class FeaturedProductsComponent {
+  @Input() products: Product[] = [];
 }

@@ -1,6 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import { HttpContext } from "@angular/common/http";
 import { Observable, of, shareReplay } from "rxjs";
+import { HomeData } from "../models/home-data";
 
 import { ApiHttpClient } from "../http/http-client";
 import { Product } from "../models/product";
@@ -18,6 +19,16 @@ export class ProductService {
   // Session-level caches for home page data
   private featuredCache$?: Observable<Pagination<Product>>;
   private newArrivalsCache$?: Observable<Pagination<Product>>;
+  private homeData$?: Observable<HomeData>;
+
+  getHomeData(context?: HttpContext): Observable<HomeData> {
+    if (!this.homeData$) {
+      this.homeData$ = this.api
+        .get<HomeData>("/home", { context })
+        .pipe(shareReplay(1));
+    }
+    return this.homeData$;
+  }
 
   getProducts(
     params?: any,
@@ -31,10 +42,12 @@ export class ProductService {
     context?: HttpContext,
   ): Observable<Pagination<Product>> {
     if (!this.featuredCache$) {
-      this.featuredCache$ = this.api.get<Pagination<Product>>(this.baseUrl, {
-        params: { isFeatured: true, pageSize: limit },
-        context,
-      }).pipe(shareReplay(1));
+      this.featuredCache$ = this.api
+        .get<Pagination<Product>>(this.baseUrl, {
+          params: { isFeatured: true, pageSize: limit },
+          context,
+        })
+        .pipe(shareReplay(1));
     }
     return this.featuredCache$;
   }
@@ -44,10 +57,12 @@ export class ProductService {
     context?: HttpContext,
   ): Observable<Pagination<Product>> {
     if (!this.newArrivalsCache$) {
-      this.newArrivalsCache$ = this.api.get<Pagination<Product>>(this.baseUrl, {
-        params: { orderBy: "id", order: "desc", pageSize: limit },
-        context,
-      }).pipe(shareReplay(1));
+      this.newArrivalsCache$ = this.api
+        .get<Pagination<Product>>(this.baseUrl, {
+          params: { orderBy: "id", order: "desc", pageSize: limit },
+          context,
+        })
+        .pipe(shareReplay(1));
     }
     return this.newArrivalsCache$;
   }

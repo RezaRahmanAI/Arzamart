@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { HttpContext } from "@angular/common/http";
 
@@ -14,16 +14,6 @@ import { SHOW_LOADING } from "../../../../core/services/loading.service";
   templateUrl: "./new-arrivals.component.html",
   styleUrl: "./new-arrivals.component.css",
 })
-export class NewArrivalsComponent implements OnInit {
-  products: Product[] = [];
-
-  constructor(private readonly productService: ProductService) {}
-
-  ngOnInit(): void {
-    this.productService
-      .getNewArrivals(10, new HttpContext().set(SHOW_LOADING, true))
-      .subscribe((response) => {
-        this.products = response.data;
-      });
-  }
+export class NewArrivalsComponent {
+  @Input() products: Product[] = [];
 }

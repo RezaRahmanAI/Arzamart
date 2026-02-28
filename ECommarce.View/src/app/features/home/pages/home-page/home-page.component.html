@@ -1,13 +1,18 @@
-<main class="flex-1 bg-white">
-  <app-hero></app-hero>
+<main class="flex-1 bg-white" *ngIf="homeData$ | async as data">
+  <app-hero [slides]="(heroSlides$ | async) ?? []"></app-hero>
 
   <div class="space-y-12 pb-32 bg-white">
     <!-- Product Sections — load immediately (above the fold) -->
-    <app-new-arrivals></app-new-arrivals>
+    <app-new-arrivals [products]="data.newArrivals"></app-new-arrivals>
+
+    <!-- Category Grid - Unified -->
+    <app-category-grid [categories]="data.categories"></app-category-grid>
 
     <!-- Below the fold — only render when scrolled into viewport -->
     @defer (on viewport) {
-      <app-featured-products></app-featured-products>
+      <app-featured-products
+        [products]="data.featuredProducts"
+      ></app-featured-products>
     } @placeholder {
       <div class="h-96 flex items-center justify-center">
         <div class="animate-pulse bg-gray-100 rounded-lg w-full h-full"></div>

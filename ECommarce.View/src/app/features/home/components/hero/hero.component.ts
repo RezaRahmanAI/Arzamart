@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy, inject } from "@angular/core";
+import { Component, OnInit, OnDestroy, inject, Input } from "@angular/core";
 import { CommonModule } from "@angular/common"; // Import CommonModule for structural directives
 import { RouterModule } from "@angular/router"; // Import RouterModule for routerLink
 import { trigger, transition, style, animate } from "@angular/animations";
-import { BannerService } from "../../../../core/services/banner.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 
 interface Slide {
@@ -38,33 +37,18 @@ export class HeroComponent implements OnInit, OnDestroy {
     ArrowRight,
     ArrowLeft,
   };
-  private bannerService = inject(BannerService);
   private imageUrlService = inject(ImageUrlService);
 
-  slides: Slide[] = [];
+  @Input() slides: Slide[] = [];
 
   currentSlide = 0;
   timer: any;
   currentYear = new Date().getFullYear();
 
   ngOnInit() {
-    this.loadBanners();
-  }
-
-  loadBanners() {
-    this.bannerService.getActiveBanners().subscribe((banners: any[]) => {
-      this.slides = banners.map((b: any) => ({
-        image: this.imageUrlService.getImageUrl(b.imageUrl),
-        title: b.title,
-        subtitle: b.subtitle,
-        link: b.linkUrl || "/shop",
-        linkText: b.buttonText || "Shop Now",
-      }));
-
-      if (this.slides.length > 0) {
-        this.startTimer();
-      }
-    });
+    if (this.slides.length > 0) {
+      this.startTimer();
+    }
   }
 
   ngOnDestroy() {

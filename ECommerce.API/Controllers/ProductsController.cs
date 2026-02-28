@@ -34,7 +34,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    [ResponseCache(Duration = 60, VaryByQueryKeys = new[] { "*" })]
+    [ResponseCache(Duration = 300, VaryByQueryKeys = new[] { "*" })]
     public async Task<ActionResult<PaginationDto<ProductDto>>> GetProducts(
         [FromQuery] string? sort, 
         [FromQuery] int? categoryId, 
@@ -81,13 +81,13 @@ public class ProductsController : ControllerBase
 
         var result = new PaginationDto<ProductDto>(pageIndex, pageSize, totalItems, dtos);
         
-        _cache.Set(cacheKey, result, TimeSpan.FromSeconds(2));
+        _cache.Set(cacheKey, result, TimeSpan.FromMinutes(5));
         
         return Ok(result);
     }
 
     [HttpGet("{slug}")]
-    [ResponseCache(Duration = 60, VaryByQueryKeys = new[] { "slug" })]
+    [ResponseCache(Duration = 300, VaryByQueryKeys = new[] { "slug" })]
     public async Task<ActionResult<ProductDto>> GetProduct(string slug)
     {
         var cacheKey = $"product_{slug}";
@@ -100,7 +100,7 @@ public class ProductsController : ControllerBase
         var product = await _productService.GetProductBySlugAsync(slug);
         if (product == null) return NotFound();
         
-        _cache.Set(cacheKey, product, TimeSpan.FromSeconds(60));
+        _cache.Set(cacheKey, product, TimeSpan.FromMinutes(5));
         return Ok(product);
     }
 }

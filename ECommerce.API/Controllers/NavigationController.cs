@@ -16,7 +16,7 @@ public class NavigationController : BaseApiController
     }
 
     [HttpGet("mega-menu")]
-    [ResponseCache(Duration = 300)]
+    [ResponseCache(Duration = 600)]
     public async Task<IActionResult> GetMegaMenu()
     {
         const string cacheKey = "navigation_mega_menu";
