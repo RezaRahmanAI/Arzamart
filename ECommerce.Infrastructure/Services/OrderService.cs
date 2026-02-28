@@ -31,41 +31,97 @@ public class OrderService : IOrderService
         
         foreach (var itemDto in orderDto.Items)
         {
-            var productSpec = new BaseSpecification<Product>(p => p.Id == itemDto.ProductId);
-            productSpec.AddInclude(p => p.Variants);
+            var productSpec = new ProductsWithCategoriesSpecification(itemDto.ProductId);
             var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(productSpec);
             
             if (product == null) throw new KeyNotFoundException($"Product {itemDto.ProductId} not found");
 
-            // Deduct from Main Product Stock
-            if (product.StockQuantity < itemDto.Quantity) throw new InvalidOperationException($"Insufficient stock for {product.Name}");
-            product.StockQuantity -= itemDto.Quantity;
-
-            // Robust Variant Lookup
-            ProductVariant variant = null;
-            if (!string.IsNullOrEmpty(itemDto.Size))
+            if (product.ProductType == ECommerce.Core.Enums.ProductType.Combo)
             {
-                var normalizedSize = itemDto.Size.Trim().ToLower();
-                variant = product.Variants.FirstOrDefault(v => 
-                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                
-                if (variant != null)
+                // Handle Combo Product Stock Deduction
+                if (product.BundleItems == null || !product.BundleItems.Any())
+                    throw new InvalidOperationException($"Combo product {product.Name} has no components defined.");
+
+                foreach (var bundleItem in product.BundleItems)
                 {
-                     if (variant.StockQuantity < itemDto.Quantity) throw new InvalidOperationException($"Insufficient stock for {product.Name} ({itemDto.Size})");
-                     variant.StockQuantity -= itemDto.Quantity;
-                     _unitOfWork.Repository<ProductVariant>().Update(variant);
-                }
-            }
+                    int totalNeeded = bundleItem.Quantity * itemDto.Quantity;
+                    
+                    // Deduct from Component Product
+                    if (bundleItem.ComponentProduct.StockQuantity < totalNeeded)
+                        throw new InvalidOperationException($"Insufficient stock for component {bundleItem.ComponentProduct.Name} in combo {product.Name}");
+                    
+                    bundleItem.ComponentProduct.StockQuantity -= totalNeeded;
+                    _unitOfWork.Repository<Product>().Update(bundleItem.ComponentProduct);
 
-            // Price Fallback: If no specific variant found, use the first available variant's price or 0
-            decimal unitPrice = 0;
-            if (variant != null && (variant.Price ?? 0) > 0)
-            {
-                unitPrice = variant.Price.Value;
+                    // Deduct from Component Variant if specified
+                    if (bundleItem.ComponentVariantId.HasValue)
+                    {
+                        var variant = bundleItem.ComponentVariant;
+                        if (variant == null)
+                        {
+                            // Try to fetch it if not loaded (though spec should load it)
+                            variant = await _unitOfWork.Repository<ProductVariant>().GetByIdAsync(bundleItem.ComponentVariantId.Value);
+                        }
+
+                        if (variant != null)
+                        {
+                            if (variant.StockQuantity < totalNeeded)
+                                throw new InvalidOperationException($"Insufficient variant stock for {bundleItem.ComponentProduct.Name} ({variant.Size}) in combo {product.Name}");
+                            
+                            variant.StockQuantity -= totalNeeded;
+                            _unitOfWork.Repository<ProductVariant>().Update(variant);
+                        }
+                    }
+                }
+
+                // Optional: Update the Combo's own stock if used as a cache
+                if (product.StockQuantity >= itemDto.Quantity)
+                {
+                    product.StockQuantity -= itemDto.Quantity;
+                    _unitOfWork.Repository<Product>().Update(product);
+                }
             }
             else
             {
-                // Fallback to min variant price similar to MappingProfiles
+                // Deduct from Simple Product Stock
+                if (product.StockQuantity < itemDto.Quantity) throw new InvalidOperationException($"Insufficient stock for {product.Name}");
+                product.StockQuantity -= itemDto.Quantity;
+                _unitOfWork.Repository<Product>().Update(product);
+
+                // Robust Variant Lookup
+                ProductVariant variant = null;
+                if (!string.IsNullOrEmpty(itemDto.Size))
+                {
+                    var normalizedSize = itemDto.Size.Trim().ToLower();
+                    variant = product.Variants.FirstOrDefault(v => 
+                        v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                    
+                    if (variant != null)
+                    {
+                        if (variant.StockQuantity < itemDto.Quantity) throw new InvalidOperationException($"Insufficient stock for {product.Name} ({itemDto.Size})");
+                        variant.StockQuantity -= itemDto.Quantity;
+                        _unitOfWork.Repository<ProductVariant>().Update(variant);
+                    }
+                }
+            }
+
+            // Price Fallback logic (Keep as is)
+            decimal unitPrice = 0;
+            // Lookup variant for price even for combo if combo has its own variants
+            ProductVariant priceVariant = null;
+            if (!string.IsNullOrEmpty(itemDto.Size))
+            {
+                 var normalizedSize = itemDto.Size.Trim().ToLower();
+                 priceVariant = product.Variants.FirstOrDefault(v => 
+                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+            }
+
+            if (priceVariant != null && (priceVariant.Price ?? 0) > 0)
+            {
+                unitPrice = priceVariant.Price.Value;
+            }
+            else
+            {
                 unitPrice = product.Variants.Where(v => (v.Price ?? 0) > 0)
                                            .Select(v => v.Price.Value)
                                            .DefaultIfEmpty(0)
@@ -180,20 +236,53 @@ public class OrderService : IOrderService
             {
                 foreach (var item in order.Items)
                 {
-                    var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.ProductId);
+                    var productSpec = new ProductsWithCategoriesSpecification(item.ProductId);
+                    var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(productSpec);
+                    
                     if (product != null)
                     {
-                        product.StockQuantity += item.Quantity;
-                        _unitOfWork.Repository<Product>().Update(product);
-
-                        if (!string.IsNullOrEmpty(item.Size))
+                        if (product.ProductType == ECommerce.Core.Enums.ProductType.Combo)
                         {
-                            var variantSpec = new BaseSpecification<ProductVariant>(v => v.ProductId == item.ProductId && v.Size == item.Size);
-                            var variant = await _unitOfWork.Repository<ProductVariant>().GetEntityWithSpec(variantSpec);
-                            if (variant != null)
+                            // Restore stock to components
+                            foreach (var bundleItem in product.BundleItems)
                             {
-                                variant.StockQuantity += item.Quantity;
-                                _unitOfWork.Repository<ProductVariant>().Update(variant);
+                                int totalToRestore = bundleItem.Quantity * item.Quantity;
+                                
+                                bundleItem.ComponentProduct.StockQuantity += totalToRestore;
+                                _unitOfWork.Repository<Product>().Update(bundleItem.ComponentProduct);
+
+                                if (bundleItem.ComponentVariantId.HasValue)
+                                {
+                                    var variant = bundleItem.ComponentVariant;
+                                    if (variant != null)
+                                    {
+                                        variant.StockQuantity += totalToRestore;
+                                        _unitOfWork.Repository<ProductVariant>().Update(variant);
+                                    }
+                                }
+                            }
+
+                            // Restore Combo's own stock cache
+                            product.StockQuantity += item.Quantity;
+                            _unitOfWork.Repository<Product>().Update(product);
+                        }
+                        else
+                        {
+                            // Restore Simple Product Stock
+                            product.StockQuantity += item.Quantity;
+                            _unitOfWork.Repository<Product>().Update(product);
+
+                            if (!string.IsNullOrEmpty(item.Size))
+                            {
+                                var normalizedSize = item.Size.Trim().ToLower();
+                                var variant = product.Variants.FirstOrDefault(v => 
+                                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                                
+                                if (variant != null)
+                                {
+                                    variant.StockQuantity += item.Quantity;
+                                    _unitOfWork.Repository<ProductVariant>().Update(variant);
+                                }
                             }
                         }
                     }

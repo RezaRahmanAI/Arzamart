@@ -13,4 +13,5 @@ public interface IProductService
     Task<ProductDto> CreateProductAsync(ProductCreateDto dto);
     Task<ProductDto> UpdateProductAsync(int id, ProductUpdateDto dto);
     Task<List<string>> GetAvailableSizesAsync();
+    int CalculateEffectiveStock(Product product);
 }

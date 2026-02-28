@@ -25,6 +25,9 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);
         AddInclude(x => x.Variants);
+        AddInclude(x => x.BundleItems);
+        AddInclude("BundleItems.ComponentProduct");
+        AddInclude("BundleItems.ComponentVariant");
 
         AddOrderBy(x => x.Name);
 
@@ -77,5 +80,8 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);
         AddInclude(x => x.Variants);
+        AddInclude(x => x.BundleItems);
+        AddInclude("BundleItems.ComponentProduct");
+        AddInclude("BundleItems.ComponentVariant");
     }
 }

@@ -68,7 +68,17 @@ public class ProductsController : ControllerBase
         var totalItems = await _productsRepo.CountAsync(countSpec);
         var products = await _productsRepo.ListAsync(spec);
         
-        var dtos = _mapper.Map<IReadOnlyList<ProductDto>>(products);
+        var dtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products);
+        
+        // Calculate effective stock for combos in the list
+        for (int i = 0; i < products.Count; i++)
+        {
+            if (products[i].ProductType == ECommerce.Core.Enums.ProductType.Combo)
+            {
+                dtos[i].StockQuantity = _productService.CalculateEffectiveStock(products[i]);
+            }
+        }
+
         var result = new PaginationDto<ProductDto>(pageIndex, pageSize, totalItems, dtos);
         
         _cache.Set(cacheKey, result, TimeSpan.FromSeconds(2));

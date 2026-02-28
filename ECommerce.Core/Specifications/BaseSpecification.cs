@@ -18,6 +18,7 @@ public class BaseSpecification<T> : ISpecification<T>
 
     public List<Expression<Func<T, object>>> Includes { get; } = 
         new List<Expression<Func<T, object>>>();
+    public List<string> IncludesStrings { get; } = new List<string>();
 
     public Expression<Func<T, object>> OrderBy { get; private set; }
 
@@ -32,6 +33,11 @@ public class BaseSpecification<T> : ISpecification<T>
     public void AddInclude(Expression<Func<T, object>> includeExpression)
     {
         Includes.Add(includeExpression);
+    }
+
+    public void AddInclude(string includeString)
+    {
+        IncludesStrings.Add(includeString);
     }
 
     protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)

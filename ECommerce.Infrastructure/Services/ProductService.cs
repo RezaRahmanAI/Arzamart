@@ -31,11 +31,13 @@ public class ProductService : IProductService
 
         if (product == null) return null;
 
-        return _mapper.Map<Product, ProductDto>(product);
+        var dto = _mapper.Map<Product, ProductDto>(product);
+        if (product.ProductType == ProductType.Combo)
+        {
+            dto.StockQuantity = CalculateEffectiveStock(product);
+        }
+        return dto;
     }
-
-
-
 
     public async Task<ProductDto> GetProductByIdAsync(int id)
     {
@@ -44,7 +46,37 @@ public class ProductService : IProductService
 
         if (product == null) return null;
 
-        return _mapper.Map<Product, ProductDto>(product);
+        var dto = _mapper.Map<Product, ProductDto>(product);
+        if (product.ProductType == ProductType.Combo)
+        {
+            dto.StockQuantity = CalculateEffectiveStock(product);
+        }
+        return dto;
+    }
+
+    public int CalculateEffectiveStock(Product product)
+    {
+        if (product.BundleItems == null || !product.BundleItems.Any()) return 0;
+
+        int minStock = int.MaxValue;
+
+        foreach (var item in product.BundleItems)
+        {
+            int componentStock = 0;
+            if (item.ComponentVariantId.HasValue && item.ComponentVariant != null)
+            {
+                componentStock = item.ComponentVariant.StockQuantity;
+            }
+            else if (item.ComponentProduct != null)
+            {
+                componentStock = item.ComponentProduct.StockQuantity;
+            }
+
+            int possibleSets = componentStock / item.Quantity;
+            if (possibleSets < minStock) minStock = possibleSets;
+        }
+
+        return minStock == int.MaxValue ? 0 : minStock;
     }
 
     public async Task<ProductDto> CreateProductAsync(ProductCreateDto dto)

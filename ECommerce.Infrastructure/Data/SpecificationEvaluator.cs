@@ -31,6 +31,8 @@ public class SpecificationEvaluator<T> where T : BaseEntity
 
         query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
 
+        query = spec.IncludesStrings.Aggregate(query, (current, include) => current.Include(include));
+
         if (spec.IsPagingEnabled)
         {
             query = query.Skip(spec.Skip).Take(spec.Take);
