@@ -235,5 +235,22 @@ namespace ECommerce.Infrastructure.Services
         {
             await RevokeTokenAsync(refreshToken);
         }
+
+        public async Task<UserDto> GetCurrentUserAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) throw new Exception("USER_NOT_FOUND");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.FirstOrDefault() ?? "Customer";
+
+            return new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email ?? "",
+                Name = user.FullName ?? user.UserName ?? "Customer",
+                Role = role
+            };
+        }
     }
 }

@@ -132,4 +132,22 @@ public class AuthController : ControllerBase
 
         return Ok(new { message = "Logged out successfully" });
     }
+
+    [HttpGet("me")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<ActionResult<UserDto>> GetMe()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        try
+        {
+            var user = await _authService.GetCurrentUserAsync(userId);
+            return Ok(user);
+        }
+        catch (Exception)
+        {
+            return Unauthorized();
+        }
+    }
 }

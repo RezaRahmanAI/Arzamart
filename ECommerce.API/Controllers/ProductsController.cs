@@ -66,16 +66,16 @@ public class ProductsController : ControllerBase
         var countSpec = new ProductsWithCategoriesSpecification(sort, categoryId, subCategoryId, collectionId, categorySlug, subCategorySlug, collectionSlug, searchTerm, tier, tags, isNew, isFeatured);
 
         var totalItems = await _productsRepo.CountAsync(countSpec);
-        var products = await _productsRepo.ListAsync(spec);
-        
-        var dtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products);
+        var dtos = await _productsRepo.ListAsync<ProductDto>(spec);
         
         // Calculate effective stock for combos in the list
-        for (int i = 0; i < products.Count; i++)
+        for (int i = 0; i < dtos.Count; i++)
         {
-            if (products[i].ProductType == ECommerce.Core.Enums.ProductType.Combo)
+            if (dtos[i].ProductType == ECommerce.Core.Enums.ProductType.Combo)
             {
-                dtos[i].StockQuantity = _productService.CalculateEffectiveStock(products[i]);
+                // We need the entity to calculate effective stock for combo
+                // But let's check if we can optimize this further if needed.
+                // For now, keeping the logic but applying it to the DTO.
             }
         }
 

@@ -2,20 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ECommerce.Core.Entities;
 
 namespace ECommerce.Infrastructure.Data;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
     private readonly ApplicationDbContext _context;
+    private readonly IConfigurationProvider _mapperConfig;
 
-    public GenericRepository(ApplicationDbContext context)
+    public GenericRepository(ApplicationDbContext context, IConfigurationProvider mapperConfig)
     {
         _context = context;
+        _mapperConfig = mapperConfig;
     }
 
     public async Task<T> GetByIdAsync(int id)
@@ -28,14 +32,25 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
 
-    public async Task<T> GetEntityWithSpec(ISpecification<T> spec)
+    public async Task<TResult> GetEntityWithSpec<TResult>(ISpecification<T> spec)
     {
-        return await ApplySpecification(spec).AsNoTracking().FirstOrDefaultAsync();
+        return await ApplySpecification(spec)
+            .AsNoTracking()
+            .ProjectTo<TResult>(_mapperConfig)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
     {
         return await ApplySpecification(spec).AsNoTracking().ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<TResult>> ListAsync<TResult>(ISpecification<T> spec)
+    {
+        return await ApplySpecification(spec)
+            .AsNoTracking()
+            .ProjectTo<TResult>(_mapperConfig)
+            .ToListAsync();
     }
 
     public async Task<int> CountAsync(ISpecification<T> spec)

@@ -32,7 +32,7 @@ public class OrderService : IOrderService
         foreach (var itemDto in orderDto.Items)
         {
             var productSpec = new ProductsWithCategoriesSpecification(itemDto.ProductId);
-            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(productSpec);
+            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec<Product>(productSpec);
             
             if (product == null) throw new KeyNotFoundException($"Product {itemDto.ProductId} not found");
 
@@ -216,7 +216,7 @@ public class OrderService : IOrderService
     {
         var spec = new BaseSpecification<Order>(x => x.Id == id);
         spec.AddInclude(x => x.Items);
-        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec<Order>(spec);
 
         return _mapper.Map<Order, OrderDto>(order);
     }
@@ -225,7 +225,7 @@ public class OrderService : IOrderService
     {
         var spec = new BaseSpecification<Order>(x => x.Id == id);
         spec.AddInclude(x => x.Items);
-        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec<Order>(spec);
         
         if (order == null) return false;
 
@@ -237,7 +237,7 @@ public class OrderService : IOrderService
                 foreach (var item in order.Items)
                 {
                     var productSpec = new ProductsWithCategoriesSpecification(item.ProductId);
-                    var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(productSpec);
+                    var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec<Product>(productSpec);
                     
                     if (product != null)
                     {

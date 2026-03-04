@@ -74,6 +74,14 @@
       </app-price-display>
     </div>
 
+    <!-- Description Preview -->
+    <p
+      *ngIf="description"
+      class="text-[10px] text-gray-400 line-clamp-2 leading-relaxed max-w-[200px] font-medium"
+    >
+      {{ description }}
+    </p>
+
     <!-- Size Selection -->
     <div
       *ngIf="availableSizes.length > 0"

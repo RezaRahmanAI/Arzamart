@@ -41,6 +41,8 @@ import {
   Maximize2,
   Loader2,
   MessageCircle,
+  Truck,
+  ShieldCheck,
 } from "lucide-angular";
 
 @Component({
@@ -70,6 +72,8 @@ export class ProductDetailsPageComponent {
     Maximize2,
     Loader2,
     MessageCircle,
+    Truck,
+    ShieldCheck,
   };
   private readonly route = inject(ActivatedRoute);
   private readonly productService = inject(ProductService);
@@ -219,7 +223,9 @@ export class ProductDetailsPageComponent {
         });
 
         const selectedVariant = product.variants?.find(
-          (v) => v.size === selectedSize,
+          (v) =>
+            (v.size || "").trim().toLowerCase() ===
+            (selectedSize || "").trim().toLowerCase(),
         );
         const currentStock = selectedVariant
           ? selectedVariant.stockQuantity

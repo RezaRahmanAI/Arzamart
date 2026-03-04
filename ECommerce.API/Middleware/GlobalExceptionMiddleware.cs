@@ -18,21 +18,6 @@ public class GlobalExceptionMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // 1. Unified CORS & Preflight Handler (First line of defense)
-        if (context.Request.Headers.TryGetValue("Origin", out var origin))
-        {
-            context.Response.Headers["Access-Control-Allow-Origin"] = origin;
-            context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
-            context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
-            context.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With, X-Session-Id, Accept, Origin, X-Pagination";
-
-            if (context.Request.Method == "OPTIONS")
-            {
-                context.Response.StatusCode = 200;
-                return;
-            }
-        }
-
         try
         {
             await _next(context);
@@ -40,14 +25,6 @@ public class GlobalExceptionMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unhandled exception occurred: {Message}", ex.Message);
-            
-            // Ensure headers persist even if cleared during exception
-            if (context.Request.Headers.TryGetValue("Origin", out var failOrigin))
-            {
-                context.Response.Headers["Access-Control-Allow-Origin"] = failOrigin;
-                context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
-            }
-
             await HandleExceptionAsync(context, ex);
         }
     }

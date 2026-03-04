@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Collections;
+using System.Threading.Tasks;
+using AutoMapper;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 
@@ -11,11 +10,13 @@ namespace ECommerce.Infrastructure.Data;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
+    private readonly IConfigurationProvider _mapperConfig;
     private Hashtable _repositories;
 
-    public UnitOfWork(ApplicationDbContext context)
+    public UnitOfWork(ApplicationDbContext context, IConfigurationProvider mapperConfig)
     {
         _context = context;
+        _mapperConfig = mapperConfig;
     }
 
     public async Task<int> Complete()
@@ -37,7 +38,7 @@ public class UnitOfWork : IUnitOfWork
         if (!_repositories.ContainsKey(type))
         {
             var repositoryType = typeof(GenericRepository<>);
-            var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(TEntity)), _context);
+            var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(TEntity)), _context, _mapperConfig);
 
             _repositories.Add(type, repositoryInstance);
         }

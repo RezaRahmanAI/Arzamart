@@ -4,11 +4,14 @@ namespace ECommerce.API.Extensions;
 
 public static class MiddlewareExtensions
 {
-    public static IApplicationBuilder UseCustomMiddleware(this IApplicationBuilder app)
+    public static IApplicationBuilder UseAppExceptionHandling(this IApplicationBuilder app)
     {
-        // 1. Exception Handling (Must be at the absolute top)
         app.UseMiddleware<GlobalExceptionMiddleware>();
+        return app;
+    }
 
+    public static IApplicationBuilder UseAppSecurityMiddleware(this IApplicationBuilder app)
+    {
         // 2. Request Logging
         app.UseMiddleware<RequestLoggingMiddleware>();
 

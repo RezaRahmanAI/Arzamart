@@ -17,6 +17,8 @@ import {
   filter,
   take,
   Observable,
+  retry,
+  timer,
 } from "rxjs";
 
 let isRefreshing = false;
@@ -37,6 +39,12 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   return next(req).pipe(
+    retry({
+      count: 2,
+      delay: (error, retryCount) => timer(retryCount * 1000),
+      // Only retry on network errors or transient 5xx
+      resetOnSuccess: true,
+    }),
     catchError((error) => {
       if (
         error instanceof HttpErrorResponse &&

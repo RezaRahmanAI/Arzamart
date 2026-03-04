@@ -1,634 +1,366 @@
 <ng-container *ngFor="let vm of [vm$ | async]">
   <div *ngIf="vm" class="bg-[#f5f5f3] min-h-screen font-sans text-[#1a1a1a]">
     <!-- Breadcrumb -->
-    <div class="max-w-[1200px] mx-auto px-6 pt-28 pb-4">
-      <nav class="flex items-center gap-2 text-xs text-[#888]">
-        <a
-          routerLink="/"
-          class="hover:text-[#1a1a1a] transition-colors underline underline-offset-2"
-          >Home</a
-        >
-        <span class="text-[#ccc]">/</span>
-        <span class="text-[#1a1a1a]">{{ vm.product.name }}</span>
-        <span
-          *ngIf="vm.product.sku && !vm.product.shortDescription"
-          class="text-[#ccc]"
-          >-</span
-        >
-        <span
-          *ngIf="vm.product.sku && !vm.product.shortDescription"
-          class="text-[#888]"
-          >{{ vm.product.sku }}</span
-        >
+    <div class="max-w-[1400px] mx-auto px-6 lg:px-12 pt-28 pb-6">
+      <nav class="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-[#999]">
+        <a routerLink="/" class="hover:text-[#1a1a1a] transition-colors">Home</a>
+        <span class="text-[#ccc] text-xs">/</span>
+        <span class="text-[#1a1a1a] font-bold">{{ vm.product.name }}</span>
       </nav>
     </div>
 
     <!-- Main Product Layout -->
-    <div class="max-w-[1200px] mx-auto px-6 pb-20">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16">
-        <!-- ===== LEFT: Image Gallery ===== -->
-        <div class="relative">
-          <!-- Main Image with Arrows -->
-          <div
-            class="relative bg-[#ebebeb] overflow-hidden group"
-            style="aspect-ratio: 3/4"
-          >
-            <!-- Images -->
-            <ng-container *ngFor="let url of vm.gallery; let i = index">
-              <img
-                [src]="imageUrlService.getImageUrl(url)"
-                [alt]="vm.product.name"
-                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-                [class.opacity-100]="i === currentImageIndex"
-                [class.opacity-0]="i !== currentImageIndex"
-              />
-            </ng-container>
+    <div class="max-w-[1400px] mx-auto px-6 lg:px-12 pb-20">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 xl:gap-24">
+        
+        <!-- ===== LEFT: Image Gallery & Description (Unified) ===== -->
+        <div class="lg:col-span-7 flex flex-col gap-12">
+          
+          <div class="relative">
+            <!-- Main Image -->
+            <div class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4]">
+              <!-- Images -->
+              <ng-container *ngFor="let url of vm.gallery; let i = index">
+                <img
+                  [src]="imageUrlService.getImageUrl(url)"
+                  [alt]="vm.product.name"
+                  class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out"
+                  [class.opacity-100]="i === currentImageIndex"
+                  [class.opacity-0]="i !== currentImageIndex"
+                />
+              </ng-container>
 
-            <!-- Tier Badge -->
-            <div *ngIf="vm.product.tier" class="absolute top-4 right-4 z-10">
-              <span
-                class="px-3 py-1 bg-white/90 text-[10px] uppercase tracking-[0.25em] font-semibold text-[#1a1a1a] border border-[#ddd]"
+              <!-- Tier Badge -->
+              <div *ngIf="vm.product.tier" class="absolute top-6 right-6 z-10">
+                <span class="px-4 py-1.5 bg-white/95 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] border border-[#eee] backdrop-blur-sm shadow-sm">
+                  {{ vm.product.tier }}
+                </span>
+              </div>
+
+              <!-- Nav Arrows (Subtle) -->
+              <button
+                *ngIf="vm.gallery.length > 1"
+                (click)="prevImage(vm.gallery)"
+                class="absolute left-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
               >
-                {{ vm.product.tier }}
+                <lucide-icon [img]="icons.ChevronLeft" class="w-5 h-5"></lucide-icon>
+              </button>
+              <button
+                *ngIf="vm.gallery.length > 1"
+                (click)="nextImage(vm.gallery)"
+                class="absolute right-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
+              >
+                <lucide-icon [img]="icons.ChevronRight" class="w-5 h-5"></lucide-icon>
+              </button>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div *ngIf="vm.gallery.length > 1" class="flex items-center gap-4 mt-6">
+              <span class="text-[9px] uppercase tracking-[0.3em] text-[#999] font-bold">
+                {{ (currentImageIndex + 1).toString().padStart(2, '0') }} / {{ vm.gallery.length.toString().padStart(2, '0') }}
               </span>
+              <div class="flex-1 h-[1px] bg-[#e5e5e5]">
+                <div 
+                  class="h-full bg-[#1a1a1a] transition-all duration-700 ease-out"
+                  [style.width.%]="((currentImageIndex + 1) / vm.gallery.length) * 100"
+                ></div>
+              </div>
             </div>
 
-            <!-- Prev Arrow -->
-            <button
-              *ngIf="vm.gallery.length > 1"
-              (click)="prevImage(vm.gallery)"
-              class="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow transition-all duration-200 opacity-0 group-hover:opacity-100"
-              type="button"
-            >
-              <lucide-icon
-                [img]="icons.ChevronLeft"
-                class="w-5 h-5"
-              ></lucide-icon>
-            </button>
-
-            <!-- Next Arrow -->
-            <button
-              *ngIf="vm.gallery.length > 1"
-              (click)="nextImage(vm.gallery)"
-              class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow transition-all duration-200 opacity-0 group-hover:opacity-100"
-              type="button"
-            >
-              <lucide-icon
-                [img]="icons.ChevronRight"
-                class="w-5 h-5"
-              ></lucide-icon>
-            </button>
-          </div>
-
-          <!-- Image Counter + Progress Bar -->
-          <div
-            *ngIf="vm.gallery.length > 1"
-            class="flex items-center gap-3 mt-3 px-1"
-          >
-            <span class="text-xs text-[#888]"
-              >{{ currentImageIndex + 1 }} / {{ vm.gallery.length }}</span
-            >
-            <div class="flex-1 h-[2px] bg-[#ddd] rounded-full overflow-hidden">
-              <div
-                class="h-full bg-[#1a1a1a] rounded-full transition-all duration-300"
-                [style.width.%]="
-                  ((currentImageIndex + 1) / vm.gallery.length) * 100
-                "
-              ></div>
+            <!-- Thumbnail Row -->
+            <div *ngIf="vm.gallery.length > 1" class="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide">
+              <button
+                *ngFor="let url of vm.gallery; let i = index"
+                (click)="goToImage(i)"
+                class="flex-shrink-0 w-20 h-24 border transition-all duration-500 overflow-hidden"
+                [class.border-[#1a1a1a]]="i === currentImageIndex"
+                [class.border-transparent]="i !== currentImageIndex"
+                [class.opacity-60]="i !== currentImageIndex"
+              >
+                <img [src]="imageUrlService.getImageUrl(url)" class="w-full h-full object-cover" />
+              </button>
             </div>
           </div>
 
-          <!-- Thumbnail Row -->
-          <div
-            *ngIf="vm.gallery.length > 1"
-            class="flex gap-2 mt-3 overflow-x-auto pb-1"
-          >
-            <button
-              *ngFor="let url of vm.gallery; let i = index"
-              (click)="goToImage(i)"
-              type="button"
-              class="flex-shrink-0 w-16 h-20 overflow-hidden border-2 transition-all duration-200"
-              [class.border-[#1a1a1a]]="i === currentImageIndex"
-              [class.border-transparent]="i !== currentImageIndex"
-            >
-              <img
-                [src]="imageUrlService.getImageUrl(url)"
-                [alt]="vm.product.name + ' ' + (i + 1)"
-                class="w-full h-full object-cover"
-              />
-            </button>
+          <!-- Description & Details (Always below Image Gallery) -->
+          <div class="space-y-12 py-12 border-t border-[#eee]">
+            <!-- Primary Description -->
+            <div class="space-y-6">
+              <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#c8922a]">Description</h3>
+              <p class="text-[17px] text-[#444] leading-[1.8] font-light whitespace-pre-line max-w-[90%]">
+                {{ vm.product.description }}
+              </p>
+            </div>
+
+            <!-- Accordions (Polished) -->
+            <div class="divide-y divide-[#eee] border-y border-[#eee]">
+              <details class="group" *ngIf="vm.product.fabricAndCare">
+                <summary class="flex items-center justify-between py-6 cursor-pointer list-none">
+                  <span class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">Details & Composition</span>
+                  <lucide-icon [img]="icons.Plus" class="w-4 h-4 text-[#bbb] group-open:rotate-45 transition-transform duration-300"></lucide-icon>
+                </summary>
+                <div class="pb-8 text-[14px] text-[#666] leading-relaxed font-light">
+                  {{ vm.product.fabricAndCare }}
+                </div>
+              </details>
+
+              <details class="group">
+                <summary class="flex items-center justify-between py-6 cursor-pointer list-none">
+                  <span class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">Materials & Care</span>
+                  <lucide-icon [img]="icons.Plus" class="w-4 h-4 text-[#bbb] group-open:rotate-45 transition-transform duration-300"></lucide-icon>
+                </summary>
+                <div class="pb-8 text-[14px] text-[#666] leading-relaxed font-light space-y-4">
+                  <p>Expertly crafted using high-quality materials to ensure both luxury and longevity. We recommend following specialized care instructions to maintain the original appearance.</p>
+                  <p>{{ vm.product.shippingAndReturns || 'Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary.' }}</p>
+                </div>
+              </details>
+            </div>
           </div>
         </div>
 
-        <!-- ===== RIGHT: Product Info (Sticky) ===== -->
-        <div class="lg:sticky lg:top-24 lg:self-start">
-          <div class="flex flex-col gap-6">
-            <!-- Product Name & SKU -->
-            <div>
-              <h1
-                class="text-2xl md:text-3xl font-semibold text-[#1a1a1a] leading-tight mb-1"
-              >
+        <!-- ===== RIGHT: Product Info & Actions (Sticky) ===== -->
+        <div class="lg:col-span-5 lg:sticky lg:top-32 lg:self-start">
+          <div class="flex flex-col gap-10">
+            
+            <!-- Product Identity -->
+            <div class="space-y-4">
+              <h1 class="text-4xl md:text-5xl font-serif italic text-[#1a1a1a] leading-[1.1]">
                 {{ vm.product.name }}
               </h1>
-              <p
-                class="text-sm text-[#c8922a] font-medium"
-                *ngIf="!vm.product.shortDescription"
-              >
-                Product Code: {{ vm.product.sku }}
-              </p>
-              <p
-                class="text-sm text-[#555] font-medium mb-2"
-                *ngIf="vm.product.shortDescription"
-              >
-                {{ vm.product.shortDescription }}
-              </p>
+              <div class="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold">
+                <span class="text-[#bbb]">Item Ref:</span>
+                <span class="text-[#1a1a1a]">{{ vm.product.sku }}</span>
+                <span *ngIf="vm.product.shortDescription" class="text-[#c8922a]">• {{ vm.product.shortDescription }}</span>
+              </div>
             </div>
 
-            <!-- Price -->
-            <div class="flex items-baseline gap-3">
-              <app-price-display
-                class="text-xl font-bold text-[#1a1a1a]"
-                [amount]="vm.currentPrice"
+            <!-- Pricing Section -->
+            <div class="flex items-baseline gap-5 py-8 border-y border-[#eee]">
+              <app-price-display 
+                class="text-3xl font-serif italic text-[#1a1a1a]" 
+                [amount]="vm.currentPrice" 
                 size="lg"
               ></app-price-display>
-              <app-price-display
-                *ngIf="
-                  vm.currentCompareAtPrice &&
-                  vm.currentCompareAtPrice > vm.currentPrice
-                "
-                class="line-through text-[#aaa] text-sm"
-                [amount]="vm.currentCompareAtPrice"
+              
+              <app-price-display 
+                *ngIf="vm.currentCompareAtPrice && vm.currentCompareAtPrice > vm.currentPrice"
+                class="line-through text-[#ccc] text-lg" 
+                [amount]="vm.currentCompareAtPrice" 
                 size="sm"
               ></app-price-display>
-              <span
-                *ngIf="
-                  vm.currentCompareAtPrice &&
-                  vm.currentCompareAtPrice > vm.currentPrice
-                "
-                class="text-xs font-bold text-red-500 uppercase tracking-wider"
+              
+              <span 
+                *ngIf="vm.currentCompareAtPrice && vm.currentCompareAtPrice > vm.currentPrice"
+                class="text-[10px] font-bold text-red-500 uppercase tracking-[0.3em] ml-auto"
               >
-                -{{
-                  getDiscountPercentage({
-                    price: vm.currentPrice,
-                    compareAtPrice: vm.currentCompareAtPrice,
-                  })
-                }}%
+                Offer -{{ getDiscountPercentage({price: vm.currentPrice, compareAtPrice: vm.currentCompareAtPrice}) }}%
               </span>
             </div>
 
-            <!-- Color Swatches -->
-            <div *ngIf="vm.uniqueColors.length > 0" class="space-y-2">
-              <p class="text-sm font-medium text-[#1a1a1a]">
-                Color:
-                <span class="font-normal text-[#555]">{{
-                  selectedColorName(vm.product, vm.selectedColor)
-                }}</span>
+            <!-- Variants: Color -->
+            <div *ngIf="vm.uniqueColors.length > 0" class="space-y-5 text-center lg:text-left">
+              <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">
+                Available Color <span class="text-[#999] ml-2 font-normal">{{ selectedColorName(vm.product, vm.selectedColor) }}</span>
               </p>
-              <div class="flex flex-wrap gap-2">
-                <button
-                  *ngFor="let color of vm.uniqueColors"
+              <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
+                <button 
+                  *ngFor="let color of vm.uniqueColors" 
                   (click)="selectColor(color, vm.product)"
-                  type="button"
-                  [title]="color.name"
-                  class="w-16 h-20 overflow-hidden border-2 transition-all duration-200 relative"
-                  [class.border-[#1a1a1a]]="
-                    color.name === vm.selectedColor?.name
-                  "
-                  [class.border-[#ddd]]="color.name !== vm.selectedColor?.name"
+                  class="w-16 h-20 border transition-all duration-300 relative overflow-hidden group"
+                  [class.border-[#1a1a1a]]="color.name === vm.selectedColor?.name"
+                  [class.border-[#eee]]="color.name !== vm.selectedColor?.name"
                 >
-                  <img
-                    *ngIf="getColorImage(vm.product, color.name) as imgUrl"
-                    [src]="imgUrl"
-                    [alt]="color.name"
-                    class="w-full h-full object-cover"
+                  <img 
+                    *ngIf="getColorImage(vm.product, color.name) as imgUrl" 
+                    [src]="imgUrl" 
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                   />
-                  <div
-                    *ngIf="!getColorImage(vm.product, color.name)"
-                    class="w-full h-full flex items-end justify-center pb-1"
-                    [style.backgroundColor]="'#e8e8e8'"
-                  >
-                    <span
-                      class="text-[8px] text-[#555] uppercase tracking-wide text-center leading-tight px-1"
-                      >{{ color.name }}</span
-                    >
+                  <div *ngIf="!getColorImage(vm.product, color.name)" class="w-full h-full bg-[#f9f9f9] flex items-center justify-center text-[8px] uppercase tracking-tighter text-[#aaa] font-bold text-center p-2">
+                    {{ color.name }}
                   </div>
                 </button>
               </div>
             </div>
 
-            <!-- Size Selector -->
-            <div *ngIf="vm.uniqueSizes.length > 0" class="space-y-2">
+            <!-- Variants: Size -->
+            <div *ngIf="vm.uniqueSizes.length > 0" class="space-y-5">
               <div class="flex items-center justify-between">
-                <p class="text-sm font-medium text-[#1a1a1a]">Select Size</p>
-                <button
-                  (click)="openSizeGuide()"
-                  class="text-xs text-[#555] underline underline-offset-2 hover:text-[#1a1a1a] transition-colors flex items-center gap-1"
-                  type="button"
-                >
-                  Size Guide
-                  <lucide-icon
-                    [img]="icons.Maximize2"
-                    class="w-3 h-3"
-                  ></lucide-icon>
-                </button>
+                <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">Select Size</p>
+                <button (click)="openSizeGuide()" class="text-[9px] uppercase tracking-[0.2em] text-[#999] hover:text-[#1a1a1a] transition-colors border-b border-[#eee] pb-0.5">Size Guide</button>
               </div>
               <div class="flex flex-wrap gap-2">
-                <button
-                  *ngFor="let size of vm.uniqueSizes"
+                <button 
+                  *ngFor="let size of vm.uniqueSizes" 
                   (click)="selectSize(size || '')"
-                  type="button"
-                  class="px-4 h-10 border text-xs font-medium uppercase tracking-wider transition-all duration-200"
-                  [class.bg-[#1a1a1a]]="size === vm.selectedSize"
+                  class="min-w-[60px] h-14 border text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300"
+                  [class.bg-[#1a1a1a]]="size === vm.selectedSize" 
                   [class.text-white]="size === vm.selectedSize"
                   [class.border-[#1a1a1a]]="size === vm.selectedSize"
-                  [class.bg-white]="size !== vm.selectedSize"
+                  [class.bg-white]="size !== vm.selectedSize" 
                   [class.text-[#1a1a1a]]="size !== vm.selectedSize"
-                  [class.border-[#ccc]]="size !== vm.selectedSize"
+                  [class.border-[#eee]]="size !== vm.selectedSize" 
                   [class.hover:border-[#1a1a1a]]="size !== vm.selectedSize"
                 >
                   {{ size }}
                 </button>
               </div>
-              <p *ngIf="vm.selectedSize" class="text-xs text-[#555] mt-1">
-                Stock: {{ vm.currentStock }}
-              </p>
+              <p *ngIf="vm.selectedSize" class="text-[9px] uppercase tracking-[0.2em] text-[#bbb] font-medium">Stock Status: <span class="text-[#1a1a1a]">{{ vm.currentStock }} available</span></p>
             </div>
 
-            <!-- Quantity Selector -->
-            <div class="space-y-2">
-              <p class="text-sm font-medium text-[#1a1a1a]">Quantity</p>
-              <div
-                class="flex items-center w-32 h-12 border border-[#ddd] bg-white"
-              >
-                <button
-                  (click)="decreaseQuantity()"
-                  type="button"
-                  class="flex-1 h-full flex items-center justify-center hover:bg-[#f5f5f3] transition-colors"
+            <!-- Actions -->
+            <div class="flex flex-col gap-4 pt-4">
+              <!-- Quantity -->
+              <div class="flex items-center h-16 border border-[#eee] bg-white group hover:border-[#aaa] transition-colors">
+                <button (click)="decreaseQuantity()" class="w-16 h-full flex items-center justify-center hover:bg-[#fafafa]"><lucide-icon [img]="icons.Minus" class="w-3 h-3"></lucide-icon></button>
+                <div class="flex-1 text-center font-bold text-sm tracking-[0.2em]">{{ quantity$ | async }}</div>
+                <button (click)="increaseQuantity()" class="w-16 h-full flex items-center justify-center hover:bg-[#fafafa]"><lucide-icon [img]="icons.Plus" class="w-3 h-3"></lucide-icon></button>
+              </div>
+
+              <!-- Errors -->
+              <p *ngIf="selectionError" class="text-[10px] text-red-600 bg-red-50 p-4 tracking-wider leading-relaxed">
+                {{ selectionError }}
+              </p>
+
+              <!-- Main Buttons -->
+              <div class="grid grid-cols-1 gap-3">
+                <button 
+                  (click)="addToCart(vm.product)" 
+                  [disabled]="!vm.currentStock"
+                  class="w-full h-16 bg-[#1a1a1a] text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-black transition-all duration-300 disabled:opacity-20 flex items-center justify-center gap-4"
                 >
-                  <lucide-icon
-                    [img]="icons.Minus"
-                    class="w-4 h-4"
-                  ></lucide-icon>
+                  <lucide-icon [img]="icons.ShoppingBag" class="w-4 h-4"></lucide-icon>
+                  {{ vm.currentStock ? 'Add to Shopping Bag' : 'Sold Out' }}
                 </button>
-                <div
-                  class="flex-1 h-full flex items-center justify-center font-bold text-sm"
+                
+                <button 
+                  (click)="buyNow(vm.product)" 
+                  [disabled]="!vm.currentStock"
+                  class="w-full h-16 bg-white border border-[#1a1a1a] text-[#1a1a1a] text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-[#f9f9f9] transition-all duration-300 disabled:opacity-20"
                 >
-                  {{ quantity$ | async }}
-                </div>
-                <button
-                  (click)="increaseQuantity()"
-                  type="button"
-                  class="flex-1 h-full flex items-center justify-center hover:bg-[#f5f5f3] transition-colors"
-                >
-                  <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
+                  Secure Checkout
                 </button>
               </div>
-            </div>
 
-            <!-- Error -->
-            <p
-              *ngIf="selectionError"
-              class="text-xs text-red-600 bg-red-50 border border-red-100 px-3 py-2"
-            >
-              {{ selectionError }}
-            </p>
-
-            <!-- Action Buttons -->
-            <div class="flex flex-col gap-3 pt-2">
-              <!-- Add to Bag -->
-              <button
-                (click)="addToCart(vm.product)"
-                [disabled]="!vm.currentStock"
-                type="button"
-                class="w-full h-12 bg-[#1a1a1a] text-white text-sm font-semibold uppercase tracking-[0.15em] hover:bg-[#333] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                <lucide-icon
-                  [img]="icons.ShoppingBag"
-                  class="w-4 h-4"
-                ></lucide-icon>
-                {{ vm.currentStock ? "Add to bag" : "Out of Stock" }}
-              </button>
-
-              <!-- Buy Now -->
-              <button
-                (click)="buyNow(vm.product)"
-                [disabled]="!vm.currentStock"
-                type="button"
-                class="w-full h-12 bg-white border border-[#1a1a1a] text-[#1a1a1a] text-sm font-semibold uppercase tracking-[0.15em] hover:bg-[#f5f5f3] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                <lucide-icon
-                  [img]="icons.CreditCard"
-                  class="w-4 h-4"
-                ></lucide-icon>
-                Buy It Now
-              </button>
-
-              <!-- WhatsApp Contact -->
-              <a
-                *ngIf="(settings$ | async)?.whatsAppNumber as whatsApp"
-                [href]="getWhatsAppUrl(vm.product, whatsApp)"
-                target="_blank"
+              <!-- WhatsApp -->
+              <a 
+                *ngIf="(settings$ | async)?.whatsAppNumber as whatsApp" 
+                [href]="getWhatsAppUrl(vm.product, whatsApp)" 
+                target="_blank" 
                 rel="noopener noreferrer"
-                class="w-full h-12 bg-[#25D366] text-white text-sm font-semibold uppercase tracking-[0.15em] hover:bg-[#1ebe5d] transition-colors flex items-center justify-center gap-2 rounded-sm"
+                class="w-full h-16 bg-[#25D366] text-white text-[11px] font-bold uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:shadow-lg transition-all"
               >
-                <lucide-icon
-                  [img]="icons.MessageCircle"
-                  class="w-4 h-4"
-                ></lucide-icon>
-                Contact on WhatsApp
+                <lucide-icon [img]="icons.MessageCircle" class="w-4 h-4"></lucide-icon>
+                Consult on WhatsApp
               </a>
             </div>
 
-            <!-- Description & Details Template -->
-            <ng-template #productDetailsTemplate let-product="product">
-              <!-- Description -->
-              <div
-                *ngIf="product.description"
-                class="pt-2 border-t border-[#e0e0e0]"
-              >
-                <p
-                  class="text-sm text-[#555] leading-relaxed whitespace-pre-line"
-                >
-                  {{ product.description }}
-                </p>
+            <!-- Features Info -->
+            <div class="grid grid-cols-2 gap-4 pt-10 border-t border-[#eee]">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-[#f9f9f9] flex items-center justify-center"><lucide-icon [img]="icons.Truck" class="w-4 h-4 text-[#888]"></lucide-icon></div>
+                <span class="text-[9px] uppercase tracking-[0.1em] text-[#888] font-bold">Priority Shipping</span>
               </div>
-
-              <!-- Accordions -->
-              <div class="border-t border-[#e0e0e0]">
-                <details
-                  class="group border-b border-[#e0e0e0]"
-                  *ngIf="product.fabricAndCare"
-                >
-                  <summary
-                    class="flex items-center justify-between py-4 cursor-pointer list-none"
-                  >
-                    <span class="text-sm font-semibold text-[#1a1a1a]"
-                      >Details</span
-                    >
-                    <span
-                      class="text-[#888] transition-transform duration-300 group-open:rotate-45"
-                    >
-                      <lucide-icon
-                        [img]="icons.Plus"
-                        class="w-4 h-4"
-                      ></lucide-icon>
-                    </span>
-                  </summary>
-                  <div class="pb-4 text-sm text-[#555] leading-relaxed">
-                    {{ product.fabricAndCare }}
-                  </div>
-                </details>
-
-                <details class="group border-b border-[#e0e0e0]">
-                  <summary
-                    class="flex items-center justify-between py-4 cursor-pointer list-none"
-                  >
-                    <span class="text-sm font-semibold text-[#1a1a1a]"
-                      >Materials</span
-                    >
-                    <span
-                      class="text-[#888] transition-transform duration-300 group-open:rotate-45"
-                    >
-                      <lucide-icon
-                        [img]="icons.Plus"
-                        class="w-4 h-4"
-                      ></lucide-icon>
-                    </span>
-                  </summary>
-                  <div class="pb-4 text-sm text-[#555] leading-relaxed">
-                    Premium quality fabric crafted for comfort and elegance.
-                  </div>
-                </details>
-
-                <details class="group border-b border-[#e0e0e0]">
-                  <summary
-                    class="flex items-center justify-between py-4 cursor-pointer list-none"
-                  >
-                    <span class="text-sm font-semibold text-[#1a1a1a]"
-                      >Care</span
-                    >
-                    <span
-                      class="text-[#888] transition-transform duration-300 group-open:rotate-45"
-                    >
-                      <lucide-icon
-                        [img]="icons.Plus"
-                        class="w-4 h-4"
-                      ></lucide-icon>
-                    </span>
-                  </summary>
-                  <div class="pb-4 text-sm text-[#555] leading-relaxed">
-                    {{
-                      product.shippingAndReturns ||
-                        "Hand wash or dry clean recommended. Do not bleach."
-                    }}
-                  </div>
-                </details>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-[#f9f9f9] flex items-center justify-center"><lucide-icon [img]="icons.ShieldCheck" class="w-4 h-4 text-[#888]"></lucide-icon></div>
+                <span class="text-[9px] uppercase tracking-[0.1em] text-[#888] font-bold">Secure Payment</span>
               </div>
-            </ng-template>
-
-            <!-- Render Details ONLY ON MOBILE (Right Column) -->
-            <div class="block lg:hidden mt-6">
-              <ng-container
-                *ngTemplateOutlet="
-                  productDetailsTemplate;
-                  context: { product: vm.product }
-                "
-              ></ng-container>
             </div>
           </div>
-        </div>
-        <!-- END RIGHT -->
-
-        <!-- Render Details ONLY ON DESKTOP (Left Column, below image) -->
-        <div
-          class="hidden lg:block lg:col-start-1 lg:mt-[-5rem] xl:mt-[-8rem] z-10 max-w-xl"
-        >
-          <ng-container
-            *ngTemplateOutlet="
-              productDetailsTemplate;
-              context: { product: vm.product }
-            "
-          ></ng-container>
         </div>
       </div>
     </div>
 
-    <!-- ===== Reviews Section — only render when scrolled into view ===== -->
-    @defer (on viewport) {
-      <div
-        class="max-w-[1200px] mx-auto px-6 py-16 border-t border-[#e0e0e0]"
-        id="reviews"
-      >
-        <div
-          class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6"
-        >
-          <div>
-            <p
-              class="text-[10px] uppercase tracking-[0.4em] text-[#c8922a] font-bold mb-2"
+    <!-- ===== FOOTER SECTIONS: Reviews & Related ===== -->
+    <div class="max-w-[1400px] mx-auto px-6 lg:px-12 space-y-32">
+      
+      <!-- Reviews -->
+      @defer (on viewport) {
+        <section id="reviews" class="pt-24 border-t border-[#eee]">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
+            <div class="space-y-3">
+              <p class="text-[11px] uppercase tracking-[0.4em] text-[#c8922a] font-bold">Community</p>
+              <h3 class="text-4xl lg:text-5xl font-serif italic text-[#1a1a1a]">Client Feedback</h3>
+            </div>
+            <button 
+              (click)="toggleReviewForm()" 
+              class="px-10 py-5 bg-[#1a1a1a] text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-black transition-all"
             >
-              Refined Experience
-            </p>
-            <h3 class="text-3xl font-serif italic text-[#1a1a1a]">
-              Customer Testimonies
-            </h3>
+              Share Experience
+            </button>
           </div>
-          <button
-            (click)="toggleReviewForm()"
-            class="px-6 py-3 bg-[#1a1a1a] text-white text-xs uppercase tracking-[0.2em] font-semibold hover:bg-[#333] transition-colors"
-          >
-            Write a Review
-          </button>
-        </div>
 
-        <!-- Review Form -->
-        <div
-          *ngIf="isReviewFormOpen"
-          class="mb-12 bg-white p-8 border border-[#e0e0e0]"
-        >
-          <h4 class="text-lg font-semibold text-[#1a1a1a] mb-6">
-            Share your experience
-          </h4>
-          <div class="space-y-5 max-w-xl">
-            <div>
-              <label
-                class="block text-xs uppercase tracking-widest font-semibold text-[#888] mb-2"
-                >Rating</label
-              >
-              <div class="flex gap-1">
-                <button
-                  *ngFor="let star of [1, 2, 3, 4, 5]"
-                  (click)="setRating(star)"
-                  class="transition-colors p-1"
-                  [class.text-[#c8922a]]="star <= reviewRating"
-                  [class.text-[#ddd]]="star > reviewRating"
-                  type="button"
-                >
-                  <lucide-icon
-                    [img]="icons.Star"
-                    class="w-6 h-6"
-                    [class.fill-[#c8922a]]="star <= reviewRating"
-                    [class.fill-transparent]="star > reviewRating"
-                  ></lucide-icon>
+          <!-- Review Form -->
+          <div *ngIf="isReviewFormOpen" class="mb-20 bg-white p-10 lg:p-16 border border-[#eee] max-w-4xl">
+            <h4 class="text-xl font-serif italic text-[#1a1a1a] mb-10">Write your review</h4>
+            <div class="space-y-8">
+              <div>
+                <label class="block text-[10px] uppercase tracking-[0.3em] font-bold text-[#888] mb-4">Select Rating</label>
+                <div class="flex gap-2">
+                  <button *ngFor="let star of [1, 2, 3, 4, 5]" (click)="setRating(star)"
+                    class="transition-colors" [class.text-[#c8922a]]="star <= reviewRating" [class.text-[#eee]]="star > reviewRating">
+                    <lucide-icon [img]="icons.Star" class="w-8 h-8" [class.fill-current]="star <= reviewRating"></lucide-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-2">
+                  <label class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">Your Name</label>
+                  <input [(ngModel)]="reviewName" class="w-full border-b border-[#eee] py-4 bg-transparent focus:border-[#1a1a1a] outline-none transition-colors text-sm" placeholder="Full name" />
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">Your Message</label>
+                <textarea [(ngModel)]="reviewComment" rows="4" class="w-full border border-[#eee] p-5 bg-transparent focus:border-[#1a1a1a] outline-none transition-colors text-sm" placeholder="What was your impression?"></textarea>
+              </div>
+              <div *ngIf="reviewError" class="text-xs text-red-500 tracking-wider">{{ reviewError }}</div>
+              <div class="flex gap-4 pt-4">
+                <button (click)="submitReview(vm.product.id)" [disabled]="isSubmittingReview" class="px-10 h-14 bg-[#1a1a1a] text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black">
+                  {{ isSubmittingReview ? 'Processing...' : 'Post Review' }}
                 </button>
+                <button (click)="toggleReviewForm()" class="px-10 h-14 border border-[#eee] text-[#999] text-[10px] font-bold uppercase tracking-[0.2em] hover:border-[#1a1a1a]">Cancel</button>
               </div>
             </div>
-            <div>
-              <label
-                class="block text-xs uppercase tracking-widest font-semibold text-[#888] mb-2"
-                >Your Name</label
-              >
-              <input
-                [(ngModel)]="reviewName"
-                class="w-full border border-[#ddd] bg-[#fafafa] px-3 py-2 text-sm focus:outline-none focus:border-[#1a1a1a] transition-colors"
-                placeholder="Enter your name"
-              />
-            </div>
-            <div>
-              <label
-                class="block text-xs uppercase tracking-widest font-semibold text-[#888] mb-2"
-                >Your Review</label
-              >
-              <textarea
-                [(ngModel)]="reviewComment"
-                rows="4"
-                class="w-full border border-[#ddd] bg-[#fafafa] px-3 py-2 text-sm focus:outline-none focus:border-[#1a1a1a] transition-colors"
-                placeholder="How was your experience?"
-              ></textarea>
-            </div>
-            <div *ngIf="reviewError" class="text-xs text-red-500">
-              {{ reviewError }}
-            </div>
-            <div class="flex gap-3">
-              <button
-                (click)="submitReview(vm.product.id)"
-                [disabled]="isSubmittingReview"
-                class="px-6 py-2 bg-[#1a1a1a] text-white text-xs uppercase tracking-wider font-semibold hover:bg-[#333] transition-colors disabled:opacity-50"
-                type="button"
-              >
-                {{ isSubmittingReview ? "Submitting..." : "Submit" }}
-              </button>
-              <button
-                (click)="toggleReviewForm()"
-                class="px-6 py-2 border border-[#ddd] text-[#555] text-xs uppercase tracking-wider font-semibold hover:border-[#1a1a1a] transition-colors"
-                type="button"
-              >
-                Cancel
-              </button>
-            </div>
           </div>
-        </div>
 
-        <!-- Reviews Grid -->
-        <div *ngIf="reviews$ | async as reviews">
-          <div
-            *ngIf="reviews.length === 0"
-            class="text-center py-12 text-sm text-[#888]"
-          >
-            No reviews yet. Be the first to share your thoughts.
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div
-              *ngFor="let review of reviews; trackBy: trackReview"
-              class="bg-white p-6 border border-[#e0e0e0]"
-            >
-              <div class="flex items-center justify-between mb-3">
-                <span class="font-semibold text-sm text-[#1a1a1a]">{{
-                  review.customerName
-                }}</span>
-                <span class="text-xs text-[#aaa]">{{
-                  review.date | date: "mediumDate"
-                }}</span>
+          <!-- Review List -->
+          <div *ngIf="reviews$ | async as reviews">
+            <div *ngIf="reviews.length === 0" class="text-center py-20 text-xs uppercase tracking-[0.2em] text-[#bbb]">Be the first to share your thoughts on this piece.</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div *ngFor="let review of reviews" class="bg-white p-8 lg:p-12 border border-[#eee] space-y-6">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-bold uppercase tracking-[0.1em]">{{ review.customerName }}</span>
+                  <span class="text-[10px] text-[#bbb] tracking-[0.1em]">{{ review.date | date: 'MMM dd, yyyy' }}</span>
+                </div>
+                <div class="flex gap-1 text-[#c8922a]">
+                  <ng-container *ngFor="let _ of fullStars(review.rating)">
+                    <lucide-icon [img]="icons.Star" class="w-3.5 h-3.5 fill-[#c8922a]"></lucide-icon>
+                  </ng-container>
+                </div>
+                <p class="text-[15px] text-[#555] leading-relaxed italic font-light">"{{ review.comment }}"</p>
               </div>
-              <div class="flex gap-0.5 text-[#c8922a] mb-3">
-                <ng-container *ngFor="let _ of fullStars(review.rating)">
-                  <lucide-icon
-                    [img]="icons.Star"
-                    class="w-3.5 h-3.5 fill-[#c8922a]"
-                  ></lucide-icon>
-                </ng-container>
-              </div>
-              <p class="text-sm text-[#555] leading-relaxed italic">
-                "{{ review.comment }}"
-              </p>
             </div>
           </div>
-        </div>
-      </div>
-    } @placeholder {
-      <div class="h-48 animate-pulse bg-gray-50"></div>
-    }
+        </section>
+      } @placeholder {
+        <div class="h-40 animate-pulse bg-gray-50"></div>
+      }
 
-    <!-- ===== Related Products — only render when scrolled into view ===== -->
-    @defer (on viewport) {
-      <div
-        *ngIf="vm.relatedProducts && vm.relatedProducts.length > 0"
-        class="max-w-[1200px] mx-auto px-6 py-16 border-t border-[#e0e0e0]"
-      >
-        <div class="text-center mb-12">
-          <p
-            class="text-[10px] uppercase tracking-[0.4em] text-[#c8922a] font-bold mb-2"
-          >
-            Curated for you
-          </p>
-          <h3 class="text-3xl font-serif italic text-[#1a1a1a]">
-            Complete The Look
-          </h3>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <app-product-card
-            *ngFor="let related of vm.relatedProducts"
-            [product]="related"
-          ></app-product-card>
-        </div>
-      </div>
-    } @placeholder {
-      <div class="h-48 animate-pulse bg-gray-50"></div>
-    }
+      <!-- Related Items -->
+      @defer (on viewport) {
+        <section *ngIf="vm.relatedProducts.length" class="pb-40 pt-24 border-t border-[#eee]">
+          <div class="text-center mb-20 space-y-3">
+            <p class="text-[11px] uppercase tracking-[0.4em] text-[#c8922a] font-bold">Curated Selection</p>
+            <h3 class="text-4xl lg:text-5xl font-serif italic text-[#1a1a1a]">Complete The Look</h3>
+          </div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 xl:gap-12">
+            <app-product-card *ngFor="let related of vm.relatedProducts" [product]="related"></app-product-card>
+          </div>
+        </section>
+      } @placeholder {
+        <div class="h-40 animate-pulse bg-gray-50"></div>
+      }
+    </div>
   </div>
 
-  <!-- Size Guide Modal -->
-  <app-size-guide
-    *ngIf="isSizeGuideOpen"
-    (close)="closeSizeGuide()"
-  ></app-size-guide>
+  <app-size-guide *ngIf="isSizeGuideOpen" (close)="closeSizeGuide()"></app-size-guide>
 </ng-container>

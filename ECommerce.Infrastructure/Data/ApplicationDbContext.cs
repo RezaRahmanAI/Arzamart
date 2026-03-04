@@ -74,9 +74,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasIndex(p => p.Slug).IsUnique();
             entity.HasIndex(p => p.Sku).IsUnique();
             entity.HasIndex(p => p.CategoryId);
-            entity.HasIndex(p => p.IsActive);
-            entity.HasIndex(p => p.IsFeatured);
             entity.HasIndex(p => p.IsNew);
+            entity.HasIndex(p => p.IsFeatured);
+            
+            // Filtered index for active storefront products
+            entity.HasIndex(p => new { p.IsActive, p.CategoryId })
+                  .HasFilter("[IsActive] = 1")
+                  .HasDatabaseName("IX_Products_Storefront_Active");
         });
         
         // Product Variant Configuration
@@ -143,13 +147,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasIndex(c => c.Slug);
         });
 
-        // Navigation Menu Self-Referencing
         builder.Entity<NavigationMenu>(entity =>
         {
             entity.HasOne(m => m.ParentMenu)
                   .WithMany(m => m.ChildMenus)
                   .HasForeignKey(m => m.ParentMenuId)
                   .OnDelete(DeleteBehavior.Restrict);
+            
+            entity.HasIndex(m => m.IsActive);
+            entity.HasIndex(m => m.DisplayOrder);
         });
 
         // Order Configuration

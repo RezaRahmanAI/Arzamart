@@ -103,7 +103,11 @@ export class ProductCardComponent {
     const variants = this.variants;
     if (!variants || !variants.length) return null;
     if (this.selectedSize) {
-      const selected = variants.find((v) => v.size === this.selectedSize);
+      const selected = variants.find(
+        (v) =>
+          (v.size || "").trim().toLowerCase() ===
+          (this.selectedSize || "").trim().toLowerCase(),
+      );
       if (selected) return selected;
     }
     return this.smallestVariant;
@@ -208,6 +212,16 @@ export class ProductCardComponent {
         if (bIdx !== -1) return 1;
         return a.localeCompare(b);
       });
+  }
+
+  get description(): string {
+    if ("shortDescription" in this.product && this.product.shortDescription) {
+      return this.product.shortDescription;
+    }
+    if ("description" in this.product && this.product.description) {
+      return this.product.description;
+    }
+    return "";
   }
 
   selectSize(size: string): void {

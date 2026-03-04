@@ -43,7 +43,7 @@ namespace ECommerce.Infrastructure.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(double.Parse(_config["Token:AccessTokenExpiryMinutes"] ?? "15")),
+                Expires = DateTime.UtcNow.AddMinutes(double.Parse(_config["Token:AccessTokenExpiryMinutes"] ?? "10080")),
                 SigningCredentials = creds,
                 Issuer = _config["Token:Issuer"],
                 Audience = _config["Token:Audience"]

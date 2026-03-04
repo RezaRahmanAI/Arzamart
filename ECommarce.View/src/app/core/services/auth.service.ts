@@ -31,6 +31,8 @@ export interface AuthSession {
 export class AuthService {
   private readonly injector = inject(Injector);
   private readonly SAVED_EMAIL_KEY = "saved_email";
+  private readonly AUTH_TOKEN_KEY = "arza_token";
+  private readonly AUTH_USER_KEY = "arza_user";
 
   // Use a getter for ApiHttpClient to resolve circular dependency if any,
   // though ApiHttpClient is usually fine.
@@ -48,7 +50,46 @@ export class AuthService {
 
   currentUser = this.currentUser$.asObservable();
 
-  constructor() {}
+  constructor() {
+    this.hydrateSession();
+  }
+
+  private hydrateSession(): void {
+    const token = localStorage.getItem(this.AUTH_TOKEN_KEY);
+    const userJson = localStorage.getItem(this.AUTH_USER_KEY);
+
+    if (token) {
+      this.accessToken$.next(token);
+    }
+    if (userJson) {
+      try {
+        this.currentUser$.next(JSON.parse(userJson));
+      } catch (e) {
+        console.error("Failed to parse stored user", e);
+      }
+    }
+
+    // Always verify session on startup if token exists
+    if (token) {
+      // Use setTimeout to avoid circular issues during initialization if any
+      setTimeout(() => {
+        this.checkAuth().subscribe();
+      }, 0);
+    }
+  }
+
+  checkAuth(): Observable<AuthUser | null> {
+    return this.api.get<AuthUser>("/auth/me").pipe(
+      tap((user) => {
+        this.currentUser$.next(user);
+        localStorage.setItem(this.AUTH_USER_KEY, JSON.stringify(user));
+      }),
+      catchError(() => {
+        this.logout();
+        return of(null);
+      }),
+    );
+  }
 
   adminLogin(email: string, password: string): Observable<AuthSession> {
     return this.api
@@ -100,8 +141,10 @@ export class AuthService {
   setSession(session: AuthSession): void {
     if (session.accessToken) {
       this.accessToken$.next(session.accessToken);
+      localStorage.setItem(this.AUTH_TOKEN_KEY, session.accessToken);
     }
     this.currentUser$.next(session.user);
+    localStorage.setItem(this.AUTH_USER_KEY, JSON.stringify(session.user));
   }
 
   getAccessToken(): string | null {
@@ -151,6 +194,8 @@ export class AuthService {
   logout(): void {
     this.accessToken$.next(null);
     this.currentUser$.next(null);
+    localStorage.removeItem(this.AUTH_TOKEN_KEY);
+    localStorage.removeItem(this.AUTH_USER_KEY);
 
     // Call logout API but don't wait or handle hard redirect here
     // to avoid interrupting guest flows.

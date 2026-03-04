@@ -13,7 +13,7 @@ import {
   HttpContext,
   HttpContextToken,
 } from "@angular/common/http";
-import { APP_INITIALIZER } from "@angular/core";
+import { APP_INITIALIZER, provideZoneChangeDetection } from "@angular/core";
 import { of, EMPTY } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 import { AuthService } from "./app/core/services/auth.service";
@@ -33,6 +33,7 @@ export const BYPASS_LOGGING = new HttpContextToken<boolean>(() => false);
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
       appRoutes,
       withInMemoryScrolling({

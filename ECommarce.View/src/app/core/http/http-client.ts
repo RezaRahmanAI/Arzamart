@@ -25,7 +25,7 @@ export class ApiHttpClient {
     } = {},
   ) {
     return this.http.get<T>(this.buildUrl(path), {
-      withCredentials: true,
+      withCredentials: false,
       ...options,
     });
   }
@@ -41,7 +41,7 @@ export class ApiHttpClient {
     } = {},
   ) {
     return this.http.post<T>(this.buildUrl(path), body, {
-      withCredentials: true,
+      withCredentials: false,
       ...options,
     });
   }
@@ -59,7 +59,7 @@ export class ApiHttpClient {
     // Forcing POST instead of PUT because some production environments block PUT/PATCH
     // and cause CORS issues. The backend is already configured to accept POST for updates.
     return this.http.post<T>(this.buildUrl(path), body, {
-      withCredentials: true,
+      withCredentials: false,
       ...options,
     });
   }
@@ -77,7 +77,7 @@ export class ApiHttpClient {
     const deletePath = path.endsWith("/") ? `${path}delete` : `${path}/delete`;
 
     return this.http.post<T>(this.buildUrl(deletePath), null, {
-      withCredentials: true,
+      withCredentials: false,
       ...options,
     });
   }

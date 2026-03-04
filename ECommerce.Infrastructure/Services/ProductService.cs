@@ -27,31 +27,13 @@ public class ProductService : IProductService
     public async Task<ProductDto> GetProductBySlugAsync(string slug)
     {
         var spec = new ProductsWithCategoriesSpecification(slug);
-        var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
-
-        if (product == null) return null;
-
-        var dto = _mapper.Map<Product, ProductDto>(product);
-        if (product.ProductType == ProductType.Combo)
-        {
-            dto.StockQuantity = CalculateEffectiveStock(product);
-        }
-        return dto;
+        return await _unitOfWork.Repository<Product>().GetEntityWithSpec<ProductDto>(spec);
     }
 
     public async Task<ProductDto> GetProductByIdAsync(int id)
     {
         var spec = new ProductsWithCategoriesSpecification(id);
-        var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
-
-        if (product == null) return null;
-
-        var dto = _mapper.Map<Product, ProductDto>(product);
-        if (product.ProductType == ProductType.Combo)
-        {
-            dto.StockQuantity = CalculateEffectiveStock(product);
-        }
-        return dto;
+        return await _unitOfWork.Repository<Product>().GetEntityWithSpec<ProductDto>(spec);
     }
 
     public int CalculateEffectiveStock(Product product)
@@ -82,7 +64,7 @@ public class ProductService : IProductService
     public async Task<ProductDto> CreateProductAsync(ProductCreateDto dto)
     {
         var categorySpec = new CategoriesWithSubCategoriesSpec(dto.Category);
-        var category = await _unitOfWork.Repository<Category>().GetEntityWithSpec(categorySpec);
+        var category = await _unitOfWork.Repository<Category>().GetEntityWithSpec<Category>(categorySpec);
         
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
 
@@ -175,12 +157,12 @@ public class ProductService : IProductService
     public async Task<ProductDto> UpdateProductAsync(int id, ProductUpdateDto dto)
     {
         var spec = new ProductsWithCategoriesSpecification(id);
-        var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
+        var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec<Product>(spec);
 
         if (product == null) throw new KeyNotFoundException("Product not found");
 
         var categorySpec = new CategoriesWithSubCategoriesSpec(dto.Category);
-        var category = await _unitOfWork.Repository<Category>().GetEntityWithSpec(categorySpec);
+        var category = await _unitOfWork.Repository<Category>().GetEntityWithSpec<Category>(categorySpec);
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
 
         // Update basic props

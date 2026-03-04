@@ -60,12 +60,16 @@ try
     // ── 4. Middleware Pipeline ───────────────────────────────────────
 
     // Global Exception & Logging (Absolute Top)
-    app.UseCustomMiddleware();
+    app.UseAppExceptionHandling();
+    
+    // CORS (Must be before any middleware that can return a response, including Auth and IP Blocking)
+    app.UseCors("DefaultPolicy");
+
+    app.UseAppSecurityMiddleware();
 
     app.UseSwagger();
     app.UseSwaggerUI();
     
-
     app.UseHttpsRedirection();
     app.UseResponseCompression();
 
@@ -77,9 +81,6 @@ try
     app.ConfigureExternalMedia(builder.Configuration, builder.Environment);
 
     app.UseRouting();
-
-    // CORS (Before Auth)
-    app.UseCors("DefaultPolicy");
 
     app.UseAuthentication();
     app.UseMiddleware<ECommerce.API.Middleware.RevokedTokenMiddleware>();
