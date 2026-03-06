@@ -134,6 +134,13 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.bannerForm.invalid) {
       this.bannerForm.markAllAsTouched();
+      const invalidFields: string[] = [];
+      Object.keys(this.bannerForm.controls).forEach((key) => {
+        if (this.bannerForm.get(key)?.invalid) invalidFields.push(key);
+      });
+      window.alert(
+        `Please fill in all required fields: ${invalidFields.join(", ")}`,
+      );
       return;
     }
 

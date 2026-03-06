@@ -17,13 +17,13 @@ import { CartItem, CartSummary } from "../models/cart";
 import { Product } from "../models/product";
 import { SettingsService } from "../../admin/services/settings.service";
 import { AnalyticsService } from "./analytics.service";
-import { environment } from "../../../environments/environment";
 import {
   CartDto,
   AddToCartDto,
   UpdateCartItemDto,
 } from "../models/cart-dto.model";
 import { v4 as uuidv4 } from "uuid";
+import { ApiHttpClient } from "../http/http-client";
 
 @Injectable({
   providedIn: "root",
@@ -33,11 +33,11 @@ export class CartService {
   private shippingCharge = 0;
   private readonly taxRate = 0;
   private readonly sessionIdKey = "cart_session_id";
-  private readonly apiUrl = `${environment.apiBaseUrl}/Cart`;
+  private readonly apiUrl = `/Cart`;
 
   private readonly settingsService = inject(SettingsService);
   private readonly analyticsService = inject(AnalyticsService);
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(ApiHttpClient);
 
   private readonly cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
   readonly cartItems$ = this.cartItemsSubject.asObservable();
@@ -73,11 +73,11 @@ export class CartService {
         debounceTime(500),
         switchMap((update) => {
           const numericId = parseInt(update!.id, 10);
-          return this.http
+          return this.api
             .put<CartDto>(
               `${this.apiUrl}/items/${numericId}`,
               { quantity: update!.qty },
-              { headers: this.headers },
+              this.options,
             )
             .pipe(
               catchError((err) => {
@@ -99,20 +99,29 @@ export class CartService {
 
   getSessionId(): string {
     let sessionId = localStorage.getItem(this.sessionIdKey);
-    if (!sessionId) {
+    // Explicitly reject invalid strings that might be stored accidentally
+    if (
+      !sessionId ||
+      sessionId === "null" ||
+      sessionId === "undefined" ||
+      sessionId.trim() === "" ||
+      sessionId.length < 10
+    ) {
       sessionId = uuidv4();
       localStorage.setItem(this.sessionIdKey, sessionId);
     }
     return sessionId;
   }
 
-  private get headers() {
-    return new HttpHeaders().set("X-Session-Id", this.getSessionId());
+  private get options() {
+    return {
+      headers: new HttpHeaders().set("X-Session-Id", this.getSessionId()),
+    };
   }
 
   refreshCartFromServer(): void {
-    this.http
-      .get<CartDto>(this.apiUrl, { headers: this.headers })
+    this.api
+      .get<CartDto>(this.apiUrl, this.options)
       .pipe(catchError(() => of(null)))
       .subscribe((dto) => {
         if (dto) this.updateLocalState(dto);
@@ -148,8 +157,8 @@ export class CartService {
       size: resolvedSize,
     };
 
-    return this.http
-      .post<CartDto>(`${this.apiUrl}/items`, payload, { headers: this.headers })
+    return this.api
+      .post<CartDto>(`${this.apiUrl}/items`, payload, this.options)
       .pipe(
         tap((dto) => {
           this.updateLocalState(dto);
@@ -178,13 +187,21 @@ export class CartService {
     const numericId = parseInt(cartItemId, 10);
     if (isNaN(numericId)) return;
 
-    this.http
-      .delete<CartDto>(`${this.apiUrl}/items/${numericId}`, {
-        headers: this.headers,
-      })
+    // 1. Optimistic UI update
+    const currentItems = this.cartItemsSubject.getValue();
+    const updatedItems = currentItems.filter((i) => i.id !== cartItemId);
+    this.cartItemsSubject.next(updatedItems);
+
+    // 2. Perform backend deletion
+    // ApiHttpClient.delete automatically converts to POST /delete
+    this.api
+      .delete<CartDto>(`${this.apiUrl}/items/${numericId}`, this.options)
       .subscribe({
         next: (dto) => this.updateLocalState(dto),
-        error: (err) => console.error("Failed to remove item", err),
+        error: (err) => {
+          console.error("Failed to remove item", err);
+          this.refreshCartFromServer(); // Re-sync to revert local state on failure
+        },
       });
   }
 
@@ -209,9 +226,13 @@ export class CartService {
 
   clearCart(): void {
     this.cartItemsSubject.next([]);
-    // Depending on backend implementation, this might need an API endpoint
-    // to clear the whole cart. For now, we clear the UI.
-    // Actual DB clearing should likely be a DELETE /api/cart
+    // Perform backend deletion
+    this.api.delete(this.apiUrl, this.options).subscribe({
+      error: (err) => {
+        console.error("Failed to clear cart on server", err);
+        this.refreshCartFromServer(); // Re-sync if failed
+      },
+    });
   }
 
   mergeGuestCart(): Observable<CartDto | null> {
@@ -219,8 +240,12 @@ export class CartService {
     if (!sessionId) return of(null);
 
     // Auth token is handled by the auth interceptor automatically
-    return this.http
-      .post<CartDto>(`${this.apiUrl}/merge?sessionId=${sessionId}`, {})
+    return this.api
+      .post<CartDto>(
+        `${this.apiUrl}/merge`,
+        {},
+        { ...this.options, params: { sessionId } },
+      )
       .pipe(
         tap((dto) => {
           if (dto) {

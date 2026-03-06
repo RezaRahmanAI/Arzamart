@@ -32,6 +32,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
 
+    public async Task<T> GetEntityWithSpec(ISpecification<T> spec)
+    {
+        return await ApplySpecification(spec)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<TResult> GetEntityWithSpec<TResult>(ISpecification<T> spec)
     {
         return await ApplySpecification(spec)
@@ -40,9 +46,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
             .FirstOrDefaultAsync();
     }
 
-    public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
+    public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec, bool track = false)
     {
-        return await ApplySpecification(spec).AsNoTracking().ToListAsync();
+        var query = ApplySpecification(spec);
+        if (!track) query = query.AsNoTracking();
+        return await query.ToListAsync();
     }
 
     public async Task<IReadOnlyList<TResult>> ListAsync<TResult>(ISpecification<T> spec)

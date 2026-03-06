@@ -183,6 +183,75 @@
               </div>
             </div>
             <hr class="border-border" />
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="col-span-1">
+                <label class="block text-sm font-medium text-text-main mb-2"
+                  >Size Guide Image</label
+                >
+                <p class="text-xs text-text-secondary mb-3">
+                  This image will be shown to customers when they click "Size
+                  Guide".
+                </p>
+              </div>
+              <div class="col-span-2">
+                <div class="flex items-center gap-6">
+                  <div
+                    class="h-32 w-48 rounded-lg bg-background-light border border-border flex items-center justify-center overflow-hidden relative group"
+                    role="button"
+                    tabindex="0"
+                    (click)="sizeGuideUpload.click()"
+                  >
+                    <ng-container
+                      *ngIf="sizeGuidePreviewUrl; else sizeGuidePlaceholder"
+                    >
+                      <img
+                        [src]="sizeGuidePreviewUrl"
+                        class="w-full h-full object-contain"
+                        alt="Size Guide"
+                      />
+                    </ng-container>
+                    <ng-template #sizeGuidePlaceholder>
+                      <lucide-icon
+                        [img]="icons.Image"
+                        class="w-10 h-10 text-text-secondary group-hover:hidden"
+                      ></lucide-icon>
+                    </ng-template>
+                    <div
+                      class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer"
+                    >
+                      <lucide-icon
+                        [img]="icons.Edit"
+                        class="w-5 h-5 text-white"
+                      ></lucide-icon>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <input
+                      #sizeGuideUpload
+                      class="hidden"
+                      type="file"
+                      accept="image/png,image/jpeg,image/gif"
+                      (change)="onSizeGuideSelected($event)"
+                    />
+                    <button
+                      type="button"
+                      (click)="sizeGuideUpload.click()"
+                      class="px-4 py-2 bg-white border border-border rounded-lg text-sm font-medium text-text-main shadow-sm hover:bg-background-light transition-colors flex items-center gap-2"
+                    >
+                      <lucide-icon
+                        [img]="icons.Upload"
+                        class="w-4 h-4"
+                      ></lucide-icon>
+                      Upload Size Guide
+                    </button>
+                    <p *ngIf="sizeGuideError" class="mt-2 text-xs text-red-600">
+                      {{ sizeGuideError }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="border-border" />
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="col-span-2 md:col-span-1">
                 <label

@@ -69,18 +69,14 @@ public class HomeController : ControllerBase
         var newArrivals = await _productRepo.ListAsync(newArrivalsSpec);
         var newArrivalsDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(newArrivals);
 
-        // 3. Fetch Featured Products (Deduplicate from New Arrivals if necessary)
-        // For "blazing fast", we can just fetch them normally but maybe exclude IDs from newArrivals
+        // 3. Fetch Featured Products
         var featuredSpec = new ProductsWithCategoriesSpecification(
-            sort: null, categoryId: null, subCategoryId: null, collectionId: null,
+            sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
             categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
             tier: null, tags: null, isNew: null, isFeatured: true, skip: 0, take: 10);
         var featuredProducts = await _productRepo.ListAsync(featuredSpec);
         
-        // Deduplication logic: If a product is in New Arrivals, don't show it in Featured again
-        var newArrivalIds = new HashSet<int>(newArrivals.Select(p => p.Id));
-        var filteredFeatured = featuredProducts.Where(p => !newArrivalIds.Contains(p.Id)).ToList();
-        var featuredDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(filteredFeatured);
+        var featuredDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(featuredProducts);
 
         // 4. Fetch Top Categories
         var catSpec = new CategoriesWithSubCategoriesSpec();

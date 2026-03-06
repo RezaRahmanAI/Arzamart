@@ -10,6 +10,11 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
+        // Safe mapping to prevent recursive Entity mapping crashes during DTO flattening
+        CreateMap<Product, Product>().MaxDepth(1);
+        CreateMap<ProductVariant, ProductVariant>().MaxDepth(1);
+        CreateMap<Category, Category>().MaxDepth(1);
+        
         CreateMap<Product, ProductDto>()
             .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : ""))
             .ForMember(d => d.SubCategoryName, o => o.MapFrom(s => s.SubCategory != null ? s.SubCategory.Name : null))
@@ -46,7 +51,8 @@ public class MappingProfiles : Profile
                 PurchaseRate = v.PurchaseRate,
                 StockQuantity = v.StockQuantity
             })))
-            .ForMember(d => d.BundleItems, o => o.MapFrom(s => s.BundleItems));
+            .ForMember(d => d.IsBundle, o => o.MapFrom(s => s.IsBundle))
+            .ForMember(d => d.BundleQuantity, o => o.MapFrom(s => s.BundleQuantity));
 
         CreateMap<Product, ProductListDto>()
             .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : ""))
@@ -73,12 +79,18 @@ public class MappingProfiles : Profile
         CreateMap<SubCategory, SubCategoryDto>();
         CreateMap<Collection, CollectionDto>();
         
-        CreateMap<ProductBundleItem, ProductBundleItemDto>()
-            .ForMember(d => d.ComponentProductName, o => o.MapFrom(s => s.ComponentProduct != null ? s.ComponentProduct.Name : ""))
-            .ForMember(d => d.ComponentVariantName, o => o.MapFrom(s => s.ComponentVariant != null ? s.ComponentVariant.Size : ""));
-        
-        CreateMap<Order, OrderDto>();
-        CreateMap<OrderItem, OrderItemDto>();
+        CreateMap<Order, OrderDto>()
+            .ForMember(d => d.ItemsCount, o => o.MapFrom(s => s.Items.Sum(i => i.Quantity)));
+
+        CreateMap<OrderItem, OrderItemDto>()
+            .ForMember(d => d.ProductId, o => o.MapFrom(s => s.ProductId))
+            .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ProductName))
+            .ForMember(d => d.UnitPrice, o => o.MapFrom(s => s.UnitPrice))
+            .ForMember(d => d.Quantity, o => o.MapFrom(s => s.Quantity))
+            .ForMember(d => d.Color, o => o.MapFrom(s => s.Color))
+            .ForMember(d => d.Size, o => o.MapFrom(s => s.Size))
+            .ForMember(d => d.ImageUrl, o => o.MapFrom(s => s.ImageUrl))
+            .ForMember(d => d.TotalPrice, o => o.MapFrom(s => s.UnitPrice * s.Quantity));
 
         CreateMap<Review, ReviewDto>()
             .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product != null ? s.Product.Name : ""));

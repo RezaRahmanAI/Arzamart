@@ -96,6 +96,8 @@ export class AdminSettingsComponent implements OnInit {
   stripePublishableKey = "";
   logoPreviewUrl: string | null = null;
   logoError = "";
+  sizeGuidePreviewUrl: string | null = null;
+  sizeGuideError = "";
   saveMessage = "";
   saveError = "";
   isSaving = false;
@@ -130,6 +132,12 @@ export class AdminSettingsComponent implements OnInit {
       if (settings.logoUrl) {
         this.logoPreviewUrl = this.imageUrlService.getImageUrl(
           settings.logoUrl,
+        );
+      }
+
+      if (settings.sizeGuideImageUrl) {
+        this.sizeGuidePreviewUrl = this.imageUrlService.getImageUrl(
+          settings.sizeGuideImageUrl,
         );
       }
 
@@ -173,6 +181,13 @@ export class AdminSettingsComponent implements OnInit {
 
     if (this.settingsForm.invalid) {
       this.settingsForm.markAllAsTouched();
+      const invalidFields: string[] = [];
+      Object.keys(this.settingsForm.controls).forEach((key) => {
+        if (this.settingsForm.get(key)?.invalid) invalidFields.push(key);
+      });
+      window.alert(
+        `Please fill in all required fields: ${invalidFields.join(", ")}`,
+      );
       return;
     }
 
@@ -180,6 +195,7 @@ export class AdminSettingsComponent implements OnInit {
     const payload: AdminSettings = {
       websiteName: formValue.websiteName,
       logoUrl: this.lastSettings?.logoUrl, // Preserved unless updated via upload
+      sizeGuideImageUrl: this.lastSettings?.sizeGuideImageUrl,
       contactEmail: formValue.contactEmail,
       contactPhone: formValue.contactPhone,
       address: formValue.address,
@@ -296,6 +312,42 @@ export class AdminSettingsComponent implements OnInit {
     });
   }
 
+  onSizeGuideSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    const isValidType = ["image/png", "image/jpeg", "image/gif"].includes(
+      file.type,
+    );
+    const isValidSize = file.size <= 5 * 1024 * 1024; // Allow up to 5MB for size guide
+
+    if (!isValidType || !isValidSize) {
+      this.sizeGuideError = "Please upload a PNG, JPG, or GIF file up to 5MB.";
+      this.sizeGuidePreviewUrl = null;
+      input.value = "";
+      return;
+    }
+
+    this.sizeGuideError = "";
+
+    this.settingsService.uploadLogo(file).subscribe({
+      next: (res) => {
+        if (this.lastSettings) {
+          this.lastSettings.sizeGuideImageUrl = res.url;
+        }
+        this.sizeGuidePreviewUrl = this.imageUrlService.getImageUrl(res.url);
+      },
+      error: (err) => {
+        console.error("Size Guide upload failed", err);
+        this.sizeGuideError = "Failed to upload Size Guide.";
+      },
+    });
+  }
+
   copyStripeKey(): void {
     if (!this.stripePublishableKey) {
       return;
@@ -329,6 +381,13 @@ export class AdminSettingsComponent implements OnInit {
   saveZone(): void {
     if (this.zoneForm.invalid) {
       this.zoneForm.markAllAsTouched();
+      const invalidFields: string[] = [];
+      Object.keys(this.zoneForm.controls).forEach((key) => {
+        if (this.zoneForm.get(key)?.invalid) invalidFields.push(key);
+      });
+      window.alert(
+        `Please fill in all required fields: ${invalidFields.join(", ")}`,
+      );
       return;
     }
 
@@ -414,6 +473,13 @@ export class AdminSettingsComponent implements OnInit {
   saveDelivery(): void {
     if (this.deliveryForm.invalid) {
       this.deliveryForm.markAllAsTouched();
+      const invalidFields: string[] = [];
+      Object.keys(this.deliveryForm.controls).forEach((key) => {
+        if (this.deliveryForm.get(key)?.invalid) invalidFields.push(key);
+      });
+      window.alert(
+        `Please fill in all required fields: ${invalidFields.join(", ")}`,
+      );
       return;
     }
 

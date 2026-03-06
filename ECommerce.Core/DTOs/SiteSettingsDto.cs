@@ -28,5 +28,6 @@ public class SiteSettingsDto
     public string? FacebookPixelId { get; set; }
     public string? GoogleTagId { get; set; }
 
+    public string? SizeGuideImageUrl { get; set; }
     public IEnumerable<DeliveryMethod>? DeliveryMethods { get; set; }
 }

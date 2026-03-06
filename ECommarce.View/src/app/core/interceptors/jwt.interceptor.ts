@@ -41,8 +41,14 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     retry({
       count: 2,
-      delay: (error, retryCount) => timer(retryCount * 1000),
-      // Only retry on network errors or transient 5xx
+      delay: (error, retryCount) => {
+        // Only retry on network errors (status 0) or server errors (5xx)
+        if (error instanceof HttpErrorResponse && (error.status === 0 || error.status >= 500)) {
+          return timer(retryCount * 1000);
+        }
+        // Don't retry for 4xx errors (client errors)
+        throw error;
+      },
       resetOnSuccess: true,
     }),
     catchError((error) => {
@@ -50,7 +56,8 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
         error instanceof HttpErrorResponse &&
         error.status === 401 &&
         !req.url.includes("auth/login") &&
-        !req.url.includes("auth/refresh")
+        !req.url.includes("auth/refresh") &&
+        !req.url.includes("auth/logout")
       ) {
         return handle401Error(req, next, authService);
       }

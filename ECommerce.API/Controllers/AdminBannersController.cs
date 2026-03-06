@@ -27,6 +27,7 @@ public class AdminBannersController : ControllerBase
     public async Task<ActionResult<List<HeroBannerDto>>> GetAllBanners()
     {
         var banners = await _context.HeroBanners
+            .AsNoTracking()
             .OrderBy(b => b.DisplayOrder)
             .Select(b => new HeroBannerDto
             {
@@ -47,7 +48,7 @@ public class AdminBannersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<HeroBannerDto>> GetBannerById(int id)
     {
-        var banner = await _context.HeroBanners.FindAsync(id);
+        var banner = await _context.HeroBanners.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         if (banner == null) return NotFound();
 
         return Ok(new HeroBannerDto

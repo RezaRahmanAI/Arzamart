@@ -70,6 +70,10 @@ export interface Product {
 
   productType: ProductType;
   bundleItems?: ProductBundleItem[];
+
+  // Simplified Bundle System
+  isBundle: boolean;
+  bundleQuantity: number;
 }
 
 export interface RelatedProduct {

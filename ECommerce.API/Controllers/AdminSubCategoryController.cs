@@ -27,6 +27,7 @@ public class AdminSubCategoryController : ControllerBase
     public async Task<ActionResult<List<SubCategoryDto>>> GetAllSubCategories()
     {
         var subCategories = await _context.SubCategories
+            .AsNoTracking()
             .OrderBy(sc => sc.CategoryId)
             .ThenBy(sc => sc.DisplayOrder)
             .Select(sc => new SubCategoryDto
@@ -48,7 +49,7 @@ public class AdminSubCategoryController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<SubCategoryDto>> GetSubCategoryById(int id)
     {
-        var sc = await _context.SubCategories.FindAsync(id);
+        var sc = await _context.SubCategories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
         if (sc == null)
             return NotFound();

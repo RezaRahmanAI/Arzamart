@@ -9,7 +9,6 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/settings")]
-[Authorize(Roles = "Admin")]
 public class AdminSettingsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -27,7 +26,7 @@ public class AdminSettingsController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<SiteSettingsDto>> GetSettings()
     {
-        var settings = await _context.SiteSettings.FirstOrDefaultAsync();
+        var settings = await _context.SiteSettings.AsNoTracking().FirstOrDefaultAsync();
         
         if (settings == null)
         {
@@ -54,7 +53,8 @@ public class AdminSettingsController : ControllerBase
             ShippingCharge = settings.ShippingCharge,
             FacebookPixelId = settings.FacebookPixelId,
             GoogleTagId = settings.GoogleTagId,
-            DeliveryMethods = await _context.DeliveryMethods.ToListAsync()
+            SizeGuideImageUrl = settings.SizeGuideImageUrl,
+            DeliveryMethods = await _context.DeliveryMethods.AsNoTracking().ToListAsync()
         });
     }
 
@@ -84,6 +84,7 @@ public class AdminSettingsController : ControllerBase
         settings.ShippingCharge = dto.ShippingCharge;
         settings.FacebookPixelId = dto.FacebookPixelId;
         settings.GoogleTagId = dto.GoogleTagId;
+        settings.SizeGuideImageUrl = dto.SizeGuideImageUrl;
         settings.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
@@ -117,7 +118,7 @@ public class AdminSettingsController : ControllerBase
     [HttpGet("delivery-methods")]
     public async Task<ActionResult<IEnumerable<DeliveryMethod>>> GetDeliveryMethods()
     {
-        return await _context.DeliveryMethods.ToListAsync();
+        return await _context.DeliveryMethods.AsNoTracking().ToListAsync();
     }
 
     [HttpPost("delivery-methods")]

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260227103339_phase1")]
-    partial class phase1
+    [Migration("20260306070425_size")]
+    partial class size
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -628,6 +628,10 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("DisplayOrder");
+
+                    b.HasIndex("IsActive");
+
                     b.HasIndex("ParentMenuId");
 
                     b.ToTable("NavigationMenus", "dbo");
@@ -789,6 +793,9 @@ namespace ECommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BundleQuantity")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -808,6 +815,9 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsBundle")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsFeatured")
@@ -867,8 +877,6 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("CollectionId");
 
-                    b.HasIndex("IsActive");
-
                     b.HasIndex("IsFeatured");
 
                     b.HasIndex("IsNew");
@@ -881,44 +889,11 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("SubCategoryId");
 
+                    b.HasIndex("IsActive", "CategoryId")
+                        .HasDatabaseName("IX_Products_Storefront_Active")
+                        .HasFilter("[IsActive] = 1");
+
                     b.ToTable("Products", "dbo");
-                });
-
-            modelBuilder.Entity("ECommerce.Core.Entities.ProductBundleItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ComponentProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ComponentVariantId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MainProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ComponentProductId");
-
-                    b.HasIndex("ComponentVariantId");
-
-                    b.HasIndex("MainProductId");
-
-                    b.ToTable("ProductBundleItems", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.ProductImage", b =>
@@ -1110,6 +1085,9 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<decimal>("ShippingCharge")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("SizeGuideImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TwitterUrl")
                         .HasColumnType("nvarchar(max)");
@@ -1436,32 +1414,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Navigation("SubCategory");
                 });
 
-            modelBuilder.Entity("ECommerce.Core.Entities.ProductBundleItem", b =>
-                {
-                    b.HasOne("ECommerce.Core.Entities.Product", "ComponentProduct")
-                        .WithMany()
-                        .HasForeignKey("ComponentProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ECommerce.Core.Entities.ProductVariant", "ComponentVariant")
-                        .WithMany()
-                        .HasForeignKey("ComponentVariantId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ECommerce.Core.Entities.Product", "MainProduct")
-                        .WithMany("BundleItems")
-                        .HasForeignKey("MainProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ComponentProduct");
-
-                    b.Navigation("ComponentVariant");
-
-                    b.Navigation("MainProduct");
-                });
-
             modelBuilder.Entity("ECommerce.Core.Entities.ProductImage", b =>
                 {
                     b.HasOne("ECommerce.Core.Entities.Product", "Product")
@@ -1595,8 +1547,6 @@ namespace ECommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("ECommerce.Core.Entities.Product", b =>
                 {
-                    b.Navigation("BundleItems");
-
                     b.Navigation("Images");
 
                     b.Navigation("Reviews");

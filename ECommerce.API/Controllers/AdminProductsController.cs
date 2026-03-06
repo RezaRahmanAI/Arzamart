@@ -6,6 +6,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ECommerce.API.Controllers;
 
@@ -19,14 +20,16 @@ public class AdminProductsController : ControllerBase
     private readonly IProductService _productService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IConfiguration _config;
+    private readonly IMemoryCache _cache;
 
-    public AdminProductsController(ApplicationDbContext context, IWebHostEnvironment environment, IProductService productService, IUnitOfWork unitOfWork, IConfiguration config)
+    public AdminProductsController(ApplicationDbContext context, IWebHostEnvironment environment, IProductService productService, IUnitOfWork unitOfWork, IConfiguration config, IMemoryCache cache)
     {
         _context = context;
         _environment = environment;
         _productService = productService;
         _unitOfWork = unitOfWork;
         _config = config;
+        _cache = cache;
     }
 
     [HttpPost("upload-media")]
@@ -92,8 +95,11 @@ public class AdminProductsController : ControllerBase
         [FromQuery] int pageSize = 10)
     {
         var query = _context.Products
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(p => p.Category)
             .Include(p => p.Images)
+            .Include(p => p.Variants)
             .AsQueryable();
 
         // Apply filters
@@ -194,6 +200,7 @@ public class AdminProductsController : ControllerBase
             var result = await _productService.CreateProductAsync(dto);
             if (result == null) return BadRequest(new { message = "Error creating product" });
 
+            _cache.Remove("home_page_data");
             return CreatedAtAction(nameof(GetProductById), new { id = result.Id }, result);
         }
         catch (KeyNotFoundException ex)
@@ -202,6 +209,12 @@ public class AdminProductsController : ControllerBase
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"[ADMIN_ERROR] Error creating product: {ex.Message}");
+            Console.WriteLine($"[ADMIN_ERROR] StackTrace: {ex.StackTrace}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"[ADMIN_ERROR] InnerException: {ex.InnerException.Message}");
+            }
             return StatusCode(500, new { message = $"Error creating product: {ex.Message}" });
         }
     }
@@ -211,9 +224,17 @@ public class AdminProductsController : ControllerBase
     {
         try
         {
+            Console.WriteLine($"[ADMIN_DEBUG] Updating Product {id}: {dto.Name}, Type: {dto.ProductType}, BundleItems: {dto.BundleItems?.Count ?? -1}");
+            if (dto.BundleItems != null)
+            {
+                foreach(var bi in dto.BundleItems) {
+                    Console.WriteLine($"  [ADMIN_DEBUG] Component: {bi.ComponentProductId}, Variant: {bi.ComponentVariantId}, Qty: {bi.Quantity}");
+                }
+            }
             var result = await _productService.UpdateProductAsync(id, dto);
             if (result == null) return BadRequest(new { message = "Error updating product" });
 
+            _cache.Remove("home_page_data");
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
@@ -250,6 +271,7 @@ public class AdminProductsController : ControllerBase
         _context.Products.Remove(product);
         await _context.SaveChangesAsync();
 
+        _cache.Remove("home_page_data");
         return NoContent();
     }
 

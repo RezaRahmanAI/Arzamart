@@ -43,5 +43,8 @@ public class Product : BaseEntity
     public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
     public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
-    public ICollection<ProductBundleItem> BundleItems { get; set; } = new List<ProductBundleItem>();
+
+    // Simplified Bundle System
+    public bool IsBundle { get; set; } = false;
+    public int BundleQuantity { get; set; } = 1;
 }

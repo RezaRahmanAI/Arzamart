@@ -82,6 +82,16 @@ export class AdminReviewsComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.reviewForm.invalid || !this.selectedReviewId) {
+      if (this.reviewForm.invalid) {
+        this.reviewForm.markAllAsTouched();
+        const invalidFields: string[] = [];
+        Object.keys(this.reviewForm.controls).forEach((key) => {
+          if (this.reviewForm.get(key)?.invalid) invalidFields.push(key);
+        });
+        window.alert(
+          `Please fill in all required fields: ${invalidFields.join(", ")}`,
+        );
+      }
       return;
     }
 

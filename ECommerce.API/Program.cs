@@ -16,7 +16,7 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
 
-    // ── 1. Logging (Serilog) ──────────────────────────────────────────
+    // ── 1. Register Services ──────────────────────────────────────────
     builder.Host.UseSerilog((context, services, configuration) =>
     {
         try
@@ -59,11 +59,11 @@ try
 
     // ── 4. Middleware Pipeline ───────────────────────────────────────
 
+    // CORS (Must be at the very top to ensure preflights and error responses have headers)
+    app.UseCors("DefaultPolicy");
+
     // Global Exception & Logging (Absolute Top)
     app.UseAppExceptionHandling();
-    
-    // CORS (Must be before any middleware that can return a response, including Auth and IP Blocking)
-    app.UseCors("DefaultPolicy");
 
     app.UseAppSecurityMiddleware();
 
@@ -110,6 +110,10 @@ try
     }
 
     app.Run();
+}
+catch (HostAbortedException)
+{
+    throw; // Necessary for EF Core tooling
 }
 catch (Exception ex)
 {

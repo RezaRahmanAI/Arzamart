@@ -19,6 +19,7 @@ export interface SiteSettings {
   shippingCharge: number;
   facebookPixelId?: string;
   googleTagId?: string;
+  sizeGuideImageUrl?: string;
 }
 
 @Injectable({

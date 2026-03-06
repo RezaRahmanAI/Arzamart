@@ -36,7 +36,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<BlockedIp> BlockedIps { get; set; }
     public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
     public DbSet<AppRefreshToken> RefreshTokens { get; set; }
-    public DbSet<ProductBundleItem> ProductBundleItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -94,25 +93,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .WithMany(p => p.Variants)
                   .HasForeignKey(v => v.ProductId)
                   .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        // Product Bundle Item Configuration
-        builder.Entity<ProductBundleItem>(entity =>
-        {
-            entity.HasOne(bi => bi.MainProduct)
-                  .WithMany(p => p.BundleItems)
-                  .HasForeignKey(bi => bi.MainProductId)
-                  .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne(bi => bi.ComponentProduct)
-                  .WithMany()
-                  .HasForeignKey(bi => bi.ComponentProductId)
-                  .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(bi => bi.ComponentVariant)
-                  .WithMany()
-                  .HasForeignKey(bi => bi.ComponentVariantId)
-                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Category Self-Referencing Hierarchy

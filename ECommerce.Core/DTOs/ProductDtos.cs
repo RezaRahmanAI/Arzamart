@@ -63,6 +63,10 @@ public class ProductCreateDto
 
     public ProductType ProductType { get; set; } = ProductType.Simple;
     public List<ProductBundleItemCreateDto> BundleItems { get; set; } = new();
+
+    // Simplified Bundle System
+    public bool IsBundle { get; set; }
+    public int BundleQuantity { get; set; } = 1;
 }
 
 // Product update DTO
@@ -123,6 +127,10 @@ public class ProductUpdateDto
 
     public ProductType ProductType { get; set; } = ProductType.Simple;
     public List<ProductBundleItemCreateDto> BundleItems { get; set; } = new();
+
+    // Simplified Bundle System
+    public bool IsBundle { get; set; }
+    public int BundleQuantity { get; set; } = 1;
 }
 
 public class ProductVariantEditDto

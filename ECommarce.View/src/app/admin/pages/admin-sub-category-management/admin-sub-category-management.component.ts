@@ -254,6 +254,13 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   saveCategory(): void {
     if (this.categoryForm.invalid) {
       this.categoryForm.markAllAsTouched();
+      const invalidFields: string[] = [];
+      Object.keys(this.categoryForm.controls).forEach((key) => {
+        if (this.categoryForm.get(key)?.invalid) invalidFields.push(key);
+      });
+      window.alert(
+        `Please fill in all required fields: ${invalidFields.join(", ")}`,
+      );
       return;
     }
 

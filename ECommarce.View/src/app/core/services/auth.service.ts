@@ -11,6 +11,8 @@ import {
   of,
 } from "rxjs";
 import { ApiHttpClient } from "../http/http-client";
+import { BYPASS_LOGGING } from "../http/tokens";
+import { HttpContext } from "@angular/common/http";
 
 export interface AuthUser {
   id: string;
@@ -58,10 +60,16 @@ export class AuthService {
     const token = localStorage.getItem(this.AUTH_TOKEN_KEY);
     const userJson = localStorage.getItem(this.AUTH_USER_KEY);
 
-    if (token) {
+    // Strict validation: Ignore "null", "undefined", or obviously malformed tokens
+    if (this.isValidToken(token)) {
       this.accessToken$.next(token);
+    } else if (token) {
+      // Clean up junk from localStorage
+      this.logout();
+      return;
     }
-    if (userJson) {
+
+    if (userJson && userJson !== "undefined" && userJson !== "null") {
       try {
         this.currentUser$.next(JSON.parse(userJson));
       } catch (e) {
@@ -69,17 +77,36 @@ export class AuthService {
       }
     }
 
-    // Always verify session on startup if token exists
-    if (token) {
-      // Use setTimeout to avoid circular issues during initialization if any
+    // Always verify session on startup if token exists and isn't obviously expired
+    const currentToken = this.accessToken$.getValue();
+    if (currentToken && this.isLoggedIn()) {
+      // Use setTimeout to avoid circular issues during initialization
       setTimeout(() => {
-        this.checkAuth().subscribe();
+        // Use BYPASS_LOGGING context to ensure console remains clean on startup failures
+        const context = new HttpContext().set(BYPASS_LOGGING, true);
+        this.checkAuth(context).subscribe();
       }, 0);
+    } else if (currentToken) {
+      // If token exists but is expired/invalid, clear it to start clean
+      this.logout();
     }
   }
 
-  checkAuth(): Observable<AuthUser | null> {
-    return this.api.get<AuthUser>("/auth/me").pipe(
+  private isValidToken(token: string | null): token is string {
+    if (
+      !token ||
+      token === "null" ||
+      token === "undefined" ||
+      token.trim() === ""
+    ) {
+      return false;
+    }
+    // Basic JWT format check: segments separated by dots
+    return token.split(".").length === 3;
+  }
+
+  checkAuth(context?: HttpContext): Observable<AuthUser | null> {
+    return this.api.get<AuthUser>("/auth/me", { context }).pipe(
       tap((user) => {
         this.currentUser$.next(user);
         localStorage.setItem(this.AUTH_USER_KEY, JSON.stringify(user));
@@ -153,7 +180,7 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     const token = this.getAccessToken();
-    if (!token) return false;
+    if (!this.isValidToken(token)) return false;
 
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
@@ -191,7 +218,11 @@ export class AuthService {
     return this.currentUser$.getValue();
   }
 
+  private isLoggingOut = false;
   logout(): void {
+    if (this.isLoggingOut) return;
+    this.isLoggingOut = true;
+
     this.accessToken$.next(null);
     this.currentUser$.next(null);
     localStorage.removeItem(this.AUTH_TOKEN_KEY);
@@ -199,7 +230,10 @@ export class AuthService {
 
     // Call logout API but don't wait or handle hard redirect here
     // to avoid interrupting guest flows.
-    this.api.post("/auth/logout", {}).subscribe();
+    this.api.post("/auth/logout", {}).subscribe({
+      next: () => (this.isLoggingOut = false),
+      error: () => (this.isLoggingOut = false),
+    });
 
     // Use the router for a cleaner navigation to home page instead of hard redirect to login
     const router = this.injector.get(Router);

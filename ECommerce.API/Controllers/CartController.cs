@@ -13,10 +13,12 @@ namespace ECommerce.API.Controllers;
 public class CartController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly ILogger<CartController> _logger;
 
-    public CartController(ApplicationDbContext context)
+    public CartController(ApplicationDbContext context, ILogger<CartController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     private string? GetUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -24,11 +26,20 @@ public class CartController : ControllerBase
     private string? GetSessionId()
     {
         var headers = Request.Headers;
-        if (headers.TryGetValue("X-Session-Id", out var sessionId)) return sessionId.ToString();
+        if (headers.TryGetValue("X-Session-Id", out var sessionId))
+        {
+            var val = sessionId.ToString().Trim();
+            // Sanitize against common invalid string literals from bad localStorage states
+            if (!string.IsNullOrEmpty(val) && val != "null" && val != "undefined" && val.Length >= 10)
+            {
+                return val;
+            }
+        }
         return null; 
     }
 
     [HttpGet]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public async Task<ActionResult<CartDto>> GetCart()
     {
         var cart = await GetOrCreateCartAsync();
@@ -83,7 +94,7 @@ public class CartController : ControllerBase
         return Ok(MapToDto(cart));
     }
 
-    [HttpPut("items/{id}")]
+    [HttpPost("items/{id}")]
     public async Task<ActionResult<CartDto>> UpdateItem(int id, UpdateCartItemDto dto)
     {
         // Faster lookup: directly fetch the item and its cart
@@ -122,20 +133,36 @@ public class CartController : ControllerBase
         return Ok(MapToDto(cart));
     }
 
-    [HttpDelete("items/{id}")]
+    [HttpPost("items/{id}/delete")]
     public async Task<ActionResult<CartDto>> RemoveItem(int id)
     {
+        _logger.LogInformation("Processing DELETE request for cart item {id}", id);
+        
         var cart = await GetOrCreateCartAsync();
         var item = cart.Items.FirstOrDefault(i => i.Id == id);
         
         if (item != null)
         {
+            _logger.LogInformation("Found item {id} in cart {cartId}. Removing...", id, cart.Id);
             cart.Items.Remove(item);
             await _context.SaveChangesAsync();
+        }
+        else
+        {
+            _logger.LogWarning("Item {id} not found in cart {cartId}", id, cart.Id);
         }
 
         cart = await GetCartQuery(cart.Id).FirstAsync();
         return Ok(MapToDto(cart));
+    }
+
+    [HttpDelete]
+    public async Task<ActionResult> ClearCart()
+    {
+        var cart = await GetOrCreateCartAsync();
+        _context.CartItems.RemoveRange(cart.Items);
+        await _context.SaveChangesAsync();
+        return NoContent();
     }
 
     [HttpPost("merge")]
@@ -203,10 +230,18 @@ public class CartController : ControllerBase
 
         if (cart == null)
         {
+            // If the user is a guest but didn't provide a valid SessionId (e.g. because we stripped an invalid one),
+            // generate a fresh distinct one for the database to avoid orphaned carts grouping together on SessionId = null
+            var finalSessionId = sessionId;
+            if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(finalSessionId))
+            {
+                finalSessionId = Guid.NewGuid().ToString();
+            }
+
             cart = new Cart
             {
                 UserId = userId,
-                SessionId = string.IsNullOrEmpty(userId) ? sessionId : null
+                SessionId = string.IsNullOrEmpty(userId) ? finalSessionId : null
             };
             
             _context.Carts.Add(cart);
@@ -225,6 +260,7 @@ public class CartController : ControllerBase
             .Include(c => c.Items)
                 .ThenInclude(i => i.Product)
                     .ThenInclude(p => p.Variants)
+            .AsSplitQuery()
             .AsQueryable();
 
         if (id.HasValue)

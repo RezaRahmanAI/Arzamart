@@ -110,7 +110,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("logout")]
-    [Microsoft.AspNetCore.Authorization.Authorize]
+    [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public async Task<IActionResult> Logout()
     {
         var refreshToken = Request.Cookies["refreshToken"];

@@ -27,6 +27,7 @@ public class AdminCategoryController : ControllerBase
     public async Task<ActionResult<List<CategoryDto>>> GetAllCategories()
     {
         var categories = await _context.Categories
+            .AsNoTracking()
             .Include(c => c.SubCategories)
             .ThenInclude(sc => sc.Collections)
             .OrderBy(c => c.DisplayOrder)
@@ -67,6 +68,7 @@ public class AdminCategoryController : ControllerBase
     public async Task<ActionResult<CategoryDto>> GetCategoryById(int id)
     {
         var category = await _context.Categories
+            .AsNoTracking()
             .Include(c => c.Products)
             .FirstOrDefaultAsync(c => c.Id == id);
 

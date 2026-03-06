@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ECommerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class phase1 : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -594,6 +594,8 @@ namespace ECommerce.Infrastructure.Migrations
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     SubCategoryId = table.Column<int>(type: "int", nullable: true),
                     CollectionId = table.Column<int>(type: "int", nullable: true),
+                    IsBundle = table.Column<bool>(type: "bit", nullable: false),
+                    BundleQuantity = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -786,46 +788,6 @@ namespace ECommerce.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "ProductBundleItems",
-                schema: "dbo",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MainProductId = table.Column<int>(type: "int", nullable: false),
-                    ComponentProductId = table.Column<int>(type: "int", nullable: false),
-                    ComponentVariantId = table.Column<int>(type: "int", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductBundleItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProductBundleItems_ProductVariants_ComponentVariantId",
-                        column: x => x.ComponentVariantId,
-                        principalSchema: "dbo",
-                        principalTable: "ProductVariants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ProductBundleItems_Products_ComponentProductId",
-                        column: x => x.ComponentProductId,
-                        principalSchema: "dbo",
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ProductBundleItems_Products_MainProductId",
-                        column: x => x.MainProductId,
-                        principalSchema: "dbo",
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 schema: "dbo",
@@ -942,6 +904,18 @@ namespace ECommerce.Infrastructure.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_NavigationMenus_DisplayOrder",
+                schema: "dbo",
+                table: "NavigationMenus",
+                column: "DisplayOrder");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NavigationMenus_IsActive",
+                schema: "dbo",
+                table: "NavigationMenus",
+                column: "IsActive");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_NavigationMenus_ParentMenuId",
                 schema: "dbo",
                 table: "NavigationMenus",
@@ -984,24 +958,6 @@ namespace ECommerce.Infrastructure.Migrations
                 column: "Status");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductBundleItems_ComponentProductId",
-                schema: "dbo",
-                table: "ProductBundleItems",
-                column: "ComponentProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductBundleItems_ComponentVariantId",
-                schema: "dbo",
-                table: "ProductBundleItems",
-                column: "ComponentVariantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductBundleItems_MainProductId",
-                schema: "dbo",
-                table: "ProductBundleItems",
-                column: "MainProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ProductImages_ProductId",
                 schema: "dbo",
                 table: "ProductImages",
@@ -1018,12 +974,6 @@ namespace ECommerce.Infrastructure.Migrations
                 schema: "dbo",
                 table: "Products",
                 column: "CollectionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_IsActive",
-                schema: "dbo",
-                table: "Products",
-                column: "IsActive");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_IsFeatured",
@@ -1050,6 +1000,13 @@ namespace ECommerce.Infrastructure.Migrations
                 table: "Products",
                 column: "Slug",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_Storefront_Active",
+                schema: "dbo",
+                table: "Products",
+                columns: new[] { "IsActive", "CategoryId" },
+                filter: "[IsActive] = 1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_SubCategoryId",
@@ -1154,11 +1111,11 @@ namespace ECommerce.Infrastructure.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "ProductBundleItems",
+                name: "ProductImages",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "ProductImages",
+                name: "ProductVariants",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
@@ -1186,19 +1143,15 @@ namespace ECommerce.Infrastructure.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "ProductVariants",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "DeliveryMethods",
+                name: "Products",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Products",
+                name: "DeliveryMethods",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

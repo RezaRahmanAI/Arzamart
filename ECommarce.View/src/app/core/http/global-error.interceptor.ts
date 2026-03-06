@@ -2,7 +2,7 @@ import { HttpInterceptorFn, HttpErrorResponse } from "@angular/common/http";
 import { inject } from "@angular/core";
 import { throwError, EMPTY } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { BYPASS_LOGGING } from "../../../main";
+import { BYPASS_LOGGING } from "./tokens";
 import { Router } from "@angular/router";
 
 import { NotificationService } from "../services/notification.service";
@@ -40,14 +40,15 @@ export const globalErrorInterceptor: HttpInterceptorFn = (request, next) => {
             break;
 
           case 401:
-            // Don't notify or redirect for silent refresh failures (guest users)
+            // Don't notify or redirect for silent refresh failures or auth checks on startup
             if (
               !request.url.includes("auth/refresh") &&
-              !request.url.includes("auth/login")
+              !request.url.includes("auth/login") &&
+              !request.url.includes("auth/me") &&
+              !request.url.includes("auth/logout")
             ) {
               notificationService.error("Session expired. Please login again.");
             }
-            // Removed forced redirect to /login - let guards handle specific path protection
             break;
 
           case 403: {
@@ -68,11 +69,14 @@ export const globalErrorInterceptor: HttpInterceptorFn = (request, next) => {
             notificationService.error("Resource not found");
             break;
 
-          case 500:
-            notificationService.error(
-              "A server error occurred. Our engineers have been notified.",
-            );
+          case 500: {
+            const message = 
+              error.error?.message || 
+              (typeof error.error === 'string' ? error.error : null) ||
+              "A server error occurred. Our engineers have been notified.";
+            notificationService.error(message);
             break;
+          }
 
           default:
             notificationService.error("An unexpected error occurred");

@@ -25,9 +25,6 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);
         AddInclude(x => x.Variants);
-        AddInclude(x => x.BundleItems);
-        AddInclude("BundleItems.ComponentProduct");
-        AddInclude("BundleItems.ComponentVariant");
 
         AddOrderBy(x => x.Name);
 
@@ -40,6 +37,9 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
                     break;
                 case "priceDesc":
                     AddOrderByDescending(p => p.Name);
+                    break;
+                case "id_desc":
+                    AddOrderByDescending(p => p.Id);
                     break;
                 case "sortOrder":
                     AddOrderBy(p => p.SortOrder);
@@ -65,6 +65,12 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
         AddIncludes();
     }
 
+    public ProductsWithCategoriesSpecification(IEnumerable<int> ids)
+        : base(x => ids.Contains(x.Id))
+    {
+        AddIncludes();
+    }
+
     public ProductsWithCategoriesSpecification(string slug) 
         : base(x => x.Slug == slug)
     {
@@ -80,8 +86,5 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);
         AddInclude(x => x.Variants);
-        AddInclude(x => x.BundleItems);
-        AddInclude("BundleItems.ComponentProduct");
-        AddInclude("BundleItems.ComponentVariant");
     }
 }

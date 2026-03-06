@@ -29,81 +29,50 @@ public class OrderService : IOrderService
     {
         var items = new List<OrderItem>();
         
+        // 1. Bulk Fetch Products to fix N+1 query issue
+        var productIds = orderDto.Items.Select(i => i.ProductId).Distinct().ToList();
+        var productSpec = new ProductsWithCategoriesSpecification(productIds);
+        
+        // Pass track: true so EF Core tracks changes for stock deductions
+        var products = await _unitOfWork.Repository<Product>().ListAsync(productSpec, track: true);
+        var productDict = products.ToDictionary(p => p.Id);
+
         foreach (var itemDto in orderDto.Items)
         {
-            var productSpec = new ProductsWithCategoriesSpecification(itemDto.ProductId);
-            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec<Product>(productSpec);
-            
-            if (product == null) throw new KeyNotFoundException($"Product {itemDto.ProductId} not found");
-
-            if (product.ProductType == ECommerce.Core.Enums.ProductType.Combo)
+            if (!productDict.TryGetValue(itemDto.ProductId, out var product))
             {
-                // Handle Combo Product Stock Deduction
-                if (product.BundleItems == null || !product.BundleItems.Any())
-                    throw new InvalidOperationException($"Combo product {product.Name} has no components defined.");
+                throw new KeyNotFoundException($"Product {itemDto.ProductId} not found");
+            }
 
-                foreach (var bundleItem in product.BundleItems)
+            // Calculate total units to deduct (Quantity * BundleMultiplier)
+            int multiplier = product.IsBundle ? product.BundleQuantity : 1;
+            int totalDeduction = itemDto.Quantity * multiplier;
+
+            // 1. Deduct from specific variant if size/variant is selected
+            if (!string.IsNullOrEmpty(itemDto.Size))
+            {
+                var normalizedSize = itemDto.Size.Trim().ToLower();
+                var variant = product.Variants.FirstOrDefault(v => 
+                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                
+                if (variant != null)
                 {
-                    int totalNeeded = bundleItem.Quantity * itemDto.Quantity;
+                    if (variant.StockQuantity < totalDeduction)
+                        throw new InvalidOperationException($"Insufficient stock for {product.Name} ({itemDto.Size}). Needed: {totalDeduction}, Available: {variant.StockQuantity}");
                     
-                    // Deduct from Component Product
-                    if (bundleItem.ComponentProduct.StockQuantity < totalNeeded)
-                        throw new InvalidOperationException($"Insufficient stock for component {bundleItem.ComponentProduct.Name} in combo {product.Name}");
-                    
-                    bundleItem.ComponentProduct.StockQuantity -= totalNeeded;
-                    _unitOfWork.Repository<Product>().Update(bundleItem.ComponentProduct);
-
-                    // Deduct from Component Variant if specified
-                    if (bundleItem.ComponentVariantId.HasValue)
-                    {
-                        var variant = bundleItem.ComponentVariant;
-                        if (variant == null)
-                        {
-                            // Try to fetch it if not loaded (though spec should load it)
-                            variant = await _unitOfWork.Repository<ProductVariant>().GetByIdAsync(bundleItem.ComponentVariantId.Value);
-                        }
-
-                        if (variant != null)
-                        {
-                            if (variant.StockQuantity < totalNeeded)
-                                throw new InvalidOperationException($"Insufficient variant stock for {bundleItem.ComponentProduct.Name} ({variant.Size}) in combo {product.Name}");
-                            
-                            variant.StockQuantity -= totalNeeded;
-                            _unitOfWork.Repository<ProductVariant>().Update(variant);
-                        }
-                    }
-                }
-
-                // Optional: Update the Combo's own stock if used as a cache
-                if (product.StockQuantity >= itemDto.Quantity)
-                {
-                    product.StockQuantity -= itemDto.Quantity;
-                    _unitOfWork.Repository<Product>().Update(product);
+                    variant.StockQuantity -= totalDeduction;
+                    // Repository update isn't strictly necessary when tracking is enabled, 
+                    // but keeping it for explicitness or in case GenericRepository requires it for its internal state.
+                    _unitOfWork.Repository<ProductVariant>().Update(variant);
                 }
             }
-            else
-            {
-                // Deduct from Simple Product Stock
-                if (product.StockQuantity < itemDto.Quantity) throw new InvalidOperationException($"Insufficient stock for {product.Name}");
-                product.StockQuantity -= itemDto.Quantity;
-                _unitOfWork.Repository<Product>().Update(product);
 
-                // Robust Variant Lookup
-                ProductVariant variant = null;
-                if (!string.IsNullOrEmpty(itemDto.Size))
-                {
-                    var normalizedSize = itemDto.Size.Trim().ToLower();
-                    variant = product.Variants.FirstOrDefault(v => 
-                        v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                    
-                    if (variant != null)
-                    {
-                        if (variant.StockQuantity < itemDto.Quantity) throw new InvalidOperationException($"Insufficient stock for {product.Name} ({itemDto.Size})");
-                        variant.StockQuantity -= itemDto.Quantity;
-                        _unitOfWork.Repository<ProductVariant>().Update(variant);
-                    }
-                }
-            }
+            // 2. Deduct from main product stock (as an aggregate or for simple products)
+            if (product.StockQuantity < totalDeduction)
+                throw new InvalidOperationException($"Insufficient stock for {product.Name}. Needed: {totalDeduction}, Available: {product.StockQuantity}");
+
+            product.StockQuantity -= totalDeduction;
+            _unitOfWork.Repository<Product>().Update(product);
 
             // Price Fallback logic (Keep as is)
             decimal unitPrice = 0;
@@ -199,8 +168,15 @@ public class OrderService : IOrderService
             orderDto.Name,
             orderDto.Address
         );
-        
-        return _mapper.Map<Order, OrderDto>(order);
+        Console.WriteLine("--- ABOUT TO MAP ORDER TO ORDERDTO ---");
+        try {
+            var result = _mapper.Map<Order, OrderDto>(order);
+            Console.WriteLine("--- MAPPING SUCCESSFUL ---");
+            return result;
+        } catch (Exception ex) {
+            Console.WriteLine($"--- MAPPING FAILED: {ex.Message} ---");
+            throw;
+        }
     }
 
     public async Task<IReadOnlyList<OrderDto>> GetOrdersAsync()
@@ -241,48 +217,21 @@ public class OrderService : IOrderService
                     
                     if (product != null)
                     {
-                        if (product.ProductType == ECommerce.Core.Enums.ProductType.Combo)
+                        int multiplier = product.IsBundle ? product.BundleQuantity : 1;
+                        // Restore Product Stock
+                        product.StockQuantity += item.Quantity * multiplier;
+                        _unitOfWork.Repository<Product>().Update(product);
+
+                        if (!string.IsNullOrEmpty(item.Size))
                         {
-                            // Restore stock to components
-                            foreach (var bundleItem in product.BundleItems)
+                            var normalizedSize = item.Size.Trim().ToLower();
+                            var variant = product.Variants.FirstOrDefault(v => 
+                                v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                            
+                            if (variant != null)
                             {
-                                int totalToRestore = bundleItem.Quantity * item.Quantity;
-                                
-                                bundleItem.ComponentProduct.StockQuantity += totalToRestore;
-                                _unitOfWork.Repository<Product>().Update(bundleItem.ComponentProduct);
-
-                                if (bundleItem.ComponentVariantId.HasValue)
-                                {
-                                    var variant = bundleItem.ComponentVariant;
-                                    if (variant != null)
-                                    {
-                                        variant.StockQuantity += totalToRestore;
-                                        _unitOfWork.Repository<ProductVariant>().Update(variant);
-                                    }
-                                }
-                            }
-
-                            // Restore Combo's own stock cache
-                            product.StockQuantity += item.Quantity;
-                            _unitOfWork.Repository<Product>().Update(product);
-                        }
-                        else
-                        {
-                            // Restore Simple Product Stock
-                            product.StockQuantity += item.Quantity;
-                            _unitOfWork.Repository<Product>().Update(product);
-
-                            if (!string.IsNullOrEmpty(item.Size))
-                            {
-                                var normalizedSize = item.Size.Trim().ToLower();
-                                var variant = product.Variants.FirstOrDefault(v => 
-                                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                                
-                                if (variant != null)
-                                {
-                                    variant.StockQuantity += item.Quantity;
-                                    _unitOfWork.Repository<ProductVariant>().Update(variant);
-                                }
+                                variant.StockQuantity += item.Quantity * multiplier;
+                                _unitOfWork.Repository<ProductVariant>().Update(variant);
                             }
                         }
                     }

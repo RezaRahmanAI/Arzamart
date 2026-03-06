@@ -29,6 +29,7 @@ import { SHOW_LOADING } from "../../../../core/services/loading.service";
 
 import { ProductCardComponent } from "../../../../shared/components/product-card/product-card.component";
 import { SizeGuideComponent } from "../../../../shared/components/size-guide/size-guide.component";
+import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
 import {
   LucideAngularModule,
   ChevronLeft,
@@ -56,6 +57,7 @@ import {
     ProductCardComponent,
     SizeGuideComponent,
     LucideAngularModule,
+    SafeHtmlPipe,
   ],
   templateUrl: "./product-details-page.component.html",
   styleUrl: "./product-details-page.component.css",

@@ -30,7 +30,7 @@ public class CustomersController : ControllerBase
 
         if (customer == null)
         {
-            return NotFound(new { error = "Customer not found" });
+            return Ok(null); // Return success with null object to avoid 404 errors in frontend
         }
 
         return Ok(new CustomerDto

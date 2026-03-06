@@ -215,13 +215,15 @@ export class ProductCardComponent {
   }
 
   get description(): string {
-    if ("shortDescription" in this.product && this.product.shortDescription) {
-      return this.product.shortDescription;
-    }
-    if ("description" in this.product && this.product.description) {
-      return this.product.description;
-    }
-    return "";
+    const desc =
+      "shortDescription" in this.product && this.product.shortDescription
+        ? this.product.shortDescription
+        : "description" in this.product && this.product.description
+          ? this.product.description
+          : "";
+
+    // Strip HTML tags for preview
+    return desc.replace(/<[^>]*>/g, "");
   }
 
   selectSize(size: string): void {

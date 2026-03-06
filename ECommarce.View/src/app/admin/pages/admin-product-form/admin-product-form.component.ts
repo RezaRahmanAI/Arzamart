@@ -161,6 +161,8 @@ export class AdminProductFormComponent implements OnDestroy {
       }),
       productType: [ProductType.Simple, [Validators.required]],
       bundleItems: this.formBuilder.array([]),
+      isBundle: [false],
+      bundleQuantity: [1, [Validators.min(1)]],
     },
     { validators: [this.salePriceValidator] },
   );
@@ -375,8 +377,10 @@ export class AdminProductFormComponent implements OnDestroy {
 
           tier: (product as any).tier || "",
           tags: (product as any).tags || "",
-          sortOrder: (product as any).sortOrder || 0,
-          productType: product.productType ?? ProductType.Simple,
+          sortOrder: product.sortOrder,
+          productType: product.productType,
+          isBundle: product.isBundle,
+          bundleQuantity: product.bundleQuantity || 1,
         });
 
         // Load bundle items if any
@@ -619,6 +623,62 @@ export class AdminProductFormComponent implements OnDestroy {
     }
     this.resetForm();
     void this.router.navigate(["/admin/products"]);
+  }
+
+  applyFormatting(type: string, textarea: HTMLTextAreaElement): void {
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    const fullText = textarea.value;
+
+    let replacement = "";
+    switch (type) {
+      case "bold":
+        replacement = `<b>${selectedText}</b>`;
+        break;
+      case "italic":
+        replacement = `<i>${selectedText}</i>`;
+        break;
+      case "underline":
+        replacement = `<u>${selectedText}</u>`;
+        break;
+      case "list":
+        replacement = `\n<ul>\n  <li>${selectedText || "Item"}</li>\n</ul>`;
+        break;
+      case "link":
+        const url = window.prompt("Enter URL", "https://");
+        if (url) {
+          replacement = `<a href="${url}" class="text-primary hover:underline" target="_blank">${selectedText || "Link Text"}</a>`;
+        } else {
+          return;
+        }
+        break;
+    }
+
+    const newValue =
+      fullText.substring(0, start) + replacement + fullText.substring(end);
+    this.form.patchValue({ description: newValue });
+
+    // Restore focus and selection
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(
+        start + replacement.length,
+        start + replacement.length,
+      );
+    }, 0);
+  }
+
+  onSizeSelectChange(event: Event, index: number): void {
+    const select = event.target as HTMLSelectElement;
+    const value = select.value;
+    const sizeForm = this.sizesArray.at(index);
+
+    if (value === "custom") {
+      sizeForm.patchValue({ label: "custom" });
+    } else {
+      sizeForm.patchValue({ label: value });
+    }
   }
 
   saveProduct(): void {
@@ -962,6 +1022,8 @@ export class AdminProductFormComponent implements OnDestroy {
               quantity: Number(bi.quantity),
             }))
           : [],
+      isBundle: Boolean(raw.isBundle),
+      bundleQuantity: Number(raw.bundleQuantity || 1),
     };
     // but we want to match backend DTO structure primarily.
     // Actually the interface is updated, so it should be fine.
@@ -1020,6 +1082,9 @@ export class AdminProductFormComponent implements OnDestroy {
         fabricAndCare: "",
         shippingAndReturns: "",
       },
+      productType: ProductType.Simple,
+      isBundle: false,
+      bundleQuantity: 1,
     });
     this.mediaError = "";
 

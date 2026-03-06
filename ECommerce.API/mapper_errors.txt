@@ -1,0 +1,27 @@
+AutoMapper.AutoMapperConfigurationException: 
+Unmapped members were found. Review the types and members below.
+Add a custom mapping expression, ignore, add a custom resolver, or modify the source/destination type
+For no matching constructor, add a no-arg ctor, add optional arguments, or map all of the constructor parameters
+====================================================================
+Category -> CategoryDto (Destination member list)
+ECommerce.Core.Entities.Category -> ECommerce.Core.DTOs.CategoryDto (Destination member list)
+
+Unmapped properties:
+ProductCount
+======================================================================
+CreateReviewDto -> Review (Destination member list)
+ECommerce.Core.DTOs.CreateReviewDto -> ECommerce.Core.Entities.Review (Destination member list)
+
+Unmapped properties:
+Product
+CustomerAvatar
+Date
+IsVerifiedPurchase
+IsFeatured
+IsApproved
+Likes
+Id
+CreatedAt
+UpdatedAt
+
+   at Program.<Main>$(String[] args) in c:\Users\User\Documents\Personal\Arza\ECommerce.API\Program.cs:line 66

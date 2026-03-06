@@ -11,7 +11,7 @@ import {
   withInterceptors,
   withFetch,
   HttpContext,
-  HttpContextToken,
+// BYPASS_LOGGING imported above
 } from "@angular/common/http";
 import { APP_INITIALIZER, provideZoneChangeDetection } from "@angular/core";
 import { of, EMPTY } from "rxjs";
@@ -29,7 +29,7 @@ import { jwtInterceptor } from "./app/core/interceptors/jwt.interceptor";
 import { loadingInterceptor } from "./app/core/interceptors/loading.interceptor";
 import { httpCacheInterceptor } from "./app/interceptors/cache.interceptor";
 
-export const BYPASS_LOGGING = new HttpContextToken<boolean>(() => false);
+import { BYPASS_LOGGING } from "./app/core/http/tokens";
 
 bootstrapApplication(AppComponent, {
   providers: [

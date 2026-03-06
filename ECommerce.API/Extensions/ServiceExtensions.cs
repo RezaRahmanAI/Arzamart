@@ -76,10 +76,13 @@ public static class ServiceExtensions
 
         services.AddDbContextPool<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString,
-                sqlOptions => sqlOptions.EnableRetryOnFailure(
-                    maxRetryCount: 3,
-                    maxRetryDelay: TimeSpan.FromSeconds(5),
-                    errorNumbersToAdd: null)));
+                sqlOptions => {
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorNumbersToAdd: null);
+                    sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                }));
 
         return services;
     }
@@ -140,37 +143,35 @@ public static class ServiceExtensions
         {
             options.AddPolicy("DefaultPolicy", builder =>
             {
+                // Always Load from config if available
+                var allowedOrigins = config.GetSection("AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+                
                 if (env.IsDevelopment())
                 {
-                    // Zero Headaches in Dev: Allow everything
+                    // Development: Allow everything
                     builder.SetIsOriginAllowed(_ => true)
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
                 }
+                else if (allowedOrigins.Length > 0)
+                {
+                    // Production: Use configured origins
+                    builder.WithOrigins(allowedOrigins)
+                           .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                           .WithHeaders("Content-Type", "Authorization", "X-Session-Id", "X-Requested-With")
+                           .AllowCredentials();
+                }
                 else
                 {
-                    // Strict in Production: Load from config
-                    var allowedOrigins = config.GetSection("AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
-                    
-                    if (allowedOrigins.Length > 0)
-                    {
-                        builder.WithOrigins(allowedOrigins)
-                               .AllowAnyMethod()
-                               .AllowAnyHeader()
-                               .AllowCredentials();
-                    }
-                    else
-                    {
-                        // Final fail-safe if config is missing
-                        builder.WithOrigins("https://arzamart.shop", "https://www.arzamart.shop")
-                               .AllowAnyMethod()
-                               .AllowAnyHeader()
-                               .AllowCredentials();
-                    }
+                    // Production Fallback: Hardcoded safe defaults
+                    builder.WithOrigins("https://arzamart.shop", "https://www.arzamart.shop", "https://api.arzamart.shop")
+                           .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                           .WithHeaders("Content-Type", "Authorization", "X-Session-Id", "X-Requested-With")
+                           .AllowCredentials();
                 }
                 
-                builder.WithExposedHeaders("Content-Disposition", "Content-Length", "X-Pagination");
+                builder.WithExposedHeaders("Content-Disposition", "Content-Length", "X-Pagination", "Authorization");
             });
         });
 

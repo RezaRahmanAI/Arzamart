@@ -110,6 +110,13 @@ export class AdminPagesComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.pageForm.invalid) {
       this.pageForm.markAllAsTouched();
+      const invalidFields: string[] = [];
+      Object.keys(this.pageForm.controls).forEach((key) => {
+        if (this.pageForm.get(key)?.invalid) invalidFields.push(key);
+      });
+      window.alert(
+        `Please fill in all required fields: ${invalidFields.join(", ")}`,
+      );
       return;
     }
 

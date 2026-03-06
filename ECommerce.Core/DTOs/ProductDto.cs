@@ -46,7 +46,10 @@ public class ProductDto
     public int SortOrder { get; set; }
 
     public ProductType ProductType { get; set; }
-    public List<ProductBundleItemDto> BundleItems { get; set; } = new();
+
+    // Simplified Bundle System
+    public bool IsBundle { get; set; }
+    public int BundleQuantity { get; set; }
 }
 
 public class ProductImageDto

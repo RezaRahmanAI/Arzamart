@@ -133,6 +133,13 @@ export class AdminNavigationManagementComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.menuForm.invalid) {
       this.menuForm.markAllAsTouched();
+      const invalidFields: string[] = [];
+      Object.keys(this.menuForm.controls).forEach((key) => {
+        if (this.menuForm.get(key)?.invalid) invalidFields.push(key);
+      });
+      window.alert(
+        `Please fill in all required fields: ${invalidFields.join(", ")}`,
+      );
       return;
     }
 

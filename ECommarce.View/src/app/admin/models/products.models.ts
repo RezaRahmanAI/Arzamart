@@ -102,6 +102,8 @@ export interface ProductCreatePayload {
   collectionId?: number | null;
   productType: ProductType;
   bundleItems?: ProductBundleItem[];
+  isBundle: boolean;
+  bundleQuantity: number;
 }
 
 export interface ProductUpdatePayload {
@@ -164,6 +166,8 @@ export interface ProductUpdatePayload {
   collectionId?: number | null;
   productType: ProductType;
   bundleItems?: ProductBundleItem[];
+  isBundle: boolean;
+  bundleQuantity: number;
 }
 
 export type ProductsStatusTab = "All Items" | "Active" | "Drafts" | "Archived";

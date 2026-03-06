@@ -31,4 +31,5 @@ public class SiteSetting : BaseEntity
     public string? Currency { get; set; } = "BDT";
     public decimal FreeShippingThreshold { get; set; } = 5000;
     public decimal ShippingCharge { get; set; } = 120;
+    public string? SizeGuideImageUrl { get; set; }
 }

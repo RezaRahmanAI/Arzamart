@@ -36,35 +36,11 @@ public class ProductService : IProductService
         return await _unitOfWork.Repository<Product>().GetEntityWithSpec<ProductDto>(spec);
     }
 
-    public int CalculateEffectiveStock(Product product)
-    {
-        if (product.BundleItems == null || !product.BundleItems.Any()) return 0;
-
-        int minStock = int.MaxValue;
-
-        foreach (var item in product.BundleItems)
-        {
-            int componentStock = 0;
-            if (item.ComponentVariantId.HasValue && item.ComponentVariant != null)
-            {
-                componentStock = item.ComponentVariant.StockQuantity;
-            }
-            else if (item.ComponentProduct != null)
-            {
-                componentStock = item.ComponentProduct.StockQuantity;
-            }
-
-            int possibleSets = componentStock / item.Quantity;
-            if (possibleSets < minStock) minStock = possibleSets;
-        }
-
-        return minStock == int.MaxValue ? 0 : minStock;
-    }
 
     public async Task<ProductDto> CreateProductAsync(ProductCreateDto dto)
     {
         var categorySpec = new CategoriesWithSubCategoriesSpec(dto.Category);
-        var category = await _unitOfWork.Repository<Category>().GetEntityWithSpec<Category>(categorySpec);
+        var category = await _unitOfWork.Repository<Category>().GetEntityWithSpec(categorySpec);
         
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
 
@@ -91,24 +67,13 @@ public class ProductService : IProductService
             SortOrder = dto.SortOrder,
             SubCategoryId = dto.SubCategoryId,
             CollectionId = dto.CollectionId,
-            ProductType = dto.ProductType
+            ProductType = dto.ProductType,
+            IsBundle = dto.IsBundle,
+            BundleQuantity = dto.BundleQuantity > 0 ? dto.BundleQuantity : 1
         };
 
         _unitOfWork.Repository<Product>().Add(product);
         
-        // Handle Bundle Items if Combo
-        if (dto.ProductType == ProductType.Combo && dto.BundleItems != null)
-        {
-            foreach (var item in dto.BundleItems)
-            {
-                product.BundleItems.Add(new ProductBundleItem
-                {
-                    ComponentProductId = item.ComponentProductId,
-                    ComponentVariantId = item.ComponentVariantId,
-                    Quantity = item.Quantity
-                });
-            }
-        }
         
         // Handle Images
         if (dto.Media?.MainImage != null)
@@ -136,16 +101,19 @@ public class ProductService : IProductService
         }
 
         // Handle Variants — each variant = one size with its own stock
-        foreach (var v in dto.InventoryVariants)
+        if (dto.InventoryVariants != null)
         {
-            product.Variants.Add(new ProductVariant {
-                Sku = v.Sku,
-                Price = v.Price,
-                CompareAtPrice = v.SalePrice,
-                PurchaseRate = v.PurchaseRate,
-                StockQuantity = v.Inventory,
-                Size = v.Label
-            });
+            foreach (var v in dto.InventoryVariants)
+            {
+                product.Variants.Add(new ProductVariant {
+                    Sku = v.Sku,
+                    Price = v.Price,
+                    CompareAtPrice = v.SalePrice,
+                    PurchaseRate = v.PurchaseRate,
+                    StockQuantity = v.Inventory,
+                    Size = v.Label
+                });
+            }
         }
 
         var result = await _unitOfWork.Complete();
@@ -157,7 +125,7 @@ public class ProductService : IProductService
     public async Task<ProductDto> UpdateProductAsync(int id, ProductUpdateDto dto)
     {
         var spec = new ProductsWithCategoriesSpecification(id);
-        var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec<Product>(spec);
+        var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec); // Fixed: Removed <Product> to use the non-projected tracked version
 
         if (product == null) throw new KeyNotFoundException("Product not found");
 
@@ -166,6 +134,7 @@ public class ProductService : IProductService
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
 
         // Update basic props
+        product.Name = dto.Name; // Ensure name is also updated
         product.Description = dto.Description;
         product.ShortDescription = dto.ShortDescription;
         product.IsActive = dto.StatusActive;
@@ -184,28 +153,9 @@ public class ProductService : IProductService
         product.SubCategoryId = dto.SubCategoryId;
         product.CollectionId = dto.CollectionId;
         product.ProductType = dto.ProductType;
+        product.IsBundle = dto.IsBundle;
+        product.BundleQuantity = dto.BundleQuantity > 0 ? dto.BundleQuantity : 1;
 
-        // Sync bundle items if Combo
-        var existingBundleItems = await _unitOfWork.Repository<ProductBundleItem>()
-            .ListAsync(new BaseSpecification<ProductBundleItem>(bi => bi.MainProductId == id));
-            
-        foreach (var item in existingBundleItems)
-        {
-            _unitOfWork.Repository<ProductBundleItem>().Delete(item);
-        }
-
-        if (dto.ProductType == ProductType.Combo && dto.BundleItems != null)
-        {
-            foreach (var item in dto.BundleItems)
-            {
-                product.BundleItems.Add(new ProductBundleItem
-                {
-                    ComponentProductId = item.ComponentProductId,
-                    ComponentVariantId = item.ComponentVariantId,
-                    Quantity = item.Quantity
-                });
-            }
-        }
 
         // Sync images
         foreach (var img in product.Images.ToList())
@@ -258,14 +208,31 @@ public class ProductService : IProductService
         product.StockQuantity = dto.InventoryVariants.Sum(v => v.Inventory);
 
         _unitOfWork.Repository<Product>().Update(product);
-        await _unitOfWork.Complete();
+        var savedChanges = await _unitOfWork.Complete();
+        Console.WriteLine($"[SERVICE_DEBUG] Saved {savedChanges} changes to database for Product {id}");
 
         return _mapper.Map<Product, ProductDto>(product);
     }
 
     private string GenerateSlug(string name)
     {
-        return name.ToLower().Trim().Replace(" ", "-").Replace("/", "-");
+        if (string.IsNullOrEmpty(name)) return Guid.NewGuid().ToString();
+
+        var slug = name.ToLower().Trim()
+            .Replace(" ", "-")
+            .Replace("/", "-")
+            .Replace("&", "and")
+            .Replace("?", "")
+            .Replace("!", "")
+            .Replace(".", "")
+            .Replace(",", "")
+            .Replace("'", "")
+            .Replace("\"", "");
+        
+        // Ensure slug isn't too long or empty
+        if (slug.Length > 100) slug = slug.Substring(0, 100);
+        
+        return slug;
     }
 
     public async Task<List<string>> GetAvailableSizesAsync()

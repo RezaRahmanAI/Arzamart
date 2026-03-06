@@ -819,12 +819,12 @@ public static class DataSeeder
         }
 
         // Proceed to seed
+        var products = await context.Products.ToListAsync();
+        var reviews = new List<Review>();
+        var random = new Random();
+
         if (false /* Review seeding disabled */)
         {
-            var products = await context.Products.ToListAsync();
-            var reviews = new List<Review>();
-            var random = new Random();
-
             var customerNames = new[] { "Sarah M.", "John D.", "Emily R.", "Michael B.", "Jessica K.", "David L.", "Emma S.", "James P.", "Olivia H.", "Daniel W." };
             var positiveComments = new[]
             {
@@ -877,11 +877,12 @@ public static class DataSeeder
 
             await context.Reviews.AddRangeAsync(reviews);
             await context.SaveChangesAsync();
+        }
 
-            // Seed Hero Banners
-            if (!await context.HeroBanners.AnyAsync())
-            {
-                var banners = new List<HeroBanner>
+        // Seed Hero Banners
+        if (!await context.HeroBanners.AnyAsync())
+        {
+            var banners = new List<HeroBanner>
             {
                 new HeroBanner
                 {
@@ -915,32 +916,31 @@ public static class DataSeeder
                 }
             };
 
-                await context.HeroBanners.AddRangeAsync(banners);
-                await context.SaveChangesAsync();
-            }
+            await context.HeroBanners.AddRangeAsync(banners);
+            await context.SaveChangesAsync();
+        }
 
-            // Seed/Update Site Settings to ArzaMart
-            var siteSettings = await context.SiteSettings.FirstOrDefaultAsync();
-            if (siteSettings == null)
+        // Seed/Update Site Settings to ArzaMart
+        var siteSettings = await context.SiteSettings.FirstOrDefaultAsync();
+        if (siteSettings == null)
+        {
+            siteSettings = new SiteSetting
             {
-                siteSettings = new SiteSetting
-                {
-                    WebsiteName = "ArzaMart",
-                    ContactEmail = "support@arzamart.shop",
-                    ContactPhone = "+880 1234-567890",
-                    Currency = "BDT",
-                    FreeShippingThreshold = 5000,
-                    ShippingCharge = 120
-                };
-                context.SiteSettings.Add(siteSettings);
-                await context.SaveChangesAsync();
-            }
-            else if (siteSettings.WebsiteName == "SheraShopBD24" || siteSettings.WebsiteName == "SheraShop")
-            {
-                siteSettings.WebsiteName = "ArzaMart";
-                siteSettings.ContactEmail = "support@arzamart.shop";
-                await context.SaveChangesAsync();
-            }
+                WebsiteName = "ArzaMart",
+                ContactEmail = "support@arzamart.shop",
+                ContactPhone = "+880 1234-567890",
+                Currency = "BDT",
+                FreeShippingThreshold = 5000,
+                ShippingCharge = 120
+            };
+            context.SiteSettings.Add(siteSettings);
+            await context.SaveChangesAsync();
+        }
+        else if (siteSettings.WebsiteName == "SheraShopBD24" || siteSettings.WebsiteName == "SheraShop")
+        {
+            siteSettings.WebsiteName = "ArzaMart";
+            siteSettings.ContactEmail = "support@arzamart.shop";
+            await context.SaveChangesAsync();
         }
     }
 }
