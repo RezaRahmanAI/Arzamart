@@ -302,43 +302,52 @@
                   class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
                 >
                   Size
-                  <div class="flex gap-2">
-                    <select
-                      class="flex-1 min-w-0 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                      (change)="onSizeSelectChange($event, sizeIndex)"
-                    >
-                      <option value="">Select Size</option>
-                      <option
-                        *ngFor="let sz of standardSizes"
-                        [value]="sz"
-                        [selected]="size.get('label')?.value === sz"
-                      >
-                        {{ sz }}
-                      </option>
-                      <option
-                        value="custom"
-                        [selected]="
-                          size.get('label')?.value &&
-                          !standardSizes.includes(size.get('label')?.value)
-                        "
-                      >
-                        Custom...
-                      </option>
-                    </select>
+                  <div class="flex gap-2 relative">
+                    <div class="flex-1 min-w-0 relative">
+                      <button type="button" 
+                              (click)="toggleSizeDropdown(sizeIndex, $event)"
+                              class="flex w-full items-center justify-between rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark">
+                        <span>{{ size.get('label')?.value && standardSizes.includes(size.get('label')?.value) ? size.get('label')?.value : (size.get('label')?.value ? 'Custom...' : 'Select Size') }}</span>
+                        <lucide-icon [img]="icons.ChevronDown" class="h-4 w-4 opacity-50"></lucide-icon>
+                      </button>
+                      
+                      <div *ngIf="openSizeDropdownIndex === sizeIndex" 
+                           class="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        
+                        <div (click)="selectSize(sizeIndex, '', $event)"
+                             class="relative cursor-pointer select-none py-2 px-3 hover:bg-primary/10 hover:text-primary text-text-main-light dark:text-text-main-dark transition-colors duration-150">
+                             Select Size
+                        </div>
+                        
+                        <div *ngFor="let sz of allAvailableSizes" 
+                             (click)="selectSize(sizeIndex, sz, $event)"
+                             class="relative cursor-pointer select-none py-2 px-3 hover:bg-primary/10 hover:text-primary text-text-main-light dark:text-text-main-dark text-sm transition-colors duration-150 flex justify-between items-center group">
+                          <span>{{ sz }}</span>
+                          <lucide-icon *ngIf="size.get('label')?.value === sz" [img]="icons.Check" class="h-4 w-4 text-primary"></lucide-icon>
+                        </div>
+                        
+                        <div (click)="selectSize(sizeIndex, 'custom', $event)"
+                             class="relative cursor-pointer select-none py-2 px-3 hover:bg-primary/10 hover:text-primary text-text-main-light dark:text-text-main-dark border-t border-border-light dark:border-border-dark transition-colors duration-150">
+                             Custom...
+                        </div>
+                      </div>
+                    </div>
                     <input
                       *ngIf="
                         size.get('label')?.value === 'custom' ||
                         (size.get('label')?.value &&
-                          !standardSizes.includes(size.get('label')?.value))
+                          !standardSizes.includes(size.get('label')?.value) && 
+                          !allAvailableSizes.includes(size.get('label')?.value))
                       "
                       class="flex-1 min-w-0 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
                       formControlName="label"
                       placeholder="Enter size"
+                      (click)="$event.stopPropagation()"
                     />
                     <input
                       type="hidden"
                       formControlName="label"
-                      *ngIf="standardSizes.includes(size.get('label')?.value)"
+                      *ngIf="allAvailableSizes.includes(size.get('label')?.value) || standardSizes.includes(size.get('label')?.value)"
                     />
                   </div>
                 </label>

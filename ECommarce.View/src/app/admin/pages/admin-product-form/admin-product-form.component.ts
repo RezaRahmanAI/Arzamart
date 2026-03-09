@@ -38,6 +38,7 @@ import {
   PlayCircle,
   PlusCircle,
   Eye,
+  ChevronDown
 } from "lucide-angular";
 
 interface MediaFormValue {
@@ -61,6 +62,9 @@ interface MediaFormValue {
     PriceDisplayComponent,
     LucideAngularModule,
   ],
+  host: {
+    '(document:click)': 'onDocumentClick($event)'
+  },
   templateUrl: "./admin-product-form.component.html",
 })
 export class AdminProductFormComponent implements OnDestroy {
@@ -76,6 +80,7 @@ export class AdminProductFormComponent implements OnDestroy {
     PlayCircle,
     PlusCircle,
     Eye,
+    ChevronDown
   };
   private formBuilder = inject(FormBuilder);
   private productsService = inject(ProductsService);
@@ -128,6 +133,8 @@ export class AdminProductFormComponent implements OnDestroy {
 
   mediaError = "";
   private mediaFileMap = new Map<string, File>();
+
+  openSizeDropdownIndex: number | null = null;
 
   form = this.formBuilder.group(
     {
@@ -679,6 +686,25 @@ export class AdminProductFormComponent implements OnDestroy {
     } else {
       sizeForm.patchValue({ label: value });
     }
+  }
+
+  toggleSizeDropdown(index: number, event: Event): void {
+    event.stopPropagation();
+    this.openSizeDropdownIndex = this.openSizeDropdownIndex === index ? null : index;
+  }
+
+  selectSize(index: number, sizeValue: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    const sizeForm = this.sizesArray.at(index);
+    sizeForm.patchValue({ label: sizeValue });
+    this.openSizeDropdownIndex = null;
+  }
+
+  onDocumentClick(event: MouseEvent): void {
+    // If click happens outside the dropdown (or we just close it on any document click since toggle stops propagation)
+    this.openSizeDropdownIndex = null;
   }
 
   saveProduct(): void {

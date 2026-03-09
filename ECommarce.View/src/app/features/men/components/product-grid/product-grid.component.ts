@@ -1,7 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
 import { HttpContext } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 import { ProductService } from "../../../../core/services/product.service";
 import { Product } from "../../../../core/models/product";
@@ -17,9 +19,10 @@ import { ImageUrlService } from "../../../../core/services/image-url.service";
   imports: [CommonModule, ProductCardComponent],
   templateUrl: "./product-grid.component.html",
   styleUrl: "./product-grid.component.css",
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenProductGridComponent implements OnInit {
-  products: Product[] = [];
+  products$!: Observable<Product[]>;
 
   constructor(
     private readonly productService: ProductService,
@@ -27,10 +30,12 @@ export class MenProductGridComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.productService
+    this.products$ = this.productService
       .getProducts({ gender: "men" }, new HttpContext().set(SHOW_LOADING, true))
-      .subscribe((res) => {
-        this.products = res.data;
-      });
+      .pipe(map(res => res.data));
+  }
+
+  trackByProduct(index: number, product: Product): number {
+    return product.id;
   }
 }

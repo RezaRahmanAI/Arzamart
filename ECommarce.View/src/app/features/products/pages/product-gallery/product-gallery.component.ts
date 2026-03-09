@@ -5,6 +5,8 @@ import { combineLatest } from "rxjs";
 import { ProductService } from "../../../../core/services/product.service";
 import { Product } from "../../../../core/models/product";
 import { ProductCardComponent } from "../../../../shared/components/product-card/product-card.component";
+import { ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { LucideAngularModule, Package } from "lucide-angular";
 
@@ -13,6 +15,7 @@ import { LucideAngularModule, Package } from "lucide-angular";
   standalone: true,
   imports: [CommonModule, ProductCardComponent, LucideAngularModule],
   templateUrl: "./product-gallery.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductGalleryComponent implements OnInit {
   readonly icons = {
@@ -20,6 +23,15 @@ export class ProductGalleryComponent implements OnInit {
   };
   private readonly route = inject(ActivatedRoute);
   private readonly productService = inject(ProductService);
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  constructor() {
+    combineLatest([this.route.params, this.route.queryParams])
+      .pipe(takeUntilDestroyed())
+      .subscribe(([params, queryParams]) => {
+        this.loadProducts({ ...params, ...queryParams });
+      });
+  }
 
   products: Product[] = [];
   loading = true;
@@ -27,11 +39,10 @@ export class ProductGalleryComponent implements OnInit {
   skeletonItems = Array(8).fill(0);
 
   ngOnInit(): void {
-    combineLatest([this.route.params, this.route.queryParams]).subscribe(
-      ([params, queryParams]) => {
-        this.loadProducts({ ...params, ...queryParams });
-      },
-    );
+  }
+
+  trackByProductId(index: number, product: Product): number {
+    return product.id;
   }
 
   private loadProducts(params: any): void {
@@ -85,9 +96,11 @@ export class ProductGalleryComponent implements OnInit {
       next: (response) => {
         this.products = response.data;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.loading = false;
+        this.cdr.markForCheck();
       },
     });
   }

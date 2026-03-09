@@ -63,7 +63,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task<int> CountAsync(ISpecification<T> spec)
     {
-        return await ApplySpecification(spec).AsNoTracking().CountAsync();
+        return await ApplySpecification(spec, evaluateIncludes: false).AsNoTracking().CountAsync();
     }
 
     public IQueryable<T> GetQueryable()
@@ -87,8 +87,8 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         _context.Set<T>().Remove(entity);
     }
 
-    private IQueryable<T> ApplySpecification(ISpecification<T> spec)
+    private IQueryable<T> ApplySpecification(ISpecification<T> spec, bool evaluateIncludes = true)
     {
-        return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
+        return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec, evaluateIncludes);
     }
 }

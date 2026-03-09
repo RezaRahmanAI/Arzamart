@@ -81,7 +81,11 @@ public class ProductsController : ControllerBase
 
         var result = new PaginationDto<ProductDto>(pageIndex, pageSize, totalItems, dtos);
         
-        _cache.Set(cacheKey, result, TimeSpan.FromMinutes(5));
+        var cacheOptions = new MemoryCacheEntryOptions()
+            .SetSize(1)
+            .SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+
+        _cache.Set(cacheKey, result, cacheOptions);
         
         return Ok(result);
     }
@@ -100,7 +104,11 @@ public class ProductsController : ControllerBase
         var product = await _productService.GetProductBySlugAsync(slug);
         if (product == null) return NotFound();
         
-        _cache.Set(cacheKey, product, TimeSpan.FromMinutes(5));
+        var cacheOptions = new MemoryCacheEntryOptions()
+            .SetSize(1)
+            .SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+
+        _cache.Set(cacheKey, product, cacheOptions);
         return Ok(product);
     }
 }

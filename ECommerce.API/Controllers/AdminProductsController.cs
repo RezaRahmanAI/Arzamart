@@ -96,10 +96,6 @@ public class AdminProductsController : ControllerBase
     {
         var query = _context.Products
             .AsNoTracking()
-            .AsSplitQuery()
-            .Include(p => p.Category)
-            .Include(p => p.Images)
-            .Include(p => p.Variants)
             .AsQueryable();
 
         // Apply filters
@@ -121,6 +117,10 @@ public class AdminProductsController : ControllerBase
 
         var total = await query.CountAsync();
         var products = await query
+            .Include(p => p.Category)
+            .Include(p => p.Images)
+            .Include(p => p.Variants)
+            .AsSplitQuery()
             .OrderByDescending(p => p.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)

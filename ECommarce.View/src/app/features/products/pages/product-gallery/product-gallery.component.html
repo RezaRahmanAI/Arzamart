@@ -89,7 +89,7 @@
         class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12"
       >
         <app-product-card
-          *ngFor="let product of products"
+          *ngFor="let product of products; trackBy: trackByProductId"
           [product]="product"
         ></app-product-card>
       </div>

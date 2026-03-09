@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { HttpContext } from "@angular/common/http";
 
@@ -13,7 +13,12 @@ import { SHOW_LOADING } from "../../../../core/services/loading.service";
   imports: [CommonModule, ProductCardComponent],
   templateUrl: "./featured-products.component.html",
   styleUrl: "./featured-products.component.css",
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeaturedProductsComponent {
   @Input() products: Product[] = [];
+
+  trackByProduct(index: number, product: Product): number {
+    return product.id;
+  }
 }

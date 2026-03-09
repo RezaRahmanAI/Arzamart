@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { ProductService } from "../../../../core/services/product.service";
@@ -31,11 +31,11 @@ import { CategorySectionComponent } from "../../components/category-section/cate
     WhyChooseUsComponent,
     TestimonialsComponent,
     NewsletterComponent,
-    CampaignSpotlightComponent,
-    CategorySectionComponent,
-  ],
+    CategorySectionComponent
+],
   templateUrl: "./home-page.component.html",
   styleUrl: "./home-page.component.css",
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePageComponent {
   private readonly productService = inject(ProductService);

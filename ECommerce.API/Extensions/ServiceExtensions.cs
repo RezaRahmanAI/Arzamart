@@ -38,7 +38,10 @@ public static class ServiceExtensions
         services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.SmallestSize);
 
         // 3. Caching
-        services.AddMemoryCache();
+        services.AddMemoryCache(options => 
+        {
+            options.SizeLimit = 1024;
+        });
         services.AddResponseCaching();
 
         // 4. Infrastructure
