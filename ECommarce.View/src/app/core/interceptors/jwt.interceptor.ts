@@ -1,129 +1,33 @@
 import {
   HttpInterceptorFn,
   HttpErrorResponse,
-  HttpRequest,
-  HttpHandlerFn,
-  HttpEvent,
-  HttpContextToken,
 } from "@angular/common/http";
 import { inject } from "@angular/core";
-import { Router } from "@angular/router";
-import { AuthService, AuthSession } from "../services/auth.service";
-import {
-  catchError,
-  switchMap,
-  throwError,
-  BehaviorSubject,
-  filter,
-  take,
-  Observable,
-  retry,
-  timer,
-} from "rxjs";
-
-let isRefreshing = false;
-const refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<
-  string | null
->(null);
+import { finalize, retry, timer } from "rxjs";
+import { LoadingService } from "../services/loading.service";
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const token = authService.getAccessToken();
+  const loading = inject(LoadingService);
+  const token = localStorage.getItem("arza_token");
+  const isFormData = req.body instanceof FormData;
 
-  if (token) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  loading.show();
+
+  const headers: Record<string, string> = {
+    Accept: "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
+  if (!isFormData && !req.headers.has("Content-Type")) {
+    headers["Content-Type"] = "application/json";
   }
 
-  return next(req).pipe(
+  return next(req.clone({ setHeaders: headers })).pipe(
     retry({
       count: 2,
-      delay: (error, retryCount) => {
-        // Only retry on network errors (status 0) or server errors (5xx)
-        if (error instanceof HttpErrorResponse && (error.status === 0 || error.status >= 500)) {
-          return timer(retryCount * 1000);
-        }
-        // Don't retry for 4xx errors (client errors)
-        throw error;
-      },
-      resetOnSuccess: true,
+      delay: (error, retryCount) => timer(retryCount * 1000),
     }),
-    catchError((error) => {
-      if (
-        error instanceof HttpErrorResponse &&
-        error.status === 401 &&
-        !req.url.includes("auth/login") &&
-        !req.url.includes("auth/refresh") &&
-        !req.url.includes("auth/logout")
-      ) {
-        return handle401Error(req, next, authService);
-      }
-      return throwError(() => error);
-    }),
+    finalize(() => loading.hide()),
   );
 };
 
-const handle401Error = (
-  req: HttpRequest<any>,
-  next: HttpHandlerFn,
-  authService: AuthService,
-): Observable<HttpEvent<any>> => {
-  if (!isRefreshing) {
-    isRefreshing = true;
-    refreshTokenSubject.next(null);
-
-    return authService.api
-      .post<AuthSession>("/auth/refresh", {}, { withCredentials: true })
-      .pipe(
-        switchMap((response) => {
-          isRefreshing = false;
-
-          // If the backend returned 204 No Content (null response), treat it as a failed refresh
-          if (!response || !response.accessToken) {
-            authService.logout();
-            return throwError(() => new Error("Session expired"));
-          }
-
-          authService.setSession(response);
-          refreshTokenSubject.next(response.accessToken ?? null);
-
-          return next(
-            req.clone({
-              setHeaders: {
-                Authorization: `Bearer ${response.accessToken}`,
-              },
-            }),
-          );
-        }),
-        catchError((err) => {
-          isRefreshing = false;
-          authService.logout();
-
-          // If refresh fails and we were on an admin route, redirect to login
-          if (req.url.includes("/admin")) {
-            const router = inject(Router); // Injectable inside functional interceptor helper
-            void router.navigateByUrl("/admin/login");
-          }
-
-          return throwError(() => err);
-        }),
-      );
-  } else {
-    return refreshTokenSubject.pipe(
-      filter((token) => token !== null),
-      take(1),
-      switchMap((token) => {
-        return next(
-          req.clone({
-            setHeaders: {
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-        );
-      }),
-    );
-  }
-};

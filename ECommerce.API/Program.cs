@@ -50,7 +50,7 @@ try
 
     // ── 3. Services Registration ─────────────────────────────────────
     builder.Services.AddDatabaseServices(builder.Configuration);
-    builder.Services.AddIdentityServices(builder.Configuration);
+    builder.Services.AddExoosisAuthServices(builder.Configuration);
     builder.Services.AddAppServices(builder.Configuration);
     builder.Services.AddCustomCors(builder.Configuration, builder.Environment);
     builder.Services.AddSwaggerServices(builder.Environment);
@@ -83,8 +83,8 @@ try
     app.UseRouting();
 
     app.UseAuthentication();
-    app.UseMiddleware<ECommerce.API.Middleware.RevokedTokenMiddleware>();
     app.UseAuthorization();
+
 
     app.UseResponseCaching();
 

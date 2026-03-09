@@ -51,8 +51,6 @@ public static class ServiceExtensions
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         // 5. Business Services
-        services.AddScoped<IJwtTokenService, JwtTokenService>();
-        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<CustomerService>();
         services.AddScoped<IDashboardService, DashboardService>();
@@ -100,21 +98,16 @@ public static class ServiceExtensions
             ?? config["AZURE_SQL_CONNECTIONSTRING"];
     }
 
-    public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddExoosisAuthServices(this IServiceCollection services, IConfiguration config)
     {
-        // Identity Setup
-        services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-        {
-            options.Password.RequireDigit = true;
-            options.Password.RequireLowercase = true;
-            options.Password.RequireUppercase = true;
-            options.Password.RequiredLength = 6;
-        })
-        .AddEntityFrameworkStores<ApplicationDbContext>()
-        .AddDefaultTokenProviders();
-
         // JWT Setup
-        var jwtKey = config["Token:Key"] ?? "Fallback_Key_For_Missing_Config_1234567890";
+        var jwtKey = config["Token:Key"] ?? "development_key_arzamart_123456789";
+        var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
+        if (keyBytes.Length < 32)
+        {
+            using var sha256 = SHA256.Create();
+            keyBytes = sha256.ComputeHash(keyBytes);
+        }
         
         services.AddAuthentication(options =>
         {
@@ -126,19 +119,21 @@ public static class ServiceExtensions
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
                 ValidIssuer = config["Token:Issuer"] ?? "ArzaMart",
                 ValidateIssuer = true,
                 ValidAudience = config["Token:Audience"] ?? "ArzaMartUsers",
                 ValidateAudience = true,
                 ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero,
-                RoleClaimType = System.Security.Claims.ClaimTypes.Role
+                ClockSkew = TimeSpan.Zero
             };
         });
 
+        services.AddAuthorization();
+
         return services;
     }
+
 
     public static IServiceCollection AddCustomCors(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
     {
