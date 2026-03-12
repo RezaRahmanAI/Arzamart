@@ -5,7 +5,8 @@ import { RouterModule } from "@angular/router";
 import { combineLatest, map } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
-import { AuthService, AuthUser } from "../../../../core/services/auth.service";
+import { AuthService } from "../../../../core/services/auth.service";
+import { User as AuthUser } from "../../../../core/models/entities";
 import { OrderService } from "../../../../core/services/order.service";
 import { UserService } from "../../../../core/services/user.service";
 import {
@@ -98,7 +99,7 @@ export class AccountPageComponent {
 
     // Update local auth state for immediate UI feedback
     this.authService.updateCurrentUser({
-      name,
+      fullName: name,
       email,
     });
   }

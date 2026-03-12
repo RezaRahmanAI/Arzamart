@@ -26,6 +26,7 @@ import {
   XCircle,
   ChevronLeft,
   ChevronRight,
+  Calendar,
 } from "lucide-angular";
 
 import {
@@ -72,6 +73,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     XCircle,
     ChevronLeft,
     ChevronRight,
+    Calendar,
   };
   private ordersService = inject(OrdersService);
   private destroy$ = new Subject<void>();
@@ -101,22 +103,35 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   statusClass(status: string): string {
     switch (status) {
       case "Pending":
-        return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200";
+        return "border-amber-500 bg-amber-50/50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-200";
       case "Confirmed":
-        return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200";
+        return "border-emerald-500 bg-emerald-50/50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200";
       case "Processing":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200";
+        return "border-yellow-500 bg-yellow-50/50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-200";
       case "Packed":
-        return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200";
+        return "border-indigo-500 bg-indigo-50/50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-200";
       case "Shipped":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200";
+        return "border-blue-500 bg-blue-50/50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-200";
       case "Delivered":
-        return "bg-accent/40 text-primary dark:bg-accent/20 dark:text-accent";
+        return "border-accent bg-accent/10 text-primary dark:bg-accent/20 dark:text-accent";
       case "Cancelled":
       case "Refund":
-        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200";
+        return "border-red-500 bg-red-50/50 text-red-700 dark:bg-red-900/20 dark:text-red-200";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "border-gray-300 bg-gray-50 text-gray-700";
+    }
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case "Pending": return "#f59e0b";
+      case "Confirmed": return "#10b981";
+      case "Processing": return "#eab308";
+      case "Packed": return "#6366f1";
+      case "Shipped": return "#3b82f6";
+      case "Delivered": return "#0d4c5e";
+      case "Cancelled": return "#ef4444";
+      default: return "#94a3b8";
     }
   }
 

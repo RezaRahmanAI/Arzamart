@@ -41,7 +41,7 @@ namespace ECommerce.API.Controllers
                 settings = new SiteSetting();
             }
 
-            _cache.Set(cacheKey, settings, TimeSpan.FromMinutes(10));
+            _cache.Set(cacheKey, settings, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
             return Ok(settings);
         }
 
@@ -60,7 +60,7 @@ namespace ECommerce.API.Controllers
                 .Where(m => m.IsActive)
                 .ToListAsync();
 
-            _cache.Set(cacheKey, methods, TimeSpan.FromMinutes(10));
+            _cache.Set(cacheKey, methods, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
             return Ok(methods);
         }
     }

@@ -27,6 +27,7 @@ public class NavigationService : INavigationService
     {
         return await _cache.GetOrCreateAsync(MegaMenuCacheKey, async entry =>
         {
+            entry.Size = 1;
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
 
             // Fetch categories with full hierarchy: Parent -> Child -> Collections (if any connected)

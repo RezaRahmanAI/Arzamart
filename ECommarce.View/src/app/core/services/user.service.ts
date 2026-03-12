@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { AuthUser } from './auth.service';
+import { User as AuthUser } from '../models/entities';
 import { Address, PaymentMethod, UserProfile } from '../models/user';
 
 @Injectable({
@@ -22,7 +22,7 @@ export class UserService {
 
     const newProfile: UserProfile = {
       id: user.id,
-      name: user.name,
+      name: user.fullName || user.name || 'User',
       email: user.email,
       addresses: [],
       paymentMethods: [],

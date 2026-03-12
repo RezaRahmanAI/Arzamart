@@ -17,15 +17,13 @@ namespace ECommerce.API.Controllers;
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly ApplicationDbContext _dbContext;
     private readonly IConfiguration _configuration;
-    private readonly PasswordHasher<ApplicationUser> _passwordHasher;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public AuthController(ApplicationDbContext dbContext, IConfiguration configuration)
+    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager)
     {
-        _dbContext = dbContext;
         _configuration = configuration;
-        _passwordHasher = new PasswordHasher<ApplicationUser>();
+        _userManager = userManager;
     }
 
     [HttpPost("login")]
@@ -37,7 +35,7 @@ public class AuthController : ControllerBase
         }
 
         var normalized = request.Identifier.Trim();
-        var user = await _dbContext.Users
+        var user = await _userManager.Users
             .FirstOrDefaultAsync(u => u.Email == normalized || u.UserName == normalized, cancellationToken);
 
         if (user is null)
@@ -45,19 +43,18 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid credentials.");
         }
 
-        if (string.IsNullOrWhiteSpace(user.PasswordHash))
+        var result = await _userManager.CheckPasswordAsync(user, request.Password);
+        if (!result)
         {
             return Unauthorized("Invalid credentials.");
         }
 
-        var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
-        if (result == PasswordVerificationResult.Failed)
-        {
-            return Unauthorized("Invalid credentials.");
-        }
+        // Fetch the highest priority role
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault() ?? user.Role ?? "Customer";
 
-        var token = GenerateToken(user);
-        return Ok(new AuthResponse(token, ToSummary(user)));
+        var token = GenerateToken(user, role);
+        return Ok(new AuthResponse(token, ToSummary(user, role)));
     }
 
     [Authorize]
@@ -70,13 +67,16 @@ public class AuthController : ControllerBase
             return Unauthorized();
         }
 
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
         {
             return Unauthorized();
         }
 
-        return Ok(ToSummary(user));
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault() ?? user.Role ?? "Customer";
+
+        return Ok(ToSummary(user, role));
     }
 
     [HttpPost("logout")]
@@ -85,7 +85,7 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
-    private string GenerateToken(ApplicationUser user)
+    private string GenerateToken(ApplicationUser user, string role)
     {
         var key = _configuration["Token:Key"] ?? "development_key_arzamart_123456789";
         var issuer = _configuration["Token:Issuer"] ?? "ArzaMart";
@@ -100,7 +100,6 @@ public class AuthController : ControllerBase
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var email = user.Email ?? string.Empty;
-        var role = string.IsNullOrWhiteSpace(user.Role) ? "Customer" : user.Role;
         var displayName = user.FullName ?? user.UserName ?? email;
 
         var claims = new List<Claim>
@@ -121,13 +120,13 @@ public class AuthController : ControllerBase
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    private static UserSummary ToSummary(ApplicationUser user)
+    private static UserSummary ToSummary(ApplicationUser user, string role)
     {
         return new UserSummary(
             user.Id,
             user.FullName ?? user.UserName ?? "User",
             user.Email ?? string.Empty,
-            user.Role,
+            role,
             user.Phone);
     }
 }

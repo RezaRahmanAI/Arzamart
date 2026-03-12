@@ -34,7 +34,8 @@ public static class DataSeeder
                 UserName = primaryAdminEmail,
                 Email = primaryAdminEmail,
                 FullName = "System Admin",
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                Role = "Admin"
             };
 
             var result = await userManager.CreateAsync(newAdmin, "Admin@123!");
@@ -53,7 +54,8 @@ public static class DataSeeder
                 UserName = "admin@gmail.com",
                 Email = "admin@gmail.com",
                 FullName = "Admin User",
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                Role = "Admin"
             };
 
             var result = await userManager.CreateAsync(adminUser, "Admin123");

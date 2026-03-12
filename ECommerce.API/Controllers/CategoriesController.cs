@@ -38,7 +38,7 @@ public class CategoriesController : ControllerBase
         var categories = await _categoryRepo.ListAsync(spec);
         var result = _mapper.Map<IReadOnlyList<CategoryDto>>(categories);
         
-        _cache.Set(cacheKey, result, TimeSpan.FromMinutes(10));
+        _cache.Set(cacheKey, result, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
         return Ok(result);
     }
 }

@@ -80,6 +80,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasIndex(p => new { p.IsActive, p.CategoryId })
                   .HasFilter("[IsActive] = 1")
                   .HasDatabaseName("IX_Products_Storefront_Active");
+
+            // Additional indexes for common queries
+            entity.HasIndex(p => p.StockQuantity);
+            entity.HasIndex(p => p.CreatedAt);
         });
         
         // Product Variant Configuration
@@ -93,6 +97,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .WithMany(p => p.Variants)
                   .HasForeignKey(v => v.ProductId)
                   .OnDelete(DeleteBehavior.Cascade);
+
+            // Performance index
+            entity.HasIndex(v => v.ProductId);
         });
 
         // Category Self-Referencing Hierarchy
@@ -165,6 +172,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .WithMany()
                   .HasForeignKey(i => i.ProductId)
                   .OnDelete(DeleteBehavior.Restrict);
+
+            // Performance index for aggregations
+            entity.HasIndex(i => i.ProductId);
+            entity.HasIndex(i => i.OrderId);
         });
 
         // Site Settings
@@ -178,6 +189,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Customer>(entity =>
         {
             entity.HasIndex(c => c.Phone).IsUnique();
+            entity.HasIndex(c => c.CreatedAt);
         });
 
         // Cart Configuration

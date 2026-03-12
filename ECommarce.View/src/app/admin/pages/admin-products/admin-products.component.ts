@@ -26,6 +26,7 @@ import {
   ChevronDown,
   AlertTriangle,
   Rocket,
+  Package,
 } from "lucide-angular";
 
 @Component({
@@ -54,6 +55,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     ChevronDown,
     AlertTriangle,
     Rocket,
+    Package,
   };
   private productsService = inject(ProductsService);
   readonly imageUrlService = inject(ImageUrlService);
@@ -254,7 +256,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   }
 
   isOutOfStock(product: AdminProduct): boolean {
-    return product.stockQuantity === 0 || product.status === "Out of Stock";
+    return (product.stockQuantity ?? 0) === 0 || product.status === "Out of Stock";
   }
 
   isLowStock(product: AdminProduct): boolean {

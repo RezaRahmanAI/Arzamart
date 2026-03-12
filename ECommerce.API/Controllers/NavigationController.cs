@@ -27,7 +27,7 @@ public class NavigationController : BaseApiController
         }
 
         var menu = await _navigationService.GetMegaMenuAsync();
-        _cache.Set(cacheKey, menu, TimeSpan.FromMinutes(10));
+        _cache.Set(cacheKey, menu, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
         return Ok(menu);
     }
 }

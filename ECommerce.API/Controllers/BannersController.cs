@@ -46,7 +46,7 @@ public class BannersController : ControllerBase
             DisplayOrder = b.DisplayOrder
         }).ToList();
 
-        _cache.Set(cacheKey, bannerDtos, TimeSpan.FromMinutes(10));
+        _cache.Set(cacheKey, bannerDtos, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
         return Ok(bannerDtos);
     }
 }

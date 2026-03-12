@@ -13,9 +13,7 @@ import {
   HttpContext,
 // BYPASS_LOGGING imported above
 } from "@angular/common/http";
-import { APP_INITIALIZER, provideZoneChangeDetection } from "@angular/core";
-import { of, EMPTY } from "rxjs";
-import { catchError, tap } from "rxjs/operators";
+import { provideZoneChangeDetection } from "@angular/core";
 import { AuthService } from "./app/core/services/auth.service";
 
 import { AppComponent } from "./app/app.component";
@@ -58,36 +56,5 @@ bootstrapApplication(AppComponent, {
         baseUrl: environment.apiBaseUrl,
       },
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (authService: AuthService) => () => {
-        // Only attempt silent refresh if we don't have a token (startup/refresh)
-        if (!authService.getAccessToken()) {
-          // Use a direct HttpContext to signal interceptors not to log this specific call
-          return authService.api
-            .post<any>(
-              "/auth/refresh",
-              {},
-              {
-                context: new HttpContext().set(BYPASS_LOGGING, true),
-                withCredentials: true, // Professional standard: explicit withCredentials
-              },
-            )
-            .pipe(
-              tap((response) => {
-                if (response) {
-                  authService.setSession(response);
-                }
-              }),
-              catchError(() => {
-                return EMPTY;
-              }),
-            );
-        }
-        return of(null);
-      },
-      deps: [AuthService],
-      multi: true,
-    },
   ],
-}).catch((err) => console.error(err));
+})

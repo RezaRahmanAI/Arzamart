@@ -210,17 +210,19 @@ public class OrderService : IOrderService
             // Restore stock if cancelling
             if (newStatus == OrderStatus.Cancelled && order.Status != OrderStatus.Cancelled)
             {
+                // Bulk fetch all products at once to avoid N+1
+                var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
+                var products = await _unitOfWork.Repository<Product>().ListAsync(
+                    new ProductsWithCategoriesSpecification(productIds), track: true);
+                var productDict = products.ToDictionary(p => p.Id);
+
                 foreach (var item in order.Items)
                 {
-                    var productSpec = new ProductsWithCategoriesSpecification(item.ProductId);
-                    var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec<Product>(productSpec);
-                    
-                    if (product != null)
+                    if (productDict.TryGetValue(item.ProductId, out var product))
                     {
                         int multiplier = product.IsBundle ? product.BundleQuantity : 1;
                         // Restore Product Stock
                         product.StockQuantity += item.Quantity * multiplier;
-                        _unitOfWork.Repository<Product>().Update(product);
 
                         if (!string.IsNullOrEmpty(item.Size))
                         {
@@ -231,7 +233,6 @@ public class OrderService : IOrderService
                             if (variant != null)
                             {
                                 variant.StockQuantity += item.Quantity * multiplier;
-                                _unitOfWork.Repository<ProductVariant>().Update(variant);
                             }
                         }
                     }

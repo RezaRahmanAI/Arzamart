@@ -27,55 +27,51 @@ public class DashboardService : IDashboardService
     {
         return await _cache.GetOrCreateAsync(DashboardStatsCacheKey, async entry =>
         {
+            entry.Size = 1;
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
 
-            var totalOrders = await _context.Orders.AsNoTracking().CountAsync();
-            var totalProducts = await _context.Products.AsNoTracking().CountAsync();
-            var totalCustomers = await _context.Users.AsNoTracking().CountAsync();
-            
-            var deliveredOrders = await _context.Orders.AsNoTracking().CountAsync(o => o.Status == OrderStatus.Delivered);
-            var pendingOrders = await _context.Orders.AsNoTracking().CountAsync(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Processing);
-            var shippedOrders = await _context.Orders.AsNoTracking().CountAsync(o => o.Status == OrderStatus.Shipped);
-            var cancelledOrders = await _context.Orders.AsNoTracking().CountAsync(o => o.Status == OrderStatus.Cancelled);
-
-            // Revenue from Confirmed, Processing, Packed, Shipped, Delivered (All valid sales)
             var validStatuses = new[] { OrderStatus.Pending, OrderStatus.Confirmed, OrderStatus.Processing, OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered };
 
-            var totalRevenue = await _context.Orders
+            // Single combined query for order stats
+            var orderStats = await _context.Orders
                 .AsNoTracking()
-                .Where(o => validStatuses.Contains(o.Status))
-                .SumAsync(o => (decimal?)o.Total) ?? 0;
+                .GroupBy(o => 1)
+                .Select(g => new
+                {
+                    TotalOrders = g.Count(),
+                    TotalRevenue = g.Where(o => validStatuses.Contains(o.Status)).Sum(o => (decimal?)o.Total) ?? 0,
+                    DeliveredOrders = g.Count(o => o.Status == OrderStatus.Delivered),
+                    PendingOrders = g.Count(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Processing),
+                    ShippedOrders = g.Count(o => o.Status == OrderStatus.Shipped),
+                    CancelledOrders = g.Count(o => o.Status == OrderStatus.Cancelled)
+                })
+                .FirstOrDefaultAsync();
 
-            // Calculate Average Selling Price (ASP)
-            var totalItemsSold = await _context.Orders
-                .AsNoTracking()
-                .Where(o => validStatuses.Contains(o.Status))
-                .SelectMany(o => o.Items)
-                .SumAsync(i => (int?)i.Quantity) ?? 0;
-                
-            var avgSellingPrice = totalItemsSold > 0 ? totalRevenue / totalItemsSold : 0;
+            var totalOrders = orderStats?.TotalOrders ?? 0;
+            var totalProducts = await _context.Products.AsNoTracking().CountAsync();
+            var totalCustomers = await _context.Users.AsNoTracking().CountAsync();
 
-            var soldItems = await _context.Orders
+            // Single query for sold items with product costs (fixed N+1)
+            var soldItemsWithCosts = await _context.Orders
                 .AsNoTracking()
                 .Where(o => validStatuses.Contains(o.Status))
                 .SelectMany(o => o.Items)
                 .GroupBy(i => i.ProductId)
-                .Select(g => new { ProductId = g.Key, Quantity = g.Sum(i => i.Quantity) })
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    Quantity = g.Sum(i => i.Quantity),
+                    Product = _context.Products
+                        .Where(p => p.Id == g.Key)
+                        .Select(p => p.Variants.OrderBy(v => v.Id).Select(v => (decimal?)v.PurchaseRate).FirstOrDefault() ?? 0)
+                        .FirstOrDefault()
+                })
                 .ToListAsync();
 
-            var productIds = soldItems.Select(s => s.ProductId).ToList();
-
-            var productCosts = await _context.Products
-                .AsNoTracking()
-                .Where(p => productIds.Contains(p.Id))
-                .Select(p => new
-                {
-                    p.Id,
-                    PurchaseRate = p.Variants.OrderBy(v => v.Id).Select(v => (decimal?)v.PurchaseRate).FirstOrDefault() ?? 0
-                })
-                .ToDictionaryAsync(p => p.Id, p => p.PurchaseRate);
-
-            var totalPurchaseCost = soldItems.Sum(s => s.Quantity * (productCosts.ContainsKey(s.ProductId) ? productCosts[s.ProductId] : 0));
+            var totalItemsSold = soldItemsWithCosts.Sum(s => s.Quantity);
+            var totalRevenue = orderStats?.TotalRevenue ?? 0;
+            var avgSellingPrice = totalItemsSold > 0 ? totalRevenue / totalItemsSold : 0;
+            var totalPurchaseCost = soldItemsWithCosts.Sum(s => s.Quantity * s.Product);
 
             return new DashboardStatsDto
             {
@@ -83,10 +79,10 @@ public class DashboardService : IDashboardService
                 TotalProducts = totalProducts,
                 TotalCustomers = totalCustomers,
                 TotalRevenue = totalRevenue,
-                DeliveredOrders = deliveredOrders,
-                PendingOrders = pendingOrders,
-                ReturnedOrders = 0, // Placeholder as there's no Return status yet
-                CustomerQueries = 0, // Placeholder
+                DeliveredOrders = orderStats?.DeliveredOrders ?? 0,
+                PendingOrders = orderStats?.PendingOrders ?? 0,
+                ReturnedOrders = 0,
+                CustomerQueries = 0,
                 TotalPurchaseCost = totalPurchaseCost,
                 AverageSellingPrice = avgSellingPrice,
                 ReturnValue = 0,
@@ -98,33 +94,40 @@ public class DashboardService : IDashboardService
 
     public async Task<List<PopularProductDto>> GetPopularProductsAsync()
     {
+        var validStatuses = new[] { OrderStatus.Confirmed, OrderStatus.Processing, OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered };
+
+        // Get sold counts per product in a single query
+        var soldCounts = await _context.Orders
+            .AsNoTracking()
+            .Where(o => validStatuses.Contains(o.Status))
+            .SelectMany(o => o.Items)
+            .GroupBy(i => i.ProductId)
+            .Select(g => new { ProductId = g.Key, SoldCount = g.Sum(i => i.Quantity) })
+            .ToDictionaryAsync(x => x.ProductId, x => x.SoldCount);
+
+        // Get products with includes
         var products = await _context.Products
             .AsNoTracking()
             .Include(p => p.Images)
             .Include(p => p.Variants)
-            .Select(p => new
+            .Take(100) // Limit initial fetch
+            .ToListAsync();
+
+        var result = products
+            .Select(p => new PopularProductDto
             {
-                Product = p,
-                SoldCount = _context.Orders
-                    .AsNoTracking()
-                    .Where(o => o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Processing || o.Status == OrderStatus.Packed || o.Status == OrderStatus.Shipped || o.Status == OrderStatus.Delivered)
-                    .SelectMany(o => o.Items)
-                    .Where(i => i.ProductId == p.Id)
-                    .Sum(i => (int?)i.Quantity) ?? 0
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Variants.FirstOrDefault()?.Price ?? 0,
+                Stock = p.StockQuantity,
+                SoldCount = soldCounts.GetValueOrDefault(p.Id, 0),
+                ImageUrl = p.ImageUrl ?? p.Images.FirstOrDefault()?.Url ?? ""
             })
             .OrderByDescending(x => x.SoldCount)
             .Take(5)
-            .ToListAsync();
+            .ToList();
 
-        return products.Select(x => new PopularProductDto
-        {
-            Id = x.Product.Id,
-            Name = x.Product.Name,
-            Price = x.Product.Variants.FirstOrDefault()?.Price ?? 0,
-            Stock = x.Product.StockQuantity,
-            SoldCount = x.SoldCount,
-            ImageUrl = x.Product.ImageUrl ?? x.Product.Images.FirstOrDefault()?.Url ?? ""
-        }).ToList();
+        return result;
     }
 
     public async Task<List<RecentOrderDto>> GetRecentOrdersAsync()

@@ -156,7 +156,7 @@ public class CartController : ControllerBase
         return Ok(MapToDto(cart));
     }
 
-    [HttpDelete]
+    [HttpPost("delete")]
     public async Task<ActionResult> ClearCart()
     {
         var cart = await GetOrCreateCartAsync();

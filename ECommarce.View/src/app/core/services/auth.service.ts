@@ -14,7 +14,7 @@ export class AuthService {
   private currentUserKey = "arza-user";
   private tokenKey = "arza_token";
 
-  private api = inject(ApiHttpClient);
+  api = inject(ApiHttpClient);
 
   constructor() {
     this.hydrateSession();
@@ -44,7 +44,6 @@ export class AuthService {
     return this.api.post<AuthResponse>("/auth/login", payload).pipe(
       tap((response) => this.setSession(response.user, response.token)),
       map((response) => response.user),
-      catchError(() => of(null)),
     );
   }
 
@@ -86,7 +85,55 @@ export class AuthService {
     return !!this.userSubject.value;
   }
 
-  // Helper for existing components that might use currentUserSnapshot
+  // Compatibility Methods
+  isLoggedIn(): boolean {
+    return !!this.userSubject.value;
+  }
+
+  getRole(): string | undefined {
+    return this.userSubject.value?.role;
+  }
+
+  adminLogin(email: string, password: string): Observable<User | null> {
+    return this.login(email, password);
+  }
+
+  customerPhoneLogin(phone: string): Observable<User | null> {
+    // For MVP/Guest checkout, we might just "identify" them or do a silent login
+    // If backend doesn't have a specific endpoint, we can use a mock or a simple me call
+    return this.api.get<User>(`/customers/lookup?phone=${phone}`).pipe(
+      tap((user) => {
+        if (user) {
+          this.setSession(user, this.getAccessToken() || "");
+        }
+      }),
+    );
+  }
+
+  saveEmail(email: string): void {
+    localStorage.setItem("arza-saved-email", email);
+  }
+
+  getSavedEmail(): string | null {
+    return localStorage.getItem("arza-saved-email");
+  }
+
+  clearSavedEmail(): void {
+    localStorage.removeItem("arza-saved-email");
+  }
+
+  updateCurrentUser(partial: Partial<User>): void {
+    const current = this.userSubject.value;
+    if (current) {
+      const updated = { ...current, ...partial };
+      // Ensure name and fullName stay in sync if one is provided
+      if (partial.name && !partial.fullName) updated.fullName = partial.name;
+      if (partial.fullName && !partial.name) updated.name = partial.fullName;
+
+      this.setSession(updated, this.getAccessToken() || "");
+    }
+  }
+
   currentUserSnapshot(): User | null {
     return this.userSubject.value;
   }

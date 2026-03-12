@@ -46,10 +46,21 @@ public class HomeController : ControllerBase
             return Ok(cached);
         }
 
-        // 1. Fetch Banners
-        var bannerSpec = new HeroBannerSpecification(isActive: true);
-        var banners = await _bannerRepo.ListAsync(bannerSpec);
-        var bannerDtos = banners.Select(b => new HeroBannerDto
+        // Run all queries in parallel for better performance
+        var bannerTask = _bannerRepo.ListAsync(new HeroBannerSpecification(isActive: true));
+        var newArrivalsTask = _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
+            sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
+            categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
+            tier: null, tags: null, isNew: true, isFeatured: null, skip: 0, take: 10));
+        var featuredTask = _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
+            sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
+            categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
+            tier: null, tags: null, isNew: null, isFeatured: true, skip: 0, take: 10));
+        var categoriesTask = _categoryRepo.ListAsync(new CategoriesWithSubCategoriesSpec());
+
+        await Task.WhenAll(bannerTask, newArrivalsTask, featuredTask, categoriesTask);
+
+        var bannerDtos = bannerTask.Result.Select(b => new HeroBannerDto
         {
             Id = b.Id,
             Title = b.Title ?? "",
@@ -61,27 +72,9 @@ public class HomeController : ControllerBase
             DisplayOrder = b.DisplayOrder
         }).ToList();
 
-        // 2. Fetch New Arrivals
-        var newArrivalsSpec = new ProductsWithCategoriesSpecification(
-            sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
-            categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
-            tier: null, tags: null, isNew: true, isFeatured: null, skip: 0, take: 10);
-        var newArrivals = await _productRepo.ListAsync(newArrivalsSpec);
-        var newArrivalsDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(newArrivals);
-
-        // 3. Fetch Featured Products
-        var featuredSpec = new ProductsWithCategoriesSpecification(
-            sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
-            categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
-            tier: null, tags: null, isNew: null, isFeatured: true, skip: 0, take: 10);
-        var featuredProducts = await _productRepo.ListAsync(featuredSpec);
-        
-        var featuredDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(featuredProducts);
-
-        // 4. Fetch Top Categories
-        var catSpec = new CategoriesWithSubCategoriesSpec();
-        var categories = await _categoryRepo.ListAsync(catSpec);
-        var categoryDtos = _mapper.Map<IReadOnlyList<CategoryDto>>(categories);
+        var newArrivalsDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(newArrivalsTask.Result);
+        var featuredDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(featuredTask.Result);
+        var categoryDtos = _mapper.Map<IReadOnlyList<CategoryDto>>(categoriesTask.Result);
 
         var result = new HomePageDto
         {
@@ -91,7 +84,7 @@ public class HomeController : ControllerBase
             Categories = categoryDtos
         };
 
-        _cache.Set(cacheKey, result, TimeSpan.FromMinutes(10));
+        _cache.Set(cacheKey, result, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
 
         return Ok(result);
     }

@@ -58,16 +58,29 @@ namespace ECommerce.Infrastructure.Services
             }
 
             // 2. Try Identity PBKDF2 (Old Format)
-            if (!passwordValid)
+            if (!passwordValid && !string.IsNullOrEmpty(user.PasswordHash))
             {
-                var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash!, loginDto.Password);
-                if (result == PasswordVerificationResult.Success || result == PasswordVerificationResult.SuccessRehashNeeded)
+                try 
                 {
-                    passwordValid = true;
-                    // Migrate to BCrypt
-                    user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(loginDto.Password);
-                    user.PasswordSalt = "BCrypt";
-                    await _userManager.UpdateAsync(user);
+                    // Only attempt Identity verification if it's not a BCrypt hash (starts with $)
+                    // Identity hashes are Base64 strings.
+                    if (!user.PasswordHash.StartsWith("$"))
+                    {
+                        var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, loginDto.Password);
+                        if (result == PasswordVerificationResult.Success || result == PasswordVerificationResult.SuccessRehashNeeded)
+                        {
+                            passwordValid = true;
+                            // Migrate to BCrypt
+                            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(loginDto.Password);
+                            user.PasswordSalt = "BCrypt";
+                            await _userManager.UpdateAsync(user);
+                        }
+                    }
+                }
+                catch
+                {
+                    // If Identity verification fails due to format (e.g. invalid Base64), 
+                    // we've already tried BCrypt, so we just let passwordValid stay false.
                 }
             }
 

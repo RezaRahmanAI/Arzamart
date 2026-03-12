@@ -107,8 +107,8 @@ public class ProductService : IProductService
             {
                 product.Variants.Add(new ProductVariant {
                     Sku = v.Sku,
-                    Price = v.Price,
-                    CompareAtPrice = v.SalePrice,
+                    Price = v.SalePrice ?? v.Price,
+                    CompareAtPrice = v.SalePrice.HasValue ? v.Price : null,
                     PurchaseRate = v.PurchaseRate,
                     StockQuantity = v.Inventory,
                     Size = v.Label
@@ -196,8 +196,8 @@ public class ProductService : IProductService
         {
             product.Variants.Add(new ProductVariant {
                 Sku = v.Sku,
-                Price = v.Price,
-                CompareAtPrice = v.SalePrice,
+                Price = v.SalePrice ?? v.Price,
+                CompareAtPrice = v.SalePrice.HasValue ? v.Price : null,
                 PurchaseRate = v.PurchaseRate,
                 StockQuantity = v.Inventory,
                 Size = v.Label
@@ -237,13 +237,14 @@ public class ProductService : IProductService
 
     public async Task<List<string>> GetAvailableSizesAsync()
     {
-        return await _unitOfWork.Repository<ProductVariant>()
-            .ListAllAsync()
-            .ContinueWith(t => t.Result
-                .Select(v => v.Size)
-                .Where(s => !string.IsNullOrEmpty(s))
-                .Distinct()
-                .OrderBy(s => s)
-                .ToList());
+        var sizes = await _unitOfWork.Repository<ProductVariant>()
+            .GetQueryable()
+            .Where(v => !string.IsNullOrEmpty(v.Size))
+            .Select(v => v.Size)
+            .Distinct()
+            .OrderBy(s => s)
+            .ToListAsync();
+        
+        return sizes ?? new List<string>();
     }
 }
