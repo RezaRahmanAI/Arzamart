@@ -1,7 +1,7 @@
 <ng-container *ngFor="let vm of [vm$ | async]">
   <div *ngIf="vm" class="bg-[#f5f5f3] min-h-screen font-sans text-[#1a1a1a]">
     <!-- Breadcrumb -->
-    <div class="max-w-[1400px] mx-auto px-6 lg:px-12 pt-28 pb-6">
+    <div class="max-w-[1200px] mx-auto px-6 lg:px-12 pt-16 pb-2">
       <nav
         class="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-[#999]"
       >
@@ -14,178 +14,172 @@
     </div>
 
     <!-- Main Product Layout -->
-    <div class="max-w-[1400px] mx-auto px-6 lg:px-12 pb-20">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 xl:gap-24">
+    <div class="max-w-[1240px] mx-auto px-6 lg:px-10 pb-12">
+      <!-- Mobile-only header (shown above image) -->
+      <div class="lg:hidden mb-6 space-y-2 text-center lg:text-left">
+        <h1 class="text-2xl font-serif italic text-[#1a1a1a] leading-tight">
+          {{ vm.product.name }}
+        </h1>
+        <div class="flex items-center justify-center lg:justify-start gap-4 text-[9px] uppercase tracking-[0.2em] font-bold text-[#bbb]">
+          <span class="text-[#1a1a1a]">{{ vm.product.sku }}</span>
+          <span *ngIf="vm.product.shortDescription" class="text-[#c8922a]">• {{ vm.product.shortDescription }}</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
         <!-- ===== LEFT: Image Gallery & Description (Unified) ===== -->
-        <div class="lg:col-span-7 flex flex-col gap-12">
-          <div class="relative">
-            <!-- Main Image -->
-            <div
-              class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4]"
-            >
-              <!-- Images -->
-              <ng-container *ngFor="let url of vm.gallery; let i = index">
-                <img
-                  [src]="imageUrlService.getImageUrl(url)"
-                  [alt]="vm.product.name"
-                  class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out"
-                  [class.opacity-100]="i === currentImageIndex"
-                  [class.opacity-0]="i !== currentImageIndex"
-                />
-              </ng-container>
-
-              <!-- Tier Badge -->
-              <div *ngIf="vm.product.tier" class="absolute top-6 right-6 z-10">
-                <span
-                  class="px-4 py-1.5 bg-white/95 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] border border-[#eee] backdrop-blur-sm shadow-sm"
+        <div class="lg:col-span-6 flex flex-col gap-10">
+            <div class="flex flex-row lg:flex-col gap-4">
+              <!-- Main Image Area -->
+              <div class="relative flex-1">
+                <div
+                  class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[550px]"
                 >
-                  {{ vm.product.tier }}
-                </span>
+                  <!-- Images -->
+                  <ng-container *ngFor="let url of vm.gallery; let i = index">
+                    <img
+                      [src]="imageUrlService.getImageUrl(url)"
+                      [alt]="vm.product.name"
+                      class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out"
+                      [class.opacity-100]="i === currentImageIndex"
+                      [class.opacity-0]="i !== currentImageIndex"
+                    />
+                  </ng-container>
+
+                  <!-- Tier Badge -->
+                  <div
+                    *ngIf="vm.product.tier"
+                    class="absolute top-6 right-6 z-10"
+                  >
+                    <span
+                      class="px-4 py-1.5 bg-white/95 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] border border-[#eee] backdrop-blur-sm shadow-sm"
+                    >
+                      {{ vm.product.tier }}
+                    </span>
+                  </div>
+
+                  <!-- Nav Arrows -->
+                  <button
+                    *ngIf="vm.gallery.length > 1"
+                    (click)="prevImage(vm.gallery)"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
+                  >
+                    <lucide-icon
+                      [img]="icons.ChevronLeft"
+                      class="w-4 h-4"
+                    ></lucide-icon>
+                  </button>
+                  <button
+                    *ngIf="vm.gallery.length > 1"
+                    (click)="nextImage(vm.gallery)"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
+                  >
+                    <lucide-icon
+                      [img]="icons.ChevronRight"
+                      class="w-4 h-4"
+                    ></lucide-icon>
+                  </button>
+                </div>
               </div>
 
-              <!-- Nav Arrows (Subtle) -->
-              <button
+              <!-- Thumbnails (Right on Mobile, Bottom on Desktop) -->
+              <div
                 *ngIf="vm.gallery.length > 1"
-                (click)="prevImage(vm.gallery)"
-                class="absolute left-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
+                class="flex flex-col lg:flex-row gap-2 overflow-x-auto lg:overflow-x-auto scrollbar-hide w-16 lg:w-full flex-shrink-0"
               >
-                <lucide-icon
-                  [img]="icons.ChevronLeft"
-                  class="w-5 h-5"
-                ></lucide-icon>
-              </button>
-              <button
-                *ngIf="vm.gallery.length > 1"
-                (click)="nextImage(vm.gallery)"
-                class="absolute right-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
-              >
-                <lucide-icon
-                  [img]="icons.ChevronRight"
-                  class="w-5 h-5"
-                ></lucide-icon>
-              </button>
-            </div>
-
-            <!-- Progress Indicator -->
-            <div
-              *ngIf="vm.gallery.length > 1"
-              class="flex items-center gap-4 mt-6"
-            >
-              <span
-                class="text-[9px] uppercase tracking-[0.3em] text-[#999] font-bold"
-              >
-                {{ (currentImageIndex + 1).toString().padStart(2, "0") }} /
-                {{ vm.gallery.length.toString().padStart(2, "0") }}
-              </span>
-              <div class="flex-1 h-[1px] bg-[#e5e5e5]">
-                <div
-                  class="h-full bg-[#1a1a1a] transition-all duration-700 ease-out"
-                  [style.width.%]="
-                    ((currentImageIndex + 1) / vm.gallery.length) * 100
-                  "
-                ></div>
+                <button
+                  *ngFor="let url of vm.gallery; let i = index"
+                  (click)="goToImage(i)"
+                  class="flex-shrink-0 w-full h-20 lg:w-20 lg:h-24 border transition-all duration-300 overflow-hidden relative"
+                  [class.border-[#1a1a1a]]="i === currentImageIndex"
+                  [class.border-transparent]="i !== currentImageIndex"
+                >
+                  <img
+                    [src]="imageUrlService.getImageUrl(url)"
+                    class="w-full h-full object-cover"
+                    [class.opacity-60]="i !== currentImageIndex"
+                  />
+                  <!-- Selection Indicator Line -->
+                  <div
+                    *ngIf="i === currentImageIndex"
+                    class="absolute bottom-0 left-0 w-full h-0.5 bg-[#1a1a1a]"
+                  ></div>
+                </button>
               </div>
             </div>
 
-            <!-- Thumbnail Row -->
-            <div
-              *ngIf="vm.gallery.length > 1"
-              class="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide"
-            >
-              <button
-                *ngFor="let url of vm.gallery; let i = index"
-                (click)="goToImage(i)"
-                class="flex-shrink-0 w-20 h-24 border transition-all duration-500 overflow-hidden"
-                [class.border-[#1a1a1a]]="i === currentImageIndex"
-                [class.border-transparent]="i !== currentImageIndex"
-                [class.opacity-60]="i !== currentImageIndex"
-              >
-                <img
-                  [src]="imageUrlService.getImageUrl(url)"
-                  class="w-full h-full object-cover"
-                />
-              </button>
-            </div>
-          </div>
-
-          <!-- Description & Details (Always below Image Gallery) -->
-          <div class="space-y-12 py-12 border-t border-[#eee]">
-            <!-- Primary Description -->
-            <div class="space-y-6">
-              <h3
-                class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#c8922a]"
-              >
-                Description
-              </h3>
-              <p
-                class="text-[17px] text-[#444] leading-[1.8] font-light max-w-[90%]"
-                [innerHTML]="vm.product.description | safeHtml"
-              ></p>
-            </div>
-
-            <!-- Accordions (Polished) -->
-            <div class="divide-y divide-[#eee] border-y border-[#eee]">
-              <details class="group" *ngIf="vm.product.fabricAndCare">
-                <summary
-                  class="flex items-center justify-between py-6 cursor-pointer list-none"
+            <!-- Description & Details (Desktop Only: In Left Column) -->
+            <div class="hidden lg:block space-y-8 py-8 border-t border-[#eee] mt-10">
+              <!-- Primary Description -->
+              <div class="space-y-4">
+                <h3
+                  class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#c8922a]"
                 >
-                  <span
-                    class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
-                    >Details & Composition</span
+                  Description
+                </h3>
+                <p
+                  class="text-[17px] text-[#444] leading-[1.8] font-light max-w-[90%]"
+                  [innerHTML]="vm.product.description | safeHtml"
+                ></p>
+              </div>
+
+              <!-- Accordions -->
+              <div class="divide-y divide-[#eee] border-y border-[#eee]">
+                <details class="group" *ngIf="vm.product.fabricAndCare">
+                  <summary
+                    class="flex items-center justify-between py-6 cursor-pointer list-none"
                   >
-                  <lucide-icon
-                    [img]="icons.Plus"
-                    class="w-4 h-4 text-[#bbb] group-open:rotate-45 transition-transform duration-300"
-                  ></lucide-icon>
-                </summary>
-                <div
-                  class="pb-8 text-[14px] text-[#666] leading-relaxed font-light"
-                >
-                  {{ vm.product.fabricAndCare }}
-                </div>
-              </details>
-
-              <details class="group">
-                <summary
-                  class="flex items-center justify-between py-6 cursor-pointer list-none"
-                >
-                  <span
-                    class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
-                    >Materials & Care</span
+                    <span
+                      class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
+                      >Details & Composition</span
+                    >
+                    <lucide-icon
+                      [img]="icons.Plus"
+                      class="w-4 h-4 text-[#bbb] group-open:rotate-45 transition-transform duration-300"
+                    ></lucide-icon>
+                  </summary>
+                  <div
+                    class="pb-8 text-[14px] text-[#666] leading-relaxed font-light"
                   >
-                  <lucide-icon
-                    [img]="icons.Plus"
-                    class="w-4 h-4 text-[#bbb] group-open:rotate-45 transition-transform duration-300"
-                  ></lucide-icon>
-                </summary>
-                <div
-                  class="pb-8 text-[14px] text-[#666] leading-relaxed font-light space-y-4"
-                >
-                  <p>
-                    Expertly crafted using high-quality materials to ensure both
-                    luxury and longevity. We recommend following specialized
-                    care instructions to maintain the original appearance.
-                  </p>
-                  <p>
-                    {{
-                      vm.product.shippingAndReturns ||
-                        "Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary."
-                    }}
-                  </p>
-                </div>
-              </details>
+                    {{ vm.product.fabricAndCare }}
+                  </div>
+                </details>
+
+                <details class="group">
+                  <summary
+                    class="flex items-center justify-between py-4 cursor-pointer list-none"
+                  >
+                    <span
+                      class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
+                      >Materials & Care</span
+                    >
+                    <lucide-icon
+                      [img]="icons.Plus"
+                      class="w-4 h-4 text-[#bbb] group-open:rotate-45 transition-transform duration-300"
+                    ></lucide-icon>
+                  </summary>
+                  <div
+                    class="pb-8 text-[14px] text-[#666] leading-relaxed font-light space-y-4"
+                  >
+                    <p>
+                      {{
+                        vm.product.shippingAndReturns ||
+                          "Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary."
+                      }}
+                    </p>
+                  </div>
+                </details>
+              </div>
             </div>
-          </div>
+
         </div>
 
         <!-- ===== RIGHT: Product Info & Actions (Sticky) ===== -->
-        <div class="lg:col-span-5 lg:sticky lg:top-32 lg:self-start">
+        <div class="lg:col-span-6 lg:sticky lg:top-24 lg:self-start">
           <div class="flex flex-col gap-10">
-            <!-- Product Identity -->
-            <div class="space-y-4">
-              <h1
-                class="text-4xl md:text-5xl font-serif italic text-[#1a1a1a] leading-[1.1]"
-              >
+            <!-- Product Identity (Desktop Only) -->
+            <div class="hidden lg:block space-y-4">
+              <h1 class="text-2xl lg:text-3xl font-serif italic text-[#1a1a1a] leading-[1.2]">
                 {{ vm.product.name }}
               </h1>
               <div
@@ -200,11 +194,11 @@
             </div>
 
             <!-- Pricing Section -->
-            <div class="flex items-baseline gap-5 py-8 border-y border-[#eee]">
+            <div class="flex items-baseline gap-4 py-5 border-y border-[#eee]">
               <app-price-display
-                class="text-3xl font-serif italic text-[#1a1a1a]"
+                class="text-2xl font-serif italic text-[#1a1a1a]"
                 [amount]="vm.currentPrice"
-                size="lg"
+                size="md"
               ></app-price-display>
 
               <app-price-display
@@ -317,11 +311,11 @@
             <div class="flex flex-col gap-4 pt-4">
               <!-- Quantity -->
               <div
-                class="flex items-center h-16 border border-[#eee] bg-white group hover:border-[#aaa] transition-colors"
+                class="flex items-center h-12 border border-[#eee] bg-white group hover:border-[#aaa] transition-colors"
               >
                 <button
                   (click)="decreaseQuantity()"
-                  class="w-16 h-full flex items-center justify-center hover:bg-[#fafafa]"
+                  class="w-12 h-full flex items-center justify-center hover:bg-[#fafafa]"
                 >
                   <lucide-icon
                     [img]="icons.Minus"
@@ -335,7 +329,7 @@
                 </div>
                 <button
                   (click)="increaseQuantity()"
-                  class="w-16 h-full flex items-center justify-center hover:bg-[#fafafa]"
+                  class="w-12 h-full flex items-center justify-center hover:bg-[#fafafa]"
                 >
                   <lucide-icon [img]="icons.Plus" class="w-3 h-3"></lucide-icon>
                 </button>
@@ -354,7 +348,7 @@
                 <button
                   (click)="addToCart(vm.product)"
                   [disabled]="!vm.currentStock"
-                  class="w-full h-16 bg-[#1a1a1a] text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-black transition-all duration-300 disabled:opacity-20 flex items-center justify-center gap-4"
+                  class="w-full h-12 bg-[#1a1a1a] text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-black transition-all duration-300 disabled:opacity-20 flex items-center justify-center gap-4"
                 >
                   <lucide-icon
                     [img]="icons.ShoppingBag"
@@ -366,7 +360,7 @@
                 <button
                   (click)="buyNow(vm.product)"
                   [disabled]="!vm.currentStock"
-                  class="w-full h-16 bg-white border border-[#1a1a1a] text-[#1a1a1a] text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-[#f9f9f9] transition-all duration-300 disabled:opacity-20"
+                  class="w-full h-12 bg-white border border-[#1a1a1a] text-[#1a1a1a] text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-[#f9f9f9] transition-all duration-300 disabled:opacity-20"
                 >
                   Secure Checkout
                 </button>
@@ -378,7 +372,7 @@
                 [href]="getWhatsAppUrl(vm.product, whatsApp)"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="w-full h-16 bg-[#25D366] text-white text-[11px] font-bold uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:shadow-lg transition-all"
+                class="w-full h-12 bg-[#25D366] text-white text-[11px] font-bold uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:shadow-lg transition-all"
               >
                 <lucide-icon
                   [img]="icons.MessageCircle"
@@ -388,8 +382,72 @@
               </a>
             </div>
 
+            <!-- Description & Details (Mobile Only: Below Buttons) -->
+            <div class="lg:hidden space-y-6 pt-8 border-t border-[#eee]">
+              <!-- Primary Description -->
+              <div class="space-y-3">
+                <h3
+                  class="text-[10px] uppercase tracking-[0.3em] font-bold text-[#c8922a]"
+                >
+                  Description
+                </h3>
+                <p
+                  class="text-[15px] text-[#444] leading-[1.6] font-light"
+                  [innerHTML]="vm.product.description | safeHtml"
+                ></p>
+              </div>
+
+              <!-- Accordions -->
+              <div class="divide-y divide-[#eee] border-y border-[#eee]">
+                <details class="group" *ngIf="vm.product.fabricAndCare">
+                  <summary
+                    class="flex items-center justify-between py-4 cursor-pointer list-none"
+                  >
+                    <span
+                      class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
+                      >Details & Composition</span
+                    >
+                    <lucide-icon
+                      [img]="icons.Plus"
+                      class="w-3.5 h-3.5 text-[#bbb] group-open:rotate-45 transition-transform duration-300"
+                    ></lucide-icon>
+                  </summary>
+                  <div
+                    class="pb-6 text-[13px] text-[#666] leading-relaxed font-light"
+                  >
+                    {{ vm.product.fabricAndCare }}
+                  </div>
+                </details>
+
+                <details class="group">
+                  <summary
+                    class="flex items-center justify-between py-4 cursor-pointer list-none"
+                  >
+                    <span
+                      class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
+                      >Materials & Care</span
+                    >
+                    <lucide-icon
+                      [img]="icons.Plus"
+                      class="w-3.5 h-3.5 text-[#bbb] group-open:rotate-45 transition-transform duration-300"
+                    ></lucide-icon>
+                  </summary>
+                  <div
+                    class="pb-6 text-[13px] text-[#666] leading-relaxed font-light space-y-3"
+                  >
+                    <p>
+                      {{
+                        vm.product.shippingAndReturns ||
+                          "Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary."
+                      }}
+                    </p>
+                  </div>
+                </details>
+              </div>
+            </div>
+
             <!-- Features Info -->
-            <div class="grid grid-cols-2 gap-4 pt-10 border-t border-[#eee]">
+            <div class="grid grid-cols-2 gap-4 pt-6 border-t border-[#eee]">
               <div class="flex items-center gap-3">
                 <div
                   class="w-8 h-8 rounded-full bg-[#f9f9f9] flex items-center justify-center"
