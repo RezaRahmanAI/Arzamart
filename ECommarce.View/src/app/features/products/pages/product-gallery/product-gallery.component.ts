@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { ScrollingModule } from "@angular/cdk/scrolling";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest } from "rxjs";
 import { ProductService } from "../../../../core/services/product.service";
@@ -13,7 +14,7 @@ import { LucideAngularModule, Package } from "lucide-angular";
 @Component({
   selector: "app-product-gallery",
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, LucideAngularModule],
+  imports: [CommonModule, ProductCardComponent, LucideAngularModule, ScrollingModule],
   templateUrl: "./product-gallery.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -37,6 +38,10 @@ export class ProductGalleryComponent implements OnInit {
   loading = true;
   title = "Products";
   skeletonItems = Array(8).fill(0);
+  
+  // For virtual scrolling rows in a grid (e.g. 4 columns)
+  productRows: Product[][] = [];
+  readonly itemsPerRow = 4;
 
   ngOnInit(): void {
   }
@@ -95,6 +100,7 @@ export class ProductGalleryComponent implements OnInit {
     this.productService.getProducts(filterParams).subscribe({
       next: (response) => {
         this.products = response.data;
+        this.chunkProductsIntoRows();
         this.loading = false;
         this.cdr.markForCheck();
       },
@@ -103,5 +109,13 @@ export class ProductGalleryComponent implements OnInit {
         this.cdr.markForCheck();
       },
     });
+  }
+
+  private chunkProductsIntoRows(): void {
+    const rows: Product[][] = [];
+    for (let i = 0; i < this.products.length; i += this.itemsPerRow) {
+      rows.push(this.products.slice(i, i + this.itemsPerRow));
+    }
+    this.productRows = rows;
   }
 }

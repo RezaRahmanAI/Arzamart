@@ -31,6 +31,12 @@ public class GlobalExceptionMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        if (context.Response.HasStarted)
+        {
+            _logger.LogWarning("The response has already started, the error page middleware will not be executed.");
+            return;
+        }
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 

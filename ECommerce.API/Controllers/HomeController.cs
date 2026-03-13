@@ -46,21 +46,20 @@ public class HomeController : ControllerBase
             return Ok(cached);
         }
 
-        // Run all queries in parallel for better performance
-        var bannerTask = _bannerRepo.ListAsync(new HeroBannerSpecification(isActive: true));
-        var newArrivalsTask = _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
+        // EF Core DbContext is not thread-safe and does not support parallel queries on the same instance.
+        // We must execute them sequentially.
+        var banners = await _bannerRepo.ListAsync(new HeroBannerSpecification(isActive: true));
+        var newArrivals = await _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
             sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
             categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
             tier: null, tags: null, isNew: true, isFeatured: null, skip: 0, take: 10));
-        var featuredTask = _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
+        var featuredProducts = await _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
             sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
             categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
             tier: null, tags: null, isNew: null, isFeatured: true, skip: 0, take: 10));
-        var categoriesTask = _categoryRepo.ListAsync(new CategoriesWithSubCategoriesSpec());
+        var categories = await _categoryRepo.ListAsync(new CategoriesWithSubCategoriesSpec());
 
-        await Task.WhenAll(bannerTask, newArrivalsTask, featuredTask, categoriesTask);
-
-        var bannerDtos = bannerTask.Result.Select(b => new HeroBannerDto
+        var bannerDtos = banners.Select(b => new HeroBannerDto
         {
             Id = b.Id,
             Title = b.Title ?? "",
@@ -72,9 +71,9 @@ public class HomeController : ControllerBase
             DisplayOrder = b.DisplayOrder
         }).ToList();
 
-        var newArrivalsDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(newArrivalsTask.Result);
-        var featuredDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(featuredTask.Result);
-        var categoryDtos = _mapper.Map<IReadOnlyList<CategoryDto>>(categoriesTask.Result);
+        var newArrivalsDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(newArrivals);
+        var featuredDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(featuredProducts);
+        var categoryDtos = _mapper.Map<IReadOnlyList<CategoryDto>>(categories);
 
         var result = new HomePageDto
         {

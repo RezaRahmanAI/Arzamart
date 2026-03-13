@@ -145,9 +145,9 @@ export class AdminProductFormComponent implements OnDestroy {
       category: ["", [Validators.required]],
       subCategory: [""],
       collection: [""],
-      gender: ["women", [Validators.required]],
-      price: [0],
-      salePrice: [null as number | null],
+      gender: ["women"],
+      price: [0, [Validators.required, Validators.min(0)]],
+      salePrice: [null as number | null, [Validators.min(0)]],
       purchaseRate: [0],
 
       newArrival: [false],
@@ -166,7 +166,7 @@ export class AdminProductFormComponent implements OnDestroy {
         fabricAndCare: [""],
         shippingAndReturns: [""],
       }),
-      productType: [ProductType.Simple, [Validators.required]],
+      productType: [ProductType.Simple],
       bundleItems: this.formBuilder.array([]),
       isBundle: [false],
       bundleQuantity: [1, [Validators.min(1)]],
@@ -375,9 +375,13 @@ export class AdminProductFormComponent implements OnDestroy {
             : "",
           collection: product.collectionId ? String(product.collectionId) : "",
           gender: "women", // Default or handle via category
-          price: product.price,
-          salePrice: product.compareAtPrice || null,
-          purchaseRate: product.price,
+          price: product.compareAtPrice && product.compareAtPrice > product.price 
+            ? product.compareAtPrice 
+            : product.price,
+          salePrice: product.compareAtPrice && product.compareAtPrice > product.price 
+            ? product.price 
+            : null,
+          purchaseRate: product.purchaseRate || product.price,
 
           newArrival: product.isNew || false,
           isFeatured: product.isFeatured || false,
@@ -453,7 +457,7 @@ export class AdminProductFormComponent implements OnDestroy {
                   [Validators.min(0)],
                 ],
                 purchaseRate: [
-                  v.purchaseRate ?? v.PurchaseRate ?? 0,
+                  v.purchaseRate ?? v.PurchaseRate ?? product.purchaseRate ?? product.price ?? 0,
                   [Validators.required, Validators.min(0)],
                 ],
                 stock: [
@@ -729,16 +733,21 @@ export class AdminProductFormComponent implements OnDestroy {
         }
       });
 
-      console.error("Form validation failed", {
+      console.error("Form validation failed. Details:", {
         formValid: this.form.valid,
         formErrors: this.form.errors,
         mediaCount: this.mediaItemsArray.length,
         invalidFields: invalidFields,
-        formValue: this.form.value,
+        formValue: this.form.getRawValue(),
       });
+      
+      // Also log errors for each group if applicable
+      if (this.form.get("variants")?.invalid) {
+         console.error("Variants group is invalid:", this.form.get("variants")?.errors);
+      }
 
       window.alert(
-        `Please fill in all required fields: ${invalidFields.join(", ")}`,
+        `Form is incomplete or has errors. Missing fields: ${invalidFields.join(", ")}`
       );
       return;
     }
@@ -1002,8 +1011,8 @@ export class AdminProductFormComponent implements OnDestroy {
       statusActive: Boolean(raw.statusActive),
       category: categoryObj?.name || "", // Send Name, not ID
       gender: raw.gender ?? "women",
-      price: productPrice,
-      salePrice: productSalePrice,
+      price: raw.salePrice !== null ? raw.salePrice : productPrice, // The selling price
+      salePrice: raw.salePrice !== null ? productPrice : undefined, // The original/higher price
       purchaseRate: productPurchaseRate,
 
       newArrival: Boolean(raw.newArrival),

@@ -39,10 +39,37 @@ public static class ServiceExtensions
         services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.SmallestSize);
 
         // 3. Caching
-        services.AddMemoryCache(options => 
+        services.AddMemoryCache();
+        
+        var redisConn = config["Redis:ConnectionString"];
+        Console.WriteLine($"[DEBUG] Redis Connection String from Config: '{redisConn}'");
+        if (string.IsNullOrEmpty(redisConn) || redisConn.Equals("Disabled", StringComparison.OrdinalIgnoreCase))
         {
-            options.SizeLimit = 1024;
+            services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConn;
+                options.InstanceName = "Arzamart_";
+            });
+        }
+
+        services.AddOutputCache(options =>
+        {
+            options.AddPolicy("DefaultPolicy", builder => 
+                builder.Expire(TimeSpan.FromMinutes(5)));
+            
+            options.AddPolicy("Products", builder =>
+                builder.Expire(TimeSpan.FromMinutes(10))
+                       .Tag("products"));
+
+            options.AddPolicy("Categories", builder =>
+                builder.Expire(TimeSpan.FromHours(1))
+                       .Tag("categories"));
         });
+
         services.AddResponseCaching();
 
         // 4. Infrastructure

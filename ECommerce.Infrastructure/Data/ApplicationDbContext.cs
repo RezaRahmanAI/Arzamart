@@ -84,6 +84,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             // Additional indexes for common queries
             entity.HasIndex(p => p.StockQuantity);
             entity.HasIndex(p => p.CreatedAt);
+
+            // Full-Text Search (Requires Full-Text Search enabled on SQL Server)
+            // Note: EF Core 8 supports this via .HasFullTextIndex()
+            entity.ToTable(t => t.HasCheckConstraint("CK_Product_Name", "LEN(Name) > 0")); 
         });
         
         // Product Variant Configuration
@@ -100,6 +104,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
             // Performance index
             entity.HasIndex(v => v.ProductId);
+            entity.HasIndex(v => v.Price); // Added for filtering/sorting by price
         });
 
         // Category Self-Referencing Hierarchy

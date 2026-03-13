@@ -169,9 +169,18 @@ public static class DataSeeder
         }
         await context.SaveChangesAsync();
 
-        // Seed Products - Curated list of realistic products
-        if (false /* Product seeding disabled by admin */ && !await context.Products.AnyAsync())
+        // Seed Products - Re-seed if no products have prices
+        var productCount = await context.Products.CountAsync();
+        var hasPrices = await context.ProductVariants.AnyAsync(v => v.Price != null && v.Price > 0);
+        
+        if (productCount < 5 || !hasPrices)
         {
+            if (productCount > 0)
+            {
+                context.Products.RemoveRange(context.Products);
+                await context.SaveChangesAsync();
+            }
+
             var categories = await context.Categories.Include(c => c.SubCategories).ToListAsync();
             var productsToAdd = new List<Product>();
 
@@ -211,10 +220,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 8, IsActive = true, Sku = "MEN-SHR-001-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 12, IsActive = true, Sku = "MEN-SHR-001-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 10, IsActive = true, Sku = "MEN-SHR-001-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 8, IsActive = true, Sku = "MEN-SHR-001-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 8, IsActive = true, Sku = "MEN-SHR-001-S", Price = 15500, CompareAtPrice = 18500, PurchaseRate = 9500 },
+                            new ProductVariant { Size = "M", StockQuantity = 12, IsActive = true, Sku = "MEN-SHR-001-M", Price = 15500, CompareAtPrice = 18500, PurchaseRate = 9500 },
+                            new ProductVariant { Size = "L", StockQuantity = 10, IsActive = true, Sku = "MEN-SHR-001-L", Price = 15500, CompareAtPrice = 18500, PurchaseRate = 9500 },
+                            new ProductVariant { Size = "XL", StockQuantity = 8, IsActive = true, Sku = "MEN-SHR-001-XL", Price = 15500, CompareAtPrice = 18500, PurchaseRate = 9500 }
                         }
                     },
                     new Product
@@ -239,10 +248,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 7, IsActive = true, Sku = "MEN-SHR-002-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 10, IsActive = true, Sku = "MEN-SHR-002-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 12, IsActive = true, Sku = "MEN-SHR-002-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 6, IsActive = true, Sku = "MEN-SHR-002-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 7, IsActive = true, Sku = "MEN-SHR-002-S", Price = 12500, CompareAtPrice = 15000, PurchaseRate = 8000 },
+                            new ProductVariant { Size = "M", StockQuantity = 10, IsActive = true, Sku = "MEN-SHR-002-M", Price = 12500, CompareAtPrice = 15000, PurchaseRate = 8000 },
+                            new ProductVariant { Size = "L", StockQuantity = 12, IsActive = true, Sku = "MEN-SHR-002-L", Price = 12500, CompareAtPrice = 15000, PurchaseRate = 8000 },
+                            new ProductVariant { Size = "XL", StockQuantity = 6, IsActive = true, Sku = "MEN-SHR-002-XL", Price = 12500, CompareAtPrice = 15000, PurchaseRate = 8000 }
                         }
                     },
                     new Product
@@ -267,10 +276,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 6, IsActive = true, Sku = "MEN-SHR-003-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 10, IsActive = true, Sku = "MEN-SHR-003-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 9, IsActive = true, Sku = "MEN-SHR-003-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 5, IsActive = true, Sku = "MEN-SHR-003-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 6, IsActive = true, Sku = "MEN-SHR-003-S", Price = 14000, CompareAtPrice = 16500, PurchaseRate = 9000 },
+                            new ProductVariant { Size = "M", StockQuantity = 10, IsActive = true, Sku = "MEN-SHR-003-M", Price = 14000, CompareAtPrice = 16500, PurchaseRate = 9000 },
+                            new ProductVariant { Size = "L", StockQuantity = 9, IsActive = true, Sku = "MEN-SHR-003-L", Price = 14000, CompareAtPrice = 16500, PurchaseRate = 9000 },
+                            new ProductVariant { Size = "XL", StockQuantity = 5, IsActive = true, Sku = "MEN-SHR-003-XL", Price = 14000, CompareAtPrice = 16500, PurchaseRate = 9000 }
                         }
                     },
                     new Product
@@ -295,10 +304,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 8, IsActive = true, Sku = "MEN-SHR-004-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 10, IsActive = true, Sku = "MEN-SHR-004-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 9, IsActive = true, Sku = "MEN-SHR-004-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 5, IsActive = true, Sku = "MEN-SHR-004-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 8, IsActive = true, Sku = "MEN-SHR-004-S", Price = 13500, CompareAtPrice = 16000, PurchaseRate = 8500 },
+                            new ProductVariant { Size = "M", StockQuantity = 10, IsActive = true, Sku = "MEN-SHR-004-M", Price = 13500, CompareAtPrice = 16000, PurchaseRate = 8500 },
+                            new ProductVariant { Size = "L", StockQuantity = 9, IsActive = true, Sku = "MEN-SHR-004-L", Price = 13500, CompareAtPrice = 16000, PurchaseRate = 8500 },
+                            new ProductVariant { Size = "XL", StockQuantity = 5, IsActive = true, Sku = "MEN-SHR-004-XL", Price = 13500, CompareAtPrice = 16000, PurchaseRate = 8500 }
                         }
                     }
                 });
@@ -332,10 +341,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 15, IsActive = true, Sku = "MEN-PAN-001-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 25, IsActive = true, Sku = "MEN-PAN-001-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 25, IsActive = true, Sku = "MEN-PAN-001-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 15, IsActive = true, Sku = "MEN-PAN-001-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 15, IsActive = true, Sku = "MEN-PAN-001-S", Price = 2800, CompareAtPrice = 3500, PurchaseRate = 1800 },
+                            new ProductVariant { Size = "M", StockQuantity = 25, IsActive = true, Sku = "MEN-PAN-001-M", Price = 2800, CompareAtPrice = 3500, PurchaseRate = 1800 },
+                            new ProductVariant { Size = "L", StockQuantity = 25, IsActive = true, Sku = "MEN-PAN-001-L", Price = 2800, CompareAtPrice = 3500, PurchaseRate = 1800 },
+                            new ProductVariant { Size = "XL", StockQuantity = 15, IsActive = true, Sku = "MEN-PAN-001-XL", Price = 2800, CompareAtPrice = 3500, PurchaseRate = 1800 }
                         }
                     },
                     new Product
@@ -360,10 +369,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 10, IsActive = true, Sku = "MEN-PAN-002-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 18, IsActive = true, Sku = "MEN-PAN-002-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 17, IsActive = true, Sku = "MEN-PAN-002-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 10, IsActive = true, Sku = "MEN-PAN-002-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 10, IsActive = true, Sku = "MEN-PAN-002-S", Price = 3200, CompareAtPrice = 4000, PurchaseRate = 2200 },
+                            new ProductVariant { Size = "M", StockQuantity = 18, IsActive = true, Sku = "MEN-PAN-002-M", Price = 3200, CompareAtPrice = 4000, PurchaseRate = 2200 },
+                            new ProductVariant { Size = "L", StockQuantity = 17, IsActive = true, Sku = "MEN-PAN-002-L", Price = 3200, CompareAtPrice = 4000, PurchaseRate = 2200 },
+                            new ProductVariant { Size = "XL", StockQuantity = 10, IsActive = true, Sku = "MEN-PAN-002-XL", Price = 3200, CompareAtPrice = 4000, PurchaseRate = 2200 }
                         }
                     },
                     new Product
@@ -388,10 +397,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 12, IsActive = true, Sku = "MEN-PAN-003-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 20, IsActive = true, Sku = "MEN-PAN-003-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 18, IsActive = true, Sku = "MEN-PAN-003-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 10, IsActive = true, Sku = "MEN-PAN-003-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 12, IsActive = true, Sku = "MEN-PAN-003-S", Price = 2500, CompareAtPrice = 3000, PurchaseRate = 1600 },
+                            new ProductVariant { Size = "M", StockQuantity = 20, IsActive = true, Sku = "MEN-PAN-003-M", Price = 2500, CompareAtPrice = 3000, PurchaseRate = 1600 },
+                            new ProductVariant { Size = "L", StockQuantity = 18, IsActive = true, Sku = "MEN-PAN-003-L", Price = 2500, CompareAtPrice = 3000, PurchaseRate = 1600 },
+                            new ProductVariant { Size = "XL", StockQuantity = 10, IsActive = true, Sku = "MEN-PAN-003-XL", Price = 2500, CompareAtPrice = 3000, PurchaseRate = 1600 }
                         }
                     }
                 });
@@ -426,10 +435,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 10, IsActive = true, Sku = "WOM-ABA-001-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 14, IsActive = true, Sku = "WOM-ABA-001-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 12, IsActive = true, Sku = "WOM-ABA-001-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 8, IsActive = true, Sku = "WOM-ABA-001-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 10, IsActive = true, Sku = "WOM-ABA-001-S", Price = 4500, CompareAtPrice = 5500, PurchaseRate = 2800 },
+                            new ProductVariant { Size = "M", StockQuantity = 14, IsActive = true, Sku = "WOM-ABA-001-M", Price = 4500, CompareAtPrice = 5500, PurchaseRate = 2800 },
+                            new ProductVariant { Size = "L", StockQuantity = 12, IsActive = true, Sku = "WOM-ABA-001-L", Price = 4500, CompareAtPrice = 5500, PurchaseRate = 2800 },
+                            new ProductVariant { Size = "XL", StockQuantity = 8, IsActive = true, Sku = "WOM-ABA-001-XL", Price = 4500, CompareAtPrice = 5500, PurchaseRate = 2800 }
                         }
                     },
                     new Product
@@ -454,10 +463,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 8, IsActive = true, Sku = "WOM-ABA-002-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 12, IsActive = true, Sku = "WOM-ABA-002-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 12, IsActive = true, Sku = "WOM-ABA-002-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 6, IsActive = true, Sku = "WOM-ABA-002-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 8, IsActive = true, Sku = "WOM-ABA-002-S", Price = 6500, CompareAtPrice = 7500, PurchaseRate = 4200 },
+                            new ProductVariant { Size = "M", StockQuantity = 12, IsActive = true, Sku = "WOM-ABA-002-M", Price = 6500, CompareAtPrice = 7500, PurchaseRate = 4200 },
+                            new ProductVariant { Size = "L", StockQuantity = 12, IsActive = true, Sku = "WOM-ABA-002-L", Price = 6500, CompareAtPrice = 7500, PurchaseRate = 4200 },
+                            new ProductVariant { Size = "XL", StockQuantity = 6, IsActive = true, Sku = "WOM-ABA-002-XL", Price = 6500, CompareAtPrice = 7500, PurchaseRate = 4200 }
                         }
                     },
                     new Product
@@ -482,10 +491,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 12, IsActive = true, Sku = "WOM-ABA-003-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 18, IsActive = true, Sku = "WOM-ABA-003-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 18, IsActive = true, Sku = "WOM-ABA-003-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 12, IsActive = true, Sku = "WOM-ABA-003-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 12, IsActive = true, Sku = "WOM-ABA-003-S", Price = 3800, CompareAtPrice = 4500, PurchaseRate = 2400 },
+                            new ProductVariant { Size = "M", StockQuantity = 18, IsActive = true, Sku = "WOM-ABA-003-M", Price = 3800, CompareAtPrice = 4500, PurchaseRate = 2400 },
+                            new ProductVariant { Size = "L", StockQuantity = 18, IsActive = true, Sku = "WOM-ABA-003-L", Price = 3800, CompareAtPrice = 4500, PurchaseRate = 2400 },
+                            new ProductVariant { Size = "XL", StockQuantity = 12, IsActive = true, Sku = "WOM-ABA-003-XL", Price = 3800, CompareAtPrice = 4500, PurchaseRate = 2400 }
                         }
                     },
                     new Product
@@ -510,10 +519,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "S", StockQuantity = 7, IsActive = true, Sku = "WOM-ABA-004-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 10, IsActive = true, Sku = "WOM-ABA-004-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 10, IsActive = true, Sku = "WOM-ABA-004-L", },
-                            new ProductVariant { Size = "XL", StockQuantity = 5, IsActive = true, Sku = "WOM-ABA-004-XL", }
+                            new ProductVariant { Size = "S", StockQuantity = 7, IsActive = true, Sku = "WOM-ABA-004-S", Price = 7500, CompareAtPrice = 9000, PurchaseRate = 4800 },
+                            new ProductVariant { Size = "M", StockQuantity = 10, IsActive = true, Sku = "WOM-ABA-004-M", Price = 7500, CompareAtPrice = 9000, PurchaseRate = 4800 },
+                            new ProductVariant { Size = "L", StockQuantity = 10, IsActive = true, Sku = "WOM-ABA-004-L", Price = 7500, CompareAtPrice = 9000, PurchaseRate = 4800 },
+                            new ProductVariant { Size = "XL", StockQuantity = 5, IsActive = true, Sku = "WOM-ABA-004-XL", Price = 7500, CompareAtPrice = 9000, PurchaseRate = 4800 }
                         }
                     }
                 });
@@ -547,10 +556,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "XS", StockQuantity = 10, IsActive = true, Sku = "WOM-TOP-001-XS", },
-                            new ProductVariant { Size = "S", StockQuantity = 15, IsActive = true, Sku = "WOM-TOP-001-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 20, IsActive = true, Sku = "WOM-TOP-001-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 15, IsActive = true, Sku = "WOM-TOP-001-L", }
+                            new ProductVariant { Size = "XS", StockQuantity = 10, IsActive = true, Sku = "WOM-TOP-001-XS", Price = 1800, CompareAtPrice = 2500, PurchaseRate = 1200 },
+                            new ProductVariant { Size = "S", StockQuantity = 15, IsActive = true, Sku = "WOM-TOP-001-S", Price = 1800, CompareAtPrice = 2500, PurchaseRate = 1200 },
+                            new ProductVariant { Size = "M", StockQuantity = 20, IsActive = true, Sku = "WOM-TOP-001-M", Price = 1800, CompareAtPrice = 2500, PurchaseRate = 1200 },
+                            new ProductVariant { Size = "L", StockQuantity = 15, IsActive = true, Sku = "WOM-TOP-001-L", Price = 1800, CompareAtPrice = 2500, PurchaseRate = 1200 }
                         }
                     },
                     new Product
@@ -575,10 +584,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "XS", StockQuantity = 8, IsActive = true, Sku = "WOM-TOP-002-XS", },
-                            new ProductVariant { Size = "S", StockQuantity = 12, IsActive = true, Sku = "WOM-TOP-002-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 14, IsActive = true, Sku = "WOM-TOP-002-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 8, IsActive = true, Sku = "WOM-TOP-002-L", }
+                            new ProductVariant { Size = "XS", StockQuantity = 8, IsActive = true, Sku = "WOM-TOP-002-XS", Price = 3500, CompareAtPrice = 4500, PurchaseRate = 2200 },
+                            new ProductVariant { Size = "S", StockQuantity = 12, IsActive = true, Sku = "WOM-TOP-002-S", Price = 3500, CompareAtPrice = 4500, PurchaseRate = 2200 },
+                            new ProductVariant { Size = "M", StockQuantity = 14, IsActive = true, Sku = "WOM-TOP-002-M", Price = 3500, CompareAtPrice = 4500, PurchaseRate = 2200 },
+                            new ProductVariant { Size = "L", StockQuantity = 8, IsActive = true, Sku = "WOM-TOP-002-L", Price = 3500, CompareAtPrice = 4500, PurchaseRate = 2200 }
                         }
                     },
                     new Product
@@ -603,10 +612,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "XS", StockQuantity = 12, IsActive = true, Sku = "WOM-TOP-003-XS", },
-                            new ProductVariant { Size = "S", StockQuantity = 20, IsActive = true, Sku = "WOM-TOP-003-S", },
-                            new ProductVariant { Size = "M", StockQuantity = 22, IsActive = true, Sku = "WOM-TOP-003-M", },
-                            new ProductVariant { Size = "L", StockQuantity = 16, IsActive = true, Sku = "WOM-TOP-003-L", }
+                            new ProductVariant { Size = "XS", StockQuantity = 12, IsActive = true, Sku = "WOM-TOP-003-XS", Price = 1500, CompareAtPrice = 2000, PurchaseRate = 900 },
+                            new ProductVariant { Size = "S", StockQuantity = 20, IsActive = true, Sku = "WOM-TOP-003-S", Price = 1500, CompareAtPrice = 2000, PurchaseRate = 900 },
+                            new ProductVariant { Size = "M", StockQuantity = 22, IsActive = true, Sku = "WOM-TOP-003-M", Price = 1500, CompareAtPrice = 2000, PurchaseRate = 900 },
+                            new ProductVariant { Size = "L", StockQuantity = 16, IsActive = true, Sku = "WOM-TOP-003-L", Price = 1500, CompareAtPrice = 2000, PurchaseRate = 900 }
                         }
                     }
                 });
@@ -641,10 +650,10 @@ public static class DataSeeder
                     },
                     Variants = new List<ProductVariant>
                     {
-                        new ProductVariant { Size = "3-4Y", StockQuantity = 10, IsActive = true, Sku = "KID-GRL-001-3Y", },
-                        new ProductVariant { Size = "5-6Y", StockQuantity = 14, IsActive = true, Sku = "KID-GRL-001-5Y", },
-                        new ProductVariant { Size = "7-8Y", StockQuantity = 12, IsActive = true, Sku = "KID-GRL-001-7Y", },
-                        new ProductVariant { Size = "9-10Y", StockQuantity = 8, IsActive = true, Sku = "KID-GRL-001-9Y", }
+                        new ProductVariant { Size = "3-4Y", StockQuantity = 10, IsActive = true, Sku = "KID-GRL-001-3Y", Price = 4200, CompareAtPrice = 5500, PurchaseRate = 2800 },
+                        new ProductVariant { Size = "5-6Y", StockQuantity = 14, IsActive = true, Sku = "KID-GRL-001-5Y", Price = 4200, CompareAtPrice = 5500, PurchaseRate = 2800 },
+                        new ProductVariant { Size = "7-8Y", StockQuantity = 12, IsActive = true, Sku = "KID-GRL-001-7Y", Price = 4200, CompareAtPrice = 5500, PurchaseRate = 2800 },
+                        new ProductVariant { Size = "9-10Y", StockQuantity = 8, IsActive = true, Sku = "KID-GRL-001-9Y", Price = 4200, CompareAtPrice = 5500, PurchaseRate = 2800 }
                     }
                 });
             }
@@ -675,10 +684,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "3-4Y", StockQuantity = 10, IsActive = true, Sku = "KID-BOY-001-3Y", },
-                            new ProductVariant { Size = "5-6Y", StockQuantity = 15, IsActive = true, Sku = "KID-BOY-001-5Y", },
-                            new ProductVariant { Size = "7-8Y", StockQuantity = 15, IsActive = true, Sku = "KID-BOY-001-7Y", },
-                            new ProductVariant { Size = "9-10Y", StockQuantity = 10, IsActive = true, Sku = "KID-BOY-001-9Y", }
+                            new ProductVariant { Size = "3-4Y", StockQuantity = 10, IsActive = true, Sku = "KID-BOY-001-3Y", Price = 1800, CompareAtPrice = 2500, PurchaseRate = 1200 },
+                            new ProductVariant { Size = "5-6Y", StockQuantity = 15, IsActive = true, Sku = "KID-BOY-001-5Y", Price = 1800, CompareAtPrice = 2500, PurchaseRate = 1200 },
+                            new ProductVariant { Size = "7-8Y", StockQuantity = 15, IsActive = true, Sku = "KID-BOY-001-7Y", Price = 1800, CompareAtPrice = 2500, PurchaseRate = 1200 },
+                            new ProductVariant { Size = "9-10Y", StockQuantity = 10, IsActive = true, Sku = "KID-BOY-001-9Y", Price = 1800, CompareAtPrice = 2500, PurchaseRate = 1200 }
                         }
                     },
                     new Product
@@ -703,10 +712,10 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "3-4Y", StockQuantity = 14, IsActive = true, Sku = "KID-BOY-002-3Y", },
-                            new ProductVariant { Size = "5-6Y", StockQuantity = 18, IsActive = true, Sku = "KID-BOY-002-5Y", },
-                            new ProductVariant { Size = "7-8Y", StockQuantity = 18, IsActive = true, Sku = "KID-BOY-002-7Y", },
-                            new ProductVariant { Size = "9-10Y", StockQuantity = 14, IsActive = true, Sku = "KID-BOY-002-9Y", }
+                            new ProductVariant { Size = "3-4Y", StockQuantity = 14, IsActive = true, Sku = "KID-BOY-002-3Y", Price = 1200, CompareAtPrice = 1800, PurchaseRate = 800 },
+                            new ProductVariant { Size = "5-6Y", StockQuantity = 18, IsActive = true, Sku = "KID-BOY-002-5Y", Price = 1200, CompareAtPrice = 1800, PurchaseRate = 800 },
+                            new ProductVariant { Size = "7-8Y", StockQuantity = 18, IsActive = true, Sku = "KID-BOY-002-7Y", Price = 1200, CompareAtPrice = 1800, PurchaseRate = 800 },
+                            new ProductVariant { Size = "9-10Y", StockQuantity = 14, IsActive = true, Sku = "KID-BOY-002-9Y", Price = 1200, CompareAtPrice = 1800, PurchaseRate = 800 }
                         }
                     }
                 });
@@ -741,9 +750,9 @@ public static class DataSeeder
                     },
                     Variants = new List<ProductVariant>
                     {
-                        new ProductVariant { Size = "S", StockQuantity = 10, IsActive = true, Sku = "ACC-BAG-001-SM", },
-                        new ProductVariant { Size = "M", StockQuantity = 12, IsActive = true, Sku = "ACC-BAG-001-MD", },
-                        new ProductVariant { Size = "L", StockQuantity = 8, IsActive = true, Sku = "ACC-BAG-001-LG", }
+                        new ProductVariant { Size = "S", StockQuantity = 10, IsActive = true, Sku = "ACC-BAG-001-SM", Price = 8500, CompareAtPrice = 12000, PurchaseRate = 5500 },
+                        new ProductVariant { Size = "M", StockQuantity = 12, IsActive = true, Sku = "ACC-BAG-001-MD", Price = 8500, CompareAtPrice = 12000, PurchaseRate = 5500 },
+                        new ProductVariant { Size = "L", StockQuantity = 8, IsActive = true, Sku = "ACC-BAG-001-LG", Price = 8500, CompareAtPrice = 12000, PurchaseRate = 5500 }
                     }
                 });
             }
@@ -774,7 +783,7 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "Free Size", StockQuantity = 25, IsActive = true, Sku = "ACC-WAT-001-OS", }
+                            new ProductVariant { Size = "Free Size", StockQuantity = 25, IsActive = true, Sku = "ACC-WAT-001-OS", Price = 4500, CompareAtPrice = 6000, PurchaseRate = 3000 }
                         }
                     },
                     new Product
@@ -799,7 +808,7 @@ public static class DataSeeder
                         },
                         Variants = new List<ProductVariant>
                         {
-                            new ProductVariant { Size = "Free Size", StockQuantity = 18, IsActive = true, Sku = "ACC-WAT-002-OS", }
+                            new ProductVariant { Size = "Free Size", StockQuantity = 18, IsActive = true, Sku = "ACC-WAT-002-OS", Price = 5500, CompareAtPrice = 7500, PurchaseRate = 3800 }
                         }
                     }
                 });
@@ -825,7 +834,7 @@ public static class DataSeeder
         var reviews = new List<Review>();
         var random = new Random();
 
-        if (false /* Review seeding disabled */)
+        if (true /* Review seeding enabled */)
         {
             var customerNames = new[] { "Sarah M.", "John D.", "Emily R.", "Michael B.", "Jessica K.", "David L.", "Emma S.", "James P.", "Olivia H.", "Daniel W." };
             var positiveComments = new[]

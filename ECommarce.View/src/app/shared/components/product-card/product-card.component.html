@@ -22,7 +22,7 @@
     <!-- Discount Badge -->
     <div *ngIf="hasDiscount" class="absolute top-4 left-4">
       <span
-        class="px-2 py-1 bg-primary text-white text-[8px] uppercase tracking-[0.35em] font-bold"
+        class="px-2 py-1 bg-black text-white text-[12px] font-bold tracking-wider"
       >
         -{{ discountPercentage }}%
       </span>
@@ -44,7 +44,7 @@
       </div>
       <button
         (click)="addToCart($event)"
-        class="bg-primary px-4 py-3 text-white border border-primary hover:bg-accent hover:border-accent transition-colors duration-300"
+        class="bg-black px-4 py-3 text-white border border-black hover:bg-black/80 transition-colors duration-300"
         title="Add to Cart"
       >
         <lucide-icon [img]="icons.ShoppingCart" class="w-4 h-4"></lucide-icon>
@@ -52,51 +52,42 @@
     </div>
   </div>
 
-  <div class="flex flex-col items-center gap-3 px-2">
+  <div class="flex flex-col items-center gap-2 px-2">
     <h3
-      class="text-[10px] uppercase tracking-[0.25em] font-bold text-text-main group-hover:text-accent transition-colors duration-500"
+      class="text-[14px] uppercase tracking-[0.3em] font-bold text-black group-hover:text-black/70 transition-colors duration-500"
     >
-      {{ product.name }}
+      {{ product.sku || product.name }}
     </h3>
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2">
       <app-price-display
-        class="text-primary font-serif italic text-lg tracking-tight transition-all duration-300"
+        class="text-black font-bold text-xl tracking-tight transition-all duration-300"
         [amount]="currentPrice"
-        size="md"
+        size="lg"
       >
       </app-price-display>
       <app-price-display
         *ngIf="hasDiscount"
-        class="line-through text-gray-300 text-xs opacity-70 transition-all duration-300"
+        class="line-through text-gray-500 text-base transition-all duration-300"
         [amount]="originalPrice"
-        size="sm"
+        size="md"
       >
       </app-price-display>
     </div>
 
-    <!-- Description Preview -->
-    <p
-      *ngIf="description"
-      class="text-[10px] text-gray-400 line-clamp-2 leading-relaxed max-w-[200px] font-medium"
-    >
-      {{ description }}
-    </p>
-
     <!-- Size Selection -->
     <div
       *ngIf="availableSizes.length > 0"
-      class="flex flex-wrap items-center justify-center gap-2 mt-1 w-full"
+      class="flex flex-wrap items-center justify-center gap-4 mt-2 w-full"
     >
       <button
         *ngFor="let size of availableSizes"
         (click)="
           selectSize(size); $event.preventDefault(); $event.stopPropagation()
         "
-        class="min-w-[32px] h-8 px-2 text-[10px] uppercase font-bold tracking-wider transition-all duration-300 border"
+        class="w-10 h-10 flex items-center justify-center text-[12px] uppercase font-bold transition-all duration-300 border border-gray-100"
         [ngClass]="{
-          'bg-primary text-white border-primary': selectedSize === size,
-          'bg-transparent text-text-main border-border hover:border-primary hover:text-primary':
-            selectedSize !== size,
+          'bg-black text-white border-black': selectedSize === size,
+          'bg-white text-black hover:border-black': selectedSize !== size
         }"
       >
         {{ size }}

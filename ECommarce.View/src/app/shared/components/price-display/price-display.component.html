@@ -5,9 +5,6 @@
     [ngClass]="iconClass"
   />
   <span [ngClass]="bdtClass">
-    {{ amount | currency: 'BDT':'code':'1.2-2' }}
+    {{ amount | number: '1.2-2' }}
   </span>
-</span>
-<span *ngIf="showUsd" [ngClass]="usdClass">
-  ({{ amount | bdtToUsd | currency: 'USD':'code':'1.2-2' }})
 </span>

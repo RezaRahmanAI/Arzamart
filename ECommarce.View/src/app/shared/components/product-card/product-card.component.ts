@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
 
@@ -25,6 +25,7 @@ import { LucideAngularModule, ShoppingCart } from "lucide-angular";
   ],
   templateUrl: "./product-card.component.html",
   styleUrl: "./product-card.component.css",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductCardComponent {
   @Input({ required: true }) product!: Product | RelatedProduct;

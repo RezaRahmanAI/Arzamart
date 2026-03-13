@@ -192,7 +192,7 @@ public class OrderService : IOrderService
     {
         var spec = new BaseSpecification<Order>(x => x.Id == id);
         spec.AddInclude(x => x.Items);
-        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec<Order>(spec);
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
         return _mapper.Map<Order, OrderDto>(order);
     }
@@ -201,7 +201,7 @@ public class OrderService : IOrderService
     {
         var spec = new BaseSpecification<Order>(x => x.Id == id);
         spec.AddInclude(x => x.Items);
-        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec<Order>(spec);
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
         
         if (order == null) return false;
 

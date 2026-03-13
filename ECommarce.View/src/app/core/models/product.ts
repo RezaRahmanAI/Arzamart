@@ -79,6 +79,7 @@ export interface Product {
 export interface RelatedProduct {
   id: number;
   name: string;
+  sku?: string;
   price: number;
   compareAtPrice?: number;
   imageUrl: string;

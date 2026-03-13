@@ -10,6 +10,8 @@ using ECommerce.Core.Specifications;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Core.Enums;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace ECommerce.Infrastructure.Services;
 
@@ -17,23 +19,51 @@ public class ProductService : IProductService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IDistributedCache _cache;
 
-    public ProductService(IUnitOfWork unitOfWork, IMapper mapper)
+    public ProductService(IUnitOfWork unitOfWork, IMapper mapper, IDistributedCache cache)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _cache = cache;
     }
 
     public async Task<ProductDto> GetProductBySlugAsync(string slug)
     {
+        var cacheKey = $"product_slug:{slug}";
+        var cached = await _cache.GetStringAsync(cacheKey);
+        if (cached != null) return JsonSerializer.Deserialize<ProductDto>(cached);
+
         var spec = new ProductsWithCategoriesSpecification(slug);
-        return await _unitOfWork.Repository<Product>().GetEntityWithSpec<ProductDto>(spec);
+        var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec<ProductDto>(spec);
+
+        if (product != null)
+        {
+            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(product), new DistributedCacheEntryOptions {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            });
+        }
+
+        return product;
     }
 
     public async Task<ProductDto> GetProductByIdAsync(int id)
     {
+        var cacheKey = $"product_id:{id}";
+        var cached = await _cache.GetStringAsync(cacheKey);
+        if (cached != null) return JsonSerializer.Deserialize<ProductDto>(cached);
+
         var spec = new ProductsWithCategoriesSpecification(id);
-        return await _unitOfWork.Repository<Product>().GetEntityWithSpec<ProductDto>(spec);
+        var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec<ProductDto>(spec);
+
+        if (product != null)
+        {
+            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(product), new DistributedCacheEntryOptions {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            });
+        }
+
+        return product;
     }
 
 

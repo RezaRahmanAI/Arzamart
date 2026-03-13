@@ -11,6 +11,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Microsoft.AspNetCore.OutputCaching.OutputCache(PolicyName = "Products")]
 public class ProductsController : ControllerBase
 {
     private readonly IGenericRepository<Product> _productsRepo;
@@ -35,6 +36,7 @@ public class ProductsController : ControllerBase
 
     [HttpGet]
     [ResponseCache(Duration = 300, VaryByQueryKeys = new[] { "*" })]
+    [Microsoft.AspNetCore.OutputCaching.OutputCache(PolicyName = "Products")]
     public async Task<ActionResult<PaginationDto<ProductDto>>> GetProducts(
         [FromQuery] string? sort, 
         [FromQuery] int? categoryId, 
@@ -92,6 +94,7 @@ public class ProductsController : ControllerBase
 
     [HttpGet("{slug}")]
     [ResponseCache(Duration = 300, VaryByQueryKeys = new[] { "slug" })]
+    [Microsoft.AspNetCore.OutputCaching.OutputCache(PolicyName = "Products")]
     public async Task<ActionResult<ProductDto>> GetProduct(string slug)
     {
         var cacheKey = $"product_{slug}";

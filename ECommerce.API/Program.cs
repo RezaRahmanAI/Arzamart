@@ -1,4 +1,5 @@
 using ECommerce.API.Extensions;
+using ECommerce.API.Middleware;
 using ECommerce.Core.Entities;
 using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
@@ -65,6 +66,9 @@ try
     // Global Exception & Logging (Absolute Top)
     app.UseAppExceptionHandling();
 
+    // Request Timing (Right after exception handling)
+    app.UseMiddleware<TimingMiddleware>();
+
     app.UseAppSecurityMiddleware();
 
     app.UseSwagger();
@@ -87,6 +91,7 @@ try
 
 
     app.UseResponseCaching();
+    app.UseOutputCache();
 
     app.MapControllers();
 
@@ -97,7 +102,7 @@ try
         try
         {
             var context = services.GetRequiredService<ApplicationDbContext>();
-            context.Database.Migrate();
+            // context.Database.Migrate();
 
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();

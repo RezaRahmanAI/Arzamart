@@ -84,15 +84,21 @@
         </p>
       </div>
 
-      <div
+      <cdk-virtual-scroll-viewport
         *ngIf="!loading && products.length > 0"
-        class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12"
+        itemSize="450"
+        class="h-[80vh] w-full"
       >
-        <app-product-card
-          *ngFor="let product of products; trackBy: trackByProductId"
-          [product]="product"
-        ></app-product-card>
-      </div>
+        <div 
+          *cdkVirtualFor="let row of productRows"
+          class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12 mb-12"
+        >
+          <app-product-card
+            *ngFor="let product of row; trackBy: trackByProductId"
+            [product]="product"
+          ></app-product-card>
+        </div>
+      </cdk-virtual-scroll-viewport>
     </div>
   </div>
 </main>
