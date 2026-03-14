@@ -55,6 +55,8 @@ export class OrderService {
         name: payload.state.fullName,
         phone: payload.state.phone,
         address: payload.state.address,
+        city: payload.state.city ?? "",
+        area: payload.state.area ?? "",
         deliveryMethodId: payload.deliveryMethodId,
         itemsCount: payload.summary.itemsCount,
         total: payload.summary.total,

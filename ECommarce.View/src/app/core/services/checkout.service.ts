@@ -74,6 +74,8 @@ export class CheckoutService {
       fullName: "",
       phone: "",
       address: "",
+      city: "",
+      area: "",
       deliveryMethodId: undefined,
     };
   }

@@ -30,6 +30,7 @@ import {
   DeliveryMethod,
   AdminSettings,
 } from "../../../../admin/models/settings.models";
+import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 
 import {
   LucideAngularModule,
@@ -40,6 +41,9 @@ import {
   MapPin,
   Truck,
   Info,
+  Search,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-angular";
 
 @Component({
@@ -64,6 +68,9 @@ export class CheckoutPageComponent {
     MapPin,
     Truck,
     Info,
+    Search,
+    ChevronDown,
+    ChevronUp,
   };
   private readonly cartService = inject(CartService);
   private readonly checkoutService = inject(CheckoutService);
@@ -79,8 +86,21 @@ export class CheckoutPageComponent {
     fullName: ["", [Validators.required, Validators.minLength(2)]],
     phone: ["", [Validators.required, Validators.minLength(7)]],
     address: ["", [Validators.required, Validators.minLength(5)]],
+    city: ["", Validators.required],
+    area: ["", Validators.required],
     deliveryMethodId: [0, Validators.required],
+    paymentMethod: ["cod", Validators.required],
   });
+
+  cities = Object.keys(BANGLADESH_LOCATIONS).sort();
+  filteredCities: string[] = [];
+  citySearch = "";
+  isCityDropdownOpen = false;
+
+  areas: string[] = [];
+  filteredAreas: string[] = [];
+  areaSearch = "";
+  isAreaDropdownOpen = false;
 
   isLoading = false;
   errorMessage = "";
@@ -160,6 +180,17 @@ export class CheckoutPageComponent {
         });
       });
 
+    this.checkoutForm.controls.city.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((city) => {
+        this.areas = BANGLADESH_LOCATIONS[city] || [];
+        this.filteredAreas = [...this.areas];
+        this.checkoutForm.patchValue({ area: "" });
+        this.areaSearch = "";
+        this.citySearch = city; // Keep search input synced
+        this.updateDeliveryMethodByCity(city);
+      });
+
     this.checkoutForm.controls.phone.valueChanges
       .pipe(
         map((value) => value.trim()),
@@ -228,9 +259,66 @@ export class CheckoutPageComponent {
         },
         error: (error: any) => {
           this.isLoading = false;
-          this.errorMessage = error.message ?? "Unable to place order.";
+          this.errorMessage = error.error?.message ?? error.message ?? "Unable to place order.";
         },
       });
+  }
+
+  private updateDeliveryMethodByCity(city: string): void {
+    const isDhaka = city.toLowerCase() === "dhaka";
+    this.deliveryMethods$.subscribe((methods) => {
+      const method = methods.find((m) =>
+        isDhaka
+          ? m.name.toLowerCase().includes("inside")
+          : m.name.toLowerCase().includes("outside"),
+      );
+      if (method) {
+        this.checkoutForm.patchValue({ deliveryMethodId: method.id });
+      }
+    });
+  }
+
+  filterCities(event: Event): void {
+    const query = (event.target as HTMLInputElement).value.toLowerCase();
+    this.citySearch = query;
+    this.filteredCities = this.cities.filter(c => c.toLowerCase().includes(query));
+  }
+
+  selectCity(city: string): void {
+    this.checkoutForm.patchValue({ city });
+    this.citySearch = city;
+    this.isCityDropdownOpen = false;
+  }
+
+  toggleCityDropdown(): void {
+    this.isCityDropdownOpen = !this.isCityDropdownOpen;
+    if (this.isCityDropdownOpen) {
+      this.isAreaDropdownOpen = false; // Close other
+      this.filteredCities = [...this.cities];
+      this.citySearch = this.checkoutForm.get('city')?.value || "";
+    }
+  }
+
+  filterAreas(event: Event): void {
+    const query = (event.target as HTMLInputElement).value.toLowerCase();
+    this.areaSearch = query;
+    this.filteredAreas = this.areas.filter(a => a.toLowerCase().includes(query));
+  }
+
+  selectArea(area: string): void {
+    this.checkoutForm.patchValue({ area });
+    this.areaSearch = area;
+    this.isAreaDropdownOpen = false;
+  }
+
+  toggleAreaDropdown(): void {
+    if (!this.checkoutForm.get('city')?.value) return;
+    this.isAreaDropdownOpen = !this.isAreaDropdownOpen;
+    if (this.isAreaDropdownOpen) {
+      this.isCityDropdownOpen = false; // Close other
+      this.filteredAreas = [...this.areas];
+      this.areaSearch = this.checkoutForm.get('area')?.value || "";
+    }
   }
 
   trackCartItem(_: number, item: CartItem): string {
@@ -242,6 +330,8 @@ export class CheckoutPageComponent {
       fullName: this.checkoutForm.controls.fullName.value ?? "",
       phone: this.checkoutForm.controls.phone.value ?? "",
       address: this.checkoutForm.controls.address.value ?? "",
+      city: this.checkoutForm.controls.city.value ?? "",
+      area: this.checkoutForm.controls.area.value ?? "",
       deliveryMethodId:
         this.checkoutForm.controls.deliveryMethodId.value ?? undefined,
     });

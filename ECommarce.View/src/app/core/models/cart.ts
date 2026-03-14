@@ -8,6 +8,8 @@ export interface CartItem {
   size: string;
   imageUrl: string;
   imageAlt: string;
+  discountPercentage?: number;
+  compareAtPrice?: number | null;
 }
 
 export interface CartSummary {
@@ -15,6 +17,7 @@ export interface CartSummary {
   subtotal: number;
   tax: number;
   shipping: number;
+  discount: number;
   total: number;
   freeShippingThreshold: number;
   freeShippingRemaining: number;

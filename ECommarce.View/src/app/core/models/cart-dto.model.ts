@@ -10,6 +10,7 @@ export interface CartItemDto {
   color: string;
   size: string;
   availableStock: number;
+  compareAtPrice?: number | null;
 }
 
 export interface CartDto {

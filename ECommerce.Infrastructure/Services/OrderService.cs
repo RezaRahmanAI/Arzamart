@@ -87,16 +87,33 @@ public class OrderService : IOrderService
 
             if (priceVariant != null && (priceVariant.Price ?? 0) > 0)
             {
-                unitPrice = priceVariant.Price.Value;
+                // Consistency fix: Ensure we pick the lower price if CompareAtPrice is used as a discount field
+                var p = priceVariant.Price.Value;
+                var cp = priceVariant.CompareAtPrice ?? 0;
+                unitPrice = (cp > 0 && cp < p) ? cp : p;
             }
             else
             {
-                unitPrice = product.Variants.Where(v => (v.Price ?? 0) > 0)
-                                           .Select(v => v.Price.Value)
-                                           .DefaultIfEmpty(0)
-                                           .Min();
+                // Fallback: Get the minimum positive active price from any variant
+                var validVariants = product.Variants.Where(v => (v.Price ?? 0) > 0).ToList();
+                if (validVariants.Any())
+                {
+                    unitPrice = validVariants.Min(v => {
+                        var p = v.Price ?? 0;
+                        var cp = v.CompareAtPrice ?? 0;
+                        return (cp > 0 && cp < p) ? cp : p;
+                    });
+                }
             }
             
+            // Image fallback: Try to get color-specific image if available
+            var itemImageUrl = product.ImageUrl;
+            if (!string.IsNullOrEmpty(itemDto.Color) && product.Images != null)
+            {
+                var colorImg = product.Images.FirstOrDefault(i => i.Color == itemDto.Color);
+                if (colorImg != null) itemImageUrl = colorImg.Url;
+            }
+
             var orderItem = new OrderItem
             {
                 ProductId = product.Id,
@@ -105,7 +122,7 @@ public class OrderService : IOrderService
                 Quantity = itemDto.Quantity,
                 Color = itemDto.Color,
                 Size = itemDto.Size,
-                ImageUrl = product.ImageUrl
+                ImageUrl = itemImageUrl
             };
             
             items.Add(orderItem);
@@ -148,6 +165,8 @@ public class OrderService : IOrderService
             CustomerName = orderDto.Name,
             CustomerPhone = orderDto.Phone,
             ShippingAddress = orderDto.Address,
+            City = orderDto.City,
+            Area = orderDto.Area,
             Items = items,
             SubTotal = subtotal,
             Tax = 0,

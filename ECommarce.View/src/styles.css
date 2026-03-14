@@ -153,6 +153,6 @@
   }
 
   .site-container {
-    @apply max-w-[1920px] mx-auto px-6 md:px-12 lg:px-20;
+    @apply w-full lg:w-[80%] max-w-[1536px] mx-auto px-6 md:px-12 lg:px-0;
   }
 }

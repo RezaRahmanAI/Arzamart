@@ -3,14 +3,17 @@ import { Observable } from "rxjs";
 import { ApiHttpClient } from "../core/http/http-client";
 
 export interface CartItem {
-  id: number;
+  id: string;
   productId: number;
-  productName: string;
-  productImageUrl?: string;
+  name: string;
+  price: number;
   quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-  availableStock: number;
+  color: string;
+  size: string;
+  imageUrl: string;
+  imageAlt: string;
+  discountPercentage?: number;
+  compareAtPrice?: number | null;
 }
 
 export interface Cart {

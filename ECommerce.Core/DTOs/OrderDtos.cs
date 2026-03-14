@@ -7,6 +7,8 @@ public class OrderCreateDto
     public string Name { get; set; }
     public string Phone { get; set; }
     public string Address { get; set; }
+    public string City { get; set; }
+    public string Area { get; set; }
     public int ItemsCount { get; set; }
     public decimal Total { get; set; }
     public int? DeliveryMethodId { get; set; }
@@ -32,6 +34,8 @@ public class OrderDto
     public string CustomerName { get; set; }
     public string CustomerPhone { get; set; }
     public string ShippingAddress { get; set; }
+    public string City { get; set; }
+    public string Area { get; set; }
     public decimal SubTotal { get; set; }
     public decimal Tax { get; set; }
     public decimal ShippingCost { get; set; }

@@ -3,6 +3,12 @@ import { Component, DestroyRef, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { LucideAngularModule, X, Search, ChevronDown, ChevronUp } from "lucide-angular";
+import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
+import { OrderService } from "../../../../core/services/order.service";
+import { OrderItem } from "../../../../core/models/order";
+import { ImageUrlService } from "../../../../core/services/image-url.service";
+import { CustomerProfileService } from "../../../../core/services/customer-profile.service";
 
 import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
@@ -15,6 +21,7 @@ interface OfferDetails {
   imageUrl: string;
   price: number;
   badge: string;
+  productId: number;
 }
 
 const OFFERS: OfferDetails[] = [
@@ -28,16 +35,11 @@ const OFFERS: OfferDetails[] = [
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1000&q=80",
     price: 89,
     badge: "Pop-up exclusive",
+    productId: 1, // Placeholder for the Midnight Luxe set in DB
   },
 ];
 
-import { ImageUrlService } from "../../../../core/services/image-url.service";
-import { CustomerProfileService } from "../../../../core/services/customer-profile.service";
 
-import { LucideAngularModule, X } from "lucide-angular";
-
-import { OrderService } from "../../../../core/services/order.service";
-import { OrderItem } from "../../../../core/models/order";
 
 @Component({
   selector: "app-offer-details-page",
@@ -54,7 +56,10 @@ import { OrderItem } from "../../../../core/models/order";
 })
 export class OfferDetailsPageComponent {
   readonly icons = {
-    X,
+    X: X,
+    Search: Search,
+    ChevronDown: ChevronDown,
+    ChevronUp: ChevronUp,
   };
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -74,10 +79,22 @@ export class OfferDetailsPageComponent {
     fullName: ["", [Validators.required, Validators.minLength(2)]],
     phone: ["", [Validators.required, Validators.minLength(7)]],
     address: ["", [Validators.required, Validators.minLength(5)]],
+    city: ["Dhaka", Validators.required],
+    area: ["", Validators.required],
     quantity: [1, [Validators.required, Validators.min(1), Validators.max(10)]],
     size: ["M", [Validators.required]],
-    additionalDetails: [""],
+    color: ["Default"],
   });
+
+  cities = Object.keys(BANGLADESH_LOCATIONS).sort();
+  filteredCities: string[] = [];
+  citySearch = "";
+  isCityDropdownOpen = false;
+
+  areas: string[] = [];
+  filteredAreas: string[] = [];
+  areaSearch = "";
+  isAreaDropdownOpen = false;
 
   constructor() {
     this.route.paramMap
@@ -89,6 +106,20 @@ export class OfferDetailsPageComponent {
           void this.router.navigate(["/"]);
         }
       });
+
+    this.orderForm.controls.city.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((city) => {
+        this.areas = BANGLADESH_LOCATIONS[city] || [];
+        this.filteredAreas = [...this.areas];
+        this.orderForm.patchValue({ area: "" });
+        this.areaSearch = "";
+        this.citySearch = city; // Keep search input synced
+      });
+
+    // Initialize areas for default city
+    this.areas = BANGLADESH_LOCATIONS["Dhaka"] || [];
+    this.filteredAreas = [...this.areas];
   }
 
   get total(): number {
@@ -97,6 +128,49 @@ export class OfferDetailsPageComponent {
     }
     const quantity = this.orderForm.controls.quantity.value ?? 1;
     return this.offer.price * quantity;
+  }
+
+  filterCities(event: Event): void {
+    const query = (event.target as HTMLInputElement).value.toLowerCase();
+    this.citySearch = query;
+    this.filteredCities = this.cities.filter(c => c.toLowerCase().includes(query));
+  }
+
+  selectCity(city: string): void {
+    this.orderForm.patchValue({ city });
+    this.citySearch = city;
+    this.isCityDropdownOpen = false;
+  }
+
+  toggleCityDropdown(): void {
+    this.isCityDropdownOpen = !this.isCityDropdownOpen;
+    if (this.isCityDropdownOpen) {
+      this.isAreaDropdownOpen = false; // Close other
+      this.filteredCities = [...this.cities];
+      this.citySearch = this.orderForm.get('city')?.value || "";
+    }
+  }
+
+  filterAreas(event: Event): void {
+    const query = (event.target as HTMLInputElement).value.toLowerCase();
+    this.areaSearch = query;
+    this.filteredAreas = this.areas.filter(a => a.toLowerCase().includes(query));
+  }
+
+  selectArea(area: string): void {
+    this.orderForm.patchValue({ area });
+    this.areaSearch = area;
+    this.isAreaDropdownOpen = false;
+  }
+
+  toggleAreaDropdown(): void {
+    if (!this.orderForm.get('city')?.value) return;
+    this.isAreaDropdownOpen = !this.isAreaDropdownOpen;
+    if (this.isAreaDropdownOpen) {
+      this.isCityDropdownOpen = false; // Close other
+      this.filteredAreas = [...this.areas];
+      this.areaSearch = this.orderForm.get('area')?.value || "";
+    }
   }
 
   submitOrder(): void {
@@ -111,16 +185,24 @@ export class OfferDetailsPageComponent {
 
     const quantity = this.orderForm.controls.quantity.value ?? 1;
     const size = this.orderForm.controls.size.value ?? "";
-    const additional = this.orderForm.controls.additionalDetails.value?.trim();
 
     this.customerOrderApi
       .placeOrder({
         name: this.orderForm.controls.fullName.value,
         phone: this.orderForm.controls.phone.value,
         address: this.orderForm.controls.address.value,
+        city: this.orderForm.controls.city.value,
+        area: this.orderForm.controls.area.value,
         itemsCount: quantity,
         total: this.total,
-        items: [],
+        items: [
+          {
+            productId: this.offer.productId,
+            quantity: quantity,
+            color: this.orderForm.controls.color.value ?? "Default",
+            size: this.orderForm.controls.size.value ?? "M",
+          },
+        ],
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -157,7 +239,6 @@ export class OfferDetailsPageComponent {
             address: "",
             quantity: 1,
             size: "M",
-            additionalDetails: "",
           });
         },
         error: () => {

@@ -8,6 +8,8 @@ export interface CustomerLookupResponse {
   name: string;
   phone: string;
   address: string;
+  city?: string;
+  area?: string;
 }
 
 export interface OrderItemRequest {
@@ -21,6 +23,8 @@ export interface CustomerOrderRequest {
   name: string;
   phone: string;
   address: string;
+  city: string;
+  area: string;
   deliveryMethodId?: number;
   itemsCount: number;
   total: number;
@@ -32,6 +36,8 @@ export interface CustomerOrderResponse {
   name: string;
   phone: string;
   address: string;
+  city: string;
+  area: string;
   itemsCount: number;
   total: number;
   createdAt: string;

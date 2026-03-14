@@ -267,12 +267,14 @@ export class CartService {
       id: i.id.toString(), // Map backend numeric ID to string ID used in frontend UI
       productId: i.productId,
       name: i.productName,
-      price: i.salePrice ?? i.price, // Use sale price if available
+      price: i.price,
       quantity: i.quantity,
       color: i.color,
       size: i.size,
       imageUrl: i.imageUrl,
       imageAlt: i.productName, // Basic fallback
+      discountPercentage: i.salePrice ? Math.round(((i.salePrice - i.price) / i.salePrice) * 100) : 0,
+      compareAtPrice: i.salePrice,
     }));
 
     this.cartItemsSubject.next(mappedItems);
@@ -296,12 +298,17 @@ export class CartService {
       100,
     );
     const itemsCount = items.reduce((total, item) => total + item.quantity, 0);
+    const discount = items.reduce((total, item) => {
+      const originalPrice = item.compareAtPrice ?? item.price;
+      return total + (originalPrice - item.price) * item.quantity;
+    }, 0);
 
     return {
       itemsCount,
       subtotal,
       tax,
       shipping,
+      discount,
       total,
       freeShippingThreshold: this.freeShippingThreshold,
       freeShippingRemaining,

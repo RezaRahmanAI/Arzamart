@@ -1,44 +1,46 @@
-<section class="bg-white py-32 px-6" *ngIf="settings$ | async as settings">
-  <div class="max-w-4xl mx-auto text-center flex flex-col items-center gap-12">
-    <div class="max-w-2xl mx-auto flex flex-col items-center">
-      <span
-        class="text-[10px] uppercase tracking-[0.5em] text-accent font-bold mb-6 block"
-        >The Insider</span
-      >
-      <h2
-        class="text-4xl md:text-5xl lg:text-6xl font-serif italic tracking-tighter text-primary mb-8"
-      >
-        Join the refined world<br />of {{ settings.websiteName || "ArzaMart" }}
-      </h2>
-      <p
-        class="text-text-sub text-xs md:text-sm uppercase tracking-widest leading-loose opacity-60 max-w-lg"
-      >
-        {{
-          settings.description ||
-            "Receive exclusive updates on new collections, limited releases, and refined products."
-        }}
+<section class="bg-white py-32" *ngIf="settings$ | async as settings">
+  <div class="site-container">
+    <div class="mx-auto text-center flex flex-col items-center gap-12">
+      <div class="mx-auto flex flex-col items-center">
+        <span
+          class="text-[10px] uppercase tracking-[0.5em] text-accent font-bold mb-6 block"
+          >The Insider</span
+        >
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-serif italic tracking-tighter text-primary mb-8"
+        >
+          Join the refined world<br />of {{ settings.websiteName || "ArzaMart" }}
+        </h2>
+        <p
+          class="text-text-sub text-xs md:text-sm uppercase tracking-widest leading-loose opacity-60 max-w-lg"
+        >
+          {{
+            settings.description ||
+              "Receive exclusive updates on new collections, limited releases, and refined products."
+          }}
+        </p>
+      </div>
+
+      <form class="flex w-full flex-col sm:flex-row gap-8 mt-4 max-w-xl group">
+        <div class="flex-1 relative">
+          <input
+            class="w-full h-14 bg-transparent border-0 border-b border-gray-100 px-0 focus:ring-0 focus:border-accent text-primary text-sm uppercase tracking-widest placeholder:text-gray-200 transition-all duration-300"
+            placeholder="E-MAIL ADDRESS"
+            required
+            type="email"
+          />
+        </div>
+        <button
+          class="h-14 bg-primary text-white text-[10px] uppercase tracking-[0.3em] font-bold px-12 hover:bg-accent transition-all duration-500"
+          type="submit"
+        >
+          Subscribe
+        </button>
+      </form>
+
+      <p class="text-[10px] text-gray-300 uppercase tracking-widest mt-4">
+        By joining, you agree to our refined policies.
       </p>
     </div>
-
-    <form class="flex w-full flex-col sm:flex-row gap-8 mt-4 max-w-xl group">
-      <div class="flex-1 relative">
-        <input
-          class="w-full h-14 bg-transparent border-0 border-b border-gray-100 px-0 focus:ring-0 focus:border-accent text-primary text-sm uppercase tracking-widest placeholder:text-gray-200 transition-all duration-300"
-          placeholder="E-MAIL ADDRESS"
-          required
-          type="email"
-        />
-      </div>
-      <button
-        class="h-14 bg-primary text-white text-[10px] uppercase tracking-[0.3em] font-bold px-12 hover:bg-accent transition-all duration-500"
-        type="submit"
-      >
-        Subscribe
-      </button>
-    </form>
-
-    <p class="text-[10px] text-gray-300 uppercase tracking-widest mt-4">
-      By joining, you agree to our refined policies.
-    </p>
   </div>
 </section>

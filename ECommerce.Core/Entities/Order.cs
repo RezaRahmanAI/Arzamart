@@ -22,6 +22,8 @@ public class Order : BaseEntity
     public string CustomerName { get; set; }
     public string CustomerPhone { get; set; }
     public string ShippingAddress { get; set; }
+    public string City { get; set; } = string.Empty;
+    public string Area { get; set; } = string.Empty;
     
     // Financials
     public decimal SubTotal { get; set; }

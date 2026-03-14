@@ -1,3 +1,4 @@
+using ECommerce.API.Helpers;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using ECommerce.Infrastructure.Data;
@@ -76,7 +77,7 @@ public static class ServiceExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddHttpContextAccessor();
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        services.AddAutoMapper(typeof(MappingProfiles), typeof(OrderService));
 
         // 5. Business Services
         services.AddScoped<IOrderService, OrderService>();

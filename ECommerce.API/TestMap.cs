@@ -10,7 +10,7 @@ public class TestMap {
         try {
             var config = new MapperConfiguration(cfg => {
                 cfg.AddProfile<MappingProfiles>();
-            });
+            }, new Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory());
             var mapper = config.CreateMapper();
 
             var order = new Order {
