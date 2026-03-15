@@ -4,6 +4,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ECommerce.API.Controllers;
 
@@ -14,12 +15,14 @@ public class AdminSettingsController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
+    private readonly IMemoryCache _cache;
 
-    public AdminSettingsController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config)
+    public AdminSettingsController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config, IMemoryCache cache)
     {
         _context = context;
         _environment = environment;
         _config = config;
+        _cache = cache;
     }
 
     [HttpGet]
@@ -89,6 +92,9 @@ public class AdminSettingsController : ControllerBase
 
         await _context.SaveChangesAsync();
 
+        _cache.Remove("site_settings");
+        _cache.Remove("delivery_methods_active");
+
         return Ok(dto);
     }
 
@@ -136,6 +142,8 @@ public class AdminSettingsController : ControllerBase
         _context.DeliveryMethods.Add(method);
         await _context.SaveChangesAsync();
 
+        _cache.Remove("delivery_methods_active");
+
         return CreatedAtAction(nameof(GetDeliveryMethods), new { id = method.Id }, method);
     }
 
@@ -152,6 +160,8 @@ public class AdminSettingsController : ControllerBase
         method.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+        
+        _cache.Remove("delivery_methods_active");
         return NoContent();
     }
 
@@ -163,6 +173,8 @@ public class AdminSettingsController : ControllerBase
 
         _context.DeliveryMethods.Remove(method);
         await _context.SaveChangesAsync();
+
+        _cache.Remove("delivery_methods_active");
         return NoContent();
     }
 }

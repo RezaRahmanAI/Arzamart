@@ -22,6 +22,7 @@ const EXCLUDED_PATTERNS = [
   "/checkout",
   "/customers",
   "/analytics",
+  "/sitesettings",
 ];
 
 function shouldCache(url: string): boolean {

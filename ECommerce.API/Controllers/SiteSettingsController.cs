@@ -11,7 +11,7 @@ using System.Linq;
 namespace ECommerce.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/sitesettings")]
     public class SiteSettingsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -24,7 +24,6 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        [ResponseCache(Duration = 600)]
         public async Task<ActionResult<SiteSetting>> GetSettings()
         {
             const string cacheKey = "site_settings";
@@ -46,7 +45,6 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet("delivery-methods")]
-        [ResponseCache(Duration = 600)]
         public async Task<ActionResult<IEnumerable<DeliveryMethod>>> GetDeliveryMethods()
         {
             const string cacheKey = "delivery_methods_active";

@@ -125,6 +125,10 @@ export class CheckoutPageComponent {
         }
       }),
       shareReplay(1),
+      catchError((err) => {
+        console.error("Failed to load delivery methods", err);
+        return of([] as DeliveryMethod[]);
+      }),
     );
 
   readonly summary$ = this.cartService.summary$;
@@ -138,12 +142,19 @@ export class CheckoutPageComponent {
     this.deliveryMethods$.pipe(startWith([] as DeliveryMethod[])),
   ]).pipe(
     map(([cartItems, summary, settings, deliveryMethods]) => {
+      // Fallback to settings.deliveryMethods if public call is empty but settings has them
+      const rawMethods = (deliveryMethods && deliveryMethods.length > 0) 
+        ? deliveryMethods 
+        : (settings?.deliveryMethods || []);
+      
+      const activeMethods = rawMethods.filter(m => m.isActive);
+
       const freeShippingThreshold = settings?.freeShippingThreshold ?? 0;
       const isFreeShipping =
         freeShippingThreshold > 0 && summary.subtotal >= freeShippingThreshold;
 
       // Update delivery methods costs if free shipping applies
-      const effectiveDeliveryMethods = deliveryMethods.map((m) => ({
+      const effectiveDeliveryMethods = activeMethods.map((m) => ({
         ...m,
         cost: isFreeShipping ? 0 : m.cost,
       }));
