@@ -87,8 +87,8 @@ export class OrderService {
     tax: number,
   ): Order {
     const order: Order = {
-      id: response.orderId,
-      orderNumber: `ORD-${response.orderId}`,
+      id: response.id,
+      orderNumber: response.orderNumber || `ORD-${response.id}`,
       status: OrderStatus.Confirmed,
       items,
       customerName: response.name,
@@ -131,19 +131,19 @@ export class OrderService {
     summary: CartSummary,
   ): Order {
     return {
-      id: response.orderId,
-      orderNumber: `ORD-${response.orderId}`,
+      id: response.id,
+      orderNumber: response.orderNumber || `ORD-${response.id}`,
       status: OrderStatus.Confirmed,
       items,
       customerName: response.name,
       customerPhone: response.phone,
       shippingAddress: response.address,
-      subTotal: summary.subtotal,
-      shippingCost: summary.shipping,
-      tax: summary.tax,
-      total: summary.total,
-      itemsCount: summary.itemsCount,
-      createdAt: new Date().toISOString(),
+      subTotal: response.subTotal || summary.subtotal,
+      shippingCost: response.shippingCost ?? summary.shipping,
+      tax: response.tax ?? summary.tax,
+      total: response.total || summary.total,
+      itemsCount: response.itemsCount || summary.itemsCount,
+      createdAt: response.createdAt || new Date().toISOString(),
     };
   }
 }

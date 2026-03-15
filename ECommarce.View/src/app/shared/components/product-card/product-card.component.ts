@@ -13,6 +13,8 @@ import { PriceDisplayComponent } from "../price-display/price-display.component"
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { CartService } from "../../../core/services/cart.service";
 import { LucideAngularModule, ShoppingCart } from "lucide-angular";
+import { QuickAddModalComponent } from "../quick-add-modal/quick-add-modal.component";
+import { ProductImage } from "../../../core/models/product";
 
 @Component({
   selector: "app-product-card",
@@ -22,6 +24,7 @@ import { LucideAngularModule, ShoppingCart } from "lucide-angular";
     RouterLink,
     PriceDisplayComponent,
     LucideAngularModule,
+    QuickAddModalComponent,
   ],
   templateUrl: "./product-card.component.html",
   styleUrl: "./product-card.component.css",
@@ -32,6 +35,7 @@ export class ProductCardComponent {
   selectedSize: string | null = null;
 
   readonly icons = { ShoppingCart };
+  showQuickAdd = false;
 
   constructor(
     public readonly imageUrlService: ImageUrlService,
@@ -242,15 +246,22 @@ export class ProductCardComponent {
       return;
     }
 
+    // Instead of adding directly, show the Quick Add modal for color selection
+    this.showQuickAdd = true;
+  }
+
+  onQuickAddConfirm(selection: { color: string; size?: string }): void {
     if ("id" in this.product) {
       this.cartService
         .addItem(
           this.product as Product,
           1,
-          this.selectedColorName,
-          this.selectedSize ?? undefined,
+          selection.color,
+          selection.size ?? this.selectedSize ?? undefined,
         )
-        .subscribe();
+        .subscribe(() => {
+          this.showQuickAdd = false;
+        });
     }
   }
 }

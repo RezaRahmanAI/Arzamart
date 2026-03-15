@@ -237,15 +237,18 @@ export class CartService {
     }
   }
 
-  clearCart(): void {
-    this.cartItemsSubject.next([]);
+  clearCart(): Observable<any> {
     // Perform backend deletion
-    this.api.delete(this.apiUrl, this.options).subscribe({
-      error: (err) => {
+    return this.api.delete(this.apiUrl, this.options).pipe(
+      tap(() => {
+        this.cartItemsSubject.next([]);
+      }),
+      catchError((err) => {
         console.error("Failed to clear cart on server", err);
         this.refreshCartFromServer(); // Re-sync if failed
-      },
-    });
+        throw err;
+      }),
+    );
   }
 
   mergeGuestCart(): Observable<CartDto | null> {

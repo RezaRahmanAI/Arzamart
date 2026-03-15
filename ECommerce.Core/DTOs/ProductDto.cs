@@ -101,4 +101,5 @@ public class ProductListDto
     public string? CollectionName { get; set; }
 
     public List<ProductVariantDto> Variants { get; set; } = new();
+    public IEnumerable<ProductImageDto> Images { get; set; } = new List<ProductImageDto>();
 }

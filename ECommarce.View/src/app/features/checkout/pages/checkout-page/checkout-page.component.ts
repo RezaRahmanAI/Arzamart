@@ -140,8 +140,11 @@ export class CheckoutPageComponent {
       .getSettings()
       .pipe(startWith(null as AdminSettings | null)),
     this.deliveryMethods$.pipe(startWith([] as DeliveryMethod[])),
+    this.checkoutForm.controls.deliveryMethodId.valueChanges.pipe(
+      startWith(this.checkoutForm.controls.deliveryMethodId.value),
+    ),
   ]).pipe(
-    map(([cartItems, summary, settings, deliveryMethods]) => {
+    map(([cartItems, summary, settings, deliveryMethods, currentMethodId]) => {
       // Fallback to settings.deliveryMethods if public call is empty but settings has them
       const rawMethods = (deliveryMethods && deliveryMethods.length > 0) 
         ? deliveryMethods 
@@ -160,7 +163,6 @@ export class CheckoutPageComponent {
       }));
 
       // Find the currently selected method in the effective list (to get the updated cost)
-      const currentMethodId = this.checkoutForm.controls.deliveryMethodId.value;
       const selectedMethod =
         effectiveDeliveryMethods.find((m) => m.id === currentMethodId) || null;
 

@@ -231,7 +231,7 @@ export class OfferDetailsPageComponent {
             0,
           );
 
-          void this.router.navigate(["/order-confirmation", response.orderId]);
+          void this.router.navigate(["/order-confirmation", response.id]);
 
           this.orderForm.reset({
             fullName: "",

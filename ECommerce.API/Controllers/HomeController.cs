@@ -36,15 +36,19 @@ public class HomeController : ControllerBase
     }
 
     [HttpGet]
-    [ResponseCache(Duration = 600)]
+    // [ResponseCache(Duration = 600)]
     public async Task<ActionResult<HomePageDto>> GetHomeData()
     {
         const string cacheKey = "home_page_data";
 
+        // Temporarily commented out to fix stale data issue where Images were missing in DTO
+        /*
         if (_cache.TryGetValue(cacheKey, out HomePageDto? cached) && cached != null)
         {
             return Ok(cached);
         }
+        */
+        _cache.Remove(cacheKey); // Explicitly clear to be safe
 
         // EF Core DbContext is not thread-safe and does not support parallel queries on the same instance.
         // We must execute them sequentially.

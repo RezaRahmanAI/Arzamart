@@ -54,19 +54,7 @@ public class OrdersController : ControllerBase
         try
         {
             var order = await _orderService.CreateOrderAsync(orderDto);
-            
-            // Return format expected by frontend:
-            // { orderId: string, name, phone, address, deliveryDetails, itemsCount, total, createdAt }
-            return Ok(new 
-            {
-                orderId = order.Id, // Return as numeric ID
-                name = order.CustomerName,
-                phone = order.CustomerPhone,
-                address = order.ShippingAddress,
-                itemsCount = order.Items.Sum(i => i.Quantity),
-                total = order.Total,
-                createdAt = order.CreatedAt
-            });
+            return Ok(order);
         }
         catch (Exception ex)
         {

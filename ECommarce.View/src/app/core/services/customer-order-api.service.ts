@@ -32,14 +32,18 @@ export interface CustomerOrderRequest {
 }
 
 export interface CustomerOrderResponse {
-  orderId: number;
+  id: number;
+  orderNumber: string;
   name: string;
   phone: string;
   address: string;
   city: string;
   area: string;
-  itemsCount: number;
+  subTotal: number;
+  shippingCost: number;
+  tax: number;
   total: number;
+  itemsCount: number;
   createdAt: string;
 }
 

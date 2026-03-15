@@ -23,6 +23,8 @@ export interface Order {
   createdAt: string;
   updatedAt?: string;
   paymentStatus?: string;
+  city?: string;
+  area?: string;
 }
 
 export interface OrderItem {

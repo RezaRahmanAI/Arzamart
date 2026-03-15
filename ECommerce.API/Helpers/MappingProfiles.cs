@@ -73,6 +73,16 @@ public class MappingProfiles : Profile
                 CompareAtPrice = v.CompareAtPrice,
                 PurchaseRate = v.PurchaseRate,
                 StockQuantity = v.StockQuantity
+            })))
+            .ForMember(d => d.Images, o => o.MapFrom(s => s.Images.Select(i => new ProductImageDto 
+            {
+                Id = i.Id,
+                ImageUrl = i.Url,
+                AltText = i.AltText,
+                Label = i.Label,
+                IsPrimary = i.IsMain,
+                Type = i.MediaType ?? "image",
+                Color = i.Color
             })));
 
         CreateMap<Category, CategoryDto>();

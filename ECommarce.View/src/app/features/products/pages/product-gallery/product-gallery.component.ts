@@ -100,7 +100,6 @@ export class ProductGalleryComponent implements OnInit {
     this.productService.getProducts(filterParams).subscribe({
       next: (response) => {
         this.products = response.data;
-        this.chunkProductsIntoRows();
         this.loading = false;
         this.cdr.markForCheck();
       },

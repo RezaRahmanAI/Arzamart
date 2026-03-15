@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, map, of, tap } from "rxjs";
+import { BehaviorSubject, Observable, map, of, tap, switchMap } from "rxjs";
 
 import { CheckoutState } from "../models/checkout";
 import { CartService } from "./cart.service";
@@ -52,12 +52,13 @@ export class CheckoutService {
         deliveryMethodId: state.deliveryMethodId,
       })
       .pipe(
-        tap(() => {
+        switchMap((order) => {
           this.profileService.storePhone(state.phone);
-          this.cartService.clearCart();
           this.resetState();
-        }),
-        map((order) => order.id),
+          return this.cartService.clearCart().pipe(
+            map(() => order.id)
+          );
+        })
       );
   }
 
