@@ -375,9 +375,9 @@ export class AdminProductFormComponent implements OnDestroy {
             : "",
           collection: product.collectionId ? String(product.collectionId) : "",
           gender: "women", 
-          price:  product.price,
-          salePrice: product.compareAtPrice,
-          purchaseRate: product.purchaseRate,
+          price: product.compareAtPrice ?? product.price,
+          salePrice: product.compareAtPrice ? product.price : null,
+          purchaseRate: product.purchaseRate || product.price,
 
           newArrival: product.isNew || false,
           isFeatured: product.isFeatured || false,
@@ -445,11 +445,11 @@ export class AdminProductFormComponent implements OnDestroy {
               this.formBuilder.group({
                 label: [v.size ?? v.Size ?? ""],
                 price: [
-                  v.compareAtPrice ?? v.price ?? v.Price ?? product.price ?? 0,
+                  v.compareAtPrice ?? v.price ?? v.Price ?? product.compareAtPrice ?? product.price ?? 0,
                   [Validators.required, Validators.min(0)],
                 ],
                 salePrice: [
-                  (v.compareAtPrice || v.CompareAtPrice) ? (v.price ?? v.Price) : null,
+                  v.compareAtPrice ? (v.price ?? v.Price ?? product.price ?? 0) : null,
                   [Validators.min(0)],
                 ],
                 purchaseRate: [
@@ -720,30 +720,21 @@ export class AdminProductFormComponent implements OnDestroy {
       this.form.markAllAsTouched();
 
       // Log detailed validation errors
-      const invalidFields: string[] = [];
+      const errorMessages: string[] = [];
       Object.keys(this.form.controls).forEach((key) => {
         const control = this.form.get(key);
         if (control?.invalid) {
-          invalidFields.push(key);
-          console.error(`Field "${key}" is invalid:`, control.errors);
+          if (control.errors?.['required']) errorMessages.push(`${key} is required`);
+          else if (control.errors?.['min']) errorMessages.push(`${key} must be positive`);
+          else errorMessages.push(`${key} is invalid`);
         }
       });
-
-      console.error("Form validation failed. Details:", {
-        formValid: this.form.valid,
-        formErrors: this.form.errors,
-        mediaCount: this.mediaItemsArray.length,
-        invalidFields: invalidFields,
-        formValue: this.form.getRawValue(),
-      });
-      
-      // Also log errors for each group if applicable
-      if (this.form.get("variants")?.invalid) {
-         console.error("Variants group is invalid:", this.form.get("variants")?.errors);
+      if (this.form.errors?.['salePriceExceedsBase']) {
+        errorMessages.push("Sale Price must be lower than Price");
       }
 
       window.alert(
-        `Form is incomplete or has errors. Missing fields: ${invalidFields.join(", ")}`
+        `Form has errors:\n${errorMessages.join("\n")}`
       );
       return;
     }
