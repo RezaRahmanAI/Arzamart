@@ -29,7 +29,32 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 ">
         <!-- ===== LEFT: Image Gallery & Description (Unified) ===== -->
         <div class="lg:col-span-6 flex flex-col gap-10">
-            <div class="flex flex-row lg:flex-col gap-4">
+            <div class="flex flex-row gap-4">
+              <!-- Thumbnails (Left on Desktop, Right on Mobile - fixed to Left/Vertical for desktop as requested) -->
+              <div
+                *ngIf="vm.gallery.length > 1"
+                class="hidden lg:flex flex-col gap-2 overflow-y-auto scrollbar-hide w-24 flex-shrink-0"
+                style="max-height: 550px;"
+              >
+                <button
+                  *ngFor="let url of vm.gallery; let i = index"
+                  (click)="goToImage(i)"
+                  class="flex-shrink-0 w-full h-28 border transition-all duration-300 overflow-hidden relative"
+                  [class.border-[#1a1a1a]]="i === currentImageIndex"
+                  [class.border-transparent]="i !== currentImageIndex"
+                >
+                  <img
+                    [src]="imageUrlService.getImageUrl(url)"
+                    class="w-full h-full object-cover"
+                    [class.opacity-60]="i !== currentImageIndex"
+                  />
+                  <div
+                    *ngIf="i === currentImageIndex"
+                    class="absolute bottom-0 left-0 w-full h-0.5 bg-[#1a1a1a]"
+                  ></div>
+                </button>
+              </div>
+
               <!-- Main Image Area -->
               <div class="relative flex-1">
                 <div
@@ -82,15 +107,15 @@
                 </div>
               </div>
 
-              <!-- Thumbnails (Right on Mobile, Bottom on Desktop) -->
+              <!-- Mobile Thumbnails (Stay on right/bottom or hidden if desired, typically vertical on mobile is hard) -->
               <div
                 *ngIf="vm.gallery.length > 1"
-                class="flex flex-col lg:flex-row gap-2 overflow-x-auto lg:overflow-x-auto scrollbar-hide w-16 lg:w-full flex-shrink-0"
+                class="flex flex-col lg:hidden gap-2 overflow-y-auto scrollbar-hide w-16 flex-shrink-0"
               >
                 <button
                   *ngFor="let url of vm.gallery; let i = index"
                   (click)="goToImage(i)"
-                  class="flex-shrink-0 w-full h-20 lg:w-20 lg:h-24 border transition-all duration-300 overflow-hidden relative"
+                  class="flex-shrink-0 w-full h-20 border transition-all duration-300 overflow-hidden relative"
                   [class.border-[#1a1a1a]]="i === currentImageIndex"
                   [class.border-transparent]="i !== currentImageIndex"
                 >
@@ -99,11 +124,6 @@
                     class="w-full h-full object-cover"
                     [class.opacity-60]="i !== currentImageIndex"
                   />
-                  <!-- Selection Indicator Line -->
-                  <div
-                    *ngIf="i === currentImageIndex"
-                    class="absolute bottom-0 left-0 w-full h-0.5 bg-[#1a1a1a]"
-                  ></div>
                 </button>
               </div>
             </div>
