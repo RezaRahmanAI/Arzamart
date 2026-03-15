@@ -146,6 +146,12 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
         return;
       }
       this.selectedProductIds.delete(product.id);
+      
+      // Optimistic UI update: Remove from local array immediately
+      this.products = this.products.filter(p => p.id !== product.id);
+      this.totalResults--;
+      
+      // Still reload to ensure pagination and total results are perfectly in sync
       this.loadProducts();
     });
   }

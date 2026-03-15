@@ -374,14 +374,10 @@ export class AdminProductFormComponent implements OnDestroy {
             ? String(product.subCategoryId)
             : "",
           collection: product.collectionId ? String(product.collectionId) : "",
-          gender: "women", // Default or handle via category
-          price: product.compareAtPrice && product.compareAtPrice > product.price 
-            ? product.compareAtPrice 
-            : product.price,
-          salePrice: product.compareAtPrice && product.compareAtPrice > product.price 
-            ? product.price 
-            : null,
-          purchaseRate: product.purchaseRate || product.price,
+          gender: "women", 
+          price:  product.price,
+          salePrice: product.compareAtPrice,
+          purchaseRate: product.purchaseRate,
 
           newArrival: product.isNew || false,
           isFeatured: product.isFeatured || false,
@@ -449,11 +445,11 @@ export class AdminProductFormComponent implements OnDestroy {
               this.formBuilder.group({
                 label: [v.size ?? v.Size ?? ""],
                 price: [
-                  v.price ?? v.Price ?? product.price ?? 0,
+                  v.compareAtPrice ?? v.price ?? v.Price ?? product.price ?? 0,
                   [Validators.required, Validators.min(0)],
                 ],
                 salePrice: [
-                  v.compareAtPrice ?? v.CompareAtPrice ?? null,
+                  (v.compareAtPrice || v.CompareAtPrice) ? (v.price ?? v.Price) : null,
                   [Validators.min(0)],
                 ],
                 purchaseRate: [
@@ -1011,8 +1007,8 @@ export class AdminProductFormComponent implements OnDestroy {
       statusActive: Boolean(raw.statusActive),
       category: categoryObj?.name || "", // Send Name, not ID
       gender: raw.gender ?? "women",
-      price: raw.salePrice !== null ? raw.salePrice : productPrice, // The selling price
-      salePrice: raw.salePrice !== null ? productPrice : undefined, // The original/higher price
+      price: productPrice,
+      salePrice: productSalePrice,
       purchaseRate: productPurchaseRate,
 
       newArrival: Boolean(raw.newArrival),

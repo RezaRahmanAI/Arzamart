@@ -77,7 +77,7 @@ public static class ServiceExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddHttpContextAccessor();
-        services.AddAutoMapper(typeof(MappingProfiles), typeof(OrderService));
+        services.AddAutoMapper(cfg => cfg.AddMaps(typeof(MappingProfiles).Assembly, typeof(OrderService).Assembly));
 
         // 5. Business Services
         services.AddScoped<IOrderService, OrderService>();

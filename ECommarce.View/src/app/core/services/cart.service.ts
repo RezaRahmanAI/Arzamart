@@ -22,6 +22,7 @@ import {
   AddToCartDto,
   UpdateCartItemDto,
 } from "../models/cart-dto.model";
+import { NotificationService } from "./notification.service";
 import { v4 as uuidv4 } from "uuid";
 import { ApiHttpClient } from "../http/http-client";
 
@@ -37,6 +38,7 @@ export class CartService {
 
   private readonly settingsService = inject(SettingsService);
   private readonly analyticsService = inject(AnalyticsService);
+  private readonly notificationService = inject(NotificationService);
   private readonly api = inject(ApiHttpClient);
 
   private readonly cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
@@ -147,14 +149,25 @@ export class CartService {
     size?: string,
   ): Observable<CartDto> {
     const resolvedColor =
-      color ?? product.images?.find((i) => !!i.color)?.color ?? "Default";
-    const resolvedSize = size ?? product.variants[0]?.size ?? "One Size";
+      color && color.trim() !== "" 
+        ? color 
+        : (product.images?.find((i) => !!i.color)?.color ?? "Default");
+        
+    const hasVariants = product.variants && product.variants.length > 0;
+    const resolvedSize = 
+      size && size.trim() !== ""
+        ? size
+        : (hasVariants ? undefined : "One Size");
+
+    if (hasVariants && !resolvedSize) {
+      throw new Error("Size is required for this product.");
+    }
 
     const payload: AddToCartDto = {
       productId: product.id,
       quantity,
       color: resolvedColor,
-      size: resolvedSize,
+      size: resolvedSize ?? "One Size",
     };
 
     return this.api
@@ -314,5 +327,9 @@ export class CartService {
       freeShippingRemaining,
       freeShippingProgress,
     };
+  }
+
+  notifySizeRequired(): void {
+    this.notificationService.error("Please select a size first");
   }
 }

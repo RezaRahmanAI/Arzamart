@@ -87,10 +87,7 @@ public class OrderService : IOrderService
 
             if (priceVariant != null && (priceVariant.Price ?? 0) > 0)
             {
-                // Consistency fix: Ensure we pick the lower price if CompareAtPrice is used as a discount field
-                var p = priceVariant.Price.Value;
-                var cp = priceVariant.CompareAtPrice ?? 0;
-                unitPrice = (cp > 0 && cp < p) ? cp : p;
+                unitPrice = priceVariant.Price.Value;
             }
             else
             {

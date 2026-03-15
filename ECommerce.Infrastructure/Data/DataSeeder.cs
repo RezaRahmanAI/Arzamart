@@ -26,7 +26,7 @@ public static class DataSeeder
         // Ensure Primary Admin User exists
         var primaryAdminEmail = "admin@arzamart.shop";
         var existingAdmin = await userManager.FindByEmailAsync(primaryAdminEmail);
-        
+
         if (existingAdmin == null)
         {
             var newAdmin = new ApplicationUser
@@ -169,18 +169,11 @@ public static class DataSeeder
         }
         await context.SaveChangesAsync();
 
-        // Seed Products - Re-seed if no products have prices
+        // Seed Products - Only if empty
         var productCount = await context.Products.CountAsync();
-        var hasPrices = await context.ProductVariants.AnyAsync(v => v.Price != null && v.Price > 0);
-        
-        if (productCount < 5 || !hasPrices)
-        {
-            if (productCount > 0)
-            {
-                context.Products.RemoveRange(context.Products);
-                await context.SaveChangesAsync();
-            }
 
+        if (productCount == 0)
+        {
             var categories = await context.Categories.Include(c => c.SubCategories).ToListAsync();
             var productsToAdd = new List<Product>();
 
@@ -625,7 +618,7 @@ public static class DataSeeder
             var kidsCat = categories.FirstOrDefault(c => c.Slug == "kids");
             var girlsSub = FindSubCategory("kids", "girls");
             var boysSub = FindSubCategory("kids", "boys");
-            
+
             if (kidsCat != null && girlsSub != null)
             {
                 productsToAdd.Add(new Product
@@ -636,10 +629,14 @@ public static class DataSeeder
                     ShortDescription = "Adorable pink party dress for little girls",
                     Description = "Let your little princess shine in this beautiful pink party dress with tulle layers and sparkly embellishments.",
 
-                    CategoryId = kidsCat.Id, SubCategoryId = girlsSub.Id,
+                    CategoryId = kidsCat.Id,
+                    SubCategoryId = girlsSub.Id,
                     ImageUrl = "https://images.unsplash.com/photo-1518837697477-94d4777248d6?w=800",
-                    StockQuantity = 44, IsActive = true, IsNew = true,
-                    Tags = "Kids, Girls, Dress, Party", Tier = "Premium",
+                    StockQuantity = 44,
+                    IsActive = true,
+                    IsNew = true,
+                    Tags = "Kids, Girls, Dress, Party",
+                    Tier = "Premium",
                     FabricAndCare = "Polyester tulle. Hand wash cold.",
                     ShippingAndReturns = "Free shipping. Returns within 14 days.",
                     Images = new List<ProductImage>
@@ -736,10 +733,14 @@ public static class DataSeeder
                     ShortDescription = "Premium brown leather handbag",
                     Description = "Carry your essentials in style with this premium brown leather handbag. Features multiple compartments and a detachable shoulder strap.",
 
-                    CategoryId = accessoriesCat.Id, SubCategoryId = bagsSub.Id,
+                    CategoryId = accessoriesCat.Id,
+                    SubCategoryId = bagsSub.Id,
                     ImageUrl = "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800",
-                    StockQuantity = 30, IsActive = true, IsNew = true,
-                    Tags = "Accessories, Bags, Leather, Luxury", Tier = "Luxury",
+                    StockQuantity = 30,
+                    IsActive = true,
+                    IsNew = true,
+                    Tags = "Accessories, Bags, Leather, Luxury",
+                    Tier = "Luxury",
                     FabricAndCare = "Genuine leather. Wipe with damp cloth.",
                     ShippingAndReturns = "Free shipping. Returns within 7 days.",
                     Images = new List<ProductImage>
@@ -821,24 +822,20 @@ public static class DataSeeder
             }
         }
 
-        // Seed Reviews
-        // Always clear and re-seed to ensure fresh data and fix potential bad data issues
-        if (await context.Reviews.AnyAsync())
+        // Seed Reviews - Only if empty
+        if (!await context.Reviews.AnyAsync())
         {
-            context.Reviews.RemoveRange(context.Reviews);
-            await context.SaveChangesAsync();
-        }
 
-        // Proceed to seed
-        var products = await context.Products.ToListAsync();
-        var reviews = new List<Review>();
-        var random = new Random();
+            // Proceed to seed
+            var products = await context.Products.ToListAsync();
+            var reviews = new List<Review>();
+            var random = new Random();
 
-        if (true /* Review seeding enabled */)
-        {
-            var customerNames = new[] { "Sarah M.", "John D.", "Emily R.", "Michael B.", "Jessica K.", "David L.", "Emma S.", "James P.", "Olivia H.", "Daniel W." };
-            var positiveComments = new[]
+            if (true /* Review seeding enabled */)
             {
+                var customerNames = new[] { "Sarah M.", "John D.", "Emily R.", "Michael B.", "Jessica K.", "David L.", "Emma S.", "James P.", "Olivia H.", "Daniel W." };
+                var positiveComments = new[]
+                {
                 "Absolutely love this product! The quality is outstanding.",
                 "Exceeded my expectations. Will definitely buy again.",
                 "Great value for money. Highly recommended.",
@@ -848,8 +845,8 @@ public static class DataSeeder
                 "Exactly what I was looking for. Five stars!",
                 "Beautiful design and great craftsmanship."
             };
-            var neutralComments = new[]
-            {
+                var neutralComments = new[]
+                {
                 "Good product but sizing runs a bit small.",
                 "Decent quality for the price.",
                 "It's okay, nothing special.",
@@ -857,43 +854,43 @@ public static class DataSeeder
                 "Color is slightly different from the picture."
             };
 
-            foreach (var product in products)
-            {
-                var numberOfReviews = random.Next(2, 6); // 2 to 5 reviews per product
-
-                for (int i = 0; i < numberOfReviews; i++)
+                foreach (var product in products)
                 {
-                    var isPositive = random.NextDouble() > 0.2; // 80% positive reviews
-                    var rating = isPositive ? random.Next(4, 6) : random.Next(3, 5);
-                    var comment = isPositive
-                        ? positiveComments[random.Next(positiveComments.Length)]
-                        : neutralComments[random.Next(neutralComments.Length)];
+                    var numberOfReviews = random.Next(2, 6); // 2 to 5 reviews per product
 
-                    var daysAgo = random.Next(1, 365);
-
-                    reviews.Add(new Review
+                    for (int i = 0; i < numberOfReviews; i++)
                     {
-                        ProductId = product.Id,
-                        CustomerName = customerNames[random.Next(customerNames.Length)],
-                        Rating = rating,
-                        Comment = comment,
-                        Date = DateTime.UtcNow.AddDays(-daysAgo),
-                        IsVerifiedPurchase = random.NextDouble() > 0.1, // 90% verified
-                        IsFeatured = isPositive && rating == 5 && random.NextDouble() > 0.7, // Some 5-star reviews are featured
-                        IsApproved = true,
-                        Likes = random.Next(0, 20)
-                    });
+                        var isPositive = random.NextDouble() > 0.2; // 80% positive reviews
+                        var rating = isPositive ? random.Next(4, 6) : random.Next(3, 5);
+                        var comment = isPositive
+                            ? positiveComments[random.Next(positiveComments.Length)]
+                            : neutralComments[random.Next(neutralComments.Length)];
+
+                        var daysAgo = random.Next(1, 365);
+
+                        reviews.Add(new Review
+                        {
+                            ProductId = product.Id,
+                            CustomerName = customerNames[random.Next(customerNames.Length)],
+                            Rating = rating,
+                            Comment = comment,
+                            Date = DateTime.UtcNow.AddDays(-daysAgo),
+                            IsVerifiedPurchase = random.NextDouble() > 0.1, // 90% verified
+                            IsFeatured = isPositive && rating == 5 && random.NextDouble() > 0.7, // Some 5-star reviews are featured
+                            IsApproved = true,
+                            Likes = random.Next(0, 20)
+                        });
+                    }
                 }
+
+                await context.Reviews.AddRangeAsync(reviews);
+                await context.SaveChangesAsync();
             }
 
-            await context.Reviews.AddRangeAsync(reviews);
-            await context.SaveChangesAsync();
-        }
-
-        // Seed Hero Banners
-        if (!await context.HeroBanners.AnyAsync())
-        {
-            var banners = new List<HeroBanner>
+            // Seed Hero Banners
+            if (!await context.HeroBanners.AnyAsync())
+            {
+                var banners = new List<HeroBanner>
             {
                 new HeroBanner
                 {
@@ -927,31 +924,32 @@ public static class DataSeeder
                 }
             };
 
-            await context.HeroBanners.AddRangeAsync(banners);
-            await context.SaveChangesAsync();
-        }
+                await context.HeroBanners.AddRangeAsync(banners);
+                await context.SaveChangesAsync();
+            }
 
-        // Seed/Update Site Settings to ArzaMart
-        var siteSettings = await context.SiteSettings.FirstOrDefaultAsync();
-        if (siteSettings == null)
-        {
-            siteSettings = new SiteSetting
+            // Seed/Update Site Settings to ArzaMart
+            var siteSettings = await context.SiteSettings.FirstOrDefaultAsync();
+            if (siteSettings == null)
             {
-                WebsiteName = "ArzaMart",
-                ContactEmail = "support@arzamart.shop",
-                ContactPhone = "+880 1234-567890",
-                Currency = "BDT",
-                FreeShippingThreshold = 5000,
-                ShippingCharge = 120
-            };
-            context.SiteSettings.Add(siteSettings);
-            await context.SaveChangesAsync();
-        }
-        else if (siteSettings.WebsiteName == "SheraShopBD24" || siteSettings.WebsiteName == "SheraShop")
-        {
-            siteSettings.WebsiteName = "ArzaMart";
-            siteSettings.ContactEmail = "support@arzamart.shop";
-            await context.SaveChangesAsync();
+                siteSettings = new SiteSetting
+                {
+                    WebsiteName = "ArzaMart",
+                    ContactEmail = "support@arzamart.shop",
+                    ContactPhone = "+880 1234-567890",
+                    Currency = "BDT",
+                    FreeShippingThreshold = 5000,
+                    ShippingCharge = 120
+                };
+                context.SiteSettings.Add(siteSettings);
+                await context.SaveChangesAsync();
+            }
+            else if (siteSettings.WebsiteName == "SheraShopBD24" || siteSettings.WebsiteName == "SheraShop")
+            {
+                siteSettings.WebsiteName = "ArzaMart";
+                siteSettings.ContactEmail = "support@arzamart.shop";
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

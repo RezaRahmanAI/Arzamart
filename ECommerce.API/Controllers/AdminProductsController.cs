@@ -247,11 +247,12 @@ public class AdminProductsController : ControllerBase
         }
     }
 
-    [HttpPost("{id}/delete")]
-    public async Task<ActionResult> DeleteProduct(int id)
+    [HttpPost("{id:int}/delete")]
+    public async Task<ActionResult<bool>> DeleteProduct(int id)
     {
         var product = await _context.Products
             .Include(p => p.Images)
+            .Include(p => p.Variants)
             .FirstOrDefaultAsync(p => p.Id == id);
 
         if (product == null)
@@ -272,7 +273,7 @@ public class AdminProductsController : ControllerBase
         await _context.SaveChangesAsync();
 
         _cache.Remove("home_page_data");
-        return NoContent();
+        return Ok(true);
     }
 
 
@@ -374,6 +375,13 @@ public class AdminProductsController : ControllerBase
 
         if (await _unitOfWork.Complete() > 0)
         {
+             // Invalidate cache
+             var cacheKeys = new[] { $"product_id:{product.Id}", $"product_slug:{product.Slug}" };
+             foreach (var key in cacheKeys)
+             {
+                 _cache.Remove(key);
+             }
+
              return Ok(new { message = "Stock updated successfully", newTotal = product.StockQuantity });
         }
 

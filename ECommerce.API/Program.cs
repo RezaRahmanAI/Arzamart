@@ -93,24 +93,25 @@ try
     app.UseResponseCaching();
     app.UseOutputCache();
 
+
     app.MapControllers();
 
-    // ── 5. Database Migration & Seeding ──────────────────────────────
+    // ── 5. Database Seeding (Manual Migrations Required) ──────────────
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
         try
         {
             var context = services.GetRequiredService<ApplicationDbContext>();
-            // context.Database.Migrate();
-
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+            
+            // Seed data only (context.Database.Migrate() remains disabled)
             DataSeeder.SeedAsync(userManager, roleManager, context).GetAwaiter().GetResult();
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "An error occurred during migration/seeding.");
+            Log.Error(ex, "An error occurred during seeding.");
         }
     }
 

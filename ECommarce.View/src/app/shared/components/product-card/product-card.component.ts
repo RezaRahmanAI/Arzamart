@@ -61,7 +61,8 @@ export class ProductCardComponent {
 
   get selectedColorName(): string {
     if ("images" in this.product && this.product.images?.length > 0) {
-      return this.product.images.find((i) => i.color)?.color ?? "";
+      const firstColor = this.product.images.find((i) => i.color)?.color;
+      if (firstColor) return firstColor;
     }
     return "";
   }
@@ -234,6 +235,12 @@ export class ProductCardComponent {
   addToCart(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
+
+    const sizes = this.availableSizes;
+    if (sizes.length > 0 && !this.selectedSize) {
+      this.cartService.notifySizeRequired();
+      return;
+    }
 
     if ("id" in this.product) {
       this.cartService

@@ -241,6 +241,16 @@ public class ProductService : IProductService
         var savedChanges = await _unitOfWork.Complete();
         Console.WriteLine($"[SERVICE_DEBUG] Saved {savedChanges} changes to database for Product {id}");
 
+        // Invalidate cache
+        var cacheKeys = new[] { $"product_id:{id}", $"product_slug:{product.Slug}" };
+        foreach (var key in cacheKeys)
+        {
+            await _cache.RemoveAsync(key);
+        }
+
+        // Also invalidate IMemoryCache if possible, but ProductService only has IDistributedCache.
+        // The controller handles IMemoryCache removal for "home_page_data".
+
         return _mapper.Map<Product, ProductDto>(product);
     }
 

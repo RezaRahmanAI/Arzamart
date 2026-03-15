@@ -322,7 +322,7 @@ public class CartController : ControllerBase
             }).ToList()
         };
 
-        dto.Subtotal = dto.Items.Sum(i => (i.SalePrice ?? i.Price) * i.Quantity);
+        dto.Subtotal = dto.Items.Sum(i => i.Price * i.Quantity);
         dto.TotalItems = dto.Items.Sum(i => i.Quantity);
 
         return dto;

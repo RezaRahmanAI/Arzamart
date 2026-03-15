@@ -21,11 +21,11 @@ public class MappingProfiles : Profile
             .ForMember(d => d.CollectionName, o => o.MapFrom(s => s.Collection != null ? s.Collection.Name : null))
             .ForMember(d => d.Price, o => o.MapFrom(s => 
                 s.Variants.Any(v => v.Price > 0) 
-                    ? s.Variants.Where(v => v.Price > 0).Min(v => (v.CompareAtPrice > 0 && v.CompareAtPrice < v.Price) ? v.CompareAtPrice : v.Price) ?? 0 
+                    ? s.Variants.Where(v => v.Price > 0).Min(v => v.Price) ?? 0 
                     : (s.Variants.FirstOrDefault() != null ? s.Variants.FirstOrDefault().Price : 0)))
             .ForMember(d => d.CompareAtPrice, o => o.MapFrom(s => 
                 s.Variants.Any(v => v.Price > 0)
-                    ? s.Variants.Where(v => v.Price > 0).Min(v => (v.CompareAtPrice > 0 && v.CompareAtPrice < v.Price) ? v.Price : v.CompareAtPrice) 
+                    ? s.Variants.Where(v => v.Price > 0).Max(v => v.CompareAtPrice) 
                     : (s.Variants.FirstOrDefault() != null ? s.Variants.FirstOrDefault().CompareAtPrice : null)))
             .ForMember(d => d.PurchaseRate, o => o.MapFrom(s => 
                 s.Variants.Any(v => v.PurchaseRate != null && v.PurchaseRate > 0)
@@ -46,8 +46,8 @@ public class MappingProfiles : Profile
                 Id = v.Id,
                 Sku = v.Sku,
                 Size = v.Size,
-                Price = (v.CompareAtPrice > 0 && v.CompareAtPrice < v.Price) ? v.CompareAtPrice : v.Price,
-                CompareAtPrice = (v.CompareAtPrice > 0 && v.CompareAtPrice < v.Price) ? v.Price : v.CompareAtPrice,
+                Price = v.Price,
+                CompareAtPrice = v.CompareAtPrice,
                 PurchaseRate = v.PurchaseRate,
                 StockQuantity = v.StockQuantity
             })))
@@ -58,19 +58,19 @@ public class MappingProfiles : Profile
             .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : ""))
             .ForMember(d => d.Price, o => o.MapFrom(s => 
                 s.Variants.Any(v => v.Price > 0) 
-                    ? s.Variants.Where(v => v.Price > 0).Min(v => (v.CompareAtPrice > 0 && v.CompareAtPrice < v.Price) ? v.CompareAtPrice : v.Price) ?? 0 
+                    ? s.Variants.Where(v => v.Price > 0).Min(v => v.Price) ?? 0 
                     : (s.Variants.FirstOrDefault() != null ? s.Variants.FirstOrDefault().Price : 0)))
             .ForMember(d => d.CompareAtPrice, o => o.MapFrom(s => 
                 s.Variants.Any(v => v.Price > 0)
-                    ? s.Variants.Where(v => v.Price > 0).Min(v => (v.CompareAtPrice > 0 && v.CompareAtPrice < v.Price) ? v.Price : v.CompareAtPrice) 
+                    ? s.Variants.Where(v => v.Price > 0).Max(v => v.CompareAtPrice) 
                     : (s.Variants.FirstOrDefault() != null ? s.Variants.FirstOrDefault().CompareAtPrice : null)))
             .ForMember(d => d.Variants, o => o.MapFrom(s => s.Variants.Select(v => new ProductVariantDto
             {
                 Id = v.Id,
                 Sku = v.Sku,
                 Size = v.Size,
-                Price = (v.CompareAtPrice > 0 && v.CompareAtPrice < v.Price) ? v.CompareAtPrice : v.Price,
-                CompareAtPrice = (v.CompareAtPrice > 0 && v.CompareAtPrice < v.Price) ? v.Price : v.CompareAtPrice,
+                Price = v.Price,
+                CompareAtPrice = v.CompareAtPrice,
                 PurchaseRate = v.PurchaseRate,
                 StockQuantity = v.StockQuantity
             })));

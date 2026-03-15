@@ -372,26 +372,21 @@ export class ProductDetailsPageComponent {
     const isColorRequired = uniqueColorsCount > 0;
     const isSizeRequired = uniqueSizesCount > 0;
 
-    if (
-      (isColorRequired && !selectedColor) ||
-      (isSizeRequired && !selectedSize)
-    ) {
-      if (isColorRequired && isSizeRequired) {
-        this.selectionError =
-          "Please select a color and size before adding to cart.";
-      } else if (isColorRequired) {
-        this.selectionError = "Please select a color before adding to cart.";
-      } else {
-        this.selectionError = "Please select a size before adding to cart.";
-      }
+    // Auto-resolve color if missing but provided in product images
+    const finalColorName = selectedColor?.name ?? (isColorRequired ? Array.from(new Set(product.images?.map(i => i.color).filter(Boolean)))[0] : undefined);
+    
+    // Size remains strictly mandatory
+    if (isSizeRequired && !selectedSize) {
+      this.selectionError = "Please select a size before adding to cart.";
       return;
     }
+
     const quantity = this.quantitySubject.getValue();
     this.cartService
       .addItem(
         product,
         quantity,
-        selectedColor?.name ?? undefined,
+        finalColorName,
         selectedSize ?? undefined,
       )
       .subscribe();

@@ -511,6 +511,8 @@ namespace ECommerce.Infrastructure.Migrations
                     CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CustomerPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Area = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Tax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ShippingCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -603,6 +605,7 @@ namespace ECommerce.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
+                    table.CheckConstraint("CK_Product_Name", "LEN(Name) > 0");
                     table.ForeignKey(
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -892,6 +895,12 @@ namespace ECommerce.Infrastructure.Migrations
                 column: "SubCategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Customers_CreatedAt",
+                schema: "dbo",
+                table: "Customers",
+                column: "CreatedAt");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Customers_Phone",
                 schema: "dbo",
                 table: "Customers",
@@ -977,6 +986,12 @@ namespace ECommerce.Infrastructure.Migrations
                 column: "CollectionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Products_CreatedAt",
+                schema: "dbo",
+                table: "Products",
+                column: "CreatedAt");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_IsFeatured",
                 schema: "dbo",
                 table: "Products",
@@ -1003,6 +1018,12 @@ namespace ECommerce.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Products_StockQuantity",
+                schema: "dbo",
+                table: "Products",
+                column: "StockQuantity");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_Storefront_Active",
                 schema: "dbo",
                 table: "Products",
@@ -1014,6 +1035,12 @@ namespace ECommerce.Infrastructure.Migrations
                 schema: "dbo",
                 table: "Products",
                 column: "SubCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductVariants_Price",
+                schema: "dbo",
+                table: "ProductVariants",
+                column: "Price");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductVariants_ProductId",
