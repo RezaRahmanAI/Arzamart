@@ -13,7 +13,6 @@
   body {
     @apply font-sans antialiased text-text-main bg-white;
     animation: fadeIn 1.2s ease-out;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   h1,

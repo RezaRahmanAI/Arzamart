@@ -9,6 +9,7 @@ import {
   StatusDistribution,
   CustomerGrowth,
   DailyTraffic,
+  CategorySales,
 } from "../models/admin-dashboard.models";
 
 import { ApiHttpClient } from "../../core/http/http-client";
@@ -51,5 +52,11 @@ export class AdminDashboardService {
 
   getDailyTraffic(): Observable<DailyTraffic> {
     return this.api.get<DailyTraffic>("/analytics/daily");
+  }
+
+  getSalesByCategory(): Observable<CategorySales[]> {
+    return this.api.get<CategorySales[]>(
+      "/admin/dashboard/analytics/sales-by-category",
+    );
   }
 }

@@ -3,8 +3,11 @@ import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { filter, map, startWith, Subject, takeUntil } from "rxjs";
-import { LucideAngularModule, Search, Bell, Menu } from "lucide-angular";
+import { LucideAngularModule, Search, Bell, Menu, User, LogOut, Settings, Eye, ChevronDown } from "lucide-angular";
 import { SidebarService } from "../../services/sidebar.service";
+import { AuthService } from "../../../core/services/auth.service";
+import { SiteSettingsService } from "../../../core/services/site-settings.service";
+import { ImageUrlService } from "../../../core/services/image-url.service";
 
 @Component({
   selector: "app-admin-header",
@@ -13,10 +16,17 @@ import { SidebarService } from "../../services/sidebar.service";
   templateUrl: "./admin-header.component.html",
 })
 export class AdminHeaderComponent implements OnInit, OnDestroy {
-  readonly icons = { Search, Bell, Menu };
+  readonly icons = { Search, Bell, Menu, User, LogOut, Settings, Eye, ChevronDown };
   protected sidebarService = inject(SidebarService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  protected authService = inject(AuthService);
+  private settingsService = inject(SiteSettingsService);
+  public imageUrlService = inject(ImageUrlService);
+
+  currentUser$ = this.authService.currentUser;
+  settings$ = this.settingsService.getSettings();
+  isProfileDropdownOpen = false;
 
   pageTitle$ = this.router.events.pipe(
     filter((event) => event instanceof NavigationEnd),
@@ -39,6 +49,15 @@ export class AdminHeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  toggleProfileDropdown() {
+    this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(["/admin/login"]);
   }
 
   private resolveTitle(route: ActivatedRoute): string {

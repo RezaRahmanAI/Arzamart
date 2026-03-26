@@ -12,10 +12,6 @@ import {
 
 import {
   DashboardStats,
-  OrderItem,
-  PopularProduct,
-  StatusDistribution,
-  CustomerGrowth,
   DailyTraffic,
 } from "../../models/admin-dashboard.models";
 
@@ -71,40 +67,10 @@ export class DashboardOverviewComponent {
   stats$: Observable<DashboardStats> = this.createLiveStream(() =>
     this.adminDashboardService.getStats(),
   );
-  recentOrders$: Observable<OrderItem[]> = this.createLiveStream(() =>
-    this.adminDashboardService.getRecentOrders(),
-  );
-  popularProducts$: Observable<PopularProduct[]> = this.createLiveStream(() =>
-    this.adminDashboardService.getPopularProducts(),
-  );
-  orderDistribution$: Observable<StatusDistribution[]> = this.createLiveStream(
-    () => this.adminDashboardService.getOrderDistribution(),
-  );
-  customerGrowth$: Observable<CustomerGrowth[]> = this.createLiveStream(() =>
-    this.adminDashboardService.getCustomerGrowth(),
-  );
+
   dailyTraffic$: Observable<DailyTraffic> = this.createLiveStream(() =>
     this.adminDashboardService.getDailyTraffic(),
   );
-
-  statusClass(status: OrderItem["status"]): string {
-    switch (status) {
-      case "Completed":
-      case "Delivered":
-        return "bg-green-100 text-green-800";
-      case "Pending":
-      case "Processing":
-      case "Confirmed":
-      case "Packed":
-        return "bg-yellow-100 text-yellow-800";
-      case "Shipped":
-        return "bg-blue-100 text-blue-800";
-      case "Cancelled":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  }
 
   private createLiveStream<T>(source: () => Observable<T>): Observable<T> {
     return timer(0, this.refreshIntervalMs).pipe(

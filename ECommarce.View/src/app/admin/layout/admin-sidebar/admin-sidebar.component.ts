@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   ShoppingBag,
   Package,
-  Warehouse,
   GalleryVertical,
   FileText,
   MessageSquare,
@@ -58,34 +57,27 @@ export class AdminSidebarComponent implements OnInit {
   };
 
   topItems: AdminNavItem[] = [
-    { label: "Dashboard", icon: LayoutDashboard, route: "/admin/dashboard" },
+    { label: "Overview", icon: LayoutDashboard, route: "/admin/dashboard" },
   ];
 
   ngOnInit() {
     // Open menu if we are on a products route
-    if (
-      this.router.url.includes("/admin/products") ||
-      this.router.url.includes("/admin/inventory")
-    ) {
+    if (this.router.url.includes("/admin/products")) {
       this.isProductsMenuOpen = true;
     }
   }
 
   navItems: AdminNavItem[] = [
-    { label: "Orders", icon: ShoppingBag, route: "/admin/orders" },
-    { label: "Inventory", icon: Warehouse, route: "/admin/inventory" },
-
-    { label: "Banners", icon: GalleryVertical, route: "/admin/banners" },
-    { label: "Content Pages", icon: FileText, route: "/admin/pages" },
-    { label: "Reviews", icon: MessageSquare, route: "/admin/reviews" },
-    { label: "Blog", icon: Newspaper, route: "/admin/blog" },
-    { label: "Customers", icon: Users, route: "/admin/customers" },
-    { label: "Security", icon: Shield, route: "/admin/security" },
-    { label: "Analytics", icon: LineChart, route: "/admin/analytics" },
+    { label: "Sales Orders", icon: ShoppingBag, route: "/admin/orders" },
+    { label: "Campaigns", icon: GalleryVertical, route: "/admin/banners" },
+    { label: "Site Content", icon: FileText, route: "/admin/pages" },
+    { label: "Customer Reviews", icon: MessageSquare, route: "/admin/reviews" },
+    { label: "Editorial", icon: Newspaper, route: "/admin/blog" },
+    { label: "CRM", icon: Users, route: "/admin/customers" },
   ];
 
   bottomItems: AdminNavItem[] = [
-    { label: "Settings", icon: Settings, route: "/admin/settings" },
+    { label: "System Preferences", icon: Settings, route: "/admin/settings" },
   ];
 
   isProductsMenuOpen = false;

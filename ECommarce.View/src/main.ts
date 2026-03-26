@@ -14,6 +14,7 @@ import {
 // BYPASS_LOGGING imported above
 } from "@angular/common/http";
 import { provideZoneChangeDetection } from "@angular/core";
+import { provideCharts, withDefaultRegisterables } from "ng2-charts";
 import { AuthService } from "./app/core/services/auth.service";
 
 import { AppComponent } from "./app/app.component";
@@ -56,5 +57,6 @@ bootstrapApplication(AppComponent, {
         baseUrl: environment.apiBaseUrl,
       },
     },
+    provideCharts(withDefaultRegisterables()),
   ],
 })

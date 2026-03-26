@@ -45,7 +45,11 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@tailwindcss/forms": "^0.5.9",
+    "chart.js": "^4.5.1",
     "lucide-angular": "^0.574.0",
+    "ng2-charts": "^6.0.1",
+    "ngx-quill": "^26.0.0",
+    "quill": "^2.0.3",
     "rxjs": "^7.8.1",
     "uuid": "^13.0.0",
     "zone.js": "^0.14.7"
@@ -62,6 +66,6 @@
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.14",
-    "typescript": "^5.5.4"
+    "typescript": "~5.5.4"
   }
 }

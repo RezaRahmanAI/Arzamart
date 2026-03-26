@@ -6,9 +6,7 @@ import { map } from "rxjs";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 
 import { HeroComponent } from "../../components/hero/hero.component";
-import { CategoryGridComponent } from "../../components/category-grid/category-grid.component";
 import { NewArrivalsComponent } from "../../components/new-arrivals/new-arrivals.component";
-import { PromoBannerComponent } from "../../components/promo-banner/promo-banner.component";
 import { FeaturedProductsComponent } from "../../components/featured-products/featured-products.component";
 import { WhyChooseUsComponent } from "../../components/why-choose-us/why-choose-us.component";
 import { TestimonialsComponent } from "../../components/testimonials/testimonials.component";
@@ -24,9 +22,7 @@ import { CategorySectionComponent } from "../../components/category-section/cate
     CommonModule,
     RouterModule,
     HeroComponent,
-    CategoryGridComponent,
     NewArrivalsComponent,
-    PromoBannerComponent,
     FeaturedProductsComponent,
     WhyChooseUsComponent,
     TestimonialsComponent,

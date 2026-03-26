@@ -252,6 +252,7 @@ export class ProductCardComponent {
 
   onQuickAddConfirm(selection: { color: string; size?: string }): void {
     if ("id" in this.product) {
+      this.showQuickAdd = false;
       this.cartService
         .addItem(
           this.product as Product,
@@ -259,9 +260,7 @@ export class ProductCardComponent {
           selection.color,
           selection.size ?? this.selectedSize ?? undefined,
         )
-        .subscribe(() => {
-          this.showQuickAdd = false;
-        });
+        .subscribe();
     }
   }
 }

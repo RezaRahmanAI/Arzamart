@@ -1,192 +1,164 @@
 <aside
-  class="fixed lg:static inset-y-0 left-0 w-64 h-full bg-primary flex flex-col flex-shrink-0 transition-transform duration-300 z-50 lg:translate-x-0"
+  class="fixed lg:sticky top-0 left-0 w-72 h-screen bg-primary/95 backdrop-blur-glass flex flex-col flex-shrink-0 transition-all duration-500 z-50 border-r border-white/10 lg:translate-x-0 shadow-2xl overflow-hidden"
   [class.-translate-x-full]="!sidebarService.isOpen()"
   [class.translate-x-0]="sidebarService.isOpen()"
 >
-  <!-- Mobile Close Button -->
-  <button
-    (click)="sidebarService.close()"
-    class="absolute top-4 right-4 p-2 text-white/50 hover:text-white lg:hidden"
-    type="button"
-  >
-    <lucide-icon [img]="icons.X" class="w-6 h-6"></lucide-icon>
-  </button>
-  <!-- Fixed Header -->
-  <div class="px-6 pt-6 pb-4 flex-shrink-0">
-    <div class="flex items-center gap-3" *ngIf="settings$ | async as settings">
-      <div class="bg-white/10 p-2 rounded-lg">
-        <img
-          *ngIf="settings.logoUrl"
-          [src]="imageUrlService.getImageUrl(settings.logoUrl)"
-          class="w-8 h-8 object-contain"
-          alt="Logo"
-        />
-        <lucide-icon
-          *ngIf="!settings.logoUrl"
-          [img]="icons.Store"
-          class="w-5 h-5 text-white"
-        ></lucide-icon>
-      </div>
-      <div>
-        <h1 class="text-white text-lg font-bold leading-tight">
-          {{ settings.websiteName || "Admin Console" }}
-        </h1>
-        <p class="text-gray-400 text-xs font-medium">Admin Console</p>
-      </div>
-    </div>
+  <!-- Background Decorative Elements -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+    <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-accent blur-[100px] rounded-full"></div>
+    <div class="absolute bottom-[5%] right-0 w-[30%] h-[30%] bg-primary-light blur-[80px] rounded-full"></div>
   </div>
 
-  <!-- Scrollable Navigation -->
-  <div
-    class="flex-1 overflow-y-auto px-6 pb-4 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
-  >
-    <nav class="flex flex-col gap-1">
-      <a
-        *ngFor="let item of topItems"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors group"
-        [routerLink]="item.route"
-        routerLinkActive="bg-accent text-primary"
-        #rla="routerLinkActive"
-        [ngClass]="
-          rla.isActive
-            ? 'bg-accent text-primary'
-            : 'text-gray-300 hover:bg-white/10 hover:text-white'
-        "
-        [routerLinkActiveOptions]="{ exact: false }"
-      >
-        <lucide-icon [img]="item.icon" class="w-5 h-5"></lucide-icon>
-        <span class="text-sm font-medium">{{ item.label }}</span>
-      </a>
+  <!-- Mobile Close Header (only on mobile) -->
+  <div class="lg:hidden flex justify-end p-4 relative z-10">
+    <button
+      (click)="sidebarService.close()"
+      class="p-2 text-white/40 hover:text-accent transition-colors bg-white/5 hover:bg-white/10 rounded-full"
+      type="button"
+    >
+      <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+    </button>
+  </div>
 
-      <!-- Products Dropdown -->
-      <div class="flex flex-col gap-1">
-        <button
-          type="button"
-          class="flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors group w-full text-left"
-          (click)="toggleProductsMenu()"
-          routerLinkActive="bg-accent text-primary"
-          [routerLinkActiveOptions]="{ exact: false }"
-          #productsActive="routerLinkActive"
-          [ngClass]="
-            productsActive.isActive
-              ? 'bg-accent text-primary'
-              : 'text-gray-300 hover:bg-white/10 hover:text-white'
-          "
-        >
-          <div class="flex items-center gap-3">
+  <!-- Main Scrollable Content -->
+  <div class="flex-1 flex flex-col min-h-0 relative z-10">
+    
+    <!-- Fixed-feel Header -->
+    <div class="px-8 pt-8 pb-6">
+      <div class="flex items-center gap-4 group cursor-default" *ngIf="settings$ | async as settings">
+        <div class="relative">
+          <div class="absolute inset-0 bg-accent/20 blur-xl rounded-full scale-150 group-hover:scale-175 transition-transform duration-700"></div>
+          <div class="relative bg-white/5 border border-white/10 p-2.5 rounded-xl shadow-inner backdrop-blur-md">
+            <img
+              *ngIf="settings.logoUrl"
+              [src]="imageUrlService.getImageUrl(settings.logoUrl)"
+              class="w-8 h-8 object-contain"
+              alt="Logo"
+            />
             <lucide-icon
-              [img]="icons.ShoppingBag"
-              class="w-5 h-5"
+              *ngIf="!settings.logoUrl"
+              [img]="icons.Store"
+              class="w-6 h-6 text-accent"
             ></lucide-icon>
-            <span class="text-sm font-medium">Products</span>
           </div>
-          <lucide-icon
-            [img]="isProductsMenuOpen ? icons.ChevronUp : icons.ChevronDown"
-            class="w-4 h-4"
-          ></lucide-icon>
-        </button>
-        <div class="pl-10 flex flex-col gap-1 mb-2" *ngIf="isProductsMenuOpen">
-          <a
-            class="px-3 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
-            routerLink="/admin/products"
-            routerLinkActive="text-white bg-white/10 rounded-md"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            All Products
-          </a>
-          <a
-            class="px-3 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
-            routerLink="/admin/products/categories"
-            routerLinkActive="text-white bg-white/10 rounded-md"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            Categories
-          </a>
-          <a
-            class="px-3 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
-            routerLink="/admin/products/sub-categories"
-            routerLinkActive="text-white bg-white/10 rounded-md"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            Sub Categories
-          </a>
-          <a
-            class="px-3 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
-            routerLink="/admin/products/inventory"
-            routerLinkActive="text-white bg-white/10 rounded-md"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            Inventory
-          </a>
+        </div>
+        <div class="flex flex-col">
+          <h1 class="text-white text-lg font-display font-bold tracking-tight leading-none">
+            {{ settings.websiteName || "Admin Console" }}
+          </h1>
+          <span class="text-accent/60 text-[10px] uppercase tracking-widest font-black mt-1">
+            Enterprise Panel
+          </span>
         </div>
       </div>
+    </div>
 
-      <a
-        *ngFor="let item of navItems"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors group"
-        [routerLink]="item.route"
-        routerLinkActive="bg-accent text-primary"
-        #rlaSecondary="routerLinkActive"
-        [ngClass]="
-          rlaSecondary.isActive
-            ? 'bg-accent text-primary'
-            : 'text-gray-300 hover:bg-white/10 hover:text-white'
-        "
-        [routerLinkActiveOptions]="{ exact: false }"
-      >
-        <lucide-icon [img]="item.icon" class="w-5 h-5"></lucide-icon>
-        <span class="text-sm font-medium">{{ item.label }}</span>
-      </a>
-    </nav>
-  </div>
+    <!-- Scrollable Nav Section -->
+    <div class="flex-1 overflow-y-auto custom-sidebar-scroll px-4 pb-8">
+      <div class="space-y-8">
+        <!-- Main Section -->
+        <div>
+          <p class="px-4 mb-4 text-[10px] font-display font-black text-white/20 uppercase tracking-[0.2em]">Core Navigation</p>
+          <nav class="space-y-1">
+            <a
+              *ngFor="let item of topItems"
+              class="flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group relative"
+              [routerLink]="item.route"
+              routerLinkActive="nav-active"
+              #rla="routerLinkActive"
+              [ngClass]="rla.isActive ? 'bg-accent/10 text-accent shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+              [routerLinkActiveOptions]="{ exact: false }"
+            >
+              <div class="relative">
+                <lucide-icon [img]="item.icon" class="w-5 h-5 transition-transform group-hover:scale-110 duration-300" [ngClass]="rla.isActive ? 'text-accent' : ''"></lucide-icon>
+                <div *ngIf="rla.isActive" class="absolute inset-0 bg-accent blur-md opacity-20 scale-150"></div>
+              </div>
+              <span class="text-sm font-display font-semibold">{{ item.label }}</span>
+              <div *ngIf="rla.isActive" class="absolute left-0 w-1 h-5 bg-accent rounded-r-full shadow-[0_0_12px_rgba(var(--color-accent),0.5)]"></div>
+            </a>
 
-  <!-- Fixed Footer -->
-  <div class="p-6 border-t border-white/10 flex-shrink-0 bg-primary">
-    <nav class="flex flex-col gap-2">
-      <a
-        class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary hover:bg-white/10 hover:text-white transition-colors group mb-2 border border-white/10 bg-white/5"
-        routerLink="/"
-        target="_blank"
-      >
-        <lucide-icon [img]="icons.Eye" class="w-5 h-5"></lucide-icon>
-        <span class="text-sm font-medium">View Live Shop</span>
-      </a>
+            <!-- Products Multi-level -->
+            <div class="space-y-1">
+              <button
+                type="button"
+                class="flex items-center justify-between gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group w-full text-left relative"
+                (click)="toggleProductsMenu()"
+                [ngClass]="isProductsMenuOpen ? 'text-white bg-white/5 ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+              >
+                <div class="flex items-center gap-3.5">
+                  <lucide-icon [img]="icons.ShoppingBag" class="w-5 h-5 group-hover:scale-110 transition-transform duration-300" [ngClass]="isProductsMenuOpen ? 'text-accent' : ''"></lucide-icon>
+                  <span class="text-sm font-display font-semibold">Inventory</span>
+                </div>
+                <lucide-icon
+                  [img]="isProductsMenuOpen ? icons.ChevronUp : icons.ChevronDown"
+                  class="w-4 h-4 text-white/20 group-hover:text-white transition-colors"
+                ></lucide-icon>
+              </button>
+              
+              <div class="overflow-hidden transition-all duration-500" [style.max-height]="isProductsMenuOpen ? '400px' : '0px'">
+                <div class="pl-12 pr-4 py-2 space-y-1 border-l-[1.5px] border-white/5 ml-6.5">
+                  <a
+                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    routerLink="/admin/products"
+                    routerLinkActive="nav-sub-active text-accent"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                  >
+                    Product Catalog
+                  </a>
+                  <a
+                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    routerLink="/admin/products/categories"
+                    routerLinkActive="nav-sub-active text-accent"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                  >
+                    Parent Categories
+                  </a>
+                  <a
+                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    routerLink="/admin/products/sub-categories"
+                    routerLinkActive="nav-sub-active text-accent"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                  >
+                    Sub Collections
+                  </a>
+                </div>
+              </div>
+            </div>
 
-      <a
-        *ngFor="let item of bottomItems"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors group"
-        [routerLink]="item.route"
-        routerLinkActive="bg-accent text-primary"
-        #rlaBottom="routerLinkActive"
-        [ngClass]="
-          rlaBottom.isActive
-            ? 'bg-accent text-primary'
-            : 'text-gray-300 hover:bg-white/10 hover:text-white'
-        "
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <lucide-icon [img]="item.icon" class="w-5 h-5"></lucide-icon>
-        <span class="text-sm font-medium">{{ item.label }}</span>
-      </a>
-      <a
-        class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-300 hover:bg-red-500/10 hover:text-red-200 transition-colors group"
-        routerLink="/admin/logout"
-      >
-        <lucide-icon [img]="icons.LogOut" class="w-5 h-5"></lucide-icon>
-        <span class="text-sm font-medium">Logout</span>
-      </a>
-    </nav>
-    <div class="mt-6 flex items-center gap-3 px-4">
-      <div
-        class="bg-center bg-no-repeat bg-cover rounded-full size-8 ring-2 ring-white/20"
-        data-alt="Admin user profile picture showing a smiling face"
-        style="
-          background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuArAP0MWy_gb6uUPqM-T5rVuIYqseD5U_AH62taViQsQ6hXfk3_u0HfyhJtNYGsmjPJoCvYL0ExCORpx_wU-dbq1I8TMzvPxZd_Ggyh5gxt7AR3pTXEt_64ACT4InTO3O2KEUkSwFx-B_SzaXTZKlDrHpu5_Nq1osNH54LFpS1pmYzgMaRS2_ZIBKLEHW5hPxYMX0qXWYGtXBm5wbzM2mFX2JF7SUA5YgqoBl7zeRNtoFsn4lSN4nVV61hPuJIXaYeRF7zcq8ziyw0&quot;);
-        "
-      ></div>
-      <div class="flex flex-col">
-        <p class="text-white text-sm font-medium">Admin User</p>
-        <p class="text-gray-400 text-xs">admin&#64;muslim.com</p>
+            <a
+              *ngFor="let item of navItems"
+              class="flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group relative"
+              [routerLink]="item.route"
+              routerLinkActive="nav-active"
+              #rlaSecondary="routerLinkActive"
+              [ngClass]="rlaSecondary.isActive ? 'bg-accent/10 text-accent shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+              [routerLinkActiveOptions]="{ exact: false }"
+            >
+              <lucide-icon [img]="item.icon" class="w-5 h-5 transition-transform group-hover:scale-110 duration-300" [ngClass]="rlaSecondary.isActive ? 'text-accent' : ''"></lucide-icon>
+              <span class="text-sm font-display font-semibold">{{ item.label }}</span>
+              <div *ngIf="rlaSecondary.isActive" class="absolute left-0 w-1 h-5 bg-accent rounded-r-full shadow-[0_0_12px_rgba(var(--color-accent),0.5)]"></div>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Management Section -->
+        <div>
+          <p class="px-4 mb-4 text-[10px] font-display font-black text-white/20 uppercase tracking-[0.2em]">Management</p>
+          <nav class="space-y-1">
+            <a
+              *ngFor="let item of bottomItems"
+              class="flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group relative text-white/50 hover:text-white hover:bg-white/5"
+              [routerLink]="item.route"
+              routerLinkActive="nav-active bg-accent/10 text-accent ring-1 ring-white/5"
+              #rlaBottom="routerLinkActive"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <lucide-icon [img]="item.icon" class="w-5 h-5 group-hover:scale-110 transition-transform duration-300" [ngClass]="rlaBottom.isActive ? 'text-accent' : ''"></lucide-icon>
+              <span class="text-sm font-display font-semibold">{{ item.label }}</span>
+              <div *ngIf="rlaBottom.isActive" class="absolute left-0 w-1 h-5 bg-accent rounded-r-full shadow-[0_0_12px_rgba(var(--color-accent),0.5)]"></div>
+            </a>
+          </nav>
+        </div>
       </div>
     </div>
   </div>

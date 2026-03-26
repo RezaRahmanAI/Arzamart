@@ -16,8 +16,9 @@ module.exports = {
         "border-color": "#E5E5E5",
       },
       fontFamily: {
-        sans: ["Inter", "'Plus Jakarta Sans'", "sans-serif"],
-        display: ["Montserrat", "Outfit", "sans-serif"],
+        sans: ["Montserrat", "sans-serif"],
+        display: ["Montserrat", "sans-serif"],
+        serif: ["Montserrat", "serif"],
       },
       borderRadius: {
         DEFAULT: "0.25rem",
