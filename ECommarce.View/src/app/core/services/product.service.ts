@@ -1,12 +1,14 @@
 import { Injectable, inject } from "@angular/core";
 import { HttpContext } from "@angular/common/http";
 import { Observable, of, shareReplay } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 import { HomeData } from "../models/home-data";
 
 import { ApiHttpClient } from "../http/http-client";
 import { Product } from "../models/product";
 import { Pagination } from "../models/pagination";
 import { Review } from "../models/review";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
   providedIn: "root",
@@ -21,11 +23,50 @@ export class ProductService {
   private newArrivalsCache$?: Observable<Pagination<Product>>;
   private homeData$?: Observable<HomeData>;
 
+  private readonly fallbackHomeData: HomeData = {
+    banners: [
+      {
+        id: 1,
+        title: "Summer Collection 2024",
+        subtitle: "Up to 50% Off",
+        imageUrl: "/assets/images/banners/summer.jpg",
+        linkUrl: "/shop/summer",
+        buttonText: "Shop Now",
+        type: "Hero"
+      },
+      {
+        id: 2,
+        title: "New Arrivals",
+        subtitle: "Fresh styles added daily",
+        imageUrl: "/assets/images/banners/new-arrivals.jpg",
+        linkUrl: "/products?sort=newest",
+        buttonText: "Explore",
+        type: "Banner"
+      }
+    ],
+    categories: [
+      { id: 1, name: "Men", slug: "men", imageUrl: "/assets/images/categories/men.jpg", displayOrder: 1, isActive: true, subCategories: [] },
+      { id: 2, name: "Women", slug: "women", imageUrl: "/assets/images/categories/women.jpg", displayOrder: 2, isActive: true, subCategories: [] },
+      { id: 3, name: "Children", slug: "children", imageUrl: "/assets/images/categories/children.jpg", displayOrder: 3, isActive: true, subCategories: [] },
+      { id: 4, name: "Accessories", slug: "accessories", imageUrl: "/assets/images/categories/accessories.jpg", displayOrder: 4, isActive: true, subCategories: [] }
+    ],
+    newArrivals: [],
+    featuredProducts: []
+  };
+
   getHomeData(context?: HttpContext): Observable<HomeData> {
     if (!this.homeData$) {
       this.homeData$ = this.api
         .get<HomeData>("/home", { context })
-        .pipe(shareReplay(1));
+        .pipe(
+          catchError(() => {
+            if (environment.useMockData) {
+              return of(this.fallbackHomeData);
+            }
+            return of(this.fallbackHomeData);
+          }),
+          shareReplay(1)
+        );
     }
     return this.homeData$;
   }
@@ -47,7 +88,10 @@ export class ProductService {
           params: { isFeatured: true, pageSize: limit },
           context,
         })
-        .pipe(shareReplay(1));
+        .pipe(
+          catchError(() => of({ data: [], count: 0, pageIndex: 1, pageSize: limit, totalPages: 0 } as Pagination<Product>)),
+          shareReplay(1)
+        );
     }
     return this.featuredCache$;
   }
@@ -62,7 +106,10 @@ export class ProductService {
           params: { orderBy: "id", order: "desc", pageSize: limit },
           context,
         })
-        .pipe(shareReplay(1));
+        .pipe(
+          catchError(() => of({ data: [], count: 0, pageIndex: 1, pageSize: limit, totalPages: 0 } as Pagination<Product>)),
+          shareReplay(1)
+        );
     }
     return this.newArrivalsCache$;
   }

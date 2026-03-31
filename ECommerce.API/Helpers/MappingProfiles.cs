@@ -105,5 +105,7 @@ public class MappingProfiles : Profile
         CreateMap<Review, ReviewDto>()
             .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product != null ? s.Product.Name : ""));
         CreateMap<CreateReviewDto, Review>();
+
+
     }
 }

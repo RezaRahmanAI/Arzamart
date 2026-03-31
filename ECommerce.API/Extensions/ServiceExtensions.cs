@@ -11,6 +11,8 @@ using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using System.Text.Json.Serialization;
 
 namespace ECommerce.API.Extensions;
@@ -36,8 +38,8 @@ public static class ServiceExtensions
             options.Providers.Add<GzipCompressionProvider>();
         });
 
-        services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
-        services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.SmallestSize);
+        services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+        services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 
         // 3. Caching
         services.AddMemoryCache();
@@ -73,6 +75,26 @@ public static class ServiceExtensions
 
         services.AddResponseCaching();
 
+        // 4. Rate Limiting for DDoS protection
+        services.AddRateLimiter(options =>
+        {
+            options.AddFixedWindowLimiter("fixed", limiterOptions =>
+            {
+                limiterOptions.PermitLimit = 100;
+                limiterOptions.Window = TimeSpan.FromMinutes(1);
+                limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                limiterOptions.QueueLimit = 20;
+            });
+            options.AddSlidingWindowLimiter("sliding", limiterOptions =>
+            {
+                limiterOptions.PermitLimit = 50;
+                limiterOptions.Window = TimeSpan.FromSeconds(10);
+                limiterOptions.SegmentsPerWindow = 5;
+                limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                limiterOptions.QueueLimit = 10;
+            });
+        });
+
         // 4. Infrastructure
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -88,6 +110,17 @@ public static class ServiceExtensions
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IReviewService, ReviewService>();
         services.AddSignalR();
+
+        services.Configure<SteadfastSettings>(config.GetSection("Steadfast"));
+        services.AddHttpClient<ISteadfastService, SteadfastService>()
+            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(2),
+                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(1),
+                MaxConnectionsPerServer = 100,
+                EnableMultipleHttp2Connections = true
+            });
+        services.AddHostedService<SteadfastWorker>();
 
         return services;
     }

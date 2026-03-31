@@ -4,6 +4,7 @@ import {
   withInMemoryScrolling,
   withPreloading,
   PreloadAllModules,
+  withComponentInputBinding,
 } from "@angular/router";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import {
@@ -40,6 +41,7 @@ bootstrapApplication(AppComponent, {
         anchorScrolling: "enabled",
       }),
       withPreloading(PreloadAllModules),
+      withComponentInputBinding(),
     ),
     provideAnimations(),
     provideHttpClient(

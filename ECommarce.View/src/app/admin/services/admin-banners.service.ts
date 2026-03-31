@@ -12,6 +12,7 @@ export interface Banner {
   buttonText: string;
   displayOrder: number;
   isActive: boolean;
+  type: "Hero" | "Promo" | "Spotlight";
 }
 
 @Injectable({

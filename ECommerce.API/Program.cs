@@ -86,6 +86,8 @@ try
 
     app.UseRouting();
 
+    app.UseRateLimiter();
+
     app.UseAuthentication();
     app.UseAuthorization();
 

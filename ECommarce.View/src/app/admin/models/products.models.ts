@@ -9,6 +9,7 @@ import {
 
 export type ProductStatus = "Active" | "Draft" | "Archived" | "Out of Stock";
 
+
 export interface ProductVariantEdit {
   id?: number;
   sku?: string;
@@ -71,7 +72,14 @@ export interface ProductCreatePayload {
 
   variants: {
     colors: { name: string; hex: string; selected: boolean }[];
-    sizes: { label: string; stock: number; selected: boolean }[];
+    sizes: {
+      label: string;
+      price: number;
+      salePrice?: number;
+      purchaseRate: number;
+      stock: number;
+      selected: boolean;
+    }[];
   };
 
   inventoryVariants: {
@@ -140,7 +148,14 @@ export interface ProductUpdatePayload {
 
   variants: {
     colors: { name: string; hex: string; selected: boolean }[];
-    sizes: { label: string; stock: number; selected: boolean }[];
+    sizes: {
+      label: string;
+      price: number;
+      salePrice?: number;
+      purchaseRate: number;
+      stock: number;
+      selected: boolean;
+    }[];
   };
 
   inventoryVariants: {

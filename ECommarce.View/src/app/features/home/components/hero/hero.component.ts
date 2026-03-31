@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy, inject, Input } from "@angular/core";
-import { CommonModule } from "@angular/common"; // Import CommonModule for structural directives
-import { RouterModule } from "@angular/router"; // Import RouterModule for routerLink
+import { CommonModule } from "@angular/common"; 
+import { RouterModule } from "@angular/router"; 
 import { trigger, transition, style, animate } from "@angular/animations";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
+import { LucideAngularModule, ArrowRight, ArrowLeft, Tag } from "lucide-angular";
 
 interface Slide {
   image: string;
@@ -10,9 +11,8 @@ interface Slide {
   subtitle: string;
   link: string;
   linkText: string;
+  type?: string;
 }
-
-import { LucideAngularModule, ArrowRight, ArrowLeft } from "lucide-angular";
 
 @Component({
   selector: "app-hero",
@@ -21,14 +21,20 @@ import { LucideAngularModule, ArrowRight, ArrowLeft } from "lucide-angular";
   templateUrl: "./hero.component.html",
   styleUrl: "./hero.component.css",
   animations: [
-    trigger("fade", [
+    trigger("slideSlide", [
       transition(":enter", [
-        style({ opacity: 0 }),
-        animate("800ms ease-in-out", style({ opacity: 1 })),
-      ]),
+        style({ transform: "{{enterStart}}", opacity: 0 }),
+        animate(
+          "600ms cubic-bezier(0.4, 0, 0.2, 1)",
+          style({ transform: "translateX(0)", opacity: 1 }),
+        ),
+      ], { params: { enterStart: 'translateX(100%)' } }),
       transition(":leave", [
-        animate("800ms ease-in-out", style({ opacity: 0 })),
-      ]),
+        animate(
+          "600ms cubic-bezier(0.4, 0, 0.2, 1)",
+          style({ transform: "{{leaveEnd}}", opacity: 0 }),
+        ),
+      ], { params: { leaveEnd: 'translateX(-100%)' } }),
     ]),
   ],
 })
@@ -36,17 +42,24 @@ export class HeroComponent implements OnInit, OnDestroy {
   readonly icons = {
     ArrowRight,
     ArrowLeft,
+    Tag,
   };
-  private imageUrlService = inject(ImageUrlService);
+  public imageUrlService = inject(ImageUrlService);
 
   @Input() slides: Slide[] = [];
+  spotlightSlide: Slide | null = null;
+  mainSlides: Slide[] = [];
 
   currentSlide = 0;
+  direction: "next" | "prev" = "next";
   timer: any;
   currentYear = new Date().getFullYear();
 
   ngOnInit() {
-    if (this.slides.length > 0) {
+    this.spotlightSlide = this.slides.find(s => s.type === 'Spotlight') || null;
+    this.mainSlides = this.slides.filter(s => s.type === 'Hero' || !s.type);
+    
+    if (this.mainSlides.length > 0) {
       this.startTimer();
     }
   }
@@ -68,15 +81,18 @@ export class HeroComponent implements OnInit, OnDestroy {
   }
 
   next() {
-    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+    this.direction = "next";
+    this.currentSlide = (this.currentSlide + 1) % this.mainSlides.length;
   }
 
   prev() {
+    this.direction = "prev";
     this.currentSlide =
-      (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+      (this.currentSlide - 1 + this.mainSlides.length) % this.mainSlides.length;
   }
 
   goTo(index: number) {
+    this.direction = index > this.currentSlide ? "next" : "prev";
     this.currentSlide = index;
     this.stopTimer();
     this.startTimer();

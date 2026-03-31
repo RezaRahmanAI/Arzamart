@@ -5,16 +5,8 @@
     <!-- Product Sections — load immediately (above the fold) -->
     <app-new-arrivals [products]="data.newArrivals"></app-new-arrivals>
 
-    <!-- Below the fold — only render when scrolled into viewport -->
-    @defer (on viewport) {
-      <app-featured-products
-        [products]="data.featuredProducts"
-      ></app-featured-products>
-    } @placeholder {
-      <div class="h-96 flex items-center justify-center">
-        <div class="animate-pulse bg-gray-100 rounded-lg w-full h-full"></div>
-      </div>
-    }
+    <!-- Dynamic Promo Banner (Offers) -->
+    <app-promo-banner></app-promo-banner>
 
     <!-- Category Sections — defer until scrolled into view -->
     @defer (on viewport) {
@@ -53,27 +45,32 @@
       </ng-container>
     } @placeholder {
       <div class="h-96 flex items-center justify-center">
-        <div class="animate-pulse bg-gray-100 rounded-lg w-full h-full"></div>
+        <div class="animate-pulse bg-border-color rounded-lg w-full h-full"></div>
       </div>
     }
 
 
-    @defer (on viewport) {
-      <app-why-choose-us></app-why-choose-us>
-    } @placeholder {
-      <div class="h-64 animate-pulse bg-gray-50 rounded-lg"></div>
-    }
+    <div class="bg-supporting py-24">
+      @defer (on viewport) {
+        <app-why-choose-us></app-why-choose-us>
+      } @placeholder {
+        <div class="h-64 animate-pulse bg-supporting rounded-lg"></div>
+      }
+    </div>
 
     @defer (on viewport) {
       <app-testimonials></app-testimonials>
     } @placeholder {
-      <div class="h-64 animate-pulse bg-gray-50 rounded-lg"></div>
+      <div class="h-64 animate-pulse bg-supporting rounded-lg"></div>
     }
 
-    @defer (on viewport) {
-      <app-newsletter></app-newsletter>
-    } @placeholder {
-      <div class="h-48 animate-pulse bg-gray-50 rounded-lg"></div>
-    }
+    <div class="bg-supporting py-24">
+      @defer (on viewport) {
+        <app-newsletter></app-newsletter>
+      } @placeholder {
+        <div class="h-48 animate-pulse bg-supporting rounded-lg"></div>
+      }
+    </div>
   </div>
 </main>
+

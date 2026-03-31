@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
+using Microsoft.AspNetCore.OutputCaching;
+
 namespace ECommerce.API.Controllers;
 
 [ApiController]
@@ -21,8 +23,9 @@ public class AdminProductsController : ControllerBase
     private readonly IUnitOfWork _unitOfWork;
     private readonly IConfiguration _config;
     private readonly IMemoryCache _cache;
+    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminProductsController(ApplicationDbContext context, IWebHostEnvironment environment, IProductService productService, IUnitOfWork unitOfWork, IConfiguration config, IMemoryCache cache)
+    public AdminProductsController(ApplicationDbContext context, IWebHostEnvironment environment, IProductService productService, IUnitOfWork unitOfWork, IConfiguration config, IMemoryCache cache, IOutputCacheStore cacheStore)
     {
         _context = context;
         _environment = environment;
@@ -30,6 +33,7 @@ public class AdminProductsController : ControllerBase
         _unitOfWork = unitOfWork;
         _config = config;
         _cache = cache;
+        _cacheStore = cacheStore;
     }
 
     [HttpPost("upload-media")]
@@ -200,7 +204,10 @@ public class AdminProductsController : ControllerBase
             var result = await _productService.CreateProductAsync(dto);
             if (result == null) return BadRequest(new { message = "Error creating product" });
 
-            _cache.Remove("home_page_data");
+            _cache.Remove("home_new_arrivals");
+            _cache.Remove("home_featured_products");
+            await _cacheStore.EvictByTagAsync("products", default);
+
             return CreatedAtAction(nameof(GetProductById), new { id = result.Id }, result);
         }
         catch (KeyNotFoundException ex)
@@ -234,7 +241,10 @@ public class AdminProductsController : ControllerBase
             var result = await _productService.UpdateProductAsync(id, dto);
             if (result == null) return BadRequest(new { message = "Error updating product" });
 
-            _cache.Remove("home_page_data");
+            _cache.Remove("home_new_arrivals");
+            _cache.Remove("home_featured_products");
+            await _cacheStore.EvictByTagAsync("products", default);
+
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
@@ -272,7 +282,10 @@ public class AdminProductsController : ControllerBase
         _context.Products.Remove(product);
         await _context.SaveChangesAsync();
 
-        _cache.Remove("home_page_data");
+        _cache.Remove("home_new_arrivals");
+        _cache.Remove("home_featured_products");
+        await _cacheStore.EvictByTagAsync("products", default);
+
         return Ok(true);
     }
 
@@ -376,6 +389,10 @@ public class AdminProductsController : ControllerBase
         if (await _unitOfWork.Complete() > 0)
         {
              // Invalidate cache
+             _cache.Remove("home_new_arrivals");
+             _cache.Remove("home_featured_products");
+             await _cacheStore.EvictByTagAsync("products", default);
+             
              var cacheKeys = new[] { $"product_id:{product.Id}", $"product_slug:{product.Slug}" };
              foreach (var key in cacheKeys)
              {

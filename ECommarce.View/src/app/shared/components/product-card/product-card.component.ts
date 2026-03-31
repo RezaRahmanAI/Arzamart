@@ -36,6 +36,7 @@ export class ProductCardComponent {
 
   readonly icons = { ShoppingCart };
   showQuickAdd = false;
+  isOrdering = false;
 
   constructor(
     public readonly imageUrlService: ImageUrlService,
@@ -260,7 +261,25 @@ export class ProductCardComponent {
           selection.color,
           selection.size ?? this.selectedSize ?? undefined,
         )
-        .subscribe();
+        .subscribe(() => {
+          if (this.isOrdering) {
+            window.location.href = "/checkout";
+          }
+        });
     }
+  }
+
+  orderNow(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const sizes = this.availableSizes;
+    if (sizes.length > 0 && !this.selectedSize) {
+      this.cartService.notifySizeRequired();
+      return;
+    }
+
+    this.isOrdering = true;
+    this.showQuickAdd = true;
   }
 }

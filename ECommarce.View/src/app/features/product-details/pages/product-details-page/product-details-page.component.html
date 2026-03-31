@@ -1,5 +1,5 @@
 <ng-container *ngFor="let vm of [vm$ | async]">
-  <div *ngIf="vm" class="bg-[#f5f5f3] min-h-screen font-sans text-[#1a1a1a]">
+  <div *ngIf="vm" class="bg-[#fcfcfc] min-h-screen text-primary">
     <!-- Breadcrumb -->
     <div class="site-container pt-16 pb-2">
       <nav
@@ -22,7 +22,7 @@
         </h1>
         <div class="flex items-center justify-center lg:justify-start gap-4 text-[9px] uppercase tracking-[0.2em] font-bold text-[#bbb]">
           <!-- <span class="text-[#1a1a1a]">{{ vm.product.sku }}</span> -->
-          <span *ngIf="vm.product.shortDescription" class="text-[#c8922a]">• {{ vm.product.shortDescription }}</span>
+          <span *ngIf="vm.product.shortDescription" class="text-accent">• {{ vm.product.shortDescription }}</span>
         </div>
       </div>
 
@@ -133,12 +133,12 @@
               <!-- Primary Description -->
               <div class="space-y-4">
                 <h3
-                  class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#c8922a]"
+                  class="text-[11px] uppercase tracking-[0.4em] font-bold text-accent"
                 >
                   Description
                 </h3>
                 <p
-                  class="text-[17px] text-[#444] leading-[1.8] font-light max-w-[90%]"
+                  class="text-[17px] text-primary/80 leading-[1.8] font-light max-w-[90%]"
                   [innerHTML]="vm.product.description | safeHtml"
                 ></p>
               </div>
@@ -368,7 +368,7 @@
                 <button
                   (click)="addToCart(vm.product)"
                   [disabled]="!vm.currentStock"
-                  class="w-full h-12 bg-[#1a1a1a] text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-black transition-all duration-300 disabled:opacity-20 flex items-center justify-center gap-4"
+                  class="w-full h-14 bg-primary text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all duration-300 disabled:opacity-20 flex items-center justify-center gap-4 rounded-xl shadow-lg shadow-primary/10"
                 >
                   <lucide-icon
                     [img]="icons.ShoppingBag"
@@ -380,7 +380,7 @@
                 <button
                   (click)="buyNow(vm.product)"
                   [disabled]="!vm.currentStock"
-                  class="w-full h-12 bg-white border border-[#1a1a1a] text-[#1a1a1a] text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-[#f9f9f9] transition-all duration-300 disabled:opacity-20"
+                  class="w-full h-14 bg-accent text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all duration-300 disabled:opacity-20 rounded-xl shadow-lg shadow-accent/20"
                 >
                   Secure Checkout
                 </button>
@@ -522,7 +522,7 @@
             </div>
             <button
               (click)="toggleReviewForm()"
-              class="px-10 py-5 bg-[#1a1a1a] text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-black transition-all"
+              class="px-10 py-5 bg-accent text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all rounded-xl shadow-xl shadow-accent/20"
             >
               Share Experience
             </button>

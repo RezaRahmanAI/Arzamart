@@ -4,6 +4,8 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ECommerce.API.Controllers;
 
@@ -15,12 +17,16 @@ public class AdminCategoryController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
+    private readonly IMemoryCache _cache;
+    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminCategoryController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config)
+    public AdminCategoryController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config, IMemoryCache cache, IOutputCacheStore cacheStore)
     {
         _context = context;
         _environment = environment;
         _config = config;
+        _cache = cache;
+        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -149,6 +155,9 @@ public class AdminCategoryController : ControllerBase
         _context.Categories.Add(category);
         await _context.SaveChangesAsync();
 
+        _cache.Remove("home_categories");
+        await _cacheStore.EvictByTagAsync("categories", default);
+
         var result = new CategoryDto
         {
             Id = category.Id,
@@ -209,6 +218,9 @@ public class AdminCategoryController : ControllerBase
         }
 
         await _context.SaveChangesAsync();
+        
+        _cache.Remove("home_categories");
+        await _cacheStore.EvictByTagAsync("categories", default);
 
         var result = new CategoryDto
         {
@@ -241,6 +253,9 @@ public class AdminCategoryController : ControllerBase
         _context.Categories.Remove(category);
         await _context.SaveChangesAsync();
 
+        _cache.Remove("home_categories");
+        await _cacheStore.EvictByTagAsync("categories", default);
+
         return NoContent();
     }
 
@@ -263,6 +278,10 @@ public class AdminCategoryController : ControllerBase
         }
 
         await _context.SaveChangesAsync();
+        
+        _cache.Remove("home_categories");
+        await _cacheStore.EvictByTagAsync("categories", default);
+
         return Ok(true);
     }
 

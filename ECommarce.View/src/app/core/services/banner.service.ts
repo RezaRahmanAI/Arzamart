@@ -11,6 +11,7 @@ export interface HeroBanner {
   linkUrl: string;
   buttonText: string;
   displayOrder: number;
+  type: "Hero" | "Promo" | "Spotlight";
 }
 
 @Injectable({

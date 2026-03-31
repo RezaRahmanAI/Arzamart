@@ -8,6 +8,7 @@ export interface AdminBanner {
   buttonText: string;
   displayOrder: number;
   isActive: boolean;
+  type: "Hero" | "Promo" | "Spotlight";
 }
 
 export interface BannerCreatePayload {
@@ -19,4 +20,5 @@ export interface BannerCreatePayload {
   buttonText: string;
   displayOrder: number;
   isActive: boolean;
+  type: "Hero" | "Promo" | "Spotlight";
 }

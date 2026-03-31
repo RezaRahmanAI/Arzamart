@@ -1,8 +1,27 @@
-/* Fonts loaded via non-blocking <link> tags in index.html */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* RGB values for Tailwind opacity support (space-separated) */
+  --color-primary-rgb: 26 35 50;
+  --color-accent-rgb: 232 115 95;
+  --color-supporting-rgb: 244 241 234;
+  --color-surface-rgb: 255 255 255;
+
+  /* Semantic variables */
+  --color-primary: rgb(var(--color-primary-rgb));
+  --color-primary-light: #2d3b4e;
+  --color-accent: rgb(var(--color-accent-rgb));
+  --color-accent-light: #f09485;
+  --color-secondary: #ffffff;
+  --color-supporting: rgb(var(--color-supporting-rgb));
+  --color-background-light: #ffffff;
+  --color-background-dark: #1a2332;
+  --color-text-main: #1a2332;
+  --color-text-sub: #64748b;
+  --color-border: #d8d2c2;
+}
 
 /* Luxury Minimalist Enhancements */
 @layer base {
@@ -30,7 +49,7 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-gray-100;
+    @apply bg-supporting;
   }
 
   ::-webkit-scrollbar-thumb {
@@ -152,6 +171,81 @@
   }
 
   .site-container {
-    @apply w-full lg:w-[80%] max-w-[1536px] mx-auto px-6 md:px-12 lg:px-0;
+    @apply w-full max-w-[1400px] mx-auto px-4 md:px-8 lg:px-10;
   }
+}
+
+/* Quill Editor Customizations for Arza Admin */
+.arza-quill-wrapper {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.dark .arza-quill-wrapper {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.arza-quill-wrapper:focus-within {
+  border-color: #2a3342;
+  box-shadow: 0 0 0 2px rgba(42, 51, 66, 0.1);
+}
+
+.arza-quill-wrapper .ql-toolbar.ql-snow {
+  border: none;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 8px 12px;
+}
+
+.dark .arza-quill-wrapper .ql-toolbar.ql-snow {
+  border-color: #334155;
+  background: #1e293b;
+}
+
+.dark .arza-quill-wrapper .ql-toolbar .ql-stroke {
+  stroke: #94a3b8;
+}
+
+.dark .arza-quill-wrapper .ql-toolbar .ql-fill {
+  fill: #94a3b8;
+}
+
+.dark .arza-quill-wrapper .ql-toolbar .ql-picker {
+  color: #94a3b8;
+}
+
+.arza-quill-wrapper .ql-container.ql-snow {
+  border: none;
+  min-height: 180px;
+  max-height: 500px;
+  overflow-y: auto;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.arza-quill-wrapper .ql-editor {
+  padding: 16px;
+  line-height: 1.6;
+}
+
+.dark .arza-quill-wrapper .ql-editor {
+  color: #f1f5f9;
+}
+
+.arza-quill-wrapper .ql-editor.ql-blank::before {
+  color: #94a3b8;
+  font-style: normal;
+  left: 16px;
+}
+
+/* Ensure the editor itself is visible */
+quill-editor {
+  display: block;
+  width: 100%;
 }

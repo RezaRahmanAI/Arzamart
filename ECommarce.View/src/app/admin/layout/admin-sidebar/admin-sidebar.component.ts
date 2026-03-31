@@ -20,6 +20,7 @@ import {
   ChevronDown,
   ChevronUp,
   X,
+  Heart,
 } from "lucide-angular";
 import { SidebarService } from "../../services/sidebar.service";
 
@@ -54,17 +55,30 @@ export class AdminSidebarComponent implements OnInit {
     Eye,
     LogOut,
     X,
+    LayoutDashboard,
+    Package,
+    GalleryVertical,
+    FileText,
+    MessageSquare,
+    Newspaper,
+    Users,
+    Shield,
+    LineChart,
+    Settings,
   };
 
   topItems: AdminNavItem[] = [
     { label: "Overview", icon: LayoutDashboard, route: "/admin/dashboard" },
   ];
 
+
+
   ngOnInit() {
     // Open menu if we are on a products route
     if (this.router.url.includes("/admin/products")) {
       this.isProductsMenuOpen = true;
     }
+
   }
 
   navItems: AdminNavItem[] = [

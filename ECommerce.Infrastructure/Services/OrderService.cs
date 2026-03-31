@@ -17,12 +17,14 @@ public class OrderService : IOrderService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly CustomerService _customerService;
+    private readonly ISteadfastService _steadfastService;
 
-    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, CustomerService customerService)
+    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, CustomerService customerService, ISteadfastService steadfastService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _customerService = customerService;
+        _steadfastService = steadfastService;
     }
 
     public async Task<OrderDto> CreateOrderAsync(OrderCreateDto orderDto)
@@ -223,10 +225,8 @@ public class OrderService : IOrderService
 
         if (Enum.TryParse<OrderStatus>(status, true, out var newStatus))
         {
-            // Restore stock if cancelling
             if (newStatus == OrderStatus.Cancelled && order.Status != OrderStatus.Cancelled)
             {
-                // Bulk fetch all products at once to avoid N+1
                 var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
                 var products = await _unitOfWork.Repository<Product>().ListAsync(
                     new ProductsWithCategoriesSpecification(productIds), track: true);
@@ -237,7 +237,6 @@ public class OrderService : IOrderService
                     if (productDict.TryGetValue(item.ProductId, out var product))
                     {
                         int multiplier = product.IsBundle ? product.BundleQuantity : 1;
-                        // Restore Product Stock
                         product.StockQuantity += item.Quantity * multiplier;
 
                         if (!string.IsNullOrEmpty(item.Size))
@@ -255,8 +254,29 @@ public class OrderService : IOrderService
                 }
             }
 
-
             order.Status = newStatus;
+            
+            if (newStatus == OrderStatus.Confirmed && order.SteadfastConsignmentId == null)
+            {
+                try
+                {
+                    var (consignmentId, trackingCode) = await _steadfastService.CreateOrderAsync(order);
+                    if (!string.IsNullOrEmpty(consignmentId))
+                    {
+                        if (long.TryParse(consignmentId, out var cid))
+                        {
+                            order.SteadfastConsignmentId = cid;
+                        }
+                        order.SteadfastTrackingCode = trackingCode;
+                        order.SteadfastStatus = "in_review";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error sending order {order.Id} to Steadfast: {ex.Message}");
+                }
+            }
+            
             _unitOfWork.Repository<Order>().Update(order);
             return await _unitOfWork.Complete() > 0;
         }

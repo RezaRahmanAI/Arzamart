@@ -1,4 +1,4 @@
-<section class="bg-white py-32" *ngIf="settings$ | async as settings">
+<section class="bg-transparent py-32" *ngIf="settings$ | async as settings">
   <div class="site-container">
     <div class="mx-auto text-center flex flex-col items-center gap-12">
       <div class="mx-auto flex flex-col items-center">
@@ -31,7 +31,7 @@
           />
         </div>
         <button
-          class="h-14 bg-primary text-white text-[10px] uppercase tracking-[0.3em] font-bold px-12 hover:bg-accent transition-all duration-500"
+          class="h-14 bg-accent text-white text-[10px] uppercase tracking-[0.3em] font-bold px-12 hover:bg-primary transition-all duration-500"
           type="submit"
         >
           Subscribe

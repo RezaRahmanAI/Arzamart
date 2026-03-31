@@ -14,6 +14,7 @@ import { NewsletterComponent } from "../../components/newsletter/newsletter.comp
 import { CampaignSpotlightComponent } from "../../components/campaign-spotlight/campaign-spotlight.component";
 
 import { CategorySectionComponent } from "../../components/category-section/category-section.component";
+import { PromoBannerComponent } from "../../components/promo-banner/promo-banner.component";
 
 @Component({
   selector: "app-home-page",
@@ -27,7 +28,8 @@ import { CategorySectionComponent } from "../../components/category-section/cate
     WhyChooseUsComponent,
     TestimonialsComponent,
     NewsletterComponent,
-    CategorySectionComponent
+    CategorySectionComponent,
+    PromoBannerComponent
 ],
   templateUrl: "./home-page.component.html",
   styleUrl: "./home-page.component.css",
@@ -41,13 +43,15 @@ export class HomePageComponent {
 
   heroSlides$ = this.homeData$.pipe(
     map((data) =>
-      data.banners.map((b) => ({
-        image: this.imageUrlService.getImageUrl(b.imageUrl),
-        title: b.title,
-        subtitle: b.subtitle,
-        link: b.linkUrl || "/shop",
-        linkText: b.buttonText || "Shop Now",
-      })),
+      data.banners
+        .map((b) => ({
+          image: b.imageUrl, // Pass raw path, HeroComponent uses imageUrlService
+          title: b.title,
+          subtitle: b.subtitle,
+          link: b.linkUrl || "/shop",
+          linkText: b.buttonText || "Shop Now",
+          type: b.type
+        })),
     ),
   );
 

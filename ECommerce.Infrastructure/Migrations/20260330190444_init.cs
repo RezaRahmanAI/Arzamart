@@ -226,6 +226,7 @@ namespace ECommerce.Infrastructure.Migrations
                     ButtonText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DisplayOrder = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -519,6 +520,10 @@ namespace ECommerce.Infrastructure.Migrations
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DeliveryMethodId = table.Column<int>(type: "int", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
+                    SteadfastConsignmentId = table.Column<long>(type: "bigint", nullable: true),
+                    SteadfastTrackingCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SteadfastStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedIp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -723,6 +728,40 @@ namespace ECommerce.Infrastructure.Migrations
                     table.PrimaryKey("PK_ProductImages", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ProductImages_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalSchema: "dbo",
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductLandingPages",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Headline = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VideoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Subtitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BenefitsTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BenefitsContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReviewsTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SideEffectsTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SideEffectsContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UsageTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UsageContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ThemeColor = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductLandingPages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductLandingPages_Products_ProductId",
                         column: x => x.ProductId,
                         principalSchema: "dbo",
                         principalTable: "Products",
@@ -974,6 +1013,13 @@ namespace ECommerce.Infrastructure.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductLandingPages_ProductId",
+                schema: "dbo",
+                table: "ProductLandingPages",
+                column: "ProductId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 schema: "dbo",
                 table: "Products",
@@ -1140,6 +1186,10 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductImages",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "ProductLandingPages",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

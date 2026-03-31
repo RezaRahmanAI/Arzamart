@@ -1,275 +1,140 @@
-<!-- Top Utility Bar (Clean Minimalist) -->
-<div
-  class="bg-white text-slate-500 text-[10px] uppercase tracking-[0.2em] py-2 border-b border-gray-100"
->
-  <div class="site-container flex justify-between items-center">
-    <div class="flex items-center gap-6">
-      <a
-        [href]="'mailto:' + (vm$ | async)?.settings?.contactEmail"
-        class="hover:text-primary transition-colors"
-        >{{
-          (vm$ | async)?.settings?.contactEmail || "support@arzamart.shop"
-        }}</a
-      >
-    </div>
-    <div class="hidden md:flex items-center gap-6">
-      <a routerLink="/contact" class="hover:text-primary transition-colors"
-        >Contact</a
-      >
-      <a routerLink="/stores" class="hover:text-primary transition-colors"
-        >Store Locations</a
-      >
-      <span class="text-gray-200">|</span>
-      <button class="hover:text-primary transition-colors uppercase">
-        English
-      </button>
-    </div>
-  </div>
-</div>
-
 <header
-  class="fixed z-50 w-full transition-all duration-300 border-b bg-white text-slate-900 border-gray-100"
-  [ngClass]="{
-    'top-0 shadow-sm py-1':
-      isScrolled || isMenuOpen || !(vm$ | async)?.isHomePage,
-    'top-[34px] py-3': !isScrolled && !isMenuOpen && (vm$ | async)?.isHomePage,
-  }"
+  class="fixed z-50 w-full transition-all duration-300 bg-white/95 backdrop-blur-md border-b border-border-color"
+  [ngClass]="{ 'py-1': isScrolled, 'py-2': !isScrolled }"
 >
   <ng-container *ngIf="vm$ | async as vm">
     <div class="site-container">
-      <div class="flex items-center justify-between h-16 md:h-18">
-        <!-- Left Side: Logo -->
-        <div class="flex-shrink-0 flex items-center">
-          <a routerLink="/" class="flex items-center group">
-            <img
-              [src]="
-                vm.settings.logoUrl
-                  ? imageUrlService.getImageUrl(vm.settings.logoUrl!)
-                  : 'assets/logo.svg'
-              "
-              [alt]="vm.settings.websiteName || 'ArzaMart'"
-              class="h-8 sm:h-9 md:h-10 lg:h-11 w-auto max-w-[120px] sm:max-w-[140px] md:max-w-[160px] lg:max-w-[180px] object-contain transition-transform duration-300 group-hover:scale-105"
-            />
-          </a>
+      <!-- Row 1: Logo & Nav & Icons -->
+      <div class="flex items-center justify-between h-12">
+        <!-- Logo -->
+        <a routerLink="/" class="flex-shrink-0 flex items-center group">
+          <img
+            [src]="
+              vm.settings.logoUrl
+                ? imageUrlService.getImageUrl(vm.settings.logoUrl!)
+                : 'assets/logo.svg'
+            "
+            [alt]="vm.settings.websiteName || 'ArzaMart'"
+            class="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+        </a>
+
+        <!-- Center-Right: Navigation Links -->
+        <div class="hidden lg:flex items-center gap-6 ml-auto mr-12">
+          <ng-container *ngFor="let item of vm.menu">
+            <a
+              [routerLink]="['/category', item.slug]"
+              class="text-[11px] font-bold uppercase tracking-wider text-primary hover:text-accent transition-colors cursor-pointer"
+            >
+              {{ item.name }}
+            </a>
+          </ng-container>
         </div>
 
-        <!-- Center: Nav Links -->
-        <nav
-          class="hidden lg:flex items-center gap-8 flex-1 justify-center px-10"
-        >
-          <ng-container *ngFor="let item of vm.menu">
-            <div class="group relative py-6">
-              <a
-                [routerLink]="['/category', item.slug]"
-                class="text-[10px] uppercase tracking-[0.25em] font-medium text-slate-700 hover:text-primary transition-colors duration-300 relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[1px] after:bg-primary after:transition-all group-hover:after:w-full"
-              >
-                {{ item.name }}
-              </a>
-
-              <!-- Mega Menu Dropdown (Minimalist) -->
-              <div
-                class="invisible group-hover:visible absolute top-full left-1/2 -translate-x-1/2 w-max min-w-[600px] bg-white border border-gray-100 shadow-2xl p-10 grid grid-cols-4 gap-10 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-50 rounded-b-xl"
-              >
-                <div
-                  *ngFor="let sub of item.subCategories"
-                  class="flex flex-col gap-4"
-                >
-                  <h4
-                    class="text-[9px] uppercase tracking-[0.3em] font-bold text-primary mb-2 pb-2 border-b border-gray-50"
-                  >
-                    {{ sub.name }}
-                  </h4>
-                  <ul class="flex flex-col gap-2.5">
-                    <li *ngFor="let coll of sub.collections">
-                      <a
-                        [routerLink]="['/collection', coll.slug]"
-                        class="text-[11px] text-slate-500 hover:text-primary transition-colors duration-300"
-                      >
-                        {{ coll.name }}
-                      </a>
-                    </li>
-                    <li class="mt-1">
-                      <a
-                        [routerLink]="['/subcategory', sub.slug]"
-                        class="text-[9px] uppercase tracking-wider font-bold text-accent hover:text-primary transition-colors"
-                      >
-                        Explore All
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </ng-container>
-        </nav>
-
-        <!-- Right Side: Utils & Mobile Toggle -->
-        <div class="flex items-center gap-5 md:gap-7 flex-shrink-0">
-          <!-- Search -->
-          <!-- Search -->
-          <div class="relative flex items-center">
-            <div
-              *ngIf="isSearchOpen"
-              class="absolute right-full mr-2 w-48 md:w-64"
-            >
-              <input
-                id="navbar-search-input"
-                type="text"
-                [(ngModel)]="searchQuery"
-                (keyup.enter)="onSearch()"
-                placeholder="Search products..."
-                class="w-full px-3 py-1.5 text-xs text-slate-700 border border-gray-200 rounded-md focus:outline-none focus:border-primary transition-all"
-              />
-            </div>
-            <button
-              class="hover:text-primary transition-colors p-1"
-              aria-label="Search"
-              (click)="toggleSearch()"
-            >
-              <lucide-icon
-                [img]="isSearchOpen ? icons.X : icons.Search"
-                class="w-5 h-5 md:w-6 md:h-6 stroke-[1.5]"
-              ></lucide-icon>
-            </button>
-          </div>
-
-          <!-- Profile -->
-          <a
-            routerLink="/profile"
-            class="hover:text-primary transition-colors p-1"
-            [ngClass]="{ 'text-primary': vm.isCustomerLoggedIn }"
-            aria-label="Profile"
-          >
-            <lucide-icon
-              [img]="icons.User"
-              class="w-5 h-5 md:w-6 md:h-6 stroke-[1.5]"
-            ></lucide-icon>
-            <span
-              *ngIf="vm.isCustomerLoggedIn"
-              class="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-primary border border-white"
-            ></span>
+        <!-- Far Right: Actions -->
+        <div class="flex items-center gap-6 flex-shrink-0">
+          <a routerLink="/offers" class="flex items-center gap-1.5 text-primary hover:text-accent transition-colors cursor-pointer group">
+            <lucide-icon [img]="icons.Tag" class="w-4 h-4 text-primary/40 group-hover:text-accent transition-colors"></lucide-icon>
+            <span class="text-[11px] font-bold uppercase tracking-wider hidden sm:inline">Offer</span>
           </a>
-
-          <!-- Cart -->
-          <a
-            routerLink="/cart"
-            class="hover:text-primary transition-colors p-1 relative"
-            aria-label="Cart"
-          >
-            <lucide-icon
-              [img]="icons.ShoppingBag"
-              class="w-5 h-5 md:w-6 md:h-6 stroke-[1.5]"
-            ></lucide-icon>
+          
+          <a routerLink="/cart" class="relative group p-1 text-primary hover:text-accent transition-all duration-300 cursor-pointer">
+            <lucide-icon [img]="icons.ShoppingBag" class="w-5 h-5 stroke-[2]"></lucide-icon>
             <span
               *ngIf="vm.cartCount > 0"
-              class="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-primary text-[8px] font-bold text-white flex items-center justify-center"
+              class="absolute -top-1 -right-1 h-4 w-4 bg-accent text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform"
             >
               {{ vm.cartCount }}
             </span>
           </a>
 
-          <!-- Mobile Menu Toggle -->
-          <button
-            class="lg:hidden hover:text-primary transition-colors p-1"
-            (click)="toggleMenu()"
-            [attr.aria-expanded]="isMenuOpen"
-          >
-            <lucide-icon
-              [img]="isMenuOpen ? icons.X : icons.Menu"
-              class="w-6 h-6 stroke-[1.5]"
-            ></lucide-icon>
+          <a routerLink="/profile" class="text-primary hover:text-accent transition-all duration-300 cursor-pointer p-1">
+            <lucide-icon [img]="icons.User" class="w-5 h-5 stroke-[2]"></lucide-icon>
+          </a>
+
+          <!-- Mobile Toggle -->
+          <button (click)="toggleMenu()" class="lg:hidden p-1 text-text-sub hover:text-primary transition-colors">
+            <lucide-icon [img]="isMenuOpen ? icons.X : icons.Menu" class="w-6 h-6"></lucide-icon>
           </button>
         </div>
       </div>
-    </div>
 
-    <!-- Mobile Navigation Overlay (Refined) -->
-    <div
-      *ngIf="isMenuOpen"
-      class="lg:hidden fixed inset-0 z-40 bg-white pt-24 px-6 overflow-y-auto"
-    >
-      <nav class="flex flex-col gap-6 w-full py-10">
-        <div *ngFor="let item of vm.menu" class="border-b border-gray-100 pb-4">
+      <!-- Row 2: Search & Categories -->
+      <div class="flex items-center gap-4 py-2 border-t border-supporting bg-white lg:flex-row flex-col">
+        <!-- Categories Dropdown Button -->
+        <div class="relative w-full lg:w-64">
           <button
-            (click)="item.isOpen = !item.isOpen"
-            class="flex justify-between items-center w-full py-2"
+            (click)="toggleCategoriesMenu()"
+            class="w-full flex items-center justify-between gap-3 px-4 py-2 bg-supporting/40 hover:bg-supporting/60 border border-border-color rounded-lg text-[10px] font-bold text-text-main transition-all duration-300 group"
           >
-            <span
-              class="text-sm uppercase tracking-[0.2em] font-semibold text-slate-800"
-              >{{ item.name }}</span
-            >
-            <lucide-icon
-              [img]="icons.ChevronDown"
-              class="w-5 h-5 opacity-50 transition-transform duration-300"
-              [ngClass]="{ 'rotate-180': item.isOpen }"
-            ></lucide-icon>
+            <div class="flex items-center gap-2 md:gap-3">
+              <lucide-icon [img]="icons.Menu" class="w-4 h-4 text-primary group-hover:rotate-180 transition-transform duration-500"></lucide-icon>
+              <span class="uppercase tracking-[0.1em]">All Categories</span>
+            </div>
+            <lucide-icon [img]="icons.ChevronDown" class="w-4 h-4 opacity-40 transition-transform duration-300" [class.rotate-180]="isCategoriesMenuOpen"></lucide-icon>
           </button>
 
-          <div *ngIf="item.isOpen" class="flex flex-col gap-4 pl-4 pt-4 pb-2">
-            <div
-              *ngFor="let sub of item.subCategories"
-              class="flex flex-col gap-2"
+          <!-- Categories Dropdown (Elegant Minimalist) -->
+          <div
+            *ngIf="isCategoriesMenuOpen"
+            class="absolute top-full left-0 w-full mt-2 bg-white border border-border-color shadow-2xl rounded-2xl p-4 grid grid-cols-1 gap-1 z-[60] animate-fade-in-up origin-top"
+          >
+             <a
+              *ngFor="let item of vm.menu"
+              [routerLink]="['/category', item.slug]"
+              (click)="isCategoriesMenuOpen = false"
+              class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold text-text-sub hover:text-primary hover:bg-primary/5 transition-all duration-200"
             >
-              <h5
-                class="text-[9px] uppercase tracking-widest font-bold text-accent"
-              >
-                {{ sub.name }}
-              </h5>
-              <ul class="flex flex-col gap-2">
-                <li *ngFor="let coll of sub.collections">
-                  <a
-                    [routerLink]="['/collection', coll.slug]"
-                    (click)="closeMenu()"
-                    class="text-xs text-slate-500"
-                    >{{ coll.name }}</a
-                  >
-                </li>
-              </ul>
-            </div>
+              {{ item.name }}
+            </a>
           </div>
         </div>
 
-        <div class="mt-4 flex flex-col gap-4 px-4">
-          <a
-            class="text-[10px] uppercase tracking-[0.15em] text-slate-400 hover:text-primary transition-colors"
-            routerLink="/about"
-            (click)="closeMenu()"
-            >About Us</a
-          >
-          <a
-            class="text-[10px] uppercase tracking-[0.15em] text-slate-400 hover:text-primary transition-colors"
-            routerLink="/contact"
-            (click)="closeMenu()"
-            >Customer Care</a
-          >
-        </div>
-
-        <div class="flex flex-col gap-4 mt-10">
-          <ng-container *ngIf="vm.user; else loginBtn">
-            <a
-              *ngIf="vm.user.role === 'admin'"
-              class="w-full py-3 bg-slate-100 text-slate-900 border border-slate-200 rounded-lg text-[10px] uppercase tracking-widest font-bold text-center"
-              routerLink="/admin/dashboard"
-              (click)="closeMenu()"
-              >Admin Dashboard</a
-            >
+        <!-- Search Bar -->
+        <div class="relative flex-1 w-full">
+          <div class="relative flex items-center">
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="onSearch()"
+              placeholder="Search for products..."
+              class="w-full h-10 pl-5 pr-12 bg-supporting/40 border border-border-color rounded-lg text-sm text-text-main placeholder:text-gray-400 focus:ring-2 focus:ring-primary/10 focus:border-primary/20 focus:bg-white transition-all duration-300"
+            />
             <button
-              class="w-full py-3 bg-primary text-white rounded-lg text-[10px] uppercase tracking-widest font-bold"
-              (click)="logout(); closeMenu()"
+              (click)="onSearch()"
+              class="absolute right-2 px-4 py-2 bg-white text-gray-400 hover:text-primary transition-all duration-300"
             >
-              Sign Out
+              <lucide-icon [img]="icons.Search" class="w-5 h-5 stroke-[2.5]"></lucide-icon>
             </button>
-          </ng-container>
-          <ng-template #loginBtn>
-            <a
-              class="w-full py-3 bg-primary text-white rounded-lg text-[10px] uppercase tracking-widest font-bold text-center"
-              routerLink="/login"
-              (click)="closeMenu()"
-              >Sign In</a
-            >
-          </ng-template>
+          </div>
         </div>
-      </nav>
+      </div>
     </div>
   </ng-container>
 </header>
+
+<!-- Spacer to push content below fixed navbar -->
+<div class="h-24 lg:h-28"></div>
+
+<!-- Mobile Navigation Overlay (Refined) -->
+<div
+  *ngIf="isMenuOpen"
+  class="lg:hidden fixed inset-0 z-[100] bg-white pt-24 px-6 overflow-y-auto animate-fade-in"
+>
+  <div class="flex justify-between items-center mb-8">
+     <img src="assets/logo.svg" class="h-8 w-auto" alt="Logo" />
+     <button (click)="closeMenu()" class="p-2 bg-gray-50 rounded-full"><lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon></button>
+  </div>
+  <nav class="flex flex-col gap-1">
+    <ng-container *ngIf="vm$ | async as vm">
+        <a 
+            *ngFor="let item of vm.menu"
+            [routerLink]="['/category', item.slug]"
+            (click)="closeMenu()"
+            class="py-4 border-b border-gray-50 text-sm font-bold uppercase tracking-widest text-text-main hover:text-primary transition-colors"
+        >
+            {{ item.name }}
+        </a>
+    </ng-container>
+  </nav>
+</div>

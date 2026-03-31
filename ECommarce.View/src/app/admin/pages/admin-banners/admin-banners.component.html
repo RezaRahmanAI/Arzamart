@@ -56,6 +56,15 @@
             class="bg-accent text-primary text-[10px] px-2 py-0.5 rounded-full font-bold"
             >Active</span
           >
+          <span
+            [ngClass]="{
+              'bg-blue-500 text-white': banner.type === 'Hero',
+              'bg-emerald-500 text-white': banner.type === 'Promo',
+              'bg-amber-500 text-white': banner.type === 'Spotlight'
+            }"
+            class="text-[10px] px-2 py-0.5 rounded-full font-bold"
+            >{{ banner.type || 'Hero' }}</span
+          >
         </div>
       </div>
       <div class="p-4">
@@ -127,6 +136,36 @@
 
     <form [formGroup]="bannerForm" (ngSubmit)="onSubmit()" class="p-8">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="col-span-2">
+          <label
+            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+            >Banner Type</label
+          >
+          <div class="flex gap-4">
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" formControlName="type" value="Hero" class="peer hidden" />
+              <div class="p-4 border rounded-xl bg-gray-50 peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary transition-all text-center">
+                <p class="font-bold text-sm">Hero Slide</p>
+                <p class="text-[10px] opacity-60">Full-width carousel</p>
+              </div>
+            </label>
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" formControlName="type" value="Promo" class="peer hidden" />
+              <div class="p-4 border rounded-xl bg-gray-50 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 transition-all text-center">
+                <p class="font-bold text-sm">Offer Banner</p>
+                <p class="text-[10px] opacity-60">Mid-page horizontal</p>
+              </div>
+            </label>
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" formControlName="type" value="Spotlight" class="peer hidden" />
+              <div class="p-4 border rounded-xl bg-gray-50 peer-checked:bg-amber-600 peer-checked:text-white peer-checked:border-amber-600 transition-all text-center">
+                <p class="font-bold text-sm">Spotlight Card</p>
+                <p class="text-[10px] opacity-60">Ramadan-style offer</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
         <div class="col-span-2">
           <label
             class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"

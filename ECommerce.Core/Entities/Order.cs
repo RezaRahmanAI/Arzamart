@@ -37,6 +37,11 @@ public class Order : BaseEntity
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
     
     public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
+    
+    public long? SteadfastConsignmentId { get; set; }
+    public string? SteadfastTrackingCode { get; set; }
+    public string? SteadfastStatus { get; set; }
+    public string? CreatedIp { get; set; }
 }
 
 

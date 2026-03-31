@@ -43,7 +43,8 @@ public class BannersController : ControllerBase
             MobileImageUrl = b.MobileImageUrl ?? "",
             LinkUrl = b.LinkUrl ?? "",
             ButtonText = b.ButtonText ?? "",
-            DisplayOrder = b.DisplayOrder
+            DisplayOrder = b.DisplayOrder,
+            Type = b.Type
         }).ToList();
 
         _cache.Set(cacheKey, bannerDtos, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });

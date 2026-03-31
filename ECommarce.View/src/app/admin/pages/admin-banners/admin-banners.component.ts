@@ -62,6 +62,7 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
     buttonText: [""],
     displayOrder: [0, [Validators.required]],
     isActive: [true],
+    type: ["Hero", [Validators.required]],
   });
 
   ngOnInit(): void {
@@ -94,6 +95,7 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
       buttonText: "",
       displayOrder: this.banners.length + 1,
       isActive: true,
+      type: "Hero",
     });
     this.isModalOpen = true;
   }
@@ -110,6 +112,7 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
       buttonText: banner.buttonText,
       displayOrder: banner.displayOrder,
       isActive: banner.isActive,
+      type: banner.type || "Hero",
     });
     this.isModalOpen = true;
   }

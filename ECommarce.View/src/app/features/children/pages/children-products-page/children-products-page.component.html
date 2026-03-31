@@ -26,7 +26,7 @@
       <aside class="w-full lg:w-64 shrink-0 space-y-8">
         <div>
           <h3
-            class="font-serif font-semibold text-primary mb-4 pb-2 border-b border-slate-100"
+            class="font-serif font-semibold text-primary mb-4 pb-2 border-b border-border-color"
           >
             Categories
           </h3>
@@ -41,13 +41,13 @@
                   class="w-4 h-4 text-slate-400"
                 ></lucide-icon>
               </button>
-              <div class="pl-3 mt-2 space-y-2 border-l border-slate-200">
+              <div class="pl-3 mt-2 space-y-2 border-l border-border-color">
                 <label class="flex items-center gap-2 cursor-pointer">
                   <input
                     class="rounded border-slate-300 text-primary focus:ring-primary size-4"
                     type="checkbox"
                   />
-                  <span class="text-sm text-slate-600"
+                  <span class="text-sm text-text-sub"
                     >Abayas &amp; Dresses</span
                   >
                 </label>
@@ -56,14 +56,14 @@
                     class="rounded border-slate-300 text-primary focus:ring-primary size-4"
                     type="checkbox"
                   />
-                  <span class="text-sm text-slate-600">Hijabs</span>
+                  <span class="text-sm text-text-sub">Hijabs</span>
                 </label>
                 <label class="flex items-center gap-2 cursor-pointer">
                   <input
                     class="rounded border-slate-300 text-primary focus:ring-primary size-4"
                     type="checkbox"
                   />
-                  <span class="text-sm text-slate-600">Sets</span>
+                  <span class="text-sm text-text-sub">Sets</span>
                 </label>
               </div>
             </div>
@@ -78,20 +78,20 @@
                 ></lucide-icon>
               </button>
               <div
-                class="hidden pl-3 mt-2 space-y-2 border-l border-slate-200"
+                class="hidden pl-3 mt-2 space-y-2 border-l border-border-color"
               ></div>
             </div>
           </div>
         </div>
         <div>
           <h3
-            class="font-serif font-semibold text-primary mb-4 pb-2 border-b border-slate-100"
+            class="font-serif font-semibold text-primary mb-4 pb-2 border-b border-border-color"
           >
             Size / Age
           </h3>
           <div class="grid grid-cols-3 gap-2">
             <button
-              class="px-2 py-1.5 text-xs border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"
+              class="px-2 py-1.5 text-xs border border-border-color rounded hover:border-primary hover:text-primary transition-colors"
             >
               2-3Y
             </button>
@@ -101,22 +101,22 @@
               4-5Y
             </button>
             <button
-              class="px-2 py-1.5 text-xs border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"
+              class="px-2 py-1.5 text-xs border border-border-color rounded hover:border-primary hover:text-primary transition-colors"
             >
               6-7Y
             </button>
             <button
-              class="px-2 py-1.5 text-xs border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"
+              class="px-2 py-1.5 text-xs border border-border-color rounded hover:border-primary hover:text-primary transition-colors"
             >
               8-9Y
             </button>
             <button
-              class="px-2 py-1.5 text-xs border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"
+              class="px-2 py-1.5 text-xs border border-border-color rounded hover:border-primary hover:text-primary transition-colors"
             >
               10-12Y
             </button>
             <button
-              class="px-2 py-1.5 text-xs border border-slate-200 rounded hover:border-primary hover:text-primary transition-colors"
+              class="px-2 py-1.5 text-xs border border-border-color rounded hover:border-primary hover:text-primary transition-colors"
             >
               Teen
             </button>
@@ -124,7 +124,7 @@
         </div>
         <div>
           <h3
-            class="font-serif font-semibold text-primary mb-4 pb-2 border-b border-slate-100"
+            class="font-serif font-semibold text-primary mb-4 pb-2 border-b border-border-color"
           >
             Price
           </h3>
@@ -136,7 +136,7 @@
                   >$</span
                 >
                 <input
-                  class="w-full pl-5 pr-1 py-1 text-sm border-slate-200 rounded focus:ring-primary focus:border-primary"
+                  class="w-full pl-5 pr-1 py-1 text-sm border-border-color rounded focus:ring-primary focus:border-primary"
                   type="number"
                   value="10"
                 />
@@ -148,7 +148,7 @@
                   >$</span
                 >
                 <input
-                  class="w-full pl-5 pr-1 py-1 text-sm border-slate-200 rounded focus:ring-primary focus:border-primary"
+                  class="w-full pl-5 pr-1 py-1 text-sm border-border-color rounded focus:ring-primary focus:border-primary"
                   type="number"
                   value="150"
                 />
@@ -164,7 +164,7 @@
           <h4 class="font-serif font-bold text-primary text-lg mb-2">
             Ramadan Ready?
           </h4>
-          <p class="text-sm text-slate-600 mb-4">
+          <p class="text-sm text-text-sub mb-4">
             Check out our exclusive prayer sets for kids.
           </p>
           <button
@@ -178,18 +178,18 @@
         <div
           class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"
         >
-          <p class="text-sm text-slate-500">
+          <p class="text-sm text-text-sub">
             Showing
-            <span class="font-semibold text-slate-900">{{
+            <span class="font-semibold text-text-main">{{
               products.length
             }}</span>
             products
           </p>
           <div class="flex items-center gap-3">
-            <span class="text-sm text-slate-500">Sort by:</span>
+            <span class="text-sm text-text-sub">Sort by:</span>
             <div class="relative group">
               <button
-                class="flex items-center gap-2 text-sm font-medium text-slate-900 hover:text-primary"
+                class="flex items-center gap-2 text-sm font-medium text-text-main hover:text-primary"
               >
                 <span>Popularity</span>
                 <lucide-icon
@@ -198,7 +198,7 @@
                 ></lucide-icon>
               </button>
               <div
-                class="absolute right-0 top-full mt-2 w-40 bg-white shadow-xl rounded-lg border border-slate-100 py-1 hidden group-hover:block z-20"
+                class="absolute right-0 top-full mt-2 w-40 bg-white shadow-xl rounded-lg border border-border-color py-1 hidden group-hover:block z-20"
               >
                 <a
                   class="block px-4 py-2 text-sm text-primary bg-slate-50"
@@ -206,18 +206,18 @@
                   >Popularity</a
                 >
                 <a
-                  class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary"
+                  class="block px-4 py-2 text-sm text-text-sub hover:bg-slate-50 hover:text-primary"
                   href="#"
                   >New Arrivals</a
                 >
                 <a
-                  class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary"
+                  class="block px-4 py-2 text-sm text-text-sub hover:bg-slate-50 hover:text-primary"
                   href="#"
                 >
                   Price: Low to High
                 </a>
                 <a
-                  class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary"
+                  class="block px-4 py-2 text-sm text-text-sub hover:bg-slate-50 hover:text-primary"
                   href="#"
                 >
                   Price: High to Low
@@ -235,7 +235,7 @@
             class="group flex flex-col gap-3 cursor-pointer"
           >
             <div
-              class="aspect-[3/4] w-full overflow-hidden rounded-lg bg-slate-100 relative"
+              class="aspect-[3/4] w-full overflow-hidden rounded-lg bg-supporting relative"
             >
               <img
                 [alt]="product.name"
@@ -264,7 +264,7 @@
             <div>
               <div class="flex justify-between items-start mb-1">
                 <h3
-                  class="text-base font-medium text-slate-900 group-hover:text-primary transition-colors cursor-pointer"
+                  class="text-base font-medium text-text-main group-hover:text-primary transition-colors cursor-pointer"
                 >
                   {{ product.name }}
                 </h3>
@@ -315,22 +315,22 @@
               >1</a
             >
             <a
-              class="px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md transition-colors"
+              class="px-4 py-2 text-text-sub hover:bg-slate-50 rounded-md transition-colors"
               href="#"
               >2</a
             >
             <a
-              class="px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md transition-colors"
+              class="px-4 py-2 text-text-sub hover:bg-slate-50 rounded-md transition-colors"
               href="#"
               >3</a
             >
             <span class="px-2 text-slate-400">...</span>
             <a
-              class="px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-md transition-colors"
+              class="px-4 py-2 text-text-sub hover:bg-slate-50 rounded-md transition-colors"
               href="#"
               >8</a
             >
-            <a class="p-2 text-slate-600 hover:text-primary" href="#">
+            <a class="p-2 text-text-sub hover:text-primary" href="#">
               <lucide-icon
                 [img]="icons.ChevronRight"
                 class="w-10 h-10"
@@ -350,12 +350,12 @@
       <h2 class="text-2xl font-serif font-bold text-primary mb-2">
         Join the Family
       </h2>
-      <p class="text-slate-600 mb-6">
+      <p class="text-text-sub mb-6">
         Subscribe to receive updates, access to exclusive deals, and more.
       </p>
       <div class="flex gap-2 max-w-sm mx-auto">
         <input
-          class="flex-1 rounded-lg border-slate-200 focus:ring-primary focus:border-primary"
+          class="flex-1 rounded-lg border-border-color focus:ring-primary focus:border-primary"
           placeholder="Enter your email"
           type="email"
         />
@@ -368,3 +368,4 @@
     </div>
   </div>
 </main>
+

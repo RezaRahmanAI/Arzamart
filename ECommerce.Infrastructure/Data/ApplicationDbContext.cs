@@ -44,6 +44,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // Enforce standard professional schema prefix
         builder.HasDefaultSchema("dbo");
 
+        // Global Query Filters for Soft Delete & Active Status
+        builder.Entity<Product>().HasQueryFilter(p => p.IsActive);
+        builder.Entity<Category>().HasQueryFilter(c => c.IsActive);
+        builder.Entity<SubCategory>().HasQueryFilter(sc => sc.IsActive);
+        builder.Entity<Collection>().HasQueryFilter(c => c.IsActive);
+        builder.Entity<NavigationMenu>().HasQueryFilter(n => n.IsActive);
+        builder.Entity<HeroBanner>().HasQueryFilter(h => h.IsActive);
+        builder.Entity<BlogPost>().HasQueryFilter(b => b.Status == BlogPostStatus.Published);
+
         // Delivery Method Configuration
         builder.Entity<DeliveryMethod>(entity =>
         {

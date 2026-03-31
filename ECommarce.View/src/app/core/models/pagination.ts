@@ -3,4 +3,5 @@ export interface Pagination<T> {
   pageSize: number;
   count: number;
   data: T[];
+  totalPages?: number;
 }

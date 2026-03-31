@@ -2,16 +2,16 @@
   <!-- Page Heading & Actions -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h2 class="text-2xl font-bold text-slate-900 dark:text-white">
-        Products
+      <h2 class="text-3xl font-black text-primary uppercase tracking-tighter mb-1">
+        {{ pageTitle }}
       </h2>
-      <p class="text-slate-500 dark:text-slate-400 mt-1">
-        Manage your clothing products, prices, and stock levels.
+      <p class="text-[10px] font-black uppercase tracking-[0.2em] text-text-sub opacity-50">
+        Inventory management & global pricing
       </p>
     </div>
     <div class="flex items-center gap-3">
       <button
-        class="h-10 px-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark text-slate-700 dark:text-slate-200 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2 shadow-sm"
+        class="arza-btn-secondary h-10 px-4"
         type="button"
         (click)="exportProducts()"
       >
@@ -19,7 +19,7 @@
         Export
       </button>
       <a
-        class="h-10 px-4 rounded-lg bg-primary text-white text-sm font-medium hover:bg-[#083b4b] transition-colors flex items-center gap-2 shadow-sm"
+        class="arza-btn-primary h-10 px-4"
         routerLink="/admin/products/create"
       >
         <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
@@ -41,7 +41,7 @@
           ></lucide-icon>
         </div>
         <input
-          class="block w-full h-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg leading-5 bg-white dark:bg-surface-dark placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm"
+          class="block w-full h-full pl-10 pr-4 rounded-xl border border-border-color bg-white text-sm text-primary placeholder:text-text-sub/40 focus:ring-2 focus:ring-primary/20 transition-all outline-none"
           placeholder="Search by name, SKU or tag..."
           type="text"
           [formControl]="searchControl"
@@ -60,7 +60,7 @@
           ></lucide-icon>
         </div>
         <select
-          class="block w-full h-full pl-10 pr-10 py-2 text-base border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-white dark:bg-surface-dark text-slate-700 dark:text-slate-200 appearance-none cursor-pointer"
+          class="block w-full h-full pl-10 pr-10 py-2 text-xs font-bold uppercase tracking-widest border border-border-color rounded-xl focus:ring-2 focus:ring-primary/20 bg-white text-primary appearance-none cursor-pointer outline-none"
           [formControl]="categoryControl"
         >
           <option *ngFor="let category of categories">{{ category }}</option>
@@ -70,7 +70,7 @@
         >
           <lucide-icon
             [img]="icons.ChevronDown"
-            class="w-4 h-4 text-slate-400"
+            class="w-4 h-4 text-text-sub/30"
           ></lucide-icon>
         </div>
       </div>
@@ -81,13 +81,13 @@
     >
       <button
         *ngFor="let tab of statusTabs"
-        class="h-11 px-4 rounded-lg text-sm font-medium whitespace-nowrap shadow-sm"
+        class="arza-btn h-11 px-6 shadow-sm border border-border-color"
         type="button"
         (click)="setStatusTab(tab)"
         [ngClass]="
           selectedStatusTab === tab
-            ? 'bg-primary text-white'
-            : 'bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors'
+            ? 'bg-primary text-white border-primary'
+            : 'bg-white dark:bg-background-dark text-text-sub hover:bg-supporting hover:text-primary'
         "
       >
         {{ tab }}
@@ -132,7 +132,7 @@
               *ngIf="product.isFeatured"
               class="px-2 py-1 rounded-lg text-[10px] font-black bg-amber-400 text-amber-950 uppercase tracking-tighter shadow-sm"
             >
-              Featured
+              Offer
             </span>
             <span
               *ngIf="product.isNew"

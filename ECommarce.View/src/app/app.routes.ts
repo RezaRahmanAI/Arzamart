@@ -38,6 +38,14 @@ export const appRoutes: Routes = [
         (m) => m.AccessoriesPageComponent,
       ),
   },
+  {
+    path: "offers",
+    loadComponent: () =>
+      import(
+        "./features/products/pages/product-gallery/product-gallery.component"
+      ).then((m) => m.ProductGalleryComponent),
+    title: "Sale & Offers",
+  },
   { path: "products", redirectTo: "women", pathMatch: "full" },
   {
     path: "search",
@@ -66,13 +74,6 @@ export const appRoutes: Routes = [
     loadComponent: () =>
       import("./features/product-details/pages/product-details-page/product-details-page.component").then(
         (m) => m.ProductDetailsPageComponent,
-      ),
-  },
-  {
-    path: "lp/:slug",
-    loadComponent: () =>
-      import("./features/landing-page/pages/landing-page/landing-page.component").then(
-        (m) => m.LandingPageComponent,
       ),
   },
   {
@@ -232,6 +233,7 @@ export const appRoutes: Routes = [
           ),
         data: { title: "Edit Product" },
       },
+
       {
         path: "orders",
         loadComponent: () =>

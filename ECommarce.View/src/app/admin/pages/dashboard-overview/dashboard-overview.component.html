@@ -4,20 +4,20 @@
 >
   <!-- Total Orders -->
   <div
-    class="bg-surface p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow"
+    class="bg-surface-light dark:bg-surface-dark p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 hover:shadow-primary/10 transition-all group"
   >
     <div class="flex items-start justify-between">
-      <div class="p-3 bg-primary/5 rounded-lg text-primary">
-        <lucide-icon [img]="icons.Receipt" class="w-6 h-6"></lucide-icon>
+      <div class="p-4 bg-primary/5 rounded-2xl text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
+        <lucide-icon [img]="icons.Receipt" class="w-7 h-7"></lucide-icon>
       </div>
       <span
-        class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full"
-        >All time</span
+        class="text-[9px] font-black text-text-sub uppercase tracking-[0.2em] bg-supporting px-3 py-1.5 rounded-full"
+        >Historical</span
       >
     </div>
     <div>
-      <p class="text-gray-500 text-sm font-medium mb-1">Total Orders</p>
-      <h3 class="text-2xl font-bold text-primary tracking-tight">
+      <p class="text-text-sub text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">Total Orders</p>
+      <h3 class="text-3xl font-black text-primary tracking-tighter">
         {{ stats.totalOrders }}
       </h3>
     </div>
@@ -25,16 +25,16 @@
 
   <!-- Daily Traffic -->
   <div
-    class="bg-surface p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow"
+    class="bg-surface-light dark:bg-surface-dark p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 hover:shadow-accent/10 transition-all group"
     *ngIf="dailyTraffic$ | async as traffic"
   >
     <div class="flex items-start justify-between">
-      <div class="p-3 bg-pink-50 rounded-lg text-pink-600">
-        <lucide-icon [img]="icons.Eye" class="w-6 h-6"></lucide-icon>
+      <div class="p-4 bg-accent/5 rounded-2xl text-accent group-hover:bg-accent group-hover:text-white transition-all duration-500">
+        <lucide-icon [img]="icons.Eye" class="w-7 h-7"></lucide-icon>
       </div>
       <span
-        class="text-xs font-semibold text-pink-600 bg-pink-50 px-2 py-1 rounded-full"
-        >Today</span
+        class="text-[9px] font-black text-accent uppercase tracking-[0.2em] bg-accent/5 px-3 py-1.5 rounded-full"
+        >Real-time</span
       >
     </div>
     <div>
@@ -52,21 +52,21 @@
 
   <!-- Total Revenue -->
   <div
-    class="bg-surface p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow"
+    class="bg-surface-light dark:bg-surface-dark p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 hover:shadow-emerald-500/10 transition-all group"
   >
     <div class="flex items-start justify-between">
-      <div class="p-3 bg-emerald-50 rounded-lg text-emerald-600">
-        <lucide-icon [img]="icons.CreditCard" class="w-6 h-6"></lucide-icon>
+      <div class="p-4 bg-emerald-500/5 rounded-2xl text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
+        <lucide-icon [img]="icons.CreditCard" class="w-7 h-7"></lucide-icon>
       </div>
       <span
-        class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full"
+        class="text-[9px] font-black text-emerald-600 uppercase tracking-[0.2em] bg-emerald-500/5 px-3 py-1.5 rounded-full"
         >Revenue</span
       >
     </div>
     <div>
-      <p class="text-gray-500 text-sm font-medium mb-1">Total Revenue</p>
+      <p class="text-text-sub text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">Total Revenue</p>
       <app-price-display
-        class="text-primary"
+        class="text-primary text-3xl font-black tracking-tighter"
         [amount]="stats.totalRevenue"
         size="lg"
       ></app-price-display>
@@ -75,20 +75,20 @@
 
   <!-- Delivered -->
   <div
-    class="bg-surface p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow"
+    class="bg-surface-light dark:bg-surface-dark p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 hover:shadow-blue-500/10 transition-all group"
   >
     <div class="flex items-start justify-between">
-      <div class="p-3 bg-blue-50 rounded-lg text-blue-600">
-        <lucide-icon [img]="icons.Truck" class="w-6 h-6"></lucide-icon>
+      <div class="p-4 bg-blue-500/5 rounded-2xl text-blue-600 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
+        <lucide-icon [img]="icons.Truck" class="w-7 h-7"></lucide-icon>
       </div>
       <span
-        class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-full"
+        class="text-[9px] font-black text-blue-600 uppercase tracking-[0.2em] bg-blue-500/5 px-3 py-1.5 rounded-full"
         >Delivered</span
       >
     </div>
     <div>
-      <p class="text-gray-500 text-sm font-medium mb-1">Orders Delivered</p>
-      <h3 class="text-2xl font-bold text-primary tracking-tight">
+      <p class="text-text-sub text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">Orders Delivered</p>
+      <h3 class="text-3xl font-black text-primary tracking-tighter">
         {{ stats.deliveredOrders }}
       </h3>
     </div>
@@ -96,20 +96,20 @@
 
   <!-- Pending -->
   <div
-    class="bg-surface p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow"
+    class="bg-surface-light dark:bg-surface-dark p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 hover:shadow-amber-500/10 transition-all group"
   >
     <div class="flex items-start justify-between">
-      <div class="p-3 bg-amber-50 rounded-lg text-amber-600">
-        <lucide-icon [img]="icons.Clock" class="w-6 h-6"></lucide-icon>
+      <div class="p-4 bg-amber-500/5 rounded-2xl text-amber-600 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500">
+        <lucide-icon [img]="icons.Clock" class="w-7 h-7"></lucide-icon>
       </div>
       <span
-        class="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-1 rounded-full"
-        >Pending</span
+        class="text-[9px] font-black text-amber-600 uppercase tracking-[0.2em] bg-amber-500/5 px-3 py-1.5 rounded-full"
+        >Processing</span
       >
     </div>
     <div>
-      <p class="text-gray-500 text-sm font-medium mb-1">Pending Orders</p>
-      <h3 class="text-2xl font-bold text-primary tracking-tight">
+      <p class="text-text-sub text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">Pending Orders</p>
+      <h3 class="text-3xl font-black text-primary tracking-tighter">
         {{ stats.pendingOrders }}
       </h3>
     </div>
@@ -183,15 +183,15 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
     <div
       *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]"
-      class="bg-surface p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 animate-pulse"
+      class="bg-surface-light p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 animate-pulse"
     >
       <div class="flex items-start justify-between">
-        <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-lg"></div>
-        <div class="w-16 h-5 bg-gray-50 dark:bg-gray-800 rounded-full"></div>
+        <div class="w-14 h-14 bg-supporting rounded-2xl"></div>
+        <div class="w-20 h-6 bg-supporting rounded-full"></div>
       </div>
-      <div class="space-y-3">
-        <div class="w-24 h-4 bg-gray-100 dark:bg-gray-800 rounded"></div>
-        <div class="w-32 h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
+      <div class="space-y-4">
+        <div class="w-24 h-3 bg-supporting rounded"></div>
+        <div class="w-32 h-10 bg-supporting/50 rounded-xl"></div>
       </div>
     </div>
   </div>
@@ -199,9 +199,9 @@
 
 
 
-<footer class="mt-12 mb-6 text-center" *ngIf="settings$ | async as settings">
-  <p class="text-sm text-gray-400">
+<footer class="mt-20 mb-10 text-center" *ngIf="settings$ | async as settings">
+  <p class="text-[10px] font-black uppercase tracking-[0.4em] text-text-sub/30">
     © {{ Math.max(2026, date.getFullYear()) }}
-    {{ settings.websiteName || "Admin Console" }}. All rights reserved.
+    {{ settings.websiteName || "ArzaMart Console" }}
   </p>
 </footer>

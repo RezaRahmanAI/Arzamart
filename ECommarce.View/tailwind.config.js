@@ -5,15 +5,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#050505", // Deepest black for ultra-luxury feel
-        "primary-light": "#151515",
-        accent: "#D4AF37", // Metallic Gold
-        "accent-light": "#F0E68C",
-        "background-light": "#FFFFFF",
-        "background-dark": "#050505",
-        "text-main": "#050505",
-        "text-sub": "#888888",
-        "border-color": "#E5E5E5",
+        primary: "rgb(var(--color-primary-rgb) / <alpha-value>)",
+        "primary-light": "var(--color-primary-light)",
+        accent: "rgb(var(--color-accent-rgb) / <alpha-value>)",
+        "accent-light": "var(--color-accent-light)",
+        secondary: "var(--color-secondary)",
+        supporting: "rgb(var(--color-supporting-rgb) / <alpha-value>)",
+        "background-light": "var(--color-background-light)",
+        "background-dark": "var(--color-background-dark)",
+        "text-main": "var(--color-text-main)",
+        "text-sub": "var(--color-text-sub)",
+        "border-color": "var(--color-border)",
       },
       fontFamily: {
         sans: ["Montserrat", "sans-serif"],

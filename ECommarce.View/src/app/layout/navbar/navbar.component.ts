@@ -15,6 +15,8 @@ import {
   Facebook,
   Instagram,
   Twitter,
+  Tag,
+  Search as SearchIcon,
 } from "lucide-angular";
 
 import { AuthService } from "../../core/services/auth.service";
@@ -50,10 +52,12 @@ export class NavbarComponent {
     Facebook,
     Instagram,
     Twitter,
+    Tag,
   };
 
   isMenuOpen = false;
   isSearchOpen = false;
+  isCategoriesMenuOpen = false;
   searchQuery = "";
   isScrolled = false;
 
@@ -99,6 +103,11 @@ export class NavbarComponent {
   closeMenu(): void {
     this.isMenuOpen = false;
     this.isSearchOpen = false;
+    this.isCategoriesMenuOpen = false;
+  }
+
+  toggleCategoriesMenu(): void {
+    this.isCategoriesMenuOpen = !this.isCategoriesMenuOpen;
   }
 
   toggleSearch(): void {

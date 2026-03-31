@@ -1,98 +1,99 @@
-<main
-  class="site-container flex-1 flex flex-col py-8 pt-24"
->
-  <div
-    class="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end"
-  >
-    <div class="max-w-2xl">
-      <h2
-        class="mb-3 text-4xl font-black tracking-tight text-primary lg:text-5xl uppercase"
-      >
-        {{ title }}
-      </h2>
-      <p class="text-lg text-text-sub">
-        Explore our curated collection of {{ title | lowercase }}.
-      </p>
+<main class="min-h-screen bg-supporting pb-20">
+  <!-- Professional Alzeena Strip Header -->
+  <div class="bg-white border-y border-border-color/30 py-4 mb-8 shadow-sm">
+    <div class="site-container px-4">
+      <div class="flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-text-sub/50 mb-1">
+        <a routerLink="/" class="hover:text-primary transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-primary font-black">{{ title }}</span>
+      </div>
+      <h1 class="text-3xl font-black text-primary uppercase tracking-tighter leading-none">{{ title }}</h1>
     </div>
   </div>
 
-  <div class="flex flex-col gap-10 lg:flex-row">
-    <!-- Sidebar (Placeholder for now) -->
-    <aside class="w-full lg:w-64 flex-shrink-0 hidden lg:block">
-      <div class="sticky top-32">
-        <h3 class="text-sm font-bold uppercase tracking-widest mb-6">
-          Filters
-        </h3>
-        <div class="space-y-8">
-          <div>
-            <h4 class="text-[11px] uppercase tracking-wider font-bold mb-4">
-              Availability
-            </h4>
-            <div class="space-y-3">
-              <label class="flex items-center gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  class="w-4 h-4 rounded border-gray-300 text-accent focus:ring-accent"
-                />
-                <span
-                  class="text-xs text-text-sub group-hover:text-primary transition-colors"
-                  >In Stock</span
-                >
-              </label>
-              <label class="flex items-center gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  class="w-4 h-4 rounded border-gray-300 text-accent focus:ring-accent"
-                />
-                <span
-                  class="text-xs text-text-sub group-hover:text-primary transition-colors"
-                  >Pre-order</span
-                >
-              </label>
+  <div class="site-container px-4">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Sidebar (Hidden on Mobile, block on LG) -->
+      <aside class="hidden lg:block w-full lg:w-72 flex-shrink-0">
+        <div class="bg-white border border-border-color shadow-sm rounded-xl overflow-hidden">
+          <div class="p-4 border-b border-supporting flex items-center gap-3 bg-supporting/30">
+            <div class="w-1.5 h-6 bg-accent rounded-full"></div>
+            <h3 class="text-[12px] font-black text-primary uppercase tracking-widest">{{ isOffersPage ? 'Offers by Category' : 'Sub Categories' }}</h3>
+          </div>
+          
+          <div class="p-2">
+            <!-- Normal Sidebar -->
+            <nav *ngIf="!isOffersPage" class="flex flex-col gap-0.5">
+              <button 
+                *ngFor="let sub of subCategories"
+                (click)="navigateToSub('/subcategory/' + sub.slug)"
+                class="w-full flex items-center justify-between p-3 text-[11px] font-bold text-text-sub hover:bg-supporting/40 hover:text-accent rounded-lg transition-all group"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="w-1.5 h-1.5 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-all"></div>
+                  {{ sub.name }}
+                </div>
+                <lucide-icon [name]="icons.ChevronRight" class="w-4 h-4 opacity-20"></lucide-icon>
+              </button>
+            </nav>
+
+            <!-- Hierarchical Sidebar (Offers Page) -->
+            <div *ngIf="isOffersPage" class="flex flex-col gap-4 p-2">
+              <div *ngFor="let cat of offerCategories" class="flex flex-col gap-2">
+                <div class="flex items-center gap-2 px-2 py-1">
+                  <span class="text-[10px] font-black text-primary uppercase tracking-tighter opacity-70">{{ cat.name }}</span>
+                  <div class="h-[1px] flex-1 bg-border-color opacity-50"></div>
+                </div>
+                <nav class="flex flex-col gap-0.5">
+                  <button 
+                    *ngFor="let sub of cat.subCategories"
+                    (click)="navigateToSub('/subcategory/' + sub.slug + '?isOffer=true')"
+                    class="w-full flex items-center justify-between p-2.5 text-[11px] font-bold text-text-sub hover:bg-supporting/40 hover:text-accent rounded-lg transition-all group"
+                  >
+                    <div class="flex items-center gap-3 pl-2">
+                      <div class="w-1 h-1 bg-accent rounded-full opacity-30 group-hover:opacity-100 transition-all"></div>
+                      {{ sub.name }}
+                    </div>
+                    <lucide-icon [name]="icons.ChevronRight" class="w-3.5 h-3.5 opacity-20"></lucide-icon>
+                  </button>
+                </nav>
+              </div>
+            </div>
+            
+            <div *ngIf="(!isOffersPage && subCategories.length === 0) || (isOffersPage && offerCategories.length === 0)" class="py-6 text-center">
+              <p class="text-[10px] text-text-sub uppercase tracking-widest">No Categories Found</p>
             </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
 
-    <!-- Grid -->
-    <div class="flex-1">
-      <!-- Skeleton Grid -->
-      <div
-        *ngIf="loading"
-        class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12"
-      >
-        <div *ngFor="let item of skeletonItems" class="animate-pulse">
-          <div class="aspect-[3/4] bg-gray-100 rounded-xl mb-4"></div>
-          <div class="h-4 bg-gray-100 rounded w-3/4 mb-2"></div>
-          <div class="h-4 bg-gray-100 rounded w-1/2"></div>
+      <!-- Main Content Area -->
+      <div class="flex-1 flex flex-col gap-6">
+          <!-- Grid Configuration (Alzeena 5-Column) -->
+          <div *ngIf="!loading && filteredProducts.length > 0" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+            <app-product-card
+              *ngFor="let product of filteredProducts; trackBy: trackByProductId"
+              [product]="product"
+            ></app-product-card>
+          </div>
+
+          <!-- Loading State -->
+          <div *ngIf="loading" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+            <div *ngFor="let item of skeletonItems" class="animate-pulse">
+              <div class="aspect-[3/4] bg-gray-100 rounded sm:rounded-lg mb-2 sm:mb-3"></div>
+              <div class="h-2 sm:h-3 bg-gray-100 w-3/4 rounded-full mb-1 sm:mb-2"></div>
+              <div class="h-2 sm:h-3 bg-gray-100 w-1/2 rounded-full"></div>
+            </div>
+          </div>
+
+          <!-- No Products Found -->
+          <div *ngIf="!loading && filteredProducts.length === 0" class="flex flex-col items-center justify-center py-20 text-center bg-white border border-gray-100 rounded-xl">
+            <lucide-icon [name]="icons.Package" class="w-12 h-12 text-gray-200 mb-4"></lucide-icon>
+            <h3 class="text-lg font-black text-primary mb-2">No products found</h3>
+            <p class="text-gray-400 text-xs max-w-xs mx-auto">Try a different size or clear filters.</p>
+            <button *ngIf="selectedSize !== 'All Sizes'" (click)="selectSizeFilter('All Sizes')" class="mt-4 px-6 py-2 bg-accent text-white text-xs font-black uppercase rounded-xl">Clear Size Filter</button>
+          </div>
         </div>
       </div>
-
-      <div
-        *ngIf="!loading && products.length === 0"
-        class="flex flex-col items-center justify-center py-20 text-center"
-      >
-        <lucide-icon
-          [img]="icons.Package"
-          class="w-16 h-16 text-gray-200 mb-4"
-        ></lucide-icon>
-        <h3 class="text-xl font-medium text-primary mb-2">No products found</h3>
-        <p class="text-text-sub max-w-xs mx-auto">
-          We couldn't find any products in this category. Try checking other
-          sections.
-        </p>
-      </div>
-
-      <div
-        *ngIf="!loading && products.length > 0"
-        class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12"
-      >
-        <app-product-card
-          *ngFor="let product of products; trackBy: trackByProductId"
-          [product]="product"
-        ></app-product-card>
-      </div>
     </div>
-  </div>
-</main>
+  </main>

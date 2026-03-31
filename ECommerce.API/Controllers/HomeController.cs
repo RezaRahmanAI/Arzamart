@@ -36,59 +36,63 @@ public class HomeController : ControllerBase
     }
 
     [HttpGet]
-    // [ResponseCache(Duration = 600)]
     public async Task<ActionResult<HomePageDto>> GetHomeData()
     {
-        const string cacheKey = "home_page_data";
-
-        // Temporarily commented out to fix stale data issue where Images were missing in DTO
-        /*
-        if (_cache.TryGetValue(cacheKey, out HomePageDto? cached) && cached != null)
+        // 1. Banners (home_banners)
+        var banners = await _cache.GetOrCreateAsync("home_banners", async entry =>
         {
-            return Ok(cached);
-        }
-        */
-        _cache.Remove(cacheKey); // Explicitly clear to be safe
+            entry.SlidingExpiration = TimeSpan.FromMinutes(30);
+            var items = await _bannerRepo.ListAsync(new HeroBannerSpecification(isActive: true));
+            return items.Select(b => new HeroBannerDto
+            {
+                Id = b.Id,
+                Title = b.Title ?? "",
+                Subtitle = b.Subtitle ?? "",
+                ImageUrl = b.ImageUrl,
+                MobileImageUrl = b.MobileImageUrl ?? "",
+                LinkUrl = b.LinkUrl ?? "",
+                ButtonText = b.ButtonText ?? "",
+                DisplayOrder = b.DisplayOrder,
+                Type = b.Type
+            }).ToList();
+        });
 
-        // EF Core DbContext is not thread-safe and does not support parallel queries on the same instance.
-        // We must execute them sequentially.
-        var banners = await _bannerRepo.ListAsync(new HeroBannerSpecification(isActive: true));
-        var newArrivals = await _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
-            sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
-            categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
-            tier: null, tags: null, isNew: true, isFeatured: null, skip: 0, take: 10));
-        var featuredProducts = await _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
-            sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
-            categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
-            tier: null, tags: null, isNew: null, isFeatured: true, skip: 0, take: 10));
-        var categories = await _categoryRepo.ListAsync(new CategoriesWithSubCategoriesSpec());
-
-        var bannerDtos = banners.Select(b => new HeroBannerDto
+        // 2. New Arrivals (home_new_arrivals)
+        var newArrivals = await _cache.GetOrCreateAsync("home_new_arrivals", async entry =>
         {
-            Id = b.Id,
-            Title = b.Title ?? "",
-            Subtitle = b.Subtitle ?? "",
-            ImageUrl = b.ImageUrl,
-            MobileImageUrl = b.MobileImageUrl ?? "",
-            LinkUrl = b.LinkUrl ?? "",
-            ButtonText = b.ButtonText ?? "",
-            DisplayOrder = b.DisplayOrder
-        }).ToList();
+            entry.SlidingExpiration = TimeSpan.FromMinutes(10);
+            var items = await _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
+                sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
+                categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
+                tier: null, tags: null, isNew: true, isFeatured: null, skip: 0, take: 10));
+            return _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(items);
+        });
 
-        var newArrivalsDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(newArrivals);
-        var featuredDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(featuredProducts);
-        var categoryDtos = _mapper.Map<IReadOnlyList<CategoryDto>>(categories);
-
-        var result = new HomePageDto
+        // 3. Featured Products (home_featured_products)
+        var featuredProducts = await _cache.GetOrCreateAsync("home_featured_products", async entry =>
         {
-            Banners = bannerDtos,
-            NewArrivals = newArrivalsDtos,
-            FeaturedProducts = featuredDtos,
-            Categories = categoryDtos
-        };
+            entry.SlidingExpiration = TimeSpan.FromMinutes(10);
+            var items = await _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
+                sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
+                categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
+                tier: null, tags: null, isNew: null, isFeatured: true, skip: 0, take: 10));
+            return _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(items);
+        });
 
-        _cache.Set(cacheKey, result, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
+        // 4. Categories (home_categories)
+        var categories = await _cache.GetOrCreateAsync("home_categories", async entry =>
+        {
+            entry.SlidingExpiration = TimeSpan.FromHours(1);
+            var items = await _categoryRepo.ListAsync(new CategoriesWithSubCategoriesSpec());
+            return _mapper.Map<IReadOnlyList<CategoryDto>>(items);
+        });
 
-        return Ok(result);
+        return Ok(new HomePageDto
+        {
+            Banners = banners ?? new List<HeroBannerDto>(),
+            NewArrivals = newArrivals ?? new List<ProductListDto>(),
+            FeaturedProducts = featuredProducts ?? new List<ProductListDto>(),
+            Categories = categories ?? new List<CategoryDto>()
+        });
     }
 }

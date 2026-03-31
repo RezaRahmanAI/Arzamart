@@ -5,7 +5,7 @@
         <span class="text-[10px] uppercase tracking-[0.5em] text-accent font-bold mb-4 block">Just In</span>
         <h2 class="text-4xl md:text-6xl font-serif italic tracking-tighter text-primary">New Arrivals</h2>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-8">
         <app-product-card *ngFor="let product of products; trackBy: trackByProduct" [product]="product"></app-product-card>
       </div>
     </div>

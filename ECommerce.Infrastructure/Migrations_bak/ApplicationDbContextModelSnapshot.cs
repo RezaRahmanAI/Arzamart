@@ -576,6 +576,9 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -655,6 +658,9 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CreatedIp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CustomerName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -679,6 +685,15 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<long?>("SteadfastConsignmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SteadfastStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SteadfastTrackingCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("SubTotal")
                         .HasColumnType("decimal(18,2)");
@@ -955,6 +970,65 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages", "dbo");
+                });
+
+            modelBuilder.Entity("ECommerce.Core.Entities.ProductLandingPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BenefitsContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BenefitsTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Headline")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReviewsTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SideEffectsContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SideEffectsTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ThemeColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UsageContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsageTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VideoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("ProductLandingPages", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.ProductVariant", b =>
@@ -1441,6 +1515,17 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("ECommerce.Core.Entities.ProductLandingPage", b =>
+                {
+                    b.HasOne("ECommerce.Core.Entities.Product", "Product")
+                        .WithOne("LandingPage")
+                        .HasForeignKey("ECommerce.Core.Entities.ProductLandingPage", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("ECommerce.Core.Entities.ProductVariant", b =>
                 {
                     b.HasOne("ECommerce.Core.Entities.Product", "Product")
@@ -1564,6 +1649,8 @@ namespace ECommerce.Infrastructure.Migrations
             modelBuilder.Entity("ECommerce.Core.Entities.Product", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("LandingPage");
 
                     b.Navigation("Reviews");
 
