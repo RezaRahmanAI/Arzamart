@@ -1,17 +1,17 @@
-<section class="py-24 bg-white border-t border-gray-50">
+<section class="py-12 md:py-16 lg:py-20 bg-white border-t border-gray-50">
   <div class="site-container">
     <div class="layout-content-container flex flex-col mx-auto">
-      <div class="text-center mb-16">
+      <div class="text-center mb-10 md:mb-16">
         <span
-          class="text-[10px] uppercase tracking-[0.4em] text-accent font-bold mb-3 block"
+          class="text-[10px] uppercase tracking-[0.4em] text-accent font-bold mb-2 md:mb-3 block"
           >Collective Voice</span
         >
-        <h2 class="text-4xl font-serif italic tracking-tighter text-primary">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif italic tracking-tighter text-primary">
           Voices of Refinement
         </h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16">
         <div
           *ngIf="reviews.length === 0"
           class="col-span-3 text-center text-gray-400 text-sm tracking-widest uppercase"

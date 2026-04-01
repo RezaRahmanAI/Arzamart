@@ -1,8 +1,8 @@
 <section class="site-container py-4 md:py-6" (mouseenter)="stopTimer()" (mouseleave)="startTimer()">
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5 h-full min-h-[50vh] sm:min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] xl:min-h-[85vh]">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5 h-full min-h-[50vh] sm:min-h-[55vh] md:min-h-[65vh] lg:min-h-[70vh] xl:min-h-[75vh]">
     
     <!-- Left: Main Slider (75%) -->
-    <div class="lg:col-span-8 xl:col-span-9 relative rounded-2xl md:rounded-3xl overflow-hidden bg-supporting group shadow-lg h-full min-h-[45vh] sm:min-h-[55vh] md:min-h-[65vh] lg:h-full">
+    <div class="lg:col-span-8 xl:col-span-9 relative rounded-2xl md:rounded-3xl overflow-hidden bg-supporting group shadow-lg h-full min-h-[45vh] sm:min-h-[50vh] md:min-h-[60vh] lg:min-h-[70vh] xl:min-h-[75vh]">
       <ng-container *ngFor="let slide of mainSlides; let i = index">
         <div
           *ngIf="i === currentSlide"
@@ -74,7 +74,7 @@
 
     <!-- Right: Side Promo Banner (25%) -->
     <div class="lg:col-span-4 xl:col-span-3 h-full flex flex-col gap-4 lg:gap-5">
-      <div class="flex-1 relative rounded-2xl md:rounded-3xl overflow-hidden group shadow-lg min-h-[200px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-full">
+      <div class="flex-1 relative rounded-2xl md:rounded-3xl overflow-hidden group shadow-lg min-h-[200px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[70vh] xl:min-h-[75vh]">
          <!-- Use a high-quality relevant image or background -->
          <div class="absolute inset-0 bg-primary">
              <img [src]="spotlightSlide ? imageUrlService.getImageUrl(spotlightSlide.image) : 'https://images.unsplash.com/photo-1512163143273-bde0e3cc7407?q=80&w=2070&auto=format&fit=crop'" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000" alt="Promo" loading="eager" decoding="async" />

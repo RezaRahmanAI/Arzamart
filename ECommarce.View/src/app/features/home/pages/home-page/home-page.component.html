@@ -1,7 +1,7 @@
 <main class="flex-1 bg-white" *ngIf="homeData$ | async as data">
   <app-hero [slides]="(heroSlides$ | async) ?? []"></app-hero>
 
-  <div class="space-y-12 pb-32 bg-white">
+  <div class="space-y-8 md:space-y-12 pb-20 md:pb-32 bg-white">
     <!-- Product Sections — load immediately (above the fold) -->
     <app-new-arrivals [products]="data.newArrivals"></app-new-arrivals>
 
@@ -50,7 +50,7 @@
     }
 
 
-    <div class="bg-supporting py-24">
+    <div class="bg-supporting py-12 md:py-16 lg:py-20">
       @defer (on viewport) {
         <app-why-choose-us></app-why-choose-us>
       } @placeholder {
@@ -58,19 +58,11 @@
       }
     </div>
 
-    @defer (on viewport) {
+    @defer (on viewport; on timer(500ms)) {
       <app-testimonials></app-testimonials>
     } @placeholder {
       <div class="h-64 animate-pulse bg-supporting rounded-lg"></div>
     }
-
-    <div class="bg-supporting py-24">
-      @defer (on viewport) {
-        <app-newsletter></app-newsletter>
-      } @placeholder {
-        <div class="h-48 animate-pulse bg-supporting rounded-lg"></div>
-      }
-    </div>
   </div>
 </main>
 

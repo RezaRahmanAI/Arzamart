@@ -1,5 +1,5 @@
 <div class="group relative flex flex-col bg-white overflow-hidden transition-all duration-300">
-  <!-- Image Container (Perfect Alzeena Aspect) -->
+  <!-- Image Container -->
   <a [routerLink]="['/product', product.slug]" class="relative aspect-[3/4] block overflow-hidden bg-supporting border border-border-color rounded sm:rounded-lg">
     <img
       *ngIf="mainImage"
@@ -11,31 +11,30 @@
     />
     
     <!-- Sophisticated Badge -->
-    <div class="absolute top-1.5 sm:top-2 left-1.5 sm:left-2">
-      <span *ngIf="hasDiscount" class="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-accent text-white text-[8px] sm:text-[9px] font-black uppercase rounded shadow-lg shadow-accent/20">
+    <div class="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
+      <span *ngIf="hasDiscount" class="px-1 py-0.5 bg-accent text-white text-[7px] sm:text-[8px] font-bold uppercase rounded shadow-lg shadow-accent/20">
         -{{ discountPercentage }}%
       </span>
     </div>
   </a>
 
-  <!-- Content Area (Clean & Aligned) -->
-  <div class="pt-2 sm:pt-3 pb-1 sm:pb-2 px-1 sm:px-2 flex flex-col gap-1 sm:gap-2 flex-1">
-    <!-- Meta Info (Black/Bold) -->
+  <!-- Content Area -->
+  <div class="pt-3 sm:pt-4 pb-2 px-2 sm:px-4 flex flex-col gap-2 md:gap-3 flex-1">
+    <!-- Meta Info -->
     <div>
-      <p class="text-[9px] sm:text-[10px] md:text-[11px] text-primary font-semibold sm:font-bold uppercase tracking-tight mb-0.5 truncate">{{ product.sku || 'PL152' }} {{ product.name }}</p>
-      <div class="flex items-center gap-1 sm:gap-2">
-        <!-- Price in Accent Color (Alzeena Style) -->
-        <h3 class="text-sm sm:text-[15px] md:text-[16px] lg:text-[17px] font-black text-accent leading-none">৳{{ currentPrice }}</h3>
-        <span *ngIf="hasDiscount" class="text-[9px] sm:text-[10px] md:text-[11px] text-gray-300 line-through font-medium">৳{{ originalPrice }}</span>
+      <p class="text-[10px] sm:text-xs md:text-sm text-primary font-semibold uppercase tracking-tight truncate">{{ product.sku || 'PL152' }} {{ product.name }}</p>
+      <div class="flex items-center gap-2">
+        <h3 class="text-sm sm:text-base md:text-lg font-bold text-accent leading-none">৳{{ currentPrice }}</h3>
+        <span *ngIf="hasDiscount" class="text-[9px] sm:text-xs text-gray-300 line-through font-medium">৳{{ originalPrice }}</span>
       </div>
     </div>
 
-    <!-- Slim Size Selector (Restored & Refined) -->
-    <div *ngIf="availableSizes.length > 0" class="flex flex-wrap gap-0.5 sm:gap-1">
+    <!-- Size Selector -->
+    <div *ngIf="availableSizes.length > 0" class="flex flex-wrap gap-1.5">
       <button
         *ngFor="let size of availableSizes"
         (click)="selectSize(size); $event.preventDefault(); $event.stopPropagation()"
-        class="h-5 sm:h-6 min-w-[1.5rem] sm:min-w-[1.75rem] px-0.5 sm:px-1 flex items-center justify-center text-[8px] sm:text-[9px] font-black uppercase transition-all rounded-sm border"
+        class="h-6 sm:h-8 min-w-[1.75rem] sm:min-w-[2rem] px-1 flex items-center justify-center text-[10px] sm:text-xs font-bold uppercase transition-all rounded-sm border"
         [ngClass]="selectedSize === size 
           ? 'bg-primary text-white border-primary' 
           : 'bg-white text-gray-400 border-gray-100 hover:border-accent'"
@@ -44,18 +43,18 @@
       </button>
     </div>
 
-    <!-- Actions (Wide & Flat Alzeena Style) -->
+    <!-- Actions -->
     <div class="mt-auto">
-      <div class="flex flex-col gap-0.5 sm:gap-1">
+      <div class="flex flex-col gap-1.5 md:gap-2">
         <button
           (click)="addToCart($event)"
-          class="w-full h-7 sm:h-8 bg-white text-primary border border-gray-300 rounded text-[9px] sm:text-[10px] font-black uppercase tracking-wider sm:tracking-widest hover:bg-primary hover:text-white hover:border-primary transition-all duration-300"
+          class="w-full h-8 sm:h-10 md:h-12 bg-white text-primary border border-gray-300 rounded text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-wider hover:bg-primary hover:text-white hover:border-primary transition-all duration-300"
         >
           ADD TO CART
         </button>
         <button
           (click)="orderNow($event)"
-          class="w-full h-7 sm:h-8 bg-accent text-white rounded text-[9px] sm:text-[10px] font-black uppercase tracking-wider sm:tracking-widest hover:opacity-90 transition-all shadow-sm"
+          class="w-full h-8 sm:h-10 md:h-12 bg-accent text-white rounded text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm"
         >
           ORDER NOW
         </button>
@@ -63,7 +62,7 @@
     </div>
   </div>
 
-  <!-- Quick Add Modal (Hidden logic kept) -->
+  <!-- Quick Add Modal -->
   <app-quick-add-modal
     *ngIf="showQuickAdd"
     [product]="$any(product)"

@@ -1,3 +1,7 @@
 :host {
   display: block;
 }
+
+:host ::ng-deep .product-image-link {
+  aspect-ratio: 3/4;
+}
