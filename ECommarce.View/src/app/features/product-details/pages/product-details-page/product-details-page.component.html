@@ -14,15 +14,14 @@
     </div>
 
     <!-- Main Product Layout -->
-    <div class="site-container pb-12">
+    <div class="site-container pb-8 md:pb-12">
       <!-- Mobile-only header (shown above image) -->
-      <div class="lg:hidden mb-3 space-y-2 text-center lg:text-left">
-        <h1 class="text-xl font-serif italic text-[#1a1a1a] leading-tight">
+      <div class="lg:hidden mb-4 space-y-2 text-center">
+        <h1 class="text-xl sm:text-2xl font-serif italic text-[#1a1a1a] leading-tight">
           {{ vm.product.name }}
         </h1>
-        <div class="flex items-center justify-center lg:justify-start gap-4 text-[9px] uppercase tracking-[0.2em] font-bold text-[#bbb]">
-          <!-- <span class="text-[#1a1a1a]">{{ vm.product.sku }}</span> -->
-          <span *ngIf="vm.product.shortDescription" class="text-accent">• {{ vm.product.shortDescription }}</span>
+        <div class="flex items-center justify-center gap-3 text-[9px] uppercase tracking-[0.2em] font-bold text-[#bbb]">
+          <span *ngIf="vm.product.shortDescription" class="text-accent">{{ vm.product.shortDescription }}</span>
         </div>
       </div>
 
@@ -58,7 +57,7 @@
               <!-- Main Image Area -->
               <div class="relative flex-1">
                 <div
-                  class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[550px]"
+                  class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4] max-h-[50vh] md:max-h-[60vh] lg:max-h-[550px]"
                 >
                   <!-- Images -->
                   <ng-container *ngFor="let url of vm.gallery; let i = index">
@@ -107,15 +106,15 @@
                 </div>
               </div>
 
-              <!-- Mobile Thumbnails (Stay on right/bottom or hidden if desired, typically vertical on mobile is hard) -->
+              <!-- Mobile Thumbnails (Right side on mobile) -->
               <div
                 *ngIf="vm.gallery.length > 1"
-                class="flex flex-col lg:hidden gap-2 overflow-y-auto scrollbar-hide w-16 flex-shrink-0"
+                class="flex flex-row md:hidden gap-2 overflow-x-auto scrollbar-hide w-16 flex-shrink-0"
               >
                 <button
                   *ngFor="let url of vm.gallery; let i = index"
                   (click)="goToImage(i)"
-                  class="flex-shrink-0 w-full h-20 border transition-all duration-300 overflow-hidden relative"
+                  class="flex-shrink-0 w-14 h-16 border transition-all duration-300 overflow-hidden relative"
                   [class.border-[#1a1a1a]]="i === currentImageIndex"
                   [class.border-transparent]="i !== currentImageIndex"
                 >

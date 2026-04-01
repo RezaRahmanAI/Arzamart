@@ -120,6 +120,16 @@ export class NavbarComponent {
     }
   }
 
+  toggleMobileSearch(): void {
+    this.isSearchOpen = !this.isSearchOpen;
+    if (this.isSearchOpen) {
+      setTimeout(() => {
+        const input = document.getElementById("mobile-search-input");
+        if (input) input.focus();
+      }, 100);
+    }
+  }
+
   onSearch(): void {
     if (this.searchQuery.trim()) {
       this.router.navigate(["/search"], {

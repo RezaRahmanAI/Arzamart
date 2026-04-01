@@ -1,8 +1,8 @@
-<section class="site-container py-6" (mouseenter)="stopTimer()" (mouseleave)="startTimer()">
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 h-full min-h-[350px] md:min-h-[450px] lg:min-h-[500px]">
+<section class="site-container py-4 md:py-6" (mouseenter)="stopTimer()" (mouseleave)="startTimer()">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5 h-full min-h-[300px] sm:min-h-[350px] md:min-h-[450px] lg:min-h-[500px]">
     
     <!-- Left: Main Slider (75%) -->
-    <div class="lg:col-span-8 xl:col-span-9 relative rounded-2xl md:rounded-3xl overflow-hidden bg-supporting group shadow-lg h-[400px] md:h-[450px] lg:h-full">
+    <div class="lg:col-span-8 xl:col-span-9 relative rounded-2xl md:rounded-3xl overflow-hidden bg-supporting group shadow-lg h-[320px] sm:h-[380px] md:h-[450px] lg:h-full">
       <ng-container *ngFor="let slide of mainSlides; let i = index">
         <div
           *ngIf="i === currentSlide"

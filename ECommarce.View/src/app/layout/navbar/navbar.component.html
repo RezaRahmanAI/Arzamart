@@ -5,7 +5,7 @@
   <ng-container *ngIf="vm$ | async as vm">
     <div class="site-container">
       <!-- Row 1: Logo & Nav & Icons -->
-      <div class="flex items-center justify-between h-12">
+      <div class="flex items-center justify-between h-12 lg:h-12">
         <!-- Logo -->
         <a routerLink="/" class="flex-shrink-0 flex items-center group">
           <img
@@ -31,8 +31,13 @@
           </ng-container>
         </div>
 
-        <!-- Far Right: Actions -->
-        <div class="flex items-center gap-6 flex-shrink-0">
+          <!-- Far Right: Actions -->
+        <div class="flex items-center gap-3 md:gap-6 flex-shrink-0">
+          <!-- Mobile Search Toggle -->
+          <button (click)="toggleMobileSearch()" class="lg:hidden p-1 text-text-sub hover:text-primary transition-colors">
+            <lucide-icon [img]="icons.Search" class="w-5 h-5"></lucide-icon>
+          </button>
+          
           <a routerLink="/offers" class="flex items-center gap-1.5 text-primary hover:text-accent transition-colors cursor-pointer group">
             <lucide-icon [img]="icons.Tag" class="w-4 h-4 text-primary/40 group-hover:text-accent transition-colors"></lucide-icon>
             <span class="text-[11px] font-bold uppercase tracking-wider hidden sm:inline">Offer</span>
@@ -59,8 +64,8 @@
         </div>
       </div>
 
-      <!-- Row 2: Search & Categories -->
-      <div class="flex items-center gap-4 py-2 border-t border-supporting bg-white lg:flex-row flex-col">
+      <!-- Row 2: Search & Categories (Desktop only) -->
+      <div class="hidden lg:flex items-center gap-4 py-2 border-t border-supporting bg-white">
         <!-- Categories Dropdown Button -->
         <div class="relative w-full lg:w-64">
           <button
@@ -114,16 +119,37 @@
 </header>
 
 <!-- Spacer to push content below fixed navbar -->
-<div class="h-24 lg:h-28"></div>
+<div class="h-16 lg:h-28"></div>
 
 <!-- Mobile Navigation Overlay (Refined) -->
 <div
   *ngIf="isMenuOpen"
-  class="lg:hidden fixed inset-0 z-[100] bg-white pt-24 px-6 overflow-y-auto animate-fade-in"
+  class="lg:hidden fixed inset-0 z-[100] bg-white pt-20 px-5 overflow-y-auto animate-fade-in"
 >
-  <div class="flex justify-between items-center mb-8">
-     <img src="assets/logo.svg" class="h-8 w-auto" alt="Logo" />
-     <button (click)="closeMenu()" class="p-2 bg-gray-50 rounded-full"><lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon></button>
+  <!-- Mobile Search Bar -->
+  <div *ngIf="isSearchOpen" class="mb-6 animate-fade-in">
+    <div class="relative">
+      <input
+        #mobileSearchInput
+        id="mobile-search-input"
+        type="text"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+        placeholder="Search for products..."
+        class="w-full h-12 pl-12 pr-12 bg-supporting/40 border border-border-color rounded-xl text-base text-text-main placeholder:text-gray-400"
+      />
+      <lucide-icon [img]="icons.Search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+      <button (click)="toggleMobileSearch()" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-primary">
+        <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex justify-between items-center mb-6">
+     <img src="assets/logo.svg" class="h-7 w-auto" alt="Logo" />
+     <button (click)="closeMenu()" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">
+       <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+     </button>
   </div>
   <nav class="flex flex-col gap-1">
     <ng-container *ngIf="vm$ | async as vm">
@@ -131,10 +157,24 @@
             *ngFor="let item of vm.menu"
             [routerLink]="['/category', item.slug]"
             (click)="closeMenu()"
-            class="py-4 border-b border-gray-50 text-sm font-bold uppercase tracking-widest text-text-main hover:text-primary transition-colors"
+            class="py-4 px-2 border-b border-gray-100 text-sm font-semibold uppercase tracking-wider text-text-main hover:text-primary hover:bg-gray-50 transition-colors rounded-lg"
         >
             {{ item.name }}
         </a>
     </ng-container>
   </nav>
+  <div class="mt-8 pb-8">
+    <a routerLink="/offers" (click)="closeMenu()" class="flex items-center gap-3 py-3 px-2 text-sm font-semibold uppercase tracking-wider text-text-main hover:text-primary hover:bg-gray-50 transition-colors rounded-lg">
+      <lucide-icon [img]="icons.Tag" class="w-4 h-4"></lucide-icon>
+      Offers
+    </a>
+    <a routerLink="/cart" (click)="closeMenu()" class="flex items-center gap-3 py-3 px-2 text-sm font-semibold uppercase tracking-wider text-text-main hover:text-primary hover:bg-gray-50 transition-colors rounded-lg">
+      <lucide-icon [img]="icons.ShoppingBag" class="w-4 h-4"></lucide-icon>
+      Cart
+    </a>
+    <a routerLink="/profile" (click)="closeMenu()" class="flex items-center gap-3 py-3 px-2 text-sm font-semibold uppercase tracking-wider text-text-main hover:text-primary hover:bg-gray-50 transition-colors rounded-lg">
+      <lucide-icon [img]="icons.User" class="w-4 h-4"></lucide-icon>
+      Account
+    </a>
+  </div>
 </div>

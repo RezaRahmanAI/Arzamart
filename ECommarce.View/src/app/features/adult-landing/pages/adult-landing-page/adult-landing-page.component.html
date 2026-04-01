@@ -207,7 +207,7 @@
     </section>
 
     <!-- ORDER FORM -->
-    <div id="order" class="bg-white py-16 px-4 md:px-10 border-t border-[#e0e0e0]">
+    <div id="order" class="bg-white py-10 md:py-16 px-4 md:px-10 border-t border-[#e0e0e0]">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-10 relative inline-block w-full">
           <p class="text-[10px] uppercase tracking-[0.4em] text-[#c8922a] font-bold mb-2">Secure Checkout</p>
@@ -220,14 +220,14 @@
         <div class="text-[12px] uppercase tracking-widest font-bold text-[#1a1a1a] mb-6 pb-2 border-gray-200 border-b">Your Products</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10" id="productsGrid">
           <div *ngFor="let item of offerItems" 
-               class="bg-white border-2 rounded-none p-4 text-center transition-all cursor-pointer hover:border-[#1a1a1a] hover:shadow-lg relative" 
+               class="bg-white border-2 rounded-lg p-4 text-center transition-all cursor-pointer hover:border-[#1a1a1a] hover:shadow-lg relative" 
                [class]="item.quantity > 0 ? 'border-[#1a1a1a] shadow-md' : 'border-[#f0f0f0]'">
             <div (click)="openProductModal(item)" class="mb-2">
               <img [src]="item.imageUrl" [alt]="item.name" loading="lazy" class="w-24 h-24 object-contain mx-auto">
               <div class="text-[11px] uppercase tracking-wider font-semibold text-[#1a1a1a] mt-2 leading-tight h-10 flex items-center justify-center line-clamp-2 px-1">{{ item.name }}</div>
             </div>
             <div class="text-base font-bold text-[#c8922a] mb-3">৳ {{ item.price | number:'1.2-2' }}</div>
-            <div class="flex items-center justify-center border border-[#e0e0e0] rounded-none overflow-hidden h-10 relative z-10">
+            <div class="flex items-center justify-center border border-[#e0e0e0] rounded-lg overflow-hidden h-10 relative z-10">
               <button (click)="$event.stopPropagation(); changeQty(item, -1)" class="bg-white hover:bg-[#fafafa] w-10 h-full font-bold transition-colors border-r border-[#e0e0e0]">−</button>
               <input type="number" [value]="item.quantity" min="0" (input)="$event.stopPropagation(); updateQuantity(item, $event)" 
                      class="w-12 border-none text-center font-bold text-sm py-1 outline-none bg-transparent text-[#1a1a1a]">
@@ -244,14 +244,14 @@
             <div class="space-y-2 text-left">
               <label class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#888]">আপনার ফোন নাম্বার <span class="text-[#c8922a]">*</span></label>
               <input type="tel" formControlName="phone" placeholder="01XXXXXXXXX" 
-                     class="w-full px-4 py-3 border border-[#e0e0e0] rounded-none focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm">
+                     class="w-full px-4 py-3 border border-[#e0e0e0] rounded-lg focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm">
               <p class="text-[10px] text-red-500" *ngIf="checkoutForm.controls.phone.touched && checkoutForm.controls.phone.invalid">ফোন নাম্বার আবশ্যক</p>
             </div>
             
             <div class="space-y-2 text-left">
               <label class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#888]">নাম <span class="text-[#c8922a]">*</span></label>
               <input type="text" formControlName="fullName" placeholder="আপনার পুরো নাম লিখুন" 
-                     class="w-full px-4 py-3 border border-[#e0e0e0] rounded-none focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm">
+                     class="w-full px-4 py-3 border border-[#e0e0e0] rounded-lg focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm">
               <p class="text-[10px] text-red-500" *ngIf="checkoutForm.controls.fullName.touched && checkoutForm.controls.fullName.invalid">নাম আবশ্যক</p>
             </div>
 
@@ -284,7 +284,7 @@
             <div class="space-y-2 text-left">
               <label class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#888]">আপনার ঠিকানা <span class="text-[#c8922a]">*</span></label>
               <input type="text" formControlName="address" placeholder="বাড়ি নম্বর, রাস্তা, এলাকা, জেলা" 
-                     class="w-full px-4 py-3 border border-[#e0e0e0] rounded-none focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm">
+                     class="w-full px-4 py-3 border border-[#e0e0e0] rounded-lg focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm">
               <p class="text-[10px] text-red-500" *ngIf="checkoutForm.controls.address.touched && checkoutForm.controls.address.invalid">ঠিকানা আবশ্যক</p>
             </div>
 
