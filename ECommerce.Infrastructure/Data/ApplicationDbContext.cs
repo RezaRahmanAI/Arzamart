@@ -29,7 +29,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
-    public DbSet<BlogPost> BlogPosts { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<SiteSetting> SiteSettings { get; set; }
     public DbSet<DailyTraffic> DailyTraffics { get; set; }
@@ -49,7 +48,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Collection>().HasQueryFilter(c => c.IsActive);
         builder.Entity<NavigationMenu>().HasQueryFilter(n => n.IsActive);
         builder.Entity<HeroBanner>().HasQueryFilter(h => h.IsActive);
-        builder.Entity<BlogPost>().HasQueryFilter(b => b.Status == BlogPostStatus.Published);
 
         // Delivery Method Configuration
         builder.Entity<DeliveryMethod>(entity =>

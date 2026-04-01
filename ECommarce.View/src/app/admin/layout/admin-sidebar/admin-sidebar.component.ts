@@ -9,7 +9,6 @@ import {
   GalleryVertical,
   FileText,
   MessageSquare,
-  Newspaper,
   Users,
   Shield,
   LineChart,
@@ -60,7 +59,6 @@ export class AdminSidebarComponent implements OnInit {
     GalleryVertical,
     FileText,
     MessageSquare,
-    Newspaper,
     Users,
     Shield,
     LineChart,
@@ -86,7 +84,6 @@ export class AdminSidebarComponent implements OnInit {
     { label: "Campaigns", icon: GalleryVertical, route: "/admin/banners" },
     { label: "Site Content", icon: FileText, route: "/admin/pages" },
     { label: "Customer Reviews", icon: MessageSquare, route: "/admin/reviews" },
-    { label: "Editorial", icon: Newspaper, route: "/admin/blog" },
     { label: "CRM", icon: Users, route: "/admin/customers" },
   ];
 

@@ -1,3 +1,4 @@
+using ECommerce.Core.Interfaces;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Infrastructure.Data;
@@ -15,12 +16,14 @@ public class AdminSubCategoryController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
+    private readonly ICacheService _cache;
 
-    public AdminSubCategoryController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config)
+    public AdminSubCategoryController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config, ICacheService cache)
     {
         _context = context;
         _environment = environment;
         _config = config;
+        _cache = cache;
     }
 
     [HttpGet]
@@ -95,6 +98,8 @@ public class AdminSubCategoryController : ControllerBase
         _context.SubCategories.Add(subCategory);
         await _context.SaveChangesAsync();
 
+        await InvalidateSubCategoryCacheAsync();
+
         var result = new SubCategoryDto
         {
             Id = subCategory.Id,
@@ -135,6 +140,8 @@ public class AdminSubCategoryController : ControllerBase
 
         await _context.SaveChangesAsync();
 
+        await InvalidateSubCategoryCacheAsync();
+
         var result = new SubCategoryDto
         {
             Id = subCategory.Id,
@@ -156,6 +163,8 @@ public class AdminSubCategoryController : ControllerBase
 
         _context.SubCategories.Remove(subCategory);
         await _context.SaveChangesAsync();
+
+        await InvalidateSubCategoryCacheAsync();
 
         return NoContent();
     }
@@ -196,6 +205,12 @@ public class AdminSubCategoryController : ControllerBase
         {
             return StatusCode(500, new { message = "An error occurred during subcategory image upload: " + ex.Message });
         }
+    }
+
+    private async Task InvalidateSubCategoryCacheAsync()
+    {
+        await _cache.RemoveAsync("nav:mega-menu");
+        await _cache.RemoveByPrefixAsync("product:list");
     }
 
     private static string GenerateSlug(string name)

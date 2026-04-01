@@ -24,7 +24,7 @@ public static class DataSeeder
         }
 
         // Ensure Primary Admin User exists
-        var primaryAdminEmail = "admin@arzamart.shop";
+        var primaryAdminEmail = "admin@sherashopbd.com";
         var existingAdmin = await userManager.FindByEmailAsync(primaryAdminEmail);
 
         if (existingAdmin == null)
@@ -928,14 +928,14 @@ public static class DataSeeder
                 await context.SaveChangesAsync();
             }
 
-            // Seed/Update Site Settings to ArzaMart
+            // Seed/Update Site Settings to SheraShopBD
             var siteSettings = await context.SiteSettings.FirstOrDefaultAsync();
             if (siteSettings == null)
             {
                 siteSettings = new SiteSetting
                 {
-                    WebsiteName = "ArzaMart",
-                    ContactEmail = "support@arzamart.shop",
+                    WebsiteName = "SheraShopBD",
+                    ContactEmail = "support@sherashopbd.com",
                     ContactPhone = "+880 1234-567890",
                     Currency = "BDT",
                     FreeShippingThreshold = 5000,
@@ -944,10 +944,10 @@ public static class DataSeeder
                 context.SiteSettings.Add(siteSettings);
                 await context.SaveChangesAsync();
             }
-            else if (siteSettings.WebsiteName == "SheraShopBD24" || siteSettings.WebsiteName == "SheraShop")
+            else if (siteSettings.WebsiteName != "SheraShopBD")
             {
-                siteSettings.WebsiteName = "ArzaMart";
-                siteSettings.ContactEmail = "support@arzamart.shop";
+                siteSettings.WebsiteName = "SheraShopBD";
+                siteSettings.ContactEmail = "support@sherashopbd.com";
                 await context.SaveChangesAsync();
             }
         }

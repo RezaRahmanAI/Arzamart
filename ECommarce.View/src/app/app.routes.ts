@@ -148,20 +148,6 @@ export const appRoutes: Routes = [
     },
   },
   {
-    path: "blog",
-    loadComponent: () =>
-      import("./features/blog/pages/blog-list/blog-list.component").then(
-        (m) => m.BlogListComponent,
-      ),
-  },
-  {
-    path: "blog/:slug",
-    loadComponent: () =>
-      import("./features/blog/pages/blog-details/blog-details.component").then(
-        (m) => m.BlogDetailsComponent,
-      ),
-  },
-  {
     path: "profile",
     loadComponent: () =>
       import("./features/customer-profile/pages/profile-page/profile-page.component").then(
@@ -255,14 +241,6 @@ export const appRoutes: Routes = [
             (m) => m.AdminOrdersComponent,
           ),
         data: { title: "Order Management" },
-      },
-      {
-        path: "blog",
-        loadComponent: () =>
-          import("./admin/pages/admin-blog-posts/admin-blog-posts.component").then(
-            (m) => m.AdminBlogPostsComponent,
-          ),
-        data: { title: "Blog Posts" },
       },
       {
         path: "orders/:id",

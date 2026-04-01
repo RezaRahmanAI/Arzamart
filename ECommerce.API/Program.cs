@@ -91,6 +91,8 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
+    // Block suspicious users
+    app.UseSuspiciousUserBlocking();
 
     app.UseResponseCaching();
     app.UseOutputCache();

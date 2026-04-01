@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { Observable, shareReplay, startWith } from "rxjs";
+import { Observable, shareReplay, startWith, BehaviorSubject, switchMap } from "rxjs";
 import { ApiHttpClient } from "../http/http-client";
 
 export interface SiteSettings {
@@ -28,18 +28,25 @@ export interface SiteSettings {
 export class SiteSettingsService {
   private api = inject(ApiHttpClient);
 
-  // Cache settings to avoid multiple calls
-  private settings$ = this.api.get<SiteSettings>("/sitesettings").pipe(
+  private readonly refreshSubject = new BehaviorSubject<void>(void 0);
+
+  // Cache settings to avoid multiple calls, but allow refresh
+  private settings$ = this.refreshSubject.pipe(
+    switchMap(() => this.api.get<SiteSettings>("/sitesettings")),
     startWith({
-      websiteName: "ArzaMart",
+      websiteName: "Arza Mart",
       currency: "BDT",
       freeShippingThreshold: 5000,
       shippingCharge: 0,
     } as SiteSettings),
-    shareReplay(1),
+    shareReplay(1)
   );
 
   getSettings(): Observable<SiteSettings> {
     return this.settings$;
+  }
+
+  refreshSettings(): void {
+    this.refreshSubject.next();
   }
 }

@@ -1,7 +1,10 @@
 using ECommerce.Core.DTOs;
+using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
+using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace ECommerce.API.Controllers;
@@ -11,10 +14,12 @@ namespace ECommerce.API.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
+    private readonly ApplicationDbContext _context;
 
-    public OrdersController(IOrderService orderService)
+    public OrdersController(IOrderService orderService, ApplicationDbContext context)
     {
         _orderService = orderService;
+        _context = context;
     }
 
     [HttpPost]
@@ -33,6 +38,13 @@ public class OrdersController : ControllerBase
         if (string.IsNullOrWhiteSpace(orderDto.Phone))
         {
             return BadRequest(new { message = "Phone number is required" });
+        }
+
+        // Check if customer is suspicious
+        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Phone == orderDto.Phone);
+        if (customer != null && customer.IsSuspicious)
+        {
+            return StatusCode(403, new { success = false, message = "Your account has been suspended. Please contact support." });
         }
 
         if (string.IsNullOrWhiteSpace(orderDto.Address))

@@ -1,3 +1,4 @@
+using ECommerce.Core.Interfaces;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Infrastructure.Data;
@@ -17,10 +18,10 @@ public class AdminCategoryController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
-    private readonly IMemoryCache _cache;
+    private readonly ICacheService _cache;
     private readonly IOutputCacheStore _cacheStore;
 
-    public AdminCategoryController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config, IMemoryCache cache, IOutputCacheStore cacheStore)
+    public AdminCategoryController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config, ICacheService cache, IOutputCacheStore cacheStore)
     {
         _context = context;
         _environment = environment;
@@ -155,7 +156,7 @@ public class AdminCategoryController : ControllerBase
         _context.Categories.Add(category);
         await _context.SaveChangesAsync();
 
-        _cache.Remove("home_categories");
+        await InvalidateCategoryCacheAsync();
         await _cacheStore.EvictByTagAsync("categories", default);
 
         var result = new CategoryDto
@@ -219,7 +220,7 @@ public class AdminCategoryController : ControllerBase
 
         await _context.SaveChangesAsync();
         
-        _cache.Remove("home_categories");
+        await InvalidateCategoryCacheAsync();
         await _cacheStore.EvictByTagAsync("categories", default);
 
         var result = new CategoryDto
@@ -253,7 +254,7 @@ public class AdminCategoryController : ControllerBase
         _context.Categories.Remove(category);
         await _context.SaveChangesAsync();
 
-        _cache.Remove("home_categories");
+        await InvalidateCategoryCacheAsync();
         await _cacheStore.EvictByTagAsync("categories", default);
 
         return NoContent();
@@ -279,7 +280,7 @@ public class AdminCategoryController : ControllerBase
 
         await _context.SaveChangesAsync();
         
-        _cache.Remove("home_categories");
+        await InvalidateCategoryCacheAsync();
         await _cacheStore.EvictByTagAsync("categories", default);
 
         return Ok(true);
@@ -323,6 +324,13 @@ public class AdminCategoryController : ControllerBase
         {
             // Log error but don't fail the request
         }
+    }
+
+    private async Task InvalidateCategoryCacheAsync()
+    {
+        await _cache.RemoveAsync("home_categories");
+        await _cache.RemoveAsync("nav:mega-menu");
+        await _cache.RemoveByPrefixAsync("product:list");
     }
 
     private static string GenerateSlug(string name)

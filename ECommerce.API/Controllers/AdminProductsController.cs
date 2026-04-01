@@ -22,10 +22,10 @@ public class AdminProductsController : ControllerBase
     private readonly IProductService _productService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IConfiguration _config;
-    private readonly IMemoryCache _cache;
+    private readonly ICacheService _cache;
     private readonly IOutputCacheStore _cacheStore;
 
-    public AdminProductsController(ApplicationDbContext context, IWebHostEnvironment environment, IProductService productService, IUnitOfWork unitOfWork, IConfiguration config, IMemoryCache cache, IOutputCacheStore cacheStore)
+    public AdminProductsController(ApplicationDbContext context, IWebHostEnvironment environment, IProductService productService, IUnitOfWork unitOfWork, IConfiguration config, ICacheService cache, IOutputCacheStore cacheStore)
     {
         _context = context;
         _environment = environment;
@@ -204,8 +204,8 @@ public class AdminProductsController : ControllerBase
             var result = await _productService.CreateProductAsync(dto);
             if (result == null) return BadRequest(new { message = "Error creating product" });
 
-            _cache.Remove("home_new_arrivals");
-            _cache.Remove("home_featured_products");
+            await _cache.RemoveAsync("home_new_arrivals");
+            await _cache.RemoveAsync("home_featured_products");
             await _cacheStore.EvictByTagAsync("products", default);
 
             return CreatedAtAction(nameof(GetProductById), new { id = result.Id }, result);
@@ -241,8 +241,8 @@ public class AdminProductsController : ControllerBase
             var result = await _productService.UpdateProductAsync(id, dto);
             if (result == null) return BadRequest(new { message = "Error updating product" });
 
-            _cache.Remove("home_new_arrivals");
-            _cache.Remove("home_featured_products");
+            await _cache.RemoveAsync("home_new_arrivals");
+            await _cache.RemoveAsync("home_featured_products");
             await _cacheStore.EvictByTagAsync("products", default);
 
             return Ok(result);
@@ -282,8 +282,8 @@ public class AdminProductsController : ControllerBase
         _context.Products.Remove(product);
         await _context.SaveChangesAsync();
 
-        _cache.Remove("home_new_arrivals");
-        _cache.Remove("home_featured_products");
+        await _cache.RemoveAsync("home_new_arrivals");
+        await _cache.RemoveAsync("home_featured_products");
         await _cacheStore.EvictByTagAsync("products", default);
 
         return Ok(true);
@@ -389,14 +389,14 @@ public class AdminProductsController : ControllerBase
         if (await _unitOfWork.Complete() > 0)
         {
              // Invalidate cache
-             _cache.Remove("home_new_arrivals");
-             _cache.Remove("home_featured_products");
+             await _cache.RemoveAsync("home_new_arrivals");
+             await _cache.RemoveAsync("home_featured_products");
              await _cacheStore.EvictByTagAsync("products", default);
              
              var cacheKeys = new[] { $"product_id:{product.Id}", $"product_slug:{product.Slug}" };
              foreach (var key in cacheKeys)
              {
-                 _cache.Remove(key);
+                 await _cache.RemoveAsync(key);
              }
 
              return Ok(new { message = "Stock updated successfully", newTotal = product.StockQuantity });

@@ -6,7 +6,7 @@ public class SiteSetting : BaseEntity
 {    
     [Required]
     [MaxLength(100)]
-    public string WebsiteName { get; set; } = "ArzaMart";
+    public string WebsiteName { get; set; } = "SheraShopBD";
     
     public string? LogoUrl { get; set; }
     

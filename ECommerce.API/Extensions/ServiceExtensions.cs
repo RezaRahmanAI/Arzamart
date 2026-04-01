@@ -59,6 +59,8 @@ public static class ServiceExtensions
             });
         }
 
+        services.AddSingleton<ICacheService, CacheService>();
+
         services.AddOutputCache(options =>
         {
             options.AddPolicy("DefaultPolicy", builder => 
@@ -95,17 +97,16 @@ public static class ServiceExtensions
             });
         });
 
-        // 4. Infrastructure
+        // 5. Infrastructure
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddHttpContextAccessor();
         services.AddAutoMapper(cfg => cfg.AddMaps(typeof(MappingProfiles).Assembly, typeof(OrderService).Assembly));
 
-        // 5. Business Services
+        // 6. Business Services
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<CustomerService>();
         services.AddScoped<IDashboardService, DashboardService>();
-        services.AddScoped<IBlogService, BlogService>();
         services.AddScoped<INavigationService, NavigationService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IReviewService, ReviewService>();
@@ -134,7 +135,7 @@ public static class ServiceExtensions
         {
             // Prevent hard startup crash (IIS 500.30) when env vars are missing.
             // The API can still boot and expose diagnostics while DB issues are fixed.
-            connectionString = "Server=localhost;Database=arzamart_placeholder;User Id=sa;Password=Placeholder123!;Encrypt=False;TrustServerCertificate=True;";
+            connectionString = "Server=localhost;Database=sherashopbd_placeholder;User Id=sa;Password=Placeholder123!;Encrypt=False;TrustServerCertificate=True;";
             Console.Error.WriteLine("WARNING: No DefaultConnection was found in configuration. Using placeholder SQL connection string to keep API startup alive.");
         }
 
@@ -164,7 +165,7 @@ public static class ServiceExtensions
     public static IServiceCollection AddExoosisAuthServices(this IServiceCollection services, IConfiguration config)
     {
         // JWT Setup
-        var jwtKey = config["Token:Key"] ?? "development_key_arzamart_123456789";
+        var jwtKey = config["Token:Key"] ?? "development_key_sherashopbd_123456789";
         var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
         if (keyBytes.Length < 32)
         {
@@ -196,9 +197,9 @@ public static class ServiceExtensions
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-                ValidIssuer = config["Token:Issuer"] ?? "ArzaMart",
+                ValidIssuer = config["Token:Issuer"] ?? "SheraShopBD",
                 ValidateIssuer = true,
-                ValidAudience = config["Token:Audience"] ?? "ArzaMartUsers",
+                ValidAudience = config["Token:Audience"] ?? "SheraShopBDUsers",
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
@@ -239,7 +240,7 @@ public static class ServiceExtensions
                 else
                 {
                     // Production Fallback: Hardcoded safe defaults
-                    builder.WithOrigins("https://arzamart.shop", "https://www.arzamart.shop", "https://api.arzamart.shop")
+                    builder.WithOrigins("https://sherashopbd.com", "https://www.sherashopbd.com", "https://api.sherashopbd.com")
                            .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                            .WithHeaders("Content-Type", "Authorization", "X-Session-Id", "X-Requested-With")
                            .AllowCredentials();

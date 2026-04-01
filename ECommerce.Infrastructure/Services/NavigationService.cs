@@ -14,10 +14,10 @@ namespace ECommerce.Infrastructure.Services;
 public class NavigationService : INavigationService
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMemoryCache _cache;
-    private const string MegaMenuCacheKey = "MegaMenu";
+    private readonly ICacheService _cache;
+    private const string MegaMenuCacheKey = "nav:mega-menu";
 
-    public NavigationService(ApplicationDbContext context, IMemoryCache cache)
+    public NavigationService(ApplicationDbContext context, ICacheService cache)
     {
         _context = context;
         _cache = cache;
@@ -25,11 +25,8 @@ public class NavigationService : INavigationService
 
     public async Task<MegaMenuDto> GetMegaMenuAsync()
     {
-        return await _cache.GetOrCreateAsync(MegaMenuCacheKey, async entry =>
+        return await _cache.GetOrCreateAsync(MegaMenuCacheKey, async () =>
         {
-            entry.Size = 1;
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
-
             // Fetch categories with full hierarchy: Parent -> Child -> Collections (if any connected)
             // We are transitioning from Category -> SubCategory to Category -> ChildCategory
             // To maintain frontend compatibility, we map ChildCategories to "SubCategories" in the DTO.

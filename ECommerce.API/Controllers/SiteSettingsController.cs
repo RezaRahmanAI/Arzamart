@@ -28,6 +28,9 @@ namespace ECommerce.API.Controllers
         {
             const string cacheKey = "site_settings";
 
+            // Clear cache to ensure fresh data
+            _cache.Remove(cacheKey);
+
             if (_cache.TryGetValue(cacheKey, out SiteSetting? cached) && cached != null)
             {
                 return Ok(cached);

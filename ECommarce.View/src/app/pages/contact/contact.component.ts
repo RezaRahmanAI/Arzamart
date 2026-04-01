@@ -56,20 +56,20 @@ export class ContactComponent {
     ChevronDown,
     Store,
   };
-  supportEmail = "support@arzamart.shop";
-  phone = "+1 (555) 123-4567";
-  phoneDial = "+15551234567";
-  address = "123 Modest Fashion Ave,\nNew York, NY 10012";
+  supportEmail = "support@sherashopbd.com";
+  phone = "+8801XXXXXXXXX";
+  phoneDial = "+8801XXXXXXXXX";
+  address = "Dhaka, Bangladesh";
   addressLines: string[] = [];
-  officeHours = "Mon-Fri, 9am - 6pm EST.";
+  officeHours = "Sat-Thu, 10am - 8pm BST.";
 
   mapDetails = {
-    storeName: "ArzaMart Flagship",
+    storeName: "SheraShopBD Flagship",
     openHours: "Open daily 10am - 8pm",
-    locationLabel: "New York City",
+    locationLabel: "Dhaka, Bangladesh",
   };
 
-  mapLocation = "123 Modest Fashion Ave, New York, NY 10012";
+  mapLocation = "Dhaka, Bangladesh";
 
   inquiryTopics: InquiryTopic[] = [
     { value: "sizing", label: "Sizing & Fit" },

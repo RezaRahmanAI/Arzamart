@@ -87,9 +87,9 @@ public class AuthController : ControllerBase
 
     private string GenerateToken(ApplicationUser user, string role)
     {
-        var key = _configuration["Token:Key"] ?? "development_key_arzamart_123456789";
-        var issuer = _configuration["Token:Issuer"] ?? "ArzaMart";
-        var audience = _configuration["Token:Audience"] ?? "ArzaMartUsers";
+        var key = _configuration["Token:Key"] ?? "development_key_sherashopbd_123456789";
+        var issuer = _configuration["Token:Issuer"] ?? "SheraShopBD";
+        var audience = _configuration["Token:Audience"] ?? "SheraShopBDUsers";
         var keyBytes = Encoding.UTF8.GetBytes(key);
         if (keyBytes.Length < 32)
         {
