@@ -36,14 +36,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<BlockedIp> BlockedIps { get; set; }
     public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
     public DbSet<AppRefreshToken> RefreshTokens { get; set; }
+    public DbSet<AdultProduct> AdultProducts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         
-        // Enforce standard professional schema prefix
-        builder.HasDefaultSchema("dbo");
-
         // Global Query Filters for Soft Delete & Active Status
         builder.Entity<Product>().HasQueryFilter(p => p.IsActive);
         builder.Entity<Category>().HasQueryFilter(c => c.IsActive);
@@ -62,7 +60,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // Product Configuration
         builder.Entity<Product>(entity =>
         {
-            
             entity.HasOne(p => p.Category)
                   .WithMany(c => c.Products)
                   .HasForeignKey(p => p.CategoryId)
@@ -94,8 +91,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasIndex(p => p.StockQuantity);
             entity.HasIndex(p => p.CreatedAt);
 
-            // Full-Text Search (Requires Full-Text Search enabled on SQL Server)
-            // Note: EF Core 8 supports this via .HasFullTextIndex()
+            // Constraint
             entity.ToTable(t => t.HasCheckConstraint("CK_Product_Name", "LEN(Name) > 0")); 
         });
         
@@ -111,9 +107,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .HasForeignKey(v => v.ProductId)
                   .OnDelete(DeleteBehavior.Cascade);
 
-            // Performance index
             entity.HasIndex(v => v.ProductId);
-            entity.HasIndex(v => v.Price); // Added for filtering/sorting by price
+            entity.HasIndex(v => v.Price);
         });
 
         // Category Self-Referencing Hierarchy
@@ -172,7 +167,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .HasForeignKey(i => i.OrderId)
                   .OnDelete(DeleteBehavior.Cascade);
 
-            // Performance indexes
             entity.HasIndex(o => o.Status);
             entity.HasIndex(o => o.CreatedAt);
             entity.HasIndex(o => o.OrderNumber);
@@ -187,7 +181,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .HasForeignKey(i => i.ProductId)
                   .OnDelete(DeleteBehavior.Restrict);
 
-            // Performance index for aggregations
             entity.HasIndex(i => i.ProductId);
             entity.HasIndex(i => i.OrderId);
         });
@@ -207,18 +200,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         });
 
         // Cart Configuration
-        builder.Entity<Cart>()
-            .HasMany(c => c.Items)
-            .WithOne(i => i.Cart)
-            .HasForeignKey(i => i.CartId)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<Cart>(entity =>
+        {
+            entity.HasMany(c => c.Items)
+                  .WithOne(i => i.Cart)
+                  .HasForeignKey(i => i.CartId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(c => c.SessionId);
+            entity.Property(c => c.SessionId).HasMaxLength(100);
+        });
 
         // CartItem Configuration
-        builder.Entity<CartItem>()
-            .HasOne(i => i.Product)
-            .WithMany()
-            .HasForeignKey(i => i.ProductId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<CartItem>(entity =>
+        {
+            entity.HasOne(i => i.Product)
+                  .WithMany()
+                  .HasForeignKey(i => i.ProductId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
 
         // UserToken Configuration
         builder.Entity<AppRefreshToken>(entity =>
@@ -239,22 +239,22 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(u => u.Phone).HasMaxLength(20);
             entity.Property(u => u.Role).HasMaxLength(20).IsRequired();
             
-            // Ensure Email, UserName and PasswordHash are not required by EF
             entity.Property(u => u.Email).IsRequired(false);
             entity.Property(u => u.UserName).IsRequired(false);
             entity.Property(u => u.PasswordHash).IsRequired(false);
 
-            // Configure SQL Default Values
             entity.Property(u => u.IsSuspicious).HasDefaultValue(false);
             entity.Property(u => u.IsActive).HasDefaultValue(true);
             entity.Property(u => u.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
         });
 
-        // Cart Configuration Update
-        builder.Entity<Cart>(entity =>
+        // Adult Product Configuration
+        builder.Entity<AdultProduct>(entity =>
         {
-            entity.HasIndex(c => c.SessionId);
-            entity.Property(c => c.SessionId).HasMaxLength(100);
+            entity.Property(p => p.Price).HasColumnType("decimal(18,2)");
+            entity.Property(p => p.CompareAtPrice).HasColumnType("decimal(18,2)");
+            entity.HasQueryFilter(p => p.IsActive);
+            entity.HasIndex(p => p.Slug).IsUnique();
         });
     }
 }

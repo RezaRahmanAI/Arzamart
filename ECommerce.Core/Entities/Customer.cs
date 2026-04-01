@@ -5,13 +5,13 @@ namespace ECommerce.Core.Entities;
 public class Customer : BaseEntity
 {
     [Required]
-    public string Phone { get; set; }  // Unique identifier
+    public string Phone { get; set; } = string.Empty;  // Unique identifier
 
     [Required]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [Required]
-    public string Address { get; set; }
+    public string Address { get; set; } = string.Empty;
 
     public bool IsSuspicious { get; set; } = false;
 }

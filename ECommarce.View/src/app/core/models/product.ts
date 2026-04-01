@@ -43,7 +43,6 @@ export interface Product {
   purchaseRate?: number;
   stockQuantity: number;
   isActive: boolean;
-
   isNew: boolean;
   isFeatured: boolean;
 

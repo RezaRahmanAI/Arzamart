@@ -6,10 +6,10 @@ namespace ECommerce.Core.Entities;
 public class Review : BaseEntity
 {
     public int ProductId { get; set; }
-    public Product Product { get; set; }
+    public Product? Product { get; set; }
 
     [Required]
-    public string CustomerName { get; set; }
+    public string CustomerName { get; set; } = string.Empty;
 
     public string? CustomerAvatar { get; set; } // Renamed from UserAvatar
 
@@ -18,7 +18,7 @@ public class Review : BaseEntity
 
     [Required]
     [MaxLength(1000)]
-    public string Comment { get; set; }
+    public string Comment { get; set; } = string.Empty;
 
     public DateTime Date { get; set; } = DateTime.UtcNow;
 

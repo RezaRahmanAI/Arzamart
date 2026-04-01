@@ -10,7 +10,7 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
             (!categoryId.HasValue || x.CategoryId == categoryId) &&
             (!subCategoryId.HasValue || x.SubCategoryId == subCategoryId) &&
             (!collectionId.HasValue || x.CollectionId == collectionId) &&
-            (string.IsNullOrEmpty(categorySlug) || x.Category.Slug == categorySlug) &&
+            (string.IsNullOrEmpty(categorySlug) || (x.Category != null && x.Category.Slug == categorySlug)) &&
             (string.IsNullOrEmpty(subCategorySlug) || (x.SubCategory != null && x.SubCategory.Slug == subCategorySlug)) &&
             (string.IsNullOrEmpty(collectionSlug) || (x.Collection != null && x.Collection.Slug == collectionSlug)) &&
             (string.IsNullOrEmpty(tier) || x.Tier == tier) &&
@@ -20,7 +20,7 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
         )
 
     {
-        AddInclude(x => x.Category);
+        AddInclude(x => x.Category!);
         AddInclude(x => x.SubCategory!);
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);
@@ -77,11 +77,17 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
         AddIncludes();
     }
 
+    public ProductsWithCategoriesSpecification()
+        : base(x => x.IsActive)
+    {
+        AddIncludes();
+    }
+
 
 
     private void AddIncludes()
     {
-        AddInclude(x => x.Category);
+        AddInclude(x => x.Category!);
         AddInclude(x => x.SubCategory!);
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);

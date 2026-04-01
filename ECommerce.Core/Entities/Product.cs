@@ -5,11 +5,11 @@ namespace ECommerce.Core.Entities;
 
 public class Product : BaseEntity
 {
-    public string Name { get; set; }
-    public string Slug { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? ShortDescription { get; set; }
-    public string Sku { get; set; }
+    public string Sku { get; set; } = string.Empty;
     public string? ImageUrl { get; set; } // Main image URL for quick access
     public int StockQuantity { get; set; } // Renamed from Stock
     public bool IsActive { get; set; } = true;
@@ -32,7 +32,7 @@ public class Product : BaseEntity
 
     // Foreign Keys
     public int CategoryId { get; set; }
-    public Category Category { get; set; }
+    public Category? Category { get; set; }
 
     public int? SubCategoryId { get; set; }
     public SubCategory? SubCategory { get; set; }

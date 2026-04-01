@@ -144,4 +144,8 @@ export class ProductService {
   getAdminProducts(): Observable<Product[]> {
     return this.api.get<Product[]>(this.adminBaseUrl);
   }
+
+  getItemProducts(): Observable<Pagination<Product>> {
+    return this.api.get<Pagination<Product>>(`${this.baseUrl}/items`);
+  }
 }

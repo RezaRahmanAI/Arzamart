@@ -81,8 +81,8 @@ public class CartController : ControllerBase
             cart.Items.Add(new CartItem
             {
                 ProductId = dto.ProductId,
-                Color = dto.Color,
-                Size = dto.Size,
+                Color = dto.Color ?? string.Empty,
+                Size = dto.Size ?? string.Empty,
                 Quantity = dto.Quantity
             });
         }
@@ -109,11 +109,11 @@ public class CartController : ControllerBase
         
         if (!string.IsNullOrEmpty(userId))
         {
-            if (item.Cart.UserId != userId) return Unauthorized();
+            if (item.Cart?.UserId != userId) return Unauthorized();
         }
         else if (!string.IsNullOrEmpty(sessionId))
         {
-            if (item.Cart.SessionId != sessionId) return Unauthorized();
+            if (item.Cart?.SessionId != sessionId) return Unauthorized();
         }
         else return Unauthorized();
 
@@ -255,11 +255,11 @@ public class CartController : ControllerBase
     {
         var query = _context.Carts
             .Include(c => c.Items)
-                .ThenInclude(i => i.Product)
-                    .ThenInclude(p => p.Images)
+                .ThenInclude(i => i.Product!)
+                    .ThenInclude(p => p!.Images)
             .Include(c => c.Items)
-                .ThenInclude(i => i.Product)
-                    .ThenInclude(p => p.Variants)
+                .ThenInclude(i => i.Product!)
+                    .ThenInclude(p => p!.Variants)
             .AsSplitQuery()
             .AsQueryable();
 
@@ -290,7 +290,7 @@ public class CartController : ControllerBase
 
                 if (variant != null && (variant.Price ?? 0) > 0)
                 {
-                    price = variant.Price.Value;
+                    price = variant.Price ?? 0;
                     salePrice = variant.CompareAtPrice;
                 }
                 else
@@ -315,8 +315,8 @@ public class CartController : ControllerBase
                     Price = price,
                     SalePrice = salePrice,
                     Quantity = i.Quantity,
-                    Color = i.Color,
-                    Size = i.Size,
+                    Color = i.Color ?? string.Empty,
+                    Size = i.Size ?? string.Empty,
                     AvailableStock = variant?.StockQuantity ?? 0
                 };
             }).ToList()

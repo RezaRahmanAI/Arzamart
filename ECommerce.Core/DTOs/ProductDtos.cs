@@ -18,6 +18,7 @@ public class ProductCreateDto
     public string? ShortDescription { get; set; }
     
     public bool StatusActive { get; set; } = true;
+    public bool IsItemProduct { get; set; } = false;
     
     [Required(ErrorMessage = "Category is required")]
     [MaxLength(100)]
@@ -83,6 +84,7 @@ public class ProductUpdateDto
     public string? ShortDescription { get; set; }
     
     public bool StatusActive { get; set; } = true;
+    public bool IsItemProduct { get; set; } = false;
     
     [Required(ErrorMessage = "Category is required")]
     [MaxLength(100)]
@@ -135,11 +137,11 @@ public class ProductUpdateDto
 
 public class ProductVariantEditDto
 {
-    public string Label { get; set; }
+    public string Label { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public decimal? SalePrice { get; set; }
     public decimal PurchaseRate { get; set; }
-    public string Sku { get; set; }
+    public string Sku { get; set; } = string.Empty;
     public int Inventory { get; set; }
     [JsonPropertyName("imageUrl")]
     public string? ImageUrl { get; set; }

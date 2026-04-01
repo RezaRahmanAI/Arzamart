@@ -110,7 +110,7 @@ public class AdminProductsController : ControllerBase
 
         if (!string.IsNullOrEmpty(category) && category != "all")
         {
-            query = query.Where(p => p.Category.Name == category);
+            query = query.Where(p => p.Category != null && p.Category.Name == category);
         }
 
         if (!string.IsNullOrEmpty(statusTab) && statusTab != "all")
@@ -135,15 +135,15 @@ public class AdminProductsController : ControllerBase
                 p.Description,
                 p.ShortDescription,
                 p.Sku,
-                Price = p.Variants.FirstOrDefault() != null ? p.Variants.FirstOrDefault().Price : 0,
-                SalePrice = p.Variants.FirstOrDefault() != null ? p.Variants.FirstOrDefault().CompareAtPrice : null,
-                PurchaseRate = p.Variants.FirstOrDefault() != null ? p.Variants.FirstOrDefault().PurchaseRate : null,
+                Price = p.Variants.FirstOrDefault() != null ? p.Variants.FirstOrDefault()!.Price ?? 0 : 0,
+                SalePrice = p.Variants.FirstOrDefault() != null ? p.Variants.FirstOrDefault()!.CompareAtPrice ?? null : null,
+                PurchaseRate = p.Variants.FirstOrDefault() != null ? p.Variants.FirstOrDefault()!.PurchaseRate ?? null : null,
                 p.StockQuantity,
                 p.IsNew,
                 p.IsFeatured,
                 Status = p.IsActive ? "Active" : "Draft",
                 p.ImageUrl,
-                Category = p.Category.Name,
+                Category = p.Category != null ? p.Category.Name : "",
                 CategoryId = p.CategoryId,
                 MediaUrls = p.Images.Select(i => i.Url).ToList(),
                 p.CreatedAt,
@@ -348,14 +348,14 @@ public class AdminProductsController : ControllerBase
         {
             ProductId = p.Id,
             ProductName = p.Name,
-            ProductSku = p.Sku,
-            ImageUrl = p.ImageUrl,
+            ProductSku = p.Sku ?? string.Empty,
+            ImageUrl = p.ImageUrl ?? string.Empty,
             TotalStock = p.StockQuantity,
             Variants = p.Variants.Select(v => new VariantInventoryDto
             {
                 VariantId = v.Id,
-                Sku = v.Sku,
-                Size = v.Size,
+                Sku = v.Sku ?? string.Empty,
+                Size = v.Size ?? string.Empty,
                 StockQuantity = v.StockQuantity
             }).ToList()
         }).ToList();

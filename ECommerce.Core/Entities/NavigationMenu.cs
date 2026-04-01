@@ -4,7 +4,7 @@ namespace ECommerce.Core.Entities;
 
 public class NavigationMenu : BaseEntity
 {
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     public string? Url { get; set; }
     public int DisplayOrder { get; set; }
     public bool IsActive { get; set; } = true;

@@ -79,7 +79,7 @@ public class OrderService : IOrderService
             // Price Fallback logic (Keep as is)
             decimal unitPrice = 0;
             // Lookup variant for price even for combo if combo has its own variants
-            ProductVariant priceVariant = null;
+            ProductVariant? priceVariant = null;
             if (!string.IsNullOrEmpty(itemDto.Size))
             {
                  var normalizedSize = itemDto.Size.Trim().ToLower();
@@ -89,7 +89,7 @@ public class OrderService : IOrderService
 
             if (priceVariant != null && (priceVariant.Price ?? 0) > 0)
             {
-                unitPrice = priceVariant.Price.Value;
+                unitPrice = priceVariant.Price ?? 0;
             }
             else
             {
@@ -212,7 +212,7 @@ public class OrderService : IOrderService
         spec.AddInclude(x => x.Items);
         var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
-        return _mapper.Map<Order, OrderDto>(order);
+        return _mapper.Map<Order, OrderDto>(order!);
     }
 
     public async Task<bool> UpdateOrderStatusAsync(int id, string status)

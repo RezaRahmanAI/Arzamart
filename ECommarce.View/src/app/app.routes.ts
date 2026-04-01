@@ -70,6 +70,20 @@ export const appRoutes: Routes = [
     title: "Contact",
   },
   {
+    path: "lp/:slug",
+    loadComponent: () =>
+      import(
+        "./features/landing-page/pages/landing-page/landing-page.component"
+      ).then((m) => m.LandingPageComponent),
+  },
+  {
+    path: "adult-lp/:slug",
+    loadComponent: () =>
+      import(
+        "./features/adult-landing/pages/adult-landing-page/adult-landing-page.component"
+      ).then((m) => m.AdultLandingPageComponent),
+  },
+  {
     path: "product/:slug",
     loadComponent: () =>
       import("./features/product-details/pages/product-details-page/product-details-page.component").then(
@@ -319,6 +333,30 @@ export const appRoutes: Routes = [
             (m) => m.AdminReviewsComponent,
           ),
         data: { title: "Reviews Management" },
+      },
+      {
+        path: "adult-products",
+        loadComponent: () =>
+          import("./admin/pages/admin-adult-products/admin-adult-products.component").then(
+            (m) => m.AdminAdultProductsComponent,
+          ),
+        data: { title: "Adult Products" },
+      },
+      {
+        path: "adult-products/new",
+        loadComponent: () =>
+          import("./admin/pages/admin-adult-product-form/admin-adult-product-form.component").then(
+            (m) => m.AdminAdultProductFormComponent,
+          ),
+        data: { title: "Add Adult Product" },
+      },
+      {
+        path: "adult-products/edit/:id",
+        loadComponent: () =>
+          import("./admin/pages/admin-adult-product-form/admin-adult-product-form.component").then(
+            (m) => m.AdminAdultProductFormComponent,
+          ),
+        data: { title: "Edit Adult Product" },
       },
       {
         path: "security",

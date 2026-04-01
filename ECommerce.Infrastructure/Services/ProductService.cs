@@ -28,7 +28,7 @@ public class ProductService : IProductService
         _cache = cache;
     }
 
-    public async Task<ProductDto> GetProductBySlugAsync(string slug)
+    public async Task<ProductDto?> GetProductBySlugAsync(string slug)
     {
         var cacheKey = $"product_slug:{slug}";
         var cached = await _cache.GetStringAsync(cacheKey);
@@ -47,7 +47,7 @@ public class ProductService : IProductService
         return product;
     }
 
-    public async Task<ProductDto> GetProductByIdAsync(int id)
+    public async Task<ProductDto?> GetProductByIdAsync(int id)
     {
         var cacheKey = $"product_id:{id}";
         var cached = await _cache.GetStringAsync(cacheKey);
@@ -67,7 +67,7 @@ public class ProductService : IProductService
     }
 
 
-    public async Task<ProductDto> CreateProductAsync(ProductCreateDto dto)
+    public async Task<ProductDto?> CreateProductAsync(ProductCreateDto dto)
     {
         var categorySpec = new CategoriesWithSubCategoriesSpec(dto.Category);
         var category = await _unitOfWork.Repository<Category>().GetEntityWithSpec(categorySpec);
@@ -147,12 +147,12 @@ public class ProductService : IProductService
         }
 
         var result = await _unitOfWork.Complete();
-        if (result <= 0) return null;
+        if (result <= 0) return null!;
 
         return _mapper.Map<Product, ProductDto>(product);
     }
 
-    public async Task<ProductDto> UpdateProductAsync(int id, ProductUpdateDto dto)
+    public async Task<ProductDto?> UpdateProductAsync(int id, ProductUpdateDto dto)
     {
         var spec = new ProductsWithCategoriesSpecification(id);
         var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec); // Fixed: Removed <Product> to use the non-projected tracked version
@@ -280,11 +280,13 @@ public class ProductService : IProductService
         var sizes = await _unitOfWork.Repository<ProductVariant>()
             .GetQueryable()
             .Where(v => !string.IsNullOrEmpty(v.Size))
-            .Select(v => v.Size)
+            .Select(v => v.Size!)
             .Distinct()
             .OrderBy(s => s)
             .ToListAsync();
         
-        return sizes ?? new List<string>();
+        return sizes;
     }
+
+
 }

@@ -11,7 +11,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
     private readonly IConfigurationProvider _mapperConfig;
-    private Hashtable _repositories;
+    private Hashtable _repositories = new();
 
     public UnitOfWork(ApplicationDbContext context, IConfigurationProvider mapperConfig)
     {
@@ -43,6 +43,6 @@ public class UnitOfWork : IUnitOfWork
             _repositories.Add(type, repositoryInstance);
         }
 
-        return (IGenericRepository<TEntity>)_repositories[type];
+        return (IGenericRepository<TEntity>)_repositories[type]!;
     }
 }

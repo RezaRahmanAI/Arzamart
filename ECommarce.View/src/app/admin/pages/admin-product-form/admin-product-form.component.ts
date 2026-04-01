@@ -1090,6 +1090,7 @@ export class AdminProductFormComponent implements OnDestroy {
       purchaseRate: 0,
 
       newArrival: false,
+      isFeatured: false,
 
       tier: "",
       tags: "",

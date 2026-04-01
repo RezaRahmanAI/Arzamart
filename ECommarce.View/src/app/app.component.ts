@@ -40,7 +40,10 @@ export class AppComponent implements OnInit {
   showPublicLayout$ = this.router.events.pipe(
     filter((event) => event instanceof NavigationEnd),
     startWith(null),
-    map(() => !this.router.url.startsWith("/admin")),
+    map(() => {
+      const url = this.router.url;
+      return !url.startsWith("/admin") && !url.startsWith("/adult-lp");
+    }),
   );
 
   ngOnInit() {

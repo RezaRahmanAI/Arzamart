@@ -4,8 +4,8 @@ namespace ECommerce.Core.Entities;
 
 public class SubCategory : BaseEntity
 {
-    public string Name { get; set; }
-    public string Slug { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
     public string? Description { get; set; }
     public int DisplayOrder { get; set; }
@@ -13,7 +13,7 @@ public class SubCategory : BaseEntity
     
     // Foreign Key
     public int CategoryId { get; set; }
-    public Category Category { get; set; }
+    public Category? Category { get; set; }
     
     public ICollection<Collection> Collections { get; set; } = new List<Collection>();
     public ICollection<Product> Products { get; set; } = new List<Product>();

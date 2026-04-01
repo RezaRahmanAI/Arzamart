@@ -1,0 +1,466 @@
+<div class="font-['Hind_Siliguri',sans-serif] bg-white text-[#333]">
+  
+  <div *ngIf="product && !isLoading">
+    
+    <!-- FULL HEIGHT HERO (30/70 Professional Split) -->
+    <section class="min-h-[100svh] md:h-[100svh] flex flex-col items-center relative overflow-hidden bg-black">
+      <!-- Background Texture -->
+      <div class="absolute inset-0 z-0 bg-cover bg-center opacity-70" 
+           style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.9) 100%), url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=2070');"
+           loading="eager">
+      </div>
+      
+      <!-- Content Top Part (30% approx) -->
+      <div class="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl mx-auto px-4 md:px-6 pt-10 pb-6 md:py-8 text-center md:basis-[38%] md:flex-none">
+
+        
+        <!-- Headline -->
+        <h1 *ngIf="landingPage?.headline" 
+            class="text-white text-[1.3rem] md:text-[1.8rem] font-bold leading-tight max-w-2xl animate-fade-in delay-100">
+          {{ landingPage?.headline }}
+        </h1>
+        
+        <!-- Description -->
+        <div *ngIf="landingPage?.subtitle" 
+             class="hero-subtitle text-white/90 text-sm md:text-lg max-w-2xl font-light mb-8 break-words animate-fade-in delay-200" 
+             [innerHTML]="landingPage?.subtitle">
+        </div>
+        
+        <!-- CTA Button (Slightly smaller for compact top) -->
+        <div class="mt-8 animate-fade-in delay-300 flex flex-col w-full max-w-[420px] mx-auto">
+          <button (click)="scrollToOrderForm()" 
+                  class="bg-[#1a1a1a] text-white px-8 h-12 text-xs font-semibold uppercase tracking-[0.15em] flex items-center justify-center gap-2 hover:bg-[#333] transition-all duration-300 w-full">
+            <lucide-icon [img]="icons.ShoppingCart" class="w-4 h-4"></lucide-icon>
+            অর্ডার করুন
+          </button>
+        </div>
+      </div>
+
+      <!-- Product Showcase Bottom Part (70% approx) -->
+      <div class="relative z-10 w-full max-w-4xl mx-auto flex justify-center items-end pb-8 px-4 md:px-6 md:pb-10 md:basis-[62%] md:flex-none min-h-0">
+        <img *ngIf="product.imgUrl" 
+             [src]="imageUrlService.getImageUrl(product.imgUrl)" 
+             [alt]="product.headline" 
+             loading="eager"
+             fetchpriority="high"
+             class="w-auto h-full max-h-[55svh] md:max-h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] animate-hero-visual block">
+      </div>
+    </section>
+
+    <!-- BENEFITS SECTION -->
+    <section class="bg-white py-16" *ngIf="landingPage?.benefitsTitle || landingPage?.benefitsContent">
+      <div class="max-w-4xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 md:gap-16 px-4 md:px-10">
+        <div class="flex-1 text-center lg:text-left break-words">
+          <div class="mb-6">
+            <p class="text-[10px] uppercase tracking-[0.4em] text-[#c8922a] font-bold mb-2">Why Choose Us</p>
+            <h2 class="text-3xl md:text-4xl font-serif italic text-[#1a1a1a]">
+              {{ landingPage?.benefitsTitle || 'ব্যবহারের সুবিধাঃ' }}
+            </h2>
+          </div>
+          <div class="text-[#555] text-sm md:text-base leading-relaxed mb-8 ql-editor !text-left" [innerHTML]="landingPage?.benefitsContent"></div>
+          <div class="flex flex-col gap-3 mx-auto lg:mx-0 w-full max-w-[420px] lg:max-w-none">
+            <a *ngIf="siteSettings?.facebookUrl"
+               [href]="siteSettings?.facebookUrl"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="bg-[#0084FF] text-white px-8 h-12 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#0077e6] transition-all duration-300">
+              <lucide-icon [img]="icons.MessageSquare" class="w-4 h-4"></lucide-icon>
+              Chat with us
+            </a>
+            <a *ngIf="siteSettings?.whatsAppNumber"
+               [href]="'https://wa.me/' + siteSettings?.whatsAppNumber"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="bg-[#25D366] text-white px-8 h-12 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#20bd5a] transition-all duration-300">
+              <lucide-icon [img]="icons.MessageSquare" class="w-4 h-4"></lucide-icon>
+              WhatsApp Us
+            </a>
+            <button (click)="scrollToOrderForm()" 
+                    class="bg-[#1a1a1a] text-white px-8 h-12 text-xs font-semibold uppercase tracking-[0.15em] flex items-center justify-center gap-2 mx-auto lg:mx-0 hover:bg-[#333] transition-all duration-300 w-full">
+              <lucide-icon [img]="icons.ShoppingCart" class="w-4 h-4"></lucide-icon>
+              অর্ডার করুন
+            </button>
+          </div>
+        </div>
+        <div class="flex-1 flex justify-center">
+          <img *ngIf="product.imgUrl" 
+               [src]="imageUrlService.getImageUrl(product.imgUrl)" 
+               [alt]="product.headline" 
+               class="max-w-[320px] w-full border border-[#e0e0e0]">
+        </div>
+      </div>
+    </section>
+
+    <!-- USAGE RULES SECTION -->
+    <section class="bg-[#fafafa] py-16" *ngIf="landingPage?.usageTitle || landingPage?.usageContent">
+      <div class="max-w-4xl mx-auto flex flex-col lg:flex-row-reverse items-center justify-between gap-10 md:gap-16 px-4 md:px-10 text-center lg:text-left">
+        <div class="flex-1 break-words">
+          <div class="mb-6">
+            <p class="text-[10px] uppercase tracking-[0.4em] text-[#c8922a] font-bold mb-2">How To Use</p>
+            <h2 class="text-3xl md:text-4xl font-serif italic text-[#1a1a1a]">
+              {{ landingPage?.usageTitle || 'লুব্রিকেন্ট জেল ব্যবহারের নিয়মঃ' }}
+            </h2>
+          </div>
+          <div class="text-[#555] text-sm md:text-base leading-relaxed mb-8 ql-editor !text-left" [innerHTML]="landingPage?.usageContent"></div>
+          <div class="flex flex-col gap-3 mx-auto lg:mx-0 w-full max-w-[420px] lg:max-w-none">
+            <a *ngIf="siteSettings?.facebookUrl"
+               [href]="siteSettings?.facebookUrl"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="bg-[#0084FF] text-white px-8 h-12 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#0077e6] transition-all duration-300">
+              <lucide-icon [img]="icons.MessageSquare" class="w-4 h-4"></lucide-icon>
+              Chat with us
+            </a>
+            <a *ngIf="siteSettings?.whatsAppNumber"
+               [href]="'https://wa.me/' + siteSettings?.whatsAppNumber"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="bg-[#25D366] text-white px-8 h-12 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#20bd5a] transition-all duration-300">
+              <lucide-icon [img]="icons.MessageSquare" class="w-4 h-4"></lucide-icon>
+              WhatsApp Us
+            </a>
+            <button (click)="scrollToOrderForm()" 
+                    class="bg-[#1a1a1a] text-white px-8 h-12 text-xs font-semibold uppercase tracking-[0.15em] flex items-center justify-center gap-2 mx-auto lg:mx-0 hover:bg-[#333] transition-all duration-300 w-full">
+              <lucide-icon [img]="icons.ShoppingCart" class="w-4 h-4"></lucide-icon>
+              অর্ডার করুন
+            </button>
+          </div>
+        </div>
+        <div class="flex-1 flex justify-center">
+          <img *ngIf="product.imgUrl" 
+               [src]="imageUrlService.getImageUrl(product.imgUrl)" 
+               [alt]="product.headline" 
+               class="max-w-[320px] w-full border border-[#e0e0e0]">
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section class="bg-white py-16 text-center border-t border-[#e0e0e0]" *ngIf="reviews.length > 0">
+      <div class="mb-12">
+        <p class="text-[10px] uppercase tracking-[0.4em] text-[#c8922a] font-bold mb-2">Refined Experience</p>
+        <h2 class="text-3xl md:text-4xl font-serif italic text-[#1a1a1a]">{{ landingPage?.reviewsTitle || 'Customer Testimonies' }}</h2>
+      </div>
+      
+      <div class="relative max-w-4xl mx-auto px-10 overflow-hidden">
+        <!-- Navigation -->
+        <button class="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white border border-[#e0e0e0] flex items-center justify-center text-gray-600 transition-colors hover:border-[#1a1a1a] hover:text-[#1a1a1a] z-20" 
+                (click)="prevReview()" *ngIf="reviews.length > 1">
+          <lucide-icon [img]="icons.ChevronLeft" class="w-5 h-5"></lucide-icon>
+        </button>
+        <button class="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white border border-[#e0e0e0] flex items-center justify-center text-gray-600 transition-colors hover:border-[#1a1a1a] hover:text-[#1a1a1a] z-20" 
+                (click)="nextReview()" *ngIf="reviews.length > 1">
+          <lucide-icon [img]="icons.ChevronRight" class="w-5 h-5"></lucide-icon>
+        </button>
+
+        <!-- Slider Track -->
+        <div class="flex transition-transform duration-500 ease-in-out gap-6" 
+             [style.transform]="'translateX(-' + (currentReviewIndex * (100 / (reviews.length > 3 ? 3 : reviews.length))) + '%)'">
+          <div *ngFor="let review of reviews; let i = index" 
+               class="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 py-2">
+            <div class="bg-white border border-[#e0e0e0] p-6 h-full flex flex-col gap-4 text-left">
+              <!-- If review has an image, show it -->
+              <div class="w-full aspect-square border border-[#e0e0e0] p-1 bg-[#fafafa]" *ngIf="review.reviewImage">
+                <img [src]="imageUrlService.getImageUrl(review.reviewImage)" [alt]="review.customerName" 
+                     loading="lazy"
+                     class="w-full h-full object-cover">
+              </div>
+              
+              <!-- Reviewer Info & Stars -->
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-semibold text-sm text-[#1a1a1a]">{{ review.customerName }}</span>
+                </div>
+                <!-- Stars (Gold) -->
+                <div class="flex gap-0.5 mb-3">
+                  <lucide-icon *ngFor="let _ of [1,2,3,4,5]" [img]="icons.Star" class="w-3.5 h-3.5 fill-[#c8922a] text-[#c8922a]"></lucide-icon>
+                </div>
+              </div>
+
+              <!-- Comment Aesthetic -->
+              <div class="text-sm text-[#555] leading-relaxed italic ql-editor" [innerHTML]="review.comment">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dots -->
+        <div class="flex justify-center gap-2 mt-8" *ngIf="reviews.length > 1">
+          <div *ngFor="let r of reviews; let i = index" 
+               class="h-1 cursor-pointer transition-all duration-300" 
+               [class]="currentReviewIndex === i ? 'bg-[#1a1a1a] w-8' : 'bg-[#e0e0e0] w-4'"
+               (click)="goToReview(i)">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIDE EFFECTS -->
+    <section class="max-w-4xl mx-auto py-16 px-4 md:px-10 border-t border-[#e0e0e0] mt-16 text-center" *ngIf="landingPage?.sideEffectsTitle || landingPage?.sideEffectsContent">
+      <div class="mb-8 break-words">
+        <p class="text-[10px] uppercase tracking-[0.4em] text-[#c8922a] font-bold mb-2">Important Notice</p>
+        <h2 class="text-3xl font-serif italic text-[#1a1a1a]">
+          {{ landingPage?.sideEffectsTitle || 'লুব্রিকেন্ট জেল এর পার্শ্বপ্রতিক্রিয়াঃ' }}
+        </h2>
+      </div>
+      <div class="bg-[#fafafa] border border-[#e0e0e0] p-6 md:p-8 text-[#555] text-sm md:text-base ql-editor !text-center" [innerHTML]="landingPage?.sideEffectsContent"></div>
+    </section>
+
+    <!-- ORDER FORM -->
+    <div id="order" class="bg-white py-16 px-4 md:px-10 border-t border-[#e0e0e0]">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-10 relative inline-block w-full">
+          <p class="text-[10px] uppercase tracking-[0.4em] text-[#c8922a] font-bold mb-2">Secure Checkout</p>
+          <h2 id="order-form-section" class="text-3xl font-serif italic text-[#1a1a1a]">
+            ফর্মটি পূরণ করে অর্ডার করুন
+          </h2>
+        </div>
+
+        <!-- Products -->
+        <div class="text-[12px] uppercase tracking-widest font-bold text-[#1a1a1a] mb-6 pb-2 border-gray-200 border-b">Your Products</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10" id="productsGrid">
+          <div *ngFor="let item of offerItems" 
+               class="bg-white border-2 rounded-none p-4 text-center transition-all cursor-pointer hover:border-[#1a1a1a] hover:shadow-lg relative" 
+               [class]="item.quantity > 0 ? 'border-[#1a1a1a] shadow-md' : 'border-[#f0f0f0]'">
+            <div (click)="openProductModal(item)" class="mb-2">
+              <img [src]="item.imageUrl" [alt]="item.name" loading="lazy" class="w-24 h-24 object-contain mx-auto">
+              <div class="text-[11px] uppercase tracking-wider font-semibold text-[#1a1a1a] mt-2 leading-tight h-10 flex items-center justify-center line-clamp-2 px-1">{{ item.name }}</div>
+            </div>
+            <div class="text-base font-bold text-[#c8922a] mb-3">৳ {{ item.price | number:'1.2-2' }}</div>
+            <div class="flex items-center justify-center border border-[#e0e0e0] rounded-none overflow-hidden h-10 relative z-10">
+              <button (click)="$event.stopPropagation(); changeQty(item, -1)" class="bg-white hover:bg-[#fafafa] w-10 h-full font-bold transition-colors border-r border-[#e0e0e0]">−</button>
+              <input type="number" [value]="item.quantity" min="0" (input)="$event.stopPropagation(); updateQuantity(item, $event)" 
+                     class="w-12 border-none text-center font-bold text-sm py-1 outline-none bg-transparent text-[#1a1a1a]">
+              <button (click)="$event.stopPropagation(); changeQty(item, 1)" class="bg-white hover:bg-[#fafafa] w-10 h-full font-bold transition-colors border-l border-[#e0e0e0]">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Details -->
+        <form [formGroup]="checkoutForm" (ngSubmit)="placeOrder()" class="space-y-6">
+          <div class="text-[12px] uppercase tracking-widest font-bold text-[#1a1a1a] mb-6 pb-2 border-[#1a1a1a] border-b">Billing details</div>
+          
+          <div class="space-y-4">
+            <div class="space-y-2 text-left">
+              <label class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#888]">আপনার ফোন নাম্বার <span class="text-[#c8922a]">*</span></label>
+              <input type="tel" formControlName="phone" placeholder="01XXXXXXXXX" 
+                     class="w-full px-4 py-3 border border-[#e0e0e0] rounded-none focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm">
+              <p class="text-[10px] text-red-500" *ngIf="checkoutForm.controls.phone.touched && checkoutForm.controls.phone.invalid">ফোন নাম্বার আবশ্যক</p>
+            </div>
+            
+            <div class="space-y-2 text-left">
+              <label class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#888]">নাম <span class="text-[#c8922a]">*</span></label>
+              <input type="text" formControlName="fullName" placeholder="আপনার পুরো নাম লিখুন" 
+                     class="w-full px-4 py-3 border border-[#e0e0e0] rounded-none focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm">
+              <p class="text-[10px] text-red-500" *ngIf="checkoutForm.controls.fullName.touched && checkoutForm.controls.fullName.invalid">নাম আবশ্যক</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="space-y-2 text-left">
+                <label class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#888]">জেলা <span class="text-[#c8922a]">*</span></label>
+                <div class="relative w-full">
+                  <select formControlName="district" 
+                          class="w-full px-4 py-3 border border-[#e0e0e0] rounded-none focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm appearance-none">
+                    <option value="">জেলা নির্বাচন করুন</option>
+                    <option *ngFor="let district of districts" [value]="district">{{ district }}</option>
+                  </select>
+                  <lucide-icon [img]="icons.ChevronDown" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></lucide-icon>
+                </div>
+              </div>
+
+              <div class="space-y-2 text-left">
+                <label class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#888]">এলাকা <span class="text-[#c8922a]">*</span></label>
+                <div class="relative w-full">
+                  <select formControlName="area" 
+                          class="w-full px-4 py-3 border border-[#e0e0e0] rounded-none focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm appearance-none">
+                    <option value="">এলাকা নির্বাচন করুন</option>
+                    <option *ngFor="let area of availableAreas" [value]="area">{{ area }}</option>
+                  </select>
+                  <lucide-icon [img]="icons.ChevronDown" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></lucide-icon>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2 text-left">
+              <label class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#888]">আপনার ঠিকানা <span class="text-[#c8922a]">*</span></label>
+              <input type="text" formControlName="address" placeholder="বাড়ি নম্বর, রাস্তা, এলাকা, জেলা" 
+                     class="w-full px-4 py-3 border border-[#e0e0e0] rounded-none focus:border-[#1a1a1a] outline-none transition-colors bg-white text-sm">
+              <p class="text-[10px] text-red-500" *ngIf="checkoutForm.controls.address.touched && checkoutForm.controls.address.invalid">ঠিকানা আবশ্যক</p>
+            </div>
+
+            
+          </div>
+
+          <!-- Shipping -->
+          <div class="bg-white border border-[#e0e0e0] rounded-none p-5 md:p-6 text-left">
+            <div class="text-[12px] uppercase tracking-widest font-bold text-[#1a1a1a] mb-4">Shipping</div>
+            <div *ngFor="let method of deliveryMethods" class="flex items-center gap-3 py-3 border-b border-[#f5f5f3] last:border-0 cursor-pointer">
+              <input type="radio" formControlName="deliveryMethodId" [id]="'method-' + method.id" [value]="method.id" class="accent-[#1a1a1a] w-4 h-4">
+              <label [for]="'method-' + method.id" class="text-sm text-[#555] flex-1 cursor-pointer">{{ method.name }}</label>
+              <span class="font-bold text-[#1a1a1a]">৳ {{ method.cost | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <!-- Order Summary -->
+          <div class="bg-white border-[1.5px] border-gray-100 rounded-xl overflow-hidden shadow-sm text-left">
+            <div class="p-5 border-b-2 border-gray-100 font-bold text-xl text-gray-800">Your order</div>
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="border-b border-gray-100 italic text-gray-500 text-sm">
+                  <th class="p-4 text-left font-semibold">Product</th>
+                  <th class="p-4 text-right font-semibold">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                <tr *ngFor="let item of offerItems">
+                  <ng-container *ngIf="item.quantity > 0">
+                    <td class="p-4">
+                      <div class="flex items-center gap-4">
+                        <img [src]="item.imageUrl" [alt]="item.name" class="w-16 h-16 object-contain rounded-lg bg-white border border-gray-50">
+                        <span class="text-sm font-medium text-gray-600">{{ item.name }}</span>
+                      </div>
+                    </td>
+                    <td class="p-4 text-right whitespace-nowrap">
+                      <span class="text-sm text-gray-500 font-medium">× {{ item.quantity }} &nbsp; ৳ {{ (item.price * item.quantity) | number:'1.2-2' }}</span>
+                    </td>
+                  </ng-container>
+                </tr>
+                <tr *ngIf="subtotal === 0">
+                  <td colspan="2" class="p-6 text-center text-gray-400 text-sm">কোনো পণ্য নির্বাচন করা হয়নি</td>
+                </tr>
+              </tbody>
+              <tfoot class="bg-gray-50/50">
+                <tr class="text-sm text-gray-600">
+                  <td class="p-4">Subtotal</td>
+                  <td class="p-4 text-right">৳ {{ subtotal | number:'1.2-2' }}</td>
+                </tr>
+                <tr class="text-sm text-gray-600">
+                  <td class="p-4">Shipping</td>
+                  <td class="p-4 text-right">৳ {{ (subtotal > 0 ? (selectedMethod?.cost || 0) : 0) | number:'1.2-2' }}</td>
+                </tr>
+                <tr class="font-bold text-gray-800 border-t border-gray-100">
+                  <td class="p-4 text-lg">Total</td>
+                  <td class="p-4 text-right text-lg">৳ {{ total | number:'1.2-2' }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <!-- Payment -->
+          <div class="bg-white border border-[#e0e0e0] rounded-none p-5 md:p-6 text-left">
+            <div class="text-[12px] uppercase tracking-widest font-bold text-[#1a1a1a] mb-4">Payment Method</div>
+            <div class="flex items-center gap-3 text-sm text-[#555] font-medium font-sans">
+              <input type="radio" checked disabled class="accent-[#1a1a1a] w-4 h-4">
+              <label><strong class="text-[#1a1a1a]">Cash on delivery</strong> — Pay with cash upon delivery.</label>
+            </div>
+          </div>
+
+          <!-- Privacy note -->
+          <p class="text-[11px] text-[#888] leading-relaxed mb-6 text-left uppercase tracking-tighter">
+            আপনার ব্যক্তিগত তথ্য আপনার অর্ডার প্রক্রিয়া করতে, এই ওয়েবসাইটে আপনার অভিজ্ঞতা সমর্থন করতে এবং আমাদের <a href="#" class="text-[#c8922a] underline">গোপনীয়তা নীতি</a>তে বর্ণিত অন্যান্য উদ্দেশ্যে ব্যবহার করা হবে।
+          </p>
+
+          <button type="submit" [disabled]="isOrdering || subtotal === 0"
+                  class="w-full bg-[#1a1a1a] text-white py-4 px-6 text-sm uppercase tracking-[0.15em] font-bold transition-colors hover:bg-[#333] active:bg-black disabled:bg-[#ddd] disabled:text-[#888] flex items-center justify-center">
+            <lucide-icon *ngIf="isOrdering" [img]="icons.Loader2" class="w-5 h-5 animate-spin mr-3"></lucide-icon>
+            {{ isOrdering ? 'Processing...' : 'অর্ডার করুন' }} &nbsp; <span class="ml-2 px-3 py-1 bg-white/20">৳ {{ total | number:'1.2-2' }}</span>
+          </button>
+          
+          <p *ngIf="errorMessage" class="text-sm text-red-500 text-center font-bold mt-4 animate-bounce">{{ errorMessage }}</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-100 py-10 px-10 text-center text-gray-500 text-sm">
+      <p>© {{ date.getFullYear() }} {{ siteSettings?.websiteName || "Brand Name" }}. All Rights Reserved.</p>
+    </footer>
+
+
+
+  </div>
+</div>
+
+<!-- PRODUCT DETAILS MODAL -->
+<div *ngIf="isModalOpen && selectedPopupItem" 
+     class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-black/60 backdrop-blur-sm animate-fade-in"
+     (click)="closeProductModal()">
+  <div class="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-modal-in" 
+       (click)="$event.stopPropagation()">
+    
+    <!-- Close Button -->
+    <button (click)="closeProductModal()" 
+            class="absolute top-4 right-4 p-2 text-gray-400 hover:text-black transition-colors z-10 rounded-none">
+      <lucide-icon [img]="icons.X" class="w-6 h-6"></lucide-icon>
+    </button>
+
+    <div class="grid grid-cols-1 md:grid-cols-2">
+      <!-- Image Column -->
+      <div class="bg-[#fafafa] p-8 flex items-center justify-center border-b md:border-b-0 md:border-r border-gray-100">
+        <img [src]="selectedPopupItem.imageUrl" 
+             [alt]="selectedPopupItem.name" 
+             class="w-full h-auto max-h-[300px] object-contain drop-shadow-xl">
+      </div>
+
+      <!-- Content Column -->
+      <div class="p-6 md:p-8 flex flex-col gap-6">
+        <div>
+          <h3 class="text-xl font-serif italic text-primary mb-2">{{ selectedPopupItem.name }}</h3>
+          <div class="text-2xl font-bold text-[#c8922a]">৳ {{ selectedPopupItem.price | number:'1.2-2' }}</div>
+        </div>
+
+        <div class="space-y-6 overflow-y-auto max-h-[40vh] pr-2 custom-scrollbar">
+          <!-- Benefits -->
+          <div *ngIf="landingPage?.benefitsContent" class="space-y-2">
+            <h4 class="text-xs uppercase tracking-widest font-bold text-[#c8922a]">
+              {{ landingPage?.benefitsTitle || 'ব্যবহারের সুবিধা' }}
+            </h4>
+            <div class="text-sm text-[#555] leading-relaxed ql-editor !p-0 !text-left" 
+                 [innerHTML]="landingPage?.benefitsContent"></div>
+          </div>
+
+          <!-- How to Use -->
+          <div *ngIf="landingPage?.usageContent" class="space-y-2 pt-4 border-t border-gray-100">
+            <h4 class="text-xs uppercase tracking-widest font-bold text-[#c8922a]">
+              {{ landingPage?.usageTitle || 'ব্যবহারের নিয়ম' }}
+            </h4>
+            <div class="text-sm text-[#555] leading-relaxed ql-editor !p-0 !text-left" 
+                 [innerHTML]="landingPage?.usageContent"></div>
+          </div>
+
+          <!-- Side Effects -->
+          <div *ngIf="landingPage?.sideEffectsContent" class="space-y-2 pt-4 border-t border-gray-100">
+            <h4 class="text-xs uppercase tracking-widest font-bold text-[#c8922a]">
+              {{ landingPage?.sideEffectsTitle || 'পার্শ্বপ্রতিক্রিয়া' }}
+            </h4>
+            <div class="text-[13px] text-[#555] leading-relaxed ql-editor !p-0 !text-left" 
+                 [innerHTML]="landingPage?.sideEffectsContent"></div>
+          </div>
+        </div>
+
+        <div class="mt-auto space-y-6">
+          <div class="flex flex-col gap-2">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-gray-400">Select Quantity</span>
+            <div class="flex items-center border border-[#e0e0e0] w-fit">
+              <button (click)="updateModalQuantity(-1)" 
+                      class="px-5 py-3 hover:bg-gray-50 transition-colors border-r border-[#e0e0e0]">
+                <lucide-icon [img]="icons.Minus" class="w-4 h-4"></lucide-icon>
+              </button>
+              <span class="px-8 py-3 font-bold text-lg min-w-[60px] text-center">{{ modalQuantity }}</span>
+              <button (click)="updateModalQuantity(1)" 
+                      class="px-5 py-3 hover:bg-gray-50 transition-colors border-l border-[#e0e0e0]">
+                <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
+              </button>
+            </div>
+          </div>
+
+          <button (click)="confirmModalAdd()" 
+                  class="w-full bg-[#1a1a1a] text-white py-4 px-6 text-sm uppercase tracking-[0.2em] font-bold transition-all hover:bg-[#333] flex items-center justify-center gap-3 active:scale-[0.98]">
+            <lucide-icon [img]="icons.ShoppingCart" class="w-5 h-5"></lucide-icon>
+            অর্ডারে যোগ করুন
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

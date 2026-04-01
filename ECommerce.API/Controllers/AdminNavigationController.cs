@@ -103,8 +103,8 @@ public class AdminNavigationController : ControllerBase
         return new NavigationMenuDto
         {
             Id = menu.Id,
-            Name = menu.Title,
-            Link = menu.Url,
+            Name = menu.Title ?? string.Empty,
+            Link = menu.Url ?? string.Empty,
             ParentMenuId = menu.ParentMenuId,
             DisplayOrder = menu.DisplayOrder,
             IsActive = menu.IsActive,
