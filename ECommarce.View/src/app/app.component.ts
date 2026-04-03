@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
     startWith(null),
     map(() => {
       const url = this.router.url;
-      return !url.startsWith("/admin") && !url.startsWith("/adult-lp");
+      return !url.startsWith("/admin");
     }),
   );
 

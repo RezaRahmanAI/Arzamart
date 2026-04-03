@@ -110,7 +110,6 @@ public static class ServiceExtensions
         services.AddScoped<INavigationService, NavigationService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IReviewService, ReviewService>();
-        services.AddScoped<IAdultProductService, AdultProductService>();
         services.AddSignalR();
 
         services.Configure<SteadfastSettings>(config.GetSection("Steadfast"));
