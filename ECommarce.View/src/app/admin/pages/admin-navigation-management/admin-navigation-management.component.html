@@ -72,6 +72,7 @@
                 <lucide-icon [img]="icons.Edit" class="w-5 h-5"></lucide-icon>
               </button>
               <button
+                *ngIf="authService.isSuperAdmin()"
                 (click)="deleteMenu(item.id)"
                 class="p-1.5 hover:bg-red-50 rounded-lg text-red-400 transition-colors"
                 title="Delete"

@@ -78,7 +78,12 @@ export class AuthService {
   }
 
   isAdmin() {
-    return this.userSubject.value?.role === "Admin";
+    const role = this.userSubject.value?.role;
+    return role === "Admin" || role === "SuperAdmin";
+  }
+
+  isSuperAdmin() {
+    return this.userSubject.value?.role === "SuperAdmin";
   }
 
   isAuthenticated() {

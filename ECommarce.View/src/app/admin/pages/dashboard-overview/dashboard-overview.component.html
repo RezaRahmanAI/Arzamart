@@ -1,207 +1,207 @@
-<div
-  class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6"
-  *ngIf="stats$ | async as stats; else loadingStats"
->
-  <!-- Total Orders -->
-  <div
-    class="bg-surface-light dark:bg-surface-dark p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 hover:shadow-primary/10 transition-all group"
-  >
-    <div class="flex items-start justify-between">
-      <div class="p-4 bg-primary/5 rounded-2xl text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
-        <lucide-icon [img]="icons.Receipt" class="w-7 h-7"></lucide-icon>
-      </div>
-      <span
-        class="text-[9px] font-black text-text-sub uppercase tracking-[0.2em] bg-supporting px-3 py-1.5 rounded-full"
-        >Historical</span
-      >
+<div class="space-y-8" *ngIf="stats$ | async as stats; else loadingStats">
+  <!-- Quick Management Actions -->
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <h3 class="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] pl-1">Primary Operational Shortcuts</h3>
     </div>
-    <div>
-      <p class="text-text-sub text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">Total Orders</p>
-      <h3 class="text-3xl font-black text-primary tracking-tighter">
-        {{ stats.totalOrders }}
-      </h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Create Manual Order -->
+      <a routerLink="/admin/orders/create" class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 flex items-center gap-6 cursor-pointer overflow-hidden relative">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+        <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:rotate-6 transition-transform duration-500 shrink-0">
+          <lucide-icon [img]="icons.ShoppingCart" class="w-8 h-8 text-primary"></lucide-icon>
+        </div>
+        <div class="relative">
+          <h4 class="text-sm font-semibold text-primary dark:text-white mb-1 group-hover:text-primary transition-colors">New Manual Order</h4>
+          <p class="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Instant Fulfillment</p>
+        </div>
+      </a>
+
+      <!-- Create Pre-order -->
+      <a routerLink="/admin/orders/pre-order" class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-violet-500/5 transition-all duration-500 flex items-center gap-6 cursor-pointer overflow-hidden relative">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-violet-500/5 rounded-full blur-2xl group-hover:bg-violet-500/10 transition-colors"></div>
+        <div class="w-16 h-16 rounded-2xl bg-violet-500/10 flex items-center justify-center group-hover:rotate-6 transition-transform duration-500 shrink-0">
+          <lucide-icon [img]="icons.PackagePlus" class="w-8 h-8 text-violet-600"></lucide-icon>
+        </div>
+        <div class="relative">
+          <h4 class="text-sm font-semibold text-primary dark:text-white mb-1 group-hover:text-violet-600 transition-colors">New Pre-order</h4>
+          <p class="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Advanced Booking</p>
+        </div>
+      </a>
+
+      <!-- Manage Catalog -->
+      <a routerLink="/admin/products" class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-500 flex items-center gap-6 cursor-pointer overflow-hidden relative">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors"></div>
+        <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center group-hover:rotate-6 transition-transform duration-500 shrink-0">
+          <lucide-icon [img]="icons.PlusCircle" class="w-8 h-8 text-emerald-600"></lucide-icon>
+        </div>
+        <div class="relative">
+          <h4 class="text-sm font-semibold text-primary dark:text-white mb-1 group-hover:text-emerald-600 transition-colors">Catalog Entry</h4>
+          <p class="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Add New Product</p>
+        </div>
+      </a>
     </div>
   </div>
 
-  <!-- Daily Traffic -->
-  <div
-    class="bg-surface-light dark:bg-surface-dark p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 hover:shadow-accent/10 transition-all group"
-    *ngIf="dailyTraffic$ | async as traffic"
-  >
-    <div class="flex items-start justify-between">
-      <div class="p-4 bg-accent/5 rounded-2xl text-accent group-hover:bg-accent group-hover:text-white transition-all duration-500">
-        <lucide-icon [img]="icons.Eye" class="w-7 h-7"></lucide-icon>
+  <!-- Row 1: Primary Financial & Volume Stats -->
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+    <!-- Total Revenue Card -->
+    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-500 relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors"></div>
+      <div class="relative flex flex-col h-full gap-4">
+        <div class="flex items-center justify-between">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+            <lucide-icon [img]="icons.CreditCard" class="w-7 h-7 text-emerald-600"></lucide-icon>
+          </div>
+          <span class="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-xl">Revenue</span>
+        </div>
+        <div>
+          <app-price-display
+            class="text-3xl font-semibold text-primary dark:text-white tracking-tight"
+            [amount]="stats.totalRevenue"
+            size="lg"
+          ></app-price-display>
+          <p class="text-xs font-medium text-gray-400 mt-1 uppercase tracking-wider">Gross Earnings</p>
+        </div>
       </div>
-      <span
-        class="text-[9px] font-black text-accent uppercase tracking-[0.2em] bg-accent/5 px-3 py-1.5 rounded-full"
-        >Real-time</span
-      >
     </div>
-    <div>
-      <p class="text-gray-500 text-sm font-medium mb-1">Daily Visitors</p>
-      <div class="flex items-baseline gap-2">
-        <h3 class="text-2xl font-bold text-primary tracking-tight">
-          {{ traffic.uniqueVisitors }}
-        </h3>
-        <span class="text-xs text-gray-500 font-medium"
-          >({{ traffic.pageViews }} views)</span
-        >
+
+    <!-- Total Orders Card -->
+    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+      <div class="relative flex flex-col h-full gap-4">
+        <div class="flex items-center justify-between">
+          <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+            <lucide-icon [img]="icons.Receipt" class="w-7 h-7 text-primary"></lucide-icon>
+          </div>
+          <span class="text-[10px] font-black uppercase tracking-[0.2em] text-primary-light bg-primary/5 px-3 py-1.5 rounded-xl">Volumes</span>
+        </div>
+        <div>
+          <span class="text-4xl font-semibold text-primary dark:text-white tracking-tight">{{ stats.totalOrders }}</span>
+          <p class="text-xs font-medium text-gray-400 mt-1 uppercase tracking-wider">Lifetime Orders</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivered Orders Card -->
+    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-500 relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors"></div>
+      <div class="relative flex flex-col h-full gap-4">
+        <div class="flex items-center justify-between">
+          <div class="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+            <lucide-icon [img]="icons.Truck" class="w-7 h-7 text-blue-600"></lucide-icon>
+          </div>
+          <span class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-3 py-1.5 rounded-xl">Success</span>
+        </div>
+        <div>
+          <span class="text-4xl font-semibold text-primary dark:text-white tracking-tight">{{ stats.deliveredOrders }}</span>
+          <p class="text-xs font-medium text-gray-400 mt-1 uppercase tracking-wider">Successfully Shipped</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Traffic Card -->
+    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-accent/5 transition-all duration-500 relative overflow-hidden" *ngIf="dailyTraffic$ | async as traffic">
+      <div class="absolute -right-4 -top-4 w-32 h-32 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/10 transition-colors"></div>
+      <div class="relative flex flex-col h-full gap-4">
+        <div class="flex items-center justify-between">
+          <div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+            <lucide-icon [img]="icons.Eye" class="w-7 h-7 text-accent"></lucide-icon>
+          </div>
+          <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-accent-light bg-accent/5 px-3 py-1.5 rounded-xl">Engagement</span>
+        </div>
+        <div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl font-semibold text-primary dark:text-white tracking-tight">{{ traffic.uniqueVisitors }}</span>
+            <span class="text-xs font-semibold text-gray-400 uppercase">Live</span>
+          </div>
+          <p class="text-xs font-medium text-gray-400 mt-1 uppercase tracking-wider">{{ traffic.pageViews }} Page Views Today</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Total Revenue -->
-  <div
-    class="bg-surface-light dark:bg-surface-dark p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 hover:shadow-emerald-500/10 transition-all group"
-  >
-    <div class="flex items-start justify-between">
-      <div class="p-4 bg-emerald-500/5 rounded-2xl text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
-        <lucide-icon [img]="icons.CreditCard" class="w-7 h-7"></lucide-icon>
+  <!-- Middle Row: Operational Status Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Pending Orders Card (Takes 2 columns if needed, but 1 is fine here) -->
+    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500">
+      <div class="flex items-center gap-5">
+        <div class="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0 group-hover:rotate-12 transition-transform duration-500">
+          <lucide-icon [img]="icons.Clock" class="w-8 h-8 text-amber-600"></lucide-icon>
+        </div>
+        <div class="flex-1">
+          <h4 class="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-1">Attention Required</h4>
+          <span class="text-2xl font-semibold text-primary dark:text-white">{{ stats.pendingOrders }}</span>
+          <p class="text-xs font-semibold text-amber-600 mt-0.5 uppercase tracking-wide">Pending Orders</p>
+        </div>
       </div>
-      <span
-        class="text-[9px] font-black text-emerald-600 uppercase tracking-[0.2em] bg-emerald-500/5 px-3 py-1.5 rounded-full"
-        >Revenue</span
-      >
     </div>
-    <div>
-      <p class="text-text-sub text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">Total Revenue</p>
-      <app-price-display
-        class="text-primary text-3xl font-black tracking-tighter"
-        [amount]="stats.totalRevenue"
-        size="lg"
-      ></app-price-display>
-    </div>
-  </div>
 
-  <!-- Delivered -->
-  <div
-    class="bg-surface-light dark:bg-surface-dark p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 hover:shadow-blue-500/10 transition-all group"
-  >
-    <div class="flex items-start justify-between">
-      <div class="p-4 bg-blue-500/5 rounded-2xl text-blue-600 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
-        <lucide-icon [img]="icons.Truck" class="w-7 h-7"></lucide-icon>
+    <!-- Catalog Size Card -->
+    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500">
+      <div class="flex items-center gap-5">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center shrink-0 group-hover:rotate-12 transition-transform duration-500">
+          <lucide-icon [img]="icons.Package" class="w-8 h-8 text-indigo-600"></lucide-icon>
+        </div>
+        <div class="flex-1">
+          <h4 class="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-1">Catalog Size</h4>
+          <span class="text-2xl font-semibold text-primary dark:text-white">{{ stats.totalProducts }}</span>
+          <p class="text-xs font-semibold text-indigo-600 mt-0.5 uppercase tracking-wide">Live Products</p>
+        </div>
       </div>
-      <span
-        class="text-[9px] font-black text-blue-600 uppercase tracking-[0.2em] bg-blue-500/5 px-3 py-1.5 rounded-full"
-        >Delivered</span
-      >
     </div>
-    <div>
-      <p class="text-text-sub text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">Orders Delivered</p>
-      <h3 class="text-3xl font-black text-primary tracking-tighter">
-        {{ stats.deliveredOrders }}
-      </h3>
-    </div>
-  </div>
 
-  <!-- Pending -->
-  <div
-    class="bg-surface-light dark:bg-surface-dark p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 hover:shadow-amber-500/10 transition-all group"
-  >
-    <div class="flex items-start justify-between">
-      <div class="p-4 bg-amber-500/5 rounded-2xl text-amber-600 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500">
-        <lucide-icon [img]="icons.Clock" class="w-7 h-7"></lucide-icon>
+    <!-- Customer Base Card -->
+    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500">
+      <div class="flex items-center gap-5">
+        <div class="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center shrink-0 group-hover:rotate-12 transition-transform duration-500">
+          <lucide-icon [img]="icons.Users" class="w-8 h-8 text-purple-600"></lucide-icon>
+        </div>
+        <div class="flex-1">
+          <h4 class="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-1">User Ecosystem</h4>
+          <span class="text-2xl font-semibold text-primary dark:text-white">{{ stats.totalCustomers }}</span>
+          <p class="text-xs font-semibold text-purple-600 mt-0.5 uppercase tracking-wide">Total Customers</p>
+        </div>
       </div>
-      <span
-        class="text-[9px] font-black text-amber-600 uppercase tracking-[0.2em] bg-amber-500/5 px-3 py-1.5 rounded-full"
-        >Processing</span
-      >
     </div>
-    <div>
-      <p class="text-text-sub text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">Pending Orders</p>
-      <h3 class="text-3xl font-black text-primary tracking-tighter">
-        {{ stats.pendingOrders }}
-      </h3>
-    </div>
-  </div>
 
-  <!-- Total Products -->
-  <div
-    class="bg-surface p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow"
-  >
-    <div class="flex items-start justify-between">
-      <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600">
-        <lucide-icon [img]="icons.Package" class="w-6 h-6"></lucide-icon>
+    <!-- Returns Card -->
+    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500">
+      <div class="flex items-center gap-5">
+        <div class="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center shrink-0 group-hover:rotate-12 transition-transform duration-500">
+          <lucide-icon [img]="icons.RotateCcw" class="w-8 h-8 text-rose-600"></lucide-icon>
+        </div>
+        <div class="flex-1">
+          <h4 class="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-1">Return Rate</h4>
+          <span class="text-2xl font-semibold text-primary dark:text-white">{{ stats.returnedOrders }}</span>
+          <div class="flex items-center gap-2 mt-0.5">
+            <span class="text-xs font-semibold text-rose-600 uppercase tracking-wide">Orders</span>
+            <span class="px-2 py-0.5 text-[9px] font-semibold bg-rose-50 dark:bg-rose-900/20 text-rose-600 rounded-md">{{ stats.returnRate }}</span>
+          </div>
+        </div>
       </div>
-      <span
-        class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full"
-        >Catalog</span
-      >
-    </div>
-    <div>
-      <p class="text-gray-500 text-sm font-medium mb-1">Total Products</p>
-      <h3 class="text-2xl font-bold text-primary tracking-tight">
-        {{ stats.totalProducts }}
-      </h3>
-    </div>
-  </div>
-
-  <!-- Total Customers -->
-  <div
-    class="bg-surface p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow"
-  >
-    <div class="flex items-start justify-between">
-      <div class="p-3 bg-purple-50 rounded-lg text-purple-600">
-        <lucide-icon [img]="icons.Users" class="w-6 h-6"></lucide-icon>
-      </div>
-      <span
-        class="text-xs font-semibold text-purple-600 bg-purple-50 px-2 py-1 rounded-full"
-        >Users</span
-      >
-    </div>
-    <div>
-      <p class="text-gray-500 text-sm font-medium mb-1">Total Customers</p>
-      <h3 class="text-2xl font-bold text-primary tracking-tight">
-        {{ stats.totalCustomers }}
-      </h3>
-    </div>
-  </div>
-
-  <!-- Return Rate -->
-  <div
-    class="bg-surface p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow"
-  >
-    <div class="flex items-start justify-between">
-      <div class="p-3 bg-rose-50 rounded-lg text-rose-600">
-        <lucide-icon [img]="icons.RotateCcw" class="w-6 h-6"></lucide-icon>
-      </div>
-      <span
-        class="text-xs font-semibold text-rose-600 bg-rose-50 px-2 py-1 rounded-full"
-        >Return Rate</span
-      >
-    </div>
-    <div>
-      <p class="text-gray-500 text-sm font-medium mb-1">Returned Orders</p>
-      <h3 class="text-2xl font-bold text-primary tracking-tight">
-        {{ stats.returnedOrders }} ({{ stats.returnRate }})
-      </h3>
     </div>
   </div>
 </div>
 
 <ng-template #loadingStats>
-  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-    <div
-      *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]"
-      class="bg-surface-light p-8 rounded-3xl border border-border-color/10 shadow-2xl shadow-primary/5 flex flex-col gap-6 animate-pulse"
-    >
-      <div class="flex items-start justify-between">
-        <div class="w-14 h-14 bg-supporting rounded-2xl"></div>
-        <div class="w-20 h-6 bg-supporting rounded-full"></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div *ngFor="let i of [1,2,3,4,5,6,7,8]" class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-8 rounded-[2.5rem] animate-pulse">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-2xl"></div>
+        <div class="flex-1 space-y-2">
+          <div class="w-20 h-3 bg-gray-100 dark:bg-gray-800 rounded"></div>
+          <div class="w-12 h-2 bg-gray-100 dark:bg-gray-800 rounded"></div>
+        </div>
       </div>
-      <div class="space-y-4">
-        <div class="w-24 h-3 bg-supporting rounded"></div>
-        <div class="w-32 h-10 bg-supporting/50 rounded-xl"></div>
-      </div>
+      <div class="w-24 h-8 bg-gray-100 dark:bg-gray-800 rounded-xl mb-2"></div>
+      <div class="w-32 h-3 bg-gray-100 dark:bg-gray-800 rounded"></div>
     </div>
   </div>
 </ng-template>
 
-
-
 <footer class="mt-20 mb-10 text-center" *ngIf="settings$ | async as settings">
-  <p class="text-[10px] font-black uppercase tracking-[0.4em] text-text-sub/30">
-    © {{ Math.max(2026, date.getFullYear()) }}
-    {{ settings.websiteName || "SheraShopBD Console" }}
+  <p class="text-[10px] font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-[0.3em]">
+    © {{ date.getFullYear() }} {{ settings.websiteName || "Arza" }} • Admin Navigation Console
   </p>
 </footer>

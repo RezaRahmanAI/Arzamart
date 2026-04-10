@@ -1,0 +1,285 @@
+<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 bg-gray-50 dark:bg-[#0b1120] min-h-screen">
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div>
+      <h2 class="text-primary dark:text-white text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+        Admin Management
+      </h2>
+      <p class="text-gray-500 dark:text-gray-400 text-sm mt-1 font-medium">
+        Manage administrative staff and define access permissions.
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button
+        *ngIf="currentUserRole === 'SuperAdmin'"
+        (click)="isCreateModalOpen = true"
+        class="flex items-center justify-center gap-2 rounded-xl h-11 px-6 bg-primary text-white text-sm font-semibold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+      >
+        <lucide-icon [img]="icons.UserPlus" class="w-4 h-4"></lucide-icon>
+        <span>Add New Admin</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Admin Users List -->
+  <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2rem] overflow-hidden shadow-sm shadow-gray-200/50">
+    <div class="p-6 border-b border-gray-50 dark:border-gray-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-primary">
+                <lucide-icon [img]="icons.Shield" class="w-5 h-5"></lucide-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-primary dark:text-white">Internal Staff members</h3>
+        </div>
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-lg">
+            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">{{ admins.length }} Active Admins</span>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-50 dark:border-gray-800">
+            <th class="px-8 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em]">Profile</th>
+            <th class="px-8 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em]">Role & Security</th>
+            <th class="px-8 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em]">Date Joined</th>
+            <th class="px-8 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] text-center">Status</th>
+            <th class="px-8 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] text-right" *ngIf="currentUserRole === 'SuperAdmin'">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+          <tr *ngFor="let admin of admins" class="hover:bg-gray-50/80 dark:hover:bg-gray-800/20 transition-all group">
+            <td class="px-8 py-6">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary font-bold text-sm border border-primary/10 shadow-inner group-hover:scale-110 transition-transform">
+                  {{ getInitials(admin.fullName) }}
+                </div>
+                  <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-primary dark:text-white">{{ admin.fullName }}</span>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">User: {{ admin.userName }}</span>
+                      <span class="text-xs text-gray-400 font-medium tracking-tight" *ngIf="admin.email">{{ admin.email }}</span>
+                    </div>
+                  </div>
+              </div>
+            </td>
+            <td class="px-8 py-6">
+                <div class="flex items-center gap-3">
+                    <div class="px-3 py-1.5 rounded-xl border flex items-center gap-2" 
+                         [ngClass]="admin.role === 'SuperAdmin' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-blue-50 border-blue-200 text-blue-700'">
+                        <lucide-icon [img]="admin.role === 'SuperAdmin' ? icons.ShieldCheck : icons.Shield" class="w-3.5 h-3.5"></lucide-icon>
+                        <span class="text-[10px] font-black uppercase tracking-wider">{{ admin.role }}</span>
+                    </div>
+                </div>
+            </td>
+            <td class="px-8 py-6">
+              <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest">{{ admin.createdAt | date: 'MMM d, yyyy' }}</span>
+            </td>
+            <td class="px-8 py-6">
+              <div class="flex items-center justify-center">
+                  <button (click)="toggleStatus(admin)" 
+                          [disabled]="currentUserRole !== 'SuperAdmin'"
+                          class="flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50">
+                      <lucide-icon [img]="admin.isActive ? icons.ToggleRight : icons.ToggleLeft" 
+                                class="w-8 h-8"
+                                [ngClass]="admin.isActive ? 'text-emerald-500' : 'text-gray-300'"></lucide-icon>
+                      <span class="text-[10px] font-black uppercase tracking-widest w-12 text-left"
+                            [ngClass]="admin.isActive ? 'text-emerald-600' : 'text-gray-400'">
+                          {{ admin.isActive ? 'Active' : 'Locked' }}
+                      </span>
+                  </button>
+              </div>
+            </td>
+            <td class="px-8 py-6 text-right" *ngIf="currentUserRole === 'SuperAdmin'">
+                <div class="flex items-center justify-end gap-2">
+                    <button (click)="openEditModal(admin)" title="Edit Staff Member"
+                            class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-primary hover:border-primary transition-all flex items-center justify-center">
+                        <lucide-icon [img]="icons.Pencil" class="w-4 h-4"></lucide-icon>
+                    </button>
+                    <button (click)="resetPassword(admin)" title="Reset Password"
+                            class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-amber-500 hover:border-amber-500 transition-all flex items-center justify-center">
+                        <lucide-icon [img]="icons.Lock" class="w-4 h-4"></lucide-icon>
+                    </button>
+                    <button (click)="deleteAdmin(admin)" title="Archive User"
+                            class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-red-500 hover:border-red-500 transition-all flex items-center justify-center">
+                        <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
+                    </button>
+                </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && admins.length === 0" class="py-20 text-center">
+      <lucide-icon [img]="icons.Users" class="w-16 h-16 mx-auto mb-4 text-gray-200"></lucide-icon>
+      <h3 class="text-lg font-semibold text-gray-400">No admin staff found</h3>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="p-20 flex flex-col items-center justify-center space-y-4">
+      <lucide-icon [img]="icons.Loader2" class="w-10 h-10 text-primary animate-spin"></lucide-icon>
+      <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest">Retrieving team members...</p>
+    </div>
+  </div>
+
+  <!-- Create Admin Modal -->
+  <div *ngIf="isCreateModalOpen" class="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in" (click)="isCreateModalOpen = false">
+    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
+      <div class="p-8">
+          <div class="flex items-center justify-between mb-8">
+              <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                      <lucide-icon [img]="icons.UserPlus" class="w-6 h-6"></lucide-icon>
+                  </div>
+                  <div>
+                      <h3 class="text-2xl font-semibold text-primary dark:text-white">Add New Member</h3>
+                      <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mt-1">Hire a new administrative staff</p>
+                  </div>
+              </div>
+              <button (click)="isCreateModalOpen = false" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+                  <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+              </button>
+          </div>
+
+          <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="space-y-2">
+                      <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Full Identity</label>
+                      <div class="relative group">
+                          <lucide-icon [img]="icons.User" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                          <input type="text" formControlName="fullName" placeholder="Reza Rahman" 
+                                 class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                      </div>
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Username</label>
+                    <div class="relative group">
+                        <lucide-icon [img]="icons.Plus" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                        <input type="text" formControlName="userName" placeholder="reza_admin" 
+                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                    </div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                  <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Email Address (Optional)</label>
+                  <div class="relative group">
+                      <lucide-icon [img]="icons.Mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                      <input type="email" formControlName="email" placeholder="reza@example.com" 
+                             class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                  </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Initial Password</label>
+                    <div class="relative group">
+                        <lucide-icon [img]="icons.Lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                        <input type="password" formControlName="password" placeholder="••••••••" 
+                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Access Tier</label>
+                    <select formControlName="role" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none appearance-none cursor-pointer">
+                        <option value="Admin">Staff Admin (Restricted)</option>
+                        <option value="SuperAdmin">Super Admin (Full Access)</option>
+                    </select>
+                </div>
+              </div>
+
+              <div class="p-5 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 rounded-2xl space-y-2">
+                  <div class="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+                      <lucide-icon [img]="icons.Shield" class="w-3.5 h-3.5"></lucide-icon>
+                      <span class="text-[10px] font-black uppercase tracking-widest">Security Advisory</span>
+                  </div>
+                  <p class="text-[11px] font-medium text-amber-600/80 dark:text-amber-400/80 leading-relaxed italic">
+                      "Granting **Super Admin** privileges allows full control over users, settings, and product deletions. Use with extreme caution."
+                  </p>
+              </div>
+
+              <div class="flex gap-4 pt-4">
+                  <button type="button" (click)="isCreateModalOpen = false" class="flex-1 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-all">Cancel</button>
+                  <button type="submit" [disabled]="createForm.invalid || isSubmitting"
+                          class="flex-[2] py-4 rounded-2xl bg-primary text-white font-semibold text-sm hover:scale-[1.02] active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3">
+                      <lucide-icon *ngIf="isSubmitting" [img]="icons.Loader2" class="w-5 h-5 animate-spin"></lucide-icon>
+                      <span>{{ isSubmitting ? 'Creating User...' : 'Establish Member' }}</span>
+                  </button>
+              </div>
+          </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Admin Modal -->
+  <div *ngIf="isEditModalOpen" class="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in" (click)="isEditModalOpen = false">
+    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
+      <div class="p-8">
+          <div class="flex items-center justify-between mb-8">
+              <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                      <lucide-icon [img]="icons.Pencil" class="w-6 h-6"></lucide-icon>
+                  </div>
+                  <div>
+                      <h3 class="text-2xl font-semibold text-primary dark:text-white">Update Member</h3>
+                      <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mt-1">Modify staff profile or access level</p>
+                  </div>
+              </div>
+              <button (click)="isEditModalOpen = false" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+                  <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+              </button>
+          </div>
+
+          <form [formGroup]="editForm" (ngSubmit)="onUpdate()" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="space-y-2">
+                      <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Full Identity</label>
+                      <div class="relative group">
+                          <lucide-icon [img]="icons.User" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                          <input type="text" formControlName="fullName" placeholder="Reza Rahman" 
+                                 class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                      </div>
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Username</label>
+                    <div class="relative group">
+                        <lucide-icon [img]="icons.Plus" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                        <input type="text" formControlName="userName" placeholder="reza_admin" 
+                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                    </div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                  <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Email Address (Optional)</label>
+                  <div class="relative group">
+                      <lucide-icon [img]="icons.Mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                      <input type="email" formControlName="email" placeholder="reza@example.com" 
+                             class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                  </div>
+              </div>
+
+              <div class="space-y-2">
+                  <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Access Tier</label>
+                  <select formControlName="role" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none appearance-none cursor-pointer">
+                      <option value="Admin">Staff Admin (Restricted)</option>
+                      <option value="SuperAdmin">Super Admin (Full Access)</option>
+                  </select>
+              </div>
+
+              <div class="flex gap-4 pt-4">
+                  <button type="button" (click)="isEditModalOpen = false" class="flex-1 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-all">Cancel</button>
+                  <button type="submit" [disabled]="editForm.invalid || isSubmitting"
+                          class="flex-[2] py-4 rounded-2xl bg-primary text-white font-semibold text-sm hover:scale-[1.02] active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3">
+                      <lucide-icon *ngIf="isSubmitting" [img]="icons.Loader2" class="w-5 h-5 animate-spin"></lucide-icon>
+                      <span>{{ isSubmitting ? 'Updating User...' : 'Update Staff Profile' }}</span>
+                  </button>
+              </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>

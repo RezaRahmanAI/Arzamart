@@ -40,7 +40,7 @@
   h4,
   h5,
   h6 {
-    @apply font-display font-black uppercase tracking-tighter leading-none;
+    @apply font-display font-semibold tracking-tight leading-snug;
   }
 
   /* Custom Scrollbar */
@@ -58,6 +58,19 @@
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-accent;
+  }
+
+  .custom-scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .custom-scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-200 dark:bg-gray-700 rounded-full;
+  }
+  .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-300 dark:bg-gray-600;
   }
 
   /* Selection */

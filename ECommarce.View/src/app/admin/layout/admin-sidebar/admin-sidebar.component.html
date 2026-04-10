@@ -143,24 +143,6 @@
           </nav>
         </div>
 
-        <!-- Management Section -->
-        <div>
-          <p class="px-4 mb-4 text-[10px] font-display font-black text-white/20 uppercase tracking-[0.2em]">Management</p>
-          <nav class="space-y-1">
-            <a
-              *ngFor="let item of bottomItems"
-              class="flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group relative text-white/50 hover:text-white hover:bg-white/5"
-              [routerLink]="item.route"
-              routerLinkActive="nav-active bg-accent/10 text-accent ring-1 ring-white/5"
-              #rlaBottom="routerLinkActive"
-              [routerLinkActiveOptions]="{ exact: true }"
-            >
-              <lucide-icon [img]="item.icon" class="w-5 h-5 group-hover:scale-110 transition-transform duration-300" [ngClass]="rlaBottom.isActive ? 'text-accent' : ''"></lucide-icon>
-              <span class="text-sm font-display font-semibold">{{ item.label }}</span>
-              <div *ngIf="rlaBottom.isActive" class="absolute left-0 w-1 h-5 bg-accent rounded-r-full shadow-[0_0_12px_rgba(var(--color-accent),0.5)]"></div>
-            </a>
-          </nav>
-        </div>
       </div>
     </div>
   </div>

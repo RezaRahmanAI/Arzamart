@@ -9,6 +9,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace ECommerce.API.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Admin,SuperAdmin")]
 [Route("api/admin/settings")]
 public class AdminSettingsController : ControllerBase
 {
@@ -61,6 +62,7 @@ public class AdminSettingsController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "SuperAdmin")]
     [HttpPost]
     public async Task<ActionResult<SiteSettingsDto>> UpdateSettings([FromBody] SiteSettingsDto dto)
     {
@@ -98,6 +100,7 @@ public class AdminSettingsController : ControllerBase
         return Ok(dto);
     }
 
+    [Authorize(Roles = "SuperAdmin")]
     [HttpPost("media")]
     public async Task<ActionResult<object>> UploadLogo(IFormFile file)
     {
@@ -127,6 +130,7 @@ public class AdminSettingsController : ControllerBase
         return await _context.DeliveryMethods.AsNoTracking().ToListAsync();
     }
 
+    [Authorize(Roles = "SuperAdmin")]
     [HttpPost("delivery-methods")]
     public async Task<ActionResult<DeliveryMethod>> CreateDeliveryMethod([FromBody] DeliveryMethodDto dto)
     {
@@ -147,6 +151,7 @@ public class AdminSettingsController : ControllerBase
         return CreatedAtAction(nameof(GetDeliveryMethods), new { id = method.Id }, method);
     }
 
+    [Authorize(Roles = "SuperAdmin")]
     [HttpPost("delivery-methods/{id}")]
     public async Task<IActionResult> UpdateDeliveryMethod(int id, [FromBody] DeliveryMethodDto dto)
     {
@@ -165,6 +170,7 @@ public class AdminSettingsController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "SuperAdmin")]
     [HttpPost("delivery-methods/{id}/delete")]
     public async Task<IActionResult> DeleteDeliveryMethod(int id)
     {

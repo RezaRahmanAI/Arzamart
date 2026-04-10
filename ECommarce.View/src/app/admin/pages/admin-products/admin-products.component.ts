@@ -12,6 +12,7 @@ import {
 import { ProductsService } from "../../services/products.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
+import { AuthService } from "../../../core/services/auth.service";
 import {
   LucideAngularModule,
   Plus,
@@ -60,6 +61,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   private productsService = inject(ProductsService);
   private route = inject(ActivatedRoute);
   readonly imageUrlService = inject(ImageUrlService);
+  readonly authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
   pageTitle = "Products";

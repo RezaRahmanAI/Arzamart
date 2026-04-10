@@ -10,7 +10,7 @@
     <router-outlet></router-outlet>
   </ng-template>
   <app-toast></app-toast>
-  <app-contact-fab></app-contact-fab>
+  <app-contact-fab *ngIf="showPublicLayout$ | async"></app-contact-fab>
 </div>
 
 <app-loading-spinner></app-loading-spinner>

@@ -20,6 +20,9 @@ import {
   ChevronUp,
   X,
   Heart,
+  ShoppingCart,
+  PackagePlus,
+  Box,
 } from "lucide-angular";
 import { SidebarService } from "../../services/sidebar.service";
 
@@ -31,6 +34,7 @@ interface AdminNavItem {
 
 import { SiteSettingsService } from "../../../core/services/site-settings.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
+import { AuthService } from "../../../core/services/auth.service";
 
 @Component({
   selector: "app-admin-sidebar",
@@ -43,6 +47,7 @@ export class AdminSidebarComponent implements OnInit {
   private router = inject(Router);
   private settingsService = inject(SiteSettingsService);
   public imageUrlService = inject(ImageUrlService);
+  protected authService = inject(AuthService);
 
   settings$ = this.settingsService.getSettings();
 
@@ -63,6 +68,9 @@ export class AdminSidebarComponent implements OnInit {
     Shield,
     LineChart,
     Settings,
+    ShoppingCart,
+    PackagePlus,
+    Box,
   };
 
   topItems: AdminNavItem[] = [
@@ -81,15 +89,16 @@ export class AdminSidebarComponent implements OnInit {
 
   navItems: AdminNavItem[] = [
     { label: "Sales Orders", icon: ShoppingBag, route: "/admin/orders" },
+    { label: "Pre-orders", icon: Box, route: "/admin/orders/pre-orders" },
+    { label: "Manual Order", icon: ShoppingCart, route: "/admin/orders/create" },
+    { label: "Inventory Management", icon: PackagePlus, route: "/admin/inventory" },
     { label: "Campaigns", icon: GalleryVertical, route: "/admin/banners" },
     { label: "Site Content", icon: FileText, route: "/admin/pages" },
     { label: "Customer Reviews", icon: MessageSquare, route: "/admin/reviews" },
     { label: "CRM", icon: Users, route: "/admin/customers" },
   ];
 
-  bottomItems: AdminNavItem[] = [
-    { label: "System Preferences", icon: Settings, route: "/admin/settings" },
-  ];
+  bottomItems: AdminNavItem[] = [];
 
   isProductsMenuOpen = false;
 

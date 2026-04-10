@@ -14,7 +14,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/products")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class AdminProductsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -95,6 +95,7 @@ public class AdminProductsController : ControllerBase
         [FromQuery] string? searchTerm,
         [FromQuery] string? category,
         [FromQuery] string? statusTab,
+        [FromQuery] string? stockStatus,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
@@ -117,6 +118,18 @@ public class AdminProductsController : ControllerBase
         {
             bool isActive = statusTab.ToLower() == "active";
             query = query.Where(p => p.IsActive == isActive);
+        }
+
+        if (!string.IsNullOrEmpty(stockStatus) && stockStatus != "all")
+        {
+            if (stockStatus.ToLower() == "instock")
+            {
+                query = query.Where(p => p.StockQuantity > 0);
+            }
+            else if (stockStatus.ToLower() == "outofstock")
+            {
+                query = query.Where(p => p.StockQuantity <= 0);
+            }
         }
 
         var total = await query.CountAsync();
@@ -146,6 +159,8 @@ public class AdminProductsController : ControllerBase
                 Category = p.Category != null ? p.Category.Name : "",
                 CategoryId = p.CategoryId,
                 MediaUrls = p.Images.Select(i => i.Url).ToList(),
+                Images = p.Images.Select(i => new { i.Url, i.Color }).ToList(),
+                Variants = p.Variants.Select(v => new { v.Id, v.Size, v.StockQuantity, v.Price }).ToList(),
                 p.CreatedAt,
                 p.Slug
             })
@@ -257,6 +272,7 @@ public class AdminProductsController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "SuperAdmin")]
     [HttpPost("{id:int}/delete")]
     public async Task<ActionResult<bool>> DeleteProduct(int id)
     {
@@ -351,6 +367,7 @@ public class AdminProductsController : ControllerBase
             ProductSku = p.Sku ?? string.Empty,
             ImageUrl = p.ImageUrl ?? string.Empty,
             TotalStock = p.StockQuantity,
+            StockQuantity = p.StockQuantity,
             Variants = p.Variants.Select(v => new VariantInventoryDto
             {
                 VariantId = v.Id,
@@ -400,6 +417,29 @@ public class AdminProductsController : ControllerBase
              }
 
              return Ok(new { message = "Stock updated successfully", newTotal = product.StockQuantity });
+        }
+
+        return BadRequest(new { message = "Failed to update stock" });
+    }
+
+    [HttpPost("inventory/product/{productId}")]
+    public async Task<ActionResult> UpdateProductStock(int productId, UpdateStockDto dto)
+    {
+        var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
+        if (product == null) return NotFound(new { message = "Product not found" });
+
+        product.StockQuantity = dto.Quantity;
+        _unitOfWork.Repository<Product>().Update(product);
+
+        if (await _unitOfWork.Complete() > 0)
+        {
+            await _cache.RemoveAsync("home_new_arrivals");
+            await _cache.RemoveAsync("home_featured_products");
+            await _cacheStore.EvictByTagAsync("products", default);
+            await _cache.RemoveAsync($"product_id:{product.Id}");
+            await _cache.RemoveAsync($"product_slug:{product.Slug}");
+
+            return Ok(new { message = "Stock updated successfully", newTotal = product.StockQuantity });
         }
 
         return BadRequest(new { message = "Failed to update stock" });

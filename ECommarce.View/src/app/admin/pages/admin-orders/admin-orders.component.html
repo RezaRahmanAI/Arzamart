@@ -1,470 +1,479 @@
-<div
-  class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth bg-gray-50 dark:bg-[#0b1120] min-h-screen"
->
+<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 bg-gray-50 dark:bg-[#0b1120] min-h-screen">
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div>
-      <h2
-        class="text-primary dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight"
-      >
-        Orders
+      <h2 class="text-primary dark:text-white text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+        {{ isPreOrderMode ? 'Pre-orders' : 'Orders' }}
       </h2>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">
-        Manage and track customer order fulfillment.
+      <p class="text-gray-500 dark:text-gray-400 text-sm mt-1 font-medium">
+        {{ isPreOrderMode ? 'Manage and track customer pre-orders.' : 'Command center for order fulfillment and tracking.' }}
       </p>
     </div>
     <div class="flex flex-wrap gap-3">
-      <button
-        class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark text-primary dark:text-white text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all shadow-sm"
-        type="button"
-        (click)="printOrders()"
+      <!-- New Order Actions -->
+      <a
+        routerLink="/admin/orders/create"
+        class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5"
       >
-        <lucide-icon [img]="icons.Printer" class="w-5 h-5"></lucide-icon>
-        <span>Print List</span>
+        <lucide-icon [img]="icons.ShoppingCart" class="w-4 h-4"></lucide-icon>
+        <span>New Order</span>
+      </a>
+      <a
+        routerLink="/admin/orders/pre-order"
+        class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 bg-violet-500 hover:bg-violet-600 text-white text-sm font-semibold shadow-lg shadow-violet-500/20 transition-all hover:-translate-y-0.5 mr-2"
+      >
+        <lucide-icon [img]="icons.PackagePlus" class="w-4 h-4"></lucide-icon>
+        <span>New Pre-order</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Filters Toolbar -->
+  <div class="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center bg-white dark:bg-surface-dark p-4 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
+    <div class="relative flex-1 max-w-md">
+      <lucide-icon [img]="icons.Search" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"></lucide-icon>
+      <input
+        class="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium text-primary dark:text-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none"
+        placeholder="Search by name, phone or #ID..."
+        type="text"
+        [formControl]="searchControl"
+      />
+    </div>
+
+    <div class="flex items-center gap-3">
+        <!-- Status Filter (Refactored) -->
+        <div class="relative" (click)="$event.stopPropagation()">
+            <button
+              (click)="toggleStatusMenu($event)"
+              class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
+            >
+              <lucide-icon [img]="icons.Check" class="w-4 h-4 text-emerald-500"></lucide-icon>
+              <span class="text-gray-400 uppercase text-[10px] tracking-wider hidden sm:inline">Filter By:</span>
+              <span class="min-w-[80px] text-center">{{ selectedStatus === 'All' ? 'All Statuses' : selectedStatus }}</span>
+              <lucide-icon [img]="icons.ChevronDown" class="w-4 h-4 text-gray-400" [class.rotate-180]="statusMenuOpen"></lucide-icon>
+            </button>
+            
+            <div *ngIf="statusMenuOpen" class="absolute left-0 lg:right-0 lg:left-auto mt-3 w-[280px] bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl z-[100] p-4 animate-in fade-in zoom-in duration-200">
+                <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-4">Operational States</p>
+                <div class="grid grid-cols-1 gap-1">
+                    <button *ngFor="let status of statusOptions" 
+                            (click)="setStatusFilter(status, $event)" 
+                            class="w-full px-4 py-2.5 text-left text-xs font-semibold rounded-xl transition-all group flex items-center justify-between"
+                            [class.bg-primary]="selectedStatus === status"
+                            [class.text-white]="selectedStatus === status"
+                            [class.hover:bg-gray-50]="selectedStatus !== status"
+                            [class.dark:hover:bg-gray-800]="selectedStatus !== status">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full" [ngStyle]="{ backgroundColor: getStatusColor(status) }"></div>
+                            <span>{{ status }}</span>
+                        </div>
+                        <lucide-icon *ngIf="selectedStatus === status" [img]="icons.Check" class="w-3 h-3"></lucide-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Date Filter (Advanced) -->
+        <div class="relative" (click)="$event.stopPropagation()">
+            <button
+              (click)="toggleDateMenu($event)"
+              class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
+            >
+              <lucide-icon [img]="icons.Calendar" class="w-4 h-4 text-gray-400"></lucide-icon>
+              <span class="text-gray-400 uppercase text-[10px] tracking-wider hidden sm:inline">Range:</span>
+              <span class="min-w-[80px] text-center">{{ activeDateRangeLabel }}</span>
+              <lucide-icon [img]="icons.ChevronDown" class="w-4 h-4 text-gray-400" [class.rotate-180]="dateMenuOpen"></lucide-icon>
+            </button>
+            
+            <div *ngIf="dateMenuOpen" class="absolute right-0 mt-3 w-[450px] bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl z-[100] overflow-hidden flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-800 animate-in fade-in zoom-in duration-200">
+                <!-- Direct Shortcuts Sidebar -->
+                <div class="w-full md:w-1/3 bg-gray-50/50 dark:bg-gray-800/10 p-4 space-y-2">
+                    <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-4">Quick Ranges</p>
+                    <button *ngFor="let range of dateRanges" 
+                            (click)="setDateRange(range, $event)" 
+                            class="w-full px-4 py-2 text-left text-xs font-semibold rounded-xl transition-all group flex items-center justify-between"
+                            [class.bg-primary]="selectedDateRange === range"
+                            [class.text-white]="selectedDateRange === range"
+                            [class.hover:bg-gray-100]="selectedDateRange !== range"
+                            [class.dark:hover:bg-gray-800]="selectedDateRange !== range">
+                        <span>{{ range }}</span>
+                        <lucide-icon *ngIf="selectedDateRange === range" [img]="icons.Check" class="w-3 h-3"></lucide-icon>
+                    </button>
+                </div>
+
+                <!-- Custom Calendar Inputs -->
+                <div class="w-full md:w-2/3 p-6 flex flex-col justify-between">
+                    <div>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 border-b border-gray-100 dark:border-gray-800 pb-2">Custom Range Selector</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 h-fit">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-gray-500 uppercase tracking-wider ml-1">From Date</label>
+                                <div class="relative group">
+                                    <lucide-icon [img]="icons.Calendar" class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 group-focus-within:text-primary transition-colors"></lucide-icon>
+                                    <input type="date" 
+                                           [(ngModel)]="tempStartDate"
+                                           class="w-full pl-9 pr-3 py-2.5 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-xl text-xs font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-gray-500 uppercase tracking-wider ml-1">To Date</label>
+                                <div class="relative group">
+                                    <lucide-icon [img]="icons.Calendar" class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 group-focus-within:text-primary transition-colors"></lucide-icon>
+                                    <input type="date" 
+                                           [(ngModel)]="tempEndDate"
+                                           class="w-full pl-9 pr-3 py-2.5 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-xl text-xs font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/30 rounded-xl">
+                            <p class="text-[9px] font-medium text-blue-600 dark:text-blue-400 leading-relaxed italic text-center">
+                                *Orders placed between these dates will be displayed. Time is calculated in UTC.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex gap-3">
+                        <button (click)="dateMenuOpen = false" class="flex-1 px-4 py-2.5 rounded-xl border border-gray-100 dark:border-gray-700 text-xs font-bold text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">Cancel</button>
+                        <button (click)="applyCustomRange($event)" 
+                                [disabled]="!tempStartDate || !tempEndDate"
+                                class="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] disabled:opacity-50 disabled:scale-100 transition-all">
+                            Apply Range
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2rem] overflow-hidden shadow-sm shadow-gray-200/50">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-separate border-spacing-0">
+        <thead>
+          <tr class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
+            <th class="px-6 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] w-12 text-center">#</th>
+            <th class="px-6 py-4 text-left">
+              <div class="flex items-center gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                <span>Order Info</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-left">
+              <div class="flex items-center gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                <span>Customer</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-left">
+              <div class="flex items-center gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                <span>Status</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-center">
+              <div class="flex items-center justify-center gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                <span>Total</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-right">
+              <div class="flex items-center justify-end gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                <span>Actions</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+          <tr *ngFor="let order of orders; trackBy: trackByOrderId" class="hover:bg-gray-50/80 dark:hover:bg-gray-800/30 transition-all group">
+            <td class="px-6 py-6 text-center">
+              <span class="text-xs font-semibold text-gray-300 dark:text-gray-700 font-mono">#{{ order.id }}</span>
+            </td>
+            <td class="px-6 py-6">
+              <div class="flex flex-col">
+                <span class="text-sm font-semibold text-primary dark:text-white tracking-tight mb-1 group-hover:text-primary transition-colors">#{{ order.orderNumber }}</span>
+                <span class="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{{ order.createdAt | date: 'MMM d, h:mm a' }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-6">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <lucide-icon [img]="icons.User" class="w-5 h-5 text-gray-400"></lucide-icon>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-semibold text-primary dark:text-white tracking-tight">{{ order.customerName }}</span>
+                  <span class="text-[10px] font-medium text-gray-400 tracking-wide">{{ order.customerPhone }}</span>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-6">
+                <div class="relative inline-block" (click)="$event.stopPropagation()" [style.z-index]="statusUpdateOrderId === order.id ? 100 : 1">
+                    <button 
+                      (click)="toggleStatusUpdateMenu(order.id, $event)"
+                      class="px-3 py-1.5 rounded-xl text-[10px] font-semibold uppercase border-2 flex items-center gap-2 transition-all hover:bg-white dark:hover:bg-gray-800 active:scale-95 shadow-sm"
+                      [ngClass]="statusClass(order.status)"
+                    >
+                      <span class="w-1.5 h-1.5 rounded-full animate-pulse" [ngStyle]="{ backgroundColor: getStatusColor(order.status) }"></span>
+                      <span>{{ order.status }}</span>
+                      <lucide-icon [img]="icons.ChevronDown" class="w-3 h-3 opacity-50 transition-transform" [class.rotate-180]="statusUpdateOrderId === order.id"></lucide-icon>
+                    </button>
+                    
+                    <!-- Premium Status Update Menu -->
+                    <div *ngIf="statusUpdateOrderId === order.id" 
+                         class="absolute left-0 mt-3 w-56 bg-white/95 dark:bg-surface-dark/95 backdrop-blur-xl border border-gray-100 dark:border-gray-700 rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-[200] p-3 animate-in fade-in zoom-in-95 duration-200">
+                      
+                      <div class="flex items-center justify-between px-2 py-1 mb-2">
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Update State</span>
+                        <div class="w-1.5 h-1.5 rounded-full bg-primary/20 animate-ping"></div>
+                      </div>
+
+                      <div class="space-y-1">
+                        <div *ngFor="let status of updateStatusOptions" 
+                                (click)="updateOrderStatus(order.id, status, $event)" 
+                                class="w-full px-3 py-2.5 text-left text-[11px] font-bold rounded-xl transition-all flex items-center justify-between group overflow-hidden relative cursor-pointer"
+                                [ngClass]="{
+                                  'bg-primary text-white': order.status === status,
+                                  'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50': order.status !== status
+                                }">
+                          
+                          <div class="flex items-center gap-3 relative z-10">
+                            <div class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors shadow-sm"
+                                 [ngClass]="order.status === status ? 'bg-white/20' : 'bg-gray-50 dark:bg-gray-900 group-hover:bg-white dark:group-hover:bg-gray-800'">
+                                <lucide-icon [img]="getStatusIcon(status)" class="w-3.5 h-3.5" [ngStyle]="{ color: order.status === status ? 'white' : getStatusColor(status) }"></lucide-icon>
+                            </div>
+                            <span>{{ status }}</span>
+                          </div>
+
+                          <lucide-icon *ngIf="order.status === status" [img]="icons.Check" class="w-3 h-3 relative z-10"></lucide-icon>
+                          
+                          <!-- Subtle Background hover effect -->
+                          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        </div>
+                      </div>
+                      
+                      <!-- Footer Hint -->
+                      <div class="mt-3 pt-2 border-t border-gray-50 dark:border-gray-800/50 px-2">
+                        <p class="text-[8px] font-medium text-gray-400 italic text-center">Selecting a state will notify the customer.</p>
+                      </div>
+                    </div>
+                </div>
+            </td>
+            <td class="px-6 py-6 text-center">
+                <app-price-display [amount]="order.total" className="text-sm font-semibold text-primary dark:text-white tracking-tighter" size="sm"></app-price-display>
+                <div class="text-[9px] font-medium text-gray-400 mt-1 uppercase">{{ order.itemsCount }} items</div>
+            </td>
+            <td class="px-6 py-6">
+              <div class="flex items-center justify-end flex-wrap gap-2">
+                <!-- Primary Fulfillment Actions -->
+                <button (click)="printInvoice(order, $event)" class="w-10 h-10 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 hover:text-primary hover:border-primary transition-all shadow-sm" title="Invoice/Details">
+                  <lucide-icon [img]="icons.Eye" class="w-5 h-5 m-auto"></lucide-icon>
+                </button>
+                <button (click)="editOrder(order, $event)" class="w-10 h-10 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 hover:text-amber-500 hover:border-amber-500 transition-all shadow-sm" title="Edit Order">
+                  <lucide-icon [img]="icons.Edit" class="w-5 h-5 m-auto"></lucide-icon>
+                </button>
+                <button (click)="openTracking(order, $event)" class="w-10 h-10 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 hover:text-blue-500 hover:border-blue-500 transition-all shadow-sm" title="Tracking History">
+                  <lucide-icon [img]="icons.History" class="w-5 h-5 m-auto"></lucide-icon>
+                </button>
+                <button (click)="openNotes(order, $event)" class="w-10 h-10 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 hover:text-indigo-500 hover:border-indigo-500 transition-all shadow-sm" title="Admin Notes">
+                  <lucide-icon [img]="icons.StickyNote" class="w-5 h-5 m-auto"></lucide-icon>
+                </button>
+                
+                <div class="w-px h-6 bg-gray-100 dark:bg-gray-800 mx-1"></div>
+
+                <!-- Messaging Actions -->
+                <button (click)="sendReminder(order, $event)" class="w-10 h-10 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 hover:text-emerald-500 hover:border-emerald-500 transition-all shadow-sm" title="SMS Reminder">
+                  <lucide-icon [img]="icons.Send" class="w-5 h-5 m-auto"></lucide-icon>
+                </button>
+                <button (click)="sendWhatsApp(order, $event)" class="w-10 h-10 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 hover:text-emerald-600 hover:border-emerald-600 transition-all shadow-sm" title="WhatsApp Message">
+                  <lucide-icon [img]="icons.MessageCircle" class="w-5 h-5 m-auto"></lucide-icon>
+                </button>
+
+                <div class="w-px h-6 bg-gray-100 dark:bg-gray-800 mx-1" *ngIf="order.status !== 'PreOrder'"></div>
+
+                <!-- Move between PreOrder and Main Order -->
+                <button *ngIf="order.status !== 'PreOrder'" (click)="moveToPreOrder(order, $event)" class="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-900/10 border border-violet-100 dark:border-violet-900/30 text-violet-500 hover:bg-violet-500 hover:text-white transition-all shadow-sm" title="Move to Pre-Order">
+                  <lucide-icon [img]="icons.PackagePlus" class="w-5 h-5 m-auto"></lucide-icon>
+                </button>
+                <button *ngIf="order.status === 'PreOrder'" (click)="moveToMainOrder(order, $event)" class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Convert to Main Order">
+                  <lucide-icon [img]="icons.ShoppingBag" class="w-5 h-5 m-auto"></lucide-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && orders.length === 0" class="py-20 text-center">
+      <lucide-icon [img]="icons.PackageX" class="w-16 h-16 mx-auto mb-4 text-gray-200 dark:text-gray-800"></lucide-icon>
+      <h3 class="text-lg font-semibold text-gray-400">No orders found</h3>
+      <p class="text-sm text-gray-400 mt-1 font-medium">Try adjusting your filters or search term</p>
+    </div>
+
+    <!-- Loading Skeleton -->
+    <div *ngIf="isLoading" class="divide-y divide-gray-50 dark:divide-gray-800">
+      <div *ngFor="let j of [1,2,3,4,5,6]" class="p-8 flex items-center justify-between animate-pulse">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-2xl"></div>
+          <div class="space-y-2">
+            <div class="w-32 h-4 bg-gray-100 dark:bg-gray-800 rounded"></div>
+            <div class="w-24 h-3 bg-gray-100 dark:bg-gray-800 rounded"></div>
+          </div>
+        </div>
+        <div class="w-24 h-8 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+        <div class="w-48 h-10 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-surface-dark p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
+    <div class="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+      Showing <span class="text-primary dark:text-white">{{ paginationStart }}</span>—<span class="text-primary dark:text-white">{{ paginationEnd }}</span> of {{ totalResults }} orders
+    </div>
+    <div class="flex items-center gap-3">
+      <button 
+        (click)="goToPreviousPage()" 
+        [disabled]="page === 1"
+        class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-100 transition-all font-semibold"
+      >
+        <lucide-icon [img]="icons.ChevronLeft" class="w-5 h-5"></lucide-icon>
       </button>
-      <button
-        class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 bg-primary hover:bg-primary-hover text-white text-sm font-bold shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
-        type="button"
-        (click)="exportOrders()"
+      <div class="flex items-center gap-2 px-4 py-2 rounded-2xl bg-primary/5 text-primary text-sm font-semibold">
+        <span>{{ page }}</span>
+        <span class="text-gray-400">/</span>
+        <span class="text-gray-400">{{ totalPages }}</span>
+      </div>
+      <button 
+        (click)="goToNextPage()" 
+        [disabled]="page === totalPages"
+        class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-100 transition-all font-semibold"
       >
-        <lucide-icon [img]="icons.Download" class="w-5 h-5"></lucide-icon>
-        <span>Export CSV</span>
+        <lucide-icon [img]="icons.ChevronRight" class="w-5 h-5"></lucide-icon>
       </button>
     </div>
   </div>
 
-  <!-- Stats Cards -->
-  <div
-    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
-    *ngIf="!isLoading; else loadingStats"
-  >
-    <!-- Total Orders -->
-    <div
-      class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group"
-    >
-      <div class="relative z-10">
-        <p
-          class="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider mb-2"
-        >
-          Total Orders
-        </p>
-        <div class="flex items-baseline gap-2">
-          <h3 class="text-3xl font-black text-primary dark:text-white">
-            {{ stats.totalOrders | number }}
-          </h3>
+  <!-- Tracking Modal Overlay -->
+  <div *ngIf="isTrackingModalOpen && trackingOrder" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in" (click)="isTrackingModalOpen = false">
+    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2.5rem] w-full max-w-lg overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+              <lucide-icon [img]="icons.History" class="w-6 h-6"></lucide-icon>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-primary dark:text-white">Order Tracking</h3>
+              <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mt-1">#{{ trackingOrder.orderNumber }}</p>
+            </div>
+          </div>
+          <button (click)="isTrackingModalOpen = false" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500">
+            <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+          </button>
         </div>
-      </div>
-      <div
-        class="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-blue-50 to-transparent dark:from-blue-900/10 opacity-50 group-hover:w-32 transition-all duration-500"
-      ></div>
-      <div
-        class="absolute bottom-4 right-4 text-blue-500/10 dark:text-blue-500/20"
-      >
-        <lucide-icon [img]="icons.ShoppingBag" class="w-12 h-12"></lucide-icon>
-      </div>
-    </div>
 
-    <!-- Processing -->
-    <div
-      class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group"
-    >
-      <div class="relative z-10">
-        <p
-          class="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider mb-2"
-        >
-          Pending
-        </p>
-        <div class="flex items-baseline gap-2">
-          <h3 class="text-3xl font-black text-primary dark:text-white">
-            {{ stats.processing | number }}
-          </h3>
-        </div>
-      </div>
-      <div
-        class="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-yellow-50 to-transparent dark:from-yellow-900/10 opacity-50 group-hover:w-32 transition-all duration-500"
-      ></div>
-      <div
-        class="absolute bottom-4 right-4 text-yellow-500/10 dark:text-yellow-500/20"
-      >
-        <lucide-icon [img]="icons.Package" class="w-12 h-12"></lucide-icon>
-      </div>
-    </div>
+        <div class="space-y-6 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+          <div *ngFor="let log of trackingOrder.logs; let last = last" class="relative pl-8">
+            <div *ngIf="!last" class="absolute left-[11px] top-6 bottom-0 w-0.5 bg-gray-100 dark:bg-gray-800"></div>
+            <div class="absolute left-0 top-1.5 w-6 h-6 rounded-full border-4 border-white dark:border-surface-dark shadow-sm flex items-center justify-center transition-colors" [ngClass]="log.statusTo ? 'bg-primary' : 'bg-gray-300'"></div>
+            <div class="flex flex-col">
+              <div class="flex items-center justify-between gap-4 mb-1">
+                <span class="text-sm font-semibold text-primary dark:text-white">{{ log.statusTo ? 'Status updated to ' + log.statusTo : 'Admin Note added' }}</span>
+                <span class="text-[10px] font-semibold text-gray-400 whitespace-nowrap">{{ log.createdAt | date:'MMM d, h:mm a' }}</span>
+              </div>
+              <p *ngIf="log.note" class="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-3 rounded-2xl border border-gray-100 dark:border-gray-800 italic mt-2">
+                "{{ log.note }}"
+              </p>
+              <div class="flex items-center gap-2 mt-2">
+                  <div class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                    <lucide-icon [img]="icons.User" class="w-2.5 h-2.5 text-gray-400"></lucide-icon>
+                  </div>
+                  <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">{{ log.changedBy }}</span>
+              </div>
+            </div>
+          </div>
 
-    <!-- Revenue -->
-    <div
-      class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group"
-    >
-      <div class="relative z-10">
-        <p
-          class="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider mb-2"
-        >
-          Revenue
-        </p>
-        <div class="flex items-baseline gap-2">
-          <app-price-display
-            class="text-3xl font-black text-primary dark:text-white"
-            [amount]="stats.totalRevenue"
-          >
-          </app-price-display>
+          <div *ngIf="!trackingOrder.logs || trackingOrder.logs.length === 0" class="py-12 text-center">
+              <lucide-icon [img]="icons.PackageX" class="w-12 h-12 mx-auto mb-4 text-gray-100 dark:bg-gray-800"></lucide-icon>
+              <p class="text-sm font-semibold text-gray-400">No activity logs found for this order</p>
+          </div>
         </div>
-      </div>
-      <div
-        class="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-green-50 to-transparent dark:from-green-900/10 opacity-50 group-hover:w-32 transition-all duration-500"
-      ></div>
-      <div
-        class="absolute bottom-4 right-4 text-green-500/10 dark:text-green-500/20"
-      >
-        <lucide-icon [img]="icons.CreditCard" class="w-12 h-12"></lucide-icon>
-      </div>
-    </div>
 
-    <!-- Refunds -->
-    <div
-      class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group"
-    >
-      <div class="relative z-10">
-        <p
-          class="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-wider mb-2"
-        >
-          Returns
-        </p>
-        <div class="flex items-baseline gap-2">
-          <h3 class="text-3xl font-black text-primary dark:text-white">
-            {{ stats.refundRequests | number }}
-          </h3>
-        </div>
-      </div>
-      <div
-        class="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-red-50 to-transparent dark:from-red-900/10 opacity-50 group-hover:w-32 transition-all duration-500"
-      ></div>
-      <div
-        class="absolute bottom-4 right-4 text-red-500/10 dark:text-red-500/20"
-      >
-        <lucide-icon [img]="icons.RotateCcw" class="w-12 h-12"></lucide-icon>
+        <button (click)="isTrackingModalOpen = false" class="w-full mt-8 py-5 rounded-[1.5rem] bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-xl">
+          Close Tracking
+        </button>
       </div>
     </div>
   </div>
 
-  <ng-template #loadingStats>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <div
-        *ngFor="let i of [1, 2, 3, 4]"
-        class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm animate-pulse"
-      >
-        <div class="w-24 h-4 bg-gray-100 dark:bg-gray-800 rounded mb-3"></div>
-        <div class="w-32 h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
-      </div>
-    </div>
-  </ng-template>
-
-  <!-- Main Content Area -->
-  <div class="flex flex-col gap-6">
-    <!-- Filters Toolbar -->
-    <div
-      class="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-white dark:bg-surface-dark p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm"
-    >
-      <!-- Search -->
-      <div class="w-full lg:w-96 relative group">
-        <div
-          class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-primary"
-        >
-          <lucide-icon
-            [img]="icons.Search"
-            class="w-4 h-4 text-gray-400 group-focus-within:text-primary"
-          ></lucide-icon>
-        </div>
-        <input
-          class="block w-full pl-11 pr-4 py-3 border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-background-dark text-primary dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm font-medium"
-          placeholder="Search orders..."
-          type="text"
-          [formControl]="searchControl"
-        />
-      </div>
-
-      <!-- Filter Buttons -->
-      <div class="flex flex-wrap gap-3 w-full lg:w-auto">
-        <!-- Status Filter -->
-        <div class="relative" (click)="$event.stopPropagation()">
-          <button
-            class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-95"
-            type="button"
-            (click)="toggleStatusMenu($event)"
-            [class.ring-2]="statusMenuOpen"
-            [class.ring-primary]="statusMenuOpen"
-          >
-            <span class="text-gray-500 dark:text-gray-400 font-medium"
-              >Status:</span
-            >
-            <span>{{ selectedStatus }}</span>
-            <lucide-icon
-              [img]="icons.ChevronDown"
-              class="w-4 h-4 ml-1 transition-transform"
-              [class.rotate-180]="statusMenuOpen"
-            ></lucide-icon>
-          </button>
-
-          <div
-            *ngIf="statusMenuOpen"
-            class="absolute mt-2 w-56 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-surface-dark shadow-xl z-20 py-2 animate-in fade-in zoom-in-95 duration-200"
-            (click)="$event.stopPropagation()"
-          >
-            <button
-              *ngFor="let status of statusOptions"
-              class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between group"
-              [class.text-primary]="selectedStatus === status"
-              [class.dark:text-white]="selectedStatus === status"
-              [class.text-gray-600]="selectedStatus !== status"
-              [class.dark:text-gray-300]="selectedStatus !== status"
-              type="button"
-              (click)="setStatusFilter(status, $event)"
-            >
-              {{ status }}
-              <lucide-icon
-                [img]="icons.Check"
-                *ngIf="selectedStatus === status"
-                class="w-4 h-4 text-primary"
-              ></lucide-icon>
-            </button>
-          </div>
-        </div>
-
-        <!-- Date Filter -->
-        <div class="relative" (click)="$event.stopPropagation()">
-          <button
-            class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-95"
-            type="button"
-            (click)="toggleDateMenu($event)"
-            [class.ring-2]="dateMenuOpen"
-            [class.ring-primary]="dateMenuOpen"
-          >
-            <span class="text-gray-500 dark:text-gray-400 font-medium"
-              >Period:</span
-            >
-            <span>{{ selectedDateRange }}</span>
-            <lucide-icon
-              [img]="icons.ChevronDown"
-              class="w-4 h-4 ml-1 transition-transform"
-              [class.rotate-180]="dateMenuOpen"
-            ></lucide-icon>
-          </button>
-
-          <div
-            *ngIf="dateMenuOpen"
-            class="absolute mt-2 w-56 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-surface-dark shadow-xl z-20 py-2 animate-in fade-in zoom-in-95 duration-200"
-            (click)="$event.stopPropagation()"
-          >
-            <button
-              *ngFor="let range of dateRanges"
-              class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between"
-              [class.text-primary]="selectedDateRange === range"
-              [class.dark:text-white]="selectedDateRange === range"
-              [class.text-gray-600]="selectedDateRange !== range"
-              [class.dark:text-gray-300]="selectedDateRange !== range"
-              type="button"
-              (click)="setDateRange(range, $event)"
-            >
-              {{ range }}
-              <lucide-icon
-                [img]="icons.Check"
-                *ngIf="selectedDateRange === range"
-                class="w-4 h-4 text-primary"
-              ></lucide-icon>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Orders Grid & Pagination -->
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-      *ngIf="!isLoading; else loadingCards"
-    >
-      <div
-        *ngFor="let order of orders; trackBy: trackByOrderId"
-        class="group bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col gap-5 relative border-l-4"
-        [ngStyle]="{ 'border-l-color': getStatusColor(order.status) }"
-      >
-        <!-- Card Header -->
-        <div class="flex items-start justify-between">
-          <div class="flex flex-col gap-1 text-left">
-            <div class="flex items-center gap-2">
-              <span class="font-mono font-black text-primary dark:text-white text-lg tracking-tighter">
-                #{{ order.orderNumber }}
-              </span>
-              <input
-                class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20 cursor-pointer"
-                type="checkbox"
-                [checked]="selectedOrderIds.has(order.id)"
-                (change)="toggleSelectOrder(order.id, $event)"
-                (click)="$event.stopPropagation()"
-              />
+  <!-- Notes Modal Overlay (Threaded Conversation) -->
+  <div *ngIf="isNotesModalOpen && notesOrder" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in" (click)="isNotesModalOpen = false">
+    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
+      <div class="flex flex-col h-[600px] max-h-[90vh]">
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-white dark:bg-surface-dark shrink-0">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+              <lucide-icon [img]="icons.MessageSquare" class="w-6 h-6"></lucide-icon>
             </div>
-            <div class="flex items-center gap-2 text-xs text-gray-400 font-bold uppercase tracking-widest">
-              <lucide-icon [img]="icons.Calendar" class="w-3 h-3"></lucide-icon>
-              {{ order.createdAt | date: "MMM d, h:mm a" }}
+            <div>
+              <h3 class="text-xl font-semibold text-primary dark:text-white">Internal Discussion</h3>
+              <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mt-1">Order #{{ notesOrder.orderNumber }}</p>
             </div>
           </div>
-          <span
-            class="inline-flex items-center px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter border-2"
-            [ngClass]="statusClass(order.status)"
-          >
-            {{ order.status }}
-          </span>
+          <button (click)="isNotesModalOpen = false" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+            <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+          </button>
         </div>
 
-        <!-- Customer & Items info -->
-        <div class="flex items-center gap-4 p-4 bg-gray-50/50 dark:bg-gray-800/30 rounded-xl">
-          <div
-            class="w-12 h-12 rounded-xl flex items-center justify-center text-sm font-black shadow-sm"
-            [ngClass]="avatarClass(order)"
-          >
-            {{ getCustomerInitials(order.customerName) }}
+        <!-- Thread Feed -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50 dark:bg-gray-900/10 custom-scrollbar">
+          <div *ngIf="!notesOrder.notes || notesOrder.notes.length === 0" class="flex flex-col items-center justify-center h-full text-center p-10 opacity-40">
+            <lucide-icon [img]="icons.MessageCircle" class="w-16 h-16 mb-4 text-gray-300"></lucide-icon>
+            <p class="text-sm font-semibold text-gray-500 uppercase tracking-widest">No internal notes yet</p>
+            <p class="text-xs text-gray-400 mt-2 italic font-medium">Start a collaboration by sending a note below.</p>
           </div>
-          <div class="flex flex-col min-w-0 text-left">
-            <span class="text-base font-black text-gray-900 dark:text-white truncate uppercase tracking-tighter">
-              {{ order.customerName }}
-            </span>
-            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">
-              {{ order.itemsCount }} item{{ order.itemsCount !== 1 ? "s" : "" }} ordered
-            </span>
+
+          <div *ngFor="let note of notesOrder.notes" class="flex flex-col space-y-2 animate-in slide-in-from-bottom-2">
+            <div class="flex items-center justify-between px-1">
+              <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">{{ note.adminName }}</span>
+              <span class="text-[9px] font-semibold text-gray-400">{{ note.createdAt | date:'MMM d, h:mm a' }}</span>
+            </div>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none border border-gray-100 dark:border-gray-700 shadow-sm shadow-gray-100 dark:shadow-none">
+              <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{{ note.content }}</p>
+            </div>
           </div>
         </div>
 
-        <!-- Price & Total -->
-        <div class="flex items-center justify-between pt-2 border-t border-gray-50 dark:border-gray-800">
-          <div class="flex flex-col text-left">
-            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Total Amount</span>
-            <app-price-display
-              class="text-xl font-black text-primary dark:text-white tracking-tighter"
-              [amount]="order.total"
-              size="sm"
-            ></app-price-display>
+        <!-- Input Area -->
+        <div class="p-6 bg-white dark:bg-surface-dark border-t border-gray-100 dark:border-gray-800 shrink-0">
+          <div class="relative group">
+            <textarea 
+              [(ngModel)]="newNoteText"
+              rows="3"
+              placeholder="Type your internal note here... (Admins only)"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[1.5rem] px-5 py-4 text-sm font-medium text-primary dark:text-white focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all outline-none resize-none shadow-inner"
+              (keydown.enter)="$event.preventDefault(); addNote()"
+            ></textarea>
+            
+            <div class="absolute bottom-3 right-3 flex items-center gap-2">
+              <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mr-2 hidden sm:block">Press Enter to Send</span>
+              <button 
+                (click)="addNote()" 
+                [disabled]="isSavingNote || !newNoteText.trim()"
+                class="w-12 h-12 rounded-xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 hover:bg-indigo-600 hover:scale-110 active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all"
+              >
+                <lucide-icon *ngIf="isSavingNote" [img]="icons.Loader2" class="w-5 h-5 animate-spin"></lucide-icon>
+                <lucide-icon *ngIf="!isSavingNote" [img]="icons.Send" class="w-5 h-5"></lucide-icon>
+              </button>
+            </div>
           </div>
           
-          <!-- Actions -->
-          <div class="flex items-center gap-2">
-            <!-- Quick Actions for Pending -->
-            <ng-container *ngIf="order.status === 'Pending'">
-              <button
-                class="w-10 h-10 flex items-center justify-center text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl hover:bg-emerald-500 hover:text-white transition-all shadow-sm"
-                title="Confirm Order"
-                type="button"
-                (click)="markNextStatus(order, $event)"
-              >
-                <lucide-icon [img]="icons.Check" class="w-5 h-5"></lucide-icon>
-              </button>
-            </ng-container>
-
-            <button
-              class="w-10 h-10 flex items-center justify-center text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm"
-              type="button"
-              (click)="toggleRowActions(order.id, $event)"
-            >
-              <lucide-icon [img]="icons.MoreVertical" class="w-5 h-5"></lucide-icon>
-            </button>
+          <div class="mt-4 flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></div>
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">Admin Collaboration Mode Active</span>
           </div>
         </div>
-
-        <!-- Dropdown Action Menu -->
-        <div
-          *ngIf="actionMenuOpenId === order.id"
-          class="absolute bottom-20 right-6 w-52 rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-surface-dark shadow-2xl z-20 py-3 animate-in fade-in slide-in-from-bottom-2 duration-200"
-          (click)="$event.stopPropagation()"
-        >
-          <div class="px-5 py-2 border-b border-gray-50 dark:border-gray-800 mb-2">
-            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Order Actions</p>
-          </div>
-
-          <a
-            class="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            [routerLink]="['/admin/orders', order.id]"
-            (click)="viewDetails($event)"
-          >
-            <lucide-icon [img]="icons.Eye" class="w-4 h-4"></lucide-icon>
-            View Full Details
-          </a>
-
-          <button
-            *ngIf="nextStatusLabel(order)"
-            class="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-primary dark:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left"
-            type="button"
-            (click)="markNextStatus(order, $event)"
-          >
-            <lucide-icon [img]="icons.Forward" class="w-4 h-4"></lucide-icon>
-            {{ nextStatusLabel(order) }}
-          </button>
-
-          <div class="h-px bg-gray-50 dark:bg-gray-800 my-2"></div>
-
-          <button
-            class="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left"
-            type="button"
-            (click)="cancelOrder(order, $event)"
-          >
-            <lucide-icon [img]="icons.XCircle" class="w-4 h-4"></lucide-icon>
-            Cancel Order
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Skeleton Loading -->
-    <ng-template #loadingCards>
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 animate-pulse flex flex-col gap-5">
-          <div class="flex justify-between items-start">
-            <div class="h-6 w-32 bg-gray-100 dark:bg-gray-800 rounded"></div>
-            <div class="h-6 w-20 bg-gray-100 dark:bg-gray-800 rounded-lg"></div>
-          </div>
-          <div class="h-20 bg-gray-50 dark:bg-gray-800 rounded-xl"></div>
-          <div class="flex justify-between items-end">
-            <div class="space-y-2">
-              <div class="h-2 w-16 bg-gray-100 dark:bg-gray-800 rounded"></div>
-              <div class="h-7 w-24 bg-200 dark:bg-gray-700 rounded"></div>
-            </div>
-            <div class="h-10 w-10 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
-          </div>
-        </div>
-      </div>
-    </ng-template>
-
-    <!-- Pagination -->
-    <div
-      class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-2xl p-4 flex items-center justify-between shadow-sm"
-    >
-      <div class="text-xs font-bold text-gray-400 uppercase tracking-widest hidden sm:block">
-        Showing <span class="text-gray-900 dark:text-white">{{ paginationStart }}</span> to
-        <span class="text-gray-900 dark:text-white">{{ paginationEnd }}</span> of
-        <span class="text-gray-900 dark:text-white">{{ totalResults }}</span> orders
-      </div>
-
-      <div class="flex items-center gap-2 ml-auto sm:ml-0">
-        <button
-          class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          [disabled]="page === 1"
-          (click)="goToPreviousPage()"
-        >
-          <lucide-icon [img]="icons.ChevronLeft" class="w-4 h-4"></lucide-icon>
-        </button>
-
-        <div class="flex items-center gap-1">
-          <span class="px-4 py-2 bg-primary/5 dark:bg-primary/20 text-primary dark:text-accent rounded-xl text-sm font-black">
-            {{ page }}
-          </span>
-          <span class="text-gray-400 font-bold mx-1">of</span>
-          <span class="px-4 py-2 text-gray-600 dark:text-gray-400 text-sm font-black">
-            {{ totalPages }}
-          </span>
-        </div>
-
-        <button
-          class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          [disabled]="page >= totalPages"
-          (click)="goToNextPage()"
-        >
-          <lucide-icon [img]="icons.ChevronRight" class="w-4 h-4"></lucide-icon>
-        </button>
       </div>
     </div>
   </div>

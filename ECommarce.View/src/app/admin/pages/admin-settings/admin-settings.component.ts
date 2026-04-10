@@ -20,6 +20,7 @@ import {
 } from "../../models/settings.models";
 import { SettingsService } from "../../services/settings.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
+import { AuthService } from "../../../core/services/auth.service";
 import {
   LucideAngularModule,
   Save,
@@ -57,6 +58,7 @@ export class AdminSettingsComponent implements OnInit {
   };
   private formBuilder = inject(NonNullableFormBuilder);
   private settingsService = inject(SettingsService);
+  readonly authService = inject(AuthService);
 
   @ViewChild("fileUpload") fileUpload?: ElementRef<HTMLInputElement>;
 

@@ -5,6 +5,7 @@ import { Subject, takeUntil } from "rxjs";
 import { AdminBanner } from "../../models/banners.models";
 import { AdminBannersService } from "../../services/admin-banners.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
+import { AuthService } from "../../../core/services/auth.service";
 import {
   LucideAngularModule,
   Plus,
@@ -45,6 +46,7 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
   private bannersService = inject(AdminBannersService);
   private fb = inject(FormBuilder);
   readonly imageUrlService = inject(ImageUrlService);
+  readonly authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
   banners: AdminBanner[] = [];

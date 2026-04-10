@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace ECommerce.API.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 [Route("api/admin/security")]
 [ApiController]
 public class AdminSecurityController : ControllerBase
@@ -25,6 +25,7 @@ public class AdminSecurityController : ControllerBase
         return await _context.BlockedIps.OrderByDescending(b => b.BlockedAt).ToListAsync();
     }
 
+    [Authorize(Roles = "SuperAdmin")]
     [HttpPost("block-ip")]
     public async Task<ActionResult<BlockedIp>> BlockIpAddress([FromBody] BlockedIp ipToBlock)
     {
@@ -48,6 +49,7 @@ public class AdminSecurityController : ControllerBase
         return CreatedAtAction(nameof(GetBlockedIps), new { id = ipToBlock.Id }, ipToBlock);
     }
 
+    [Authorize(Roles = "SuperAdmin")]
     [HttpPost("unblock-ip/{id}/delete")]
     public async Task<IActionResult> UnblockIp(int id)
     {

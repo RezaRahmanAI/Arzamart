@@ -236,12 +236,44 @@ export const appRoutes: Routes = [
         data: { title: "Order Management" },
       },
       {
+        path: "orders/create",
+        loadComponent: () =>
+          import(
+            "./admin/pages/admin-manual-order/admin-manual-order.component"
+          ).then((m) => m.AdminManualOrderComponent),
+        data: { title: "Manual Order" },
+      },
+      {
+        path: "orders/pre-order",
+        loadComponent: () =>
+          import(
+            "./admin/pages/admin-manual-order/admin-manual-order.component"
+          ).then((m) => m.AdminManualOrderComponent),
+        data: { title: "Create Pre-order" },
+      },
+      {
+        path: "orders/pre-orders",
+        loadComponent: () =>
+          import("./admin/pages/admin-orders/admin-orders.component").then(
+            (m) => m.AdminOrdersComponent,
+          ),
+        data: { title: "Pre-order Management", preOrderOnly: true },
+      },
+      {
         path: "orders/:id",
         loadComponent: () =>
           import("./admin/pages/admin-order-details/admin-order-details.component").then(
             (m) => m.AdminOrderDetailsComponent,
           ),
         data: { title: "Order Details" },
+      },
+      {
+        path: "orders/:id/edit",
+        loadComponent: () =>
+          import(
+            "./admin/pages/admin-manual-order/admin-manual-order.component"
+          ).then((m) => m.AdminManualOrderComponent),
+        data: { title: "Edit Order" },
       },
       {
         path: "customers",
@@ -312,6 +344,22 @@ export const appRoutes: Routes = [
             (m) => m.AdminBlockedIpsComponent,
           ),
         data: { title: "Security & IP Blocking" },
+      },
+      {
+        path: "users",
+        loadComponent: () =>
+          import("./admin/pages/admin-user-management/admin-user-management.component").then(
+            (m) => m.AdminUserManagementComponent,
+          ),
+        data: { title: "User Management" },
+      },
+      {
+        path: "profile",
+        loadComponent: () =>
+          import("./admin/pages/admin-profile/admin-profile.component").then(
+            (m) => m.AdminProfileComponent,
+          ),
+        data: { title: "My Profile" },
       },
       {
         path: "logout",

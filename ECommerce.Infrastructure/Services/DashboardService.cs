@@ -49,7 +49,7 @@ public class DashboardService : IDashboardService
 
             var totalOrders = orderStats?.TotalOrders ?? 0;
             var totalProducts = await _context.Products.AsNoTracking().CountAsync();
-            var totalCustomers = await _context.Users.AsNoTracking().CountAsync();
+            var totalCustomers = await _context.Customers.AsNoTracking().CountAsync();
 
             // Single query for sold items with product costs (fixed N+1)
             var soldItemsWithCosts = await _context.Orders

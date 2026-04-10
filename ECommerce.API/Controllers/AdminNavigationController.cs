@@ -9,7 +9,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/navigation")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class AdminNavigationController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -82,6 +82,7 @@ public class AdminNavigationController : ControllerBase
     }
 
     [HttpPost("{id}/delete")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteMenu(int id)
     {
         var menu = await _context.NavigationMenus.FindAsync(id);

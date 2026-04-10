@@ -11,7 +11,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/banners")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class AdminBannersController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -142,6 +142,7 @@ public class AdminBannersController : ControllerBase
     }
 
     [HttpPost("{id}/delete")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteBanner(int id)
     {
         var banner = await _context.HeroBanners.FindAsync(id);

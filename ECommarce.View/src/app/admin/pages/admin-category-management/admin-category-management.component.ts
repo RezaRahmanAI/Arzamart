@@ -11,6 +11,7 @@ import {
 } from "../../models/categories.models";
 import { CategoriesService } from "../../services/categories.service";
 import { environment } from "../../../../environments/environment";
+import { AuthService } from "../../../core/services/auth.service";
 import {
   LucideAngularModule,
   Search,
@@ -71,6 +72,7 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
   private categoriesService = inject(CategoriesService);
   private formBuilder = inject(FormBuilder);
   private route = inject(ActivatedRoute);
+  readonly authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
   categoriesFlat: Category[] = [];

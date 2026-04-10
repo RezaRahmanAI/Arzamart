@@ -6,7 +6,7 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
     name: "Sarah A.",
     title: "Verified Buyer",
     quote:
-      "The fabric quality is unmatched. I've bought abayas from many places, but SheraShopBD's attention to detail and fit is simply superior.",
+      "The fabric quality is unmatched. I've bought abayas from many places, but Arza Mart's attention to detail and fit is simply superior.",
     rating: 5,
     avatarUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDqoab-YUovxNmQFsMdPtAyneBM9WlRAXCCvuiZ5TOtvN3F-5_3EylXU-xikMrTaQpqWbrmxNRpV1TTDhxeRwU0svT2B7M_2GZSov-4R2KDdL2guniudrxGQP6pZ0JA7tndw5gCGFUjZqWAPUCusclObbfJSXLxBYddV8_yi5ogXrauBQF9u2cAd9BhDHZtpkgBRiFrWusjL21U0Qx9UoKC5zMjQeBV_atSgqMm6FgZMSXWcNcyB81ffnnuF49QWnr0LpCYzYS9Cqc",

@@ -34,6 +34,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<DailyTraffic> DailyTraffics { get; set; }
     public DbSet<BlockedIp> BlockedIps { get; set; }
     public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+    public DbSet<OrderNote> OrderNotes { get; set; }
     public DbSet<AppRefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -47,6 +48,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Collection>().HasQueryFilter(c => c.IsActive);
         builder.Entity<NavigationMenu>().HasQueryFilter(n => n.IsActive);
         builder.Entity<HeroBanner>().HasQueryFilter(h => h.IsActive);
+
+        // Required relation filters to avoid warnings when main entities are filtered out
+        builder.Entity<CartItem>().HasQueryFilter(ci => ci.Product!.IsActive);
+        builder.Entity<OrderItem>().HasQueryFilter(oi => oi.Product!.IsActive);
+        builder.Entity<ProductImage>().HasQueryFilter(pi => pi.Product!.IsActive);
+        builder.Entity<ProductVariant>().HasQueryFilter(pv => pv.Product!.IsActive);
+        builder.Entity<Review>().HasQueryFilter(r => r.Product!.IsActive);
 
         // Delivery Method Configuration
         builder.Entity<DeliveryMethod>(entity =>
@@ -167,6 +175,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasIndex(o => o.Status);
             entity.HasIndex(o => o.CreatedAt);
             entity.HasIndex(o => o.OrderNumber);
+
+            entity.HasMany(o => o.Notes)
+                  .WithOne()
+                  .HasForeignKey(n => n.OrderId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.Entity<OrderItem>(entity =>

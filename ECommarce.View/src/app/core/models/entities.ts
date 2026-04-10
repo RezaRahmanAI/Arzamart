@@ -1,6 +1,7 @@
 export interface User {
   id: string;
   fullName: string;
+  userName: string;
   name?: string; // For backward compatibility
   email: string;
   role: string;

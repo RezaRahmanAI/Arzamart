@@ -298,6 +298,15 @@ export class ProductDetailsPageComponent {
     return Math.round((discount / product.compareAtPrice) * 100);
   }
 
+  getDiscountAmount(product: {
+    price: number;
+    compareAtPrice?: number;
+  }): number {
+    if (!product.compareAtPrice || product.compareAtPrice <= product.price)
+      return 0;
+    return product.compareAtPrice - product.price;
+  }
+
   selectedColorName(
     product: Product | null,
     selectedColor: { name: string } | null,

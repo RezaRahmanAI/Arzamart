@@ -12,8 +12,8 @@
     
     <!-- Sophisticated Badge -->
     <div class="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
-      <span *ngIf="hasDiscount" class="px-1 py-0.5 bg-accent text-white text-[7px] sm:text-[8px] font-bold uppercase rounded shadow-lg shadow-accent/20">
-        -{{ discountPercentage }}%
+      <span *ngIf="hasDiscount" class="px-1.5 py-0.5 bg-accent text-white text-[10px] sm:text-[11px] font-bold uppercase rounded shadow-lg shadow-accent/20">
+        -৳{{ discountAmount }}
       </span>
     </div>
   </a>
@@ -25,7 +25,7 @@
       <p class="text-[10px] sm:text-xs md:text-sm text-primary font-semibold uppercase tracking-tight truncate">{{ product.sku || 'PL152' }} {{ product.name }}</p>
       <div class="flex items-center gap-2">
         <h3 class="text-sm sm:text-base md:text-lg font-bold text-accent leading-none">৳{{ currentPrice }}</h3>
-        <span *ngIf="hasDiscount" class="text-[9px] sm:text-xs text-gray-300 line-through font-medium">৳{{ originalPrice }}</span>
+        <span *ngIf="hasDiscount" class="text-[10px] sm:text-xs text-gray-500 line-through font-bold">৳{{ originalPrice }}</span>
       </div>
     </div>
 

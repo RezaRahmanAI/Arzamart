@@ -39,7 +39,7 @@ export class LoginPageComponent implements OnInit {
   private readonly router = inject(Router);
 
   readonly loginForm = this.formBuilder.nonNullable.group({
-    email: ["", [Validators.required, Validators.email]],
+    emailOrUsername: ["", [Validators.required]],
     password: ["", [Validators.required, Validators.minLength(6)]],
     rememberMe: false,
   });
@@ -57,14 +57,14 @@ export class LoginPageComponent implements OnInit {
     const savedEmail = this.authService.getSavedEmail();
     if (savedEmail) {
       this.loginForm.patchValue({
-        email: savedEmail,
+        emailOrUsername: savedEmail,
         rememberMe: true,
       });
     }
   }
 
-  get email() {
-    return this.loginForm.controls.email;
+  get emailOrUsername() {
+    return this.loginForm.controls.emailOrUsername;
   }
 
   get password() {
@@ -84,10 +84,10 @@ export class LoginPageComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = "";
 
-    const { email, password, rememberMe } = this.loginForm.getRawValue();
+    const { emailOrUsername, password, rememberMe } = this.loginForm.getRawValue();
 
     this.authService
-      .adminLogin(email, password) // Removed rememberMe from login call
+      .adminLogin(emailOrUsername, password) // Removed rememberMe from login call
       .pipe(
         take(1),
         finalize(() => {
@@ -97,7 +97,7 @@ export class LoginPageComponent implements OnInit {
       .subscribe({
         next: () => {
           if (rememberMe) {
-            this.authService.saveEmail(email);
+            this.authService.saveEmail(emailOrUsername);
           } else {
             this.authService.clearSavedEmail();
           }

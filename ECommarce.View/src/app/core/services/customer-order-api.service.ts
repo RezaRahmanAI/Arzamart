@@ -29,6 +29,7 @@ export interface CustomerOrderRequest {
   itemsCount: number;
   total: number;
   items: OrderItemRequest[];
+  isPreOrder?: boolean;
 }
 
 export interface CustomerOrderResponse {

@@ -12,7 +12,27 @@ public static class DataSeeder
 {
     public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
     {
-        // Seed Roles
+        // Ensure database is up to date for recent schema changes (AdminNote fix)
+        try
+        {
+            await context.Database.ExecuteSqlRawAsync(@"
+                IF NOT EXISTS (SELECT * FROM sys.columns 
+                               WHERE object_id = OBJECT_ID(N'[dbo].[Orders]') 
+                               AND name = 'AdminNote')
+                BEGIN
+                    ALTER TABLE [dbo].[Orders] ADD [AdminNote] NVARCHAR(MAX) NULL
+                END");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[DB_FIX] Error ensuring AdminNote column: {ex.Message}");
+        }
+
+        if (!await roleManager.RoleExistsAsync("SuperAdmin"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
+        }
+
         if (!await roleManager.RoleExistsAsync("Admin"))
         {
             await roleManager.CreateAsync(new IdentityRole("Admin"));
@@ -24,7 +44,7 @@ public static class DataSeeder
         }
 
         // Ensure Primary Admin User exists
-        var primaryAdminEmail = "admin@sherashopbd.com";
+        var primaryAdminEmail = "admin@arzamart.com";
         var existingAdmin = await userManager.FindByEmailAsync(primaryAdminEmail);
 
         if (existingAdmin == null)
@@ -38,11 +58,26 @@ public static class DataSeeder
                 Role = "Admin"
             };
 
-            var result = await userManager.CreateAsync(newAdmin, "Admin@123!");
-
+            var result = await userManager.CreateAsync(newAdmin, "Admin@1234");
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(newAdmin, "Admin");
+                await userManager.AddToRoleAsync(newAdmin, "SuperAdmin");
+            }
+        }
+        else if (existingAdmin.Role != "SuperAdmin")
+        {
+            existingAdmin.Role = "SuperAdmin";
+            await userManager.UpdateAsync(existingAdmin);
+            
+            if (!await userManager.IsInRoleAsync(existingAdmin, "Admin"))
+            {
+                await userManager.AddToRoleAsync(existingAdmin, "Admin");
+            }
+
+            if (!await userManager.IsInRoleAsync(existingAdmin, "SuperAdmin"))
+            {
+                await userManager.AddToRoleAsync(existingAdmin, "SuperAdmin");
             }
         }
 
@@ -62,7 +97,20 @@ public static class DataSeeder
 
             if (result.Succeeded)
             {
-                await userManager.AddToRoleAsync(adminUser, "Admin");
+                await userManager.AddToRoleAsync(adminUser, "SuperAdmin");
+            }
+        }
+        else 
+        {
+            var adminUser = await userManager.FindByEmailAsync("admin@gmail.com");
+            if (adminUser != null && adminUser.Role != "SuperAdmin")
+            {
+                adminUser.Role = "SuperAdmin";
+                await userManager.UpdateAsync(adminUser);
+                if (!await userManager.IsInRoleAsync(adminUser, "SuperAdmin"))
+                {
+                    await userManager.AddToRoleAsync(adminUser, "SuperAdmin");
+                }
             }
         }
 
@@ -399,6 +447,7 @@ public static class DataSeeder
                 });
             }
 
+            // Women's Abaya (4 products)
             // Women's Abaya (4 products)
             var womenCat = categories.FirstOrDefault(c => c.Slug == "women");
             var abayaSub = FindSubCategory("women", "abaya");
@@ -928,14 +977,14 @@ public static class DataSeeder
                 await context.SaveChangesAsync();
             }
 
-            // Seed/Update Site Settings to SheraShopBD
+            // Seed/Update Site Settings to Arza Mart
             var siteSettings = await context.SiteSettings.FirstOrDefaultAsync();
             if (siteSettings == null)
             {
                 siteSettings = new SiteSetting
                 {
-                    WebsiteName = "SheraShopBD",
-                    ContactEmail = "support@sherashopbd.com",
+                    WebsiteName = "Arza Mart",
+                    ContactEmail = "support@arzamart.com",
                     ContactPhone = "+880 1234-567890",
                     Currency = "BDT",
                     FreeShippingThreshold = 5000,
@@ -944,10 +993,10 @@ public static class DataSeeder
                 context.SiteSettings.Add(siteSettings);
                 await context.SaveChangesAsync();
             }
-            else if (siteSettings.WebsiteName != "SheraShopBD")
+            else if (siteSettings.WebsiteName != "Arza Mart")
             {
-                siteSettings.WebsiteName = "SheraShopBD";
-                siteSettings.ContactEmail = "support@sherashopbd.com";
+                siteSettings.WebsiteName = "Arza Mart";
+                siteSettings.ContactEmail = "support@arzamart.com";
                 await context.SaveChangesAsync();
             }
         }

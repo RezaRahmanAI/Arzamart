@@ -1,132 +1,181 @@
-<div
-  class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth bg-gray-50 dark:bg-[#0b1120] min-h-screen"
->
-  <!-- Header -->
+<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth bg-gray-50 dark:bg-[#0b1120] min-h-screen">
+  <!-- Header Section -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-    <div>
-      <h2
-        class="text-primary dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight"
-      >
-        Inventory
-      </h2>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">
-        Manage stock levels across all product variants.
-      </p>
+    <div class="flex items-center gap-5">
+      <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
+        <lucide-icon [img]="icons.Boxes" class="w-7 h-7 text-primary"></lucide-icon>
+      </div>
+      <div>
+        <h1 class="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tight">Inventory</h1>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
+          Manage product stock levels
+        </p>
+      </div>
     </div>
 
-    <div class="relative w-full md:w-96 group">
-      <div
-        class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-primary"
-      >
-        <lucide-icon
-          [img]="icons.Search"
-          class="w-4 h-4 text-gray-400 group-focus-within:text-primary"
-        ></lucide-icon>
+    <!-- Search Box -->
+    <div class="relative w-full md:w-80">
+      <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+        <lucide-icon [img]="icons.Search" class="w-5 h-5"></lucide-icon>
       </div>
-      <input
+      <input 
         [formControl]="searchControl"
-        type="text"
-        placeholder="Search by Product Name or SKU..."
-        class="block w-full pl-11 pr-4 py-3 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-surface-dark text-primary dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm font-medium shadow-sm"
-      />
+        type="text" 
+        placeholder="Search products..."
+        class="w-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl py-3 pl-12 pr-4 text-primary dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+      >
     </div>
   </div>
 
   <!-- Inventory List -->
-  <div class="space-y-6">
-    <div
-      *ngFor="let product of filteredProducts"
-      class="bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300"
-    >
-      <!-- Product Header -->
-      <div
-        class="p-5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 flex items-center gap-4"
-      >
-        <img
-          [src]="product.imageUrl || '/assets/placeholder.png'"
-          class="w-12 h-12 rounded-lg object-cover border border-gray-200 dark:border-gray-700 bg-white"
-          alt=""
-        />
-        <div>
-          <h3 class="font-bold text-lg text-primary dark:text-white">
-            {{ product.productName }}
-          </h3>
-          <p class="text-xs text-gray-500 font-mono">
-            SKU: {{ product.productSku }}
-          </p>
-        </div>
-        <div class="ml-auto text-right">
-          <span class="text-xs text-gray-400 uppercase font-bold tracking-wider"
-            >Total Stock</span
-          >
-          <p class="text-xl font-black text-primary dark:text-white">
-            {{ product.totalStock }}
-          </p>
-        </div>
-      </div>
-
-      <!-- Variants Table -->
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr
-              class="border-b border-gray-100 dark:border-gray-800 text-xs font-bold text-gray-500 uppercase tracking-wider bg-white dark:bg-surface-dark"
-            >
-              <th class="p-4 pl-6 w-1/3">Variant (Size)</th>
-              <th class="p-4 w-1/3">SKU</th>
-              <th class="p-4 pr-6 text-right w-1/3">Stock Level</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-            <tr
-              *ngFor="let variant of product.variants"
-              class="group hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors"
-            >
-              <td class="p-4 pl-6">
-                <span
-                  class="font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-sm"
-                  >{{ variant.size }}</span
-                >
-              </td>
-              <td class="p-4 text-sm text-gray-500 font-mono">
-                {{ variant.sku || "-" }}
-              </td>
-              <td class="p-4 pr-6 text-right">
-                <div class="flex items-center justify-end gap-2">
-                  <span
-                    *ngIf="variant.stockQuantity <= 5"
-                    class="text-xs font-bold text-red-500 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-full animate-pulse"
-                    >Low Stock</span
-                  >
-
-                  <div
-                    class="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-surface-dark focus-within:ring-2 focus-within:ring-primary/20 transition-all"
-                  >
-                    <input
-                      type="number"
-                      [value]="variant.stockQuantity"
-                      (change)="updateStock(variant, $event)"
-                      class="w-20 p-2 text-center text-sm font-bold text-primary dark:text-white border-none focus:ring-0 bg-transparent"
-                    />
+  <div class="space-y-4">
+  <!-- Inventory Table -->
+  <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800 text-[10px] uppercase font-bold text-gray-500 dark:text-gray-400 tracking-wider">
+            <th class="px-6 py-4">Product</th>
+            <th class="px-6 py-4">SKU</th>
+            <th class="px-6 py-4 text-center">Total Stock</th>
+            <th class="px-6 py-4">Variants / Options</th>
+            <th class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+          <ng-container *ngFor="let product of filteredProducts">
+            <tr class="hover:bg-gray-50/80 dark:hover:bg-gray-800/20 transition-all group">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 flex-shrink-0">
+                    <img 
+                      *ngIf="product.imageUrl"
+                      [src]="imageUrlService.getImageUrl(product.imageUrl)" 
+                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    >
+                    <div *ngIf="!product.imageUrl" class="w-full h-full flex items-center justify-center text-gray-400">
+                      <lucide-icon [img]="icons.Image" class="w-6 h-6"></lucide-icon>
+                    </div>
                   </div>
+                  <span class="text-sm font-semibold text-primary dark:text-white">{{ product.productName }}</span>
                 </div>
               </td>
+              <td class="px-6 py-4 text-xs font-medium text-gray-500 dark:text-gray-400">{{ product.productSku }}</td>
+              <td class="px-6 py-4 text-center">
+                <span class="inline-flex items-center justify-center min-w-[2.5rem] px-2 py-1 rounded-lg text-sm font-bold border shadow-sm"
+                      [ngClass]="{
+                        'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border-green-100 dark:border-green-800': product.totalStock > 10,
+                        'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 border-yellow-100 dark:border-yellow-800': product.totalStock > 0 && product.totalStock <= 10,
+                        'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-100 dark:border-red-800': product.totalStock === 0
+                      }">
+                  {{ product.totalStock }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <div *ngIf="product.variants && product.variants.length > 0" class="flex flex-wrap gap-2">
+                  <div *ngFor="let variant of product.variants" 
+                       class="px-2 py-1 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-md text-[10px]"
+                       [title]="variant.sku">
+                    <span class="text-gray-400 dark:text-gray-500 mr-1">{{ variant.size || '?' }} / {{ variant.color || '?' }}:</span>
+                    <span class="font-bold" [ngClass]="variant.stockQuantity === 0 ? 'text-red-500' : 'text-primary dark:text-white'">{{ variant.stockQuantity }}</span>
+                  </div>
+                </div>
+                <span *ngIf="!product.variants || product.variants.length === 0" class="text-[10px] text-gray-400 italic">No variants</span>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <button (click)="openStockModal(product)" 
+                        class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-primary dark:hover:text-primary-light hover:bg-primary/10 transition-all border border-gray-100 dark:border-gray-700 shadow-sm">
+                  <lucide-icon [img]="icons.Edit3" class="w-4 h-4"></lucide-icon>
+                </button>
+              </td>
             </tr>
-          </tbody>
-        </table>
-      </div>
+          </ng-container>
+        </tbody>
+      </table>
     </div>
 
     <!-- Empty State -->
-    <div
-      *ngIf="filteredProducts.length === 0"
-      class="p-12 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-gray-800 border-dashed"
-    >
-      <lucide-icon
-        [img]="icons.Package"
-        class="w-12 h-12 text-gray-300 mb-2"
-      ></lucide-icon>
-      <p class="text-lg font-medium">No products found</p>
+    <div *ngIf="filteredProducts.length === 0" class="flex flex-col items-center justify-center py-20 text-gray-400 dark:text-gray-500">
+      <lucide-icon [img]="icons.PackageX" class="w-12 h-12 mb-4 opacity-50"></lucide-icon>
+      <p class="font-medium">No products found in system dataset</p>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- Stock Edit Modal -->
+  <div *ngIf="showStockModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" (click)="closeStockModal()">
+    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-xl" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-bold text-primary dark:text-white">Update Stock</h3>
+        <button (click)="closeStockModal()" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:text-primary transition-colors">
+          <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+        </button>
+      </div>
+
+      <div class="p-5" *ngIf="selectedProduct">
+        <div class="flex items-center gap-4 mb-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+          <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+            <img [src]="imageUrlService.getImageUrl(selectedProduct.imageUrl || '')" class="w-full h-full object-cover">
+          </div>
+          <div>
+            <h4 class="font-bold text-primary dark:text-white">{{ selectedProduct.productName }}</h4>
+            <p class="text-sm text-gray-500">SKU: {{ selectedProduct.productSku }}</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">Total Stock</label>
+            <p class="text-2xl font-bold text-primary dark:text-white">{{ selectedProduct.totalStock }}</p>
+          </div>
+
+          <!-- Variants Section -->
+          <div *ngIf="selectedProduct.variants && selectedProduct.variants.length > 0">
+            <label class="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">Update by Size/Color</label>
+            <div class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+              <div *ngFor="let variant of selectedProduct.variants; let i = index" class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                <div class="flex-1">
+                  <p class="font-semibold text-primary dark:text-white text-sm">{{ variant.size }} <span *ngIf="variant.color">/ {{ variant.color }}</span></p>
+                  <p class="text-xs text-gray-500">Current: {{ variant.stockQuantity }}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button (click)="adjustVariantStock(i, -1)" class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center justify-center hover:bg-red-200 dark:hover:bg-red-900/40 transition-all">
+                    <lucide-icon [img]="icons.Minus" class="w-4 h-4"></lucide-icon>
+                  </button>
+                  <input type="number" [(ngModel)]="variantStockValues[i]" (change)="onVariantStockChange(i)" class="w-16 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-2 text-center text-sm font-bold text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20">
+                  <button (click)="adjustVariantStock(i, 1)" class="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center hover:bg-green-200 dark:hover:bg-green-900/40 transition-all">
+                    <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- No variants - direct stock update -->
+          <div *ngIf="!selectedProduct.variants || selectedProduct.variants.length === 0">
+            <label class="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">Update Stock</label>
+            <div class="flex items-center gap-3">
+              <button (click)="adjustStock(-1)" class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center justify-center hover:bg-red-200 dark:hover:bg-red-900/40 transition-all">
+                <lucide-icon [img]="icons.Minus" class="w-5 h-5"></lucide-icon>
+              </button>
+              <input type="number" [(ngModel)]="newStockValue" class="flex-1 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-center text-xl font-bold text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20">
+              <button (click)="adjustStock(1)" class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center hover:bg-green-200 dark:hover:bg-green-900/40 transition-all">
+                <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex gap-3">
+          <button (click)="closeStockModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-all">
+            Cancel
+          </button>
+          <button (click)="saveStock()" [disabled]="isSaving" class="flex-1 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary-hover transition-all disabled:opacity-50">
+            {{ isSaving ? 'Saving...' : 'Save Stock' }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

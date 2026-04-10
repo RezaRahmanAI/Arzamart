@@ -7,7 +7,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/analytics")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class AdminAnalyticsController : ControllerBase
 {
     private readonly IDashboardService _dashboardService;

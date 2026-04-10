@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { AdminPage } from "../../models/pages.models";
 import { AdminPagesService } from "../../services/admin-pages.service";
+import { AuthService } from "../../../core/services/auth.service";
 import {
   LucideAngularModule,
   Plus,
@@ -31,6 +32,7 @@ export class AdminPagesComponent implements OnInit, OnDestroy {
   };
   private pagesService = inject(AdminPagesService);
   private fb = inject(FormBuilder);
+  readonly authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
   pages: AdminPage[] = [];

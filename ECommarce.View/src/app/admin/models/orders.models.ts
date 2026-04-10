@@ -6,7 +6,28 @@ export type OrderStatus =
   | "Shipped"
   | "Delivered"
   | "Cancelled"
+  | "PreOrder"
+  | "Hold"
+  | "Return"
+  | "Exchange"
+  | "ReturnProcess"
   | "Refund";
+
+export interface OrderLog {
+  id: number;
+  statusFrom: string;
+  statusTo: string;
+  changedBy: string;
+  note?: string;
+  createdAt: string;
+}
+
+export interface OrderNote {
+  id: number;
+  adminName: string;
+  content: string;
+  createdAt: string;
+}
 
 export interface Order {
   id: number;
@@ -25,6 +46,11 @@ export interface Order {
   paymentStatus?: string;
   city?: string;
   area?: string;
+  isPreOrder: boolean;
+  adminNote?: string;
+  logs?: OrderLog[];
+  notes?: OrderNote[];
+  items?: OrderItem[];
 }
 
 export interface OrderItem {
@@ -46,7 +72,10 @@ export interface OrderDetail extends Order {
 export interface OrdersQueryParams {
   searchTerm: string;
   status: "All" | OrderStatus;
-  dateRange: "Last 7 Days" | "Last 30 Days" | "This Year" | "All Time";
+  dateRange: "Today" | "Yesterday" | "Last 7 Days" | "Last 30 Days" | "This Year" | "All Time" | "Custom";
+  startDate?: string;
+  endDate?: string;
   page: number;
   pageSize: number;
+  preOrderOnly?: boolean;
 }

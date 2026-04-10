@@ -6,6 +6,7 @@ export interface VariantInventoryDto {
   variantId: number;
   sku: string;
   size: string;
+  color: string;
   stockQuantity: number;
 }
 
@@ -15,6 +16,7 @@ export interface ProductInventoryDto {
   productSku: string;
   imageUrl: string;
   totalStock: number;
+  stockQuantity: number;
   variants: VariantInventoryDto[];
 }
 
@@ -29,7 +31,11 @@ export class InventoryService {
     return this.api.get<ProductInventoryDto[]>(this.baseUrl);
   }
 
-  updateStock(variantId: number, quantity: number): Observable<any> {
+  updateStock(productId: number, quantity: number): Observable<any> {
+    return this.api.post(`${this.baseUrl}/product/${productId}`, { quantity });
+  }
+
+  updateVariantStock(variantId: number, quantity: number): Observable<any> {
     return this.api.post(`${this.baseUrl}/${variantId}`, { quantity });
   }
 }

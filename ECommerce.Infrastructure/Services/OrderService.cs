@@ -50,31 +50,33 @@ public class OrderService : IOrderService
             int multiplier = product.IsBundle ? product.BundleQuantity : 1;
             int totalDeduction = itemDto.Quantity * multiplier;
 
-            // 1. Deduct from specific variant if size/variant is selected
-            if (!string.IsNullOrEmpty(itemDto.Size))
+            // 1 & 2. Deduct from stock ONLY if NOT a pre-order
+            if (!orderDto.IsPreOrder)
             {
-                var normalizedSize = itemDto.Size.Trim().ToLower();
-                var variant = product.Variants.FirstOrDefault(v => 
-                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                
-                if (variant != null)
+                // 1. Deduct from specific variant if size/variant is selected
+                if (!string.IsNullOrEmpty(itemDto.Size))
                 {
-                    if (variant.StockQuantity < totalDeduction)
-                        throw new InvalidOperationException($"Insufficient stock for {product.Name} ({itemDto.Size}). Needed: {totalDeduction}, Available: {variant.StockQuantity}");
+                    var normalizedSize = itemDto.Size.Trim().ToLower();
+                    var variant = product.Variants.FirstOrDefault(v => 
+                        v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
                     
-                    variant.StockQuantity -= totalDeduction;
-                    // Repository update isn't strictly necessary when tracking is enabled, 
-                    // but keeping it for explicitness or in case GenericRepository requires it for its internal state.
-                    _unitOfWork.Repository<ProductVariant>().Update(variant);
+                    if (variant != null)
+                    {
+                        if (variant.StockQuantity < totalDeduction)
+                            throw new InvalidOperationException($"Insufficient stock for {product.Name} ({itemDto.Size}). Needed: {totalDeduction}, Available: {variant.StockQuantity}");
+                        
+                        variant.StockQuantity -= totalDeduction;
+                        _unitOfWork.Repository<ProductVariant>().Update(variant);
+                    }
                 }
+
+                // 2. Deduct from main product stock
+                if (product.StockQuantity < totalDeduction)
+                    throw new InvalidOperationException($"Insufficient stock for {product.Name}. Needed: {totalDeduction}, Available: {product.StockQuantity}");
+
+                product.StockQuantity -= totalDeduction;
+                _unitOfWork.Repository<Product>().Update(product);
             }
-
-            // 2. Deduct from main product stock (as an aggregate or for simple products)
-            if (product.StockQuantity < totalDeduction)
-                throw new InvalidOperationException($"Insufficient stock for {product.Name}. Needed: {totalDeduction}, Available: {product.StockQuantity}");
-
-            product.StockQuantity -= totalDeduction;
-            _unitOfWork.Repository<Product>().Update(product);
 
             // Price Fallback logic (Keep as is)
             decimal unitPrice = 0;
@@ -160,7 +162,7 @@ public class OrderService : IOrderService
 
         var order = new Order
         {
-            OrderNumber = $"ORD-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString().Substring(0, 8).ToUpper()}",
+            OrderNumber = "PENDING", // Will be set after first save if using ID, or generated simply
             CustomerName = orderDto.Name,
             CustomerPhone = orderDto.Phone,
             ShippingAddress = orderDto.Address,
@@ -171,14 +173,19 @@ public class OrderService : IOrderService
             Tax = 0,
             ShippingCost = shippingCost,
             DeliveryMethodId = orderDto.DeliveryMethodId,
-            Status = OrderStatus.Pending,
+            Status = orderDto.IsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending,
+            IsPreOrder = orderDto.IsPreOrder,
             CreatedAt = DateTime.UtcNow
         };
         
         order.Total = order.SubTotal + order.Tax + order.ShippingCost;
 
         _unitOfWork.Repository<Order>().Add(order);
-        
+        await _unitOfWork.Complete();
+
+        // 5. Update OrderNumber to be a simple ID-based string
+        order.OrderNumber = (270000 + order.Id).ToString(); 
+        _unitOfWork.Repository<Order>().Update(order);
         await _unitOfWork.Complete();
 
         await _customerService.CreateOrUpdateCustomerAsync(
@@ -186,15 +193,88 @@ public class OrderService : IOrderService
             orderDto.Name,
             orderDto.Address
         );
-        Console.WriteLine("--- ABOUT TO MAP ORDER TO ORDERDTO ---");
-        try {
-            var result = _mapper.Map<Order, OrderDto>(order);
-            Console.WriteLine("--- MAPPING SUCCESSFUL ---");
-            return result;
-        } catch (Exception ex) {
-            Console.WriteLine($"--- MAPPING FAILED: {ex.Message} ---");
-            throw;
+        return _mapper.Map<Order, OrderDto>(order);
+    }
+
+    public async Task<OrderDto> UpdateOrderAsync(int id, OrderCreateDto orderDto)
+    {
+        var spec = new BaseSpecification<Order>(o => o.Id == id);
+        spec.AddInclude(o => o.Items);
+        spec.AddInclude(o => o.Notes);
+        spec.AddInclude(o => o.Logs);
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+
+        if (order == null) throw new KeyNotFoundException("Order not found");
+
+        // 1. Handle Stock Reversal for existing items (if NOT pre-order)
+        if (!order.IsPreOrder)
+        {
+            await AdjustStockOnStatusChangeAsync(order, returnToStock: true);
         }
+
+        // 2. Clear existing items from DB (we will recreate them)
+        foreach(var item in order.Items.ToList()) {
+             _unitOfWork.Repository<OrderItem>().Delete(item);
+        }
+
+        // 3. Process New Items and Deduct Stock
+        var newItems = new List<OrderItem>();
+        var productIds = orderDto.Items.Select(i => i.ProductId).Distinct().ToList();
+        var products = await _unitOfWork.Repository<Product>().ListAsync(new ProductsWithCategoriesSpecification(productIds), track: true);
+        var productDict = products.ToDictionary(p => p.Id);
+
+        foreach (var itemDto in orderDto.Items)
+        {
+            if (!productDict.TryGetValue(itemDto.ProductId, out var product)) continue;
+
+            if (!orderDto.IsPreOrder)
+            {
+                int multiplier = product.IsBundle ? product.BundleQuantity : 1;
+                int deduction = itemDto.Quantity * multiplier;
+
+                product.StockQuantity -= deduction;
+                if (!string.IsNullOrEmpty(itemDto.Size))
+                {
+                    var variant = product.Variants.FirstOrDefault(v => v.Size?.Trim().ToLower() == itemDto.Size.Trim().ToLower());
+                    if (variant != null) variant.StockQuantity -= deduction;
+                }
+            }
+
+            newItems.Add(new OrderItem {
+                ProductId = product.Id,
+                ProductName = product.Name,
+                UnitPrice = itemDto.UnitPrice ?? 0,
+                Quantity = itemDto.Quantity,
+                Color = itemDto.Color,
+                Size = itemDto.Size,
+                ImageUrl = itemDto.ImageUrl ?? product.ImageUrl
+            });
+        }
+
+        // 4. Update Order Head
+        order.CustomerName = orderDto.Name;
+        order.CustomerPhone = orderDto.Phone;
+        order.ShippingAddress = orderDto.Address;
+        order.City = orderDto.City;
+        order.Area = orderDto.Area;
+        order.Items = newItems;
+        order.IsPreOrder = orderDto.IsPreOrder;
+        order.DeliveryMethodId = orderDto.DeliveryMethodId;
+        
+        order.SubTotal = newItems.Sum(i => i.UnitPrice * i.Quantity);
+        
+        // Recalculate Shipping
+        if (order.DeliveryMethodId.HasValue) {
+            var method = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(order.DeliveryMethodId.Value);
+            order.ShippingCost = method?.Cost ?? 0;
+        }
+
+        order.Total = order.SubTotal + order.ShippingCost;
+
+        _unitOfWork.Repository<Order>().Update(order);
+        await _unitOfWork.Complete();
+
+        return _mapper.Map<Order, OrderDto>(order);
     }
 
     public async Task<IReadOnlyList<OrderDto>> GetOrdersAsync()
@@ -210,52 +290,73 @@ public class OrderService : IOrderService
     {
         var spec = new BaseSpecification<Order>(x => x.Id == id);
         spec.AddInclude(x => x.Items);
+        spec.AddInclude(x => x.Logs);
+        spec.AddInclude(x => x.Notes);
         var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
         return _mapper.Map<Order, OrderDto>(order!);
     }
 
-    public async Task<bool> UpdateOrderStatusAsync(int id, string status)
+    public async Task<bool> UpdateOrderStatusAsync(int id, string status, string? updatedBy = null, string? note = null)
     {
         var spec = new BaseSpecification<Order>(x => x.Id == id);
         spec.AddInclude(x => x.Items);
+        spec.AddInclude(x => x.Logs);
         var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
         
         if (order == null) return false;
 
         if (Enum.TryParse<OrderStatus>(status, true, out var newStatus))
         {
-            if (newStatus == OrderStatus.Cancelled && order.Status != OrderStatus.Cancelled)
+            var oldStatus = order.Status;
+            
+            // Return stock if moving TO Cancelled from something else
+            if (newStatus == OrderStatus.Cancelled && oldStatus != OrderStatus.Cancelled)
             {
-                var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
-                var products = await _unitOfWork.Repository<Product>().ListAsync(
-                    new ProductsWithCategoriesSpecification(productIds), track: true);
-                var productDict = products.ToDictionary(p => p.Id);
+                await AdjustStockOnStatusChangeAsync(order, returnToStock: true);
+            }
+            // Deduct stock if moving FROM Cancelled to something else
+            else if (oldStatus == OrderStatus.Cancelled && newStatus != OrderStatus.Cancelled)
+            {
+                 await AdjustStockOnStatusChangeAsync(order, returnToStock: false);
+            }
 
-                foreach (var item in order.Items)
+            // Handle Pre-order conversion
+            if (newStatus == OrderStatus.PreOrder && !order.IsPreOrder)
+            {
+                // Moving FROM Main Order TO Pre-Order: Return items to stock
+                if (oldStatus != OrderStatus.Cancelled) // Already returned if it was cancelled
                 {
-                    if (productDict.TryGetValue(item.ProductId, out var product))
-                    {
-                        int multiplier = product.IsBundle ? product.BundleQuantity : 1;
-                        product.StockQuantity += item.Quantity * multiplier;
-
-                        if (!string.IsNullOrEmpty(item.Size))
-                        {
-                            var normalizedSize = item.Size.Trim().ToLower();
-                            var variant = product.Variants.FirstOrDefault(v => 
-                                v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                            
-                            if (variant != null)
-                            {
-                                variant.StockQuantity += item.Quantity * multiplier;
-                            }
-                        }
-                    }
+                    await AdjustStockOnStatusChangeAsync(order, returnToStock: true);
+                }
+                order.IsPreOrder = true;
+            }
+            else if (order.IsPreOrder && newStatus != OrderStatus.PreOrder)
+            {
+                // Moving FROM Pre-Order TO Main Order: Restore flag and deduct stock
+                order.IsPreOrder = false;
+                
+                // If moving to a standard active status (not Cancelled), deduct stock
+                if (oldStatus == OrderStatus.PreOrder && newStatus != OrderStatus.Cancelled)
+                {
+                    await AdjustStockOnStatusChangeAsync(order, returnToStock: false);
                 }
             }
 
             order.Status = newStatus;
             
+            // Log the change
+            var log = new OrderLog
+            {
+                OrderId = order.Id,
+                StatusFrom = oldStatus.ToString(),
+                StatusTo = newStatus.ToString(),
+                ChangedBy = updatedBy ?? "System",
+                Note = note,
+                CreatedAt = DateTime.UtcNow
+            };
+            _unitOfWork.Repository<OrderLog>().Add(log);
+
             if (newStatus == OrderStatus.Confirmed && order.SteadfastConsignmentId == null)
             {
                 try
@@ -284,14 +385,88 @@ public class OrderService : IOrderService
         return false;
     }
 
-    public async Task<(IReadOnlyList<OrderDto> Items, int Total)> GetOrdersForAdminAsync(string? searchTerm, string? status, string? dateRange, int page, int pageSize)
+    private async Task AdjustStockOnStatusChangeAsync(Order order, bool returnToStock)
     {
-        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange);
+        if (order.IsPreOrder) return;
+
+        var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
+        var products = await _unitOfWork.Repository<Product>().ListAsync(
+            new ProductsWithCategoriesSpecification(productIds), track: true);
+        var productDict = products.ToDictionary(p => p.Id);
+
+        foreach (var item in order.Items)
+        {
+            if (productDict.TryGetValue(item.ProductId, out var product))
+            {
+                int multiplier = product.IsBundle ? product.BundleQuantity : 1;
+                int totalChange = item.Quantity * multiplier;
+
+                if (returnToStock)
+                {
+                    product.StockQuantity += totalChange;
+                }
+                else
+                {
+                    product.StockQuantity -= totalChange;
+                }
+
+                if (!string.IsNullOrEmpty(item.Size))
+                {
+                    var normalizedSize = item.Size.Trim().ToLower();
+                    var variant = product.Variants.FirstOrDefault(v => 
+                        v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                    
+                    if (variant != null)
+                    {
+                        if (returnToStock)
+                            variant.StockQuantity += totalChange;
+                        else
+                            variant.StockQuantity -= totalChange;
+                        
+                        _unitOfWork.Repository<ProductVariant>().Update(variant);
+                    }
+                }
+                _unitOfWork.Repository<Product>().Update(product);
+            }
+        }
+    }
+
+    public async Task<(IReadOnlyList<OrderDto> Items, int Total)> GetOrdersForAdminAsync(string? searchTerm, string? status, string? dateRange, int page, int pageSize, bool preOrderOnly = false, DateTime? startDate = null, DateTime? endDate = null)
+    {
+        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange, preOrderOnly, startDate, endDate);
         var total = await _unitOfWork.Repository<Order>().CountAsync(spec);
         
         spec.ApplyPaging(pageSize * (page - 1), pageSize);
         var orders = await _unitOfWork.Repository<Order>().ListAsync(spec);
         
         return (_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderDto>>(orders), total);
+    }
+
+    public async Task<OrderDto> AddOrderNoteAsync(int id, string adminName, string note)
+    {
+        var spec = new BaseSpecification<Order>(o => o.Id == id);
+        spec.AddInclude(o => o.Notes);
+        spec.AddInclude(o => o.Items);
+        spec.AddInclude(o => o.Logs);
+        
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+        if (order == null) throw new KeyNotFoundException("Order not found");
+
+        if (string.IsNullOrWhiteSpace(note))
+            throw new ArgumentException("Note cannot be empty");
+
+        var orderNote = new OrderNote
+        {
+            OrderId = id,
+            AdminName = adminName,
+            Content = note,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        order.Notes.Add(orderNote);
+        _unitOfWork.Repository<Order>().Update(order);
+        await _unitOfWork.Complete();
+
+        return _mapper.Map<Order, OrderDto>(order);
     }
 }

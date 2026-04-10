@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { AdminReview } from "../../models/reviews.models";
 import { AdminReviewsService } from "../../services/admin-reviews.service";
+import { AuthService } from "../../../core/services/auth.service";
 import {
   LucideAngularModule,
   Star,
@@ -37,6 +38,7 @@ export class AdminReviewsComponent implements OnInit, OnDestroy {
   };
   private reviewsService = inject(AdminReviewsService);
   private fb = inject(FormBuilder);
+  readonly authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
   reviews: AdminReview[] = [];

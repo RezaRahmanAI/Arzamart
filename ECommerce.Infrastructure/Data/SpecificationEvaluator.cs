@@ -23,10 +23,13 @@ public class SpecificationEvaluator<T> where T : BaseEntity
         {
             query = query.OrderBy(spec.OrderBy);
         }
-
-        if (spec.OrderByDescending != null)
+        else if (spec.OrderByDescending != null)
         {
             query = query.OrderByDescending(spec.OrderByDescending);
+        }
+        else
+        {
+            query = query.OrderBy(x => x.Id);
         }
 
         if (evaluateIncludes)

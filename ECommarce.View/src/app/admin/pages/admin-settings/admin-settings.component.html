@@ -695,6 +695,7 @@
                         ></lucide-icon>
                       </button>
                       <button
+                        *ngIf="authService.isSuperAdmin()"
                         class="p-1.5 text-text-secondary hover:text-red-600 transition-colors"
                         (click)="deleteDelivery(method)"
                       >

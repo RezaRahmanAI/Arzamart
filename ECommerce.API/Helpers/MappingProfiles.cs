@@ -90,7 +90,8 @@ public class MappingProfiles : Profile
         CreateMap<Collection, CollectionDto>();
         
         CreateMap<Order, OrderDto>()
-            .ForMember(d => d.ItemsCount, o => o.MapFrom(s => s.Items.Sum(i => i.Quantity)));
+            .ForMember(d => d.ItemsCount, o => o.MapFrom(s => s.Items.Sum(i => i.Quantity)))
+            .ForMember(d => d.Logs, o => o.MapFrom(s => s.Logs.OrderByDescending(l => l.CreatedAt)));
 
         CreateMap<OrderItem, OrderItemDto>()
             .ForMember(d => d.ProductId, o => o.MapFrom(s => s.ProductId))
@@ -101,6 +102,9 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Size, o => o.MapFrom(s => s.Size))
             .ForMember(d => d.ImageUrl, o => o.MapFrom(s => s.ImageUrl))
             .ForMember(d => d.TotalPrice, o => o.MapFrom(s => s.UnitPrice * s.Quantity));
+
+        CreateMap<OrderLog, OrderLogDto>();
+        CreateMap<OrderNote, OrderNoteDto>();
 
         CreateMap<Review, ReviewDto>()
             .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product != null ? s.Product.Name : ""));

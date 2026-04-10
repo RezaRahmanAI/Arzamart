@@ -7,6 +7,7 @@ public class ProductInventoryDto
     public string ProductSku { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
     public int TotalStock { get; set; }
+    public int StockQuantity { get; set; }
     public List<VariantInventoryDto> Variants { get; set; } = new();
 }
 

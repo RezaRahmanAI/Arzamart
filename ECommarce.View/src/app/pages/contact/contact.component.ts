@@ -56,7 +56,7 @@ export class ContactComponent {
     ChevronDown,
     Store,
   };
-  supportEmail = "support@sherashopbd.com";
+  supportEmail = "support@arzamart.com";
   phone = "+8801XXXXXXXXX";
   phoneDial = "+8801XXXXXXXXX";
   address = "Dhaka, Bangladesh";
@@ -64,7 +64,7 @@ export class ContactComponent {
   officeHours = "Sat-Thu, 10am - 8pm BST.";
 
   mapDetails = {
-    storeName: "SheraShopBD Flagship",
+    storeName: "Arza Mart Flagship",
     openHours: "Open daily 10am - 8pm",
     locationLabel: "Dhaka, Bangladesh",
   };

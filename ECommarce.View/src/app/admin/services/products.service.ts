@@ -44,6 +44,7 @@ export class ProductsService {
         searchTerm: params.searchTerm,
         category: params.category,
         statusTab: params.statusTab,
+        stockStatus: params.stockStatus ?? "all",
         page: params.page,
         pageSize: params.pageSize,
       },
@@ -62,6 +63,7 @@ export class ProductsService {
         searchTerm: params.searchTerm,
         category: params.category,
         statusTab: params.statusTab,
+        stockStatus: params.stockStatus ?? "all",
       },
     });
     return this.api.get<Product[]>("/admin/products/filtered", {

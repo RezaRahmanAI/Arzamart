@@ -191,6 +191,7 @@ export interface ProductsQueryParams {
   searchTerm: string;
   category: string;
   statusTab: string;
+  stockStatus?: string;
   isNew?: boolean;
   isFeatured?: boolean;
   page: number;

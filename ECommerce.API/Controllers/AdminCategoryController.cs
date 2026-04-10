@@ -12,7 +12,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/categories")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class AdminCategoryController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -239,6 +239,7 @@ public class AdminCategoryController : ControllerBase
     }
 
     [HttpPost("{id}/delete")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteCategory(int id)
     {
         var category = await _context.Categories.FindAsync(id);

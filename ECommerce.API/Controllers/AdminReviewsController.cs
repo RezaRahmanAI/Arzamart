@@ -8,7 +8,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/reviews")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class AdminReviewsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -43,6 +43,7 @@ public class AdminReviewsController : ControllerBase
     }
 
     [HttpPost("{id}/delete")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteReview(int id)
     {
         var review = await _context.Reviews.FindAsync(id);

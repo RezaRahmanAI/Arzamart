@@ -137,6 +137,13 @@ export class ProductCardComponent {
     return Math.round((discount / (compareAtPrice || 1)) * 100);
   }
 
+  get discountAmount(): number {
+    if (!this.hasDiscount) return 0;
+    const price = this.currentPrice;
+    const compareAtPrice = this.originalPrice;
+    return (compareAtPrice ?? 0) - price;
+  }
+
   get originalPrice(): number {
     const variant = this.hoverVariant;
     if (variant?.compareAtPrice && variant.compareAtPrice > 0)

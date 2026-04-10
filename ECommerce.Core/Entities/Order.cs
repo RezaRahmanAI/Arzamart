@@ -11,7 +11,13 @@ public enum OrderStatus
     Packed,
     Shipped,
     Delivered,
-    Cancelled
+    Cancelled,
+    PreOrder,
+    Hold,
+    Return,
+    Exchange,
+    ReturnProcess,
+    Refund
 }
 
 public class Order : BaseEntity
@@ -42,6 +48,31 @@ public class Order : BaseEntity
     public string? SteadfastTrackingCode { get; set; }
     public string? SteadfastStatus { get; set; }
     public string? CreatedIp { get; set; }
+    public bool IsPreOrder { get; set; }
+    public string? AdminNote { get; set; }
+    public ICollection<OrderLog> Logs { get; set; } = new List<OrderLog>();
+    public ICollection<OrderNote> Notes { get; set; } = new List<OrderNote>();
+}
+
+
+public class OrderNote : BaseEntity
+{
+    public int OrderId { get; set; }
+    public string AdminName { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}
+
+
+public class OrderLog : BaseEntity
+{
+    public int OrderId { get; set; }
+    public Order? Order { get; set; }
+    public string StatusFrom { get; set; } = string.Empty;
+    public string StatusTo { get; set; } = string.Empty;
+    public string? ChangedBy { get; set; }
+    public string? Note { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
 
 

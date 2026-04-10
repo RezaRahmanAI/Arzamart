@@ -9,7 +9,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/pages")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class AdminPagesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -113,6 +113,7 @@ public class AdminPagesController : ControllerBase
     }
 
     [HttpPost("{id}/delete")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeletePage(int id)
     {
         var page = await _context.Pages.FindAsync(id);

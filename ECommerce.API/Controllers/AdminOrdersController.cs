@@ -10,7 +10,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/orders")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class AdminOrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
@@ -25,10 +25,13 @@ public class AdminOrdersController : ControllerBase
         [FromQuery] string? searchTerm,
         [FromQuery] string? status,
         [FromQuery] string? dateRange,
+        [FromQuery] DateTime? startDate,
+        [FromQuery] DateTime? endDate,
+        [FromQuery] bool preOrderOnly = false,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
-        var (items, total) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, page, pageSize);
+        var (items, total) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, page, pageSize, preOrderOnly, startDate, endDate);
         // Ensure properties are lowercase to match frontend expectations if JSON serialization doesn't do it automatically
         return Ok(new { items, total });
     }
@@ -37,10 +40,13 @@ public class AdminOrdersController : ControllerBase
     public async Task<ActionResult<IEnumerable<OrderDto>>> GetFilteredOrders(
         [FromQuery] string? searchTerm,
         [FromQuery] string? status,
-        [FromQuery] string? dateRange)
+        [FromQuery] string? dateRange,
+        [FromQuery] DateTime? startDate,
+        [FromQuery] DateTime? endDate,
+        [FromQuery] bool preOrderOnly = false)
     {
         // Fetch all matching orders for stats calculation (page 1, max size)
-        var (items, _) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, 1, 100000);
+        var (items, _) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, 1, 100000, preOrderOnly, startDate, endDate);
         return Ok(items);
     }
 
@@ -55,14 +61,63 @@ public class AdminOrdersController : ControllerBase
     [HttpPost("{id}/status")]
     public async Task<ActionResult> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDto dto)
     {
-        var success = await _orderService.UpdateOrderStatusAsync(id, dto.Status);
+        var adminName = GetCurrentAdminName();
+        var success = await _orderService.UpdateOrderStatusAsync(id, dto.Status, adminName, dto.Note);
         if (!success) return BadRequest(new { message = "Error updating order status" });
 
         return Ok(new { message = "Order status updated successfully" });
+    }
+
+    [HttpPost("{id}/notes")]
+    public async Task<ActionResult<OrderDto>> AddNote(int id, [FromBody] AddNoteDto dto)
+    {
+        var adminName = GetCurrentAdminName();
+        try 
+        {
+            var updatedOrder = await _orderService.AddOrderNoteAsync(id, adminName, dto.Note);
+            return Ok(updatedOrder);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    private string GetCurrentAdminName()
+    {
+        // Prioritize Full Name/Display Name claim, then UserName/Email, finally fallback to "Admin"
+        return User.Identity?.Name 
+               ?? User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value 
+               ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value 
+               ?? "Admin";
+    }
+
+    [HttpPost("{id}")]
+    public async Task<ActionResult<OrderDto>> UpdateOrder(int id, [FromBody] OrderCreateDto dto)
+    {
+        try 
+        {
+            var updatedOrder = await _orderService.UpdateOrderAsync(id, dto);
+            return Ok(updatedOrder);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }
 
 public class UpdateOrderStatusDto
 {
     public string Status { get; set; } = string.Empty;
+    public string? Note { get; set; }
+}
+
+public class AddNoteDto
+{
+    public string Note { get; set; } = string.Empty;
 }

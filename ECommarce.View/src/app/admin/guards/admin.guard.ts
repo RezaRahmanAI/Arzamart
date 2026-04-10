@@ -16,7 +16,7 @@ export class AdminGuard implements CanActivate {
     const isLoggedIn = this.authService.isAuthenticated();
     const role = this.authService.getCurrentUser()?.role;
 
-    if (isLoggedIn && role?.toLowerCase() === "admin") {
+    if (isLoggedIn && this.authService.isAdmin()) {
       return true;
     }
 

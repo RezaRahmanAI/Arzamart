@@ -100,6 +100,9 @@ try
 
     app.MapControllers();
 
+    // Redirect root to swagger
+    app.MapGet("/", () => Results.Redirect("/swagger"));
+
     // ── 5. Database Seeding (Manual Migrations Required) ──────────────
     using (var scope = app.Services.CreateScope())
     {

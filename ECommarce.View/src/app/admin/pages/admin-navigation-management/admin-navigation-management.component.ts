@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { AdminNavigationMenu } from "../../models/navigation.models";
 import { AdminNavigationService } from "../../services/admin-navigation.service";
+import { AuthService } from "../../../core/services/auth.service";
 import {
   LucideAngularModule,
   Plus,
@@ -43,6 +44,7 @@ export class AdminNavigationManagementComponent implements OnInit, OnDestroy {
   };
   private navService = inject(AdminNavigationService);
   private fb = inject(FormBuilder);
+  readonly authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
   menus: AdminNavigationMenu[] = [];

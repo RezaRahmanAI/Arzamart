@@ -406,6 +406,14 @@ export class LandingPageComponent implements OnInit {
     return Math.round((discount / (product.compareAtPrice ?? 1)) * 100);
   }
 
+  getDiscountAmount(product: {
+    price: number;
+    compareAtPrice?: number;
+  }): number {
+    if (!this.hasDiscount(product)) return 0;
+    return (product.compareAtPrice ?? 0) - product.price;
+  }
+
   getColorImage(color: string): string | null {
     if (!this.product?.images) return null;
     const img = this.product.images.find((i) => i.color === color);

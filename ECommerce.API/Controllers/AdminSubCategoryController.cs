@@ -10,7 +10,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/subcategories")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class AdminSubCategoryController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -155,6 +155,7 @@ public class AdminSubCategoryController : ControllerBase
     }
 
     [HttpPost("{id}/delete")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteSubCategory(int id)
     {
         var subCategory = await _context.SubCategories.FindAsync(id);

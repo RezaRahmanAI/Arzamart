@@ -95,166 +95,153 @@
     </div>
   </div>
   <!-- Product Table -->
-  <!-- Product Card Grid -->
-  <div class="flex flex-col gap-6">
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-      *ngIf="!isLoading; else loadingCards"
-    >
-      <div
-        *ngFor="let product of products"
-        class="group bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full"
-        [ngClass]="{ 'opacity-60': isOutOfStock(product) }"
-      >
-        <!-- Product Image & Overlays -->
-        <div class="relative aspect-square bg-slate-100 overflow-hidden">
-          <div
-            class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-            [style.background-image]="
-              'url(' + imageUrlService.getImageUrl(product.imageUrl) + ')'
-            "
-          ></div>
-
-          <!-- Selection Overlay -->
-          <div class="absolute top-3 left-3">
-            <input
-              class="h-5 w-5 text-primary focus:ring-primary border-slate-300 rounded-lg cursor-pointer bg-white/80 backdrop-blur-sm shadow-sm"
-              type="checkbox"
-              [checked]="isSelected(product.id)"
-              (change)="toggleSelectProduct(product.id, $event)"
-              (click)="$event.stopPropagation()"
-            />
-          </div>
-
-          <!-- Badges -->
-          <div class="absolute top-3 right-3 flex flex-col gap-2 items-end">
-            <span
-              *ngIf="product.isFeatured"
-              class="px-2 py-1 rounded-lg text-[10px] font-black bg-amber-400 text-amber-950 uppercase tracking-tighter shadow-sm"
-            >
-              Offer
-            </span>
-            <span
-              *ngIf="product.isNew"
-              class="px-2 py-1 rounded-lg text-[10px] font-black bg-blue-500 text-white uppercase tracking-tighter shadow-sm"
-            >
-              New
-            </span>
-            <span
-              class="px-2 py-1 rounded-lg text-[10px] font-black shadow-sm"
-              [ngClass]="statusClasses(product)"
-            >
-              {{ product.status }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Product Info -->
-        <div class="p-5 flex flex-col flex-grow gap-3">
-          <div>
-            <div class="flex items-center justify-between gap-2 mb-1">
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ product.categoryName }}</span>
-              <span class="text-[10px] font-mono text-slate-400">{{ product.sku }}</span>
-            </div>
-            <h3 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tighter line-clamp-2 leading-tight">
-              {{ product.name }}
-            </h3>
-          </div>
-
-          <!-- Pricing -->
-          <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-50 dark:border-slate-800">
-            <div class="flex flex-col">
-              <span class="text-[10px] font-bold text-slate-400 uppercase">Price</span>
-              <app-price-display
-                class="text-lg font-black text-primary dark:text-white"
-                [amount]="product.price"
-                size="sm"
-              ></app-price-display>
-            </div>
-            <div class="flex flex-col items-end" *ngIf="product.purchaseRate">
-              <span class="text-[10px] font-bold text-slate-400 uppercase">Purchase</span>
-              <app-price-display
-                class="text-xs font-bold text-slate-500"
-                [amount]="product.purchaseRate"
-                size="sm"
-              ></app-price-display>
-            </div>
-          </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="px-5 py-4 bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
-          <div class="flex items-center gap-1">
-            <a
-              class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm hover:shadow group/btn"
-              [routerLink]="['/lp', product.slug]"
-              target="_blank"
-              title="View Landing Page"
-            >
-              <lucide-icon [img]="icons.Rocket" class="w-4.5 h-4.5 transition-transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5"></lucide-icon>
-            </a>
-            <a
-              class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm hover:shadow"
-              [routerLink]="['/admin/products', product.id, 'edit']"
-              title="Edit Product"
-            >
-              <lucide-icon [img]="icons.Edit" class="w-4.5 h-4.5"></lucide-icon>
-            </a>
-          </div>
-          <button
-            class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-red-500 transition-all rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 shadow-sm hover:shadow group/del"
-            type="button"
-            (click)="deleteProduct(product)"
-            title="Delete Product"
+  <!-- Product Table -->
+  <div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm" *ngIf="!isLoading; else loadingTable">
+    <div class="overflow-x-auto min-h-[400px]">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800 text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">
+            <th class="px-6 py-4 w-12">
+              <div class="flex items-center">
+                <input
+                  class="h-4 w-4 text-primary focus:ring-primary border-slate-300 rounded cursor-pointer"
+                  type="checkbox"
+                  [checked]="isAllSelected"
+                  (change)="toggleSelectAll($event)"
+                />
+              </div>
+            </th>
+            <th class="px-6 py-4">Product</th>
+            <th class="px-6 py-4">SKU & Category</th>
+            <th class="px-6 py-4">Pricing</th>
+            <th class="px-6 py-4">Status</th>
+            <th class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
+          <tr 
+            *ngFor="let product of products" 
+            class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all group"
+            [ngClass]="{ 'opacity-60': isOutOfStock(product) }"
           >
-            <lucide-icon [img]="icons.Trash2" class="w-4.5 h-4.5 group-hover/del:scale-110"></lucide-icon>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Empty State -->
-    <div
-      *ngIf="!isLoading && products.length === 0"
-      class="bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-slate-800 p-20 text-center flex flex-col items-center gap-4"
-    >
-      <div class="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-200">
-        <lucide-icon [img]="icons.Package" class="w-10 h-10"></lucide-icon>
-      </div>
-      <div>
-        <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">No products found</h3>
-        <p class="text-slate-500 mt-1">Try adjusting your filters or search query.</p>
-      </div>
-    </div>
-
-    <!-- Skeleton Loading -->
-    <ng-template #loadingCards>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <div *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]" class="bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden animate-pulse">
-          <div class="aspect-square bg-slate-100 dark:bg-slate-800"></div>
-          <div class="p-5 space-y-4">
-            <div class="flex justify-between">
-              <div class="h-3 w-16 bg-slate-100 dark:bg-slate-800 rounded"></div>
-              <div class="h-3 w-12 bg-slate-100 dark:bg-slate-800 rounded"></div>
-            </div>
-            <div class="space-y-2">
-              <div class="h-5 w-full bg-slate-200 dark:bg-slate-700 rounded"></div>
-              <div class="h-5 w-3/4 bg-slate-200 dark:bg-slate-700 rounded"></div>
-            </div>
-            <div class="pt-4 border-t border-slate-50 dark:border-slate-800 flex justify-between items-end">
-              <div class="space-y-1">
-                <div class="h-2 w-8 bg-slate-100 dark:bg-slate-800 rounded"></div>
-                <div class="h-6 w-20 bg-slate-200 dark:bg-slate-700 rounded"></div>
+            <td class="px-6 py-4">
+              <input
+                class="h-4 w-4 text-primary focus:ring-primary border-slate-300 rounded cursor-pointer"
+                type="checkbox"
+                [checked]="isSelected(product.id)"
+                (change)="toggleSelectProduct(product.id, $event)"
+              />
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex-shrink-0">
+                  <img 
+                    *ngIf="product.imageUrl"
+                    [src]="imageUrlService.getImageUrl(product.imageUrl)" 
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  >
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors line-clamp-1 truncate max-w-[200px]">
+                    {{ product.name }}
+                  </span>
+                  <div class="flex gap-2">
+                    <span *ngIf="product.isFeatured" class="text-[8px] font-black bg-amber-400 text-amber-950 px-1.5 py-0.5 rounded uppercase">Offer</span>
+                    <span *ngIf="product.isNew" class="text-[8px] font-black bg-blue-500 text-white px-1.5 py-0.5 rounded uppercase">New</span>
+                  </div>
+                </div>
               </div>
-              <div class="space-y-1">
-                <div class="h-2 w-10 bg-slate-100 dark:bg-slate-800 rounded"></div>
-                <div class="h-4 w-12 bg-slate-100 dark:bg-slate-800 rounded"></div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex flex-col">
+                <span class="text-[10px] font-mono text-slate-400 mb-1">{{ product.sku }}</span>
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{{ product.categoryName }}</span>
               </div>
-            </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-[9px] font-bold text-slate-400 uppercase w-12">Sale:</span>
+                  <app-price-display [amount]="product.price" className="text-sm font-black text-primary dark:text-white" size="sm"></app-price-display>
+                </div>
+                <div class="flex items-center gap-2" *ngIf="product.purchaseRate">
+                  <span class="text-[9px] font-bold text-slate-400 uppercase w-12">Buy:</span>
+                  <app-price-display [amount]="product.purchaseRate" className="text-xs font-bold text-slate-500" size="sm"></app-price-display>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="px-3 py-1.5 rounded-lg text-[10px] font-black shadow-sm inline-block min-w-[70px] text-center" [ngClass]="statusClasses(product)">
+                {{ product.status }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex items-center justify-end gap-1">
+                <a
+                  class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-transparent hover:border-slate-100 dark:hover:border-slate-600 group/btn"
+                  [routerLink]="['/lp', product.slug]"
+                  target="_blank"
+                  title="View Landing Page"
+                >
+                  <lucide-icon [img]="icons.Rocket" class="w-4.5 h-4.5 transition-transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5"></lucide-icon>
+                </a>
+                <a
+                  class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-transparent hover:border-slate-100 dark:hover:border-slate-600"
+                  [routerLink]="['/admin/products', product.id, 'edit']"
+                  title="Edit Product"
+                >
+                  <lucide-icon [img]="icons.Edit" class="w-4.5 h-4.5"></lucide-icon>
+                </a>
+                <button
+                  *ngIf="authService.isSuperAdmin()"
+                  class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-red-500 transition-all rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 shadow-sm border border-transparent hover:border-red-100 dark:hover:border-red-900/50 group/del"
+                  type="button"
+                  (click)="deleteProduct(product)"
+                  title="Delete Product"
+                >
+                  <lucide-icon [img]="icons.Trash2" class="w-4.5 h-4.5 group-hover/del:scale-110"></lucide-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div
+    *ngIf="!isLoading && products.length === 0"
+    class="bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-slate-800 p-20 text-center flex flex-col items-center gap-4 shadow-sm"
+  >
+    <div class="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-200">
+      <lucide-icon [img]="icons.Package" class="w-10 h-10"></lucide-icon>
+    </div>
+    <div>
+      <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">No products found</h3>
+      <p class="text-slate-500 mt-1">Try adjusting your filters or search query.</p>
+    </div>
+  </div>
+
+  <!-- Skeleton Loading -->
+  <ng-template #loadingTable>
+    <div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm animate-pulse">
+      <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 h-14"></div>
+      <div class="divide-y divide-slate-50 dark:divide-slate-800">
+        <div *ngFor="let i of [1, 2, 3, 4, 5]" class="px-6 py-5 flex items-center gap-6">
+          <div class="w-4 h-4 bg-slate-100 dark:bg-slate-800 rounded"></div>
+          <div class="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+          <div class="flex-1 space-y-2">
+            <div class="h-4 w-48 bg-slate-200 dark:bg-slate-700 rounded"></div>
+            <div class="h-3 w-24 bg-slate-100 dark:bg-slate-800 rounded"></div>
           </div>
+          <div class="w-32 h-4 bg-slate-100 dark:bg-slate-800 rounded"></div>
+          <div class="w-24 h-6 bg-slate-100 dark:bg-slate-800 rounded-lg"></div>
+          <div class="w-24 h-9 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
         </div>
       </div>
-    </ng-template>
+    </div>
+  </ng-template>
     <!-- Pagination -->
     <div
       class="bg-white dark:bg-surface-dark px-4 py-3 flex items-center justify-between border-t border-slate-200 dark:border-slate-700 sm:px-6"
@@ -321,7 +308,6 @@
             </button>
           </nav>
         </div>
-      </div>
     </div>
   </div>
 </div>

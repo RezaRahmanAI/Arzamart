@@ -51,22 +51,22 @@
           [formGroup]="loginForm"
           (ngSubmit)="submit()"
         >
-          <!-- Email Input -->
+          <!-- Email/Username Input -->
           <label class="flex flex-col w-full">
             <span
               class="text-[#0e181b] dark:text-gray-200 text-base font-medium leading-normal pb-2"
-              >Email address</span
+              >Email or Username</span
             >
             <input
               class="form-input w-full rounded-lg text-[#0e181b] dark:text-white bg-[#f8fbfc] dark:bg-gray-800 border border-[#d0e2e7] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 placeholder:text-[#4d8799] text-base"
-              placeholder="Enter your email address"
-              type="email"
-              formControlName="email"
+              placeholder="Enter your email or username"
+              type="text"
+              formControlName="emailOrUsername"
             />
             <span
               class="text-sm text-red-500 mt-2"
-              *ngIf="email.touched && email.invalid"
-              >A valid email is required.</span
+              *ngIf="emailOrUsername.touched && emailOrUsername.invalid"
+              >Email or username is required.</span
             >
           </label>
           <!-- Password Input -->

@@ -91,6 +91,7 @@
           Edit
         </button>
         <button
+          *ngIf="authService.isSuperAdmin()"
           (click)="deleteReview(review.id)"
           class="flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 transition-colors text-sm font-medium"
         >

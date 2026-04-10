@@ -81,6 +81,7 @@
                 ></lucide-icon>
               </button>
               <button
+                *ngIf="authService.isSuperAdmin()"
                 (click)="deletePage(page.id)"
                 class="p-2 hover:bg-red-50 rounded-full transition-colors"
                 title="Delete Page"

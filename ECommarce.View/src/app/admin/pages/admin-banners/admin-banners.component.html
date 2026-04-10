@@ -37,6 +37,7 @@
             ></lucide-icon>
           </button>
           <button
+            *ngIf="authService.isSuperAdmin()"
             (click)="deleteBanner(banner.id)"
             class="bg-white p-2 rounded-full hover:bg-red-50 transition-colors"
           >

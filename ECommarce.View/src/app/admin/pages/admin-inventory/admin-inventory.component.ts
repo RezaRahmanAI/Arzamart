@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit, inject } from "@angular/core";
-import { FormControl, ReactiveFormsModule } from "@angular/forms";
+import { FormControl, ReactiveFormsModule, FormsModule } from "@angular/forms";
 import {
   InventoryService,
   ProductInventoryDto,
@@ -14,12 +14,24 @@ import {
   Box,
   Warehouse,
   AlertCircle,
+  Boxes,
+  RefreshCw,
+  Check,
+  AlertTriangle,
+  Image,
+  Edit3,
+  X,
+  Minus,
+  Plus,
+  PackageX,
 } from "lucide-angular";
+import { NotificationService } from "../../../core/services/notification.service";
+import { ImageUrlService } from "../../../core/services/image-url.service";
 
 @Component({
   selector: "app-admin-inventory",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, LucideAngularModule],
   templateUrl: "./admin-inventory.component.html",
 })
 export class AdminInventoryComponent implements OnInit, OnDestroy {
@@ -29,13 +41,32 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
     Box,
     Warehouse,
     AlertCircle,
+    Boxes,
+    RefreshCw,
+    Check,
+    AlertTriangle,
+    Image,
+    Edit3,
+    X,
+    Minus,
+    Plus,
+    PackageX,
   };
   private inventoryService = inject(InventoryService);
+  private notification = inject(NotificationService);
+  public imageUrlService = inject(ImageUrlService);
   private destroy$ = new Subject<void>();
 
   products: ProductInventoryDto[] = [];
   filteredProducts: ProductInventoryDto[] = [];
   searchControl = new FormControl("");
+
+  // Modal state
+  showStockModal = false;
+  selectedProduct: ProductInventoryDto | null = null;
+  newStockValue = 0;
+  variantStockValues: number[] = [];
+  isSaving = false;
 
   ngOnInit(): void {
     this.loadInventory();
@@ -73,35 +104,88 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
     );
   }
 
-  updateStock(variant: VariantInventoryDto, event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const newQuantity = parseInt(input.value, 10);
 
-    if (isNaN(newQuantity) || newQuantity < 0) {
-      input.value = variant.stockQuantity.toString(); // Revert
-      return;
+
+  openStockModal(product: ProductInventoryDto) {
+    this.selectedProduct = product;
+    this.newStockValue = product.totalStock;
+    this.variantStockValues = product.variants ? product.variants.map(v => v.stockQuantity) : [];
+    this.showStockModal = true;
+  }
+
+  closeStockModal() {
+    this.showStockModal = false;
+    this.selectedProduct = null;
+    this.variantStockValues = [];
+  }
+
+  adjustStock(amount: number) {
+    const newValue = this.newStockValue + amount;
+    if (newValue >= 0) {
+      this.newStockValue = newValue;
     }
+  }
 
-    this.inventoryService
-      .updateStock(variant.variantId, newQuantity)
-      .subscribe({
-        next: (res) => {
-          variant.stockQuantity = newQuantity;
-          // Ideally update total stock in UI locally or reload
-          const product = this.products.find(
-            (p) =>
-              p.productId ===
-              this.products.find((p) => p.variants.includes(variant))
-                ?.productId,
-          );
-          if (product) {
-            product.totalStock = res.newTotal;
-          }
+  adjustVariantStock(index: number, amount: number) {
+    const newValue = this.variantStockValues[index] + amount;
+    if (newValue >= 0) {
+      this.variantStockValues[index] = newValue;
+    }
+  }
+
+  onVariantStockChange(index: number) {
+    if (this.variantStockValues[index] < 0) {
+      this.variantStockValues[index] = 0;
+    }
+  }
+
+  saveStock() {
+    if (!this.selectedProduct) return;
+    
+    this.isSaving = true;
+
+    // If product has variants, save each variant stock
+    if (this.selectedProduct.variants && this.selectedProduct.variants.length > 0) {
+      const updateRequests = this.selectedProduct.variants.map((variant, index) => {
+        return this.inventoryService.updateVariantStock(variant.variantId, this.variantStockValues[index]);
+      });
+
+      // Execute all updates
+      let completed = 0;
+      updateRequests.forEach((request, index) => {
+        request.subscribe({
+          next: () => {
+            this.selectedProduct!.variants![index].stockQuantity = this.variantStockValues[index];
+            completed++;
+            if (completed === updateRequests.length) {
+              this.loadInventory();
+              this.notification.success('Stock updated successfully');
+              this.closeStockModal();
+              this.isSaving = false;
+            }
+          },
+          error: (err) => {
+            this.notification.error(err.error?.message || "Failed to update stock");
+            this.isSaving = false;
+          },
+        });
+      });
+    } else {
+      // No variants - update product stock directly
+      this.inventoryService.updateStock(this.selectedProduct.productId, this.newStockValue).subscribe({
+        next: () => {
+          this.selectedProduct!.stockQuantity = this.newStockValue;
+          this.selectedProduct!.totalStock = this.newStockValue;
+          this.loadInventory();
+          this.notification.success('Stock updated successfully');
+          this.closeStockModal();
+          this.isSaving = false;
         },
-        error: () => {
-          input.value = variant.stockQuantity.toString(); // Revert on error
-          alert("Failed to update stock");
+        error: (err) => {
+          this.notification.error(err.error?.message || "Failed to update stock");
+          this.isSaving = false;
         },
       });
+    }
   }
 }

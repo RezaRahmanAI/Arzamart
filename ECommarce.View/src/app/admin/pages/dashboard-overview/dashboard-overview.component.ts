@@ -29,6 +29,9 @@ import {
   Package,
   Users,
   RotateCcw,
+  PlusCircle,
+  ShoppingCart,
+  PackagePlus,
 } from "lucide-angular";
 
 @Component({
@@ -52,6 +55,9 @@ export class DashboardOverviewComponent {
     Package,
     Users,
     RotateCcw,
+    PlusCircle,
+    ShoppingCart,
+    PackagePlus,
   };
   private adminDashboardService = inject(AdminDashboardService);
   private settingsService = inject(SiteSettingsService);

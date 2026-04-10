@@ -6,13 +6,11 @@ import {
   OnInit,
   inject,
 } from "@angular/core";
-import { FormControl, ReactiveFormsModule } from "@angular/forms";
-import { RouterModule } from "@angular/router";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
 import {
   LucideAngularModule,
-  Printer,
-  Download,
   ShoppingBag,
   Package,
   CreditCard,
@@ -27,6 +25,29 @@ import {
   ChevronLeft,
   ChevronRight,
   Calendar,
+  Plus,
+  PackagePlus,
+  Edit,
+  ClipboardList,
+  MessageSquare,
+  History,
+  StickyNote,
+  LogOut,
+  Send,
+  MessageCircle,
+  X,
+  Loader2,
+  PackageX,
+  User,
+  ShoppingCart,
+  PlusCircle,
+  Clock,
+  CheckCircle,
+  Truck,
+  RotateCw,
+  AlertCircle,
+  ArrowRightCircle,
+  AlertTriangle,
 } from "lucide-angular";
 
 import {
@@ -50,6 +71,7 @@ interface OrderStats {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     RouterModule,
     PriceDisplayComponent,
     LucideAngularModule,
@@ -58,8 +80,6 @@ interface OrderStats {
 })
 export class AdminOrdersComponent implements OnInit, OnDestroy {
   readonly icons = {
-    Printer,
-    Download,
     ShoppingBag,
     Package,
     CreditCard,
@@ -74,8 +94,33 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     ChevronLeft,
     ChevronRight,
     Calendar,
+    Plus,
+    PackagePlus,
+    Edit,
+    ClipboardList,
+    MessageSquare,
+    History,
+    StickyNote,
+    LogOut,
+    Send,
+    MessageCircle,
+    X,
+    Loader2,
+    PackageX,
+    User,
+    ShoppingCart,
+    PlusCircle,
+    Clock,
+    CheckCircle,
+    Truck,
+    RotateCw,
+    AlertCircle,
+    ArrowRightCircle,
+    AlertTriangle,
   };
   private ordersService = inject(OrdersService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private destroy$ = new Subject<void>();
 
   isLoading = false;
@@ -96,9 +141,15 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     "Shipped",
     "Delivered",
     "Cancelled",
+    "Hold",
+    "Return",
+    "Exchange",
+    "ReturnProcess",
+    "Refund",
+    "PreOrder",
   ];
 
-  // ... (existing code)
+  updateStatusOptions = this.statusOptions.filter((s): s is OrderStatus => s !== 'All' && s !== 'All Statuses' as any);
 
   statusClass(status: string): string {
     switch (status) {
@@ -117,6 +168,10 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       case "Cancelled":
       case "Refund":
         return "border-red-500 bg-red-50/50 text-red-700 dark:bg-red-900/20 dark:text-red-200";
+      case "Hold":
+        return "border-gray-500 bg-gray-50/50 text-gray-700 dark:bg-gray-900/20 dark:text-gray-200";
+      case "PreOrder":
+        return "border-violet-500 bg-violet-50/50 text-violet-700 dark:bg-violet-900/20 dark:text-violet-200";
       default:
         return "border-gray-300 bg-gray-50 text-gray-700";
     }
@@ -131,11 +186,37 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       case "Shipped": return "#3b82f6";
       case "Delivered": return "#0d4c5e";
       case "Cancelled": return "#ef4444";
+      case "Hold": return "#6b7280";
+      case "PreOrder": return "#8b5cf6";
+      case "Return":
+      case "ReturnProcess":
+        return "#ec4899";
+      case "Exchange":
+        return "#8b5cf6";
+      case "Refund":
+        return "#f43f5e";
       default: return "#94a3b8";
     }
   }
 
-  // ... (existing code)
+  getStatusIcon(status: string): any {
+    switch (status) {
+      case "Pending": return this.icons.Clock;
+      case "Confirmed": return this.icons.CheckCircle;
+      case "Processing": return this.icons.RotateCw;
+      case "Packed": return this.icons.Package;
+      case "Shipped": return this.icons.Truck;
+      case "Delivered": return this.icons.CheckCircle;
+      case "Cancelled": return this.icons.XCircle;
+      case "Hold": return this.icons.AlertTriangle;
+      case "Refund": return this.icons.RotateCcw;
+      case "PreOrder": return this.icons.ArrowRightCircle;
+      case "Return":
+      case "ReturnProcess":
+        return this.icons.AlertCircle;
+      default: return this.icons.Package;
+    }
+  }
 
   getNextStatus(status: string): OrderStatus | null {
     if (status === "Pending") return "Confirmed";
@@ -155,7 +236,10 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     if (nextStatus === "Shipped") return "Mark as Shipped";
     return "Mark as Delivered";
   }
+
   dateRanges: OrdersQueryParams["dateRange"][] = [
+    "Today",
+    "Yesterday",
     "Last 7 Days",
     "Last 30 Days",
     "This Year",
@@ -167,7 +251,9 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   statusMenuOpen = false;
   dateMenuOpen = false;
+  statusUpdateOrderId: number | null = null;
   actionMenuOpenId: number | null = null;
+  isPreOrderMode = false;
 
   selectedOrderIds = new Set<number>();
 
@@ -177,6 +263,21 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     totalRevenue: 0,
     refundRequests: 0,
   };
+
+  // Modals state
+  trackingOrder: Order | null = null;
+  notesOrder: Order | null = null;
+  isTrackingModalOpen = false;
+  isNotesModalOpen = false;
+  adminNoteControl = new FormControl("");
+  newNoteText = "";
+  isSavingNote = false;
+
+  // Custom Date Range State
+  customStartDate: string | null = null;
+  customEndDate: string | null = null;
+  tempStartDate: string | null = null;
+  tempEndDate: string | null = null;
 
   avatarStyles = [
     "bg-orange-100 text-orange-700",
@@ -188,7 +289,10 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    this.loadOrders();
+    this.route.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.isPreOrderMode = !!data['preOrderOnly'];
+      this.loadOrders();
+    });
 
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
@@ -207,6 +311,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   closeMenus(): void {
     this.statusMenuOpen = false;
     this.dateMenuOpen = false;
+    this.statusUpdateOrderId = null;
     this.actionMenuOpenId = null;
   }
 
@@ -215,6 +320,8 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.statusMenuOpen = false;
     this.dateMenuOpen = false;
     this.actionMenuOpenId = null;
+    this.isTrackingModalOpen = false;
+    this.isNotesModalOpen = false;
   }
 
   toggleStatusMenu(event: Event): void {
@@ -237,12 +344,56 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.loadOrders();
   }
 
+  toggleStatusUpdateMenu(orderId: number, event: Event): void {
+    event.stopPropagation();
+    this.statusUpdateOrderId = this.statusUpdateOrderId === orderId ? null : orderId;
+    this.dateMenuOpen = false;
+    this.statusMenuOpen = false;
+    this.actionMenuOpenId = null;
+  }
+
+  updateOrderStatus(orderId: number, newStatus: OrderStatus, event: Event): void {
+    event.stopPropagation();
+    this.statusUpdateOrderId = null;
+    
+    this.ordersService.updateStatus(orderId, newStatus, `Status updated to ${newStatus}`).subscribe({
+        next: () => this.loadOrders(false),
+        error: () => window.alert("Failed to update status")
+    });
+  }
+
   setDateRange(range: OrdersQueryParams["dateRange"], event: Event): void {
     event.stopPropagation();
     this.selectedDateRange = range;
+    if (range !== "Custom") {
+      this.customStartDate = null;
+      this.customEndDate = null;
+    }
     this.dateMenuOpen = false;
     this.page = 1;
     this.loadOrders();
+  }
+
+  applyCustomRange(event: Event): void {
+    event.stopPropagation();
+    if (this.tempStartDate && this.tempEndDate) {
+      this.customStartDate = this.tempStartDate;
+      this.customEndDate = this.tempEndDate;
+      this.selectedDateRange = "Custom";
+      this.dateMenuOpen = false;
+      this.page = 1;
+      this.loadOrders();
+    }
+  }
+
+  get activeDateRangeLabel(): string {
+    if (this.selectedDateRange === "Custom" && this.customStartDate && this.customEndDate) {
+      const start = new Date(this.customStartDate);
+      const end = new Date(this.customEndDate);
+      const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+      return `${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}`;
+    }
+    return this.selectedDateRange;
   }
 
   showMoreFilters(event: Event): void {
@@ -282,7 +433,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     const nextStatus = this.getNextStatus(order.status);
     if (nextStatus) {
-      this.ordersService.updateStatus(order.id, nextStatus).subscribe(() => {
+      this.ordersService.updateStatus(order.id, nextStatus, `Moved to ${nextStatus}`).subscribe(() => {
         this.loadOrders(false);
       });
     }
@@ -293,27 +444,104 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     const shouldCancel = window.confirm("Cancel this order?");
     if (shouldCancel) {
-      this.ordersService.updateStatus(order.id, "Cancelled").subscribe(() => {
+      this.ordersService.updateStatus(order.id, "Cancelled", "Cancelled from index").subscribe(() => {
         this.loadOrders(false);
       });
     }
     this.actionMenuOpenId = null;
   }
 
-  exportOrders(): void {
-    this.ordersService.exportOrders(this.buildParams()).subscribe((csv) => {
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "orders-export.csv";
-      link.click();
-      URL.revokeObjectURL(url);
+  editOrder(order: Order, event: Event): void {
+    event.stopPropagation();
+    this.router.navigate(["/admin/orders", order.id, "edit"]);
+  }
+
+  openTracking(order: Order, event: Event): void {
+    event.stopPropagation();
+    this.trackingOrder = order;
+    this.isTrackingModalOpen = true;
+  }
+
+  openNotes(order: Order, event: Event): void {
+    event.stopPropagation();
+    this.notesOrder = order;
+    this.newNoteText = "";
+    this.isNotesModalOpen = true;
+  }
+
+  addNote(): void {
+    if (!this.notesOrder || !this.newNoteText.trim()) return;
+    this.isSavingNote = true;
+    
+    this.ordersService.addOrderNote(this.notesOrder.id, this.newNoteText.trim()).subscribe({
+      next: (updatedOrder) => {
+        this.notesOrder!.notes = updatedOrder.notes;
+        this.newNoteText = "";
+        this.isSavingNote = false;
+        // Optionally update the order in the main list
+        const index = this.orders.findIndex(o => o.id === updatedOrder.id);
+        if (index !== -1) {
+          this.orders[index] = updatedOrder;
+        }
+      },
+      error: () => {
+        this.isSavingNote = false;
+        window.alert("Failed to add note");
+      }
     });
   }
 
-  printOrders(): void {
-    this.ordersService.print();
+  saveNote(): void {
+    if (!this.notesOrder) return;
+    this.isSavingNote = true;
+    const note = this.adminNoteControl.value || "";
+    
+    this.ordersService.updateStatus(this.notesOrder.id, this.notesOrder.status, note).subscribe({
+      next: () => {
+        this.notesOrder!.adminNote = note;
+        this.isSavingNote = false;
+        this.isNotesModalOpen = false;
+        this.loadOrders(false);
+      },
+      error: () => this.isSavingNote = false
+    });
+  }
+
+  sendReminder(order: Order, event: Event): void {
+    event.stopPropagation();
+    const msg = `Hello ${order.customerName || 'Customer'}, your order #${order.orderNumber} is pending. Please confirm by calling this number(01725455554).`;
+    window.alert("Reminder Text copied to clipboard: \n\n" + msg);
+    navigator.clipboard.writeText(msg);
+  }
+
+  sendWhatsApp(order: Order, event: Event): void {
+    event.stopPropagation();
+    const phone = order.customerPhone.replace(/\D/g, '');
+    const msg = encodeURIComponent(`Hello ${order.customerName}, about your order #${order.orderNumber}...`);
+    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+  }
+
+  moveToPreOrder(order: Order, event: Event): void {
+    event.stopPropagation();
+    if (window.confirm("Move this order to Pre-Order?")) {
+      this.ordersService.updateStatus(order.id, "PreOrder", "Moved to Pre-Order").subscribe(() => {
+        this.loadOrders(false);
+      });
+    }
+  }
+
+  moveToMainOrder(order: Order, event: Event): void {
+    event.stopPropagation();
+    if (window.confirm("Move this Pre-Order to Main Order (Pending)?")) {
+      this.ordersService.updateStatus(order.id, "Pending", "Converted from Pre-Order").subscribe(() => {
+        this.loadOrders(false);
+      });
+    }
+  }
+
+  printInvoice(order: Order, event: Event): void {
+    event.stopPropagation();
+    this.router.navigate(['/admin/orders', order.id]);
   }
 
   goToPreviousPage(): void {
@@ -366,13 +594,21 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   }
 
   private buildParams(): OrdersQueryParams {
-    return {
+    const params: OrdersQueryParams = {
       searchTerm: this.searchControl.value,
       status: this.selectedStatus,
       dateRange: this.selectedDateRange,
       page: this.page,
       pageSize: this.pageSize,
+      preOrderOnly: this.isPreOrderMode,
     };
+
+    if (this.selectedDateRange === "Custom" && this.customStartDate && this.customEndDate) {
+        params.startDate = this.customStartDate;
+        params.endDate = this.customEndDate;
+    }
+
+    return params;
   }
 
   loadOrders(resetSelection = true): void {

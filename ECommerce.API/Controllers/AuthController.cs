@@ -49,12 +49,20 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid credentials.");
         }
 
-        // Fetch the highest priority role
+        // Fetch all roles
         var roles = await _userManager.GetRolesAsync(user);
-        var role = roles.FirstOrDefault() ?? user.Role ?? "Customer";
+        if (!roles.Any() && !string.IsNullOrEmpty(user.Role))
+        {
+            roles = new List<string> { user.Role };
+        }
+        if (!roles.Any())
+        {
+            roles = new List<string> { "Customer" };
+        }
 
-        var token = GenerateToken(user, role);
-        return Ok(new AuthResponse(token, ToSummary(user, role)));
+        var token = GenerateToken(user, roles);
+        var primaryRole = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? "Customer");
+        return Ok(new AuthResponse(token, ToSummary(user, primaryRole)));
     }
 
     [Authorize]
@@ -85,11 +93,11 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
-    private string GenerateToken(ApplicationUser user, string role)
+    private string GenerateToken(ApplicationUser user, IList<string> roles)
     {
-        var key = _configuration["Token:Key"] ?? "development_key_sherashopbd_123456789";
-        var issuer = _configuration["Token:Issuer"] ?? "SheraShopBD";
-        var audience = _configuration["Token:Audience"] ?? "SheraShopBDUsers";
+        var key = _configuration["Token:Key"] ?? "development_key_arzamart_123456789";
+        var issuer = _configuration["Token:Issuer"] ?? "Arza Mart";
+        var audience = _configuration["Token:Audience"] ?? "Arza Mart Users";
         var keyBytes = Encoding.UTF8.GetBytes(key);
         if (keyBytes.Length < 32)
         {
@@ -106,9 +114,13 @@ public class AuthController : ControllerBase
         {
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.Email, email),
-            new(ClaimTypes.Name, displayName),
-            new(ClaimTypes.Role, role)
+            new(ClaimTypes.Name, displayName)
         };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var token = new JwtSecurityToken(
             issuer: issuer,

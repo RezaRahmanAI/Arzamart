@@ -7,7 +7,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/customers")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class AdminCustomersController : ControllerBase
 {
     private readonly CustomerService _customerService;

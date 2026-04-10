@@ -225,7 +225,7 @@
                   vm.currentCompareAtPrice &&
                   vm.currentCompareAtPrice > vm.currentPrice
                 "
-                class="line-through text-gray-500 text-lg"
+                class="line-through text-gray-600 font-medium text-lg"
                 [amount]="vm.currentCompareAtPrice"
                 size="sm"
               ></app-price-display>
@@ -235,14 +235,14 @@
                   vm.currentCompareAtPrice &&
                   vm.currentCompareAtPrice > vm.currentPrice
                 "
-                class="text-[10px] font-bold text-red-500 uppercase tracking-[0.3em] ml-auto"
+                class="text-[12px] font-bold text-red-500 uppercase tracking-[0.3em] ml-auto"
               >
-                Offer -{{
-                  getDiscountPercentage({
+                Offer -৳{{
+                  getDiscountAmount({
                     price: vm.currentPrice,
                     compareAtPrice: vm.currentCompareAtPrice,
                   })
-                }}%
+                }}
               </span>
             </div>
 

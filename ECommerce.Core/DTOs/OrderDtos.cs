@@ -12,6 +12,7 @@ public class OrderCreateDto
     public int ItemsCount { get; set; }
     public decimal Total { get; set; }
     public int? DeliveryMethodId { get; set; }
+    public bool IsPreOrder { get; set; }
     public List<OrderItemDto> Items { get; set; } = new();
 }
 
@@ -43,5 +44,27 @@ public class OrderDto
     public int ItemsCount { get; set; }
     public string Status { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
+    public bool IsPreOrder { get; set; }
+    public string? AdminNote { get; set; }
     public List<OrderItemDto> Items { get; set; } = new();
+    public List<OrderLogDto> Logs { get; set; } = new();
+    public List<OrderNoteDto> Notes { get; set; } = new();
+}
+
+public class OrderLogDto
+{
+    public int Id { get; set; }
+    public string StatusFrom { get; set; } = string.Empty;
+    public string StatusTo { get; set; } = string.Empty;
+    public string? ChangedBy { get; set; }
+    public string? Note { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+
+public class OrderNoteDto
+{
+    public int Id { get; set; }
+    public string AdminName { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
 }
