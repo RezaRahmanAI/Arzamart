@@ -124,10 +124,10 @@
                 </div>
 
                 <!-- Media Area -->
-                <div class="w-full lg:w-1/2 bg-slate-100 relative">
-                    <img [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" alt="Product Gallery" class="w-full h-full min-h-[600px] object-cover" />
-                    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-4 px-6 py-4 rounded-3xl glass-morphism shadow-2xl border border-white/30">
-                        <img *ngFor="let img of data.product.images.slice(0, 4)" [src]="imageUrlService.getImageUrl(img.imageUrl)" alt="Thumb" class="w-20 h-20 md:w-24 md:h-24 object-cover rounded-xl border-2 border-white/80 shadow-md cursor-pointer hover:scale-110 hover:border-primary-clp transition-all duration-300" />
+                <div class="w-full lg:w-1/2 bg-slate-100 relative aspect-[3/4] lg:aspect-auto overflow-hidden">
+                    <img [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" alt="Product Gallery" class="lg:absolute lg:inset-0 w-full h-full object-cover" />
+                    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-4 px-6 py-4 rounded-3xl glass-morphism shadow-2xl border border-white/30 z-10">
+                        <img *ngFor="let img of data.product.images.slice(0, 4)" [src]="imageUrlService.getImageUrl(img.imageUrl)" alt="Thumb" class="w-16 h-16 md:w-20 md:h-20 object-cover rounded-xl border-2 border-white/80 shadow-md cursor-pointer hover:scale-110 hover:border-primary-clp transition-all duration-300" />
                     </div>
                 </div>
             </div>

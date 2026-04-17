@@ -5,7 +5,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { LucideAngularModule, ShoppingCart, Truck, Verified, RotateCcw, Clock, Search, Loader2, ChevronDown, User, Phone, MapPin } from "lucide-angular";
 import { HttpClient } from "@angular/common/http";
-import { combineLatest } from "rxjs";
 import { environment } from "../../../../../environments/environment";
 import { Product } from "../../../../core/models/product";
 import { CustomLandingPageConfig } from "../../../../admin/services/custom-landing-page.service";
@@ -17,9 +16,9 @@ import { Router } from "@angular/router";
 import { SiteSettingsService } from "../../../../core/services/site-settings.service";
 import { SettingsService } from "../../../../admin/services/settings.service";
 import { DeliveryMethod } from "../../../../admin/models/settings.models";
-import { map, catchError, takeUntil } from "rxjs";
 import { ProductService } from "../../../../core/services/product.service";
-import { of, Subject } from "rxjs";
+import { of, Subject, combineLatest } from "rxjs";
+import { map, catchError, takeUntil, debounceTime, distinctUntilChanged, filter, switchMap } from "rxjs/operators";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -121,7 +120,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         ),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((customer) => {
+      .subscribe((customer: any) => {
         if (customer) {
           this.didAutofill = true;
           this.orderForm.patchValue(
