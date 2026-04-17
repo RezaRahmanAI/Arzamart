@@ -1,21 +1,42 @@
 <div class="p-8">
   <div class="flex justify-between items-center mb-8">
     <div>
-      <h1 class="text-2xl font-bold text-gray-800">Banner Management</h1>
-      <p class="text-gray-500">Manage hero banners for your home page.</p>
+      <h1 class="text-2xl font-bold text-gray-800">Banners & Campaigns</h1>
+      <p class="text-gray-500">Manage sliders and offer banners for your home page.</p>
     </div>
     <button
       (click)="openAddModal()"
       class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
     >
       <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
-      Add New Banner
+      </button>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="flex border-b border-gray-200 mb-8 overflow-x-auto no-scrollbar">
+    <button (click)="setTab('Hero')" 
+            [class.border-primary]="currentTab === 'Hero'" 
+            [class.text-primary]="currentTab === 'Hero'"
+            class="px-6 py-3 border-b-2 border-transparent font-bold text-sm transition-all whitespace-nowrap">
+      Main Hero Slider
+    </button>
+    <button (click)="setTab('Spotlight')" 
+            [class.border-primary]="currentTab === 'Spotlight'" 
+            [class.text-primary]="currentTab === 'Spotlight'"
+            class="px-6 py-3 border-b-2 border-transparent font-bold text-sm transition-all whitespace-nowrap">
+      Hero Side (Offer Banner)
+    </button>
+    <button (click)="setTab('Promo')" 
+            [class.border-primary]="currentTab === 'Promo'" 
+            [class.text-primary]="currentTab === 'Promo'"
+            class="px-6 py-3 border-b-2 border-transparent font-bold text-sm transition-all whitespace-nowrap">
+      Secondary Page Banners
     </button>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <div
-      *ngFor="let banner of banners"
+      *ngFor="let banner of filteredBanners"
       class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group"
     >
       <div class="relative h-40 bg-gray-100">
@@ -105,7 +126,7 @@
       (click)="openAddModal()"
       class="bg-primary text-white px-6 py-2 rounded-lg font-medium"
     >
-      Add Banner
+      Add {{ currentTab === 'Hero' ? 'Slider' : 'Banner' }}
     </button>
   </div>
 </div>
@@ -153,15 +174,15 @@
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Promo" class="peer hidden" />
               <div class="p-4 border rounded-xl bg-gray-50 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 transition-all text-center">
-                <p class="font-bold text-sm">Offer Banner</p>
+                <p class="font-bold text-sm">Secondary Banner</p>
                 <p class="text-[10px] opacity-60">Mid-page horizontal</p>
               </div>
             </label>
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Spotlight" class="peer hidden" />
               <div class="p-4 border rounded-xl bg-gray-50 peer-checked:bg-amber-600 peer-checked:text-white peer-checked:border-amber-600 transition-all text-center">
-                <p class="font-bold text-sm">Spotlight Card</p>
-                <p class="text-[10px] opacity-60">Ramadan-style offer</p>
+                <p class="font-bold text-sm">Offer Banner</p>
+                <p class="text-[10px] opacity-60">Hero side spotlight</p>
               </div>
             </label>
           </div>

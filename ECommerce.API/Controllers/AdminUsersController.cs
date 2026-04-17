@@ -139,6 +139,16 @@ public class AdminUsersController : ControllerBase
             return BadRequest(new { message = string.Join(", ", result.Errors.Select(e => e.Description)) });
         }
 
+        if (!string.IsNullOrWhiteSpace(dto.Password))
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var passwordResult = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+            if (!passwordResult.Succeeded)
+            {
+                return BadRequest(new { message = "Profile updated, but password reset failed: " + string.Join(", ", passwordResult.Errors.Select(e => e.Description)) });
+            }
+        }
+
         return Ok(new { message = "User updated successfully" });
     }
 
@@ -203,6 +213,7 @@ public class UpdateAdminUserDto
     public string? Email { get; set; }
     public string? Role { get; set; }
     public string? Phone { get; set; }
+    public string? Password { get; set; }
 }
 
 public class ResetPasswordDto

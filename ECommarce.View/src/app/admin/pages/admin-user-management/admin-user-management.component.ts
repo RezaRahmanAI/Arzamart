@@ -18,7 +18,9 @@ import {
   CheckCircle2,
   Trash2,
   Plus,
-  Pencil
+  Pencil,
+  Eye,
+  EyeOff
 } from "lucide-angular";
 import { AdminUsersService, AdminUser, CreateAdminRequest } from "../../services/admin-users.service";
 import { AuthService } from "../../../core/services/auth.service";
@@ -51,13 +53,17 @@ export class AdminUserManagementComponent implements OnInit {
     CheckCircle2,
     Trash2,
     Plus,
-    Pencil
+    Pencil,
+    Eye,
+    EyeOff
   };
 
   admins: AdminUser[] = [];
   isLoading = false;
   isCreateModalOpen = false;
   isSubmitting = false;
+  isCreatePasswordVisible = false;
+  isEditPasswordVisible = false;
   
   createForm = this.fb.nonNullable.group({
     fullName: ["", [Validators.required]],
@@ -73,6 +79,7 @@ export class AdminUserManagementComponent implements OnInit {
     fullName: ["", [Validators.required]],
     email: ["", [Validators.email]],
     userName: ["", [Validators.required]],
+    password: ["", [Validators.minLength(6)]],
     role: ["Admin" as "Admin" | "SuperAdmin", [Validators.required]]
   });
 
@@ -157,8 +164,10 @@ export class AdminUserManagementComponent implements OnInit {
         fullName: admin.fullName,
         email: admin.email || "",
         userName: admin.userName,
+        password: "",
         role: admin.role as any
     });
+    this.isEditPasswordVisible = false;
     this.isEditModalOpen = true;
   }
 

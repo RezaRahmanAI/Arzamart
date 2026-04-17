@@ -78,13 +78,13 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
   categoriesFlat: Category[] = [];
   categoriesTree: CategoryNode[] = [];
   filteredTree: CategoryNode[] = [];
-  selectedId: string | null = null;
-  expandedSet = new Set<string>();
+  selectedId: number | null = null;
+  expandedSet = new Set<number>();
   mode: "create" | "edit" = "edit";
   originalSnapshot: Category | null = null;
   filterTerm = "";
-  draggingId: string | null = null;
-  previousSelectedId: string | null = null;
+  draggingId: number | null = null;
+  previousSelectedId: number | null = null;
   slugManuallyEdited = false;
   private isSlugUpdating = false;
   selectedImageFile: File | null = null;
@@ -97,7 +97,7 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
   categoryForm = this.formBuilder.group({
     name: ["", [Validators.required, Validators.minLength(2)]],
     slug: ["", [Validators.required]],
-    parentId: [null as string | null],
+    parentId: [null as number | null],
     imageUrl: [""],
     isActive: [true],
   });
@@ -132,7 +132,7 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
 
     const initialId = this.route.snapshot.queryParamMap.get("category");
     if (initialId) {
-      this.selectCategoryById(initialId);
+      this.selectCategoryById(Number(initialId));
     }
   }
 
@@ -174,14 +174,14 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectCategoryById(categoryId: string): void {
+  selectCategoryById(categoryId: number): void {
     const category = this.categoriesFlat.find((item) => item.id === categoryId);
     if (category) {
       this.selectCategory(category);
     }
   }
 
-  toggleExpanded(categoryId: string): void {
+  toggleExpanded(categoryId: number): void {
     if (this.expandedSet.has(categoryId)) {
       this.expandedSet.delete(categoryId);
     } else {
@@ -197,19 +197,19 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
     this.expandedSet.clear();
   }
 
-  isExpanded(categoryId: string): boolean {
+  isExpanded(categoryId: number): boolean {
     return this.expandedSet.has(categoryId);
   }
 
-  isSelected(categoryId: string): boolean {
+  isSelected(categoryId: number): boolean {
     return this.selectedId === categoryId;
   }
 
-  onDragStart(categoryId: string, event: DragEvent): void {
+  onDragStart(categoryId: number, event: DragEvent): void {
     this.draggingId = categoryId;
     if (event.dataTransfer) {
       event.dataTransfer.effectAllowed = "move";
-      event.dataTransfer.setData("text/plain", categoryId);
+      event.dataTransfer.setData("text/plain", categoryId.toString());
     }
   }
 
@@ -308,10 +308,10 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
 
   private performSave(): void {
     const formValue = this.categoryForm.getRawValue();
-    const payload: Partial<Category> = {
+    const payload: any = {
       name: formValue.name ?? "",
       slug: formValue.slug ?? "",
-      parentId: formValue.parentId ?? null,
+      parentId: formValue.parentId ? Number(formValue.parentId) : null,
       imageUrl: formValue.imageUrl ?? "",
       isActive: formValue.isActive ?? true,
     };
@@ -428,13 +428,13 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   getParentOptions(): ParentOption[] {
-    const excludedIds = new Set<string>();
+    const excludedIds = new Set<number>();
     if (this.selectedId) {
       excludedIds.add(this.selectedId);
       this.collectDescendants(this.selectedId, excludedIds);
     }
 
-    const options: ParentOption[] = [{ id: null, label: "None (Top Level)" }];
+    const options: any[] = [{ id: null, label: "None (Top Level)" }];
     const walk = (nodes: CategoryNode[], depth: number) => {
       nodes.forEach((node) => {
         if (!excludedIds.has(node.category.id)) {
@@ -462,7 +462,7 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
       grouped.get(key)?.push(category);
     });
 
-    const buildNodes = (parentId: string | null): CategoryNode[] => {
+    const buildNodes = (parentId: number | null): CategoryNode[] => {
       const items = grouped.get(parentId) ?? [];
       const sorted = [...items].sort((a, b) => a.sortOrder - b.sortOrder);
       return sorted.map((category) => ({
@@ -477,16 +477,16 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
   filterTree(
     nodes: CategoryNode[],
     term: string,
-  ): { nodes: CategoryNode[]; expanded: Set<string> } {
+  ): { nodes: CategoryNode[]; expanded: Set<number> } {
     if (!term) {
       return { nodes, expanded: new Set() };
     }
 
-    const expanded = new Set<string>();
+    const expanded = new Set<number>();
 
     const filterNodes = (
       items: CategoryNode[],
-      ancestors: string[],
+      ancestors: number[],
     ): CategoryNode[] => {
       return items
         .map((node) => {
@@ -523,7 +523,7 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
       .replace(/(^-|-$)+/g, "");
   }
 
-  isDescendant(parentId: string, candidateId: string): boolean {
+  isDescendant(parentId: number, candidateId: number): boolean {
     let current = this.categoriesFlat.find((item) => item.id === candidateId);
     while (current && current.parentId) {
       if (current.parentId === parentId) {
@@ -583,8 +583,8 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
     this.isSlugUpdating = false;
   }
 
-  private collectCategoryIds(nodes: CategoryNode[]): string[] {
-    const ids: string[] = [];
+  private collectCategoryIds(nodes: CategoryNode[]): number[] {
+    const ids: number[] = [];
     nodes.forEach((node) => {
       ids.push(node.category.id);
       if (node.children.length > 0) {
@@ -594,7 +594,7 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
     return ids;
   }
 
-  private collectDescendants(categoryId: string, collector: Set<string>): void {
+  private collectDescendants(categoryId: number, collector: Set<number>): void {
     this.categoriesFlat
       .filter((item) => item.parentId === categoryId)
       .forEach((child) => {
@@ -640,7 +640,7 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getSiblingIds(parentId: string | null): string[] {
+  private getSiblingIds(parentId: number | null): number[] {
     return this.categoriesFlat
       .filter((item) => (item.parentId ?? null) === parentId)
       .sort((a, b) => a.sortOrder - b.sortOrder)

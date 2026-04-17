@@ -18,19 +18,19 @@ export class CategoriesService {
     return this.api.get<Category[]>("/admin/categories");
   }
 
-  getById(id: string): Observable<Category> {
+  getById(id: number): Observable<Category> {
     return this.api.get<Category>(`/admin/categories/${id}`);
   }
 
-  create(payload: Partial<Category>): Observable<Category> {
+  create(payload: any): Observable<Category> {
     return this.api.post<Category>("/admin/categories", payload);
   }
 
-  update(id: string, payload: Partial<Category>): Observable<Category> {
+  update(id: number, payload: any): Observable<Category> {
     return this.api.post<Category>(`/admin/categories/${id}`, payload);
   }
 
-  delete(id: string): Observable<boolean> {
+  delete(id: number): Observable<boolean> {
     return this.api.delete<boolean>(`/admin/categories/${id}`);
   }
 

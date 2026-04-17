@@ -54,6 +54,14 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
   isEditing = false;
   selectedBannerId: number | null = null;
   isSubmitting = false;
+  currentTab: 'Hero' | 'Spotlight' | 'Promo' = 'Hero';
+
+  get filteredBanners(): AdminBanner[] {
+    return this.banners.filter(b => {
+      if (this.currentTab === 'Hero') return b.type === 'Hero' || !b.type;
+      return b.type === this.currentTab;
+    });
+  }
 
   bannerForm = this.fb.group({
     title: ["", [Validators.required]],
@@ -95,9 +103,9 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
       mobileImageUrl: "",
       linkUrl: "",
       buttonText: "",
-      displayOrder: this.banners.length + 1,
+      displayOrder: this.banners.filter(b => b.type === this.currentTab).length + 1,
       isActive: true,
-      type: "Hero",
+      type: this.currentTab,
     });
     this.isModalOpen = true;
   }
@@ -183,5 +191,9 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
 
   getBannerImageUrl(url: string): string {
     return this.imageUrlService.getImageUrl(url);
+  }
+
+  setTab(tab: 'Hero' | 'Spotlight' | 'Promo'): void {
+    this.currentTab = tab;
   }
 }

@@ -91,7 +91,9 @@ public class MappingProfiles : Profile
         
         CreateMap<Order, OrderDto>()
             .ForMember(d => d.ItemsCount, o => o.MapFrom(s => s.Items.Sum(i => i.Quantity)))
-            .ForMember(d => d.Logs, o => o.MapFrom(s => s.Logs.OrderByDescending(l => l.CreatedAt)));
+            .ForMember(d => d.Items, o => o.MapFrom(s => s.Items))
+            .ForMember(d => d.Logs, o => o.MapFrom(s => s.Logs.OrderByDescending(l => l.CreatedAt)))
+            .ForMember(d => d.Notes, o => o.MapFrom(s => s.Notes.OrderByDescending(n => n.CreatedAt)));
 
         CreateMap<OrderItem, OrderItemDto>()
             .ForMember(d => d.ProductId, o => o.MapFrom(s => s.ProductId))
