@@ -86,8 +86,8 @@ export class CheckoutPageComponent {
     fullName: ["", [Validators.required, Validators.minLength(2)]],
     phone: ["", [Validators.required, Validators.minLength(7)]],
     address: ["", [Validators.required, Validators.minLength(5)]],
-    city: ["", Validators.required],
-    area: ["", Validators.required],
+    city: [""],
+    area: [""],
     deliveryMethodId: [0, Validators.required],
     paymentMethod: ["cod", Validators.required],
   });
