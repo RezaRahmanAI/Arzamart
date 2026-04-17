@@ -215,7 +215,7 @@
                             <span class="text-3xl font-bold text-[#ff7a00]">৳ {{ selectedVariantPrice }}</span>
                             <span class="text-xl text-slate-400 line-through font-medium" *ngIf="data.config?.originalPrice">৳ {{ data.config?.originalPrice }}</span>
                             <span class="px-2 py-0.5 rounded-lg bg-orange-100 text-[#ff7a00] text-[10px] font-black uppercase" *ngIf="data.config && data.config.originalPrice && data.config.originalPrice > selectedVariantPrice">
-                                Save {{ (((data.config.originalPrice) - selectedVariantPrice) / (data.config.originalPrice) * 100).toFixed(0) }}%
+                                Save ৳{{ (data.config.originalPrice - selectedVariantPrice) }} OFF
                             </span>
                         </div>
                     </div>
@@ -226,13 +226,13 @@
                             <div class="flex justify-between items-end mb-4">
                                 <h4 class="font-label text-xs uppercase tracking-widest text-slate-500">সাইজ সিলেক্ট করুন (SELECT SIZE)</h4>
                             </div>
-                            <div class="grid grid-cols-3 gap-3">
+                            <div class="flex flex-wrap gap-3">
                                 <button type="button" *ngFor="let variant of data.product.variants" 
                                         (click)="selectSize(variant.size || '')"
                                         [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'border-[#ff7a00] bg-orange-50 text-[#ff7a00]' : 'border-slate-100 text-slate-600 hover:border-orange-200'"
-                                        class="py-3 border-2 font-bold text-sm transition-all duration-200 rounded-xl flex flex-col items-center gap-0.5">
-                                    <span>{{ variant.size }}</span>
-                                    <span class="text-[9px] opacity-70">৳ {{ variant.price || data.product.price }}</span>
+                                        class="min-w-[80px] px-6 py-2.5 border-2 font-bold text-sm transition-all duration-200 rounded-xl flex flex-col items-center gap-0.5">
+                                    <span class="text-xs uppercase tracking-tight">{{ variant.size }}</span>
+                                    <span class="text-[11px] font-black opacity-80">৳ {{ variant.price || data.product.price }}</span>
                                 </button>
                             </div>
                             <p *ngIf="orderForm.get('selectedSize')?.touched && orderForm.get('selectedSize')?.invalid" class="text-rose-500 text-[10px] font-bold uppercase tracking-widest mt-2">Please select a size to continue</p>
