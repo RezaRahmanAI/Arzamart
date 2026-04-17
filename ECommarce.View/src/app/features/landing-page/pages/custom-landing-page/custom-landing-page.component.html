@@ -224,13 +224,13 @@
                         <!-- Size Selection -->
                         <div>
                             <div class="flex justify-between items-end mb-4">
-                                <h4 class="font-label text-xs uppercase tracking-widest text-slate-500">ডেলিভারি এলাকা (DELIVERY AREA)</h4>
+                                <h4 class="font-label text-xs uppercase tracking-widest text-slate-500">সাইজ সিলেক্ট করুন (SELECT SIZE)</h4>
                             </div>
                             <div class="grid grid-cols-3 gap-3">
                                 <button type="button" *ngFor="let variant of data.product.variants" 
                                         (click)="selectSize(variant.size || '')"
-                                        [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'border-[#121212] bg-[#121212] text-white' : 'border-slate-200 text-slate-600 hover:border-[#121212] hover:text-[#121212]'"
-                                        class="py-3 border-2 font-bold text-sm transition-all duration-200 rounded-lg flex flex-col items-center gap-0.5">
+                                        [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'border-[#ff7a00] bg-orange-50 text-[#ff7a00]' : 'border-slate-100 text-slate-600 hover:border-orange-200'"
+                                        class="py-3 border-2 font-bold text-sm transition-all duration-200 rounded-xl flex flex-col items-center gap-0.5">
                                     <span>{{ variant.size }}</span>
                                     <span class="text-[9px] opacity-70">৳ {{ variant.price || data.product.price }}</span>
                                 </button>
@@ -252,16 +252,73 @@
                         </div>
 
                         <!-- Customer Info -->
-                        <div class="space-y-4">
-                            <input type="text" formControlName="fullName" placeholder="Full Name" 
-                                   class="w-full bg-transparent border-b border-slate-200 pb-2 px-0 text-slate-900 focus:outline-none focus:border-[#121212] placeholder-slate-400 transition-colors"
-                                   [class.border-rose-300]="orderForm.get('fullName')?.touched && orderForm.get('fullName')?.invalid" />
-                            <input type="tel" formControlName="phone" placeholder="Phone Number"
-                                   class="w-full bg-transparent border-b border-slate-200 pb-2 px-0 text-slate-900 focus:outline-none focus:border-[#121212] placeholder-slate-400 transition-colors"
-                                   [class.border-rose-300]="orderForm.get('phone')?.touched && orderForm.get('phone')?.invalid" />
-                            <input type="text" formControlName="address" placeholder="Delivery Address"
-                                   class="w-full bg-transparent border-b border-slate-200 pb-2 px-0 text-slate-900 focus:outline-none focus:border-[#121212] placeholder-slate-400 transition-colors"
-                                   [class.border-rose-300]="orderForm.get('address')?.touched && orderForm.get('address')?.invalid" />
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Full Name -->
+                            <div class="relative group">
+                                <lucide-icon [img]="icons.User" class="absolute left-0 top-2 w-4 h-4 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></lucide-icon>
+                                <input type="text" formControlName="fullName" placeholder="Full Name" 
+                                       class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="relative group">
+                                <lucide-icon [img]="icons.Phone" class="absolute left-0 top-2 w-4 h-4 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></lucide-icon>
+                                <input type="tel" formControlName="phone" placeholder="Phone Number"
+                                       class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
+                            </div>
+
+                            <!-- City Dropdown -->
+                            <div class="relative">
+                                <lucide-icon [img]="icons.MapPin" class="absolute left-0 top-2 w-4 h-4 text-slate-400"></lucide-icon>
+                                <button type="button" (click)="toggleCityDropdown()"
+                                        class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-left text-slate-900 flex items-center justify-between">
+                                    <span [class.text-slate-400]="!orderForm.get('city')?.value">{{ orderForm.get('city')?.value || 'Select District' }}</span>
+                                    <lucide-icon [img]="icons.ChevronDown" class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="isCityDropdownOpen"></lucide-icon>
+                                </button>
+
+                                <div *ngIf="isCityDropdownOpen" class="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 max-h-64 overflow-hidden flex flex-col">
+                                    <div class="p-3 border-b border-slate-50">
+                                        <input type="text" [value]="citySearch" (input)="filterCities($event)" placeholder="Search District..."
+                                               class="w-full bg-slate-50 border-none rounded-xl px-4 py-2 text-sm focus:ring-1 focus:ring-orange-200 outline-none" />
+                                    </div>
+                                    <div class="overflow-y-auto py-2">
+                                        <button type="button" *ngFor="let city of filteredCities" (click)="selectCity(city)"
+                                                class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#ff7a00] transition-colors">
+                                            {{ city }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Area Dropdown -->
+                            <div class="relative">
+                                <lucide-icon [img]="icons.MapPin" class="absolute left-0 top-2 w-4 h-4 text-slate-400"></lucide-icon>
+                                <button type="button" (click)="toggleAreaDropdown()" [disabled]="!orderForm.get('city')?.value"
+                                        class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-left text-slate-900 flex items-center justify-between disabled:opacity-50">
+                                    <span [class.text-slate-400]="!orderForm.get('area')?.value">{{ orderForm.get('area')?.value || 'Select Area' }}</span>
+                                    <lucide-icon [img]="icons.ChevronDown" class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="isAreaDropdownOpen"></lucide-icon>
+                                </button>
+
+                                <div *ngIf="isAreaDropdownOpen" class="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 max-h-64 overflow-hidden flex flex-col">
+                                    <div class="p-3 border-b border-slate-50">
+                                        <input type="text" [value]="areaSearch" (input)="filterAreas($event)" placeholder="Search Area..."
+                                               class="w-full bg-slate-50 border-none rounded-xl px-4 py-2 text-sm focus:ring-1 focus:ring-orange-200 outline-none" />
+                                    </div>
+                                    <div class="overflow-y-auto py-2">
+                                        <button type="button" *ngFor="let area of filteredAreas" (click)="selectArea(area)"
+                                                class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#ff7a00] transition-colors">
+                                            {{ area }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Full Address -->
+                            <div class="md:col-span-2 relative group">
+                                <lucide-icon [img]="icons.MapPin" class="absolute left-0 top-2 w-4 h-4 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></lucide-icon>
+                                <input type="text" formControlName="address" placeholder="House/Road/Block (Detailed Address)"
+                                       class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
+                            </div>
                         </div>
 
                         <!-- Submit -->
