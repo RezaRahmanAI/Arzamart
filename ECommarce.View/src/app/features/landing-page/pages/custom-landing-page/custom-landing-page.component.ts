@@ -16,7 +16,9 @@ import { Router } from "@angular/router";
 import { SiteSettingsService } from "../../../../core/services/site-settings.service";
 import { SettingsService } from "../../../../admin/services/settings.service";
 import { DeliveryMethod } from "../../../../admin/models/settings.models";
-import { map } from "rxjs";
+import { map, catchError } from "rxjs";
+import { ProductService } from "../../../../core/services/product.service";
+import { of } from "rxjs";
 
 interface LandingPageData {
   product: Product;
@@ -41,10 +43,12 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   readonly imageUrlService = inject(ImageUrlService);
   private readonly siteSettingsService = inject(SiteSettingsService);
   private readonly settingsService = inject(SettingsService);
+  private readonly productService = inject(ProductService);
 
   brandName$ = this.siteSettingsService.getSettings().pipe(map(s => s.websiteName));
 
   data: LandingPageData | null = null;
+  relatedProducts: Product[] = [];
   deliveryMethods: DeliveryMethod[] = [];
   isLoading = true;
   isOrdering = false;
@@ -97,6 +101,17 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         // Start timer
         if (res.config?.relativeTimerTotalMinutes) {
           this.startRelativeTimer(res.config.productId, res.config.relativeTimerTotalMinutes);
+        }
+
+        // Load related products from same category
+        if (res.product?.categoryId) {
+          this.productService.getRelatedProducts(undefined, res.product.categoryId, 6)
+            .subscribe({
+              next: (related) => {
+                // Filter out current product
+                this.relatedProducts = related.data.filter(p => p.id !== res.product.id);
+              }
+            });
         }
       },
       error: () => {

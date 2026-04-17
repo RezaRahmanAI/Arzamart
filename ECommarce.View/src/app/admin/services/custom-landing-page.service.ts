@@ -9,8 +9,6 @@ export interface CustomLandingPageConfig {
   relativeTimerTotalMinutes?: number | null;
   isTimerVisible: boolean;
   headerTitle?: string;
-  bannerTitle?: string;
-  bannerSubtitle?: string;
   isProductDetailsVisible: boolean;
   productDetailsTitle?: string;
   isFabricVisible: boolean;

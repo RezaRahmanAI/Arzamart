@@ -31,8 +31,6 @@ export class AdminCustomLandingPageConfigComponent implements OnInit {
     relativeTimerTotalMinutes: [null as number | null],
     isTimerVisible: [true],
     headerTitle: ["অফারটি শেষ হতে মাত্র কিছুক্ষণ বাকি আছে!"],
-    bannerTitle: ["অফারটি মিস মানেই লস!!"],
-    bannerSubtitle: ["💥 ১৯৫০ টাকার হিজাব ছাড়া বোরখা অফারে পাচ্ছেন মাত্র ১১৫০ টাকায়!"],
     isProductDetailsVisible: [true],
     productDetailsTitle: ["🔥 প্রোডাক্ট ডিটেইলস"],
     isFabricVisible: [true],
