@@ -46,6 +46,15 @@ export class AppComponent implements OnInit {
     }),
   );
 
+  showNavbar$ = this.router.events.pipe(
+    filter((event) => event instanceof NavigationEnd),
+    startWith(null),
+    map(() => {
+      const url = this.router.url;
+      return !url.startsWith("/admin") && !url.startsWith("/login") && !url.startsWith("/clp/");
+    }),
+  );
+
   ngOnInit() {
     this.logger.info("Application initialized with professional logging");
 

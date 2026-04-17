@@ -34,7 +34,7 @@ import {
 } from "lucide-angular";
 
 interface ParentOption {
-  id: string | null;
+  id: number | null;
   label: string;
 }
 
@@ -453,7 +453,7 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   buildTree(categories: Category[]): CategoryNode[] {
-    const grouped = new Map<string | null, Category[]>();
+    const grouped = new Map<number | null, Category[]>();
     categories.forEach((category) => {
       const key = category.parentId ?? null;
       if (!grouped.has(key)) {
@@ -631,7 +631,7 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  private updateSortOrderForParent(parentId: string | null): void {
+  private updateSortOrderForParent(parentId: number | null): void {
     const siblings = this.categoriesFlat
       .filter((item) => (item.parentId ?? null) === parentId)
       .sort((a, b) => a.sortOrder - b.sortOrder);

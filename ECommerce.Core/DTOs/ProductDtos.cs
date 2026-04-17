@@ -168,15 +168,9 @@ public class ProductMediaImageDto
     [JsonPropertyName("imageUrl")]
     public string ImageUrl { get; set; } = string.Empty;
     public string Alt { get; set; } = string.Empty;
-    public string Color { get; set; } = string.Empty;
 }
 
-public class ProductColorDto
-{
-    public string Name { get; set; } = string.Empty;
-    public string Hex { get; set; } = "#111827";
-    public bool Selected { get; set; }
-}
+
 
 public class ProductSizeDto
 {
@@ -187,7 +181,6 @@ public class ProductSizeDto
 
 public class ProductVariantsDto
 {
-    public List<ProductColorDto> Colors { get; set; } = new();
     public List<ProductSizeDto> Sizes { get; set; } = new();
 }
 

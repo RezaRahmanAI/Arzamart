@@ -50,12 +50,13 @@ import { DeliveryMethod } from "../../models/settings.models";
 import { SettingsService } from "../../services/settings.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { BANGLADESH_LOCATIONS } from "../../../core/utils/bangladesh-locations";
+import { SourceManagementService } from "../../../core/services/source-management.service";
+import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
 
 interface CartItem {
   product: AdminProduct;
   quantity: number;
   selectedSize?: string;
-  selectedColor?: string;
   unitPrice: number;
 }
 
@@ -80,6 +81,7 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private settingsService = inject(SettingsService);
   public imageUrlService = inject(ImageUrlService);
+  private sourceService = inject(SourceManagementService);
 
   readonly icons = {
     Search,
@@ -120,7 +122,6 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
   // Variant Selection State
   selectedProduct = signal<AdminProduct | null>(null);
   selectedSize = signal<string | null>(null);
-  selectedColor = signal<string | null>(null);
   
   // Form
   orderForm = new FormGroup({
@@ -130,9 +131,13 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     city: new FormControl(""),
     area: new FormControl(""),
     deliveryMethodId: new FormControl<number | null>(null, [Validators.required]),
+    sourcePageId: new FormControl<number | null>(null, [Validators.required]),
+    socialMediaSourceId: new FormControl<number | null>(null, [Validators.required]),
   });
 
   deliveryMethods: DeliveryMethod[] = [];
+  sourcePages: SourcePage[] = [];
+  socialMediaSources: SocialMediaSource[] = [];
 
   // City/Area dropdown
   isCityDropdownOpen = false;
@@ -165,6 +170,10 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
         this.orderForm.patchValue({ deliveryMethodId: methods[0].id });
       }
     });
+
+    // Load active sources
+    this.sourceService.getActiveSourcePages().subscribe(pages => this.sourcePages = pages);
+    this.sourceService.getActiveSocialMediaSources().subscribe(sources => this.socialMediaSources = sources);
 
     // Setup product search
     this.searchControl.valueChanges
@@ -280,25 +289,18 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     this.areaSearch = "";
   }
 
-  getUniqueColors(product: AdminProduct): string[] {
-    if (!product.images) return [];
-    // In search result, images are { url, color }. We filter unique colors.
-    return [...new Set(product.images.map((i: any) => i.color).filter(c => !!c))];
-  }
 
   handleProductClick(product: AdminProduct) {
-    const colors = this.getUniqueColors(product);
     const sizes = product.variants?.map(v => v.size).filter(s => !!s) || [];
 
-    // If product has more than 1 color OR more than 1 size, ask for selection
+    // If product has more than 1 size, ask for selection
     const uniqueSizes = [...new Set(sizes)];
 
-    if (colors.length <= 1 && uniqueSizes.length <= 1) {
-      this.addToCart(product, uniqueSizes[0] || undefined, colors[0] || undefined);
+    if (uniqueSizes.length <= 1) {
+      this.addToCart(product, uniqueSizes[0] || undefined);
     } else {
       this.selectedProduct.set(product);
       this.selectedSize.set(uniqueSizes.length === 1 ? (uniqueSizes[0] || null) : null);
-      this.selectedColor.set(colors.length === 1 ? (colors[0] || null) : null);
     }
   }
 
@@ -315,7 +317,7 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     return product.price;
   }
 
-  addToCart(product: AdminProduct, size?: string, color?: string) {
+  addToCart(product: AdminProduct, size?: string) {
     let price = product.price;
 
     // Lookup variant price if size is selected
@@ -329,8 +331,7 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     const existing = this.cart().find(
       (i) =>
         i.product.id === product.id &&
-        i.selectedSize === size &&
-        i.selectedColor === color,
+        i.selectedSize === size,
     );
 
     if (existing) {
@@ -340,7 +341,6 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
         product,
         quantity: 1,
         selectedSize: size,
-        selectedColor: color,
         unitPrice: price,
       };
       this.cart.update((c) => [...c, newItem]);
@@ -349,7 +349,6 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     // Reset selection state
     this.selectedProduct.set(null);
     this.selectedSize.set(null);
-    this.selectedColor.set(null);
     this.notification.info(`${product.name} added to cart.`);
   }
 
@@ -404,11 +403,12 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
       itemsCount: this.cart().reduce((sum, i) => sum + i.quantity, 0),
       total: this.total,
       isPreOrder: this.isPreOrderMode,
+      sourcePageId: this.orderForm.value.sourcePageId,
+      socialMediaSourceId: this.orderForm.value.socialMediaSourceId,
       items: this.cart().map(i => ({
         productId: i.product.id,
         quantity: i.quantity,
         size: i.selectedSize,
-        color: i.selectedColor,
       }))
     };
 
@@ -437,6 +437,8 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
           address: order.shippingAddress,
           city: order.city || "",
           area: order.area || "",
+          sourcePageId: order.sourcePageId,
+          socialMediaSourceId: order.socialMediaSourceId
         });
 
         if (order.city) {
@@ -449,7 +451,6 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
           product: { id: item.productId, name: item.productName, price: item.unitPrice, imageUrl: item.imageUrl } as any,
           quantity: item.quantity,
           selectedSize: item.size,
-          selectedColor: item.color,
           unitPrice: item.unitPrice
         }));
         this.cart.set(cartItems);

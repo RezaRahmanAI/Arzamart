@@ -76,7 +76,7 @@
                   <div *ngFor="let variant of product.variants" 
                        class="px-2 py-1 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-md text-[10px]"
                        [title]="variant.sku">
-                    <span class="text-gray-400 dark:text-gray-500 mr-1">{{ variant.size || '?' }} / {{ variant.color || '?' }}:</span>
+                    <span class="text-gray-400 dark:text-gray-500 mr-1">{{ variant.size || '?' }}:</span>
                     <span class="font-bold" [ngClass]="variant.stockQuantity === 0 ? 'text-red-500' : 'text-primary dark:text-white'">{{ variant.stockQuantity }}</span>
                   </div>
                 </div>
@@ -132,11 +132,11 @@
 
           <!-- Variants Section -->
           <div *ngIf="selectedProduct.variants && selectedProduct.variants.length > 0">
-            <label class="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">Update by Size/Color</label>
+            <label class="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">Update by Size</label>
             <div class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
               <div *ngFor="let variant of selectedProduct.variants; let i = index" class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
                 <div class="flex-1">
-                  <p class="font-semibold text-primary dark:text-white text-sm">{{ variant.size }} <span *ngIf="variant.color">/ {{ variant.color }}</span></p>
+                  <p class="font-semibold text-primary dark:text-white text-sm">{{ variant.size }}</p>
                   <p class="text-xs text-gray-500">Current: {{ variant.stockQuantity }}</p>
                 </div>
                 <div class="flex items-center gap-2">

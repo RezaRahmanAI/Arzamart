@@ -29,7 +29,6 @@ export interface OrderItem {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
-  color?: string;
   size?: string;
   imageUrl?: string;
 }

@@ -145,6 +145,34 @@
                 </div>
             </div>
         </div>
+
+        <!-- Page Source Filter -->
+        <div class="relative" (click)="$event.stopPropagation()">
+            <select
+              (change)="setSourcePageFilter($any($event.target).value)"
+              class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none pr-10"
+            >
+              <option [value]="null">All Pages</option>
+              <option *ngFor="let page of sourcePages" [value]="page.id" [selected]="selectedSourcePageId === page.id">
+                {{ page.name }}
+              </option>
+            </select>
+            <lucide-icon [img]="icons.ChevronDown" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></lucide-icon>
+        </div>
+
+        <!-- Social Media Filter -->
+        <div class="relative" (click)="$event.stopPropagation()">
+            <select
+              (change)="setSocialMediaFilter($any($event.target).value)"
+              class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none pr-10"
+            >
+              <option [value]="null">All Social Media</option>
+              <option *ngFor="let source of socialMediaSources" [value]="source.id" [selected]="selectedSocialMediaSourceId === source.id">
+                {{ source.name }}
+              </option>
+            </select>
+            <lucide-icon [img]="icons.ChevronDown" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></lucide-icon>
+        </div>
     </div>
   </div>
 
@@ -173,6 +201,11 @@
             <th class="px-6 py-4 text-center">
               <div class="flex items-center justify-center gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                 <span>Total</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-left">
+              <div class="flex items-center gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                <span>Source</span>
               </div>
             </th>
             <th class="px-6 py-4 text-right">
@@ -256,9 +289,22 @@
                     </div>
                 </div>
             </td>
-            <td class="px-6 py-6 text-center">
+            <td class="px-6 py-6 text-right">
                 <app-price-display [amount]="order.total" className="text-sm font-semibold text-primary dark:text-white tracking-tighter" size="sm"></app-price-display>
                 <div class="text-[9px] font-medium text-gray-400 mt-1 uppercase">{{ order.itemsCount }} items</div>
+            </td>
+            <td class="px-6 py-6">
+              <div class="flex flex-col gap-1">
+                <div *ngIf="order.sourcePageName" class="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
+                  <lucide-icon [img]="icons.CheckCircle" class="w-3 h-3 text-emerald-500"></lucide-icon>
+                  <span>{{ order.sourcePageName }}</span>
+                </div>
+                <div *ngIf="order.socialMediaSourceName" class="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
+                  <lucide-icon [img]="icons.CheckCircle" class="w-3 h-3 text-blue-500"></lucide-icon>
+                  <span>{{ order.socialMediaSourceName }}</span>
+                </div>
+                <div *ngIf="!order.sourcePageName && !order.socialMediaSourceName" class="text-[10px] text-gray-400 italic">No source</div>
+              </div>
             </td>
             <td class="px-6 py-6">
               <div class="grid grid-cols-3 gap-2 w-fit ml-auto">

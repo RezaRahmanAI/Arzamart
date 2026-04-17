@@ -83,7 +83,6 @@ export class OfferDetailsPageComponent {
     area: [""],
     quantity: [1, [Validators.required, Validators.min(1), Validators.max(10)]],
     size: ["M", [Validators.required]],
-    color: ["Default"],
   });
 
   cities = Object.keys(BANGLADESH_LOCATIONS).sort();
@@ -199,7 +198,6 @@ export class OfferDetailsPageComponent {
           {
             productId: this.offer.productId,
             quantity: quantity,
-            color: this.orderForm.controls.color.value ?? "Default",
             size: this.orderForm.controls.size.value ?? "M",
           },
         ],
@@ -216,7 +214,6 @@ export class OfferDetailsPageComponent {
             productName: this.offer?.title ?? "Special Offer",
             unitPrice: this.offer?.price ?? 0,
             quantity: quantity,
-            color: "",
             size: size,
             imageUrl: this.offer?.imageUrl ?? "",
             totalPrice: this.total,

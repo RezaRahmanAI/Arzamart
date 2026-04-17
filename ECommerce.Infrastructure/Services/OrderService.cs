@@ -107,13 +107,8 @@ public class OrderService : IOrderService
                 }
             }
             
-            // Image fallback: Try to get color-specific image if available
+            // Image fallback
             var itemImageUrl = product.ImageUrl;
-            if (!string.IsNullOrEmpty(itemDto.Color) && product.Images != null)
-            {
-                var colorImg = product.Images.FirstOrDefault(i => i.Color == itemDto.Color);
-                if (colorImg != null) itemImageUrl = colorImg.Url;
-            }
 
             var orderItem = new OrderItem
             {
@@ -121,7 +116,6 @@ public class OrderService : IOrderService
                 ProductName = product.Name,
                 UnitPrice = unitPrice,
                 Quantity = itemDto.Quantity,
-                Color = itemDto.Color,
                 Size = itemDto.Size,
                 ImageUrl = itemImageUrl
             };
@@ -175,6 +169,8 @@ public class OrderService : IOrderService
             DeliveryMethodId = orderDto.DeliveryMethodId,
             Status = orderDto.IsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending,
             IsPreOrder = orderDto.IsPreOrder,
+            SourcePageId = orderDto.SourcePageId,
+            SocialMediaSourceId = orderDto.SocialMediaSourceId,
             CreatedAt = DateTime.UtcNow
         };
         
@@ -245,7 +241,6 @@ public class OrderService : IOrderService
                 ProductName = product.Name,
                 UnitPrice = itemDto.UnitPrice ?? 0,
                 Quantity = itemDto.Quantity,
-                Color = itemDto.Color,
                 Size = itemDto.Size,
                 ImageUrl = itemDto.ImageUrl ?? product.ImageUrl
             });
@@ -260,6 +255,8 @@ public class OrderService : IOrderService
         order.Items = newItems;
         order.IsPreOrder = orderDto.IsPreOrder;
         order.DeliveryMethodId = orderDto.DeliveryMethodId;
+        order.SourcePageId = orderDto.SourcePageId;
+        order.SocialMediaSourceId = orderDto.SocialMediaSourceId;
         
         order.SubTotal = newItems.Sum(i => i.UnitPrice * i.Quantity);
         
@@ -292,6 +289,8 @@ public class OrderService : IOrderService
         spec.AddInclude(x => x.Items);
         spec.AddInclude(x => x.Logs);
         spec.AddInclude(x => x.Notes);
+        spec.AddInclude(x => x.SourcePage!);
+        spec.AddInclude(x => x.SocialMediaSource!);
         var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
         return _mapper.Map<Order, OrderDto>(order!);
@@ -431,9 +430,9 @@ public class OrderService : IOrderService
         }
     }
 
-    public async Task<(IReadOnlyList<OrderDto> Items, int Total)> GetOrdersForAdminAsync(string? searchTerm, string? status, string? dateRange, int page, int pageSize, bool preOrderOnly = false, DateTime? startDate = null, DateTime? endDate = null)
+    public async Task<(IReadOnlyList<OrderDto> Items, int Total)> GetOrdersForAdminAsync(string? searchTerm, string? status, string? dateRange, int page, int pageSize, bool preOrderOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null)
     {
-        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange, preOrderOnly, startDate, endDate);
+        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange, preOrderOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
         var total = await _unitOfWork.Repository<Order>().CountAsync(spec);
         
         spec.ApplyPaging(pageSize * (page - 1), pageSize);

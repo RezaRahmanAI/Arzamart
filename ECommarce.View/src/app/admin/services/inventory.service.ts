@@ -6,7 +6,6 @@ export interface VariantInventoryDto {
   variantId: number;
   sku: string;
   size: string;
-  color: string;
   stockQuantity: number;
 }
 

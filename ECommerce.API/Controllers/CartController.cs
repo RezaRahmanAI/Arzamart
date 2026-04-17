@@ -69,7 +69,6 @@ public class CartController : ControllerBase
 
         var existingItem = cart.Items.FirstOrDefault(i => 
             i.ProductId == dto.ProductId && 
-            i.Color == dto.Color && 
             i.Size == dto.Size);
 
         if (existingItem != null)
@@ -81,7 +80,6 @@ public class CartController : ControllerBase
             cart.Items.Add(new CartItem
             {
                 ProductId = dto.ProductId,
-                Color = dto.Color ?? string.Empty,
                 Size = dto.Size ?? string.Empty,
                 Quantity = dto.Quantity
             });
@@ -185,7 +183,6 @@ public class CartController : ControllerBase
             {
                 var existingItem = userCart.Items.FirstOrDefault(i => 
                     i.ProductId == item.ProductId && 
-                    i.Color == item.Color && 
                     i.Size == item.Size);
 
                 if (existingItem != null)
@@ -197,7 +194,6 @@ public class CartController : ControllerBase
                     userCart.Items.Add(new CartItem
                     {
                         ProductId = item.ProductId,
-                        Color = item.Color,
                         Size = item.Size,
                         Quantity = item.Quantity
                     });
@@ -315,7 +311,6 @@ public class CartController : ControllerBase
                     Price = price,
                     SalePrice = salePrice,
                     Quantity = i.Quantity,
-                    Color = i.Color ?? string.Empty,
                     Size = i.Size ?? string.Empty,
                     AvailableStock = variant?.StockQuantity ?? 0
                 };

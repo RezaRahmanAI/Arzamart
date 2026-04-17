@@ -8,7 +8,6 @@ public class ProductImage : BaseEntity
     public string MediaType { get; set; } = "image"; // image, video
     public bool IsMain { get; set; }
     public int DisplayOrder { get; set; }
-    public string? Color { get; set; }
     
     public int ProductId { get; set; }
     public Product? Product { get; set; }

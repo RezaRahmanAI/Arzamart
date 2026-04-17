@@ -246,43 +246,7 @@
               </span>
             </div>
 
-            <!-- Variants: Color -->
-            <div
-              *ngIf="vm.uniqueColors.length > 0"
-              class="space-y-5 text-center lg:text-left"
-            >
-              <p
-                class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
-              >
-                Available Color
-                <span class="text-[#999] ml-2 font-normal">{{
-                  selectedColorName(vm.product, vm.selectedColor)
-                }}</span>
-              </p>
-              <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
-                <button
-                  *ngFor="let color of vm.uniqueColors"
-                  (click)="selectColor(color, vm.product)"
-                  class="w-16 h-20 border transition-all duration-300 relative overflow-hidden group"
-                  [class.border-[#1a1a1a]]="
-                    color.name === vm.selectedColor?.name
-                  "
-                  [class.border-[#eee]]="color.name !== vm.selectedColor?.name"
-                >
-                  <img
-                    *ngIf="getColorImage(vm.product, color.name) as imgUrl"
-                    [src]="imgUrl"
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div
-                    *ngIf="!getColorImage(vm.product, color.name)"
-                    class="w-full h-full bg-[#f9f9f9] flex items-center justify-center text-[8px] uppercase tracking-tighter text-[#aaa] font-bold text-center p-2"
-                  >
-                    {{ color.name }}
-                  </div>
-                </button>
-              </div>
-            </div>
+
 
             <!-- Variants: Size -->
             <div *ngIf="vm.uniqueSizes.length > 0" class="space-y-5">

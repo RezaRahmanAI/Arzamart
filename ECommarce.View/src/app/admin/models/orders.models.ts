@@ -48,6 +48,10 @@ export interface Order {
   area?: string;
   isPreOrder: boolean;
   adminNote?: string;
+  sourcePageId?: number;
+  sourcePageName?: string;
+  socialMediaSourceId?: number;
+  socialMediaSourceName?: string;
   logs?: OrderLog[];
   notes?: OrderNote[];
   items?: OrderItem[];
@@ -78,4 +82,6 @@ export interface OrdersQueryParams {
   page: number;
   pageSize: number;
   preOrderOnly?: boolean;
+  sourcePageId?: number;
+  socialMediaSourceId?: number;
 }

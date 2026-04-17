@@ -38,8 +38,7 @@ public class MappingProfiles : Profile
                 AltText = i.AltText,
                 Label = i.Label,
                 IsPrimary = i.IsMain,
-                Type = i.MediaType ?? "image",
-                Color = i.Color
+                Type = i.MediaType ?? "image"
             })))
             .ForMember(d => d.Variants, o => o.MapFrom(s => s.Variants.Select(v => new ProductVariantDto
             {
@@ -52,7 +51,9 @@ public class MappingProfiles : Profile
                 StockQuantity = v.StockQuantity
             })))
             .ForMember(d => d.IsBundle, o => o.MapFrom(s => s.IsBundle))
-            .ForMember(d => d.BundleQuantity, o => o.MapFrom(s => s.BundleQuantity));
+            .ForMember(d => d.BundleQuantity, o => o.MapFrom(s => s.BundleQuantity))
+            .ForMember(d => d.FabricAndCare, o => o.MapFrom(s => s.FabricAndCare))
+            .ForMember(d => d.Description, o => o.MapFrom(s => s.Description));
 
         CreateMap<Product, ProductListDto>()
             .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : ""))
@@ -81,8 +82,7 @@ public class MappingProfiles : Profile
                 AltText = i.AltText,
                 Label = i.Label,
                 IsPrimary = i.IsMain,
-                Type = i.MediaType ?? "image",
-                Color = i.Color
+                Type = i.MediaType ?? "image"
             })));
 
         CreateMap<Category, CategoryDto>();
@@ -93,14 +93,15 @@ public class MappingProfiles : Profile
             .ForMember(d => d.ItemsCount, o => o.MapFrom(s => s.Items.Sum(i => i.Quantity)))
             .ForMember(d => d.Items, o => o.MapFrom(s => s.Items))
             .ForMember(d => d.Logs, o => o.MapFrom(s => s.Logs.OrderByDescending(l => l.CreatedAt)))
-            .ForMember(d => d.Notes, o => o.MapFrom(s => s.Notes.OrderByDescending(n => n.CreatedAt)));
+            .ForMember(d => d.Notes, o => o.MapFrom(s => s.Notes.OrderByDescending(n => n.CreatedAt)))
+            .ForMember(d => d.SourcePageName, o => o.MapFrom(s => s.SourcePage != null ? s.SourcePage.Name : null))
+            .ForMember(d => d.SocialMediaSourceName, o => o.MapFrom(s => s.SocialMediaSource != null ? s.SocialMediaSource.Name : null));
 
         CreateMap<OrderItem, OrderItemDto>()
             .ForMember(d => d.ProductId, o => o.MapFrom(s => s.ProductId))
             .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ProductName))
             .ForMember(d => d.UnitPrice, o => o.MapFrom(s => s.UnitPrice))
             .ForMember(d => d.Quantity, o => o.MapFrom(s => s.Quantity))
-            .ForMember(d => d.Color, o => o.MapFrom(s => s.Color))
             .ForMember(d => d.Size, o => o.MapFrom(s => s.Size))
             .ForMember(d => d.ImageUrl, o => o.MapFrom(s => s.ImageUrl))
             .ForMember(d => d.TotalPrice, o => o.MapFrom(s => s.UnitPrice * s.Quantity));
@@ -112,6 +113,9 @@ public class MappingProfiles : Profile
             .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product != null ? s.Product.Name : ""));
         CreateMap<CreateReviewDto, Review>();
 
-
+        CreateMap<SourcePage, SourcePageDto>();
+        CreateMap<SocialMediaSource, SocialMediaSourceDto>();
+        CreateMap<CustomLandingPageConfig, CustomLandingPageConfigDto>();
+        CreateMap<CustomLandingPageConfigUpdateDto, CustomLandingPageConfig>();
     }
 }

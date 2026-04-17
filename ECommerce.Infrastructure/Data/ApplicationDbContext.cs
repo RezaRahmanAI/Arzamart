@@ -36,6 +36,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
     public DbSet<OrderNote> OrderNotes { get; set; }
     public DbSet<AppRefreshToken> RefreshTokens { get; set; }
+    public DbSet<SourcePage> SourcePages { get; set; }
+    public DbSet<SocialMediaSource> SocialMediaSources { get; set; }
+    public DbSet<CustomLandingPageConfig> CustomLandingPageConfigs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -48,6 +51,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Collection>().HasQueryFilter(c => c.IsActive);
         builder.Entity<NavigationMenu>().HasQueryFilter(n => n.IsActive);
         builder.Entity<HeroBanner>().HasQueryFilter(h => h.IsActive);
+        builder.Entity<SourcePage>().HasQueryFilter(p => p.IsActive);
+        builder.Entity<SocialMediaSource>().HasQueryFilter(s => s.IsActive);
 
         // Required relation filters to avoid warnings when main entities are filtered out
         builder.Entity<CartItem>().HasQueryFilter(ci => ci.Product!.IsActive);
@@ -180,6 +185,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .WithOne()
                   .HasForeignKey(n => n.OrderId)
                   .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(o => o.SourcePage)
+                  .WithMany()
+                  .HasForeignKey(o => o.SourcePageId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(o => o.SocialMediaSource)
+                  .WithMany()
+                  .HasForeignKey(o => o.SocialMediaSourceId)
+                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         builder.Entity<OrderItem>(entity =>
@@ -227,7 +242,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(i => i.Product)
                   .WithMany()
                   .HasForeignKey(i => i.ProductId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                  .OnDelete(DeleteBehavior.Cascade);
         });
 
         // UserToken Configuration
@@ -256,6 +271,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(u => u.IsSuspicious).HasDefaultValue(false);
             entity.Property(u => u.IsActive).HasDefaultValue(true);
             entity.Property(u => u.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+        });
+
+        builder.Entity<CustomLandingPageConfig>(entity =>
+        {
+            entity.Property(c => c.PromoPrice).HasColumnType("decimal(18,2)");
+            entity.Property(c => c.OriginalPrice).HasColumnType("decimal(18,2)");
+
+            entity.HasOne(c => c.Product)
+                .WithMany()
+                .HasForeignKey(c => c.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<Review>(entity =>
+        {
+            entity.HasOne(r => r.Product)
+                .WithMany()
+                .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
     }

@@ -91,10 +91,7 @@ export class ProductDetailsPageComponent {
   isSizeGuideOpen = false;
   currentImageIndex = 0;
 
-  private readonly selectedColorSubject = new BehaviorSubject<{
-    name: string;
-    hex: string;
-  } | null>(null);
+
   private readonly selectedSizeSubject = new BehaviorSubject<string | null>(
     null,
   );
@@ -115,13 +112,6 @@ export class ProductDetailsPageComponent {
     ),
     filter((product): product is Product => Boolean(product)),
     tap((product) => {
-      const colors = Array.from(
-        new Set(product.images?.map((i) => i.color).filter(Boolean)),
-      );
-      this.selectedColorSubject.next(
-        colors[0] ? { name: colors[0]!, hex: "" } : null,
-      );
-
       const sizes = Array.from(
         new Set(product.variants?.map((v) => v.size).filter(Boolean)),
       );
@@ -180,7 +170,6 @@ export class ProductDetailsPageComponent {
 
   readonly vm$ = combineLatest([
     this.product$,
-    this.selectedColorSubject,
     this.selectedSizeSubject,
     this.quantitySubject,
     this.selectedMediaSubject,
@@ -189,15 +178,12 @@ export class ProductDetailsPageComponent {
     map(
       ([
         product,
-        selectedColor,
         selectedSize,
         quantity,
         selectedMedia,
         relatedProducts,
       ]) => {
-        const uniqueColors = Array.from(
-          new Set(product.images?.map((i) => i.color).filter(Boolean)),
-        ).map((color) => ({ name: color!, hex: "" }));
+
 
         const uniqueSizes = Array.from(
           new Set(product.variants?.map((v) => v.size).filter(Boolean)),
@@ -245,7 +231,6 @@ export class ProductDetailsPageComponent {
 
         return {
           product,
-          selectedColor,
           selectedSize,
           quantity,
           currentStock,
@@ -253,7 +238,6 @@ export class ProductDetailsPageComponent {
           currentCompareAtPrice,
           selectedMedia: this.ensureSelectedMedia(product, selectedMedia),
           gallery: this.buildGallery(product),
-          uniqueColors,
           uniqueSizes: sortedUniqueSizes,
           relatedProducts,
         };
@@ -307,16 +291,7 @@ export class ProductDetailsPageComponent {
     return product.compareAtPrice - product.price;
   }
 
-  selectedColorName(
-    product: Product | null,
-    selectedColor: { name: string } | null,
-  ): string {
-    if (selectedColor) return selectedColor.name;
-    const colors = Array.from(
-      new Set(product?.images?.map((i) => i.color).filter(Boolean)),
-    );
-    return colors[0] ?? "";
-  }
+
 
   selectedSizeLabel(
     product: Product | null,
@@ -329,22 +304,7 @@ export class ProductDetailsPageComponent {
     return sizes[0] ?? "";
   }
 
-  selectColor(color: { name: string; hex: string }, product: Product): void {
-    this.selectedColorSubject.next(color);
-    this.selectionError = "";
 
-    // Switch to the image associated with this color
-    if (product.images) {
-      const colorImage = product.images.find((i) => i.color === color.name);
-      if (colorImage) {
-        const gallery = this.buildGallery(product);
-        const index = gallery.findIndex((url) => url === colorImage.imageUrl);
-        if (index !== -1) {
-          this.currentImageIndex = index;
-        }
-      }
-    }
-  }
 
   selectSize(sizeLabel: string): void {
     this.selectedSizeSubject.next(sizeLabel);
@@ -367,25 +327,10 @@ export class ProductDetailsPageComponent {
     if (!product) {
       return;
     }
-    const selectedColor = this.selectedColorSubject.getValue();
     const selectedSize = this.selectedSizeSubject.getValue();
 
-    // Logic to match uniqueColors and uniqueSizes used in template
-    const uniqueColorsCount = Array.from(
-      new Set(product.images?.map((i) => i.color).filter(Boolean)),
-    ).length;
-    const uniqueSizesCount = Array.from(
-      new Set(product.variants?.map((v) => v.size).filter(Boolean)),
-    ).length;
-
-    const isColorRequired = uniqueColorsCount > 0;
-    const isSizeRequired = uniqueSizesCount > 0;
-
-    // Auto-resolve color if missing but provided in product images
-    const finalColorName = selectedColor?.name ?? (isColorRequired ? Array.from(new Set(product.images?.map(i => i.color).filter(Boolean)))[0] : undefined);
-    
     // Size remains strictly mandatory
-    if (isSizeRequired && !selectedSize) {
+    if (!selectedSize && product.variants?.length) {
       this.selectionError = "Please select a size before adding to cart.";
       return;
     }
@@ -395,7 +340,6 @@ export class ProductDetailsPageComponent {
       .addItem(
         product,
         quantity,
-        finalColorName,
         selectedSize ?? undefined,
       )
       .subscribe();
@@ -428,17 +372,13 @@ export class ProductDetailsPageComponent {
   }
 
   scrollToReviews(): void {
-    const reviewsSection = document.getElementById("reviews");
+    const reviewsSection: HTMLElement | null = document.getElementById("reviews");
     if (reviewsSection) {
       reviewsSection.scrollIntoView({ behavior: "smooth" });
     }
   }
 
-  getColorImage(product: Product, color: string): string | null {
-    if (!product?.images) return null;
-    const img = product.images.find((i) => i.color === color);
-    return img ? this.imageUrlService.getImageUrl(img.imageUrl) : null;
-  }
+
 
   openSizeGuide(): void {
     this.isSizeGuideOpen = true;
@@ -462,14 +402,14 @@ export class ProductDetailsPageComponent {
   }
 
   private buildGallery(product: Product): string[] {
-    const images = product.images?.map((i) => i.imageUrl) ?? [];
+    const images = product.images?.map((i: ProductImage) => i.imageUrl) ?? [];
     // For vertical stack, we want the main image first, then the rest
-    let gallery = [];
+    let gallery: string[] = [];
     if (product.imageUrl) {
       gallery.push(product.imageUrl);
     }
     // Add other images, avoiding duplicates
-    images.forEach((img) => {
+    images.forEach((img: string) => {
       if (img !== product.imageUrl) {
         gallery.push(img);
       }

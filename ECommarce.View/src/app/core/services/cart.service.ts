@@ -145,14 +145,8 @@ export class CartService {
   addItem(
     product: Product,
     quantity = 1,
-    color?: string,
     size?: string,
   ): Observable<CartDto> {
-    const resolvedColor =
-      color && color.trim() !== "" 
-        ? color 
-        : (product.images?.find((i) => !!i.color)?.color ?? "Default");
-        
     const hasVariants = product.variants && product.variants.length > 0;
     const resolvedSize = 
       size && size.trim() !== ""
@@ -166,7 +160,6 @@ export class CartService {
     const payload: AddToCartDto = {
       productId: product.id,
       quantity,
-      color: resolvedColor,
       size: resolvedSize ?? "One Size",
     };
 
@@ -181,7 +174,6 @@ export class CartService {
             .find(
               (i) =>
                 i.productId === payload.productId &&
-                i.color === payload.color &&
                 i.size === payload.size,
             );
           if (newItem) {
@@ -285,7 +277,6 @@ export class CartService {
       name: i.productName,
       price: i.price,
       quantity: i.quantity,
-      color: i.color,
       size: i.size,
       imageUrl: i.imageUrl,
       imageAlt: i.productName, // Basic fallback

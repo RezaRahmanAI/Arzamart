@@ -14,7 +14,6 @@ export interface ProductVariantEdit {
   id?: number;
   sku?: string;
   size?: string;
-  color?: string;
   price?: number;
   salePrice?: number;
   purchaseRate?: number;
@@ -27,7 +26,7 @@ export interface AdminProduct extends CoreProduct {
 }
 
 export interface ProductVariantOption {
-  optionName: "Size" | "Color" | "Material" | string;
+  optionName: "Size" | "Material" | string;
   values: string;
 }
 
@@ -59,19 +58,16 @@ export interface ProductCreatePayload {
       label: string;
       imageUrl: string;
       alt: string;
-      color?: string;
     };
     thumbnails: {
       type: string;
       label: string;
       imageUrl: string;
       alt: string;
-      color?: string;
     }[];
   };
 
   variants: {
-    colors: { name: string; hex: string; selected: boolean }[];
     sizes: {
       label: string;
       price: number;
@@ -135,19 +131,16 @@ export interface ProductUpdatePayload {
       label: string;
       imageUrl: string;
       alt: string;
-      color?: string;
     };
     thumbnails: {
       type: string;
       label: string;
       imageUrl: string;
       alt: string;
-      color?: string;
     }[];
   };
 
   variants: {
-    colors: { name: string; hex: string; selected: boolean }[];
     sizes: {
       label: string;
       price: number;

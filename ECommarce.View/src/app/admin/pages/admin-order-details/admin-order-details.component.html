@@ -90,13 +90,10 @@
                 {{ item.productName }}
               </h4>
               <p
-                *ngIf="item.size || item.color"
+                *ngIf="item.size"
                 class="text-sm font-medium mt-1 inline-flex flex-wrap gap-2"
               >
-                <span *ngIf="item.color" class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300">
-                  Color: {{ item.color }}
-                </span>
-                <span *ngIf="item.size" class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300">
+                <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300">
                   Size: {{ item.size }}
                 </span>
               </p>

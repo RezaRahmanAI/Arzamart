@@ -49,7 +49,6 @@ interface MediaFormValue {
   type: "image" | "video";
   isMain: boolean;
   source: "file" | "url";
-  color?: string;
 }
 
 @Component({
@@ -159,7 +158,6 @@ export class AdminProductFormComponent implements OnDestroy {
       mediaFiles: [[] as File[]],
       mediaItems: this.formBuilder.array([]),
       variants: this.formBuilder.group({
-        colors: this.formBuilder.array([this.createColorGroup(true)]),
         sizes: this.formBuilder.array([this.createSizeGroup(true)]),
       }),
       meta: this.formBuilder.group({
@@ -311,9 +309,7 @@ export class AdminProductFormComponent implements OnDestroy {
     return this.form.get("mediaItems") as FormArray;
   }
 
-  get colorsArray(): FormArray {
-    return this.form.get("variants.colors") as FormArray;
-  }
+
 
   get sizesArray(): FormArray {
     return this.form.get("variants.sizes") as FormArray;
@@ -412,27 +408,7 @@ export class AdminProductFormComponent implements OnDestroy {
 
         // Load existing media
         // 1. Parse Variants First (Colors needed for Media Dropdowns)
-        this.colorsArray.clear();
-        const uniqueColors = new Set<string>();
-        const images = (product as any).images || (product as any).Images || [];
 
-        images.forEach((img: any) => {
-          const color = img.color || img.Color;
-          if (color) uniqueColors.add(color);
-        });
-
-        if (uniqueColors.size > 0) {
-          uniqueColors.forEach((color) => {
-            this.colorsArray.push(
-              this.formBuilder.group({
-                name: [color],
-                selected: [true],
-              }),
-            );
-          });
-        } else {
-          this.colorsArray.push(this.createColorGroup(true));
-        }
 
         // 2. Sizes from Variants
         this.sizesArray.clear();
@@ -479,7 +455,6 @@ export class AdminProductFormComponent implements OnDestroy {
               alt: img.altText || product.name,
               type: "image",
               isMain: img.isPrimary,
-              color: img.color, // Now we have color!
             });
           });
         } else if (product.images && product.images.length > 0) {
@@ -492,7 +467,6 @@ export class AdminProductFormComponent implements OnDestroy {
               alt: img.altText || product.name,
               type: "image",
               isMain: img.isPrimary,
-              color: img.color,
             });
           });
         } else if (product.imageUrl) {
@@ -530,26 +504,7 @@ export class AdminProductFormComponent implements OnDestroy {
       });
   }
 
-  addColor(): void {
-    this.colorsArray.push(this.createColorGroup(false));
-  }
 
-  removeColor(index: number): void {
-    if (this.colorsArray.length <= 1) {
-      return;
-    }
-    const wasSelected = Boolean(
-      this.colorsArray.at(index)?.get("selected")?.value,
-    );
-    this.colorsArray.removeAt(index);
-    if (wasSelected) {
-      this.ensureSingleSelected(this.colorsArray, "selected");
-    }
-  }
-
-  setSelectedColor(index: number): void {
-    this.ensureSingleSelected(this.colorsArray, "selected", index);
-  }
 
   addSize(): void {
     this.sizesArray.push(this.createSizeGroup(false));
@@ -785,12 +740,7 @@ export class AdminProductFormComponent implements OnDestroy {
     return index;
   }
 
-  private createColorGroup(selected: boolean): AbstractControl {
-    return this.formBuilder.group({
-      name: [""],
-      selected: [selected],
-    });
-  }
+
 
   private createSizeGroup(selected: boolean): AbstractControl {
     return this.formBuilder.group({
@@ -812,7 +762,6 @@ export class AdminProductFormComponent implements OnDestroy {
       type: [item.type],
       isMain: [item.isMain],
       source: [item.source],
-      color: [item.color],
     });
   }
 
@@ -861,7 +810,6 @@ export class AdminProductFormComponent implements OnDestroy {
       type: partial.type ?? "image",
       isMain: partial.isMain ?? this.mediaItemsArray.length === 0,
       source: partial.source,
-      color: partial.color,
     };
     this.mediaItemsArray.push(this.createMediaItemGroup(item));
     this.mediaError = "";
@@ -915,7 +863,6 @@ export class AdminProductFormComponent implements OnDestroy {
       label: mainImageItem?.label || "Main Image",
       imageUrl: mainImageItem?.url || "",
       alt: mainImageItem?.alt || "",
-      color: mainImageItem?.color || "",
     };
 
     const thumbnails = thumbnailItems.map((item) => ({
@@ -923,18 +870,10 @@ export class AdminProductFormComponent implements OnDestroy {
       label: item.label,
       imageUrl: item.url,
       alt: item.alt,
-      color: item.color || "",
     }));
 
     // 2. Handle Variants (Definitions)
-    const rawColors = this.colorsArray.getRawValue();
     const rawSizes = this.sizesArray.getRawValue();
-
-    const colors = rawColors.map((c: any) => ({
-      name: c.name,
-      hex: "", // Hex not currently in form, could add later
-      selected: true,
-    }));
 
     const sizes = rawSizes.map((s: any) => ({
       label: s.label,
@@ -1011,7 +950,6 @@ export class AdminProductFormComponent implements OnDestroy {
       },
 
       variants: {
-        colors,
         sizes,
       },
 
@@ -1071,7 +1009,6 @@ export class AdminProductFormComponent implements OnDestroy {
       imageUrl: item.url,
       altText: item.alt || "Product image",
       isPrimary: item.isMain,
-      color: item.color,
     };
   }
 
@@ -1098,7 +1035,6 @@ export class AdminProductFormComponent implements OnDestroy {
       mediaFiles: [],
       mediaItems: [],
       variants: {
-        colors: [this.createColorGroup(true).value],
         sizes: [this.createSizeGroup(true).value],
       },
       meta: {
@@ -1119,12 +1055,7 @@ export class AdminProductFormComponent implements OnDestroy {
     this.mediaItemsArray.clear();
     this.mediaFileMap.clear();
 
-    while (this.colorsArray.length > 1) {
-      this.colorsArray.removeAt(0, { emitEvent: false });
-    }
-    this.colorsArray
-      .at(0)
-      ?.patchValue({ name: "", hex: "#111827", selected: true });
+
 
     while (this.sizesArray.length > 1) {
       this.sizesArray.removeAt(0, { emitEvent: false });

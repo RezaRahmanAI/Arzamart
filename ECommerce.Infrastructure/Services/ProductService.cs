@@ -92,8 +92,7 @@ public class ProductService : IProductService
                 AltText = dto.Media.MainImage.Alt,
                 Label = dto.Media.MainImage.Label,
                 MediaType = dto.Media.MainImage.Type ?? "image",
-                IsMain = true,
-                Color = dto.Media.MainImage.Color
+                IsMain = true
             });
         }
 
@@ -104,8 +103,7 @@ public class ProductService : IProductService
                 AltText = thumb.Alt,
                 Label = thumb.Label,
                 MediaType = thumb.Type ?? "image",
-                IsMain = false,
-                Color = thumb.Color
+                IsMain = false
             });
         }
 
@@ -173,8 +171,7 @@ public class ProductService : IProductService
                 AltText = dto.Media.MainImage.Alt,
                 Label = dto.Media.MainImage.Label,
                 MediaType = dto.Media.MainImage.Type ?? "image",
-                IsMain = true,
-                Color = dto.Media.MainImage.Color
+                IsMain = true
             });
         }
         foreach (var thumb in dto.Media?.Thumbnails ?? new())
@@ -184,8 +181,7 @@ public class ProductService : IProductService
                 AltText = thumb.Alt,
                 Label = thumb.Label,
                 MediaType = thumb.Type ?? "image",
-                IsMain = false,
-                Color = thumb.Color
+                IsMain = false
             });
         }
 

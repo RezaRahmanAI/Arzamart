@@ -3,7 +3,6 @@ export interface ProductImage {
   imageUrl: string;
   altText?: string;
   isPrimary: boolean;
-  color?: string;
 }
 
 export interface ProductVariant {

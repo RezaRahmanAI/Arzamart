@@ -63,27 +63,7 @@ import { PriceDisplayComponent } from "../price-display/price-display.component"
               ></app-price-display>
             </div>
 
-            <!-- Color Selection -->
-            <div class="mb-6" *ngIf="colorOptions.length > 0">
-              <label class="text-[10px] uppercase tracking-widest font-bold text-gray-500 block mb-3">
-                Select Color: <span class="text-black">{{ selectedColor || 'required' }}</span>
-              </label>
-              <div class="flex flex-wrap gap-3">
-                <button
-                  *ngFor="let img of colorOptions"
-                  (click)="selectColor(img)"
-                  class="group relative w-10 h-10 border-2 transition-all duration-300"
-                  [class.border-black]="selectedColor === img.color"
-                  [class.border-transparent]="selectedColor !== img.color"
-                  [title]="img.color"
-                >
-                  <img
-                    [src]="imageUrlService.getImageUrl(img.imageUrl)"
-                    class="w-full h-full object-cover"
-                  />
-                </button>
-              </div>
-            </div>
+
 
             <!-- Size Selection -->
             <div class="mb-8" *ngIf="availableSizes.length > 0">
@@ -108,10 +88,9 @@ import { PriceDisplayComponent } from "../price-display/price-display.component"
               </div>
             </div>
 
-            <!-- Confirm Button -->
             <button
               (click)="confirm()"
-              [disabled]="(colorOptions.length > 0 && !selectedColor) || (availableSizes.length > 0 && !selectedSize)"
+              [disabled]="availableSizes.length > 0 && !selectedSize"
               class="w-full py-4 bg-black text-white text-[11px] uppercase tracking-[0.3em] font-bold transition-all duration-300 hover:bg-black/90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               <lucide-icon [img]="icons.ShoppingBag" class="w-4 h-4"></lucide-icon>
@@ -129,27 +108,15 @@ export class QuickAddModalComponent {
     if (val) this.selectedSize = val;
   }
   @Output() close = new EventEmitter<void>();
-  @Output() added = new EventEmitter<{ color: string; size?: string }>();
+  @Output() added = new EventEmitter<{ size?: string }>();
 
   readonly icons = { X, ShoppingBag };
   readonly imageUrlService = inject(ImageUrlService);
 
-  selectedColor: string | null = null;
   selectedSize: string | null = null;
   selectedImage: string | null = null;
 
-  get colorOptions(): ProductImage[] {
-    if (!this.product.images) return [];
-    // Get unique images that have colors
-    const colors = new Set<string>();
-    return this.product.images.filter((img) => {
-      if (img.color && !colors.has(img.color)) {
-        colors.add(img.color);
-        return true;
-      }
-      return false;
-    });
-  }
+
 
   get availableSizes(): string[] {
     const variants = this.product.variants;
@@ -213,22 +180,17 @@ export class QuickAddModalComponent {
     return 0;
   }
 
-  selectColor(img: ProductImage): void {
-    this.selectedColor = img.color || null;
-    this.selectedImage = img.imageUrl;
-  }
+
 
   selectSize(size: string): void {
     this.selectedSize = size;
   }
 
   confirm(): void {
-    const colorValid = this.colorOptions.length === 0 || !!this.selectedColor;
     const sizeValid = this.availableSizes.length === 0 || !!this.selectedSize;
 
-    if (colorValid && sizeValid) {
+    if (sizeValid) {
       this.added.emit({
-        color: this.selectedColor || "Default",
         size: this.selectedSize || undefined,
       });
     }

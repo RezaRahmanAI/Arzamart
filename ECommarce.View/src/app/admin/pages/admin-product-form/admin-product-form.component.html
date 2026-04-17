@@ -206,63 +206,7 @@
           Product Options
         </h2>
         <div class="space-y-6">
-          <!-- Colors Section -->
-          <div class="space-y-4" formArrayName="colors">
-            <div class="flex items-center justify-between">
-              <div>
-                <h3
-                  class="text-sm font-semibold text-text-main-light dark:text-text-main-dark"
-                >
-                  Available Colors
-                </h3>
-                <p class="text-xs text-text-secondary-light">
-                  Add colors here to tag your images. Does not affect stock.
-                </p>
-              </div>
-              <button
-                class="flex items-center gap-2 text-sm font-semibold text-primary hover:text-[#083a4a]"
-                type="button"
-                (click)="addColor()"
-              >
-                <lucide-icon
-                  [img]="icons.PlusCircle"
-                  class="w-5 h-5"
-                ></lucide-icon>
-                Add color
-              </button>
-            </div>
 
-            <!-- existing color loop... -->
-
-            <div
-              class="flex flex-col gap-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-4"
-              *ngFor="let color of colorsArray.controls; let colorIndex = index"
-              [formGroupName]="colorIndex"
-            >
-              <div class="grid gap-3 sm:grid-cols-[1fr_1fr_0.5fr]">
-                <label
-                  class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
-                >
-                  Name
-                  <input
-                    class="rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                    type="text"
-                    placeholder="e.g. Navy Blue"
-                    formControlName="name"
-                  />
-                </label>
-                <div class="flex items-end pb-1">
-                  <button
-                    class="text-xs font-semibold text-red-500 hover:underline"
-                    type="button"
-                    (click)="removeColor(colorIndex)"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- Sizes Section -->
           <div class="space-y-4" formArrayName="sizes">
@@ -648,23 +592,7 @@
                     <option value="video">Video</option>
                   </select>
                 </label>
-                <label
-                  class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
-                >
-                  Color Variant
-                  <select
-                    class="rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                    formControlName="color"
-                  >
-                    <option [ngValue]="null">None</option>
-                    <option
-                      *ngFor="let colorGroup of colorsArray.controls"
-                      [value]="colorGroup.get('name')?.value"
-                    >
-                      {{ colorGroup.get("name")?.value }}
-                    </option>
-                  </select>
-                </label>
+
                 <div class="flex flex-col justify-between gap-3">
                   <label
                     class="flex items-center gap-2 text-xs font-medium text-text-secondary-light uppercase"

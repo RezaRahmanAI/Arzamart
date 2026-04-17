@@ -13,6 +13,8 @@ public class OrderCreateDto
     public decimal Total { get; set; }
     public int? DeliveryMethodId { get; set; }
     public bool IsPreOrder { get; set; }
+    public int? SourcePageId { get; set; }
+    public int? SocialMediaSourceId { get; set; }
     public List<OrderItemDto> Items { get; set; } = new();
 }
 
@@ -23,7 +25,6 @@ public class OrderItemDto
     public int Quantity { get; set; }
     public decimal? UnitPrice { get; set; }
     public decimal? TotalPrice { get; set; }
-    public string? Color { get; set; }
     public string? Size { get; set; }
     public string? ImageUrl { get; set; }
 }
@@ -46,6 +47,10 @@ public class OrderDto
     public DateTime CreatedAt { get; set; }
     public bool IsPreOrder { get; set; }
     public string? AdminNote { get; set; }
+    public int? SourcePageId { get; set; }
+    public string? SourcePageName { get; set; }
+    public int? SocialMediaSourceId { get; set; }
+    public string? SocialMediaSourceName { get; set; }
     public List<OrderItemDto> Items { get; set; } = new();
     public List<OrderLogDto> Logs { get; set; } = new();
     public List<OrderNoteDto> Notes { get; set; } = new();

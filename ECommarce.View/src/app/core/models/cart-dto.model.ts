@@ -7,7 +7,6 @@ export interface CartItemDto {
   price: number;
   salePrice?: number | null;
   quantity: number;
-  color: string;
   size: string;
   availableStock: number;
   compareAtPrice?: number | null;
@@ -25,7 +24,6 @@ export interface CartDto {
 export interface AddToCartDto {
   productId: number;
   quantity: number;
-  color: string;
   size: string;
 }
 

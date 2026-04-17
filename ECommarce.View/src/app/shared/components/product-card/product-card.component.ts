@@ -64,14 +64,6 @@ export class ProductCardComponent {
     return "imageUrl" in this.product ? this.product.imageUrl || "" : "";
   }
 
-  get selectedColorName(): string {
-    if ("images" in this.product && this.product.images?.length > 0) {
-      const firstColor = this.product.images.find((i) => i.color)?.color;
-      if (firstColor) return firstColor;
-    }
-    return "";
-  }
-
   private get variants(): ProductVariant[] | undefined {
     return "variants" in this.product ? this.product.variants : undefined;
   }
@@ -250,22 +242,24 @@ export class ProductCardComponent {
 
     const sizes = this.availableSizes;
     if (sizes.length > 0 && !this.selectedSize) {
-      this.cartService.notifySizeRequired();
+      this.showQuickAdd = true;
       return;
     }
 
-    // Instead of adding directly, show the Quick Add modal for color selection
-    this.showQuickAdd = true;
+    if ("id" in this.product) {
+      this.cartService
+        .addItem(this.product as Product, 1, this.selectedSize ?? undefined)
+        .subscribe();
+    }
   }
 
-  onQuickAddConfirm(selection: { color: string; size?: string }): void {
+  onQuickAddConfirm(selection: { size?: string }): void {
     if ("id" in this.product) {
       this.showQuickAdd = false;
       this.cartService
         .addItem(
           this.product as Product,
           1,
-          selection.color,
           selection.size ?? this.selectedSize ?? undefined,
         )
         .subscribe(() => {
@@ -282,11 +276,18 @@ export class ProductCardComponent {
 
     const sizes = this.availableSizes;
     if (sizes.length > 0 && !this.selectedSize) {
-      this.cartService.notifySizeRequired();
+      this.isOrdering = true;
+      this.showQuickAdd = true;
       return;
     }
 
     this.isOrdering = true;
-    this.showQuickAdd = true;
+    if ("id" in this.product) {
+      this.cartService
+        .addItem(this.product as Product, 1, this.selectedSize ?? undefined)
+        .subscribe(() => {
+          window.location.href = "/checkout";
+        });
+    }
   }
 }

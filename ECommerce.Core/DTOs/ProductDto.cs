@@ -61,7 +61,6 @@ public class ProductImageDto
     public string? Label { get; set; }
     public bool IsPrimary { get; set; }
     public string Type { get; set; } = string.Empty;
-    public string? Color { get; set; }
 }
 
 public class ProductVariantDto

@@ -44,7 +44,6 @@ export class OrderService {
       productName: item.name,
       unitPrice: item.price,
       quantity: item.quantity,
-      color: item.color,
       size: item.size,
       imageUrl: item.imageUrl,
       totalPrice: item.price * item.quantity,
@@ -63,7 +62,6 @@ export class OrderService {
         items: items.map((i) => ({
           productId: i.productId,
           quantity: i.quantity,
-          color: i.color,
           size: i.size,
         })),
       })

@@ -57,6 +57,8 @@ import {
 } from "../../models/orders.models";
 import { OrdersService } from "../../services/orders.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
+import { SourceManagementService } from "../../../core/services/source-management.service";
+import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
 
 interface OrderStats {
   totalOrders: number;
@@ -121,6 +123,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   private ordersService = inject(OrdersService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private sourceService = inject(SourceManagementService);
   private destroy$ = new Subject<void>();
 
   isLoading = false;
@@ -248,6 +251,11 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   selectedStatus: OrdersQueryParams["status"] = "All";
   selectedDateRange: OrdersQueryParams["dateRange"] = "Last 30 Days";
+  selectedSourcePageId: number | null = null;
+  selectedSocialMediaSourceId: number | null = null;
+  
+  sourcePages: SourcePage[] = [];
+  socialMediaSources: SocialMediaSource[] = [];
 
   statusMenuOpen = false;
   dateMenuOpen = false;
@@ -292,6 +300,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.route.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.isPreOrderMode = !!data['preOrderOnly'];
       this.loadOrders();
+      this.loadSources();
     });
 
     this.searchControl.valueChanges
@@ -300,6 +309,23 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
         this.page = 1;
         this.loadOrders();
       });
+  }
+
+  loadSources(): void {
+    this.sourceService.getAllSourcePages().subscribe(pages => this.sourcePages = pages);
+    this.sourceService.getAllSocialMediaSources().subscribe(sources => this.socialMediaSources = sources);
+  }
+
+  setSourcePageFilter(id: number | null): void {
+    this.selectedSourcePageId = id;
+    this.page = 1;
+    this.loadOrders();
+  }
+
+  setSocialMediaFilter(id: number | null): void {
+    this.selectedSocialMediaSourceId = id;
+    this.page = 1;
+    this.loadOrders();
   }
 
   ngOnDestroy(): void {
@@ -601,6 +627,8 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       page: this.page,
       pageSize: this.pageSize,
       preOrderOnly: this.isPreOrderMode,
+      sourcePageId: this.selectedSourcePageId || undefined,
+      socialMediaSourceId: this.selectedSocialMediaSourceId || undefined,
     };
 
     if (this.selectedDateRange === "Custom" && this.customStartDate && this.customEndDate) {

@@ -159,7 +159,7 @@ public class AdminProductsController : ControllerBase
                 Category = p.Category != null ? p.Category.Name : "",
                 CategoryId = p.CategoryId,
                 MediaUrls = p.Images.Select(i => i.Url).ToList(),
-                Images = p.Images.Select(i => new { i.Url, i.Color }).ToList(),
+                Images = p.Images.Select(i => new { i.Url }).ToList(),
                 Variants = p.Variants.Select(v => new { v.Id, v.Size, v.StockQuantity, v.Price }).ToList(),
                 p.CreatedAt,
                 p.Slug
@@ -295,8 +295,27 @@ public class AdminProductsController : ControllerBase
             DeleteImageFile(image.Url);
         }
 
-        _context.Products.Remove(product);
-        await _context.SaveChangesAsync();
+        // Delete associated CLP Config if exists
+        var clpConfig = await _context.CustomLandingPageConfigs.FirstOrDefaultAsync(c => c.ProductId == id);
+        if (clpConfig != null)
+        {
+            _context.CustomLandingPageConfigs.Remove(clpConfig);
+        }
+
+        try
+        {
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[DELETE_ERROR] Product {id}: {ex.Message}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"[DELETE_INNER_ERROR] {ex.InnerException.Message}");
+            }
+            return StatusCode(500, new { message = "Cannot delete product. It may be referenced by orders or other data. Error: " + ex.Message });
+        }
 
         await _cache.RemoveAsync("home_new_arrivals");
         await _cache.RemoveAsync("home_featured_products");

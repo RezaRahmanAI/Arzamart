@@ -181,9 +181,24 @@
                   class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-transparent hover:border-slate-100 dark:hover:border-slate-600 group/btn"
                   [routerLink]="['/lp', product.slug]"
                   target="_blank"
-                  title="View Landing Page"
+                  title="View Standard Landing Page"
                 >
                   <lucide-icon [img]="icons.Rocket" class="w-4.5 h-4.5 transition-transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5"></lucide-icon>
+                </a>
+                <a
+                  class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-transparent hover:border-slate-100 dark:hover:border-slate-600 group/btn"
+                  [routerLink]="['/clp', product.slug]"
+                  target="_blank"
+                  title="View Custom Landing Page"
+                >
+                  <lucide-icon [img]="icons.Monitor" class="w-4.5 h-4.5 transition-transform group-hover/btn:scale-110"></lucide-icon>
+                </a>
+                <a
+                  class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-transparent hover:border-slate-100 dark:hover:border-slate-600 group/btn"
+                  [routerLink]="['/admin/products', product.id, 'custom-lp']"
+                  title="Custom LP Settings"
+                >
+                  <lucide-icon [img]="icons.Settings" class="w-4.5 h-4.5 transition-transform group-hover/btn:rotate-90"></lucide-icon>
                 </a>
                 <a
                   class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-transparent hover:border-slate-100 dark:hover:border-slate-600"

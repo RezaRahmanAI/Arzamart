@@ -12,7 +12,6 @@ public class CartItemDto
     public decimal Price { get; set; }
     public decimal? SalePrice { get; set; }
     public int Quantity { get; set; }
-    public string Color { get; set; } = string.Empty;
     public string Size { get; set; } = string.Empty;
     public int AvailableStock { get; set; }
 }
@@ -33,7 +32,6 @@ public class AddToCartDto
 {
     public int ProductId { get; set; }
     public int Quantity { get; set; }
-    public string Color { get; set; } = string.Empty;
     public string Size { get; set; } = string.Empty;
 }
 

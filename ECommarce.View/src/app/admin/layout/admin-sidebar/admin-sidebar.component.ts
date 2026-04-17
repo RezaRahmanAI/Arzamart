@@ -23,6 +23,7 @@ import {
   ShoppingCart,
   PackagePlus,
   Box,
+  Globe,
 } from "lucide-angular";
 import { SidebarService } from "../../services/sidebar.service";
 
@@ -71,6 +72,7 @@ export class AdminSidebarComponent implements OnInit {
     ShoppingCart,
     PackagePlus,
     Box,
+    Globe,
   };
 
   topItems: AdminNavItem[] = [
@@ -94,6 +96,7 @@ export class AdminSidebarComponent implements OnInit {
     { label: "Inventory Management", icon: PackagePlus, route: "/admin/inventory" },
     { label: "Banners & Campaigns", icon: GalleryVertical, route: "/admin/banners" },
     { label: "Site Content", icon: FileText, route: "/admin/pages" },
+    { label: "Order Sources", icon: Globe, route: "/admin/order-sources" },
     { label: "Customer Reviews", icon: MessageSquare, route: "/admin/reviews" },
     { label: "CRM", icon: Users, route: "/admin/customers" },
   ];

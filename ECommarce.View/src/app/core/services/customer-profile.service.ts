@@ -98,7 +98,6 @@ export class CustomerProfileService {
           item.totalPrice ||
           (item.unitPrice || item.price || 0) * item.quantity ||
           0,
-        color: item.color,
         size: item.size,
         imageUrl: item.imageUrl || "",
       })),

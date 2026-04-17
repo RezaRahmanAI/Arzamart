@@ -255,9 +255,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping on orders over ৳5000. Returns within 7 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800", AltText = "Royal Embroidered Sherwani Ivory Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Ivory", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=800", AltText = "Royal Embroidered Sherwani Ivory Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Ivory", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Royal Embroidered Sherwani Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, Color = "Black", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800", AltText = "Royal Embroidered Sherwani Ivory Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=800", AltText = "Royal Embroidered Sherwani Ivory Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Royal Embroidered Sherwani Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -283,9 +283,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping on orders over ৳5000. Returns within 7 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Classic Black Velvet Sherwani Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Black", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800", AltText = "Classic Black Velvet Sherwani Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Black", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=800", AltText = "Classic Sherwani Navy Variant", Label = "Navy Variant", IsMain = false, DisplayOrder = 3, Color = "Navy", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Classic Black Velvet Sherwani Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800", AltText = "Classic Black Velvet Sherwani Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=800", AltText = "Classic Sherwani Navy Variant", Label = "Navy Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -311,9 +311,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 7 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=800", AltText = "Maroon Silk Sherwani Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Maroon", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Maroon Silk Sherwani with Stole", Label = "With Stole", IsMain = false, DisplayOrder = 2, Color = "Maroon", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800", AltText = "Maroon Silk Sherwani Cream Variant", Label = "Cream Variant", IsMain = false, DisplayOrder = 3, Color = "Cream", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=800", AltText = "Maroon Silk Sherwani Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Maroon Silk Sherwani with Stole", Label = "With Stole", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800", AltText = "Maroon Silk Sherwani Cream Variant", Label = "Cream Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -339,9 +339,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 7 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800", AltText = "Cream Embellished Sherwani Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Cream", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800", AltText = "Cream Embellished Sherwani Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Cream", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=800", AltText = "Cream Embellished Sherwani Gold Variant", Label = "Gold Variant", IsMain = false, DisplayOrder = 3, Color = "Gold", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800", AltText = "Cream Embellished Sherwani Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800", AltText = "Cream Embellished Sherwani Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=800", AltText = "Cream Embellished Sherwani Gold Variant", Label = "Gold Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -376,9 +376,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping on orders over ৳2000. Returns within 14 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1621510456681-233013d82a13?w=800", AltText = "Premium Cotton Panjabi White Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "White", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800", AltText = "Premium Cotton Panjabi White Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "White", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Premium Cotton Panjabi Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, Color = "Black", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1621510456681-233013d82a13?w=800", AltText = "Premium Cotton Panjabi White Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800", AltText = "Premium Cotton Panjabi White Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Premium Cotton Panjabi Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -404,9 +404,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping on orders over ৳2000. Returns within 14 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1621510456681-233013d82a13?w=800", AltText = "Designer Panjabi Blue Print Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Blue", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800", AltText = "Designer Panjabi Print Detail", Label = "Print Detail", IsMain = false, DisplayOrder = 2, Color = "Blue", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Designer Panjabi Green Variant", Label = "Green Variant", IsMain = false, DisplayOrder = 3, Color = "Green", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1621510456681-233013d82a13?w=800", AltText = "Designer Panjabi Blue Print Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800", AltText = "Designer Panjabi Print Detail", Label = "Print Detail", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Designer Panjabi Green Variant", Label = "Green Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -432,9 +432,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping on orders over ৳2000. Returns within 14 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800", AltText = "Traditional Panjabi Beige Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Beige", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1621510456681-233013d82a13?w=800", AltText = "Traditional Panjabi Beige Embroidery", Label = "Embroidery Detail", IsMain = false, DisplayOrder = 2, Color = "Beige", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Traditional Panjabi Grey Variant", Label = "Grey Variant", IsMain = false, DisplayOrder = 3, Color = "Grey", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800", AltText = "Traditional Panjabi Beige Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1621510456681-233013d82a13?w=800", AltText = "Traditional Panjabi Beige Embroidery", Label = "Embroidery Detail", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800", AltText = "Traditional Panjabi Grey Variant", Label = "Grey Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -471,9 +471,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 7 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Elegant Black Abaya Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Black", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Elegant Black Abaya Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Black", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800", AltText = "Elegant Abaya Navy Variant", Label = "Navy Variant", IsMain = false, DisplayOrder = 3, Color = "Navy", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Elegant Black Abaya Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Elegant Black Abaya Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800", AltText = "Elegant Abaya Navy Variant", Label = "Navy Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -499,9 +499,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 7 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Navy Blue Embroidered Abaya Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Navy", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Navy Blue Embroidered Abaya Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Navy", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1601924582970-84472305206c?w=800", AltText = "Abaya Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, Color = "Black", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Navy Blue Embroidered Abaya Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Navy Blue Embroidered Abaya Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1601924582970-84472305206c?w=800", AltText = "Abaya Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -527,9 +527,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 14 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1601924582970-84472305206c?w=800", AltText = "Simple Everyday Abaya Grey Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Grey", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Simple Everyday Abaya Grey Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Grey", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Simple Abaya Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, Color = "Black", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1601924582970-84472305206c?w=800", AltText = "Simple Everyday Abaya Grey Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Simple Everyday Abaya Grey Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Simple Abaya Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -555,9 +555,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 7 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Luxury Burgundy Abaya Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Burgundy", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Luxury Burgundy Abaya Belt Detail", Label = "Belt Detail", IsMain = false, DisplayOrder = 2, Color = "Burgundy", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1601924582970-84472305206c?w=800", AltText = "Luxury Abaya Emerald Variant", Label = "Emerald Variant", IsMain = false, DisplayOrder = 3, Color = "Emerald", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Luxury Burgundy Abaya Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Luxury Burgundy Abaya Belt Detail", Label = "Belt Detail", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1601924582970-84472305206c?w=800", AltText = "Luxury Abaya Emerald Variant", Label = "Emerald Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -592,9 +592,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping on orders over ৳2000. Returns within 14 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800", AltText = "Floral Print Summer Top Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Pink", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Floral Print Summer Top Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Pink", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Floral Top Blue Variant", Label = "Blue Variant", IsMain = false, DisplayOrder = 3, Color = "Blue", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800", AltText = "Floral Print Summer Top Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Floral Print Summer Top Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Floral Top Blue Variant", Label = "Blue Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -620,9 +620,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 7 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Elegant Silk Blouse Emerald Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Emerald", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800", AltText = "Elegant Silk Blouse Emerald Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Emerald", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1601924582970-84472305206c?w=800", AltText = "Silk Blouse Ivory Variant", Label = "Ivory Variant", IsMain = false, DisplayOrder = 3, Color = "Ivory", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Elegant Silk Blouse Emerald Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800", AltText = "Elegant Silk Blouse Emerald Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1601924582970-84472305206c?w=800", AltText = "Silk Blouse Ivory Variant", Label = "Ivory Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -648,9 +648,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping on orders over ৳2000. Returns within 14 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800", AltText = "Casual Cotton Top White Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "White", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Casual Cotton Top White Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "White", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Casual Cotton Top Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, Color = "Black", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800", AltText = "Casual Cotton Top White Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800", AltText = "Casual Cotton Top White Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800", AltText = "Casual Cotton Top Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -690,9 +690,9 @@ public static class DataSeeder
                     ShippingAndReturns = "Free shipping. Returns within 14 days.",
                     Images = new List<ProductImage>
                     {
-                        new ProductImage { Url = "https://images.unsplash.com/photo-1518837697477-94d4777248d6?w=800", AltText = "Princess Party Dress Pink Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Pink", MediaType = "image" },
-                        new ProductImage { Url = "https://images.unsplash.com/photo-1514090458221-65bb69af63e6?w=800", AltText = "Princess Party Dress Pink Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Pink", MediaType = "image" },
-                        new ProductImage { Url = "https://images.unsplash.com/photo-1503910392345-1593b4ff3af1?w=800", AltText = "Princess Party Dress Lavender Variant", Label = "Lavender Variant", IsMain = false, DisplayOrder = 3, Color = "Lavender", MediaType = "image" }
+                        new ProductImage { Url = "https://images.unsplash.com/photo-1518837697477-94d4777248d6?w=800", AltText = "Princess Party Dress Pink Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                        new ProductImage { Url = "https://images.unsplash.com/photo-1514090458221-65bb69af63e6?w=800", AltText = "Princess Party Dress Pink Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                        new ProductImage { Url = "https://images.unsplash.com/photo-1503910392345-1593b4ff3af1?w=800", AltText = "Princess Party Dress Lavender Variant", Label = "Lavender Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                     },
                     Variants = new List<ProductVariant>
                     {
@@ -724,9 +724,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 14 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1503910392345-1593b4ff3af1?w=800", AltText = "Boys Formal Shirt Blue Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Blue", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1514090458221-65bb69af63e6?w=800", AltText = "Boys Formal Shirt Blue Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Blue", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1518837697477-94d4777248d6?w=800", AltText = "Boys Formal Shirt White Variant", Label = "White Variant", IsMain = false, DisplayOrder = 3, Color = "White", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1503910392345-1593b4ff3af1?w=800", AltText = "Boys Formal Shirt Blue Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1514090458221-65bb69af63e6?w=800", AltText = "Boys Formal Shirt Blue Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1518837697477-94d4777248d6?w=800", AltText = "Boys Formal Shirt White Variant", Label = "White Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -752,9 +752,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 14 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1514090458221-65bb69af63e6?w=800", AltText = "Boys Casual T-Shirt Set Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Multi", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1503910392345-1593b4ff3af1?w=800", AltText = "Boys Casual T-Shirt Set Colors", Label = "Color Options", IsMain = false, DisplayOrder = 2, Color = "Multi", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1518837697477-94d4777248d6?w=800", AltText = "Boys Casual T-Shirt Fabric Detail", Label = "Fabric Detail", IsMain = false, DisplayOrder = 3, Color = "Multi", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1514090458221-65bb69af63e6?w=800", AltText = "Boys Casual T-Shirt Set Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1503910392345-1593b4ff3af1?w=800", AltText = "Boys Casual T-Shirt Set Colors", Label = "Color Options", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1518837697477-94d4777248d6?w=800", AltText = "Boys Casual T-Shirt Fabric Detail", Label = "Fabric Detail", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -794,9 +794,9 @@ public static class DataSeeder
                     ShippingAndReturns = "Free shipping. Returns within 7 days.",
                     Images = new List<ProductImage>
                     {
-                        new ProductImage { Url = "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800", AltText = "Luxury Leather Handbag Brown Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Brown", MediaType = "image" },
-                        new ProductImage { Url = "https://images.unsplash.com/photo-1491336477066-31156b5e4f35?w=800", AltText = "Luxury Leather Handbag Brown Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Brown", MediaType = "image" },
-                        new ProductImage { Url = "https://images.unsplash.com/photo-1627123424574-724758594e93?w=800", AltText = "Luxury Leather Handbag Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, Color = "Black", MediaType = "image" }
+                        new ProductImage { Url = "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800", AltText = "Luxury Leather Handbag Brown Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                        new ProductImage { Url = "https://images.unsplash.com/photo-1491336477066-31156b5e4f35?w=800", AltText = "Luxury Leather Handbag Brown Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                        new ProductImage { Url = "https://images.unsplash.com/photo-1627123424574-724758594e93?w=800", AltText = "Luxury Leather Handbag Black Variant", Label = "Black Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                     },
                     Variants = new List<ProductVariant>
                     {
@@ -827,9 +827,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 7 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800", AltText = "Men's Classic Wristwatch Silver Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Silver", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1491336477066-31156b5e4f35?w=800", AltText = "Men's Classic Wristwatch Silver Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Silver", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800", AltText = "Men's Classic Wristwatch Gold Variant", Label = "Gold Variant", IsMain = false, DisplayOrder = 3, Color = "Gold", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800", AltText = "Men's Classic Wristwatch Silver Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1491336477066-31156b5e4f35?w=800", AltText = "Men's Classic Wristwatch Silver Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800", AltText = "Men's Classic Wristwatch Gold Variant", Label = "Gold Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {
@@ -852,9 +852,9 @@ public static class DataSeeder
                         ShippingAndReturns = "Free shipping. Returns within 7 days.",
                         Images = new List<ProductImage>
                         {
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1491336477066-31156b5e4f35?w=800", AltText = "Women's Rose Gold Watch Front", Label = "Front View", IsMain = true, DisplayOrder = 1, Color = "Rose Gold", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800", AltText = "Women's Rose Gold Watch Side", Label = "Side View", IsMain = false, DisplayOrder = 2, Color = "Rose Gold", MediaType = "image" },
-                            new ProductImage { Url = "https://images.unsplash.com/photo-1627123424574-724758594e93?w=800", AltText = "Women's Watch Silver Variant", Label = "Silver Variant", IsMain = false, DisplayOrder = 3, Color = "Silver", MediaType = "image" }
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1491336477066-31156b5e4f35?w=800", AltText = "Women's Rose Gold Watch Front", Label = "Front View", IsMain = true, DisplayOrder = 1, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800", AltText = "Women's Rose Gold Watch Side", Label = "Side View", IsMain = false, DisplayOrder = 2, MediaType = "image" },
+                            new ProductImage { Url = "https://images.unsplash.com/photo-1627123424574-724758594e93?w=800", AltText = "Women's Watch Silver Variant", Label = "Silver Variant", IsMain = false, DisplayOrder = 3, MediaType = "image" }
                         },
                         Variants = new List<ProductVariant>
                         {

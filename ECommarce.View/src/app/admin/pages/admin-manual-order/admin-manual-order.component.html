@@ -146,6 +146,41 @@
                 <lucide-icon [img]="icons.ChevronDown" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></lucide-icon>
               </div>
             </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Page Source</label>
+                <div class="relative">
+                  <select 
+                    formControlName="sourcePageId"
+                    class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white appearance-none focus:outline-none"
+                    [class.border-red-300]="orderForm.get('sourcePageId')?.touched && orderForm.get('sourcePageId')?.invalid"
+                  >
+                    <option [value]="null">Select Page</option>
+                    <option *ngFor="let page of sourcePages" [value]="page.id">
+                      {{ page.name }}
+                    </option>
+                  </select>
+                  <lucide-icon [img]="icons.ChevronDown" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></lucide-icon>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Social Media Source</label>
+                <div class="relative">
+                  <select 
+                    formControlName="socialMediaSourceId"
+                    class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white appearance-none focus:outline-none"
+                    [class.border-red-300]="orderForm.get('socialMediaSourceId')?.touched && orderForm.get('socialMediaSourceId')?.invalid"
+                  >
+                    <option [value]="null">Select Social Media</option>
+                    <option *ngFor="let source of socialMediaSources" [value]="source.id">
+                      {{ source.name }}
+                    </option>
+                  </select>
+                  <lucide-icon [img]="icons.ChevronDown" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></lucide-icon>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -171,7 +206,7 @@
             </div>
             <div class="flex-1 min-w-0">
               <h4 class="text-sm font-bold text-primary dark:text-white truncate">{{ item.product.name }}</h4>
-              <p class="text-[10px] text-gray-400 mt-0.5">{{ item.selectedSize }} {{ item.selectedColor ? '/ ' + item.selectedColor : '' }}</p>
+              <p class="text-[10px] text-gray-400 mt-0.5">{{ item.selectedSize }}</p>
             </div>
             <div class="flex items-center gap-2">
               <button (click)="updateQuantity(item, -1)" class="w-6 h-6 rounded-md bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-red-500 border border-gray-100 dark:border-gray-700 transition-colors">
@@ -333,23 +368,8 @@
             </div>
           </div>
 
-          <div *ngIf="getUniqueColors(selectedProduct()!).length > 0">
-            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Choose Color</label>
-            <div class="flex flex-wrap gap-3">
-              <button 
-                *ngFor="let color of getUniqueColors(selectedProduct()!)"
-                (click)="selectedColor.set(color)"
-                class="px-6 py-3 rounded-2xl text-sm font-bold transition-all border-2 flex items-center gap-3"
-                [ngClass]="selectedColor() === color ? 'bg-primary text-white border-primary shadow-lg shadow-primary/30' : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 border-gray-100 dark:border-gray-800 hover:border-primary'"
-              >
-                <span class="w-4 h-4 rounded-full border border-white/20" [style.backgroundColor]="color"></span>
-                {{ color }}
-              </button>
-            </div>
-          </div>
-
           <button 
-            (click)="addToCart(selectedProduct()!, selectedSize() || undefined, selectedColor() || undefined)"
+            (click)="addToCart(selectedProduct()!, selectedSize() || undefined)"
             class="w-full py-5 rounded-[1.5rem] bg-primary text-white font-black text-lg hover:bg-primary-hover hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/30 mt-4"
           >
             Confirm & Add to Order

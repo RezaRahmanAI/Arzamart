@@ -163,7 +163,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   selectCategory(category: Category): void {
-    this.selectedId = category.id;
+    this.selectedId = category.id as unknown as string;
     this.mode = "edit";
     this.originalSnapshot = { ...category };
     this.slugManuallyEdited = false;
@@ -180,7 +180,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   selectCategoryById(categoryId: string): void {
-    const category = this.categoriesFlat.find((item) => item.id === categoryId);
+    const category = this.categoriesFlat.find((item) => (item.id as unknown as string) === categoryId);
     if (category) {
       this.selectCategory(category);
     }
@@ -234,13 +234,13 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
     // Basic implementation: prevent nesting into itself
     // And allow reordering only if we support it.
     // For now, let's just stick to rudimentary check
-    if (!this.draggingId || this.draggingId === targetCategory.id) {
+    if (!this.draggingId || this.draggingId === (targetCategory.id as unknown as string)) {
       return;
     }
 
     // Prevent dropping a Root into a Sub (Sub cannot have children)
     const isDraggingRoot = this.draggingId.startsWith("cat_");
-    const isTargetRoot = targetCategory.id.startsWith("cat_");
+    const isTargetRoot = (targetCategory.id as unknown as string).startsWith("cat_");
 
     // Allow dragging Sub into Root (Re-parenting)
     // Allow dragging Sub into Sub (Re-ordering or Re-parenting to target's parent)
@@ -363,7 +363,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
         });
     } else if (this.selectedId.startsWith("cat_")) {
       // Update Root Category
-      const id = this.selectedId.replace("cat_", "");
+      const id = parseInt(this.selectedId.replace("cat_", ""));
       const payload: Partial<Category> = {
         name: formValue.name ?? "",
         slug: formValue.slug ?? "",
@@ -397,12 +397,12 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteCategory(category: Category): void {
-    const isSub = category.id.startsWith("sub_");
+    const isSub = (category.id as unknown as string).startsWith("sub_");
 
     if (!isSub) {
       // If deleting Root Category, warn if it has children
       const hasChildren = this.categoriesFlat.some(
-        (c) => c.parentId === category.id,
+        (c) => (c.parentId as unknown as string) === (category.id as unknown as string),
       );
       if (hasChildren) {
         window.alert(
@@ -415,7 +415,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
     if (!window.confirm(`Delete ${category.name}?`)) return;
 
     if (isSub) {
-      const id = parseInt(category.id.replace("sub_", ""));
+      const id = parseInt((category.id as unknown as string).replace("sub_", ""));
       this.subCategoriesService.delete(id).subscribe(() => {
         this.loadCategories();
         this.startCreate();
@@ -423,7 +423,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
       });
     } else {
       // Delete Root
-      const id = category.id.replace("cat_", "");
+      const id = parseInt((category.id as unknown as string).replace("cat_", ""));
       this.categoriesService.delete(id).subscribe(() => {
         this.loadCategories();
         this.startCreate();
@@ -453,9 +453,9 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   getParentOptions(): ParentOption[] {
     // Only Root Categories can be parents
     return this.categoriesFlat
-      .filter((c) => c.id.startsWith("cat_"))
+      .filter((c) => (c.id as unknown as string).startsWith("cat_"))
       .map((c) => ({
-        id: c.id,
+        id: c.id as any,
         label: c.name,
       }));
   }
@@ -469,7 +469,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
         // Root
         const rootId = `cat_${cat.id}`;
         displayList.push({
-          id: rootId,
+          id: rootId as any,
           name: cat.name,
           slug: cat.slug,
           parentId: null,
@@ -487,10 +487,10 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
 
         subCats.forEach((sub: any) => {
           displayList.push({
-            id: `sub_${sub.id}`,
+            id: `sub_${sub.id}` as any,
             name: sub.name,
             slug: sub.slug,
-            parentId: rootId,
+            parentId: rootId as any,
             imageUrl: sub.imageUrl,
             isActive: sub.isActive,
             productCount: 0, // Not available yet
@@ -505,7 +505,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
 
       // Retain selection if exists
       if (this.selectedId) {
-        const found = this.categoriesFlat.find((c) => c.id === this.selectedId);
+        const found = this.categoriesFlat.find((c) => (c.id as unknown as string) === this.selectedId);
         if (found) {
           this.selectCategory(found);
         } else {
@@ -521,7 +521,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   buildTree(categories: Category[]): CategoryNode[] {
     const grouped = new Map<string | null, Category[]>();
     categories.forEach((category) => {
-      const key = category.parentId ?? null;
+      const key = (category.parentId as unknown as string) ?? null;
       if (!grouped.has(key)) {
         grouped.set(key, []);
       }
@@ -533,7 +533,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
       const sorted = [...items].sort((a, b) => a.sortOrder - b.sortOrder);
       return sorted.map((category) => ({
         category,
-        children: buildNodes(category.id),
+        children: buildNodes(category.id as unknown as string),
       }));
     };
 
@@ -572,12 +572,13 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
           const matches =
             node.category.name.toLowerCase().includes(term) ||
             node.category.slug.toLowerCase().includes(term);
+          const nodeId = node.category.id as unknown as string;
           const filteredChildren = filterNodes(node.children, [
             ...ancestors,
-            node.category.id,
+            nodeId,
           ]);
           if (matches || filteredChildren.length > 0) {
-            if (filteredChildren.length > 0) expanded.add(node.category.id);
+            if (filteredChildren.length > 0) expanded.add(nodeId);
             ancestors.forEach((ancestorId) => expanded.add(ancestorId));
             return { ...node, children: filteredChildren };
           }
@@ -625,7 +626,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   private collectCategoryIds(nodes: CategoryNode[]): string[] {
     const ids: string[] = [];
     nodes.forEach((node) => {
-      ids.push(node.category.id);
+      ids.push(node.category.id as unknown as string);
       if (node.children.length > 0)
         ids.push(...this.collectCategoryIds(node.children));
     });

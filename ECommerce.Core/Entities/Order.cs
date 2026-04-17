@@ -50,6 +50,12 @@ public class Order : BaseEntity
     public string? CreatedIp { get; set; }
     public bool IsPreOrder { get; set; }
     public string? AdminNote { get; set; }
+    public int? SourcePageId { get; set; }
+    public SourcePage? SourcePage { get; set; }
+
+    public int? SocialMediaSourceId { get; set; }
+    public SocialMediaSource? SocialMediaSource { get; set; }
+
     public ICollection<OrderLog> Logs { get; set; } = new List<OrderLog>();
     public ICollection<OrderNote> Notes { get; set; } = new List<OrderNote>();
 }
@@ -85,7 +91,6 @@ public class OrderItem : BaseEntity
     public Product? Product { get; set; }
     
     public string ProductName { get; set; } = string.Empty;
-    public string? Color { get; set; }
     public string? Size { get; set; }
     public string? ImageUrl { get; set; } // Snapshot of product image
     

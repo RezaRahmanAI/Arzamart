@@ -77,6 +77,13 @@ export const appRoutes: Routes = [
       ).then((m) => m.LandingPageComponent),
   },
   {
+    path: "clp/:slug",
+    loadComponent: () =>
+      import("./features/landing-page/pages/custom-landing-page/custom-landing-page.component").then(
+        (m) => m.CustomLandingPageComponent,
+      ),
+  },
+  {
     path: "product/:slug",
     loadComponent: () =>
       import("./features/product-details/pages/product-details-page/product-details-page.component").then(
@@ -226,6 +233,14 @@ export const appRoutes: Routes = [
           ),
         data: { title: "Edit Product" },
       },
+      {
+        path: "products/:id/custom-lp",
+        loadComponent: () =>
+          import("./admin/pages/admin-custom-landing-page-config/admin-custom-landing-page-config.component").then(
+            (m) => m.AdminCustomLandingPageConfigComponent,
+          ),
+        data: { title: "Custom LP Settings" },
+      },
 
       {
         path: "orders",
@@ -336,6 +351,14 @@ export const appRoutes: Routes = [
             (m) => m.AdminReviewsComponent,
           ),
         data: { title: "Reviews Management" },
+      },
+      {
+        path: "order-sources",
+        loadComponent: () =>
+          import("./admin/pages/admin-source-management/admin-source-management.component").then(
+            (m) => m.AdminSourceManagementComponent,
+          ),
+        data: { title: "Order Source Management" },
       },
       {
         path: "security",

@@ -28,6 +28,8 @@ import {
   AlertTriangle,
   Rocket,
   Package,
+  Monitor,
+  Settings,
 } from "lucide-angular";
 
 @Component({
@@ -57,6 +59,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     AlertTriangle,
     Rocket,
     Package,
+    Monitor,
+    Settings,
   };
   private productsService = inject(ProductsService);
   private route = inject(ActivatedRoute);

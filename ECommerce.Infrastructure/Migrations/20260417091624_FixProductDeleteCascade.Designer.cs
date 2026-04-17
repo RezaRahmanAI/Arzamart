@@ -4,6 +4,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260417091624_FixProductDeleteCascade")]
+    partial class FixProductDeleteCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -247,10 +250,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<int>("CartId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -377,6 +376,78 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("SubCategoryId");
 
                     b.ToTable("Collections");
+                });
+
+            modelBuilder.Entity("ECommerce.Core.Entities.CustomLandingPageConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BannerSubtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BannerTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DesignDetails")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FabricDetails")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FeaturedProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeaderTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDesignVisible")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFabricVisible")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsProductDetailsVisible")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTimerVisible")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTrustBannerVisible")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("OriginalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProductDetailsTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("PromoPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("TimerEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TrustBannerText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CustomLandingPageConfigs");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Customer", b =>
@@ -635,6 +706,12 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<decimal>("ShippingCost")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("SocialMediaSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SourcePageId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -667,6 +744,10 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("OrderNumber");
 
+                    b.HasIndex("SocialMediaSourceId");
+
+                    b.HasIndex("SourcePageId");
+
                     b.HasIndex("Status");
 
                     b.ToTable("Orders");
@@ -679,9 +760,6 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -958,9 +1036,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<string>("AltText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -1001,9 +1076,6 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("CompareAtPrice")
                         .HasColumnType("decimal(18,2)");
@@ -1085,6 +1157,9 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ProductId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
@@ -1094,6 +1169,8 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("Reviews");
                 });
@@ -1165,6 +1242,58 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SiteSettings");
+                });
+
+            modelBuilder.Entity("ECommerce.Core.Entities.SocialMediaSource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SocialMediaSources");
+                });
+
+            modelBuilder.Entity("ECommerce.Core.Entities.SourcePage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SourcePages");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.SubCategory", b =>
@@ -1368,7 +1497,7 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasOne("ECommerce.Core.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cart");
@@ -1401,6 +1530,17 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Navigation("SubCategory");
                 });
 
+            modelBuilder.Entity("ECommerce.Core.Entities.CustomLandingPageConfig", b =>
+                {
+                    b.HasOne("ECommerce.Core.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("ECommerce.Core.Entities.NavigationMenu", b =>
                 {
                     b.HasOne("ECommerce.Core.Entities.Category", "Category")
@@ -1423,7 +1563,21 @@ namespace ECommerce.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("DeliveryMethodId");
 
+                    b.HasOne("ECommerce.Core.Entities.SocialMediaSource", "SocialMediaSource")
+                        .WithMany()
+                        .HasForeignKey("SocialMediaSourceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ECommerce.Core.Entities.SourcePage", "SourcePage")
+                        .WithMany()
+                        .HasForeignKey("SourcePageId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("DeliveryMethod");
+
+                    b.Navigation("SocialMediaSource");
+
+                    b.Navigation("SourcePage");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.OrderItem", b =>
@@ -1515,10 +1669,14 @@ namespace ECommerce.Infrastructure.Migrations
             modelBuilder.Entity("ECommerce.Core.Entities.Review", b =>
                 {
                     b.HasOne("ECommerce.Core.Entities.Product", "Product")
-                        .WithMany("Reviews")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ECommerce.Core.Entities.Product", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProductId1");
 
                     b.Navigation("Product");
                 });
