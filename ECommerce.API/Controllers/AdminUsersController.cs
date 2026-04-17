@@ -96,7 +96,7 @@ public class AdminUsersController : ControllerBase
         return Ok(new { message = "Admin user created successfully", user = new { user.Id, user.UserName, user.FullName, user.Role, user.IsActive } });
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> UpdateAdminUser(string id, [FromBody] UpdateAdminUserDto dto)
     {

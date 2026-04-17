@@ -38,7 +38,7 @@ public class ProfileController : ControllerBase
         });
     }
 
-    [HttpPut]
+    [HttpPost]
     public async Task<ActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
