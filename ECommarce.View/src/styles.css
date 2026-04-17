@@ -4,23 +4,23 @@
 
 :root {
   /* RGB values for Tailwind opacity support (space-separated) */
-  --color-primary-rgb: 26 35 50;
-  --color-accent-rgb: 232 115 95;
-  --color-supporting-rgb: 244 241 234;
+  --color-primary-rgb: 18 18 18;
+  --color-accent-rgb: 255 122 0;
+  --color-supporting-rgb: 248 248 248;
   --color-surface-rgb: 255 255 255;
 
   /* Semantic variables */
   --color-primary: rgb(var(--color-primary-rgb));
-  --color-primary-light: #2d3b4e;
+  --color-primary-light: #2a2a2a;
   --color-accent: rgb(var(--color-accent-rgb));
-  --color-accent-light: #f09485;
+  --color-accent-light: #ff9d4d;
   --color-secondary: #ffffff;
   --color-supporting: rgb(var(--color-supporting-rgb));
   --color-background-light: #ffffff;
-  --color-background-dark: #1a2332;
-  --color-text-main: #1a2332;
-  --color-text-sub: #64748b;
-  --color-border: #d8d2c2;
+  --color-background-dark: #121212;
+  --color-text-main: #121212;
+  --color-text-sub: #717171;
+  --color-border: #e5e5e5;
 }
 
 /* Luxury Minimalist Enhancements */
@@ -31,6 +31,7 @@
 
   body {
     @apply font-sans antialiased text-text-main bg-white;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     animation: fadeIn 1.2s ease-out;
   }
 

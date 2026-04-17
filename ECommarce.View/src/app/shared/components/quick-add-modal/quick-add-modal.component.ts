@@ -75,13 +75,14 @@ import { PriceDisplayComponent } from "../price-display/price-display.component"
                   *ngFor="let size of availableSizes"
                   (click)="selectSize(size)"
                   class="min-w-10 h-10 px-2 flex items-center justify-center border text-[11px] font-bold transition-all duration-300"
-                  [class.bg-black]="selectedSize === size"
+                  [class.bg-primary]="selectedSize === size"
                   [class.text-white]="selectedSize === size"
-                  [class.border-black]="selectedSize === size"
+                  [class.border-primary]="selectedSize === size"
                   [class.bg-white]="selectedSize !== size"
-                  [class.text-black]="selectedSize !== size"
+                  [class.text-primary]="selectedSize !== size"
                   [class.border-gray-200]="selectedSize !== size"
-                  [class.hover:border-black]="selectedSize !== size"
+                  [class.hover:border-primary]="selectedSize !== size"
+                  class="rounded-lg"
                 >
                   {{ size }}
                 </button>
@@ -91,7 +92,7 @@ import { PriceDisplayComponent } from "../price-display/price-display.component"
             <button
               (click)="confirm()"
               [disabled]="availableSizes.length > 0 && !selectedSize"
-              class="w-full py-4 bg-black text-white text-[11px] uppercase tracking-[0.3em] font-bold transition-all duration-300 hover:bg-black/90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              class="w-full py-4 bg-accent text-white text-[11px] uppercase tracking-[0.3em] font-bold transition-all duration-300 hover:opacity-90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-xl shadow-lg shadow-accent/20"
             >
               <lucide-icon [img]="icons.ShoppingBag" class="w-4 h-4"></lucide-icon>
               Confirm Selection
