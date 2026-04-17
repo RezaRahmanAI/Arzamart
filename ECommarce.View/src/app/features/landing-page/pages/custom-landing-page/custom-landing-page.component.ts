@@ -60,6 +60,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   isOrdering = false;
   timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
   private timerInterval: any;
+  selectedImage: string = "";
 
   readonly orderForm = this.fb.nonNullable.group({
     fullName: ["", [Validators.required, Validators.minLength(2)]],
@@ -173,7 +174,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
           this.productService.getRelatedProducts(undefined, res.product.categoryId, 6)
             .subscribe({
               next: (related) => {
-                // Filter out current product
+                this.selectedImage = res.product.imageUrl || "";
                 this.relatedProducts = related.data.filter(p => p.id !== res.product.id);
               }
             });
@@ -370,6 +371,10 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     if (method) {
       this.orderForm.patchValue({ deliveryMethodId: method.id });
     }
+  }
+
+  selectImage(url: string): void {
+    this.selectedImage = url;
   }
 
   scrollToOrder(): void {

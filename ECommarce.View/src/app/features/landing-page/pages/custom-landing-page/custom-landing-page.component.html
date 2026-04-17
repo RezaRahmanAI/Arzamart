@@ -1,9 +1,9 @@
 <div class="bg-slate-50 text-slate-900 font-body antialiased" *ngIf="data">
   
     <!-- Top Promo Bar (Timer) - REDESIGNED for Premium Look -->
-    <div class="sticky top-0 z-50 py-3 sm:py-4 px-4 sm:px-6" *ngIf="data.config?.isTimerVisible">
-      <div class="site-container">
-        <div class="bg-timer-gradient rounded-3xl p-4 md:p-6 shadow-[0_15px_40px_-10px_rgba(255,122,0,0.4)] flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden border border-white/20">
+    <div class="sticky top-0 z-50 py-0 sm:py-4 sm:px-6" *ngIf="data.config?.isTimerVisible">
+      <div class="site-container px-0 sm:px-4">
+        <div class="bg-timer-gradient sm:rounded-3xl p-4 md:p-6 shadow-[0_15px_40px_-10px_rgba(255,122,0,0.4)] flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden border-b sm:border border-white/20">
           <!-- Ambient Light effects -->
           <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
           <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-primary-clp/20 rounded-full blur-3xl animate-pulse"></div>
@@ -59,10 +59,10 @@
   
     <main class="space-y-32 pb-32">
       <!-- Product Details Section - REDESIGNED -->
-      <section class="px-6" *ngIf="data.config?.isProductDetailsVisible">
-        <div class="site-container">
-          <div class="floating-card overflow-hidden">
-            <div class="flex flex-col lg:flex-row">
+      <section class="px-0 sm:px-6" *ngIf="data.config?.isProductDetailsVisible">
+        <div class="site-container px-0 sm:px-4">
+          <div class="bg-white floating-card overflow-hidden">
+            <div class="flex flex-col-reverse lg:flex-row-reverse">
                 <!-- Content Area -->
                 <div class="w-full lg:w-1/2 p-8 md:p-16 space-y-10">
                     <div>
@@ -70,9 +70,7 @@
                             <span class="w-10 h-0.5 bg-primary-clp"></span>
                             <span class="text-primary-clp font-label text-xs tracking-widest">Premium Collection</span>
                         </div>
-                        <h2 class="text-4xl md:text-6xl font-headline font-black text-slate-900 leading-tight">
-                            {{ data.config?.productDetailsTitle }}
-                        </h2>
+                        <h1 class="text-3xl sm:text-4xl md:text-6xl font-headline font-black text-[#121212] tracking-tighter leading-tight mb-2">{{ data.config?.productDetailsTitle }}</h1>
                     </div>
 
                     <div class="space-y-8">
@@ -123,11 +121,22 @@
                     </div>
                 </div>
 
-                <!-- Media Area -->
-                <div class="w-full lg:w-1/2 bg-slate-100 relative aspect-[3/4] lg:aspect-auto overflow-hidden">
-                    <img [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" alt="Product Gallery" class="lg:absolute lg:inset-0 w-full h-full object-cover" />
-                    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-4 px-6 py-4 rounded-3xl glass-morphism shadow-2xl border border-white/30 z-10">
-                        <img *ngFor="let img of data.product.images.slice(0, 4)" [src]="imageUrlService.getImageUrl(img.imageUrl)" alt="Thumb" class="w-16 h-16 md:w-20 md:h-20 object-cover rounded-xl border-2 border-white/80 shadow-md cursor-pointer hover:scale-110 hover:border-primary-clp transition-all duration-300" />
+                <div class="w-full lg:w-1/2 bg-slate-100 relative lg:min-h-full">
+                    <div class="relative w-full aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-full overflow-hidden rounded-2xl sm:rounded-none lg:rounded-3xl">
+                        <img [src]="imageUrlService.getImageUrl(selectedImage || data.product.imageUrl || '')" alt="Product Gallery" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                    
+                    <!-- Thumbnails: Positioned below on mobile, glass-morphism overlay on desktop -->
+                    <div class="relative z-10 p-4 sm:p-0 sm:absolute sm:bottom-8 sm:left-1/2 sm:-translate-x-1/2 w-full flex justify-center">
+                        <div class="flex flex-wrap justify-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 rounded-2xl sm:rounded-3xl bg-white sm:glass-morphism shadow-lg sm:shadow-2xl border border-slate-100 sm:border-white/30 w-fit">
+                            <img *ngFor="let img of data.product.images.slice(0, 4)" 
+                                 [src]="imageUrlService.getImageUrl(img.imageUrl)" 
+                                 (click)="selectImage(img.imageUrl)"
+                                 alt="Thumb" 
+                                 class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-cover rounded-xl border-2 transition-all duration-300 cursor-pointer hover:scale-105"
+                                 [class.border-primary-clp]="selectedImage === img.imageUrl"
+                                 [class.border-slate-200]="selectedImage !== img.imageUrl">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -200,9 +209,9 @@
         <div class="site-container">
           <div class="flex flex-col lg:flex-row gap-12 items-start">
             <!-- Image Area -->
-            <div class="w-full lg:w-1/2 sticky top-32">
-              <div class="rounded-[32px] overflow-hidden shadow-2xl bg-white p-2">
-                <img [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" alt="Featured Product" class="w-full h-auto object-cover rounded-[30px]" />
+            <div class="w-full lg:w-1/2 sticky top-32 self-start">
+              <div class="rounded-[32px] overflow-hidden shadow-2xl bg-white p-2 relative aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-[700px]">
+                <img [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" alt="Featured Product" class="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] object-cover rounded-[26px]" />
               </div>
             </div>
   
