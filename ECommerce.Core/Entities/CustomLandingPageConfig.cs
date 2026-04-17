@@ -12,8 +12,6 @@ public class CustomLandingPageConfig : BaseEntity
     public int? RelativeTimerTotalMinutes { get; set; }
     public bool IsTimerVisible { get; set; } = true;
     public string? HeaderTitle { get; set; } // "অফারটি শেষ হতে মাত্র কিছুক্ষণ বাকি আছে!"
-    public string? BannerTitle { get; set; } // "অফারটি মিস মানেই লস!!"
-    public string? BannerSubtitle { get; set; } // "💥 ১৯৫০ টাকার হিজাব ছাড়া বোরখা অফারে পাচ্ছেন মাত্র ১১৫০ টাকায়!"
 
     // Product Details Section
     public bool IsProductDetailsVisible { get; set; } = true;

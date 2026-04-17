@@ -64,10 +64,15 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    const slug = this.route.snapshot.paramMap.get("slug");
-    if (slug) {
-      this.loadData(slug);
-    }
+    this.route.paramMap.subscribe(params => {
+      const slug = params.get("slug");
+      if (slug) {
+        this.loadData(slug);
+        if (isPlatformBrowser(this.platformId)) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -77,6 +82,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   loadData(slug: string): void {
+    this.isLoading = true;
     combineLatest([
       this.http.get<LandingPageData>(`${environment.apiBaseUrl}/custom-landing-page/${slug}`),
       this.settingsService.getPublicDeliveryMethods()

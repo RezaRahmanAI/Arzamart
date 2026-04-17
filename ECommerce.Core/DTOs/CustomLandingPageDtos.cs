@@ -10,8 +10,6 @@ public class CustomLandingPageConfigDto
     public int? RelativeTimerTotalMinutes { get; set; }
     public bool IsTimerVisible { get; set; }
     public string? HeaderTitle { get; set; }
-    public string? BannerTitle { get; set; }
-    public string? BannerSubtitle { get; set; }
 
     public bool IsProductDetailsVisible { get; set; }
     public string? ProductDetailsTitle { get; set; }
@@ -33,8 +31,6 @@ public class CustomLandingPageConfigUpdateDto
     public int? RelativeTimerTotalMinutes { get; set; }
     public bool IsTimerVisible { get; set; }
     public string? HeaderTitle { get; set; }
-    public string? BannerTitle { get; set; }
-    public string? BannerSubtitle { get; set; }
 
     public bool IsProductDetailsVisible { get; set; }
     public string? ProductDetailsTitle { get; set; }
