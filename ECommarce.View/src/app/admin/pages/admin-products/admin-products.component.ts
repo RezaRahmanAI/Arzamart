@@ -73,6 +73,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   isLoading = false;
   searchControl = new FormControl("", { nonNullable: true });
   categoryControl = new FormControl("All Categories", { nonNullable: true });
+  statusControl = new FormControl("All Items", { nonNullable: true });
 
   statusTabs: ProductsStatusTab[] = [
     "All Items",
@@ -106,6 +107,14 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     this.categoryControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.page = 1;
+        this.loadProducts();
+      });
+
+    this.statusControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((val) => {
+        this.selectedStatusTab = val as ProductsStatusTab;
         this.page = 1;
         this.loadProducts();
       });

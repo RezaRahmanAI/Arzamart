@@ -76,22 +76,31 @@
       </div>
     </div>
     <!-- Status Filter -->
-    <div
-      class="md:col-span-4 flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 no-scrollbar"
-    >
-      <button
-        *ngFor="let tab of statusTabs"
-        class="arza-btn h-11 px-6 shadow-sm border border-border-color"
-        type="button"
-        (click)="setStatusTab(tab)"
-        [ngClass]="
-          selectedStatusTab === tab
-            ? 'bg-primary text-white border-primary'
-            : 'bg-white dark:bg-background-dark text-text-sub hover:bg-supporting hover:text-primary'
-        "
-      >
-        {{ tab }}
-      </button>
+    <div class="md:col-span-4">
+      <div class="relative h-11">
+        <div
+          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+        >
+          <lucide-icon
+            [img]="icons.Filter"
+            class="w-5 h-5 text-slate-400"
+          ></lucide-icon>
+        </div>
+        <select
+          class="block w-full h-full pl-10 pr-10 py-2 text-xs font-bold uppercase tracking-widest border border-border-color rounded-xl focus:ring-2 focus:ring-primary/20 bg-white text-primary appearance-none cursor-pointer outline-none"
+          [formControl]="statusControl"
+        >
+          <option *ngFor="let tab of statusTabs">{{ tab }}</option>
+        </select>
+        <div
+          class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+        >
+          <lucide-icon
+            [img]="icons.ChevronDown"
+            class="w-4 h-4 text-text-sub/30"
+          ></lucide-icon>
+        </div>
+      </div>
     </div>
   </div>
   <!-- Product Table -->
