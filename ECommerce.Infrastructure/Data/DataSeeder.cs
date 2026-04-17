@@ -999,6 +999,101 @@ public static class DataSeeder
                 siteSettings.ContactEmail = "support@arzamart.com";
                 await context.SaveChangesAsync();
             }
+
+            // ── Seed Pages ──────────────────────────────────────────────────
+            if (!await context.Pages.AnyAsync())
+            {
+                var pages = new List<Page>
+                {
+                    new Page { Title = "About Us", Slug = "about-us", Content = "<h1>About Arza Mart</h1><p>Arza Mart is your premier destination for high-quality fashion and lifestyle products in Bangladesh. We are committed to providing our customers with an exceptional shopping experience, offering a curated selection of traditional and contemporary apparel.</p>", MetaTitle = "About Us | Arza Mart", MetaDescription = "Learn more about Arza Mart and our mission to provide quality fashion." },
+                    new Page { Title = "Privacy Policy", Slug = "privacy-policy", Content = "<h1>Privacy Policy</h1><p>At Arza Mart, we take your privacy seriously. This policy outlines how we collect, use, and protect your personal information.</p>", MetaTitle = "Privacy Policy | Arza Mart", MetaDescription = "Read our privacy policy to understand how we handle your data." },
+                    new Page { Title = "Terms & Conditions", Slug = "terms-conditions", Content = "<h1>Terms & Conditions</h1><p>By using our website, you agree to comply with and be bound by the following terms and conditions of use.</p>", MetaTitle = "Terms & Conditions | Arza Mart", MetaDescription = "Review the terms and conditions for using Arza Mart's services." },
+                    new Page { Title = "Return & Refund Policy", Slug = "return-policy", Content = "<h1>Return & Refund Policy</h1><p>We want you to be completely satisfied with your purchase. If you are not happy with an item, you can return it within 7 days of delivery.</p>", MetaTitle = "Return & Refund Policy | Arza Mart", MetaDescription = "Find out about our easy return and refund process." }
+                };
+                await context.Pages.AddRangeAsync(pages);
+                await context.SaveChangesAsync();
+            }
+
+            // ── Seed Navigation Menus ───────────────────────────────────────
+            if (!await context.NavigationMenus.AnyAsync())
+            {
+                var categories = await context.Categories.ToListAsync();
+                var menus = new List<NavigationMenu>
+                {
+                    new NavigationMenu { Title = "Home", Url = "/", DisplayOrder = 1 },
+                    new NavigationMenu { Title = "Shop", Url = "/shop", DisplayOrder = 2, IsMegaMenu = true },
+                    new NavigationMenu { Title = "New Arrivals", Url = "/shop?isNew=true", DisplayOrder = 3 },
+                    new NavigationMenu { Title = "Offers", Url = "/shop?isFeatured=true", DisplayOrder = 4 }
+                };
+
+                // Add Categories to Menu
+                foreach (var category in categories)
+                {
+                    menus.Add(new NavigationMenu 
+                    { 
+                        Title = category.Name, 
+                        Url = $"/category/{category.Slug}", 
+                        CategoryId = category.Id, 
+                        DisplayOrder = menus.Count + 1 
+                    });
+                }
+
+                await context.NavigationMenus.AddRangeAsync(menus);
+                await context.SaveChangesAsync();
+            }
+
+            // ── Seed Custom Landing Page Configs ────────────────────────────
+            if (!await context.CustomLandingPageConfigs.AnyAsync())
+            {
+                var targetProducts = await context.Products
+                    .Where(p => p.Slug == "royal-embroidered-sherwani-ivory" || p.Slug == "elegant-black-abaya-lace")
+                    .ToListAsync();
+
+                foreach (var product in targetProducts)
+                {
+                    var price = await context.ProductVariants
+                        .Where(v => v.ProductId == product.Id)
+                        .Select(v => (decimal?)v.Price)
+                        .FirstOrDefaultAsync();
+
+                    var originalPrice = await context.ProductVariants
+                        .Where(v => v.ProductId == product.Id)
+                        .Select(v => (decimal?)v.CompareAtPrice)
+                        .FirstOrDefaultAsync();
+
+                    var config = new CustomLandingPageConfig
+                    {
+                        ProductId = product.Id,
+                        RelativeTimerTotalMinutes = 1440,
+                        IsTimerVisible = true,
+                        IsProductDetailsVisible = true,
+                        IsFabricVisible = true,
+                        IsDesignVisible = true,
+                        IsTrustBannerVisible = true,
+                        TrustBannerText = "দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই",
+                        FeaturedProductName = product.Name,
+                        PromoPrice = price,
+                        OriginalPrice = originalPrice
+                    };
+
+                    // Customize content based on product
+                    if (product.Slug == "royal-embroidered-sherwani-ivory")
+                    {
+                        config.HeaderTitle = "রাজকীয় লুকে নিজেকে সাজাতে আজই অর্ডার করুন!";
+                        config.ProductDetailsTitle = "✨ শেরওয়ানি ডিটেইলস";
+                        config.TrustBannerText = "বিয়ে বা যেকোনো উৎসবে নিজেকে সেরা লুকে দেখতে এই শেরওয়ানিটি সেরা পছন্দ। কোয়ালিটি নিশ্চিত হয়েই পেমেন্ট করুন।";
+                    }
+                    else if (product.Slug == "elegant-black-abaya-lace")
+                    {
+                        config.HeaderTitle = "সবচেয়ে মার্জিত এবং স্টাইলিশ আবায়া এখন আপনার হাতের নাগালে!";
+                        config.ProductDetailsTitle = "🌸 আবায়া ডিটেইলস";
+                        config.TrustBannerText = "প্রিমিয়াম চেরি ফেব্রিক্স এবং নিখুঁত ডিজাইন। ভালো না লাগলে সাথে সাথেই রিটার্ন করতে পারবেন।";
+                    }
+
+                    context.CustomLandingPageConfigs.Add(config);
+                }
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

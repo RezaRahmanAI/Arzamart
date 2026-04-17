@@ -113,7 +113,8 @@ try
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             
-            // Seed data only (context.Database.Migrate() remains disabled)
+            // Ensure database is up to date and seed data
+            context.Database.Migrate();
             DataSeeder.SeedAsync(userManager, roleManager, context).GetAwaiter().GetResult();
         }
         catch (Exception ex)
