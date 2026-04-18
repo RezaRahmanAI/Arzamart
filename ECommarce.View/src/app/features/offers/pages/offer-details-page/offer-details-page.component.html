@@ -7,7 +7,7 @@
         <p class="offer-subtitle">{{ offer?.subtitle }}</p>
       </div>
       <a class="offer-close" routerLink="/" aria-label="Close offer">
-        <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+        <app-icon name="X" size="20"></app-icon>
       </a>
     </div>
 
@@ -79,41 +79,45 @@
                     placeholder="Search city"
                     readonly
                   />
-                  <lucide-icon [img]="isCityDropdownOpen ? icons.ChevronUp : icons.ChevronDown" class="absolute right-2 w-3.5 h-3.5 text-gray-400 pointer-events-none"></lucide-icon>
+                  <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="14" className="absolute right-2 text-gray-400 pointer-events-none"></app-icon>
                 </div>
 
                 <!-- Dropdown List -->
-                <div *ngIf="isCityDropdownOpen" 
-                  class="absolute z-[100] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
-                  (click)="$event.stopPropagation()">
-                  <div class="p-1.5 border-b border-gray-100">
-                    <div class="relative flex items-center">
-                      <lucide-icon [img]="icons.Search" class="absolute left-2 w-3 h-3 text-gray-400"></lucide-icon>
-                      <input
-                        type="text"
-                        class="w-full pl-7 pr-3 py-1.5 bg-gray-50 border-none rounded-md text-xs focus:ring-0 outline-none"
-                        placeholder="Type to search..."
-                        (input)="filterCities($event)"
-                        [value]="citySearch"
-                        autofocus
-                      />
+                @if (isCityDropdownOpen) {
+                  <div 
+                    class="absolute z-[100] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
+                    (click)="$event.stopPropagation()">
+                    <div class="p-1.5 border-b border-gray-100">
+                      <div class="relative flex items-center">
+                        <app-icon name="Search" size="12" className="absolute left-2 text-gray-400"></app-icon>
+                        <input
+                          type="text"
+                          class="w-full pl-7 pr-3 py-1.5 bg-gray-50 border-none rounded-md text-xs focus:ring-0 outline-none"
+                          placeholder="Type to search..."
+                          (input)="filterCities($event)"
+                          [value]="citySearch"
+                          autofocus
+                        />
+                      </div>
                     </div>
+                    <ul class="max-h-48 overflow-y-auto custom-scrollbar py-1">
+                      @for (city of filteredCities; track city) {
+                        <li
+                          (click)="selectCity(city)"
+                          class="px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50 cursor-pointer transition-colors"
+                          [ngClass]="{'bg-black/5 text-black font-bold': orderForm.get('city')?.value === city}"
+                        >
+                          {{ city }}
+                        </li>
+                      } @empty {
+                        <li class="px-3 py-2 text-xs text-gray-500 text-center">No results</li>
+                      }
+                    </ul>
                   </div>
-                  <ul class="max-h-48 overflow-y-auto custom-scrollbar py-1">
-                    <li *ngIf="filteredCities.length === 0" class="px-3 py-2 text-xs text-gray-500 text-center">No results</li>
-                    <li
-                      *ngFor="let city of filteredCities"
-                      (click)="selectCity(city)"
-                      class="px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50 cursor-pointer transition-colors"
-                      [ngClass]="{'bg-black/5 text-black font-bold': orderForm.get('city')?.value === city}"
-                    >
-                      {{ city }}
-                    </li>
-                  </ul>
-                </div>
 
-                <!-- Overlay to close dropdown -->
-                <div *ngIf="isCityDropdownOpen" class="fixed inset-0 z-40" (click)="toggleCityDropdown()"></div>
+                  <!-- Overlay to close dropdown -->
+                  <div class="fixed inset-0 z-40" (click)="toggleCityDropdown()"></div>
+                }
               </div>
             </div>
             <div class="space-y-1">
@@ -127,41 +131,45 @@
                     placeholder="Search area"
                     readonly
                   />
-                  <lucide-icon [img]="isAreaDropdownOpen ? icons.ChevronUp : icons.ChevronDown" class="absolute right-2 w-3.5 h-3.5 text-gray-400 pointer-events-none"></lucide-icon>
+                  <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="14" className="absolute right-2 text-gray-400 pointer-events-none"></app-icon>
                 </div>
 
                 <!-- Dropdown List -->
-                <div *ngIf="isAreaDropdownOpen" 
-                  class="absolute z-[100] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
-                  (click)="$event.stopPropagation()">
-                  <div class="p-1.5 border-b border-gray-100">
-                    <div class="relative flex items-center">
-                      <lucide-icon [img]="icons.Search" class="absolute left-2 w-3 h-3 text-gray-400"></lucide-icon>
-                      <input
-                        type="text"
-                        class="w-full pl-7 pr-3 py-1.5 bg-gray-50 border-none rounded-md text-xs focus:ring-0 outline-none"
-                        placeholder="Type to search..."
-                        (input)="filterAreas($event)"
-                        [value]="areaSearch"
-                        autofocus
-                      />
+                @if (isAreaDropdownOpen) {
+                  <div 
+                    class="absolute z-[100] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
+                    (click)="$event.stopPropagation()">
+                    <div class="p-1.5 border-b border-gray-100">
+                      <div class="relative flex items-center">
+                        <app-icon name="Search" size="12" className="absolute left-2 text-gray-400"></app-icon>
+                        <input
+                          type="text"
+                          class="w-full pl-7 pr-3 py-1.5 bg-gray-50 border-none rounded-md text-xs focus:ring-0 outline-none"
+                          placeholder="Type to search..."
+                          (input)="filterAreas($event)"
+                          [value]="areaSearch"
+                          autofocus
+                        />
+                      </div>
                     </div>
+                    <ul class="max-h-48 overflow-y-auto custom-scrollbar py-1">
+                      @for (area of filteredAreas; track area) {
+                        <li
+                          (click)="selectArea(area)"
+                          class="px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50 cursor-pointer transition-colors"
+                          [ngClass]="{'bg-black/5 text-black font-bold': orderForm.get('area')?.value === area}"
+                        >
+                          {{ area }}
+                        </li>
+                      } @empty {
+                        <li class="px-3 py-2 text-xs text-gray-500 text-center">No results</li>
+                      }
+                    </ul>
                   </div>
-                  <ul class="max-h-48 overflow-y-auto custom-scrollbar py-1">
-                    <li *ngIf="filteredAreas.length === 0" class="px-3 py-2 text-xs text-gray-500 text-center">No results</li>
-                    <li
-                      *ngFor="let area of filteredAreas"
-                      (click)="selectArea(area)"
-                      class="px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50 cursor-pointer transition-colors"
-                      [ngClass]="{'bg-black/5 text-black font-bold': orderForm.get('area')?.value === area}"
-                    >
-                      {{ area }}
-                    </li>
-                  </ul>
-                </div>
 
-                <!-- Overlay to close dropdown -->
-                <div *ngIf="isAreaDropdownOpen" class="fixed inset-0 z-40" (click)="toggleAreaDropdown()"></div>
+                  <!-- Overlay to close dropdown -->
+                  <div class="fixed inset-0 z-40" (click)="toggleAreaDropdown()"></div>
+                }
               </div>
             </div>
           </div>
@@ -203,10 +211,14 @@
             <app-price-display [amount]="total" size="md"></app-price-display>
           </div>
 
-          <p *ngIf="errorMessage" class="error-text">{{ errorMessage }}</p>
-          <p *ngIf="successMessage" class="success-text">
-            {{ successMessage }}
-          </p>
+          @if (errorMessage) {
+            <p class="error-text">{{ errorMessage }}</p>
+          }
+          @if (successMessage) {
+            <p class="success-text">
+              {{ successMessage }}
+            </p>
+          }
 
           <button type="submit" [disabled]="isLoading">
             {{ isLoading ? "Placing order..." : "Submit order" }}

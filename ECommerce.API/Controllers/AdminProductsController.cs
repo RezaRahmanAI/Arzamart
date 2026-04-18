@@ -221,7 +221,7 @@ public class AdminProductsController : ControllerBase
 
             await _cache.RemoveAsync("home_new_arrivals");
             await _cache.RemoveAsync("home_featured_products");
-            await _cacheStore.EvictByTagAsync("products", default);
+            await _cacheStore.EvictByTagAsync("catalog", default);
 
             return CreatedAtAction(nameof(GetProductById), new { id = result.Id }, result);
         }
@@ -258,7 +258,7 @@ public class AdminProductsController : ControllerBase
 
             await _cache.RemoveAsync("home_new_arrivals");
             await _cache.RemoveAsync("home_featured_products");
-            await _cacheStore.EvictByTagAsync("products", default);
+            await _cacheStore.EvictByTagAsync("catalog", default);
 
             return Ok(result);
         }
@@ -319,7 +319,7 @@ public class AdminProductsController : ControllerBase
 
         await _cache.RemoveAsync("home_new_arrivals");
         await _cache.RemoveAsync("home_featured_products");
-        await _cacheStore.EvictByTagAsync("products", default);
+        await _cacheStore.EvictByTagAsync("catalog", default);
 
         return Ok(true);
     }
@@ -427,7 +427,7 @@ public class AdminProductsController : ControllerBase
              // Invalidate cache
              await _cache.RemoveAsync("home_new_arrivals");
              await _cache.RemoveAsync("home_featured_products");
-             await _cacheStore.EvictByTagAsync("products", default);
+             await _cacheStore.EvictByTagAsync("catalog", default);
              
              var cacheKeys = new[] { $"product_id:{product.Id}", $"product_slug:{product.Slug}" };
              foreach (var key in cacheKeys)
@@ -454,7 +454,7 @@ public class AdminProductsController : ControllerBase
         {
             await _cache.RemoveAsync("home_new_arrivals");
             await _cache.RemoveAsync("home_featured_products");
-            await _cacheStore.EvictByTagAsync("products", default);
+            await _cacheStore.EvictByTagAsync("catalog", default);
             await _cache.RemoveAsync($"product_id:{product.Id}");
             await _cache.RemoveAsync($"product_slug:{product.Slug}");
 

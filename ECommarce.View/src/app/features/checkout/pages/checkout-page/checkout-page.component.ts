@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { AsyncPipe, NgClass, DecimalPipe } from "@angular/common";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
 import {
@@ -31,47 +31,23 @@ import {
   AdminSettings,
 } from "../../../../admin/models/settings.models";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
-
-import {
-  LucideAngularModule,
-  CheckCircle2,
-  ArrowLeft,
-  User,
-  Phone,
-  MapPin,
-  Truck,
-  Info,
-  Search,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-checkout-page",
   standalone: true,
   imports: [
-    CommonModule,
+    AsyncPipe,
+    DecimalPipe,
     ReactiveFormsModule,
     RouterModule,
     PriceDisplayComponent,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./checkout-page.component.html",
   styleUrl: "./checkout-page.component.css",
 })
 export class CheckoutPageComponent {
-  readonly icons = {
-    CheckCircle2,
-    ArrowLeft,
-    User,
-    Phone,
-    MapPin,
-    Truck,
-    Info,
-    Search,
-    ChevronDown,
-    ChevronUp,
-  };
   private readonly cartService = inject(CartService);
   private readonly checkoutService = inject(CheckoutService);
   private readonly authService = inject(AuthService);

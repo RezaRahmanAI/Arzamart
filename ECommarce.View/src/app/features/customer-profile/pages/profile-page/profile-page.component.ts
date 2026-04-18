@@ -10,39 +10,16 @@ import { CustomerProfileService } from "../../../../core/services/customer-profi
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { Order } from "../../../../core/models/order";
 import { catchError, finalize, of, switchMap, tap } from "rxjs";
-
-import {
-  LucideAngularModule,
-  Package,
-  User,
-  MapPin,
-  LogOut,
-  ChevronRight,
-  Phone,
-  Clock,
-  CreditCard,
-  CheckCircle2,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-profile-page",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
   templateUrl: "./profile-page.component.html",
   styleUrl: "./profile-page.component.css",
 })
 export class ProfilePageComponent implements OnInit {
-  readonly icons = {
-    Package,
-    User,
-    MapPin,
-    LogOut,
-    ChevronRight,
-    Phone,
-    Clock,
-    CreditCard,
-    CheckCircle2,
-  };
   private readonly profileService = inject(CustomerProfileService);
   private readonly fb = inject(FormBuilder);
   readonly imageUrlService = inject(ImageUrlService);
@@ -92,8 +69,6 @@ export class ProfilePageComponent implements OnInit {
     this.isSubmitting = true;
     const phone = this.loginForm.get("phone")?.value;
 
-    // Ideally we verify if customer exists, but here we just set the phone
-    // effectively "logging in"
     this.profileService.storePhone(phone);
     this.isSubmitting = false;
   }
@@ -107,7 +82,6 @@ export class ProfilePageComponent implements OnInit {
   loadData(phone: string): void {
     this.isLoading = true;
 
-    // Load profile
     this.profileService
       .getProfile(phone)
       .pipe(
@@ -121,8 +95,6 @@ export class ProfilePageComponent implements OnInit {
           }
         }),
         catchError((err) => {
-          // If profile not found (new customer), we still allow them to see the page
-          // maybe pre-fill phone
           if (err.status === 404) {
             this.profileForm.patchValue({ phone });
             return of(null);
@@ -143,7 +115,6 @@ export class ProfilePageComponent implements OnInit {
     this.isSubmitting = true;
     this.saveSuccess = false;
 
-    // Ensure we send phone, even if disabled in form
     const phone = this.profileService.getStoredPhone();
     if (!phone) return;
 

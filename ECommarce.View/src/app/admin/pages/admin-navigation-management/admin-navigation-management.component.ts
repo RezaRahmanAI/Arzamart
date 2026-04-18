@@ -5,43 +5,16 @@ import { Subject, takeUntil } from "rxjs";
 import { AdminNavigationMenu } from "../../models/navigation.models";
 import { AdminNavigationService } from "../../services/admin-navigation.service";
 import { AuthService } from "../../../core/services/auth.service";
-import {
-  LucideAngularModule,
-  Plus,
-  Edit,
-  Trash2,
-  ChevronRight,
-  ChevronDown,
-  X,
-  Link,
-  Type,
-  ArrowUpDown,
-  Check,
-  Loader2,
-  GripVertical,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-admin-navigation-management",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
   templateUrl: "./admin-navigation-management.component.html",
 })
 export class AdminNavigationManagementComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    Plus,
-    Edit,
-    Trash2,
-    ChevronRight,
-    ChevronDown,
-    X,
-    Link,
-    Type,
-    ArrowUpDown,
-    Check,
-    Loader2,
-    GripVertical,
-  };
+
   private navService = inject(AdminNavigationService);
   private fb = inject(FormBuilder);
   readonly authService = inject(AuthService);

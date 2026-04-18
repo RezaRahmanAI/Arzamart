@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from "@angular/router";
 import { filter, map, startWith, Subject, takeUntil } from "rxjs";
-import { LucideAngularModule, Search, Bell, Menu, User, LogOut, Settings, Eye, ChevronDown, Users } from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { SidebarService } from "../../services/sidebar.service";
 import { AuthService } from "../../../core/services/auth.service";
 import { SiteSettingsService } from "../../../core/services/site-settings.service";
@@ -12,11 +12,11 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
 @Component({
   selector: "app-admin-header",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, AppIconComponent, RouterModule],
   templateUrl: "./admin-header.component.html",
 })
 export class AdminHeaderComponent implements OnInit, OnDestroy {
-  readonly icons = { Search, Bell, Menu, User, LogOut, Settings, Eye, ChevronDown, Users };
+
   protected sidebarService = inject(SidebarService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);

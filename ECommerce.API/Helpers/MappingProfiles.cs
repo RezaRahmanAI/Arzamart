@@ -95,7 +95,9 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Logs, o => o.MapFrom(s => s.Logs.OrderByDescending(l => l.CreatedAt)))
             .ForMember(d => d.Notes, o => o.MapFrom(s => s.Notes.OrderByDescending(n => n.CreatedAt)))
             .ForMember(d => d.SourcePageName, o => o.MapFrom(s => s.SourcePage != null ? s.SourcePage.Name : null))
-            .ForMember(d => d.SocialMediaSourceName, o => o.MapFrom(s => s.SocialMediaSource != null ? s.SocialMediaSource.Name : null));
+            .ForMember(d => d.SourcePageId, o => o.MapFrom(s => s.SourcePageId))
+            .ForMember(d => d.SocialMediaSourceName, o => o.MapFrom(s => s.SocialMediaSource != null ? s.SocialMediaSource.Name : null))
+            .ForMember(d => d.SocialMediaSourceId, o => o.MapFrom(s => s.SocialMediaSourceId));
 
         CreateMap<OrderItem, OrderItemDto>()
             .ForMember(d => d.ProductId, o => o.MapFrom(s => s.ProductId))

@@ -1,68 +1,78 @@
-<main class="flex-1 bg-white" *ngIf="homeData$ | async as data">
-  <app-hero [slides]="(heroSlides$ | async) ?? []"></app-hero>
+@if (homeData$ | async; as data) {
+  <main class="flex-1 bg-white">
+    <app-hero [slides]="(heroSlides$ | async) ?? []"></app-hero>
 
-  <div class="space-y-8 md:space-y-12 pb-20 md:pb-32 bg-white">
-    <!-- Product Sections — load immediately (above the fold) -->
-    <app-new-arrivals [products]="data.newArrivals"></app-new-arrivals>
+    <div class="space-y-8 md:space-y-12 pb-20 md:pb-32 bg-white">
+      <!-- Product Sections — load immediately (above the fold) -->
+      <app-new-arrivals [products]="data.newArrivals"></app-new-arrivals>
 
-    <!-- Dynamic Promo Banner (Offers) -->
-    <app-promo-banner></app-promo-banner>
-
-    <!-- Category Sections — defer until scrolled into view -->
-    @defer (on viewport) {
-      <ng-container *ngIf="categories$ | async as categories">
-        <app-category-section
-          *ngIf="getCategory(categories, 'men').length"
-          title="Menswear"
-          viewAllLink="/shop/men"
-          [categories]="getCategory(categories, 'men')"
-        >
-        </app-category-section>
-
-        <app-category-section
-          *ngIf="getCategory(categories, 'women').length"
-          title="Womenswear"
-          viewAllLink="/shop/women"
-          [categories]="getCategory(categories, 'women')"
-        >
-        </app-category-section>
-
-        <app-category-section
-          *ngIf="getCategory(categories, 'kids').length"
-          title="Kidswear"
-          viewAllLink="/shop/kids"
-          [categories]="getCategory(categories, 'kids')"
-        >
-        </app-category-section>
-
-        <app-category-section
-          *ngIf="getCategory(categories, 'accessories').length"
-          title="Accessories"
-          viewAllLink="/shop/accessories"
-          [categories]="getCategory(categories, 'accessories')"
-        >
-        </app-category-section>
-      </ng-container>
-    } @placeholder {
-      <div class="h-96 flex items-center justify-center">
-        <div class="animate-pulse bg-border-color rounded-lg w-full h-full"></div>
-      </div>
-    }
-
-
-    <div class="bg-supporting py-12 md:py-16 lg:py-20">
+      <!-- Dynamic Promo Banner (Offers) — defer -->
       @defer (on viewport) {
-        <app-why-choose-us></app-why-choose-us>
+        <app-promo-banner></app-promo-banner>
+      } @placeholder {
+        <div class="h-48 animate-pulse bg-supporting rounded-lg"></div>
+      }
+
+      <!-- Category Sections — defer until scrolled into view -->
+      @defer (on viewport) {
+        @if (categories$ | async; as categories) {
+          @if (getCategory(categories, 'men').length) {
+            <app-category-section
+              title="Menswear"
+              viewAllLink="/shop/men"
+              [categories]="getCategory(categories, 'men')"
+            >
+            </app-category-section>
+          }
+
+          @if (getCategory(categories, 'women').length) {
+            <app-category-section
+              title="Womenswear"
+              viewAllLink="/shop/women"
+              [categories]="getCategory(categories, 'women')"
+            >
+            </app-category-section>
+          }
+
+          @if (getCategory(categories, 'kids').length) {
+            <app-category-section
+              title="Kidswear"
+              viewAllLink="/shop/kids"
+              [categories]="getCategory(categories, 'kids')"
+            >
+            </app-category-section>
+          }
+
+          @if (getCategory(categories, 'accessories').length) {
+            <app-category-section
+              title="Accessories"
+              viewAllLink="/shop/accessories"
+              [categories]="getCategory(categories, 'accessories')"
+            >
+            </app-category-section>
+          }
+        }
+      } @placeholder {
+        <div class="h-96 flex items-center justify-center">
+          <div class="animate-pulse bg-border-color rounded-lg w-full h-full"></div>
+        </div>
+      }
+
+
+      <div class="bg-supporting py-12 md:py-16 lg:py-20">
+        @defer (on viewport) {
+          <app-why-choose-us></app-why-choose-us>
+        } @placeholder {
+          <div class="h-64 animate-pulse bg-supporting rounded-lg"></div>
+        }
+      </div>
+
+      @defer (on viewport; on timer(500ms)) {
+        <app-testimonials></app-testimonials>
       } @placeholder {
         <div class="h-64 animate-pulse bg-supporting rounded-lg"></div>
       }
     </div>
-
-    @defer (on viewport; on timer(500ms)) {
-      <app-testimonials></app-testimonials>
-    } @placeholder {
-      <div class="h-64 animate-pulse bg-supporting rounded-lg"></div>
-    }
-  </div>
-</main>
+  </main>
+}
 

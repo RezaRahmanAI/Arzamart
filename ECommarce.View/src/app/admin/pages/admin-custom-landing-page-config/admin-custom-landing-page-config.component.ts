@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { LucideAngularModule, ArrowLeft, Save, Loader2, Info } from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { CustomLandingPageService, CustomLandingPageConfig } from "../../services/custom-landing-page.service";
 import { ProductsService } from "../../services/products.service";
 import { AdminProduct } from "../../models/products.models";
@@ -10,11 +10,11 @@ import { AdminProduct } from "../../models/products.models";
 @Component({
   selector: "app-admin-custom-landing-page-config",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppIconComponent],
   templateUrl: "./admin-custom-landing-page-config.component.html",
 })
 export class AdminCustomLandingPageConfigComponent implements OnInit {
-  readonly icons = { ArrowLeft, Save, Loader2, Info };
+
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly clpService = inject(CustomLandingPageService);

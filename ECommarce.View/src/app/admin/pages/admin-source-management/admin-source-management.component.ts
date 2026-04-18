@@ -5,38 +5,15 @@ import { Subject, takeUntil } from "rxjs";
 import { SourceManagementService } from "../../../core/services/source-management.service";
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
 import { AuthService } from "../../../core/services/auth.service";
-import {
-  LucideAngularModule,
-  Plus,
-  Edit,
-  Trash2,
-  X,
-  Loader2,
-  Globe,
-  Share2,
-  Check,
-  AlertCircle
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-admin-source-management",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
   templateUrl: "./admin-source-management.component.html",
 })
 export class AdminSourceManagementComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    Plus,
-    Edit,
-    Trash2,
-    X,
-    Loader2,
-    Globe,
-    Share2,
-    Check,
-    AlertCircle
-  };
-
   private sourceService = inject(SourceManagementService);
   private fb = inject(FormBuilder);
   readonly authService = inject(AuthService);

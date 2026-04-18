@@ -1,319 +1,273 @@
-<div class="flex flex-col min-h-screen">
-  <main
-    class="flex-grow py-8 px-4 sm:px-6 lg:px-8 max-w-[1280px] mx-auto w-full"
-    *ngIf="vm$ | async as vm"
-  >
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-      <div class="lg:col-span-8 flex flex-col gap-6">
-        <div
-          class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-border-color dark:border-gray-800"
-        >
-          <div>
-            <span class="text-[10px] uppercase tracking-[0.3em] text-text-sub font-black mb-1 block">Your Items ({{ vm.cartItems.length }})</span>
-            <h1
-              class="text-4xl md:text-5xl font-black text-primary dark:text-white uppercase tracking-tighter leading-none"
-            >
-              Shopping Bag
-            </h1>
-          </div>
-        </div>
-        <div
-          class="bg-supporting/40 rounded-xl p-6 border border-border-color shadow-sm"
-        >
-          <div class="flex justify-between items-end mb-2">
-            <p
-              class="text-sm font-medium text-primary dark:text-white"
-              *ngIf="
-                vm.summary.freeShippingRemaining > 0;
-                else freeShippingAchieved
-              "
-            >
-              Spend
-              <app-price-display
-                class="font-bold text-primary dark:text-white"
-                [amount]="vm.summary.freeShippingRemaining"
-                size="sm"
-              ></app-price-display>
-              more for
-              <span class="text-primary dark:text-accent font-bold"
-                >Free Shipping</span
-              >
-            </p>
-            <ng-template #freeShippingAchieved>
-              <p class="text-sm font-medium text-primary dark:text-white">
-                You have unlocked
-                <span class="text-primary dark:text-accent font-bold"
-                  >Free Shipping</span
-                >
-              </p>
-            </ng-template>
-            <span
-              class="text-xs font-semibold text-text-sub dark:text-slate-400"
-            >
-              {{ vm.summary.freeShippingProgress | number: "1.0-0" }}%
-            </span>
-          </div>
-          <div
-            class="w-full bg-supporting dark:bg-gray-700 rounded-full h-2.5 overflow-hidden"
-          >
+@if (vm$ | async; as vm) {
+  <div class="flex flex-col min-h-screen">
+    <main class="flex-grow py-8 px-4 sm:px-6 lg:px-8 max-w-[1280px] mx-auto w-full">
+      @if (vm.cartItems.length > 0) {
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+          <div class="lg:col-span-8 flex flex-col gap-6">
             <div
-              class="bg-primary dark:bg-accent h-2.5 rounded-full transition-all duration-500"
-              [style.width.%]="vm.summary.freeShippingProgress"
-            ></div>
-          </div>
-        </div>
-        <div class="flex flex-col gap-4">
-          <div
-            class="group relative flex flex-col sm:flex-row gap-4 bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-border-color dark:border-gray-800 transition-all hover:shadow-md"
-            *ngFor="let item of vm.cartItems; trackBy: trackCartItem"
-          >
-            <div
-              class="shrink-0 relative w-full sm:w-[120px] aspect-[3/4] rounded-lg overflow-hidden bg-gray-100"
+              class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-border-color dark:border-gray-800"
             >
-              <div
-                class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                [attr.data-alt]="item.imageAlt"
-                [style.backgroundImage]="
-                  'url(' + imageUrlService.getImageUrl(item.imageUrl) + ')'
-                "
-              ></div>
-            </div>
-            <div class="flex flex-1 flex-col justify-between py-1">
-              <div class="flex justify-between items-start gap-4">
-                <div>
-                  <h3
-                    class="text-lg font-semibold text-primary dark:text-white mb-1"
-                  >
-                    {{ item.name }}
-                  </h3>
-                  <div class="flex flex-col gap-0.5 mt-2">
-                    <p class="text-[10px] text-text-sub font-black uppercase tracking-widest">Size: {{ item.size }}</p>
-                  </div>
-                </div>
-                <button
-                  aria-label="Remove item"
-                  class="text-slate-400 hover:text-red-500 transition-colors p-1"
-                  type="button"
-                  (click)="removeItem(item)"
+              <div>
+                <span class="text-[10px] uppercase tracking-[0.3em] text-text-sub font-black mb-1 block">Your Items ({{ vm.cartItems.length }})</span>
+                <h1
+                  class="text-4xl md:text-5xl font-black text-primary dark:text-white uppercase tracking-tighter leading-none"
                 >
-                  <lucide-icon
-                    [img]="icons.Trash2"
-                    class="w-4 h-4"
-                  ></lucide-icon>
-                </button>
-              </div>
-              <div class="flex justify-between items-end mt-4 sm:mt-0">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="flex items-center rounded-lg border border-border-color dark:border-gray-700 bg-background-light dark:bg-background-dark"
-                  >
-                    <button
-                      class="w-8 h-8 flex items-center justify-center text-text-sub dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-l-lg transition-colors"
-                      type="button"
-                      (click)="decreaseQuantity(item)"
-                    >
-                      <lucide-icon
-                        [img]="icons.Minus"
-                        class="w-3.5 h-3.5"
-                      ></lucide-icon>
-                    </button>
-                    <input
-                      class="w-8 h-8 text-center bg-transparent border-none p-0 text-sm font-medium focus:ring-0 text-primary dark:text-white"
-                      readonly
-                      type="text"
-                      [value]="item.quantity"
-                    />
-                    <button
-                      class="w-8 h-8 flex items-center justify-center text-text-sub dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-r-lg transition-colors"
-                      type="button"
-                      (click)="increaseQuantity(item)"
-                    >
-                      <lucide-icon
-                        [img]="icons.Plus"
-                        class="w-3.5 h-3.5"
-                      ></lucide-icon>
-                    </button>
-                  </div>
-                </div>
-                <app-price-display
-                  class="text-primary dark:text-white"
-                  [amount]="item.price * item.quantity"
-                  size="md"
-                ></app-price-display>
+                  Shopping Bag
+                </h1>
               </div>
             </div>
-          </div>
-        </div>
-        <!-- 
-        <div
-          class="mt-8"
-          *ngIf="recommendedProducts$ | async as recommendedProducts"
-        >
-          <h2 class="text-xl font-bold text-primary dark:text-white mb-6">
-            You Might Also Like
-          </h2>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div
-              class="group cursor-pointer"
-              *ngFor="let product of recommendedProducts; trackBy: trackProduct"
-              [routerLink]="['/product', product.slug]"
+              class="bg-supporting/40 rounded-xl p-6 border border-border-color shadow-sm"
             >
-              <div
-                class="aspect-[3/4] rounded-lg overflow-hidden bg-gray-100 mb-3 relative"
-              >
-                <div
-                  class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                  [attr.data-alt]="product.name"
-                  [style.backgroundImage]="
-                    'url(' +
-                    imageUrlService.getImageUrl(
-                      product.imageUrl ||
-                        (product.images && product.images.length > 0
-                          ? product.images[0].imageUrl
-                          : '')
-                    ) +
-                    ')'
-                  "
-                ></div>
-              </div>
-              <h4
-                class="text-sm font-medium text-slate-800 dark:text-white truncate"
-              >
-                {{ product.name }}
-              </h4>
-              <app-price-display
-                class="text-text-sub dark:text-slate-400"
-                [amount]="product.price"
-                size="sm"
-              ></app-price-display>
-            </div>
-          </div>
-        </div>
-        -->
-      </div>
-      <div class="lg:col-span-4">
-        <div class="sticky top-24 flex flex-col gap-6">
-          <div
-            class="bg-white dark:bg-surface-dark rounded-xl p-6 shadow-sm border border-border-color dark:border-gray-800"
-          >
-            <h2 class="text-xl font-bold text-primary dark:text-white mb-6">
-              Order Summary
-            </h2>
-            <div
-              class="flex flex-col gap-4 pb-6 border-b border-dashed border-border-color dark:border-gray-700"
-            >
-              <div class="flex justify-between text-sm">
-                <span class="text-text-sub dark:text-slate-300">Subtotal</span>
-                <app-price-display
-                  class="font-medium text-text-main dark:text-white"
-                  [amount]="vm.summary.subtotal"
-                  size="sm"
-                ></app-price-display>
-              </div>
-              <div class="flex justify-between text-sm">
-                <span class="text-text-sub dark:text-slate-300"
-                  >Shipping Estimate</span
-                >
-                <span class="font-medium text-text-main dark:text-white">
-                  <ng-container
-                    *ngIf="vm.summary.shipping === 0; else shippingPrice"
-                    >Free</ng-container
-                  >
-                  <ng-template #shippingPrice>
+              <div class="flex justify-between items-end mb-2">
+                @if (vm.summary.freeShippingRemaining > 0) {
+                  <p class="text-sm font-medium text-primary dark:text-white">
+                    Spend
                     <app-price-display
-                      [amount]="vm.summary.shipping"
+                      class="font-bold text-primary dark:text-white"
+                      [amount]="vm.summary.freeShippingRemaining"
                       size="sm"
                     ></app-price-display>
-                  </ng-template>
+                    more for
+                    <span class="text-primary dark:text-accent font-bold">Free Shipping</span>
+                  </p>
+                } @else {
+                  <p class="text-sm font-medium text-primary dark:text-white">
+                    You have unlocked
+                    <span class="text-primary dark:text-accent font-bold">Free Shipping</span>
+                  </p>
+                }
+                <span class="text-xs font-semibold text-text-sub dark:text-slate-400">
+                  {{ vm.summary.freeShippingProgress | number: "1.0-0" }}%
                 </span>
               </div>
-            </div>
-            <div class="flex justify-between items-center py-6">
-              <span
-                class="text-base font-semibold text-text-main dark:text-white"
-                >Total</span
-              >
-              <app-price-display
-                class="text-primary dark:text-white"
-                [amount]="vm.summary.total"
-                size="lg"
-              ></app-price-display>
-            </div>
-            <button
-              class="w-full bg-primary hover:bg-[#084050] text-white font-bold py-3.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
-              type="button"
-              routerLink="/checkout"
-            >
-              <lucide-icon [img]="icons.Lock" class="w-4 h-4"></lucide-icon>
-              Proceed to Checkout
-            </button>
-            <div class="mt-6 flex flex-col gap-3">
               <div
-                class="flex items-center justify-center gap-2 text-xs text-text-sub dark:text-slate-400"
-              >
-                <lucide-icon
-                  [img]="icons.Lock"
-                  class="w-3 h-3 text-green-600"
-                ></lucide-icon>
-                Secure SSL Encryption
-              </div>
-              <div
-                class="flex items-center justify-center gap-4 opacity-60 grayscale"
+                class="w-full bg-supporting dark:bg-gray-700 rounded-full h-2.5 overflow-hidden"
               >
                 <div
-                  class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-[8px] font-bold text-text-sub"
-                >
-                  VISA
-                </div>
-                <div
-                  class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-[8px] font-bold text-text-sub"
-                >
-                  MC
-                </div>
-                <div
-                  class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-[8px] font-bold text-text-sub"
-                >
-                  AMEX
-                </div>
-                <div
-                  class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-[8px] font-bold text-text-sub"
-                >
-                  PAYPAL
-                </div>
+                  class="bg-primary dark:bg-accent h-2.5 rounded-full transition-all duration-500"
+                  [style.width.%]="vm.summary.freeShippingProgress"
+                ></div>
               </div>
+            </div>
+            <div class="flex flex-col gap-4">
+              @for (item of vm.cartItems; track item.id) {
+                <div
+                  class="group relative flex flex-col sm:flex-row gap-4 bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-border-color dark:border-gray-800 transition-all hover:shadow-md"
+                >
+                  <div
+                    class="shrink-0 relative w-full sm:w-[120px] aspect-[3/4] rounded-lg overflow-hidden bg-gray-100"
+                  >
+                    <div
+                      class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                      [attr.data-alt]="item.imageAlt"
+                      [style.backgroundImage]="
+                        'url(' + imageUrlService.getImageUrl(item.imageUrl) + ')'
+                      "
+                    ></div>
+                  </div>
+                  <div class="flex flex-1 flex-col justify-between py-1">
+                    <div class="flex justify-between items-start gap-4">
+                      <div>
+                        <h3
+                          class="text-lg font-semibold text-primary dark:text-white mb-1"
+                        >
+                          {{ item.name }}
+                        </h3>
+                        <div class="flex flex-col gap-0.5 mt-2">
+                          <p class="text-[10px] text-text-sub font-black uppercase tracking-widest">Size: {{ item.size }}</p>
+                        </div>
+                      </div>
+                      <button
+                        aria-label="Remove item"
+                        class="text-slate-400 hover:text-red-500 transition-colors p-1"
+                        type="button"
+                        (click)="removeItem(item)"
+                      >
+                        <app-icon
+                          name="Trash2"
+                          size="16"
+                        ></app-icon>
+                      </button>
+                    </div>
+                    <div class="flex justify-between items-end mt-4 sm:mt-0">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="flex items-center rounded-lg border border-border-color dark:border-gray-700 bg-background-light dark:bg-background-dark"
+                        >
+                          <button
+                            class="w-8 h-8 flex items-center justify-center text-text-sub dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-l-lg transition-colors"
+                            type="button"
+                            (click)="decreaseQuantity(item)"
+                          >
+                            <app-icon
+                              name="Minus"
+                              size="14"
+                            ></app-icon>
+                          </button>
+                          <input
+                            class="w-8 h-8 text-center bg-transparent border-none p-0 text-sm font-medium focus:ring-0 text-primary dark:text-white"
+                            readonly
+                            type="text"
+                            [value]="item.quantity"
+                          />
+                          <button
+                            class="w-8 h-8 flex items-center justify-center text-text-sub dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-r-lg transition-colors"
+                            type="button"
+                            (click)="increaseQuantity(item)"
+                          >
+                            <app-icon
+                              name="Plus"
+                              size="14"
+                            ></app-icon>
+                          </button>
+                        </div>
+                      </div>
+                      <app-price-display
+                        class="text-primary dark:text-white"
+                        [amount]="item.price * item.quantity"
+                        size="md"
+                      ></app-price-display>
+                    </div>
+                  </div>
+                </div>
+              }
             </div>
           </div>
-          <div
-            class="bg-white dark:bg-surface-dark rounded-xl p-4 shadow-sm border border-border-color dark:border-gray-800"
-          >
-            <details class="group">
-              <summary
-                class="flex items-center justify-between cursor-pointer list-none text-sm font-medium text-slate-700 dark:text-slate-300"
+          <div class="lg:col-span-4">
+            <div class="sticky top-24 flex flex-col gap-6">
+              <div
+                class="bg-white dark:bg-surface-dark rounded-xl p-6 shadow-sm border border-border-color dark:border-gray-800"
               >
-                <span>Have a promo code?</span>
-                <lucide-icon
-                  class="transition-transform group-open:rotate-180 w-4 h-4"
-                  [img]="icons.ChevronDown"
-                ></lucide-icon>
-              </summary>
-              <div class="mt-4 flex gap-2">
-                <input
-                  class="flex-1 rounded-lg border-border-color dark:border-gray-700 bg-background-light dark:bg-background-dark text-sm focus:border-primary focus:ring-primary dark:text-white"
-                  placeholder="Enter code"
-                  type="text"
-                />
-                <button
-                  class="bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-slate-800 dark:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
-                  type="button"
+                <h2 class="text-xl font-bold text-primary dark:text-white mb-6">
+                  Order Summary
+                </h2>
+                <div
+                  class="flex flex-col gap-4 pb-6 border-b border-dashed border-border-color dark:border-gray-700"
                 >
-                  Apply
+                  <div class="flex justify-between text-sm">
+                    <span class="text-text-sub dark:text-slate-300">Subtotal</span>
+                    <app-price-display
+                      class="font-medium text-text-main dark:text-white"
+                      [amount]="vm.summary.subtotal"
+                      size="sm"
+                    ></app-price-display>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-text-sub dark:text-slate-300"
+                      >Shipping Estimate</span
+                    >
+                    <span class="font-medium text-text-main dark:text-white">
+                      @if (vm.summary.shipping === 0) {
+                        Free
+                      } @else {
+                        <app-price-display
+                          [amount]="vm.summary.shipping"
+                          size="sm"
+                        ></app-price-display>
+                      }
+                    </span>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center py-6">
+                  <span
+                    class="text-base font-semibold text-text-main dark:text-white"
+                    >Total</span
+                  >
+                  <app-price-display
+                    class="text-primary dark:text-white"
+                    [amount]="vm.summary.total"
+                    size="lg"
+                  ></app-price-display>
+                </div>
+                <button
+                  class="w-full bg-primary hover:bg-[#084050] text-white font-bold py-3.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                  type="button"
+                  routerLink="/checkout"
+                >
+                  <app-icon name="Lock" size="16"></app-icon>
+                  Proceed to Checkout
                 </button>
+                <div class="mt-6 flex flex-col gap-3">
+                  <div
+                    class="flex items-center justify-center gap-2 text-xs text-text-sub dark:text-slate-400"
+                  >
+                    <app-icon
+                      name="Lock"
+                      size="12"
+                      className="text-green-600"
+                    ></app-icon>
+                    Secure SSL Encryption
+                  </div>
+                  <div
+                    class="flex items-center justify-center gap-4 opacity-60 grayscale"
+                  >
+                    <div
+                      class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-[8px] font-bold text-text-sub"
+                    >
+                      VISA
+                    </div>
+                    <div
+                      class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-[8px] font-bold text-text-sub"
+                    >
+                      MC
+                    </div>
+                    <div
+                      class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-[8px] font-bold text-text-sub"
+                    >
+                      AMEX
+                    </div>
+                    <div
+                      class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-[8px] font-bold text-text-sub"
+                    >
+                      PAYPAL
+                    </div>
+                  </div>
+                </div>
               </div>
-            </details>
+              <div
+                class="bg-white dark:bg-surface-dark rounded-xl p-4 shadow-sm border border-border-color dark:border-gray-800"
+              >
+                <details class="group">
+                  <summary
+                    class="flex items-center justify-between cursor-pointer list-none text-sm font-medium text-slate-700 dark:text-slate-300"
+                  >
+                    <span>Have a promo code?</span>
+                    <app-icon
+                      name="ChevronDown"
+                      size="16"
+                      className="transition-transform group-open:rotate-180"
+                    ></app-icon>
+                  </summary>
+                  <div class="mt-4 flex gap-2">
+                    <input
+                      class="flex-1 rounded-lg border-border-color dark:border-gray-700 bg-background-light dark:bg-background-dark text-sm focus:border-primary focus:ring-primary dark:text-white"
+                      placeholder="Enter code"
+                      type="text"
+                    />
+                    <button
+                      class="bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-slate-800 dark:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                      type="button"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </details>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </main>
-</div>
+      } @else {
+        <div class="flex flex-col items-center justify-center py-20 text-center">
+          <div class="w-24 h-24 bg-supporting rounded-full flex items-center justify-center mb-6">
+            <app-icon name="ShoppingBag" size="40" className="text-primary opacity-20"></app-icon>
+          </div>
+          <h2 class="text-2xl font-black text-primary uppercase tracking-tighter mb-2">Your bag is empty</h2>
+          <p class="text-text-sub text-sm max-w-xs mx-auto mb-8">Looks like you haven't added anything to your bag yet.</p>
+          <a routerLink="/" class="px-8 py-3 bg-accent text-white font-bold uppercase tracking-widest text-[11px] rounded-xl shadow-lg shadow-accent/20 hover:scale-105 transition-transform">Start Shopping</a>
+        </div>
+      }
+    </main>
+  </div>
+}
 

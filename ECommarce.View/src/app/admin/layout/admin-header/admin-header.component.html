@@ -8,7 +8,7 @@
       class="p-2 -ml-2 text-text-sub hover:bg-supporting rounded-xl transition-colors lg:hidden"
       type="button"
     >
-      <lucide-icon [img]="icons.Menu" class="w-6 h-6"></lucide-icon>
+      <app-icon name="Menu" size="24"></app-icon>
     </button>
     <h2 class="text-primary dark:text-white text-xl font-bold tracking-tight uppercase">
       {{ pageTitle$ | async }}
@@ -19,7 +19,7 @@
       <span
         class="absolute inset-y-0 left-0 flex items-center pl-3 text-text-sub/50"
       >
-        <lucide-icon [img]="icons.Search" class="w-4 h-4"></lucide-icon>
+        <app-icon name="Search" size="16"></app-icon>
       </span>
       <input
         class="w-full h-10 pl-10 pr-4 rounded-xl bg-supporting/50 border border-border-color text-sm text-primary placeholder:text-text-sub/40 focus:ring-2 focus:ring-primary/20 transition-all"
@@ -33,7 +33,7 @@
         class="relative p-2 text-text-sub/50 hover:text-primary hover:bg-supporting rounded-xl transition-all duration-300"
         type="button"
       >
-        <lucide-icon [img]="icons.Bell" class="w-5 h-5"></lucide-icon>
+        <app-icon name="Bell" size="20"></app-icon>
         <span
           class="absolute top-2.5 right-2.5 w-2 h-2 bg-accent rounded-full ring-2 ring-white"
         ></span>
@@ -56,11 +56,12 @@
                 class="w-full h-full object-cover"
                 [alt]="user.name"
               />
-              <lucide-icon
+              <app-icon
                 *ngIf="!user.avatarUrl"
-                [img]="icons.User"
-                class="w-5 h-5 text-primary/40"
-              ></lucide-icon>
+                name="User"
+                size="20"
+                className="text-primary/40"
+              ></app-icon>
             </div>
             <div class="absolute -bottom-0.5 -right-0.5 size-3 bg-emerald-500 border-2 border-white rounded-full"></div>
           </div>
@@ -68,7 +69,7 @@
             <span class="text-xs font-display font-black text-primary leading-none group-hover:text-accent transition-colors">{{ user.name }}</span>
             <span class="text-[10px] font-display font-black text-gray-400 uppercase tracking-wider leading-none">{{ user.role }}</span>
           </div>
-          <lucide-icon [img]="icons.ChevronDown" class="w-4 h-4 text-gray-300 group-hover:text-primary transition-all duration-300" [class.rotate-180]="isProfileDropdownOpen"></lucide-icon>
+          <app-icon name="ChevronDown" size="16" className="text-gray-300 group-hover:text-primary transition-all duration-300" [className]="isProfileDropdownOpen ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
         </button>
 
         <!-- Dropdown Menu -->
@@ -87,7 +88,7 @@
               target="_blank"
               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-display font-black text-gray-600 hover:text-accent hover:bg-accent/5 transition-all duration-300 group"
             >
-              <lucide-icon [img]="icons.Eye" class="w-4 h-4 text-gray-400 group-hover:text-accent"></lucide-icon>
+              <app-icon name="Eye" size="16" className="text-gray-400 group-hover:text-accent"></app-icon>
               <span>View Live Marketplace</span>
             </a>
             
@@ -101,7 +102,7 @@
                 (click)="isProfileDropdownOpen = false"
                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-display font-black text-gray-600 hover:text-primary hover:bg-primary/5 transition-all duration-300 group"
               >
-                <lucide-icon [img]="icons.Users" class="w-4 h-4 text-gray-400 group-hover:text-primary"></lucide-icon>
+                <app-icon name="Users" size="16" className="text-gray-400 group-hover:text-primary"></app-icon>
                 <span>Staff Management</span>
               </a>
 
@@ -110,7 +111,7 @@
                 (click)="isProfileDropdownOpen = false"
                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-display font-black text-gray-600 hover:text-accent hover:bg-accent/5 transition-all duration-300 group"
               >
-                <lucide-icon [img]="icons.Settings" class="w-4 h-4 text-gray-400 group-hover:text-accent"></lucide-icon>
+                <app-icon name="Settings" size="16" className="text-gray-400 group-hover:text-accent"></app-icon>
                 <span>System Preferences</span>
               </a>
             </ng-container>
@@ -121,7 +122,7 @@
               (click)="logout()"
               class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-display font-black text-red-500 hover:bg-red-50 transition-all duration-300 group"
             >
-              <lucide-icon [img]="icons.LogOut" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></lucide-icon>
+              <app-icon name="LogOut" size="16" className="group-hover:translate-x-1 transition-transform"></app-icon>
               <span>Secure Logout</span>
             </button>
           </div>

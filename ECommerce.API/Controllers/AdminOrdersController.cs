@@ -5,6 +5,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ECommerce.API.Controllers;
 
@@ -14,10 +15,12 @@ namespace ECommerce.API.Controllers;
 public class AdminOrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
+    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminOrdersController(IOrderService orderService)
+    public AdminOrdersController(IOrderService orderService, IOutputCacheStore cacheStore)
     {
         _orderService = orderService;
+        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -69,6 +72,8 @@ public class AdminOrdersController : ControllerBase
         var success = await _orderService.UpdateOrderStatusAsync(id, dto.Status, adminName, dto.Note);
         if (!success) return BadRequest(new { message = "Error updating order status" });
 
+        await _cacheStore.EvictByTagAsync("catalog", default);
+
         return Ok(new { message = "Order status updated successfully" });
     }
 
@@ -102,6 +107,7 @@ public class AdminOrdersController : ControllerBase
         try 
         {
             var updatedOrder = await _orderService.UpdateOrderAsync(id, dto);
+            await _cacheStore.EvictByTagAsync("catalog", default);
             return Ok(updatedOrder);
         }
         catch (KeyNotFoundException)

@@ -5,12 +5,13 @@
     {{ title }}
   </h2>
   <div class="w-12 h-px bg-accent opacity-50"></div>
-  <a
-    *ngIf="linkUrl"
-    class="text-[10px] uppercase tracking-[0.3em] font-bold text-text-sub hover:text-accent transition-colors flex items-center gap-2"
-    [routerLink]="linkUrl"
-  >
-    {{ linkLabel || "Shop Collection" }}
-    <lucide-icon [img]="icons.ArrowRight" class="w-3.5 h-3.5"></lucide-icon>
-  </a>
+  @if (linkUrl) {
+    <a
+      class="text-[10px] uppercase tracking-[0.3em] font-bold text-text-sub hover:text-accent transition-colors flex items-center gap-2"
+      [routerLink]="linkUrl"
+    >
+      {{ linkLabel || "Shop Collection" }}
+      <app-icon name="ArrowRight" size="14"></app-icon>
+    </a>
+  }
 </div>

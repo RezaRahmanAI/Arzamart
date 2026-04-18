@@ -1,62 +1,21 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, inject } from "@angular/core";
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
-import { 
-  LucideAngularModule, 
-  Users, 
-  UserPlus, 
-  Shield, 
-  ShieldCheck, 
-  Mail, 
-  Lock, 
-  User, 
-  MoreVertical, 
-  ToggleLeft, 
-  ToggleRight, 
-  X, 
-  Loader2, 
-  CheckCircle2,
-  Trash2,
-  Plus,
-  Pencil,
-  Eye,
-  EyeOff
-} from "lucide-angular";
 import { AdminUsersService, AdminUser, CreateAdminRequest } from "../../services/admin-users.service";
 import { AuthService } from "../../../core/services/auth.service";
 import { User as AuthUser } from "../../../core/models/entities";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-admin-user-management",
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, AppIconComponent],
   templateUrl: "./admin-user-management.component.html",
 })
 export class AdminUserManagementComponent implements OnInit {
   private usersService = inject(AdminUsersService);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-
-  readonly icons = {
-    Users,
-    UserPlus,
-    Shield,
-    ShieldCheck,
-    Mail,
-    Lock,
-    User,
-    MoreVertical,
-    ToggleLeft,
-    ToggleRight,
-    X,
-    Loader2,
-    CheckCircle2,
-    Trash2,
-    Plus,
-    Pencil,
-    Eye,
-    EyeOff
-  };
 
   admins: AdminUser[] = [];
   isLoading = false;
@@ -101,7 +60,6 @@ export class AdminUserManagementComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
-        // Handle error
       }
     });
   }
@@ -128,7 +86,6 @@ export class AdminUserManagementComponent implements OnInit {
     
     this.usersService.createAdmin(request as CreateAdminRequest).subscribe({
       next: (response: any) => {
-        // The API returns a { message, user } object
         const newAdmin = response.user;
         this.admins.unshift(newAdmin);
         this.isSubmitting = false;
@@ -203,9 +160,6 @@ export class AdminUserManagementComponent implements OnInit {
     }
     
     if (window.confirm(`Are you sure you want to delete ${admin.fullName}? This action cannot be undone.`)) {
-        // Since there's no delete endpoint in AdminUsersController yet, I'll recommend deactivating instead
-        // but if user really wants delete, I'd need a backend change.
-        // For now let's just show an alert or use toggleActive.
         window.alert("Deletion is disabled. Please deactivate the user instead.");
     }
   }

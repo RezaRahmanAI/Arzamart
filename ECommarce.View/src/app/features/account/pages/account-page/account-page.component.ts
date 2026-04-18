@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { AsyncPipe, NgClass } from "@angular/common";
 import { Component, DestroyRef, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -19,7 +19,7 @@ import { Order } from "../../../../core/models/order";
 @Component({
   selector: "app-account-page",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule],
   templateUrl: "./account-page.component.html",
   styleUrl: "./account-page.component.css",
 })

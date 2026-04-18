@@ -1,9 +1,7 @@
-
+import { AsyncPipe, NgClass, isPlatformBrowser } from "@angular/common";
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID } from "@angular/core";
-import { CommonModule, isPlatformBrowser } from "@angular/common";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { LucideAngularModule, ShoppingCart, Truck, Verified, RotateCcw, Clock, Search, Loader2, ChevronDown, User, Phone, MapPin } from "lucide-angular";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../../environments/environment";
 import { Product } from "../../../../core/models/product";
@@ -17,12 +15,13 @@ import { SiteSettingsService } from "../../../../core/services/site-settings.ser
 import { SettingsService } from "../../../../admin/services/settings.service";
 import { DeliveryMethod } from "../../../../admin/models/settings.models";
 import { ProductService } from "../../../../core/services/product.service";
-import { of, Subject, combineLatest } from "rxjs";
-import { map, catchError, takeUntil, debounceTime, distinctUntilChanged, filter, switchMap } from "rxjs/operators";
+import { of, combineLatest } from "rxjs";
+import { map, catchError, debounceTime, distinctUntilChanged, filter, switchMap } from "rxjs/operators";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DestroyRef } from "@angular/core";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 interface LandingPageData {
   product: Product;
@@ -32,12 +31,11 @@ interface LandingPageData {
 @Component({
   selector: "app-custom-landing-page",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule, PriceDisplayComponent],
+  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, PriceDisplayComponent, AppIconComponent],
   templateUrl: "./custom-landing-page.component.html",
   styleUrl: "./custom-landing-page.component.css"
 })
 export class CustomLandingPageComponent implements OnInit, OnDestroy {
-  readonly icons = { ShoppingCart, Truck, Verified, RotateCcw, Clock, Search, Loader2, ChevronDown, User, Phone, MapPin };
   private readonly http = inject(HttpClient);
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
@@ -96,7 +94,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Listen to city changes to update areas
     this.orderForm.controls.city.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((city) => {
@@ -108,7 +105,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.updateDeliveryMethodByCity(city);
       });
 
-    // Auto-lookup customer by phone
     this.orderForm.controls.phone.valueChanges
       .pipe(
         debounceTime(300),
@@ -152,24 +148,20 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.deliveryMethods = methods;
         this.isLoading = false;
 
-        // Set default size (first default or first variant)
         if (res.product?.variants?.length > 0) {
           const defaultVariant = res.product.variants.find(v => v.isDefault) || res.product.variants[0];
           this.orderForm.patchValue({ selectedSize: defaultVariant.size || "" });
         }
 
-        // Set default delivery method (first active one)
         if (methods.length > 0) {
           const firstActive = methods.find(m => m.isActive) || methods[0];
           this.orderForm.patchValue({ deliveryMethodId: firstActive.id });
         }
 
-        // Start timer
         if (res.config?.relativeTimerTotalMinutes) {
           this.startRelativeTimer(res.config.productId, res.config.relativeTimerTotalMinutes);
         }
 
-        // Load related products from same category
         if (res.product?.categoryId) {
           this.productService.getRelatedProducts(undefined, res.product.categoryId, 6)
             .subscribe({
@@ -225,11 +217,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  /** Get the price for the currently selected size variant */
   get selectedVariantPrice(): number {
     const selectedSize = this.orderForm.get("selectedSize")?.value;
     const variant = this.data?.product?.variants?.find(v => v.size === selectedSize);
-    // Variant price takes priority, then config promoPrice, then product base price
     return variant?.price || this.data?.config?.promoPrice || this.data?.product?.price || 0;
   }
 
@@ -301,7 +291,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       next: (order) => {
         this.isOrdering = false;
         if (order?.id) {
-          this.router.navigate(["/order-confirmation", order.id]);
+          void this.router.navigate(["/order-confirmation", order.id]);
         }
       },
       error: () => {

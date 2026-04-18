@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { AsyncPipe, DatePipe } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { combineLatest, map } from "rxjs";
@@ -11,7 +11,7 @@ import { PriceDisplayComponent } from "../../../../shared/components/price-displ
 @Component({
   selector: "app-orders-page",
   standalone: true,
-  imports: [CommonModule, RouterModule, PriceDisplayComponent],
+  imports: [AsyncPipe, DatePipe, RouterModule, PriceDisplayComponent],
   templateUrl: "./orders-page.component.html",
   styleUrl: "./orders-page.component.css",
 })

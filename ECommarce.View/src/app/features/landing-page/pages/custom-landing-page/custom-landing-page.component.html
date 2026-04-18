@@ -1,403 +1,447 @@
-<div class="bg-slate-50 text-slate-900 font-body antialiased" *ngIf="data">
-  
-    <!-- Top Promo Bar (Timer) - REDESIGNED for Premium Look -->
-    <div class="sticky top-0 z-50 py-0 sm:py-4 sm:px-6" *ngIf="data.config?.isTimerVisible">
-      <div class="site-container px-0 sm:px-4">
-        <div class="bg-timer-gradient sm:rounded-3xl p-4 md:p-6 shadow-[0_15px_40px_-10px_rgba(255,122,0,0.4)] flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden border-b sm:border border-white/20">
-          <!-- Ambient Light effects -->
-          <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-          <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-primary-clp/20 rounded-full blur-3xl animate-pulse"></div>
-          
-          <div class="flex items-center gap-5 z-10">
-            <div class="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center backdrop-blur-md border border-white/20 shadow-inner group transition-all duration-500 hover:rotate-12">
-                <lucide-icon [img]="icons.Clock" class="w-7 h-7 text-white drop-shadow-lg"></lucide-icon>
-            </div>
-            <div class="text-white text-center md:text-left">
-              <h2 class="text-xl md:text-2xl font-headline font-black tracking-tight drop-shadow-md leading-tight mb-1">{{ data.config?.headerTitle }}</h2>
-              <div class="flex items-center justify-center md:justify-start gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <p class="text-[10px] md:text-xs text-white/90 font-label tracking-[0.2em] uppercase">Limited time offer • Don't miss out!</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-4 z-10">
-            <div class="flex gap-2.5 sm:gap-4 items-center">
-              <div class="flex flex-col items-center gap-2">
-                <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                  <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.days }}</span>
+@if (data) {
+  <div class="bg-slate-50 text-slate-900 font-body antialiased">
+    
+      <!-- Top Promo Bar (Timer) - REDESIGNED for Premium Look -->
+      @if (data.config?.isTimerVisible) {
+        <div class="sticky top-0 z-50 py-0 sm:py-4 sm:px-6">
+          <div class="site-container px-0 sm:px-4">
+            <div class="bg-timer-gradient sm:rounded-3xl p-4 md:p-6 shadow-[0_15px_40px_-10px_rgba(255,122,0,0.4)] flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden border-b sm:border border-white/20">
+              <!-- Ambient Light effects -->
+              <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+              <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-primary-clp/20 rounded-full blur-3xl animate-pulse"></div>
+              
+              <div class="flex items-center gap-5 z-10">
+                <div class="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center backdrop-blur-md border border-white/20 shadow-inner group transition-all duration-500 hover:rotate-12">
+                    <app-icon name="Clock" size="28" className="text-white drop-shadow-lg"></app-icon>
                 </div>
-                <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Days</span>
-              </div>
-              <div class="text-white/40 text-2xl font-light mb-6">:</div>
-              <div class="flex flex-col items-center gap-2">
-                <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                  <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.hours }}</span>
+                <div class="text-white text-center md:text-left">
+                  <h2 class="text-xl md:text-2xl font-headline font-black tracking-tight drop-shadow-md leading-tight mb-1">{{ data.config?.headerTitle }}</h2>
+                  <div class="flex items-center justify-center md:justify-start gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <p class="text-[10px] md:text-xs text-white/90 font-label tracking-[0.2em] uppercase">Limited time offer • Don't miss out!</p>
+                  </div>
                 </div>
-                <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Hrs</span>
               </div>
-              <div class="text-white/40 text-2xl font-light mb-6">:</div>
-              <div class="flex flex-col items-center gap-2">
-                <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                  <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.minutes }}</span>
+    
+              <div class="flex items-center gap-4 z-10">
+                <div class="flex gap-2.5 sm:gap-4 items-center">
+                  <div class="flex flex-col items-center gap-2">
+                    <div class="timer-box transform hover:scale-105 transition-all duration-300">
+                      <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.days }}</span>
+                    </div>
+                    <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Days</span>
+                  </div>
+                  <div class="text-white/40 text-2xl font-light mb-6">:</div>
+                  <div class="flex flex-col items-center gap-2">
+                    <div class="timer-box transform hover:scale-105 transition-all duration-300">
+                      <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.hours }}</span>
+                    </div>
+                    <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Hrs</span>
+                  </div>
+                  <div class="text-white/40 text-2xl font-light mb-6">:</div>
+                  <div class="flex flex-col items-center gap-2">
+                    <div class="timer-box transform hover:scale-105 transition-all duration-300">
+                      <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.minutes }}</span>
+                    </div>
+                    <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Min</span>
+                  </div>
+                  <div class="text-white/40 text-2xl font-light mb-6">:</div>
+                  <div class="flex flex-col items-center gap-2">
+                    <div class="timer-box transform hover:scale-105 transition-all duration-300">
+                      <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.seconds }}</span>
+                    </div>
+                    <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Sec</span>
+                  </div>
                 </div>
-                <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Min</span>
-              </div>
-              <div class="text-white/40 text-2xl font-light mb-6">:</div>
-              <div class="flex flex-col items-center gap-2">
-                <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                  <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.seconds }}</span>
-                </div>
-                <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Sec</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  
-  
-    <main class="space-y-32 pb-32">
-      <!-- Product Details Section - REDESIGNED -->
-      <section class="px-0 sm:px-6" *ngIf="data.config?.isProductDetailsVisible">
-        <div class="site-container px-0 sm:px-4">
-          <div class="bg-white floating-card overflow-hidden">
-            <div class="flex flex-col-reverse lg:flex-row-reverse">
-                <!-- Content Area -->
-                <div class="w-full lg:w-1/2 p-8 md:p-16 space-y-10">
-                    <div>
-                        <div class="flex items-center gap-3 mb-4">
-                            <span class="w-10 h-0.5 bg-primary-clp"></span>
-                            <span class="text-primary-clp font-label text-xs tracking-widest">Premium Collection</span>
+      }
+    
+    
+      <main class="space-y-32 pb-32">
+        <!-- Product Details Section - REDESIGNED -->
+        @if (data.config?.isProductDetailsVisible) {
+          <section class="px-0 sm:px-6">
+            <div class="site-container px-0 sm:px-4">
+              <div class="bg-white floating-card overflow-hidden">
+                <div class="flex flex-col-reverse lg:flex-row-reverse">
+                    <!-- Content Area -->
+                    <div class="w-full lg:w-1/2 p-8 md:p-16 space-y-10">
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="w-10 h-0.5 bg-primary-clp"></span>
+                                <span class="text-primary-clp font-label text-xs tracking-widest">Premium Collection</span>
+                            </div>
+                            <h1 class="text-3xl sm:text-4xl md:text-6xl font-headline font-black text-[#121212] tracking-tighter leading-tight mb-2">{{ data.config?.productDetailsTitle }}</h1>
                         </div>
-                        <h1 class="text-3xl sm:text-4xl md:text-6xl font-headline font-black text-[#121212] tracking-tighter leading-tight mb-2">{{ data.config?.productDetailsTitle }}</h1>
+    
+                        <div class="space-y-8">
+                            @if (data.config?.isFabricVisible && data.product.fabricAndCare) {
+                              <div class="flex items-start gap-5">
+                                  <div class="w-12 h-12 rounded-2xl bg-primary-clp/5 flex items-center justify-center shrink-0">
+                                      <app-icon name="Verified" size="24" className="text-primary-clp"></app-icon>
+                                  </div>
+                                  <div>
+                                      <h4 class="font-label text-xs text-slate-400 mb-1">Premium Fabric</h4>
+                                      <p class="text-slate-700 font-medium text-lg">{{ data.product.fabricAndCare }}</p>
+                                  </div>
+                              </div>
+                            }
+    
+                            @if (data.config?.isDesignVisible && data.product.description) {
+                              <div class="flex items-start gap-5">
+                                  <div class="w-12 h-12 rounded-2xl bg-primary-clp/5 flex items-center justify-center shrink-0">
+                                      <app-icon name="Search" size="24" className="text-primary-clp"></app-icon>
+                                  </div>
+                                  <div class="flex-1">
+                                      <h4 class="font-label text-xs text-slate-400 mb-1">Design & Quality</h4>
+                                      <div class="prose prose-slate prose-sm max-w-none text-slate-700 font-medium leading-relaxed" [innerHTML]="data.product.description"></div>
+                                  </div>
+                              </div>
+                            }
+    
+                            <div class="flex items-start gap-5">
+                                <div class="w-12 h-12 rounded-2xl bg-primary-clp/5 flex items-center justify-center shrink-0">
+                                <app-icon name="ShoppingCart" size="20"></app-icon>
+                                </div>
+                                <div>
+                                    <h4 class="font-label text-xs text-slate-400 mb-1">Available Sizes</h4>
+                                    <p class="text-slate-700 font-medium text-lg">{{ formatSizes(data.product.variants) }}</p>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="pt-6 space-y-6">
+                            <button (click)="scrollToOrder()" class="w-full bg-[#ff7a00] text-white font-label uppercase tracking-widest py-4 rounded-xl shadow-lg shadow-orange-200 hover:bg-[#e66e00] transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2">
+                                <app-icon name="ShoppingCart" size="20"></app-icon>
+                                ORDER NOW
+                            </button>
+    
+                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                                <img src="assets/images/brand-logo.png" alt="Brand" class="w-10 h-10 object-contain" onerror="this.src='https://placehold.co/100x100?text=Brand'"/>
+                                <div>
+                                    <p class="text-[10px] font-label text-slate-400">Authentic Product By</p>
+                                    <p class="font-bold text-slate-900">{{ brandName$ | async }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="space-y-8">
-                        <div class="flex items-start gap-5" *ngIf="data.config?.isFabricVisible && data.product.fabricAndCare">
-                            <div class="w-12 h-12 rounded-2xl bg-primary-clp/5 flex items-center justify-center shrink-0">
-                                <lucide-icon [img]="icons.Verified" class="w-6 h-6 text-primary-clp"></lucide-icon>
-                            </div>
-                            <div>
-                                <h4 class="font-label text-xs text-slate-400 mb-1">Premium Fabric</h4>
-                                <p class="text-slate-700 font-medium text-lg">{{ data.product.fabricAndCare }}</p>
-                            </div>
+    
+                    <div class="w-full lg:w-1/2 bg-slate-100 relative lg:min-h-full">
+                        <div class="relative w-full aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-full overflow-hidden rounded-2xl sm:rounded-none lg:rounded-3xl">
+                            <img [src]="imageUrlService.getImageUrl(selectedImage || data.product.imageUrl || '')" alt="Product Gallery" class="absolute inset-0 w-full h-full object-cover">
                         </div>
-
-                        <div class="flex items-start gap-5" *ngIf="data.config?.isDesignVisible && data.product.description">
-                            <div class="w-12 h-12 rounded-2xl bg-primary-clp/5 flex items-center justify-center shrink-0">
-                                <lucide-icon [img]="icons.Search" class="w-6 h-6 text-primary-clp"></lucide-icon>
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="font-label text-xs text-slate-400 mb-1">Design & Quality</h4>
-                                <div class="prose prose-slate prose-sm max-w-none text-slate-700 font-medium leading-relaxed" [innerHTML]="data.product.description"></div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-5">
-                            <div class="w-12 h-12 rounded-2xl bg-primary-clp/5 flex items-center justify-center shrink-0">
-                                <lucide-icon [img]="icons.ShoppingCart" class="w-6 h-6 text-primary-clp"></lucide-icon>
-                            </div>
-                            <div>
-                                <h4 class="font-label text-xs text-slate-400 mb-1">Available Sizes</h4>
-                                <p class="text-slate-700 font-medium text-lg">{{ formatSizes(data.product.variants) }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-6 space-y-6">
-                        <button (click)="scrollToOrder()" class="w-full bg-[#ff7a00] text-white font-label uppercase tracking-widest py-4 rounded-xl shadow-lg shadow-orange-200 hover:bg-[#e66e00] transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2">
-                            <lucide-icon [img]="icons.ShoppingCart" class="w-5 h-5"></lucide-icon>
-                            ORDER NOW
-                        </button>
-
-                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                            <img src="assets/images/brand-logo.png" alt="Brand" class="w-10 h-10 object-contain" onerror="this.src='https://placehold.co/100x100?text=Brand'"/>
-                            <div>
-                                <p class="text-[10px] font-label text-slate-400">Authentic Product By</p>
-                                <p class="font-bold text-slate-900">{{ brandName$ | async }}</p>
+                        
+                        <!-- Thumbnails: Positioned below on mobile, glass-morphism overlay on desktop -->
+                        <div class="relative z-10 p-4 sm:p-0 sm:absolute sm:bottom-8 sm:left-1/2 sm:-translate-x-1/2 w-full flex justify-center">
+                            <div class="flex flex-wrap justify-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 rounded-2xl sm:rounded-3xl bg-white sm:glass-morphism shadow-lg sm:shadow-2xl border border-slate-100 sm:border-white/30 w-fit">
+                                @for (img of data.product.images.slice(0, 4); track img.imageUrl) {
+                                  <img 
+                                       [src]="imageUrlService.getImageUrl(img.imageUrl)" 
+                                       (click)="selectImage(img.imageUrl)"
+                                       alt="Thumb" 
+                                       class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-cover rounded-xl border-2 transition-all duration-300 cursor-pointer hover:scale-105"
+                                       [class.border-primary-clp]="selectedImage === img.imageUrl"
+                                       [class.border-slate-200]="selectedImage !== img.imageUrl">
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="w-full lg:w-1/2 bg-slate-100 relative lg:min-h-full">
-                    <div class="relative w-full aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-full overflow-hidden rounded-2xl sm:rounded-none lg:rounded-3xl">
-                        <img [src]="imageUrlService.getImageUrl(selectedImage || data.product.imageUrl || '')" alt="Product Gallery" class="absolute inset-0 w-full h-full object-cover">
+              </div>
+    
+              <!-- Related Products Section - NEW -->
+              @if (relatedProducts.length > 0) {
+                <div class="mt-12">
+                    <div class="flex items-center gap-4 mb-8">
+                        <span class="h-px flex-1 bg-slate-200"></span>
+                        <h3 class="text-xl md:text-2xl font-headline font-black text-slate-800 uppercase tracking-widest">More From This Category</h3>
+                        <span class="h-px flex-1 bg-slate-200"></span>
                     </div>
                     
-                    <!-- Thumbnails: Positioned below on mobile, glass-morphism overlay on desktop -->
-                    <div class="relative z-10 p-4 sm:p-0 sm:absolute sm:bottom-8 sm:left-1/2 sm:-translate-x-1/2 w-full flex justify-center">
-                        <div class="flex flex-wrap justify-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 rounded-2xl sm:rounded-3xl bg-white sm:glass-morphism shadow-lg sm:shadow-2xl border border-slate-100 sm:border-white/30 w-fit">
-                            <img *ngFor="let img of data.product.images.slice(0, 4)" 
-                                 [src]="imageUrlService.getImageUrl(img.imageUrl)" 
-                                 (click)="selectImage(img.imageUrl)"
-                                 alt="Thumb" 
-                                 class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-cover rounded-xl border-2 transition-all duration-300 cursor-pointer hover:scale-105"
-                                 [class.border-primary-clp]="selectedImage === img.imageUrl"
-                                 [class.border-slate-200]="selectedImage !== img.imageUrl">
-                        </div>
+                    <div class="flex flex-wrap justify-center gap-4 sm:gap-6">
+                        @for (rel of relatedProducts; track rel.id) {
+                          <div 
+                               class="w-[160px] sm:w-[200px] flex flex-col group cursor-pointer"
+                               [routerLink]="['/clp', rel.slug]">
+                              <div class="relative aspect-[3/4] rounded-2xl overflow-hidden bg-slate-100 mb-4 shadow-sm group-hover:shadow-xl transition-all duration-500">
+                                  <img [src]="imageUrlService.getImageUrl(rel.imageUrl)" alt="Related" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                  
+                                  <!-- Discount Badge -->
+                                  @if (rel.compareAtPrice && rel.compareAtPrice > rel.price) {
+                                    <div class="absolute top-2 left-2">
+                                        <div class="bg-[#ff2d55] text-white px-2 py-1 rounded-lg shadow-lg">
+                                            <p class="text-[8px] font-black uppercase leading-none opacity-80 mb-0.5">Save</p>
+                                            <p class="text-[10px] font-black">৳ {{ rel.compareAtPrice - rel.price }}</p>
+                                        </div>
+                                        <div class="bg-amber-400 text-[#121212] px-2 py-0.5 rounded-b-lg text-[9px] font-black uppercase tracking-tighter -mt-1 text-center">
+                                            OFFER!!
+                                        </div>
+                                    </div>
+                                  }
+                              </div>
+                              <div class="text-center px-2">
+                                  <h4 class="text-[11px] sm:text-xs font-bold text-slate-600 uppercase tracking-wide truncate mb-1 group-hover:text-[#ff7a00] transition-colors">{{ rel.name }}</h4>
+                                  <div class="flex items-baseline justify-center gap-2">
+                                      <span class="text-sm sm:text-lg font-black text-[#121212]">৳ {{ rel.price }}</span>
+                                      @if (rel.compareAtPrice) {
+                                        <span class="text-[10px] text-slate-400 line-through">৳ {{ rel.compareAtPrice }}</span>
+                                      }
+                                  </div>
+                              </div>
+                          </div>
+                        }
                     </div>
                 </div>
+              }
             </div>
-          </div>
-
-          <!-- Related Products Section - NEW -->
-          <div class="mt-12" *ngIf="relatedProducts.length > 0">
-              <div class="flex items-center gap-4 mb-8">
-                  <span class="h-px flex-1 bg-slate-200"></span>
-                  <h3 class="text-xl md:text-2xl font-headline font-black text-slate-800 uppercase tracking-widest">More From This Category</h3>
-                  <span class="h-px flex-1 bg-slate-200"></span>
+          </section>
+        }
+    
+        <!-- Trust Banner Section - REDESIGNED -->
+        @if (data.config?.isTrustBannerVisible) {
+          <section class="px-6">
+            <div class="site-container">
+              <div class="bg-timer-gradient rounded-[32px] p-8 md:p-12 text-center shadow-[0_20px_50px_rgba(255,122,0,0.2)] relative overflow-hidden">
+                <!-- Decorative circle -->
+                <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20"></div>
+                
+                <app-icon name="Verified" size="64" className="text-white/20 absolute left-8 top-1/2 -translate-y-1/2"></app-icon>
+                
+                <div class="relative z-10 space-y-6">
+                    <h3 class="text-2xl md:text-3xl font-headline font-bold text-white leading-snug max-w-2xl mx-auto">
+                        {{ data.config?.trustBannerText }}
+                    </h3>
+                    <div class="flex items-center justify-center gap-4">
+                        <div class="h-px w-8 bg-white/30"></div>
+                        <p class="text-white/80 font-label text-[10px] tracking-[0.2em]">Satisfaction Guaranteed</p>
+                        <div class="h-px w-8 bg-white/30"></div>
+                    </div>
+                </div>
               </div>
-              
-              <div class="flex flex-wrap justify-center gap-4 sm:gap-6">
-                  <div *ngFor="let rel of relatedProducts" 
-                       class="w-[160px] sm:w-[200px] flex flex-col group cursor-pointer"
-                       [routerLink]="['/clp', rel.slug]">
-                      <div class="relative aspect-[3/4] rounded-2xl overflow-hidden bg-slate-100 mb-4 shadow-sm group-hover:shadow-xl transition-all duration-500">
-                          <img [src]="imageUrlService.getImageUrl(rel.imageUrl)" alt="Related" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                          
-                          <!-- Discount Badge -->
-                          <div class="absolute top-2 left-2" *ngIf="rel.compareAtPrice && rel.compareAtPrice > rel.price">
-                              <div class="bg-[#ff2d55] text-white px-2 py-1 rounded-lg shadow-lg">
-                                  <p class="text-[8px] font-black uppercase leading-none opacity-80 mb-0.5">Save</p>
-                                  <p class="text-[10px] font-black">৳ {{ rel.compareAtPrice - rel.price }}</p>
-                              </div>
-                              <div class="bg-amber-400 text-[#121212] px-2 py-0.5 rounded-b-lg text-[9px] font-black uppercase tracking-tighter -mt-1 text-center">
-                                  OFFER!!
-                              </div>
+            </div>
+          </section>
+        }
+    
+        <!-- Featured Product & Order Form - REDESIGNED -->
+        <section id="order-section" class="px-6">
+          <div class="site-container">
+            <div class="flex flex-col lg:flex-row gap-12 items-start">
+              <!-- Image Area -->
+              <div class="w-full lg:w-1/2 sticky top-32 self-start">
+                <div class="rounded-[32px] overflow-hidden shadow-2xl bg-white p-2 relative aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-[700px]">
+                  <img [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" alt="Featured Product" class="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] object-cover rounded-[26px]" />
+                </div>
+              </div>
+    
+              <!-- Form Area -->
+              <div class="w-full lg:w-1/2">
+                  <div class="floating-card p-8 md:p-12">
+                      <div class="mb-10">
+                          <h2 class="font-headline text-4xl text-slate-900 mb-2 leading-tight">{{ data.config?.featuredProductName }}</h2>
+                          <div class="flex items-baseline gap-3">
+                              <span class="text-3xl font-bold text-[#ff7a00]">৳ {{ selectedVariantPrice }}</span>
+                              @if (data.config?.originalPrice) {
+                                <span class="text-xl text-slate-400 line-through font-medium">৳ {{ data.config?.originalPrice }}</span>
+                              }
+                              @if (data.config && data.config.originalPrice && data.config.originalPrice > selectedVariantPrice) {
+                                <span class="px-2 py-0.5 rounded-lg bg-orange-100 text-[#ff7a00] text-[10px] font-black uppercase">
+                                    Save ৳{{ (data.config.originalPrice - selectedVariantPrice) }} OFF
+                                </span>
+                              }
                           </div>
                       </div>
-                      <div class="text-center px-2">
-                          <h4 class="text-[11px] sm:text-xs font-bold text-slate-600 uppercase tracking-wide truncate mb-1 group-hover:text-[#ff7a00] transition-colors">{{ rel.name }}</h4>
-                          <div class="flex items-baseline justify-center gap-2">
-                              <span class="text-sm sm:text-lg font-black text-[#121212]">৳ {{ rel.price }}</span>
-                              <span class="text-[10px] text-slate-400 line-through" *ngIf="rel.compareAtPrice">৳ {{ rel.compareAtPrice }}</span>
+                      
+                      <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="space-y-8">
+                          <!-- Size Selection -->
+                          <div>
+                              <div class="flex justify-between items-end mb-4">
+                                  <h4 class="font-label text-xs uppercase tracking-widest text-slate-500">সাইজ সিলেক্ট করুন (SELECT SIZE)</h4>
+                              </div>
+                              <div class="flex flex-wrap gap-3">
+                                  @for (variant of data.product.variants; track variant.id) {
+                                    <button type="button" 
+                                            (click)="selectSize(variant.size || '')"
+                                            [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'border-[#ff7a00] bg-orange-50 text-[#ff7a00]' : 'border-slate-100 text-slate-600 hover:border-orange-200'"
+                                            class="min-w-[80px] px-6 py-2.5 border-2 font-bold text-sm transition-all duration-200 rounded-xl flex flex-col items-center gap-0.5">
+                                        <span class="text-xs uppercase tracking-tight">{{ variant.size }}</span>
+                                        <span class="text-[11px] font-black opacity-80">৳ {{ variant.price || data.product.price }}</span>
+                                    </button>
+                                  }
+                              </div>
+                              @if (orderForm.get('selectedSize')?.touched && orderForm.get('selectedSize')?.invalid) {
+                                <p class="text-rose-500 text-[10px] font-bold uppercase tracking-widest mt-2">Please select a size to continue</p>
+                              }
                           </div>
-                      </div>
+    
+                          <!-- Delivery Method -->
+                          <div>
+                              <p class="font-label text-xs uppercase tracking-widest text-slate-500 mb-3">ডেলিভারি এলাকা (Delivery Area)</p>
+                              <div class="flex gap-6 flex-wrap">
+                                  @for (method of deliveryMethods; track method.id) {
+                                    <label class="flex items-center cursor-pointer group">
+                                        <input type="radio" formControlName="deliveryMethodId" [value]="method.id" class="w-4 h-4 text-[#121212] border-slate-300 focus:ring-[#121212] focus:ring-offset-0 bg-transparent">
+                                        <span class="ml-2 text-sm text-slate-700 font-medium group-hover:text-[#121212] transition-colors">
+                                            {{ method.name }} — ৳{{ method.cost }}
+                                        </span>
+                                    </label>
+                                  }
+                              </div>
+                          </div>
+    
+                          <!-- Customer Info -->
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <!-- Full Name -->
+                              <div class="relative group">
+                                  <app-icon name="User" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></app-icon>
+                                  <input type="text" formControlName="fullName" placeholder="Full Name" 
+                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
+                              </div>
+    
+                              <!-- Phone -->
+                              <div class="relative group">
+                                  <app-icon name="Phone" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></app-icon>
+                                  <input type="tel" formControlName="phone" placeholder="Phone Number"
+                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
+                              </div>
+    
+                              <!-- City Dropdown -->
+                              <div class="relative">
+                                  <app-icon name="MapPin" size="16" className="absolute left-0 top-2 text-slate-400"></app-icon>
+                                  <button type="button" (click)="toggleCityDropdown()"
+                                          class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-left text-slate-900 flex items-center justify-between">
+                                      <span [class.text-slate-400]="!orderForm.get('city')?.value">{{ orderForm.get('city')?.value || 'Select District' }}</span>
+                                      <app-icon [name]="'ChevronDown'" size="16" className="text-slate-400 transition-transform" [class.rotate-180]="isCityDropdownOpen"></app-icon>
+                                  </button>
+    
+                                  @if (isCityDropdownOpen) {
+                                    <div class="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 max-h-64 overflow-hidden flex flex-col">
+                                        <div class="p-3 border-b border-slate-50">
+                                            <input type="text" [value]="citySearch" (input)="filterCities($event)" placeholder="Search District..."
+                                                   class="w-full bg-slate-50 border-none rounded-xl px-4 py-2 text-sm focus:ring-1 focus:ring-orange-200 outline-none" />
+                                        </div>
+                                        <div class="overflow-y-auto py-2">
+                                            @for (city of filteredCities; track city) {
+                                              <button type="button" (click)="selectCity(city)"
+                                                      class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#ff7a00] transition-colors">
+                                                  {{ city }}
+                                              </button>
+                                            }
+                                        </div>
+                                    </div>
+                                  }
+                              </div>
+    
+                              <!-- Area Dropdown -->
+                              <div class="relative">
+                                  <app-icon name="MapPin" size="16" className="absolute left-0 top-2 text-slate-400"></app-icon>
+                                  <button type="button" (click)="toggleAreaDropdown()" [disabled]="!orderForm.get('city')?.value"
+                                          class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-left text-slate-900 flex items-center justify-between disabled:opacity-50">
+                                      <span [class.text-slate-400]="!orderForm.get('area')?.value">{{ orderForm.get('area')?.value || 'Select Area' }}</span>
+                                      <app-icon name="ChevronDown" size="16" className="text-slate-400 transition-transform" [class.rotate-180]="isAreaDropdownOpen"></app-icon>
+                                  </button>
+    
+                                  @if (isAreaDropdownOpen) {
+                                    <div class="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 max-h-64 overflow-hidden flex flex-col">
+                                        <div class="p-3 border-b border-slate-50">
+                                            <input type="text" [value]="areaSearch" (input)="filterAreas($event)" placeholder="Search Area..."
+                                                   class="w-full bg-slate-50 border-none rounded-xl px-4 py-2 text-sm focus:ring-1 focus:ring-orange-200 outline-none" />
+                                        </div>
+                                        <div class="overflow-y-auto py-2">
+                                            @for (area of filteredAreas; track area) {
+                                              <button type="button" (click)="selectArea(area)"
+                                                      class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#ff7a00] transition-colors">
+                                                  {{ area }}
+                                              </button>
+                                            }
+                                        </div>
+                                    </div>
+                                  }
+                              </div>
+    
+                              <!-- Full Address -->
+                              <div class="md:col-span-2 relative group">
+                                  <app-icon name="MapPin" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></app-icon>
+                                  <input type="text" formControlName="address" placeholder="House/Road/Block (Detailed Address)"
+                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
+                              </div>
+                          </div>
+    
+                          <!-- Submit -->
+                          <button type="submit" [disabled]="isOrdering" class="w-full bg-[#ff7a00] text-white font-label uppercase tracking-widest py-5 mt-4 hover:bg-[#e66e00] transition-colors rounded-xl flex items-center justify-center gap-2 disabled:opacity-70 disabled:pointer-events-none shadow-[0_15px_30px_-5px_rgba(255,122,0,0.4)]">
+                              @if (isOrdering) {
+                                <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
+                              }
+                              <span>CONFIRM ORDER — ৳ {{ total }}</span>
+                          </button>
+                      </form>
                   </div>
               </div>
+            </div>
           </div>
-        </div>
-      </section>
-  
-      <!-- Trust Banner Section - REDESIGNED -->
-      <section class="px-6" *ngIf="data.config?.isTrustBannerVisible">
-        <div class="site-container">
-          <div class="bg-timer-gradient rounded-[32px] p-8 md:p-12 text-center shadow-[0_20px_50px_rgba(255,122,0,0.2)] relative overflow-hidden">
-            <!-- Decorative circle -->
-            <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20"></div>
-            
-            <lucide-icon [img]="icons.Verified" class="w-16 h-16 text-white/20 absolute left-8 top-1/2 -translate-y-1/2"></lucide-icon>
-            
-            <div class="relative z-10 space-y-6">
-                <h3 class="text-2xl md:text-3xl font-headline font-bold text-white leading-snug max-w-2xl mx-auto">
-                    {{ data.config?.trustBannerText }}
-                </h3>
-                <div class="flex items-center justify-center gap-4">
-                    <div class="h-px w-8 bg-white/30"></div>
-                    <p class="text-white/80 font-label text-[10px] tracking-[0.2em]">Satisfaction Guaranteed</p>
-                    <div class="h-px w-8 bg-white/30"></div>
+        </section>
+    
+    
+        <!-- Trust & Values - REDESIGNED -->
+        <section class="py-16">
+          <div class="site-container">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div class="floating-card p-10 text-center flex flex-col items-center group">
+                <div class="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <app-icon name="Truck" size="32" className="text-emerald-500"></app-icon>
                 </div>
-            </div>
-          </div>
-        </div>
-      </section>
-  
-      <!-- Featured Product & Order Form - REDESIGNED -->
-      <section id="order-section" class="px-6">
-        <div class="site-container">
-          <div class="flex flex-col lg:flex-row gap-12 items-start">
-            <!-- Image Area -->
-            <div class="w-full lg:w-1/2 sticky top-32 self-start">
-              <div class="rounded-[32px] overflow-hidden shadow-2xl bg-white p-2 relative aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-[700px]">
-                <img [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" alt="Featured Product" class="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] object-cover rounded-[26px]" />
+                <h5 class="font-headline text-xl font-bold text-slate-900 mb-2">Fastest Delivery</h5>
+                <p class="text-sm text-slate-500 leading-relaxed">Swift and safe delivery to your doorstep within 2-3 business days.</p>
               </div>
-            </div>
-  
-            <!-- Form Area -->
-            <div class="w-full lg:w-1/2">
-                <div class="floating-card p-8 md:p-12">
-                    <div class="mb-10">
-                        <h2 class="font-headline text-4xl text-slate-900 mb-2 leading-tight">{{ data.config?.featuredProductName }}</h2>
-                        <div class="flex items-baseline gap-3">
-                            <span class="text-3xl font-bold text-[#ff7a00]">৳ {{ selectedVariantPrice }}</span>
-                            <span class="text-xl text-slate-400 line-through font-medium" *ngIf="data.config?.originalPrice">৳ {{ data.config?.originalPrice }}</span>
-                            <span class="px-2 py-0.5 rounded-lg bg-orange-100 text-[#ff7a00] text-[10px] font-black uppercase" *ngIf="data.config && data.config.originalPrice && data.config.originalPrice > selectedVariantPrice">
-                                Save ৳{{ (data.config.originalPrice - selectedVariantPrice) }} OFF
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="space-y-8">
-                        <!-- Size Selection -->
-                        <div>
-                            <div class="flex justify-between items-end mb-4">
-                                <h4 class="font-label text-xs uppercase tracking-widest text-slate-500">সাইজ সিলেক্ট করুন (SELECT SIZE)</h4>
-                            </div>
-                            <div class="flex flex-wrap gap-3">
-                                <button type="button" *ngFor="let variant of data.product.variants" 
-                                        (click)="selectSize(variant.size || '')"
-                                        [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'border-[#ff7a00] bg-orange-50 text-[#ff7a00]' : 'border-slate-100 text-slate-600 hover:border-orange-200'"
-                                        class="min-w-[80px] px-6 py-2.5 border-2 font-bold text-sm transition-all duration-200 rounded-xl flex flex-col items-center gap-0.5">
-                                    <span class="text-xs uppercase tracking-tight">{{ variant.size }}</span>
-                                    <span class="text-[11px] font-black opacity-80">৳ {{ variant.price || data.product.price }}</span>
-                                </button>
-                            </div>
-                            <p *ngIf="orderForm.get('selectedSize')?.touched && orderForm.get('selectedSize')?.invalid" class="text-rose-500 text-[10px] font-bold uppercase tracking-widest mt-2">Please select a size to continue</p>
-                        </div>
-
-                        <!-- Delivery Method -->
-                        <div>
-                            <p class="font-label text-xs uppercase tracking-widest text-slate-500 mb-3">ডেলিভারি এলাকা (Delivery Area)</p>
-                            <div class="flex gap-6 flex-wrap">
-                                <label *ngFor="let method of deliveryMethods" class="flex items-center cursor-pointer group">
-                                    <input type="radio" formControlName="deliveryMethodId" [value]="method.id" class="w-4 h-4 text-[#121212] border-slate-300 focus:ring-[#121212] focus:ring-offset-0 bg-transparent">
-                                    <span class="ml-2 text-sm text-slate-700 font-medium group-hover:text-[#121212] transition-colors">
-                                        {{ method.name }} — ৳{{ method.cost }}
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Customer Info -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Full Name -->
-                            <div class="relative group">
-                                <lucide-icon [img]="icons.User" class="absolute left-0 top-2 w-4 h-4 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></lucide-icon>
-                                <input type="text" formControlName="fullName" placeholder="Full Name" 
-                                       class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
-                            </div>
-
-                            <!-- Phone -->
-                            <div class="relative group">
-                                <lucide-icon [img]="icons.Phone" class="absolute left-0 top-2 w-4 h-4 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></lucide-icon>
-                                <input type="tel" formControlName="phone" placeholder="Phone Number"
-                                       class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
-                            </div>
-
-                            <!-- City Dropdown -->
-                            <div class="relative">
-                                <lucide-icon [img]="icons.MapPin" class="absolute left-0 top-2 w-4 h-4 text-slate-400"></lucide-icon>
-                                <button type="button" (click)="toggleCityDropdown()"
-                                        class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-left text-slate-900 flex items-center justify-between">
-                                    <span [class.text-slate-400]="!orderForm.get('city')?.value">{{ orderForm.get('city')?.value || 'Select District' }}</span>
-                                    <lucide-icon [img]="icons.ChevronDown" class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="isCityDropdownOpen"></lucide-icon>
-                                </button>
-
-                                <div *ngIf="isCityDropdownOpen" class="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 max-h-64 overflow-hidden flex flex-col">
-                                    <div class="p-3 border-b border-slate-50">
-                                        <input type="text" [value]="citySearch" (input)="filterCities($event)" placeholder="Search District..."
-                                               class="w-full bg-slate-50 border-none rounded-xl px-4 py-2 text-sm focus:ring-1 focus:ring-orange-200 outline-none" />
-                                    </div>
-                                    <div class="overflow-y-auto py-2">
-                                        <button type="button" *ngFor="let city of filteredCities" (click)="selectCity(city)"
-                                                class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#ff7a00] transition-colors">
-                                            {{ city }}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Area Dropdown -->
-                            <div class="relative">
-                                <lucide-icon [img]="icons.MapPin" class="absolute left-0 top-2 w-4 h-4 text-slate-400"></lucide-icon>
-                                <button type="button" (click)="toggleAreaDropdown()" [disabled]="!orderForm.get('city')?.value"
-                                        class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-left text-slate-900 flex items-center justify-between disabled:opacity-50">
-                                    <span [class.text-slate-400]="!orderForm.get('area')?.value">{{ orderForm.get('area')?.value || 'Select Area' }}</span>
-                                    <lucide-icon [img]="icons.ChevronDown" class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="isAreaDropdownOpen"></lucide-icon>
-                                </button>
-
-                                <div *ngIf="isAreaDropdownOpen" class="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 max-h-64 overflow-hidden flex flex-col">
-                                    <div class="p-3 border-b border-slate-50">
-                                        <input type="text" [value]="areaSearch" (input)="filterAreas($event)" placeholder="Search Area..."
-                                               class="w-full bg-slate-50 border-none rounded-xl px-4 py-2 text-sm focus:ring-1 focus:ring-orange-200 outline-none" />
-                                    </div>
-                                    <div class="overflow-y-auto py-2">
-                                        <button type="button" *ngFor="let area of filteredAreas" (click)="selectArea(area)"
-                                                class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#ff7a00] transition-colors">
-                                            {{ area }}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Full Address -->
-                            <div class="md:col-span-2 relative group">
-                                <lucide-icon [img]="icons.MapPin" class="absolute left-0 top-2 w-4 h-4 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></lucide-icon>
-                                <input type="text" formControlName="address" placeholder="House/Road/Block (Detailed Address)"
-                                       class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
-                            </div>
-                        </div>
-
-                        <!-- Submit -->
-                        <button type="submit" [disabled]="isOrdering" class="w-full bg-[#ff7a00] text-white font-label uppercase tracking-widest py-5 mt-4 hover:bg-[#e66e00] transition-colors rounded-xl flex items-center justify-center gap-2 disabled:opacity-70 disabled:pointer-events-none shadow-[0_15px_30px_-5px_rgba(255,122,0,0.4)]">
-                            <lucide-icon *ngIf="isOrdering" [img]="icons.Loader2" class="w-5 h-5 animate-spin"></lucide-icon>
-                            <span>CONFIRM ORDER — ৳ {{ total }}</span>
-                        </button>
-                    </form>
+              
+              <div class="floating-card p-10 text-center flex flex-col items-center group">
+                <div class="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <app-icon name="Verified" size="32" className="text-amber-500"></app-icon>
                 </div>
+                <h5 class="font-headline text-xl font-bold text-slate-900 mb-2">Quality Check</h5>
+                <p class="text-sm text-slate-500 leading-relaxed">Check your product upon delivery to ensure maximum satisfaction.</p>
+              </div>
+              
+              <div class="floating-card p-10 text-center flex flex-col items-center group">
+                <div class="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <app-icon name="RotateCcw" size="32" className="text-rose-500"></app-icon>
+                </div>
+                <h5 class="font-headline text-xl font-bold text-slate-900 mb-2">Easy Exchange</h5>
+                <p class="text-sm text-slate-500 leading-relaxed">Hassle-free exchange policy if there's any sizing or quality issue.</p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-
-  
-      <!-- Trust & Values - REDESIGNED -->
-      <section class="py-16">
-        <div class="site-container">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="floating-card p-10 text-center flex flex-col items-center group">
-              <div class="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                <lucide-icon [img]="icons.Truck" class="w-8 h-8 text-emerald-500"></lucide-icon>
-              </div>
-              <h5 class="font-headline text-xl font-bold text-slate-900 mb-2">Fastest Delivery</h5>
-              <p class="text-sm text-slate-500 leading-relaxed">Swift and safe delivery to your doorstep within 2-3 business days.</p>
-            </div>
-            
-            <div class="floating-card p-10 text-center flex flex-col items-center group">
-              <div class="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                <lucide-icon [img]="icons.Verified" class="w-8 h-8 text-amber-500"></lucide-icon>
-              </div>
-              <h5 class="font-headline text-xl font-bold text-slate-900 mb-2">Quality Check</h5>
-              <p class="text-sm text-slate-500 leading-relaxed">Check your product upon delivery to ensure maximum satisfaction.</p>
-            </div>
-            
-            <div class="floating-card p-10 text-center flex flex-col items-center group">
-              <div class="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                <lucide-icon [img]="icons.RotateCcw" class="w-8 h-8 text-rose-500"></lucide-icon>
-              </div>
-              <h5 class="font-headline text-xl font-bold text-slate-900 mb-2">Easy Exchange</h5>
-              <p class="text-sm text-slate-500 leading-relaxed">Hassle-free exchange policy if there's any sizing or quality issue.</p>
-            </div>
+        </section>
+      </main>
+    
+      <!-- Footer - REDESIGNED -->
+      <footer class="bg-slate-900 text-white py-24 px-6">
+        <div class="site-container text-center">
+          <div class="text-4xl font-headline font-black text-white mb-10 tracking-tight">{{ brandName$ | async }}</div>
+          <div class="flex flex-wrap justify-center gap-x-12 gap-y-6 mb-12">
+            <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Privacy Policy</a>
+            <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Terms of Service</a>
+            <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Returns & Refunds</a>
+            <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Contact Us</a>
+          </div>
+          <div class="pt-12 border-t border-white/5">
+              <p class="font-label text-[9px] tracking-[0.3em] text-white/30">
+                  © {{ 2024 }} {{ brandName$ | async }}. CRAFTED WITH PASSION FOR ELEGANCE.
+              </p>
           </div>
         </div>
-      </section>
-    </main>
-  
-    <!-- Footer - REDESIGNED -->
-    <footer class="bg-slate-900 text-white py-24 px-6">
-      <div class="site-container text-center">
-        <div class="text-4xl font-headline font-black text-white mb-10 tracking-tight">{{ brandName$ | async }}</div>
-        <div class="flex flex-wrap justify-center gap-x-12 gap-y-6 mb-12">
-          <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Privacy Policy</a>
-          <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Terms of Service</a>
-          <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Returns & Refunds</a>
-          <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Contact Us</a>
-        </div>
-        <div class="pt-12 border-t border-white/5">
-            <p class="font-label text-[9px] tracking-[0.3em] text-white/30">
-                © {{ 2024 }} {{ brandName$ | async }}. CRAFTED WITH PASSION FOR ELEGANCE.
-            </p>
-        </div>
-      </div>
-    </footer>
+      </footer>
   </div>
-  
-  <div *ngIf="isLoading" class="min-h-screen flex flex-col items-center justify-center gap-6 bg-white">
+}
+
+@if (isLoading) {
+  <div class="min-h-screen flex flex-col items-center justify-center gap-6 bg-white">
     <div class="relative w-20 h-20">
         <div class="absolute inset-0 border-4 border-primary-clp/10 rounded-full"></div>
         <div class="absolute inset-0 border-4 border-t-primary-clp rounded-full animate-spin"></div>
     </div>
     <p class="font-label text-[10px] text-slate-400 tracking-[0.2em] animate-pulse">Loading Premium Experience...</p>
   </div>
+}

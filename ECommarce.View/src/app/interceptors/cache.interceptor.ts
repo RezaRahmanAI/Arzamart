@@ -9,9 +9,12 @@ interface CacheEntry {
 // In-memory cache store
 const cache = new Map<string, CacheEntry>();
 
-// Cache TTL in milliseconds (30 seconds for products, 5 min for static data)
+// Cache TTL in milliseconds
+const TTL_CONFIG = 24 * 60 * 60 * 1000; // 24 hours
+const TTL_CATALOG = 60 * 60 * 1000;      // 1 hour
+const TTL_CONTENT = 30 * 60 * 1000;      // 30 minutes
+const TTL_HOME = 15 * 60 * 1000;         // 15 minutes
 const DEFAULT_TTL = 60_000;
-const LONG_TTL = 600_000;
 
 // Endpoints that should never be cached
 const EXCLUDED_PATTERNS = [
@@ -22,7 +25,6 @@ const EXCLUDED_PATTERNS = [
   "/checkout",
   "/customers",
   "/analytics",
-  "/sitesettings",
 ];
 
 function shouldCache(url: string): boolean {
@@ -31,15 +33,10 @@ function shouldCache(url: string): boolean {
 }
 
 function getTTL(url: string): number {
-  // Static data gets longer cache
-  if (
-    url.includes("/categories") ||
-    url.includes("/banners") ||
-    url.includes("/navigation") ||
-    url.includes("/settings")
-  ) {
-    return LONG_TTL;
-  }
+  if (url.includes("/sitesettings") || url.includes("/navigation")) return TTL_CONFIG;
+  if (url.includes("/products") || url.includes("/categories")) return TTL_CATALOG;
+  if (url.includes("/pages") || url.includes("/banners")) return TTL_CONTENT;
+  if (url.includes("/home")) return TTL_HOME;
   return DEFAULT_TTL;
 }
 

@@ -13,24 +13,7 @@ import { ProductsService } from "../../services/products.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { AuthService } from "../../../core/services/auth.service";
-import {
-  LucideAngularModule,
-  Plus,
-  Search,
-  Filter,
-  Download,
-  Edit,
-  Trash2,
-  ChevronLeft,
-  ChevronRight,
-  FileUp,
-  ChevronDown,
-  AlertTriangle,
-  Rocket,
-  Package,
-  Monitor,
-  Settings,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-admin-products",
@@ -40,28 +23,11 @@ import {
     ReactiveFormsModule,
     RouterModule,
     PriceDisplayComponent,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./admin-products.component.html",
 })
 export class AdminProductsComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    Plus,
-    Search,
-    Filter,
-    Download,
-    Edit,
-    Trash2,
-    ChevronLeft,
-    ChevronRight,
-    FileUp,
-    ChevronDown,
-    AlertTriangle,
-    Rocket,
-    Package,
-    Monitor,
-    Settings,
-  };
   private productsService = inject(ProductsService);
   private route = inject(ActivatedRoute);
   readonly imageUrlService = inject(ImageUrlService);
@@ -167,11 +133,9 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
       }
       this.selectedProductIds.delete(product.id);
       
-      // Optimistic UI update: Remove from local array immediately
       this.products = this.products.filter(p => p.id !== product.id);
       this.totalResults--;
       
-      // Still reload to ensure pagination and total results are perfectly in sync
       this.loadProducts();
     });
   }

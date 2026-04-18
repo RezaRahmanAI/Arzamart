@@ -1,5 +1,5 @@
 import { Component, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { AsyncPipe, DecimalPipe } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { combineLatest, map } from "rxjs";
 
@@ -9,38 +9,22 @@ import { CartItem } from "../../../../core/models/cart";
 import { Product } from "../../../../core/models/product";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
-
-import {
-  LucideAngularModule,
-  Trash2,
-  Minus,
-  Plus,
-  Lock,
-  Tag,
-  ChevronDown,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-cart-page",
   standalone: true,
   imports: [
-    CommonModule,
+    AsyncPipe,
+    DecimalPipe,
     RouterModule,
     PriceDisplayComponent,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./cart-page.component.html",
   styleUrl: "./cart-page.component.css",
 })
 export class CartPageComponent {
-  readonly icons = {
-    Trash2,
-    Minus,
-    Plus,
-    Lock,
-    Tag,
-    ChevronDown,
-  };
   private readonly cartService = inject(CartService);
   private readonly productService = inject(ProductService);
   readonly imageUrlService = inject(ImageUrlService);

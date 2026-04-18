@@ -1,16 +1,12 @@
 import { Component } from "@angular/core";
-import { LucideAngularModule, X, ChevronDown } from "lucide-angular";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-women-toolbar",
   standalone: true,
-  imports: [LucideAngularModule],
+  imports: [AppIconComponent],
   templateUrl: "./toolbar.component.html",
   styleUrl: "./toolbar.component.css",
 })
 export class WomenToolbarComponent {
-  readonly icons = {
-    X,
-    ChevronDown,
-  };
 }

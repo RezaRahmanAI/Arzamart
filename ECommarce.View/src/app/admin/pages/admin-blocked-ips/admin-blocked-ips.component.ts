@@ -10,7 +10,7 @@ import {
   AdminSecurityService,
   BlockedIp,
 } from "../../services/admin-security.service";
-import { LucideAngularModule, Ban } from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-admin-blocked-ips",
@@ -19,14 +19,12 @@ import { LucideAngularModule, Ban } from "lucide-angular";
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./admin-blocked-ips.component.html",
 })
 export class AdminBlockedIpsComponent implements OnInit {
-  readonly icons = {
-    Ban,
-  };
+
   private securityService = inject(AdminSecurityService);
   private fb = inject(FormBuilder);
 

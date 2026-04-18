@@ -116,10 +116,11 @@
       <div
         class="layout-content-container max-w-[960px] flex-1 text-center flex flex-col gap-8"
       >
-        <lucide-icon
-          [img]="icons.Flower2"
-          class="w-16 h-16 text-accent mx-auto"
-        ></lucide-icon>
+        <app-icon
+          name="Flower2"
+          size="64"
+          className="text-accent mx-auto"
+        ></app-icon>
         <h2
           class="text-3xl md:text-5xl font-black leading-tight tracking-tight"
         >
@@ -154,7 +155,7 @@
             <div
               class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-6 text-primary dark:text-accent"
             >
-              <lucide-icon [img]="value.icon" class="w-8 h-8"></lucide-icon>
+              <app-icon [name]="value.icon" size="32"></app-icon>
             </div>
             <h3 class="text-xl font-bold text-primary dark:text-white mb-3">
               {{ value.title }}
@@ -188,18 +189,18 @@
             <button
               class="p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-primary dark:text-white transition-colors"
             >
-              <lucide-icon
-                [img]="icons.ArrowLeft"
-                class="w-5 h-5"
-              ></lucide-icon>
+              <app-icon
+                name="ArrowLeft"
+                size="20"
+              ></app-icon>
             </button>
             <button
               class="p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-primary dark:text-white transition-colors"
             >
-              <lucide-icon
-                [img]="icons.ArrowRight"
-                class="w-5 h-5"
-              ></lucide-icon>
+              <app-icon
+                name="ArrowRight"
+                size="20"
+              ></app-icon>
             </button>
           </div>
         </div>

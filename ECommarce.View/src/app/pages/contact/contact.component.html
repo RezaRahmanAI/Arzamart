@@ -49,7 +49,7 @@
             <div
               class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/30 text-primary dark:text-accent"
             >
-              <lucide-icon [img]="icons.Mail" class="w-5 h-5"></lucide-icon>
+              <app-icon name="Mail" size="20"></app-icon>
             </div>
             <div>
               <h4 class="text-base font-bold text-primary dark:text-white">
@@ -71,7 +71,7 @@
             <div
               class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/30 text-primary dark:text-accent"
             >
-              <lucide-icon [img]="icons.Phone" class="w-5 h-5"></lucide-icon>
+              <app-icon name="Phone" size="20"></app-icon>
             </div>
             <div>
               <h4 class="text-base font-bold text-primary dark:text-white">
@@ -93,7 +93,7 @@
             <div
               class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/30 text-primary dark:text-accent"
             >
-              <lucide-icon [img]="icons.MapPin" class="w-5 h-5"></lucide-icon>
+              <app-icon name="MapPin" size="20"></app-icon>
             </div>
             <div>
               <h4 class="text-base font-bold text-primary dark:text-white">
@@ -213,10 +213,10 @@
                 <div
                   class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500"
                 >
-                  <lucide-icon
-                    [img]="icons.ChevronDown"
-                    class="w-5 h-5"
-                  ></lucide-icon>
+                  <app-icon
+                    name="ChevronDown"
+                    size="20"
+                  ></app-icon>
                 </div>
               </div>
               <span
@@ -290,7 +290,7 @@
             <div
               class="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20 text-primary dark:text-accent"
             >
-              <lucide-icon [img]="icons.Store" class="w-5 h-5"></lucide-icon>
+              <app-icon name="Store" size="20"></app-icon>
             </div>
             <div>
               <h5 class="text-sm font-bold text-primary dark:text-white">
@@ -313,10 +313,11 @@
     </div>
     <!-- FAQ Teaser -->
     <div class="mt-16 text-center bg-accent/20 rounded-xl p-8 lg:p-12">
-      <lucide-icon
-        [img]="icons.HelpCircle"
-        class="w-12 h-12 text-primary dark:text-white mb-3"
-      ></lucide-icon>
+      <app-icon
+        name="HelpCircle"
+        size="48"
+        className="text-primary dark:text-white mb-3"
+      ></app-icon>
       <h3 class="text-xl font-bold text-primary dark:text-white mb-2">
         Need a quick answer?
       </h3>
@@ -330,10 +331,10 @@
           [routerLink]="helpCenterLink"
         >
           Visit Help Center
-          <lucide-icon
-            [img]="icons.ArrowRight"
-            class="w-3.5 h-3.5"
-          ></lucide-icon>
+          <app-icon
+            name="ArrowRight"
+            size="14"
+          ></app-icon>
         </a>
       </ng-container>
       <ng-template #helpPlaceholder>
@@ -342,10 +343,10 @@
           href="#"
         >
           Visit Help Center
-          <lucide-icon
-            [img]="icons.ArrowRight"
-            class="w-3.5 h-3.5"
-          ></lucide-icon>
+          <app-icon
+            name="ArrowRight"
+            size="14"
+          ></app-icon>
         </a>
       </ng-template>
     </div>

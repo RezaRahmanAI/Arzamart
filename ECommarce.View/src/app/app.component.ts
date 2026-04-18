@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, Renderer2 } from "@angular/core";
-import { DOCUMENT, CommonModule } from "@angular/common";
+import { AsyncPipe, DOCUMENT } from "@angular/common";
 import { Title } from "@angular/platform-browser";
 import { SiteSettingsService } from "./core/services/site-settings.service";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
@@ -17,7 +17,7 @@ import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loa
   selector: "app-root",
   standalone: true,
   imports: [
-    CommonModule,
+    AsyncPipe,
     RouterOutlet,
     NavbarComponent,
     FooterComponent,

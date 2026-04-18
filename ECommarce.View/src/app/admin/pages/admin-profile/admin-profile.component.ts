@@ -1,14 +1,14 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { LucideAngularModule, User, Mail, Lock, Phone, Save, Shield, Key } from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { ProfileService, UserProfile, UpdateProfileRequest } from "../../services/profile.service";
 import { AuthService } from "../../../core/services/auth.service";
 
 @Component({
   selector: "app-admin-profile",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
   templateUrl: "./admin-profile.component.html",
 })
 export class AdminProfileComponent implements OnInit {
@@ -16,7 +16,7 @@ export class AdminProfileComponent implements OnInit {
   private readonly profileService = inject(ProfileService);
   private readonly authService = inject(AuthService);
 
-  readonly icons = { User, Mail, Lock, Phone, Save, Shield, Key };
+
 
   isLoading = true;
   isSubmitting = false;

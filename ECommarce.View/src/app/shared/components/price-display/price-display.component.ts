@@ -1,12 +1,11 @@
 import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
-
+import { DecimalPipe, NgClass } from "@angular/common";
 import { BdtToUsdPipe } from "../../pipes/bdt-to-usd.pipe";
 
 @Component({
   selector: "app-price-display",
   standalone: true,
-  imports: [CommonModule, BdtToUsdPipe],
+  imports: [DecimalPipe, NgClass, BdtToUsdPipe],
   templateUrl: "./price-display.component.html",
   styleUrl: "./price-display.component.css",
   host: {

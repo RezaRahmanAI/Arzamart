@@ -5,31 +5,16 @@ import { Subject, takeUntil } from "rxjs";
 import { AdminPage } from "../../models/pages.models";
 import { AdminPagesService } from "../../services/admin-pages.service";
 import { AuthService } from "../../../core/services/auth.service";
-import {
-  LucideAngularModule,
-  Plus,
-  Edit,
-  Trash2,
-  FileText,
-  X,
-  Loader2,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-admin-pages",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
   templateUrl: "./admin-pages.component.html",
 })
 export class AdminPagesComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    Plus,
-    Edit,
-    Trash2,
-    FileText,
-    X,
-    Loader2,
-  };
+
   private pagesService = inject(AdminPagesService);
   private fb = inject(FormBuilder);
   readonly authService = inject(AuthService);

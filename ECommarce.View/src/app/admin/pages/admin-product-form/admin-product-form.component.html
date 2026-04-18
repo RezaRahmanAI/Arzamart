@@ -12,10 +12,10 @@
         class="flex items-center gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark mb-1"
       >
         <span>Products</span>
-        <lucide-icon
-          [img]="icons.ChevronRight"
-          class="w-3.5 h-3.5"
-        ></lucide-icon>
+        <app-icon
+          name="ChevronRight"
+          size="14"
+        ></app-icon>
         <span
           class="font-medium text-text-main-light dark:text-text-main-dark"
           >{{ isEditMode ? "Edit" : "Add New" }}</span
@@ -39,7 +39,7 @@
         class="flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-bold text-white hover:bg-[#083a4a] shadow-lg shadow-primary/20"
         type="submit"
       >
-        <lucide-icon [img]="icons.Check" class="w-5 h-5"></lucide-icon>
+        <app-icon name="Check" size="20"></app-icon>
         {{ isEditMode ? "Update Product" : "Save Product" }}
       </button>
     </div>
@@ -120,7 +120,7 @@
                   title="Bold"
                   (click)="applyFormatting('bold', descriptionArea)"
                 >
-                  <lucide-icon [img]="icons.Bold" class="w-5 h-5"></lucide-icon>
+                  <app-icon name="Bold" size="20"></app-icon>
                 </button>
                 <button
                   class="p-1 text-text-secondary-light hover:text-primary transition-colors"
@@ -128,10 +128,10 @@
                   title="Italic"
                   (click)="applyFormatting('italic', descriptionArea)"
                 >
-                  <lucide-icon
-                    [img]="icons.Italic"
-                    class="w-5 h-5"
-                  ></lucide-icon>
+                  <app-icon
+                    name="Italic"
+                    size="20"
+                  ></app-icon>
                 </button>
                 <button
                   class="p-1 text-text-secondary-light hover:text-primary transition-colors"
@@ -139,10 +139,10 @@
                   title="Underline"
                   (click)="applyFormatting('underline', descriptionArea)"
                 >
-                  <lucide-icon
-                    [img]="icons.Underline"
-                    class="w-5 h-5"
-                  ></lucide-icon>
+                  <app-icon
+                    name="Underline"
+                    size="20"
+                  ></app-icon>
                 </button>
                 <div
                   class="mx-1 h-4 w-px bg-border-light dark:bg-border-dark"
@@ -153,7 +153,7 @@
                   title="Bullet List"
                   (click)="applyFormatting('list', descriptionArea)"
                 >
-                  <lucide-icon [img]="icons.List" class="w-5 h-5"></lucide-icon>
+                  <app-icon name="List" size="20"></app-icon>
                 </button>
                 <button
                   class="p-1 text-text-secondary-light hover:text-primary transition-colors"
@@ -161,7 +161,7 @@
                   title="Insert Link"
                   (click)="applyFormatting('link', descriptionArea)"
                 >
-                  <lucide-icon [img]="icons.Link" class="w-5 h-5"></lucide-icon>
+                  <app-icon name="Link" size="20"></app-icon>
                 </button>
               </div>
               <textarea
@@ -226,10 +226,10 @@
                 type="button"
                 (click)="addSize()"
               >
-                <lucide-icon
-                  [img]="icons.PlusCircle"
-                  class="w-5 h-5"
-                ></lucide-icon>
+                <app-icon
+                  name="PlusCircle"
+                  size="20"
+                ></app-icon>
                 Add size
               </button>
             </div>
@@ -252,7 +252,7 @@
                               (click)="toggleSizeDropdown(sizeIndex, $event)"
                               class="flex w-full items-center justify-between rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark">
                         <span>{{ size.get('label')?.value && standardSizes.includes(size.get('label')?.value) ? size.get('label')?.value : (size.get('label')?.value ? 'Custom...' : 'Select Size') }}</span>
-                        <lucide-icon [img]="icons.ChevronDown" class="h-4 w-4 opacity-50"></lucide-icon>
+                        <app-icon name="ChevronDown" size="16" className="opacity-50"></app-icon>
                       </button>
                       
                       <div *ngIf="openSizeDropdownIndex === sizeIndex" 
@@ -267,7 +267,7 @@
                              (click)="selectSize(sizeIndex, sz, $event)"
                              class="relative cursor-pointer select-none py-2 px-3 hover:bg-primary/10 hover:text-primary text-text-main-light dark:text-text-main-dark text-sm transition-colors duration-150 flex justify-between items-center group">
                           <span>{{ sz }}</span>
-                          <lucide-icon *ngIf="size.get('label')?.value === sz" [img]="icons.Check" class="h-4 w-4 text-primary"></lucide-icon>
+                          <app-icon *ngIf="size.get('label')?.value === sz" name="Check" size="16" className="text-primary"></app-icon>
                         </div>
                         
                         <div (click)="selectSize(sizeIndex, 'custom', $event)"
@@ -384,7 +384,7 @@
             type="button"
             (click)="addBundleItem()"
           >
-            <lucide-icon [img]="icons.PlusCircle" class="w-5 h-5"></lucide-icon>
+            <app-icon name="PlusCircle" size="20"></app-icon>
             Add Component
           </button>
         </div>
@@ -455,10 +455,11 @@
                 type="button"
                 (click)="removeBundleItem(i)"
               >
-                <lucide-icon
-                  [img]="icons.PlusCircle"
-                  class="w-5 h-5 rotate-45"
-                ></lucide-icon>
+                <app-icon
+                  name="PlusCircle"
+                  size="20"
+                  className="rotate-45"
+                ></app-icon>
               </button>
             </div>
           </div>
@@ -502,10 +503,11 @@
             <div
               class="mb-3 rounded-full bg-surface-light dark:bg-surface-dark p-3 shadow-sm"
             >
-              <lucide-icon
-                [img]="icons.Upload"
-                class="w-8 h-8 text-primary"
-              ></lucide-icon>
+              <app-icon
+                name="Upload"
+                size="32"
+                className="text-primary"
+              ></app-icon>
             </div>
             <p
               class="text-sm font-medium text-text-main-light dark:text-text-main-dark"
@@ -553,10 +555,11 @@
                   *ngIf="media.get('type')?.value === 'video'"
                   class="absolute inset-0 flex items-center justify-center bg-black/40"
                 >
-                  <lucide-icon
-                    [img]="icons.PlayCircle"
-                    class="w-10 h-10 text-white"
-                  ></lucide-icon>
+                  <app-icon
+                    name="PlayCircle"
+                    size="40"
+                    className="text-white"
+                  ></app-icon>
                 </div>
               </div>
               <div class="flex-1 grid gap-3 sm:grid-cols-2">
@@ -730,7 +733,7 @@
           <p
             class="text-xs text-primary/80 font-medium flex items-center gap-2"
           >
-            <lucide-icon [img]="icons.Eye" class="w-4 h-4"></lucide-icon>
+            <app-icon name="Eye" size="16"></app-icon>
             This product will be visible on the store immediately upon saving.
           </p>
         </div>

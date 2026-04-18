@@ -14,37 +14,37 @@
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary text-white pl-3 pr-4 shadow-sm transition-transform active:scale-95"
     >
-      <lucide-icon [img]="icons.LayoutGrid" class="w-4.5 h-4.5"></lucide-icon>
+      <app-icon name="LayoutGrid" size="18"></app-icon>
       <p class="text-sm font-medium">All</p>
     </button>
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
     >
-      <lucide-icon [img]="icons.Filter" class="w-4.5 h-4.5"></lucide-icon>
+      <app-icon name="Filter" size="18"></app-icon>
       <p class="text-sm font-medium">Scarves</p>
     </button>
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
     >
-      <lucide-icon [img]="icons.Shirt" class="w-4.5 h-4.5"></lucide-icon>
+      <app-icon name="Shirt" size="18"></app-icon>
       <p class="text-sm font-medium">Hats</p>
     </button>
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
     >
-      <lucide-icon [img]="icons.Trophy" class="w-4.5 h-4.5"></lucide-icon>
+      <app-icon name="Trophy" size="18"></app-icon>
       <p class="text-sm font-medium">Belts</p>
     </button>
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
     >
-      <lucide-icon [img]="icons.Gem" class="w-4.5 h-4.5"></lucide-icon>
+      <app-icon name="Gem" size="18"></app-icon>
       <p class="text-sm font-medium">Jewelry</p>
     </button>
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
     >
-      <lucide-icon [img]="icons.ShoppingBag" class="w-4.5 h-4.5"></lucide-icon>
+      <app-icon name="ShoppingBag" size="18"></app-icon>
       <p class="text-sm font-medium">Bags</p>
     </button>
   </div>
@@ -188,74 +188,79 @@
             <div
               class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
             >
-              <lucide-icon
-                [img]="icons.ChevronDown"
-                class="w-5 h-5"
-              ></lucide-icon>
+              <app-icon
+                name="ChevronDown"
+                size="20"
+              ></app-icon>
             </div>
           </div>
           <button class="lg:hidden p-2.5 bg-accent rounded-lg text-primary">
-            <lucide-icon
-              [img]="icons.Filter"
-              class="w-5 h-5 block"
-            ></lucide-icon>
+            <app-icon
+              name="Filter"
+              size="20"
+            ></app-icon>
           </button>
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          *ngFor="let product of products"
-          [routerLink]="['/product', product.slug]"
-          class="group flex flex-col gap-3 cursor-pointer"
-        >
+        @for (product of products; track product.id) {
           <div
-            class="relative overflow-hidden rounded-lg aspect-[3/4] bg-accent"
+            [routerLink]="['/product', product.slug]"
+            class="group flex flex-col gap-3 cursor-pointer"
           >
             <div
-              class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105"
-              [attr.data-alt]="product.name"
-              [style.background-image]="
-                'url(' +
-                imageUrlService.getImageUrl(product.imageUrl || '') +
-                ')'
-              "
-            ></div>
-            <button
-              class="absolute bottom-4 right-4 bg-white text-primary p-2 rounded-full shadow-lg translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 hover:bg-primary hover:text-white"
+              class="relative overflow-hidden rounded-lg aspect-[3/4] bg-accent"
             >
-              <lucide-icon
-                [img]="icons.Heart"
-                class="w-5 h-5 block"
-              ></lucide-icon>
-            </button>
-          </div>
-          <div>
-            <div class="flex justify-between items-start">
-              <h3
-                class="text-primary text-base font-bold leading-tight line-clamp-2 mb-1 group-hover:underline decoration-1 underline-offset-4"
+              <div
+                class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105"
+                [attr.data-alt]="product.name"
+                [style.background-image]="
+                  'url(' +
+                  imageUrlService.getImageUrl(product.imageUrl || '') +
+                  ')'
+                "
+              ></div>
+              <button
+                class="absolute bottom-4 right-4 bg-white text-primary p-2 rounded-full shadow-lg translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 hover:bg-primary hover:text-white"
               >
-                {{ product.name }}
-              </h3>
-              <app-price-display
-                class="text-primary"
-                [amount]="product.price"
-                size="sm"
-              ></app-price-display>
+                <app-icon
+                  name="Heart"
+                  size="20"
+                ></app-icon>
+              </button>
             </div>
-            <p class="text-secondary-text text-sm mb-3">
-              {{ product.description }}
-            </p>
-            <button
-              class="w-full py-2.5 rounded-lg border border-primary text-primary font-bold text-sm hover:bg-primary hover:text-white transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              <lucide-icon
-                [img]="icons.ShoppingCart"
-                class="w-4.5 h-4.5"
-              ></lucide-icon>
-              Add to Cart
-            </button>
+            <div>
+              <div class="flex justify-between items-start">
+                <h3
+                  class="text-primary text-base font-bold leading-tight line-clamp-2 mb-1 group-hover:underline decoration-1 underline-offset-4"
+                >
+                  {{ product.name }}
+                </h3>
+                <app-price-display
+                  class="text-primary"
+                  [amount]="product.price"
+                  size="sm"
+                ></app-price-display>
+              </div>
+              <p class="text-secondary-text text-sm mb-3">
+                {{ product.description }}
+              </p>
+              <button
+                class="w-full py-2.5 rounded-lg border border-primary text-primary font-bold text-sm hover:bg-primary hover:text-white transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <app-icon
+                  name="ShoppingCart"
+                  size="18"
+                ></app-icon>
+                Add to Cart
+              </button>
+            </div>
           </div>
-        </div>
+        } @empty {
+          <div class="col-span-full py-20 text-center text-gray-500">
+             No products found in this collection.
+          </div>
+        }
       </div>
       <div class="mt-12 flex justify-center">
         <button

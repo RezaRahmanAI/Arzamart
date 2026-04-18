@@ -3,7 +3,7 @@
   <div class="flex items-center justify-between mb-8">
     <div class="flex items-center gap-4">
       <a routerLink="/admin/products" class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-secondary-light hover:text-primary transition-colors">
-        <lucide-icon [img]="icons.ArrowLeft" class="w-5 h-5"></lucide-icon>
+        <app-icon name="ArrowLeft" size="20"></app-icon>
       </a>
       <div>
         <h2 class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">Custom Landing Page Settings</h2>
@@ -11,14 +11,14 @@
       </div>
     </div>
     <button (click)="onSubmit()" [disabled]="isSaving" class="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-bold text-white hover:bg-[#083a4a] shadow-lg shadow-primary/20 disabled:opacity-50">
-      <lucide-icon *ngIf="isSaving" [img]="icons.Loader2" class="w-5 h-5 animate-spin"></lucide-icon>
-      <lucide-icon *ngIf="!isSaving" [img]="icons.Save" class="w-5 h-5"></lucide-icon>
+      <app-icon *ngIf="isSaving" name="Loader2" size="20" className="animate-spin"></app-icon>
+      <app-icon *ngIf="!isSaving" name="Save" size="20"></app-icon>
       <span>Save Changes</span>
     </button>
   </div>
 
   <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-20">
-    <lucide-icon [img]="icons.Loader2" class="w-10 h-10 animate-spin text-primary/20"></lucide-icon>
+    <app-icon name="Loader2" size="40" className="animate-spin text-primary/20"></app-icon>
     <p class="text-xs font-bold text-text-secondary-light uppercase tracking-widest mt-4">Loading configuration...</p>
   </div>
 
@@ -28,7 +28,7 @@
     <div class="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl p-6 shadow-sm space-y-6">
       <div class="flex items-center gap-2 mb-4">
         <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-            <lucide-icon [img]="icons.Info" class="w-4 h-4"></lucide-icon>
+            <app-icon name="Info" size="16"></app-icon>
         </div>
         <h3 class="text-sm font-bold text-text-main-light dark:text-text-main-dark uppercase tracking-wider">Timer & Hero Banner</h3>
       </div>
@@ -58,7 +58,7 @@
     <div class="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl p-6 shadow-sm space-y-6">
         <div class="flex items-center gap-2 mb-4">
           <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-              <lucide-icon [img]="icons.Info" class="w-4 h-4"></lucide-icon>
+              <app-icon name="Info" size="16"></app-icon>
           </div>
           <h3 class="text-sm font-bold text-text-main-light dark:text-main-dark uppercase tracking-wider">Product Features</h3>
         </div>
@@ -98,7 +98,7 @@
     <div class="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl p-6 shadow-sm space-y-6 md:col-span-2">
         <div class="flex items-center gap-2 mb-4">
             <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                <lucide-icon [img]="icons.Info" class="w-4 h-4"></lucide-icon>
+                <app-icon name="Info" size="16"></app-icon>
             </div>
             <h3 class="text-sm font-bold text-text-main-light dark:text-text-main-dark uppercase tracking-wider">Checkout & Trust</h3>
         </div>
@@ -137,12 +137,12 @@
 
   <!-- Notifications -->
   <div *ngIf="successMessage" class="fixed bottom-8 right-8 bg-emerald-500 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-10 duration-500">
-    <lucide-icon [img]="icons.Save" class="w-5 h-5"></lucide-icon>
+    <app-icon name="Save" size="20"></app-icon>
     <span class="text-sm font-bold uppercase tracking-wider">{{ successMessage }}</span>
   </div>
 
   <div *ngIf="errorMessage" class="fixed bottom-8 right-8 bg-red-500 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-10 duration-500">
-    <lucide-icon [img]="icons.Info" class="w-5 h-5"></lucide-icon>
+    <app-icon name="Info" size="20"></app-icon>
     <span class="text-sm font-bold uppercase tracking-wider">{{ errorMessage }}</span>
   </div>
 </div>

@@ -4,6 +4,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,10 +14,12 @@ namespace ECommerce.API.Controllers;
 public class AdminNavigationController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminNavigationController(ApplicationDbContext context)
+    public AdminNavigationController(ApplicationDbContext context, IOutputCacheStore cacheStore)
     {
         _context = context;
+        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -60,6 +63,8 @@ public class AdminNavigationController : ControllerBase
         _context.NavigationMenus.Add(menu);
         await _context.SaveChangesAsync();
 
+        await _cacheStore.EvictByTagAsync("config", default);
+
         return CreatedAtAction(nameof(GetMenuById), new { id = menu.Id }, MapToDto(menu));
     }
 
@@ -78,6 +83,8 @@ public class AdminNavigationController : ControllerBase
 
         await _context.SaveChangesAsync();
 
+        await _cacheStore.EvictByTagAsync("config", default);
+
         return Ok(MapToDto(menu));
     }
 
@@ -90,6 +97,8 @@ public class AdminNavigationController : ControllerBase
 
         _context.NavigationMenus.Remove(menu);
         await _context.SaveChangesAsync();
+
+        await _cacheStore.EvictByTagAsync("config", default);
 
         return NoContent();
     }

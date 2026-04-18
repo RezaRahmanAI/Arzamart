@@ -5,37 +5,16 @@ import { Subject, takeUntil } from "rxjs";
 import { AdminReview } from "../../models/reviews.models";
 import { AdminReviewsService } from "../../services/admin-reviews.service";
 import { AuthService } from "../../../core/services/auth.service";
-import {
-  LucideAngularModule,
-  Star,
-  User,
-  CheckCircle2,
-  ShoppingBag,
-  ThumbsUp,
-  Edit,
-  Trash2,
-  X,
-  MessageSquare,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-admin-reviews",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
   templateUrl: "./admin-reviews.component.html",
 })
 export class AdminReviewsComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    Star,
-    User,
-    CheckCircle2,
-    ShoppingBag,
-    ThumbsUp,
-    Edit,
-    Trash2,
-    X,
-    MessageSquare,
-  };
+
   private reviewsService = inject(AdminReviewsService);
   private fb = inject(FormBuilder);
   readonly authService = inject(AuthService);

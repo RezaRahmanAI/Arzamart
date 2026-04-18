@@ -9,7 +9,7 @@
       <a routerLink="/admin/orders/create" class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 flex items-center gap-6 cursor-pointer overflow-hidden relative">
         <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
         <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:rotate-6 transition-transform duration-500 shrink-0">
-          <lucide-icon [img]="icons.ShoppingCart" class="w-8 h-8 text-primary"></lucide-icon>
+          <app-icon name="ShoppingCart" size="32" className="text-primary"></app-icon>
         </div>
         <div class="relative">
           <h4 class="text-sm font-semibold text-primary dark:text-white mb-1 group-hover:text-primary transition-colors">New Manual Order</h4>
@@ -21,7 +21,7 @@
       <a routerLink="/admin/orders/pre-order" class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-violet-500/5 transition-all duration-500 flex items-center gap-6 cursor-pointer overflow-hidden relative">
         <div class="absolute -right-4 -top-4 w-24 h-24 bg-violet-500/5 rounded-full blur-2xl group-hover:bg-violet-500/10 transition-colors"></div>
         <div class="w-16 h-16 rounded-2xl bg-violet-500/10 flex items-center justify-center group-hover:rotate-6 transition-transform duration-500 shrink-0">
-          <lucide-icon [img]="icons.PackagePlus" class="w-8 h-8 text-violet-600"></lucide-icon>
+          <app-icon name="PackagePlus" size="32" className="text-violet-600"></app-icon>
         </div>
         <div class="relative">
           <h4 class="text-sm font-semibold text-primary dark:text-white mb-1 group-hover:text-violet-600 transition-colors">New Pre-order</h4>
@@ -33,7 +33,7 @@
       <a routerLink="/admin/products" class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-500 flex items-center gap-6 cursor-pointer overflow-hidden relative">
         <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors"></div>
         <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center group-hover:rotate-6 transition-transform duration-500 shrink-0">
-          <lucide-icon [img]="icons.PlusCircle" class="w-8 h-8 text-emerald-600"></lucide-icon>
+          <app-icon name="PlusCircle" size="32" className="text-emerald-600"></app-icon>
         </div>
         <div class="relative">
           <h4 class="text-sm font-semibold text-primary dark:text-white mb-1 group-hover:text-emerald-600 transition-colors">Catalog Entry</h4>
@@ -51,7 +51,7 @@
       <div class="relative flex flex-col h-full gap-4">
         <div class="flex items-center justify-between">
           <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-            <lucide-icon [img]="icons.CreditCard" class="w-7 h-7 text-emerald-600"></lucide-icon>
+            <app-icon name="CreditCard" size="28" className="text-emerald-600"></app-icon>
           </div>
           <span class="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-xl">Revenue</span>
         </div>
@@ -72,7 +72,7 @@
       <div class="relative flex flex-col h-full gap-4">
         <div class="flex items-center justify-between">
           <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-            <lucide-icon [img]="icons.Receipt" class="w-7 h-7 text-primary"></lucide-icon>
+            <app-icon name="Receipt" size="28" className="text-primary"></app-icon>
           </div>
           <span class="text-[10px] font-black uppercase tracking-[0.2em] text-primary-light bg-primary/5 px-3 py-1.5 rounded-xl">Volumes</span>
         </div>
@@ -89,7 +89,7 @@
       <div class="relative flex flex-col h-full gap-4">
         <div class="flex items-center justify-between">
           <div class="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-            <lucide-icon [img]="icons.Truck" class="w-7 h-7 text-blue-600"></lucide-icon>
+            <app-icon name="Truck" size="28" className="text-blue-600"></app-icon>
           </div>
           <span class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-3 py-1.5 rounded-xl">Success</span>
         </div>
@@ -106,7 +106,7 @@
       <div class="relative flex flex-col h-full gap-4">
         <div class="flex items-center justify-between">
           <div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-            <lucide-icon [img]="icons.Eye" class="w-7 h-7 text-accent"></lucide-icon>
+            <app-icon name="Eye" size="28" className="text-accent"></app-icon>
           </div>
           <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-accent-light bg-accent/5 px-3 py-1.5 rounded-xl">Engagement</span>
         </div>
@@ -127,7 +127,7 @@
     <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500">
       <div class="flex items-center gap-5">
         <div class="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0 group-hover:rotate-12 transition-transform duration-500">
-          <lucide-icon [img]="icons.Clock" class="w-8 h-8 text-amber-600"></lucide-icon>
+          <app-icon name="Clock" size="32" className="text-amber-600"></app-icon>
         </div>
         <div class="flex-1">
           <h4 class="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-1">Attention Required</h4>
@@ -141,7 +141,7 @@
     <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500">
       <div class="flex items-center gap-5">
         <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center shrink-0 group-hover:rotate-12 transition-transform duration-500">
-          <lucide-icon [img]="icons.Package" class="w-8 h-8 text-indigo-600"></lucide-icon>
+          <app-icon name="Package" size="32" className="text-indigo-600"></app-icon>
         </div>
         <div class="flex-1">
           <h4 class="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-1">Catalog Size</h4>
@@ -155,7 +155,7 @@
     <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500">
       <div class="flex items-center gap-5">
         <div class="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center shrink-0 group-hover:rotate-12 transition-transform duration-500">
-          <lucide-icon [img]="icons.Users" class="w-8 h-8 text-purple-600"></lucide-icon>
+          <app-icon name="Users" size="32" className="text-purple-600"></app-icon>
         </div>
         <div class="flex-1">
           <h4 class="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-1">User Ecosystem</h4>
@@ -169,7 +169,7 @@
     <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500">
       <div class="flex items-center gap-5">
         <div class="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center shrink-0 group-hover:rotate-12 transition-transform duration-500">
-          <lucide-icon [img]="icons.RotateCcw" class="w-8 h-8 text-rose-600"></lucide-icon>
+          <app-icon name="RotateCcw" size="32" className="text-rose-600"></app-icon>
         </div>
         <div class="flex-1">
           <h4 class="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-1">Return Rate</h4>

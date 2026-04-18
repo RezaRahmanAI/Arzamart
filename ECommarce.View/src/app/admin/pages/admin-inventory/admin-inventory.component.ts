@@ -7,51 +7,18 @@ import {
   VariantInventoryDto,
 } from "../../services/inventory.service";
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from "rxjs";
-import {
-  LucideAngularModule,
-  Search,
-  Package,
-  Box,
-  Warehouse,
-  AlertCircle,
-  Boxes,
-  RefreshCw,
-  Check,
-  AlertTriangle,
-  Image,
-  Edit3,
-  X,
-  Minus,
-  Plus,
-  PackageX,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { NotificationService } from "../../../core/services/notification.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 
 @Component({
   selector: "app-admin-inventory",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, AppIconComponent],
   templateUrl: "./admin-inventory.component.html",
 })
 export class AdminInventoryComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    Search,
-    Package,
-    Box,
-    Warehouse,
-    AlertCircle,
-    Boxes,
-    RefreshCw,
-    Check,
-    AlertTriangle,
-    Image,
-    Edit3,
-    X,
-    Minus,
-    Plus,
-    PackageX,
-  };
+
   private inventoryService = inject(InventoryService);
   private notification = inject(NotificationService);
   public imageUrlService = inject(ImageUrlService);

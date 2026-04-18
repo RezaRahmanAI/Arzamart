@@ -1,222 +1,241 @@
 <div class="min-h-screen bg-[#f5f5f3] font-sans text-[#1a1a1a] pb-20">
   <!-- Loading State -->
-  <div
-    *ngIf="isLoading"
-    class="flex flex-col items-center justify-center min-h-[60vh] gap-4"
-  >
-    <lucide-icon
-      [img]="icons.Loader2"
-      class="w-12 h-12 text-[#1a1a1a] animate-spin"
-    ></lucide-icon>
-    <p class="text-[#555] font-medium tracking-widest text-xs uppercase">
-      Loading...
-    </p>
-  </div>
-
-  <div
-    *ngIf="product && !isLoading"
-    class="max-w-[1200px] mx-auto px-6 pt-8 lg:pt-16"
-  >
-    <!-- ROW 1: Product Info (Images & Details) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-16 items-start">
-      <!-- ##### LEFT: Image Gallery ##### -->
-      <div class="lg:col-span-7 flex flex-row gap-4">
-        <!-- Vertical Thumbnails (Desktop Only) -->
-        <div
-          *ngIf="gallery.length > 1"
-          class="hidden lg:flex flex-col gap-2 overflow-y-auto scrollbar-hide w-24 flex-shrink-0"
-          style="max-height: 550px;"
-        >
-          <button
-            *ngFor="let url of gallery; let i = index"
-            (click)="goToImage(i)"
-            type="button"
-            class="flex-shrink-0 w-full h-28 border transition-all duration-300 overflow-hidden relative"
-            [class.border-[#1a1a1a]]="i === currentImageIndex"
-            [class.border-transparent]="i !== currentImageIndex"
-          >
-            <img
-              [src]="imageUrlService.getImageUrl(url)"
-              class="w-full h-full object-cover"
-              [class.opacity-60]="i !== currentImageIndex"
-            />
-            <div
-              *ngIf="i === currentImageIndex"
-              class="absolute bottom-0 left-0 w-full h-0.5 bg-[#1a1a1a]"
-            ></div>
-          </button>
-        </div>
-
-        <!-- Main Image Area -->
-        <div class="relative flex-1">
-          <div
-            class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[550px]"
-          >
-            <!-- Images -->
-            <ng-container *ngFor="let url of gallery; let i = index">
-              <img
-                [src]="imageUrlService.getImageUrl(url)"
-                [alt]="product.name"
-                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out"
-                [class.opacity-100]="i === currentImageIndex"
-                [class.opacity-0]="i !== currentImageIndex"
-              />
-            </ng-container>
-
-            <!-- Tier Badge -->
-            <div *ngIf="product.tier" class="absolute top-6 right-6 z-10">
-              <span
-                class="px-4 py-1.5 bg-white/95 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] border border-[#eee] backdrop-blur-sm shadow-sm"
-              >
-                {{ product.tier }}
-              </span>
-            </div>
-
-            <!-- Navigation Arrows -->
-            <button
-              *ngIf="gallery.length > 1"
-              (click)="prevImage()"
-              class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
-              type="button"
-            >
-              <lucide-icon
-                [img]="icons.ChevronLeft"
-                class="w-4 h-4"
-              ></lucide-icon>
-            </button>
-
-            <button
-              *ngIf="gallery.length > 1"
-              (click)="nextImage()"
-              class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
-              type="button"
-            >
-              <lucide-icon
-                [img]="icons.ChevronRight"
-                class="w-4 h-4"
-              ></lucide-icon>
-            </button>
-          </div>
-
-          <!-- Mobile Thumbnails -->
-          <div
-            *ngIf="gallery.length > 1"
-            class="flex lg:hidden gap-2 mt-4 overflow-x-auto scrollbar-hide pb-2"
-          >
-            <button
-              *ngFor="let url of gallery; let i = index"
-              (click)="goToImage(i)"
-              type="button"
-              class="flex-shrink-0 w-16 h-20 border transition-all duration-300 overflow-hidden"
-              [class.border-[#1a1a1a]]="i === currentImageIndex"
-              [class.border-transparent]="i !== currentImageIndex"
-            >
-              <img
-                [src]="imageUrlService.getImageUrl(url)"
-                class="w-full h-full object-cover"
-                [class.opacity-60]="i !== currentImageIndex"
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== RIGHT: Product Info ===== -->
-      <div class="lg:col-span-5 space-y-8 lg:pl-4">
-        <div class="space-y-4">
-          <h1 class="text-3xl lg:text-4xl font-serif italic text-[#1a1a1a] leading-tight">
-            {{ product.name }}
-          </h1>
-          <div class="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold text-[#bbb]">
-            <span>Item Ref:</span>
-            <span class="text-[#1a1a1a]">{{ product.sku }}</span>
-            <span *ngIf="product.shortDescription" class="text-[#c8922a]">• {{ product.shortDescription }}</span>
-          </div>
-        </div>
-
-        <!-- Pricing Section -->
-        <div class="flex items-baseline gap-4 py-5 border-y border-[#eee]">
-          <app-price-display
-            class="text-3xl font-serif italic text-[#1a1a1a]"
-            [amount]="currentPrice"
-            size="md"
-          ></app-price-display>
-
-          <app-price-display
-            *ngIf="currentCompareAtPrice && currentCompareAtPrice > currentPrice"
-            class="line-through text-gray-400 text-lg"
-            [amount]="currentCompareAtPrice"
-            size="sm"
-          ></app-price-display>
-
-          <span
-            *ngIf="currentCompareAtPrice && currentCompareAtPrice > currentPrice"
-            class="text-[10px] font-bold text-red-500 uppercase tracking-[0.3em] ml-auto"
-          >
-            Offer -৳{{ getDiscountAmount({ price: currentPrice, compareAtPrice: currentCompareAtPrice }) }}
-          </span>
-        </div>
-
-        <!-- Selection System -->
-        <div class="space-y-8">
-          <!-- Sizes -->
-          <div *ngIf="product.variants && product.variants.length > 0" class="space-y-5">
-            <div class="flex items-center justify-between">
-              <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">Select Size</p>
-              <button (click)="openSizeGuide()" type="button" class="text-[9px] uppercase tracking-[0.2em] text-[#999] hover:text-[#1a1a1a] transition-colors border-b border-[#eee] pb-0.5">Size Guide</button>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <button
-                *ngFor="let v of product.variants"
-                (click)="checkoutForm.patchValue({ selectedSize: v.size })"
-                type="button"
-                class="min-w-[60px] h-14 border text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300"
-                [class.bg-[#1a1a1a]]="v.size === checkoutForm.controls.selectedSize.value"
-                [class.text-white]="v.size === checkoutForm.controls.selectedSize.value"
-                [class.border-[#1a1a1a]]="v.size === checkoutForm.controls.selectedSize.value"
-                [class.bg-white]="v.size !== checkoutForm.controls.selectedSize.value"
-                [class.text-[#1a1a1a]]="v.size !== checkoutForm.controls.selectedSize.value"
-                [class.border-[#eee]]="v.size !== checkoutForm.controls.selectedSize.value"
-              >
-                {{ v.size }}
-              </button>
-            </div>
-            <p *ngIf="checkoutForm.controls.selectedSize.value" class="text-[9px] uppercase tracking-[0.2em] text-[#bbb] font-medium">
-              Stock Status: <span class="text-[#1a1a1a]">In stock</span>
-            </p>
-          </div>
-        </div>
-
-        <!-- Description & Features -->
-        <div class="space-y-8 pt-8 border-t border-[#eee]">
-          <div class="space-y-4" *ngIf="product.description">
-            <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#c8922a]">Description</h3>
-            <p class="text-[16px] text-[#444] leading-[1.7] font-light">{{ product.description }}</p>
-          </div>
-
-          <!-- Features Info -->
-          <div class="grid grid-cols-2 gap-4 pt-6">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-white border border-[#eee] flex items-center justify-center">
-                <lucide-icon [img]="icons.Truck" class="w-4 h-4 text-[#888]"></lucide-icon>
-              </div>
-              <span class="text-[9px] uppercase tracking-[0.1em] text-[#888] font-bold">Priority Shipping</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-white border border-[#eee] flex items-center justify-center">
-                <lucide-icon [img]="icons.ShieldCheck" class="w-4 h-4 text-[#888]"></lucide-icon>
-              </div>
-              <span class="text-[9px] uppercase tracking-[0.1em] text-[#888] font-bold">Secure Payment</span>
-            </div>
-          </div>
-        </div>
-      </div>
+  @if (isLoading) {
+    <div
+      class="flex flex-col items-center justify-center min-h-[60vh] gap-4"
+    >
+      <app-icon
+        name="Loader2"
+        size="48"
+        className="text-[#1a1a1a] animate-spin"
+      ></app-icon>
+      <p class="text-[#555] font-medium tracking-widest text-xs uppercase">
+        Loading...
+      </p>
     </div>
+  }
 
-        <!-- Tabs/Accordions -->
-        <div class="pt-2">
-          <div class="divide-y divide-[#eee] border-t border-[#eee]">
-            <details class="group" *ngIf="product.fabricAndCare">
+  @if (product && !isLoading) {
+    <div
+      class="max-w-[1200px] mx-auto px-6 pt-8 lg:pt-16"
+    >
+      <!-- ROW 1: Product Info (Images & Details) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-16 items-start">
+        <!-- ##### LEFT: Image Gallery ##### -->
+        <div class="lg:col-span-7 flex flex-row gap-4">
+          <!-- Vertical Thumbnails (Desktop Only) -->
+          @if (gallery.length > 1) {
+            <div
+              class="hidden lg:flex flex-col gap-2 overflow-y-auto scrollbar-hide w-24 flex-shrink-0"
+              style="max-height: 550px;"
+            >
+              @for (url of gallery; track url; let i = $index) {
+                <button
+                  (click)="goToImage(i)"
+                  type="button"
+                  class="flex-shrink-0 w-full h-28 border transition-all duration-300 overflow-hidden relative"
+                  [class.border-[#1a1a1a]]="i === currentImageIndex"
+                  [class.border-transparent]="i !== currentImageIndex"
+                >
+                  <img
+                    [src]="imageUrlService.getImageUrl(url)"
+                    class="w-full h-full object-cover"
+                    [class.opacity-60]="i !== currentImageIndex"
+                  />
+                  @if (i === currentImageIndex) {
+                    <div
+                      class="absolute bottom-0 left-0 w-full h-0.5 bg-[#1a1a1a]"
+                    ></div>
+                  }
+                </button>
+              }
+            </div>
+          }
+
+          <!-- Main Image Area -->
+          <div class="relative flex-1">
+            <div
+              class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[550px]"
+            >
+              <!-- Images -->
+              @for (url of gallery; track url; let i = $index) {
+                <img
+                  [src]="imageUrlService.getImageUrl(url)"
+                  [alt]="product.name"
+                  class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out"
+                  [class.opacity-100]="i === currentImageIndex"
+                  [class.opacity-0]="i !== currentImageIndex"
+                />
+              }
+
+              <!-- Tier Badge -->
+              @if (product.tier) {
+                <div class="absolute top-6 right-6 z-10">
+                  <span
+                    class="px-4 py-1.5 bg-white/95 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] border border-[#eee] backdrop-blur-sm shadow-sm"
+                  >
+                    {{ product.tier }}
+                  </span>
+                </div>
+              }
+
+              <!-- Navigation Arrows -->
+              @if (gallery.length > 1) {
+                <button
+                  (click)="prevImage()"
+                  class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
+                  type="button"
+                >
+                  <app-icon
+                    name="ChevronLeft"
+                    size="16"
+                  ></app-icon>
+                </button>
+
+                <button
+                  (click)="nextImage()"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
+                  type="button"
+                >
+                  <app-icon
+                    name="ChevronRight"
+                    size="16"
+                  ></app-icon>
+                </button>
+              }
+            </div>
+
+            <!-- Mobile Thumbnails -->
+            @if (gallery.length > 1) {
+              <div
+                class="flex lg:hidden gap-2 mt-4 overflow-x-auto scrollbar-hide pb-2"
+              >
+                @for (url of gallery; track url; let i = $index) {
+                  <button
+                    (click)="goToImage(i)"
+                    type="button"
+                    class="flex-shrink-0 w-16 h-20 border transition-all duration-300 overflow-hidden"
+                    [class.border-[#1a1a1a]]="i === currentImageIndex"
+                    [class.border-transparent]="i !== currentImageIndex"
+                  >
+                    <img
+                      [src]="imageUrlService.getImageUrl(url)"
+                      class="w-full h-full object-cover"
+                      [class.opacity-60]="i !== currentImageIndex"
+                    />
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- ===== RIGHT: Product Info ===== -->
+        <div class="lg:col-span-5 space-y-8 lg:pl-4">
+          <div class="space-y-4">
+            <h1 class="text-3xl lg:text-4xl font-serif italic text-[#1a1a1a] leading-tight">
+              {{ product.name }}
+            </h1>
+            <div class="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold text-[#bbb]">
+              <span>Item Ref:</span>
+              <span class="text-[#1a1a1a]">{{ product.sku }}</span>
+              @if (product.shortDescription) {
+                <span class="text-[#c8922a]">• {{ product.shortDescription }}</span>
+              }
+            </div>
+          </div>
+
+          <!-- Pricing Section -->
+          <div class="flex items-baseline gap-4 py-5 border-y border-[#eee]">
+            <app-price-display
+              class="text-3xl font-serif italic text-[#1a1a1a]"
+              [amount]="currentPrice"
+              size="md"
+            ></app-price-display>
+
+            @if (currentCompareAtPrice && currentCompareAtPrice > currentPrice) {
+              <app-price-display
+                class="line-through text-gray-400 text-lg"
+                [amount]="currentCompareAtPrice"
+                size="sm"
+              ></app-price-display>
+
+              <span
+                class="text-[10px] font-bold text-red-500 uppercase tracking-[0.3em] ml-auto"
+              >
+                Offer -৳{{ getDiscountAmount({ price: currentPrice, compareAtPrice: currentCompareAtPrice }) }}
+              </span>
+            }
+          </div>
+
+          <!-- Selection System -->
+          <div class="space-y-8">
+            <!-- Sizes -->
+            @if (product.variants && product.variants.length > 0) {
+              <div class="space-y-5">
+                <div class="flex items-center justify-between">
+                  <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">Select Size</p>
+                  <button (click)="openSizeGuide()" type="button" class="text-[9px] uppercase tracking-[0.2em] text-[#999] hover:text-[#1a1a1a] transition-colors border-b border-[#eee] pb-0.5">Size Guide</button>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  @for (v of product.variants; track v.id) {
+                    <button
+                      (click)="checkoutForm.patchValue({ selectedSize: v.size })"
+                      type="button"
+                      class="min-w-[60px] h-14 border text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300"
+                      [class.bg-[#1a1a1a]]="v.size === checkoutForm.controls.selectedSize.value"
+                      [class.text-white]="v.size === checkoutForm.controls.selectedSize.value"
+                      [class.border-[#1a1a1a]]="v.size === checkoutForm.controls.selectedSize.value"
+                      [class.bg-white]="v.size !== checkoutForm.controls.selectedSize.value"
+                      [class.text-[#1a1a1a]]="v.size !== checkoutForm.controls.selectedSize.value"
+                      [class.border-[#eee]]="v.size !== checkoutForm.controls.selectedSize.value"
+                    >
+                      {{ v.size }}
+                    </button>
+                  }
+                </div>
+                @if (checkoutForm.controls.selectedSize.value) {
+                  <p class="text-[9px] uppercase tracking-[0.2em] text-[#bbb] font-medium">
+                    Stock Status: <span class="text-[#1a1a1a]">In stock</span>
+                  </p>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Description & Features -->
+          <div class="space-y-8 pt-8 border-t border-[#eee]">
+            @if (product.description) {
+              <div class="space-y-4">
+                <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#c8922a]">Description</h3>
+                <p class="text-[16px] text-[#444] leading-[1.7] font-light">{{ product.description }}</p>
+              </div>
+            }
+
+            <!-- Features Info -->
+            <div class="grid grid-cols-2 gap-4 pt-6">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-white border border-[#eee] flex items-center justify-center">
+                  <app-icon name="Truck" size="16" className="text-[#888]"></app-icon>
+                </div>
+                <span class="text-[9px] uppercase tracking-[0.1em] text-[#888] font-bold">Priority Shipping</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-white border border-[#eee] flex items-center justify-center">
+                  <app-icon name="ShieldCheck" size="16" className="text-[#888]"></app-icon>
+                </div>
+                <span class="text-[9px] uppercase tracking-[0.1em] text-[#888] font-bold">Secure Payment</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs/Accordions -->
+      <div class="pt-2">
+        <div class="divide-y divide-[#eee] border-t border-[#eee]">
+          @if (product.fabricAndCare) {
+            <details class="group">
               <summary
                 class="flex items-center justify-between py-5 cursor-pointer list-none"
               >
@@ -224,441 +243,462 @@
                   class="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]"
                   >Fabric & Care</span
                 >
-                <lucide-icon
-                  [img]="icons.Plus"
-                  class="w-4 h-4 text-[#888] transition-transform duration-300 group-open:rotate-45"
-                ></lucide-icon>
+                <app-icon
+                  name="Plus"
+                  size="16"
+                  className="text-[#888] transition-transform duration-300 group-open:rotate-45"
+                ></app-icon>
               </summary>
               <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium">
                 {{ product.fabricAndCare }}
               </div>
             </details>
-            <details class="group">
-              <summary
-                class="flex items-center justify-between py-5 cursor-pointer list-none"
+          }
+          <details class="group">
+            <summary
+              class="flex items-center justify-between py-5 cursor-pointer list-none"
+            >
+              <span
+                class="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]"
+                >Delivery & Returns</span
               >
-                <span
-                  class="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]"
-                  >Delivery & Returns</span
-                >
-                <lucide-icon
-                  [img]="icons.Plus"
-                  class="w-4 h-4 text-[#888] transition-transform duration-300 group-open:rotate-45"
-                ></lucide-icon>
-              </summary>
-              <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium">
-                {{
-                  product.shippingAndReturns ||
-                    "Express delivery in 24-48 hours. Stress-free returns."
-                }}
-              </div>
-            </details>
-          </div>
+              <app-icon
+                name="Plus"
+                size="16"
+                className="text-[#888] transition-transform duration-300 group-open:rotate-45"
+              ></app-icon>
+            </summary>
+            <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium">
+              {{
+                product.shippingAndReturns ||
+                  "Express delivery in 24-48 hours. Stress-free returns."
+              }}
+            </div>
+          </details>
+        </div>
       </div>
 
-    <!-- ROW 2: Order Form Section -->
-    <div class="mt-20 xl:mt-24 pt-20 border-t-2 border-dashed border-[#ddd]">
-      <div class="max-w-[1000px] mx-auto">
-        <div class="text-center mb-16 space-y-4">
-          <h2
-            class="text-4xl lg:text-5xl font-black text-[#1a1a1a] uppercase tracking-tight"
-          >
-            Complete Your Order
-          </h2>
-          <div class="flex items-center justify-center gap-4">
-            <span class="h-[1px] w-12 bg-[#ddd]"></span>
-            <p class="text-xs font-bold text-[#888] uppercase tracking-[0.2em]">
-              Cash on delivery nationwide
-            </p>
-            <span class="h-[1px] w-12 bg-[#ddd]"></span>
+      <!-- ROW 2: Order Form Section -->
+      <div class="mt-20 xl:mt-24 pt-20 border-t-2 border-dashed border-[#ddd]">
+        <div class="max-w-[1000px] mx-auto">
+          <div class="text-center mb-16 space-y-4">
+            <h2
+              class="text-4xl lg:text-5xl font-black text-[#1a1a1a] uppercase tracking-tight"
+            >
+              Complete Your Order
+            </h2>
+            <div class="flex items-center justify-center gap-4">
+              <span class="h-[1px] w-12 bg-[#ddd]"></span>
+              <p class="text-xs font-bold text-[#888] uppercase tracking-[0.2em]">
+                Cash on delivery nationwide
+              </p>
+              <span class="h-[1px] w-12 bg-[#ddd]"></span>
+            </div>
           </div>
-        </div>
 
-        <div
-          class="bg-white border-2 border-[#1a1a1a] rounded-[2.5rem] p-8 lg:p-12 shadow-2xl shadow-indigo-900/10 relative overflow-hidden"
-        >
-          <!-- Background accent -->
           <div
-            class="absolute top-0 right-0 w-32 h-32 bg-[#1a1a1a]/5 rounded-bl-[5rem] -mr-8 -mt-8"
-          ></div>
-
-          <form
-            [formGroup]="checkoutForm"
-            (ngSubmit)="placeOrder()"
-            class="relative"
+            class="bg-white border-2 border-[#1a1a1a] rounded-[2.5rem] p-8 lg:p-12 shadow-2xl shadow-indigo-900/10 relative overflow-hidden"
           >
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
-              <!-- Column 1: Customer Information -->
-              <div class="space-y-8">
-                <div class="flex items-center gap-3 mb-2">
-                  <div
-                    class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center"
-                  >
-                    <lucide-icon
-                      [img]="icons.User"
-                      class="w-4 h-4 text-white"
-                    ></lucide-icon>
-                  </div>
-                  <h3
-                    class="text-xs font-black uppercase tracking-[0.2em] text-[#1a1a1a]"
-                  >
-                    Customer Info
-                  </h3>
-                </div>
+            <!-- Background accent -->
+            <div
+              class="absolute top-0 right-0 w-32 h-32 bg-[#1a1a1a]/5 rounded-bl-[5rem] -mr-8 -mt-8"
+            ></div>
 
-                <!-- Name & Phone Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div class="space-y-2">
-                    <label
-                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
-                      >Full Name</label
+            <form
+              [formGroup]="checkoutForm"
+              (ngSubmit)="placeOrder()"
+              class="relative"
+            >
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
+                <!-- Column 1: Customer Information -->
+                <div class="space-y-8">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div
+                      class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center"
                     >
-                    <input
-                      type="text"
-                      formControlName="fullName"
-                      placeholder="e.g. Abdullah"
-                      class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc]"
-                    />
-                    <p
-                      class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
-                      *ngIf="
-                        checkoutForm.controls.fullName.touched &&
-                        checkoutForm.controls.fullName.invalid
-                      "
+                      <app-icon
+                        name="User"
+                        size="16"
+                        className="text-white"
+                      ></app-icon>
+                    </div>
+                    <h3
+                      class="text-xs font-black uppercase tracking-[0.2em] text-[#1a1a1a]"
                     >
-                      Required
-                    </p>
+                      Customer Info
+                    </h3>
                   </div>
 
-                  <div class="space-y-2">
-                    <label
-                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
-                      >Mobile Number</label
-                    >
-                    <div class="relative flex">
-                      <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-[#eee] bg-[#fcfcfc] text-xs font-black text-[#888]">+88</span>
+                  <!-- Name & Phone Grid -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                      <label
+                        class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                        >Full Name</label
+                      >
                       <input
-                        type="tel"
-                        formControlName="phone"
-                        placeholder="01xxxxxxxxx"
-                        class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-r-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc]"
+                        type="text"
+                        formControlName="fullName"
+                        placeholder="e.g. Abdullah"
+                        class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc]"
                       />
+                      @if (checkoutForm.controls.fullName.touched && checkoutForm.controls.fullName.invalid) {
+                        <p
+                          class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
+                        >
+                          Required
+                        </p>
+                      }
                     </div>
-                    <p
-                      class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
-                      *ngIf="
-                        checkoutForm.controls.phone.touched &&
-                        checkoutForm.controls.phone.invalid
-                      "
-                    >
-                      Required
-                    </p>
-                  </div>
-                </div>
 
-                <!-- City & Area Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <!-- City -->
-                  <div class="space-y-2">
-                    <label class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1">City</label>
-                    <div class="relative">
-                      <div class="relative items-center flex cursor-pointer" (click)="toggleCityDropdown()">
+                    <div class="space-y-2">
+                      <label
+                        class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                        >Mobile Number</label
+                      >
+                      <div class="relative flex">
+                        <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-[#eee] bg-[#fcfcfc] text-xs font-black text-[#888]">+88</span>
                         <input
-                          class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc] pointer-events-none"
-                          type="text"
-                          [value]="checkoutForm.controls.city.value"
-                          placeholder="Select city"
-                          readonly
+                          type="tel"
+                          formControlName="phone"
+                          placeholder="01xxxxxxxxx"
+                          class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-r-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc]"
                         />
-                        <lucide-icon [img]="isCityDropdownOpen ? icons.ChevronUp : icons.ChevronDown" class="absolute right-4 w-4 h-4 text-[#888] pointer-events-none"></lucide-icon>
                       </div>
-
-                      <!-- Dropdown -->
-                      <div *ngIf="isCityDropdownOpen" 
-                        class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
-                        (click)="$event.stopPropagation()">
-                        <div class="p-3 border-b border-[#eee]">
-                          <div class="relative flex items-center">
-                            <lucide-icon [img]="icons.Search" class="absolute left-3 w-4 h-4 text-[#ccc]"></lucide-icon>
-                            <input
-                              type="text"
-                              class="w-full pl-10 pr-4 py-2 bg-[#fcfcfc] border-none rounded-xl text-sm font-bold focus:ring-0 outline-none"
-                              placeholder="Search cities..."
-                              (input)="filterCities($event)"
-                              [value]="citySearch"
-                              autofocus
-                            />
-                          </div>
-                        </div>
-                        <ul class="max-h-60 overflow-y-auto py-1">
-                          <li *ngIf="filteredCities.length === 0" class="px-5 py-3 text-xs text-[#888] text-center font-bold">No cities found</li>
-                          <li
-                            *ngFor="let city of filteredCities"
-                            (click)="selectCity(city)"
-                            class="px-5 py-3 text-sm text-[#555] font-bold hover:bg-[#fcfcfc] hover:text-[#1a1a1a] cursor-pointer transition-colors"
-                            [ngClass]="{'bg-[#1a1a1a]/5 text-[#1a1a1a]': checkoutForm.controls.city.value === city}"
-                          >
-                            {{ city }}
-                          </li>
-                        </ul>
-                      </div>
-                      <div *ngIf="isCityDropdownOpen" class="fixed inset-0 z-40" (click)="toggleCityDropdown()"></div>
+                      @if (checkoutForm.controls.phone.touched && checkoutForm.controls.phone.invalid) {
+                        <p
+                          class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
+                        >
+                          Required
+                        </p>
+                      }
                     </div>
                   </div>
 
-                  <!-- Area -->
+                  <!-- City & Area Grid -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- City -->
+                    <div class="space-y-2">
+                      <label class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1">City</label>
+                      <div class="relative">
+                        <div class="relative items-center flex cursor-pointer" (click)="toggleCityDropdown()">
+                          <input
+                            class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc] pointer-events-none"
+                            type="text"
+                            [value]="checkoutForm.controls.city.value"
+                            placeholder="Select city"
+                            readonly
+                          />
+                          <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-[#888] pointer-events-none"></app-icon>
+                        </div>
+
+                        <!-- Dropdown -->
+                        @if (isCityDropdownOpen) {
+                          <div
+                            class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+                            (click)="$event.stopPropagation()">
+                            <div class="p-3 border-b border-[#eee]">
+                              <div class="relative flex items-center">
+                                <app-icon name="Search" size="16" className="absolute left-3 text-[#ccc]"></app-icon>
+                                <input
+                                  type="text"
+                                  class="w-full pl-10 pr-4 py-2 bg-[#fcfcfc] border-none rounded-xl text-sm font-bold focus:ring-0 outline-none"
+                                  placeholder="Search cities..."
+                                  (input)="filterCities($event)"
+                                  [value]="citySearch"
+                                  autofocus
+                                />
+                              </div>
+                            </div>
+                            <ul class="max-h-60 overflow-y-auto py-1">
+                              @if (filteredCities.length === 0) {
+                                <li class="px-5 py-3 text-xs text-[#888] text-center font-bold">No cities found</li>
+                              }
+                              @for (city of filteredCities; track city) {
+                                <li
+                                  (click)="selectCity(city)"
+                                  class="px-5 py-3 text-sm text-[#555] font-bold hover:bg-[#fcfcfc] hover:text-[#1a1a1a] cursor-pointer transition-colors"
+                                  [ngClass]="{'bg-[#1a1a1a]/5 text-[#1a1a1a]': checkoutForm.controls.city.value === city}"
+                                >
+                                  {{ city }}
+                                </li>
+                              }
+                            </ul>
+                          </div>
+                        }
+                        @if (isCityDropdownOpen) {
+                          <div class="fixed inset-0 z-40" (click)="toggleCityDropdown()"></div>
+                        }
+                      </div>
+                    </div>
+
+                    <!-- Area -->
+                    <div class="space-y-2">
+                      <label class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1">Area</label>
+                      <div class="relative">
+                        <div class="relative items-center flex cursor-pointer" (click)="toggleAreaDropdown()">
+                          <input
+                            class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc] pointer-events-none"
+                            [class.opacity-50]="!checkoutForm.controls.city.value"
+                            type="text"
+                            [value]="checkoutForm.controls.area.value"
+                            placeholder="Select area"
+                            readonly
+                          />
+                          <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-[#888] pointer-events-none"></app-icon>
+                        </div>
+
+                        <!-- Dropdown -->
+                        @if (isAreaDropdownOpen) {
+                          <div
+                            class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+                            (click)="$event.stopPropagation()">
+                            <div class="p-3 border-b border-[#eee]">
+                              <div class="relative flex items-center">
+                                <app-icon name="Search" size="16" className="absolute left-3 text-[#ccc]"></app-icon>
+                                <input
+                                  type="text"
+                                  class="w-full pl-10 pr-4 py-2 bg-[#fcfcfc] border-none rounded-xl text-sm font-bold focus:ring-0 outline-none"
+                                  placeholder="Search areas..."
+                                  (input)="filterAreas($event)"
+                                  [value]="areaSearch"
+                                  autofocus
+                                />
+                              </div>
+                            </div>
+                            <ul class="max-h-60 overflow-y-auto py-1">
+                              @if (filteredAreas.length === 0) {
+                                <li class="px-5 py-3 text-xs text-[#888] text-center font-bold">No areas found</li>
+                              }
+                              @for (area of filteredAreas; track area) {
+                                <li
+                                  (click)="selectArea(area)"
+                                  class="px-5 py-3 text-sm text-[#555] font-bold hover:bg-[#fcfcfc] hover:text-[#1a1a1a] cursor-pointer transition-colors"
+                                  [ngClass]="{'bg-[#1a1a1a]/5 text-[#1a1a1a]': checkoutForm.controls.area.value === area}"
+                                >
+                                  {{ area }}
+                                </li>
+                              }
+                            </ul>
+                          </div>
+                        }
+                        @if (isAreaDropdownOpen) {
+                          <div class="fixed inset-0 z-40" (click)="toggleAreaDropdown()"></div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Address -->
                   <div class="space-y-2">
-                    <label class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1">Area</label>
-                    <div class="relative">
-                      <div class="relative items-center flex cursor-pointer" (click)="toggleAreaDropdown()">
-                        <input
-                          class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc] pointer-events-none"
-                          [class.opacity-50]="!checkoutForm.controls.city.value"
-                          type="text"
-                          [value]="checkoutForm.controls.area.value"
-                          placeholder="Select area"
-                          readonly
-                        />
-                        <lucide-icon [img]="isAreaDropdownOpen ? icons.ChevronUp : icons.ChevronDown" class="absolute right-4 w-4 h-4 text-[#888] pointer-events-none"></lucide-icon>
-                      </div>
-
-                      <!-- Dropdown -->
-                      <div *ngIf="isAreaDropdownOpen" 
-                        class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
-                        (click)="$event.stopPropagation()">
-                        <div class="p-3 border-b border-[#eee]">
-                          <div class="relative flex items-center">
-                            <lucide-icon [img]="icons.Search" class="absolute left-3 w-4 h-4 text-[#ccc]"></lucide-icon>
-                            <input
-                              type="text"
-                              class="w-full pl-10 pr-4 py-2 bg-[#fcfcfc] border-none rounded-xl text-sm font-bold focus:ring-0 outline-none"
-                              placeholder="Search areas..."
-                              (input)="filterAreas($event)"
-                              [value]="areaSearch"
-                              autofocus
-                            />
-                          </div>
-                        </div>
-                        <ul class="max-h-60 overflow-y-auto py-1">
-                          <li *ngIf="filteredAreas.length === 0" class="px-5 py-3 text-xs text-[#888] text-center font-bold">No areas found</li>
-                          <li
-                            *ngFor="let area of filteredAreas"
-                            (click)="selectArea(area)"
-                            class="px-5 py-3 text-sm text-[#555] font-bold hover:bg-[#fcfcfc] hover:text-[#1a1a1a] cursor-pointer transition-colors"
-                            [ngClass]="{'bg-[#1a1a1a]/5 text-[#1a1a1a]': checkoutForm.controls.area.value === area}"
-                          >
-                            {{ area }}
-                          </li>
-                        </ul>
-                      </div>
-                      <div *ngIf="isAreaDropdownOpen" class="fixed inset-0 z-40" (click)="toggleAreaDropdown()"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Address -->
-                <div class="space-y-2">
-                  <label
-                    class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
-                    >Delivery Address</label
-                  >
-                  <textarea
-                    formControlName="address"
-                    rows="3"
-                    placeholder="House, Road..."
-                    class="w-full p-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc] resize-none"
-                  ></textarea>
-                  <p
-                    class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
-                    *ngIf="
-                      checkoutForm.controls.address.touched &&
-                      checkoutForm.controls.address.invalid
-                    "
-                  >
-                    Required
-                  </p>
-                </div>
-              </div>
-
-              <!-- Column 2: Order Details -->
-              <div class="space-y-8">
-                <div class="flex items-center gap-3 mb-2">
-                  <div
-                    class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center"
-                  >
-                    <lucide-icon
-                      [img]="icons.Truck"
-                      class="w-4 h-4 text-white"
-                    ></lucide-icon>
-                  </div>
-                  <h3
-                    class="text-xs font-black uppercase tracking-[0.2em] text-[#1a1a1a]"
-                  >
-                    Order Details
-                  </h3>
-                </div>
-
-                <!-- Shipping -->
-                <div class="space-y-4">
-                  <label
-                    class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
-                    >Delivery Method</label
-                  >
-                  <div class="space-y-3">
                     <label
-                      *ngFor="let method of deliveryMethods"
-                      class="flex items-center justify-between p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 group"
-                      [ngClass]="
-                        checkoutForm.controls.deliveryMethodId.value ===
-                        method.id
-                          ? 'border-[#1a1a1a] bg-[#1a1a1a]/5'
-                          : 'border-[#eee] hover:border-[#ddd]'
-                      "
+                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                      >Delivery Address</label
                     >
-                      <div class="flex items-center gap-4">
-                        <div
-                          class="w-5 h-5 rounded-full border-2 border-[#ddd] flex items-center justify-center shadow-inner"
-                          [class.border-[#1a1a1a]]="
+                    <textarea
+                      formControlName="address"
+                      rows="3"
+                      placeholder="House, Road..."
+                      class="w-full p-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc] resize-none"
+                    ></textarea>
+                    @if (checkoutForm.controls.address.touched && checkoutForm.controls.address.invalid) {
+                      <p
+                        class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
+                      >
+                        Required
+                      </p>
+                    }
+                  </div>
+                </div>
+
+                <!-- Column 2: Order Details -->
+                <div class="space-y-8">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div
+                      class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center"
+                    >
+                      <app-icon
+                        name="Truck"
+                        size="16"
+                        className="text-white"
+                      ></app-icon>
+                    </div>
+                    <h3
+                      class="text-xs font-black uppercase tracking-[0.2em] text-[#1a1a1a]"
+                    >
+                      Order Details
+                    </h3>
+                  </div>
+
+                  <!-- Shipping -->
+                  <div class="space-y-4">
+                    <label
+                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                      >Delivery Method</label
+                    >
+                    <div class="space-y-3">
+                      @for (method of deliveryMethods; track method.id) {
+                        <label
+                          class="flex items-center justify-between p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 group"
+                          [ngClass]="
                             checkoutForm.controls.deliveryMethodId.value ===
                             method.id
+                              ? 'border-[#1a1a1a] bg-[#1a1a1a]/5'
+                              : 'border-[#eee] hover:border-[#ddd]'
                           "
                         >
-                          <div
-                            *ngIf="
-                              checkoutForm.controls.deliveryMethodId.value ===
-                              method.id
-                            "
-                            class="w-2.5 h-2.5 rounded-full bg-[#1a1a1a]"
-                          ></div>
-                          <input
-                            type="radio"
-                            formControlName="deliveryMethodId"
-                            [value]="method.id"
-                            class="absolute opacity-0 cursor-pointer"
-                          />
-                        </div>
-                        <div class="flex flex-col text-left">
-                          <span
-                            class="text-[11px] font-black text-[#1a1a1a] uppercase tracking-wider"
-                            >{{ method.name }}</span
+                          <div class="flex items-center gap-4">
+                            <div
+                              class="w-5 h-5 rounded-full border-2 border-[#ddd] flex items-center justify-center shadow-inner"
+                              [class.border-[#1a1a1a]]="
+                                checkoutForm.controls.deliveryMethodId.value ===
+                                method.id
+                              "
+                            >
+                              @if (checkoutForm.controls.deliveryMethodId.value === method.id) {
+                                <div
+                                  class="w-2.5 h-2.5 rounded-full bg-[#1a1a1a]"
+                                ></div>
+                              }
+                              <input
+                                type="radio"
+                                formControlName="deliveryMethodId"
+                                [value]="method.id"
+                                class="absolute opacity-0 cursor-pointer"
+                              />
+                            </div>
+                            <div class="flex flex-col text-left">
+                              <span
+                                class="text-[11px] font-black text-[#1a1a1a] uppercase tracking-wider"
+                                >{{ method.name }}</span
+                              >
+                              <span class="text-[9px] text-[#888] font-bold">{{
+                                method.estimatedDays
+                              }}</span>
+                            </div>
+                          </div>
+                          <span class="text-xs font-black text-[#1a1a1a]"
+                            >৳{{ method.cost }}</span
                           >
-                          <span class="text-[9px] text-[#888] font-bold">{{
-                            method.estimatedDays
-                          }}</span>
-                        </div>
-                      </div>
-                      <span class="text-xs font-black text-[#1a1a1a]"
-                        >৳{{ method.cost }}</span
-                      >
-                    </label>
+                        </label>
+                      }
+                    </div>
                   </div>
-                </div>
 
-                <!-- Quantity & Total -->
-                <div
-                  class="bg-[#f9f9f9] rounded-3xl p-6 border-2 border-dashed border-[#eee] flex items-center justify-between"
-                >
-                  <div class="space-y-1">
-                    <span
-                      class="text-[10px] font-black text-[#888] uppercase tracking-widest"
-                      >Quantity</span
-                    >
-                    <div
-                      class="flex items-center h-12 bg-white border-2 border-[#eee] rounded-xl overflow-hidden shadow-inner"
-                    >
-                      <button
-                        (click)="decreaseQuantity()"
-                        type="button"
-                        class="w-10 h-full flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white transition-all"
+                  <!-- Quantity & Total -->
+                  <div
+                    class="bg-[#f9f9f9] rounded-3xl p-6 border-2 border-dashed border-[#eee] flex items-center justify-between"
+                  >
+                    <div class="space-y-1">
+                      <span
+                        class="text-[10px] font-black text-[#888] uppercase tracking-widest"
+                        >Quantity</span
                       >
-                        <lucide-icon
-                          [img]="icons.Minus"
-                          class="w-3 h-3"
-                        ></lucide-icon>
-                      </button>
                       <div
-                        class="w-10 h-full flex items-center justify-center font-black text-xs text-[#1a1a1a]"
+                        class="flex items-center h-12 bg-white border-2 border-[#eee] rounded-xl overflow-hidden shadow-inner"
                       >
-                        {{ checkoutForm.controls.quantity.value }}
+                        <button
+                          (click)="decreaseQuantity()"
+                          type="button"
+                          class="w-10 h-full flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white transition-all"
+                        >
+                          <app-icon
+                            name="Minus"
+                            size="12"
+                          ></app-icon>
+                        </button>
+                        <div
+                          class="w-10 h-full flex items-center justify-center font-black text-xs text-[#1a1a1a]"
+                        >
+                          {{ checkoutForm.controls.quantity.value }}
+                        </div>
+                        <button
+                          (click)="increaseQuantity()"
+                          type="button"
+                          class="w-10 h-full flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white transition-all"
+                        >
+                          <app-icon
+                            name="Plus"
+                            size="12"
+                          ></app-icon>
+                        </button>
                       </div>
-                      <button
-                        (click)="increaseQuantity()"
-                        type="button"
-                        class="w-10 h-full flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white transition-all"
-                      >
-                        <lucide-icon
-                          [img]="icons.Plus"
-                          class="w-3 h-3"
-                        ></lucide-icon>
-                      </button>
                     </div>
-                  </div>
 
-                  <div class="text-right space-y-1">
-                    <span
-                      class="text-[10px] font-black text-[#888] uppercase tracking-widest"
-                      >Total Amount</span
-                    >
-                    <div>
-                      <app-price-display
-                        [amount]="total"
-                        size="lg"
-                        class="text-[#1a1a1a] font-black text-2xl tracking-tighter"
-                      ></app-price-display>
+                    <div class="text-right space-y-1">
+                      <span
+                        class="text-[10px] font-black text-[#888] uppercase tracking-widest"
+                        >Total Amount</span
+                      >
+                      <div>
+                        <app-price-display
+                          [amount]="total"
+                          size="lg"
+                          class="text-[#1a1a1a] font-black text-2xl tracking-tighter"
+                        ></app-price-display>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Action Buttons -->
-            <div class="mt-12 pt-10 border-t border-[#eee]">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button
-                  type="submit"
-                  [disabled]="isOrdering"
-                  class="h-16 bg-[#1a1a1a] text-white text-xs font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group"
-                >
-                  <lucide-icon
-                    *ngIf="isOrdering"
-                    [img]="icons.Loader2"
-                    class="w-5 h-5 animate-spin"
-                  ></lucide-icon>
-                  <span *ngIf="!isOrdering">Confirm Order Now</span>
-                  <lucide-icon
-                    *ngIf="!isOrdering"
-                    [img]="icons.ChevronRight"
-                    class="w-4 h-4 group-hover:translate-x-1 transition-transform"
-                  ></lucide-icon>
-                </button>
+              <!-- Action Buttons -->
+              <div class="mt-12 pt-10 border-t border-[#eee]">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <button
+                    type="submit"
+                    [disabled]="isOrdering"
+                    class="h-16 bg-[#1a1a1a] text-white text-xs font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group"
+                  >
+                    @if (isOrdering) {
+                      <app-icon
+                        name="Loader2"
+                        size="20"
+                        className="animate-spin"
+                      ></app-icon>
+                    }
+                    @if (!isOrdering) {
+                      <span>Confirm Order Now</span>
+                    }
+                    @if (!isOrdering) {
+                      <app-icon
+                        name="ChevronRight"
+                        size="16"
+                        className="group-hover:translate-x-1 transition-transform"
+                      ></app-icon>
+                    }
+                  </button>
 
-                <button
-                  type="button"
-                  (click)="addToCart()"
-                  class="h-16 bg-white border-2 border-[#ddd] hover:border-[#1a1a1a] text-[#1a1a1a] text-xs font-black uppercase tracking-[0.3em] rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
-                >
-                  <lucide-icon
-                    [img]="icons.ShoppingCart"
-                    class="w-5 h-5"
-                  ></lucide-icon>
-                  <span>Add to Bag</span>
-                </button>
+                  <button
+                    type="button"
+                    (click)="addToCart()"
+                    class="h-16 bg-white border-2 border-[#ddd] hover:border-[#1a1a1a] text-[#1a1a1a] text-xs font-black uppercase tracking-[0.3em] rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
+                  >
+                    <app-icon
+                      name="ShoppingCart"
+                      size="20"
+                    ></app-icon>
+                    <span>Add to Bag</span>
+                  </button>
+                </div>
+                @if (errorMessage) {
+                  <p
+                    class="text-[10px] text-red-500 text-center font-black uppercase tracking-widest mt-6"
+                  >
+                    {{ errorMessage }}
+                  </p>
+                }
               </div>
-              <p
-                *ngIf="errorMessage"
-                class="text-[10px] text-red-500 text-center font-black uppercase tracking-widest mt-6"
-              >
-                {{ errorMessage }}
-              </p>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 </div>
 
-<app-size-guide
-  *ngIf="isSizeGuideOpen"
-  (close)="closeSizeGuide()"
-></app-size-guide>
+@if (isSizeGuideOpen) {
+  <app-size-guide
+    (close)="closeSizeGuide()"
+  ></app-size-guide>
+}

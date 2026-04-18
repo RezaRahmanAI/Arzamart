@@ -15,14 +15,14 @@
         routerLink="/admin/orders/create"
         class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5"
       >
-        <lucide-icon [img]="icons.ShoppingCart" class="w-4 h-4"></lucide-icon>
+        <app-icon name="ShoppingCart" size="16"></app-icon>
         <span>New Order</span>
       </a>
       <a
         routerLink="/admin/orders/pre-order"
         class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 bg-violet-500 hover:bg-violet-600 text-white text-sm font-semibold shadow-lg shadow-violet-500/20 transition-all hover:-translate-y-0.5 mr-2"
       >
-        <lucide-icon [img]="icons.PackagePlus" class="w-4 h-4"></lucide-icon>
+        <app-icon name="PackagePlus" size="16"></app-icon>
         <span>New Pre-order</span>
       </a>
     </div>
@@ -31,7 +31,7 @@
   <!-- Filters Toolbar -->
   <div class="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center bg-white dark:bg-surface-dark p-4 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
     <div class="relative flex-1 max-w-md">
-      <lucide-icon [img]="icons.Search" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"></lucide-icon>
+      <app-icon name="Search" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
       <input
         class="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium text-primary dark:text-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none"
         placeholder="Search by name, phone or #ID..."
@@ -47,10 +47,10 @@
               (click)="toggleStatusMenu($event)"
               class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
             >
-              <lucide-icon [img]="icons.Check" class="w-4 h-4 text-emerald-500"></lucide-icon>
+              <app-icon name="Check" size="16" className="text-emerald-500"></app-icon>
               <span class="text-gray-400 uppercase text-[10px] tracking-wider hidden sm:inline">Filter By:</span>
               <span class="min-w-[80px] text-center">{{ selectedStatus === 'All' ? 'All Statuses' : selectedStatus }}</span>
-              <lucide-icon [img]="icons.ChevronDown" class="w-4 h-4 text-gray-400" [class.rotate-180]="statusMenuOpen"></lucide-icon>
+              <app-icon name="ChevronDown" size="16" className="text-gray-400" [className]="statusMenuOpen ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
             </button>
             
             <div *ngIf="statusMenuOpen" class="absolute left-0 lg:right-0 lg:left-auto mt-3 w-[280px] bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl z-[100] p-4 animate-in fade-in zoom-in duration-200">
@@ -67,7 +67,7 @@
                             <div class="w-2 h-2 rounded-full" [ngStyle]="{ backgroundColor: getStatusColor(status) }"></div>
                             <span>{{ status }}</span>
                         </div>
-                        <lucide-icon *ngIf="selectedStatus === status" [img]="icons.Check" class="w-3 h-3"></lucide-icon>
+                        <app-icon *ngIf="selectedStatus === status" name="Check" size="12"></app-icon>
                     </button>
                 </div>
             </div>
@@ -79,10 +79,10 @@
               (click)="toggleDateMenu($event)"
               class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
             >
-              <lucide-icon [img]="icons.Calendar" class="w-4 h-4 text-gray-400"></lucide-icon>
+              <app-icon name="Calendar" size="16" className="text-gray-400"></app-icon>
               <span class="text-gray-400 uppercase text-[10px] tracking-wider hidden sm:inline">Range:</span>
               <span class="min-w-[80px] text-center">{{ activeDateRangeLabel }}</span>
-              <lucide-icon [img]="icons.ChevronDown" class="w-4 h-4 text-gray-400" [class.rotate-180]="dateMenuOpen"></lucide-icon>
+              <app-icon name="ChevronDown" size="16" className="text-gray-400" [className]="dateMenuOpen ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
             </button>
             
             <div *ngIf="dateMenuOpen" class="absolute right-0 mt-3 w-[450px] bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl z-[100] overflow-hidden flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-800 animate-in fade-in zoom-in duration-200">
@@ -97,7 +97,7 @@
                             [class.hover:bg-gray-100]="selectedDateRange !== range"
                             [class.dark:hover:bg-gray-800]="selectedDateRange !== range">
                         <span>{{ range }}</span>
-                        <lucide-icon *ngIf="selectedDateRange === range" [img]="icons.Check" class="w-3 h-3"></lucide-icon>
+                        <app-icon *ngIf="selectedDateRange === range" name="Check" size="12"></app-icon>
                     </button>
                 </div>
 
@@ -110,7 +110,7 @@
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-gray-500 uppercase tracking-wider ml-1">From Date</label>
                                 <div class="relative group">
-                                    <lucide-icon [img]="icons.Calendar" class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 group-focus-within:text-primary transition-colors"></lucide-icon>
+                                    <app-icon name="Calendar" size="12" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></app-icon>
                                     <input type="date" 
                                            [(ngModel)]="tempStartDate"
                                            class="w-full pl-9 pr-3 py-2.5 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-xl text-xs font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
@@ -119,7 +119,7 @@
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-gray-500 uppercase tracking-wider ml-1">To Date</label>
                                 <div class="relative group">
-                                    <lucide-icon [img]="icons.Calendar" class="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 group-focus-within:text-primary transition-colors"></lucide-icon>
+                                    <app-icon name="Calendar" size="12" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></app-icon>
                                     <input type="date" 
                                            [(ngModel)]="tempEndDate"
                                            class="w-full pl-9 pr-3 py-2.5 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-xl text-xs font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
@@ -157,7 +157,7 @@
                 {{ page.name }}
               </option>
             </select>
-            <lucide-icon [img]="icons.ChevronDown" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></lucide-icon>
+            <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
         </div>
 
         <!-- Social Media Filter -->
@@ -171,7 +171,7 @@
                 {{ source.name }}
               </option>
             </select>
-            <lucide-icon [img]="icons.ChevronDown" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></lucide-icon>
+            <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
         </div>
     </div>
   </div>
@@ -229,7 +229,7 @@
             <td class="px-6 py-6">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <lucide-icon [img]="icons.User" class="w-5 h-5 text-gray-400"></lucide-icon>
+                  <app-icon name="User" size="20" className="text-gray-400"></app-icon>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-sm font-semibold text-primary dark:text-white tracking-tight">{{ order.customerName }}</span>
@@ -246,7 +246,7 @@
                     >
                       <span class="w-1.5 h-1.5 rounded-full animate-pulse" [ngStyle]="{ backgroundColor: getStatusColor(order.status) }"></span>
                       <span>{{ order.status }}</span>
-                      <lucide-icon [img]="icons.ChevronDown" class="w-3 h-3 opacity-50 transition-transform" [class.rotate-180]="statusUpdateOrderId === order.id"></lucide-icon>
+                      <app-icon name="ChevronDown" size="12" className="opacity-50 transition-transform" [className]="statusUpdateOrderId === order.id ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
                     </button>
                     
                     <!-- Premium Status Update Menu -->
@@ -270,12 +270,12 @@
                           <div class="flex items-center gap-3 relative z-10">
                             <div class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors shadow-sm"
                                  [ngClass]="order.status === status ? 'bg-white/20' : 'bg-gray-50 dark:bg-gray-900 group-hover:bg-white dark:group-hover:bg-gray-800'">
-                                <lucide-icon [img]="getStatusIcon(status)" class="w-3.5 h-3.5" [ngStyle]="{ color: order.status === status ? 'white' : getStatusColor(status) }"></lucide-icon>
+                                <app-icon [name]="getStatusIconName(status)" size="14" [className]="order.status === status ? 'text-white' : ''" [ngStyle]="{ color: order.status === status ? 'white' : getStatusColor(status) }"></app-icon>
                             </div>
                             <span>{{ status }}</span>
                           </div>
 
-                          <lucide-icon *ngIf="order.status === status" [img]="icons.Check" class="w-3 h-3 relative z-10"></lucide-icon>
+                          <app-icon *ngIf="order.status === status" name="Check" size="12" className="relative z-10"></app-icon>
                           
                           <!-- Subtle Background hover effect -->
                           <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
@@ -296,11 +296,11 @@
             <td class="px-6 py-6">
               <div class="flex flex-col gap-1">
                 <div *ngIf="order.sourcePageName" class="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
-                  <lucide-icon [img]="icons.CheckCircle" class="w-3 h-3 text-emerald-500"></lucide-icon>
+                  <app-icon name="CheckCircle" size="12" className="text-emerald-500"></app-icon>
                   <span>{{ order.sourcePageName }}</span>
                 </div>
                 <div *ngIf="order.socialMediaSourceName" class="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
-                  <lucide-icon [img]="icons.CheckCircle" class="w-3 h-3 text-blue-500"></lucide-icon>
+                  <app-icon name="CheckCircle" size="12" className="text-blue-500"></app-icon>
                   <span>{{ order.socialMediaSourceName }}</span>
                 </div>
                 <div *ngIf="!order.sourcePageName && !order.socialMediaSourceName" class="text-[10px] text-gray-400 italic">No source</div>
@@ -312,37 +312,37 @@
                 <button (click)="printInvoice(order, $event)" 
                         class="w-10 h-10 rounded-xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all shadow-sm flex items-center justify-center group" 
                         title="Invoice/Details">
-                  <lucide-icon [img]="icons.Eye" class="w-5 h-5 group-hover:scale-110 transition-transform"></lucide-icon>
+                  <app-icon name="Eye" size="20" className="group-hover:scale-110 transition-transform"></app-icon>
                 </button>
                 
                 <button (click)="editOrder(order, $event)" 
                         class="w-10 h-10 rounded-xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-amber-500 hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-all shadow-sm flex items-center justify-center group" 
                         title="Edit Order">
-                  <lucide-icon [img]="icons.Edit" class="w-5 h-5 group-hover:scale-110 transition-transform"></lucide-icon>
+                  <app-icon name="Edit" size="20" className="group-hover:scale-110 transition-transform"></app-icon>
                 </button>
                 
                 <button (click)="openTracking(order, $event)" 
                         class="w-10 h-10 rounded-xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-blue-500 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all shadow-sm flex items-center justify-center group" 
                         title="Tracking History">
-                  <lucide-icon [img]="icons.History" class="w-5 h-5 group-hover:scale-110 transition-transform"></lucide-icon>
+                  <app-icon name="History" size="20" className="group-hover:scale-110 transition-transform"></app-icon>
                 </button>
                 
                 <button (click)="openNotes(order, $event)" 
                         class="w-10 h-10 rounded-xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-indigo-500 hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/10 transition-all shadow-sm flex items-center justify-center group" 
                         title="Admin Notes">
-                  <lucide-icon [img]="icons.StickyNote" class="w-5 h-5 group-hover:scale-110 transition-transform"></lucide-icon>
+                  <app-icon name="StickyNote" size="20" className="group-hover:scale-110 transition-transform"></app-icon>
                 </button>
                 
                 <button (click)="sendReminder(order, $event)" 
                         class="w-10 h-10 rounded-xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-emerald-500 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/10 transition-all shadow-sm flex items-center justify-center group" 
                         title="SMS Reminder">
-                  <lucide-icon [img]="icons.Send" class="w-5 h-5 group-hover:scale-110 transition-transform"></lucide-icon>
+                  <app-icon name="Send" size="20" className="group-hover:scale-110 transition-transform"></app-icon>
                 </button>
                 
                 <button (click)="sendWhatsApp(order, $event)" 
                         class="w-10 h-10 rounded-xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-emerald-600 hover:border-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/10 transition-all shadow-sm flex items-center justify-center group" 
                         title="WhatsApp Message">
-                  <lucide-icon [img]="icons.MessageCircle" class="w-5 h-5 group-hover:scale-110 transition-transform"></lucide-icon>
+                  <app-icon name="MessageCircle" size="20" className="group-hover:scale-110 transition-transform"></app-icon>
                 </button>
 
                 <!-- Row 3: Centered Special Action -->
@@ -351,7 +351,7 @@
                           (click)="moveToPreOrder(order, $event)" 
                           class="w-full h-10 rounded-xl bg-violet-50 dark:bg-violet-900/10 border border-violet-100 dark:border-violet-900/30 text-violet-500 hover:bg-violet-500 hover:text-white transition-all shadow-sm flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-wider group" 
                           title="Move to Pre-Order">
-                    <lucide-icon [img]="icons.PackagePlus" class="w-4 h-4 group-hover:rotate-12 transition-transform"></lucide-icon>
+                    <app-icon name="PackagePlus" size="16" className="group-hover:rotate-12 transition-transform"></app-icon>
                     <span class="hidden group-hover:inline animate-in fade-in slide-in-from-left-2 duration-300">Pre-Order</span>
                   </button>
                   
@@ -359,7 +359,7 @@
                           (click)="moveToMainOrder(order, $event)" 
                           class="w-full h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all shadow-sm flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-wider group" 
                           title="Convert to Main Order">
-                    <lucide-icon [img]="icons.ShoppingBag" class="w-4 h-4 group-hover:rotate-12 transition-transform"></lucide-icon>
+                    <app-icon name="ShoppingBag" size="16" className="group-hover:rotate-12 transition-transform"></app-icon>
                     <span class="hidden group-hover:inline animate-in fade-in slide-in-from-left-2 duration-300">Convert</span>
                   </button>
                 </div>
@@ -372,7 +372,7 @@
 
     <!-- Empty State -->
     <div *ngIf="!isLoading && orders.length === 0" class="py-20 text-center">
-      <lucide-icon [img]="icons.PackageX" class="w-16 h-16 mx-auto mb-4 text-gray-200 dark:text-gray-800"></lucide-icon>
+      <app-icon name="PackageX" size="64" className="mx-auto mb-4 text-gray-200 dark:text-gray-800"></app-icon>
       <h3 class="text-lg font-semibold text-gray-400">No orders found</h3>
       <p class="text-sm text-gray-400 mt-1 font-medium">Try adjusting your filters or search term</p>
     </div>
@@ -404,7 +404,7 @@
         [disabled]="page === 1"
         class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-100 transition-all font-semibold"
       >
-        <lucide-icon [img]="icons.ChevronLeft" class="w-5 h-5"></lucide-icon>
+        <app-icon name="ChevronLeft" size="20"></app-icon>
       </button>
       <div class="flex items-center gap-2 px-4 py-2 rounded-2xl bg-primary/5 text-primary text-sm font-semibold">
         <span>{{ page }}</span>
@@ -416,7 +416,7 @@
         [disabled]="page === totalPages"
         class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-100 transition-all font-semibold"
       >
-        <lucide-icon [img]="icons.ChevronRight" class="w-5 h-5"></lucide-icon>
+        <app-icon name="ChevronRight" size="20"></app-icon>
       </button>
     </div>
   </div>
@@ -428,7 +428,7 @@
         <div class="flex items-center justify-between mb-8">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-              <lucide-icon [img]="icons.History" class="w-6 h-6"></lucide-icon>
+              <app-icon name="History" size="24"></app-icon>
             </div>
             <div>
               <h3 class="text-xl font-semibold text-primary dark:text-white">Order Tracking</h3>
@@ -436,7 +436,7 @@
             </div>
           </div>
           <button (click)="isTrackingModalOpen = false" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500">
-            <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+            <app-icon name="X" size="20"></app-icon>
           </button>
         </div>
 
@@ -454,7 +454,7 @@
               </p>
               <div class="flex items-center gap-2 mt-2">
                   <div class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                    <lucide-icon [img]="icons.User" class="w-2.5 h-2.5 text-gray-400"></lucide-icon>
+                    <app-icon name="User" size="10" className="text-gray-400"></app-icon>
                   </div>
                   <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">{{ log.changedBy }}</span>
               </div>
@@ -462,7 +462,7 @@
           </div>
 
           <div *ngIf="!trackingOrder.logs || trackingOrder.logs.length === 0" class="py-12 text-center">
-              <lucide-icon [img]="icons.PackageX" class="w-12 h-12 mx-auto mb-4 text-gray-100 dark:bg-gray-800"></lucide-icon>
+              <app-icon name="PackageX" size="48" className="mx-auto mb-4 text-gray-100 dark:bg-gray-800"></app-icon>
               <p class="text-sm font-semibold text-gray-400">No activity logs found for this order</p>
           </div>
         </div>
@@ -482,7 +482,7 @@
         <div class="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-white dark:bg-surface-dark shrink-0">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
-              <lucide-icon [img]="icons.MessageSquare" class="w-6 h-6"></lucide-icon>
+              <app-icon name="MessageSquare" size="24"></app-icon>
             </div>
             <div>
               <h3 class="text-xl font-semibold text-primary dark:text-white">Internal Discussion</h3>
@@ -490,14 +490,14 @@
             </div>
           </div>
           <button (click)="isNotesModalOpen = false" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
-            <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+            <app-icon name="X" size="20"></app-icon>
           </button>
         </div>
 
         <!-- Thread Feed -->
         <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50 dark:bg-gray-900/10 custom-scrollbar">
           <div *ngIf="!notesOrder.notes || notesOrder.notes.length === 0" class="flex flex-col items-center justify-center h-full text-center p-10 opacity-40">
-            <lucide-icon [img]="icons.MessageCircle" class="w-16 h-16 mb-4 text-gray-300"></lucide-icon>
+            <app-icon name="MessageCircle" size="64" className="mb-4 text-gray-300"></app-icon>
             <p class="text-sm font-semibold text-gray-500 uppercase tracking-widest">No internal notes yet</p>
             <p class="text-xs text-gray-400 mt-2 italic font-medium">Start a collaboration by sending a note below.</p>
           </div>
@@ -531,8 +531,8 @@
                 [disabled]="isSavingNote || !newNoteText.trim()"
                 class="w-12 h-12 rounded-xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 hover:bg-indigo-600 hover:scale-110 active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all"
               >
-                <lucide-icon *ngIf="isSavingNote" [img]="icons.Loader2" class="w-5 h-5 animate-spin"></lucide-icon>
-                <lucide-icon *ngIf="!isSavingNote" [img]="icons.Send" class="w-5 h-5"></lucide-icon>
+                <app-icon *ngIf="isSavingNote" name="Loader2" size="20" className="animate-spin"></app-icon>
+                <app-icon *ngIf="!isSavingNote" name="Send" size="20"></app-icon>
               </button>
             </div>
           </div>

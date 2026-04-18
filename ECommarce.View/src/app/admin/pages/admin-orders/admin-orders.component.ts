@@ -9,46 +9,6 @@ import {
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
-import {
-  LucideAngularModule,
-  ShoppingBag,
-  Package,
-  CreditCard,
-  RotateCcw,
-  Search,
-  ChevronDown,
-  Check,
-  MoreVertical,
-  Eye,
-  Forward,
-  XCircle,
-  ChevronLeft,
-  ChevronRight,
-  Calendar,
-  Plus,
-  PackagePlus,
-  Edit,
-  ClipboardList,
-  MessageSquare,
-  History,
-  StickyNote,
-  LogOut,
-  Send,
-  MessageCircle,
-  X,
-  Loader2,
-  PackageX,
-  User,
-  ShoppingCart,
-  PlusCircle,
-  Clock,
-  CheckCircle,
-  Truck,
-  RotateCw,
-  AlertCircle,
-  ArrowRightCircle,
-  AlertTriangle,
-} from "lucide-angular";
 
 import {
   Order,
@@ -59,6 +19,7 @@ import { OrdersService } from "../../services/orders.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { SourceManagementService } from "../../../core/services/source-management.service";
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 interface OrderStats {
   totalOrders: number;
@@ -76,50 +37,11 @@ interface OrderStats {
     FormsModule,
     RouterModule,
     PriceDisplayComponent,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./admin-orders.component.html",
 })
 export class AdminOrdersComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    ShoppingBag,
-    Package,
-    CreditCard,
-    RotateCcw,
-    Search,
-    ChevronDown,
-    Check,
-    MoreVertical,
-    Eye,
-    Forward,
-    XCircle,
-    ChevronLeft,
-    ChevronRight,
-    Calendar,
-    Plus,
-    PackagePlus,
-    Edit,
-    ClipboardList,
-    MessageSquare,
-    History,
-    StickyNote,
-    LogOut,
-    Send,
-    MessageCircle,
-    X,
-    Loader2,
-    PackageX,
-    User,
-    ShoppingCart,
-    PlusCircle,
-    Clock,
-    CheckCircle,
-    Truck,
-    RotateCw,
-    AlertCircle,
-    ArrowRightCircle,
-    AlertTriangle,
-  };
   private ordersService = inject(OrdersService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -202,22 +124,22 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     }
   }
 
-  getStatusIcon(status: string): any {
+  getStatusIconName(status: string): string {
     switch (status) {
-      case "Pending": return this.icons.Clock;
-      case "Confirmed": return this.icons.CheckCircle;
-      case "Processing": return this.icons.RotateCw;
-      case "Packed": return this.icons.Package;
-      case "Shipped": return this.icons.Truck;
-      case "Delivered": return this.icons.CheckCircle;
-      case "Cancelled": return this.icons.XCircle;
-      case "Hold": return this.icons.AlertTriangle;
-      case "Refund": return this.icons.RotateCcw;
-      case "PreOrder": return this.icons.ArrowRightCircle;
+      case "Pending": return "Clock";
+      case "Confirmed": return "CheckCircle";
+      case "Processing": return "RotateCw";
+      case "Packed": return "Package";
+      case "Shipped": return "Truck";
+      case "Delivered": return "CheckCircle";
+      case "Cancelled": return "XCircle";
+      case "Hold": return "AlertTriangle";
+      case "Refund": return "RotateCcw";
+      case "PreOrder": return "ArrowRightCircle";
       case "Return":
       case "ReturnProcess":
-        return this.icons.AlertCircle;
-      default: return this.icons.Package;
+        return "AlertCircle";
+      default: return "Package";
     }
   }
 
@@ -272,7 +194,6 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     refundRequests: 0,
   };
 
-  // Modals state
   trackingOrder: Order | null = null;
   notesOrder: Order | null = null;
   isTrackingModalOpen = false;
@@ -281,7 +202,6 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   newNoteText = "";
   isSavingNote = false;
 
-  // Custom Date Range State
   customStartDate: string | null = null;
   customEndDate: string | null = null;
   tempStartDate: string | null = null;
@@ -504,7 +424,6 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
         this.notesOrder!.notes = updatedOrder.notes;
         this.newNoteText = "";
         this.isSavingNote = false;
-        // Optionally update the order in the main list
         const index = this.orders.findIndex(o => o.id === updatedOrder.id);
         if (index !== -1) {
           this.orders[index] = updatedOrder;

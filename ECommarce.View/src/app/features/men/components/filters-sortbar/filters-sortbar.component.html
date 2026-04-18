@@ -5,7 +5,7 @@
     <button
       class="flex items-center gap-2 text-sm font-semibold text-primary dark:text-white hover:text-primary-light transition-colors"
     >
-      <lucide-icon [img]="icons.Sliders" class="w-5 h-5"></lucide-icon>
+      <app-icon name="Sliders" size="20"></app-icon>
       Filter
     </button>
     <div class="h-4 w-px bg-gray-300 dark:bg-gray-700"></div>
@@ -24,10 +24,11 @@
         <option>Price: High to Low</option>
         <option>Popularity</option>
       </select>
-      <lucide-icon
-        class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-primary dark:text-white w-5 h-5"
-        [img]="icons.ChevronDown"
-      ></lucide-icon>
+      <app-icon
+        name="ChevronDown"
+        size="20"
+        className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-primary dark:text-white"
+      ></app-icon>
     </div>
   </div>
 </div>

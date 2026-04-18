@@ -1,0 +1,62 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|apple-touch-icon|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "catalog-api",
+      "urls": ["/api/products/**", "/api/categories/**"],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "1h",
+        "timeout": "3s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "content-api",
+      "urls": ["/api/pages/**", "/api/banners/**"],
+      "cacheConfig": {
+        "maxSize": 50,
+        "maxAge": "30m",
+        "timeout": "3s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "config-api",
+      "urls": ["/api/sitesettings/**", "/api/navigation/**"],
+      "cacheConfig": {
+        "maxSize": 10,
+        "maxAge": "24h",
+        "timeout": "5s",
+        "strategy": "performance"
+      }
+    }
+  ]
+}

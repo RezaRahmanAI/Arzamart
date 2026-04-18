@@ -3,7 +3,7 @@ import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router"; 
 import { trigger, transition, style, animate } from "@angular/animations";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
-import { LucideAngularModule, ArrowRight, ArrowLeft, Tag } from "lucide-angular";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 interface Slide {
   image: string;
@@ -17,7 +17,7 @@ interface Slide {
 @Component({
   selector: "app-hero",
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule],
+  imports: [RouterModule, AppIconComponent],
   templateUrl: "./hero.component.html",
   styleUrl: "./hero.component.css",
   animations: [
@@ -39,11 +39,6 @@ interface Slide {
   ],
 })
 export class HeroComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    ArrowRight,
-    ArrowLeft,
-    Tag,
-  };
   public imageUrlService = inject(ImageUrlService);
 
   @Input() slides: Slide[] = [];

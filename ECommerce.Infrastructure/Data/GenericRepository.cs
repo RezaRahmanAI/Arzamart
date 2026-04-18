@@ -24,7 +24,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task<T?> GetByIdAsync(int id)
     {
-        return await _context.Set<T>().FindAsync(id);
+        return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<IReadOnlyList<T>> ListAllAsync()
@@ -32,10 +32,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
 
-    public async Task<T?> GetEntityWithSpec(ISpecification<T> spec)
+    public async Task<T?> GetEntityWithSpec(ISpecification<T> spec, bool track = false)
     {
-        return await ApplySpecification(spec)
-            .FirstOrDefaultAsync();
+        var query = ApplySpecification(spec);
+        if (!track) query = query.AsNoTracking();
+        return await query.FirstOrDefaultAsync();
     }
 
     public async Task<TResult?> GetEntityWithSpec<TResult>(ISpecification<T> spec)
@@ -68,7 +69,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public IQueryable<T> GetQueryable()
     {
-        return _context.Set<T>().AsQueryable();
+        return _context.Set<T>().AsNoTracking().AsQueryable();
     }
 
     public void Add(T entity)

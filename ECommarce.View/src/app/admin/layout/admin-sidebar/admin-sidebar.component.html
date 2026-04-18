@@ -16,7 +16,7 @@
       class="p-2 text-white/40 hover:text-accent transition-colors bg-white/5 hover:bg-white/10 rounded-full"
       type="button"
     >
-      <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+      <app-icon name="X" size="20"></app-icon>
     </button>
   </div>
 
@@ -35,11 +35,12 @@
               class="w-8 h-8 object-contain"
               alt="Logo"
             />
-            <lucide-icon
+            <app-icon
               *ngIf="!settings.logoUrl"
-              [img]="icons.Store"
-              class="w-6 h-6 text-accent"
-            ></lucide-icon>
+              name="Store"
+              size="24"
+              className="text-accent"
+            ></app-icon>
           </div>
         </div>
         <div class="flex flex-col">
@@ -70,7 +71,7 @@
               [routerLinkActiveOptions]="{ exact: false }"
             >
               <div class="relative">
-                <lucide-icon [img]="item.icon" class="w-5 h-5 transition-transform group-hover:scale-110 duration-300" [ngClass]="rla.isActive ? 'text-accent' : ''"></lucide-icon>
+                <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-110 duration-300" [className]="rla.isActive ? 'text-accent' : ''"></app-icon>
                 <div *ngIf="rla.isActive" class="absolute inset-0 bg-accent blur-md opacity-20 scale-150"></div>
               </div>
               <span class="text-sm font-display font-semibold">{{ item.label }}</span>
@@ -86,13 +87,14 @@
                 [ngClass]="isProductsMenuOpen ? 'text-white bg-white/5 ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
               >
                 <div class="flex items-center gap-3.5">
-                  <lucide-icon [img]="icons.ShoppingBag" class="w-5 h-5 group-hover:scale-110 transition-transform duration-300" [ngClass]="isProductsMenuOpen ? 'text-accent' : ''"></lucide-icon>
+                  <app-icon name="ShoppingBag" size="20" className="group-hover:scale-110 transition-transform duration-300" [className]="isProductsMenuOpen ? 'text-accent' : ''"></app-icon>
                   <span class="text-sm font-display font-semibold">Inventory</span>
                 </div>
-                <lucide-icon
-                  [img]="isProductsMenuOpen ? icons.ChevronUp : icons.ChevronDown"
-                  class="w-4 h-4 text-white/20 group-hover:text-white transition-colors"
-                ></lucide-icon>
+                <app-icon
+                  [name]="isProductsMenuOpen ? 'ChevronUp' : 'ChevronDown'"
+                  size="16"
+                  className="text-white/20 group-hover:text-white transition-colors"
+                ></app-icon>
               </button>
               
               <div class="overflow-hidden transition-all duration-500" [style.max-height]="isProductsMenuOpen ? '400px' : '0px'">
@@ -136,7 +138,7 @@
               [ngClass]="rlaSecondary.isActive ? 'bg-accent/10 text-accent shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
               [routerLinkActiveOptions]="{ exact: false }"
             >
-              <lucide-icon [img]="item.icon" class="w-5 h-5 transition-transform group-hover:scale-110 duration-300" [ngClass]="rlaSecondary.isActive ? 'text-accent' : ''"></lucide-icon>
+              <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-110 duration-300" [className]="rlaSecondary.isActive ? 'text-accent' : ''"></app-icon>
               <span class="text-sm font-display font-semibold">{{ item.label }}</span>
               <div *ngIf="rlaSecondary.isActive" class="absolute left-0 w-1 h-5 bg-accent rounded-r-full shadow-[0_0_12px_rgba(var(--color-accent),0.5)]"></div>
             </a>

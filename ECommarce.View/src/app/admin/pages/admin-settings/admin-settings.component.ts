@@ -21,17 +21,7 @@ import {
 import { SettingsService } from "../../services/settings.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { AuthService } from "../../../core/services/auth.service";
-import {
-  LucideAngularModule,
-  Save,
-  Image,
-  Edit,
-  Upload,
-  Copy,
-  Plus,
-  Trash2,
-  X,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-admin-settings",
@@ -40,22 +30,12 @@ import {
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./admin-settings.component.html",
   styleUrl: "./admin-settings.component.css",
 })
 export class AdminSettingsComponent implements OnInit {
-  readonly icons = {
-    Save,
-    Image,
-    Edit,
-    Upload,
-    Copy,
-    Plus,
-    Trash2,
-    X,
-  };
   private formBuilder = inject(NonNullableFormBuilder);
   private settingsService = inject(SettingsService);
   readonly authService = inject(AuthService);
@@ -196,7 +176,7 @@ export class AdminSettingsComponent implements OnInit {
     const formValue = this.settingsForm.getRawValue();
     const payload: AdminSettings = {
       websiteName: formValue.websiteName,
-      logoUrl: this.lastSettings?.logoUrl, // Preserved unless updated via upload
+      logoUrl: this.lastSettings?.logoUrl,
       sizeGuideImageUrl: this.lastSettings?.sizeGuideImageUrl,
       contactEmail: formValue.contactEmail,
       contactPhone: formValue.contactPhone,
@@ -297,14 +277,11 @@ export class AdminSettingsComponent implements OnInit {
 
     this.logoError = "";
 
-    // Upload immediately
     this.settingsService.uploadLogo(file).subscribe({
       next: (res) => {
         if (this.lastSettings) {
           this.lastSettings.logoUrl = res.url;
         }
-        // Update form or just preview? Form doesn't have logoUrl control explicitly binding to anything relevant for submit (except preservation),
-        // but we updated lastSettings.logoUrl so saveChanges() picks it up.
         this.logoPreviewUrl = this.imageUrlService.getImageUrl(res.url);
       },
       error: (err) => {
@@ -325,7 +302,7 @@ export class AdminSettingsComponent implements OnInit {
     const isValidType = ["image/png", "image/jpeg", "image/gif"].includes(
       file.type,
     );
-    const isValidSize = file.size <= 5 * 1024 * 1024; // Allow up to 5MB for size guide
+    const isValidSize = file.size <= 5 * 1024 * 1024;
 
     if (!isValidType || !isValidSize) {
       this.sizeGuideError = "Please upload a PNG, JPG, or GIF file up to 5MB.";
@@ -447,7 +424,6 @@ export class AdminSettingsComponent implements OnInit {
     });
   }
 
-  // Delivery Methods Methods
   startAddDelivery(): void {
     this.showDeliveryForm = true;
     this.editingDeliveryId = null;

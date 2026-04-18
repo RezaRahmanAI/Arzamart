@@ -63,11 +63,11 @@
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
           ></path>
         </svg>
-        <lucide-icon
+        <app-icon
           *ngIf="!isSaving"
-          [img]="icons.Save"
-          class="w-4.5 h-4.5"
-        ></lucide-icon>
+          name="Save"
+          size="18"
+        ></app-icon>
         {{ isSaving ? "Saving..." : "Save Changes" }}
       </button>
     </div>
@@ -128,18 +128,20 @@
                       />
                     </ng-container>
                     <ng-template #logoPlaceholder>
-                      <lucide-icon
-                        [img]="icons.Image"
-                        class="w-10 h-10 text-text-secondary group-hover:hidden"
-                      ></lucide-icon>
+                      <app-icon
+                        name="Image"
+                        size="40"
+                        className="text-text-secondary group-hover:hidden"
+                      ></app-icon>
                     </ng-template>
                     <div
                       class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer"
                     >
-                      <lucide-icon
-                        [img]="icons.Edit"
-                        class="w-5 h-5 text-white"
-                      ></lucide-icon>
+                      <app-icon
+                        name="Edit"
+                        size="20"
+                        className="text-white"
+                      ></app-icon>
                     </div>
                   </div>
                   <div class="flex-1">
@@ -148,10 +150,11 @@
                       (click)="triggerLogoUpload()"
                     >
                       <div class="space-y-1 text-center">
-                        <lucide-icon
-                          [img]="icons.Upload"
-                          class="w-8 h-8 text-text-secondary mx-auto mb-2"
-                        ></lucide-icon>
+                        <app-icon
+                          name="Upload"
+                          size="32"
+                          className="text-text-secondary mx-auto mb-2"
+                        ></app-icon>
                         <div class="flex text-sm text-text-secondary">
                           <label
                             class="relative cursor-pointer rounded-md font-medium text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
@@ -211,18 +214,20 @@
                       />
                     </ng-container>
                     <ng-template #sizeGuidePlaceholder>
-                      <lucide-icon
-                        [img]="icons.Image"
-                        class="w-10 h-10 text-text-secondary group-hover:hidden"
-                      ></lucide-icon>
+                      <app-icon
+                        name="Image"
+                        size="40"
+                        className="text-text-secondary group-hover:hidden"
+                      ></app-icon>
                     </ng-template>
                     <div
                       class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer"
                     >
-                      <lucide-icon
-                        [img]="icons.Edit"
-                        class="w-5 h-5 text-white"
-                      ></lucide-icon>
+                      <app-icon
+                        name="Edit"
+                        size="20"
+                        className="text-white"
+                      ></app-icon>
                     </div>
                   </div>
                   <div class="flex-1">
@@ -238,10 +243,10 @@
                       (click)="sizeGuideUpload.click()"
                       class="px-4 py-2 bg-white border border-border rounded-lg text-sm font-medium text-text-main shadow-sm hover:bg-background-light transition-colors flex items-center gap-2"
                     >
-                      <lucide-icon
-                        [img]="icons.Upload"
-                        class="w-4 h-4"
-                      ></lucide-icon>
+                      <app-icon
+                        name="Upload"
+                        size="16"
+                      ></app-icon>
                       Upload Size Guide
                     </button>
                     <p *ngIf="sizeGuideError" class="mt-2 text-xs text-red-600">
@@ -551,10 +556,10 @@
                     type="button"
                     (click)="copyStripeKey()"
                   >
-                    <lucide-icon
-                      [img]="icons.Copy"
-                      class="w-4 h-4"
-                    ></lucide-icon>
+                    <app-icon
+                      name="Copy"
+                      size="16"
+                    ></app-icon>
                   </button>
                 </div>
                 <p *ngIf="copiedKey" class="mt-1 text-xs text-green-600">
@@ -620,7 +625,7 @@
               type="button"
               (click)="startAddDelivery()"
             >
-              <lucide-icon [img]="icons.Plus" class="w-3.5 h-3.5"></lucide-icon>
+              <app-icon name="Plus" size="14"></app-icon>
               Add Method
             </button>
           </div>
@@ -689,20 +694,20 @@
                         class="p-1.5 text-text-secondary hover:text-primary transition-colors"
                         (click)="editDelivery(method)"
                       >
-                        <lucide-icon
-                          [img]="icons.Edit"
-                          class="w-4 h-4"
-                        ></lucide-icon>
+                        <app-icon
+                          name="Edit"
+                          size="16"
+                        ></app-icon>
                       </button>
                       <button
                         *ngIf="authService.isSuperAdmin()"
                         class="p-1.5 text-text-secondary hover:text-red-600 transition-colors"
                         (click)="deleteDelivery(method)"
                       >
-                        <lucide-icon
-                          [img]="icons.Trash2"
-                          class="w-4 h-4"
-                        ></lucide-icon>
+                        <app-icon
+                          name="Trash2"
+                          size="16"
+                        ></app-icon>
                       </button>
                     </div>
                   </td>
@@ -745,7 +750,7 @@
               class="text-text-secondary hover:text-text-main transition-colors"
               (click)="closeDeliveryForm()"
             >
-              <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+              <app-icon name="X" size="20"></app-icon>
             </button>
           </div>
           <div class="p-6 space-y-4">

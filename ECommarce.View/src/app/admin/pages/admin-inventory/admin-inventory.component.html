@@ -3,7 +3,7 @@
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div class="flex items-center gap-5">
       <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
-        <lucide-icon [img]="icons.Boxes" class="w-7 h-7 text-primary"></lucide-icon>
+        <app-icon name="Boxes" size="28" className="text-primary"></app-icon>
       </div>
       <div>
         <h1 class="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tight">Inventory</h1>
@@ -16,7 +16,7 @@
     <!-- Search Box -->
     <div class="relative w-full md:w-80">
       <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-        <lucide-icon [img]="icons.Search" class="w-5 h-5"></lucide-icon>
+        <app-icon name="Search" size="20"></app-icon>
       </div>
       <input 
         [formControl]="searchControl"
@@ -54,7 +54,7 @@
                       class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     >
                     <div *ngIf="!product.imageUrl" class="w-full h-full flex items-center justify-center text-gray-400">
-                      <lucide-icon [img]="icons.Image" class="w-6 h-6"></lucide-icon>
+                      <app-icon name="Image" size="24"></app-icon>
                     </div>
                   </div>
                   <span class="text-sm font-semibold text-primary dark:text-white">{{ product.productName }}</span>
@@ -85,7 +85,7 @@
               <td class="px-6 py-4 text-right">
                 <button (click)="openStockModal(product)" 
                         class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-primary dark:hover:text-primary-light hover:bg-primary/10 transition-all border border-gray-100 dark:border-gray-700 shadow-sm">
-                  <lucide-icon [img]="icons.Edit3" class="w-4 h-4"></lucide-icon>
+                  <app-icon name="Edit3" size="16"></app-icon>
                 </button>
               </td>
             </tr>
@@ -96,7 +96,7 @@
 
     <!-- Empty State -->
     <div *ngIf="filteredProducts.length === 0" class="flex flex-col items-center justify-center py-20 text-gray-400 dark:text-gray-500">
-      <lucide-icon [img]="icons.PackageX" class="w-12 h-12 mb-4 opacity-50"></lucide-icon>
+      <app-icon name="PackageX" size="48" className="mb-4 opacity-50"></app-icon>
       <p class="font-medium">No products found in system dataset</p>
     </div>
   </div>
@@ -109,7 +109,7 @@
       <div class="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
         <h3 class="text-lg font-bold text-primary dark:text-white">Update Stock</h3>
         <button (click)="closeStockModal()" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:text-primary transition-colors">
-          <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+          <app-icon name="X" size="20"></app-icon>
         </button>
       </div>
 
@@ -141,11 +141,11 @@
                 </div>
                 <div class="flex items-center gap-2">
                   <button (click)="adjustVariantStock(i, -1)" class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center justify-center hover:bg-red-200 dark:hover:bg-red-900/40 transition-all">
-                    <lucide-icon [img]="icons.Minus" class="w-4 h-4"></lucide-icon>
+                    <app-icon name="Minus" size="16"></app-icon>
                   </button>
                   <input type="number" [(ngModel)]="variantStockValues[i]" (change)="onVariantStockChange(i)" class="w-16 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-2 text-center text-sm font-bold text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20">
                   <button (click)="adjustVariantStock(i, 1)" class="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center hover:bg-green-200 dark:hover:bg-green-900/40 transition-all">
-                    <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
+                    <app-icon name="Plus" size="16"></app-icon>
                   </button>
                 </div>
               </div>
@@ -157,11 +157,11 @@
             <label class="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">Update Stock</label>
             <div class="flex items-center gap-3">
               <button (click)="adjustStock(-1)" class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center justify-center hover:bg-red-200 dark:hover:bg-red-900/40 transition-all">
-                <lucide-icon [img]="icons.Minus" class="w-5 h-5"></lucide-icon>
+                <app-icon name="Minus" size="20"></app-icon>
               </button>
               <input type="number" [(ngModel)]="newStockValue" class="flex-1 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-center text-xl font-bold text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20">
               <button (click)="adjustStock(1)" class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center hover:bg-green-200 dark:hover:bg-green-900/40 transition-all">
-                <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
+                <app-icon name="Plus" size="20"></app-icon>
               </button>
             </div>
           </div>

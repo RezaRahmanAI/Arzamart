@@ -22,7 +22,7 @@
       <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2.5rem] overflow-hidden shadow-sm shadow-gray-200/50">
         <div class="p-8 border-b border-gray-50 dark:border-gray-800 flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                <lucide-icon [img]="icons.User" class="w-6 h-6"></lucide-icon>
+                <app-icon name="User" size="24"></app-icon>
             </div>
             <div>
                 <h3 class="text-xl font-semibold text-primary dark:text-white">Personal Identity</h3>
@@ -35,7 +35,7 @@
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Full Name</label>
                     <div class="relative group">
-                        <lucide-icon [img]="icons.User" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                        <app-icon name="User" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
                         <input type="text" formControlName="fullName" 
                                class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
                     </div>
@@ -43,7 +43,7 @@
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Username</label>
                     <div class="relative group">
-                        <lucide-icon [img]="icons.Shield" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                        <app-icon name="Shield" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
                         <input type="text" formControlName="userName" 
                                class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
                     </div>
@@ -54,7 +54,7 @@
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Email Address</label>
                     <div class="relative group">
-                        <lucide-icon [img]="icons.Mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                        <app-icon name="Mail" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
                         <input type="email" formControlName="email" 
                                class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
                     </div>
@@ -62,7 +62,7 @@
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Phone Number</label>
                     <div class="relative group">
-                        <lucide-icon [img]="icons.Phone" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors"></lucide-icon>
+                        <app-icon name="Phone" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
                         <input type="text" formControlName="phone" 
                                class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
                     </div>
@@ -72,7 +72,7 @@
             <!-- Validation Check for SuperAdmin -->
             <div *ngIf="profileForm.get('email')?.dirty && userProfile?.role === 'SuperAdmin'" class="p-6 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 rounded-2xl space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
                 <div class="flex items-center gap-2 text-amber-700 dark:text-amber-400">
-                    <lucide-icon [img]="icons.Key" class="w-4 h-4"></lucide-icon>
+                    <app-icon name="Key" size="16"></app-icon>
                     <span class="text-[10px] font-black uppercase tracking-widest">Authority Verification Required</span>
                 </div>
                 <p class="text-[11px] font-medium text-amber-600 dark:text-amber-400/80 leading-relaxed italic">
@@ -88,8 +88,8 @@
             <div class="flex justify-end pt-4">
                 <button type="submit" [disabled]="profileForm.invalid || isSubmitting"
                         class="px-8 py-3.5 rounded-2xl bg-primary text-white font-semibold text-sm hover:scale-[1.02] active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3">
-                    <lucide-icon *ngIf="isSubmitting" [img]="icons.Save" class="w-5 h-5 animate-spin"></lucide-icon>
-                    <lucide-icon *ngIf="!isSubmitting" [img]="icons.Save" class="w-5 h-5"></lucide-icon>
+                    <app-icon *ngIf="isSubmitting" name="Loader2" size="20" className="animate-spin"></app-icon>
+                    <app-icon *ngIf="!isSubmitting" name="Save" size="20"></app-icon>
                     <span>{{ isSubmitting ? 'Saving Changes...' : 'Update Profile' }}</span>
                 </button>
             </div>
@@ -102,7 +102,7 @@
         <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2.5rem] overflow-hidden shadow-sm shadow-gray-200/50">
             <div class="p-8 border-b border-gray-50 dark:border-gray-800 flex items-center gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-600">
-                    <lucide-icon [img]="icons.Key" class="w-6 h-6"></lucide-icon>
+                    <app-icon name="Key" size="24"></app-icon>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold text-primary dark:text-white">Security Access</h3>
@@ -115,7 +115,7 @@
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Current Password</label>
                         <div class="relative group">
-                            <lucide-icon [img]="icons.Lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-amber-500 transition-colors"></lucide-icon>
+                            <app-icon name="Lock" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-amber-500 transition-colors"></app-icon>
                             <input type="password" formControlName="currentPassword" placeholder="••••••••"
                                    class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all outline-none">
                         </div>
@@ -123,7 +123,7 @@
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">New Password</label>
                         <div class="relative group">
-                            <lucide-icon [img]="icons.Key" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-amber-500 transition-colors"></lucide-icon>
+                            <app-icon name="Key" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-amber-500 transition-colors"></app-icon>
                             <input type="password" formControlName="newPassword" placeholder="••••••••"
                                    class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all outline-none">
                         </div>
@@ -131,7 +131,7 @@
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Confirm New Password</label>
                         <div class="relative group">
-                            <lucide-icon [img]="icons.Key" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-amber-500 transition-colors"></lucide-icon>
+                            <app-icon name="Key" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-amber-500 transition-colors"></app-icon>
                             <input type="password" formControlName="confirmPassword" placeholder="••••••••"
                                    class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all outline-none">
                         </div>
@@ -140,7 +140,7 @@
     
                 <button type="submit" [disabled]="passwordForm.invalid || isPasswordSubmitting"
                         class="w-full py-4 rounded-2xl bg-amber-500 text-white font-semibold text-sm hover:scale-[1.02] active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all shadow-xl shadow-amber-500/20 flex items-center justify-center gap-3">
-                    <lucide-icon *ngIf="isPasswordSubmitting" [img]="icons.Key" class="w-5 h-5 animate-spin"></lucide-icon>
+                    <app-icon *ngIf="isPasswordSubmitting" name="Loader2" size="20" className="animate-spin"></app-icon>
                     <span>{{ isPasswordSubmitting ? 'Updating Password...' : 'Change Access Key' }}</span>
                 </button>
             </form>
@@ -152,7 +152,7 @@
             <div class="relative z-10 space-y-4">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
-                        <lucide-icon [img]="icons.Shield" class="w-5 h-5 text-accent"></lucide-icon>
+                        <app-icon name="Shield" size="20" className="text-accent"></app-icon>
                     </div>
                     <span class="text-xs font-black uppercase tracking-[0.2em]">Active Session Info</span>
                 </div>

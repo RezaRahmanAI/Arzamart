@@ -157,7 +157,7 @@ public class AdminCategoryController : ControllerBase
         await _context.SaveChangesAsync();
 
         await InvalidateCategoryCacheAsync();
-        await _cacheStore.EvictByTagAsync("categories", default);
+        await _cacheStore.EvictByTagAsync("catalog", default);
 
         var result = new CategoryDto
         {
@@ -221,7 +221,7 @@ public class AdminCategoryController : ControllerBase
         await _context.SaveChangesAsync();
         
         await InvalidateCategoryCacheAsync();
-        await _cacheStore.EvictByTagAsync("categories", default);
+        await _cacheStore.EvictByTagAsync("catalog", default);
 
         var result = new CategoryDto
         {
@@ -256,7 +256,7 @@ public class AdminCategoryController : ControllerBase
         await _context.SaveChangesAsync();
 
         await InvalidateCategoryCacheAsync();
-        await _cacheStore.EvictByTagAsync("categories", default);
+        await _cacheStore.EvictByTagAsync("catalog", default);
 
         return NoContent();
     }
@@ -282,7 +282,7 @@ public class AdminCategoryController : ControllerBase
         await _context.SaveChangesAsync();
         
         await InvalidateCategoryCacheAsync();
-        await _cacheStore.EvictByTagAsync("categories", default);
+        await _cacheStore.EvictByTagAsync("catalog", default);
 
         return Ok(true);
     }

@@ -1,23 +1,8 @@
 import { Component, inject, HostListener } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { AsyncPipe } from "@angular/common";
 
 import { RouterModule, Router, NavigationEnd } from "@angular/router";
 import { combineLatest, map, startWith, filter } from "rxjs";
-import {
-  LucideAngularModule,
-  Search,
-  User,
-  ShoppingBag,
-  Menu,
-  X,
-  ChevronDown,
-  Facebook,
-  Instagram,
-  Twitter,
-  Tag,
-  Search as SearchIcon,
-} from "lucide-angular";
 
 import { AuthService } from "../../core/services/auth.service";
 import { CartService } from "../../core/services/cart.service";
@@ -29,7 +14,7 @@ import { CustomerProfileService } from "../../core/services/customer-profile.ser
 @Component({
   selector: "app-navbar",
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule, FormsModule],
+  imports: [AsyncPipe, RouterModule],
   templateUrl: "./navbar.component.html",
   styleUrl: "./navbar.component.css",
 })
@@ -41,19 +26,6 @@ export class NavbarComponent {
   private readonly router = inject(Router);
   public readonly imageUrlService = inject(ImageUrlService);
   private readonly profileService = inject(CustomerProfileService);
-
-  readonly icons = {
-    Search,
-    User,
-    ShoppingBag,
-    Menu,
-    X,
-    ChevronDown,
-    Facebook,
-    Instagram,
-    Twitter,
-    Tag,
-  };
 
   isMenuOpen = false;
   isSearchOpen = false;

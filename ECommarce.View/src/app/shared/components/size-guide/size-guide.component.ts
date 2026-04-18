@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Output, OnInit, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { LucideAngularModule, X } from "lucide-angular";
+import { AsyncPipe, NgClass } from "@angular/common";
 import { SiteSettingsService } from "../../../core/services/site-settings.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
+import { AppIconComponent } from "../app-icon/app-icon.component";
 import { map } from "rxjs";
 
 @Component({
   selector: "app-size-guide",
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [AsyncPipe, NgClass, AppIconComponent],
   template: `
     <div
       class="fixed inset-0 z-50 flex justify-end"
@@ -36,7 +36,7 @@ import { map } from "rxjs";
             (click)="close.emit()"
             class="p-2 text-slate-400 hover:text-red-500 transition-colors rounded-full hover:bg-red-50"
           >
-            <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+            <app-icon name="X" size="20"></app-icon>
           </button>
         </div>
 
@@ -53,127 +53,126 @@ import { map } from "rxjs";
           </p>
 
           <!-- Custom Image Display -->
-          <div
-            *ngIf="(settings$ | async)?.sizeGuideImageUrl as imageUrl"
-            class="mb-10 group"
-          >
+          @if ((settings$ | async)?.sizeGuideImageUrl; as imageUrl) {
             <div
-              class="rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50/30"
+              class="mb-10 group"
             >
-              <img
-                [src]="getImageUrl(imageUrl)"
-                alt="Size Guide"
-                class="w-full h-auto object-contain"
-              />
-            </div>
-            <p class="mt-4 text-[10px] text-slate-400 text-center italic">
-              * Measurements shown in the image are for reference.
-            </p>
-          </div>
-
-          <!-- Unit Toggle (Only if no image or alongside image if desired, but user said "oi khane ami img dekhabo") -->
-          <ng-container *ngIf="!(settings$ | async)?.sizeGuideImageUrl">
-            <!-- Unit Toggle -->
-            <div class="flex justify-center mb-8">
               <div
-                class="inline-flex rounded-lg border border-gray-100 p-1 bg-gray-50/50"
+                class="rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50/30"
               >
-                <button
-                  class="px-6 py-2 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all duration-300"
-                  [ngClass]="
-                    unit === 'cm'
-                      ? 'bg-white shadow-sm text-primary'
-                      : 'text-slate-400 hover:text-slate-600'
-                  "
-                  (click)="unit = 'cm'"
-                >
-                  CM
-                </button>
-                <button
-                  class="px-6 py-2 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all duration-300"
-                  [ngClass]="
-                    unit === 'in'
-                      ? 'bg-white shadow-sm text-primary'
-                      : 'text-slate-400 hover:text-slate-600'
-                  "
-                  (click)="unit = 'in'"
-                >
-                  Inches
-                </button>
+                <img
+                  [src]="getImageUrl(imageUrl)"
+                  alt="Size Guide"
+                  class="w-full h-auto object-contain"
+                />
               </div>
+              <p class="mt-4 text-[10px] text-slate-400 text-center italic">
+                * Measurements shown in the image are for reference.
+              </p>
             </div>
-
-            <!-- Table -->
-            <div class="overflow-x-auto">
-              <table class="w-full text-center">
-                <thead>
-                  <tr class="border-b border-gray-100">
-                    <th
-                      class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900"
-                    >
-                      Size
-                    </th>
-                    <th
-                      class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900 text-right"
-                    >
-                      Chest
-                    </th>
-                    <th
-                      class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900 text-right"
-                    >
-                      Length
-                    </th>
-                    <th
-                      class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900 text-right"
-                    >
-                      Shoulder
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="text-xs text-slate-600 font-light">
-                  <tr
-                    *ngFor="let row of sizeData"
-                    class="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors"
+          } @else {
+              <!-- Unit Toggle -->
+              <div class="flex justify-center mb-8">
+                <div
+                  class="inline-flex rounded-lg border border-gray-100 p-1 bg-gray-50/50"
+                >
+                  <button
+                    class="px-6 py-2 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all duration-300"
+                    [ngClass]="
+                      unit === 'cm'
+                        ? 'bg-white shadow-sm text-primary'
+                        : 'text-slate-400 hover:text-slate-600'
+                    "
+                    (click)="unit = 'cm'"
                   >
-                    <td class="py-4 font-bold text-slate-900">
-                      {{ row.size }}
-                    </td>
-                    <td class="py-4 text-right">{{ convert(row.chest) }}</td>
-                    <td class="py-4 text-right">{{ convert(row.length) }}</td>
-                    <td class="py-4 text-right">{{ convert(row.shoulder) }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div
-              class="mt-12 bg-gray-50 p-6 rounded-none border border-gray-100"
-            >
-              <h4
-                class="text-[10px] uppercase tracking-widest font-bold text-slate-900 mb-2"
-              >
-                How to measure
-              </h4>
-              <div
-                class="space-y-3 text-[11px] text-slate-500 leading-relaxed font-light"
-              >
-                <p>
-                  <span class="font-medium text-slate-700">Chest:</span> Measure
-                  around the fullest part of your chest, keeping the tape
-                  horizontal.
-                </p>
-                <p>
-                  <span class="font-medium text-slate-700">Length:</span>
-                  Measure from the highest point of the shoulder down to the
-                  hem.
-                </p>
-                <p>
-                  <span class="font-medium text-slate-700">Shoulder:</span>
-                  Measure across the back from shoulder tip to shoulder tip.
-                </p>
+                    CM
+                  </button>
+                  <button
+                    class="px-6 py-2 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all duration-300"
+                    [ngClass]="
+                      unit === 'in'
+                        ? 'bg-white shadow-sm text-primary'
+                        : 'text-slate-400 hover:text-slate-600'
+                    "
+                    (click)="unit = 'in'"
+                  >
+                    Inches
+                  </button>
+                </div>
               </div>
-            </div>
-          </ng-container>
+
+              <!-- Table -->
+              <div class="overflow-x-auto">
+                <table class="w-full text-center">
+                  <thead>
+                    <tr class="border-b border-gray-100">
+                      <th
+                        class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900"
+                      >
+                        Size
+                      </th>
+                      <th
+                        class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900 text-right"
+                      >
+                        Chest
+                      </th>
+                      <th
+                        class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900 text-right"
+                      >
+                        Length
+                      </th>
+                      <th
+                        class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900 text-right"
+                      >
+                        Shoulder
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-xs text-slate-600 font-light">
+                    @for (row of sizeData; track row.size) {
+                      <tr
+                        class="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors"
+                      >
+                        <td class="py-4 font-bold text-slate-900">
+                          {{ row.size }}
+                        </td>
+                        <td class="py-4 text-right">{{ convert(row.chest) }}</td>
+                        <td class="py-4 text-right">{{ convert(row.length) }}</td>
+                        <td class="py-4 text-right">{{ convert(row.shoulder) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+
+              <div
+                class="mt-12 bg-gray-50 p-6 rounded-none border border-gray-100"
+              >
+                <h4
+                  class="text-[10px] uppercase tracking-widest font-bold text-slate-900 mb-2"
+                >
+                  How to measure
+                </h4>
+                <div
+                  class="space-y-3 text-[11px] text-slate-500 leading-relaxed font-light"
+                >
+                  <p>
+                    <span class="font-medium text-slate-700">Chest:</span> Measure
+                    around the fullest part of your chest, keeping the tape
+                    horizontal.
+                  </p>
+                  <p>
+                    <span class="font-medium text-slate-700">Length:</span>
+                    Measure from the highest point of the shoulder down to the
+                    hem.
+                  </p>
+                  <p>
+                    <span class="font-medium text-slate-700">Shoulder:</span>
+                    Measure across the back from shoulder tip to shoulder tip.
+                  </p>
+                </div>
+              </div>
+          }
         </div>
       </div>
     </div>
@@ -187,9 +186,6 @@ import { map } from "rxjs";
   ],
 })
 export class SizeGuideComponent implements OnInit {
-  readonly icons = {
-    X,
-  };
   @Output() close = new EventEmitter<void>();
 
   private settingsService = inject(SiteSettingsService);

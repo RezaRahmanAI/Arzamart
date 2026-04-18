@@ -1,5 +1,5 @@
+import { AsyncPipe } from "@angular/common";
 import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
 import { HttpContext } from "@angular/common/http";
 import { Observable } from "rxjs";
@@ -16,7 +16,7 @@ import { ImageUrlService } from "../../../../core/services/image-url.service";
 @Component({
   selector: "app-women-product-grid",
   standalone: true,
-  imports: [CommonModule, ProductCardComponent],
+  imports: [AsyncPipe, ProductCardComponent],
   templateUrl: "./product-grid.component.html",
   styleUrl: "./product-grid.component.css",
   changeDetection: ChangeDetectionStrategy.OnPush

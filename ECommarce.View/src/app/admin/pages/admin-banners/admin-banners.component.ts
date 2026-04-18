@@ -6,43 +6,16 @@ import { AdminBanner } from "../../models/banners.models";
 import { AdminBannersService } from "../../services/admin-banners.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { AuthService } from "../../../core/services/auth.service";
-import {
-  LucideAngularModule,
-  Plus,
-  Edit,
-  Trash2,
-  Image,
-  Monitor,
-  Smartphone,
-  Link,
-  Type,
-  ArrowUpDown,
-  X,
-  Upload,
-  Loader2,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-admin-banners",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
   templateUrl: "./admin-banners.component.html",
 })
 export class AdminBannersComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    Plus,
-    Edit,
-    Trash2,
-    Image,
-    Monitor,
-    Smartphone,
-    Link,
-    Type,
-    ArrowUpDown,
-    X,
-    Upload,
-    Loader2,
-  };
+
   private bannersService = inject(AdminBannersService);
   private fb = inject(FormBuilder);
   readonly imageUrlService = inject(ImageUrlService);

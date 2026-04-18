@@ -8,7 +8,7 @@
       (click)="openAddModal()"
       class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
     >
-      <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
+      <app-icon name="Plus" size="16"></app-icon>
       </button>
   </div>
 
@@ -52,20 +52,22 @@
             (click)="openEditModal(banner)"
             class="bg-white p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
-            <lucide-icon
-              [img]="icons.Edit"
-              class="w-4 h-4 text-gray-700"
-            ></lucide-icon>
+            <app-icon
+              name="Edit"
+              size="16"
+              className="text-gray-700"
+            ></app-icon>
           </button>
           <button
             *ngIf="authService.isSuperAdmin()"
             (click)="deleteBanner(banner.id)"
             class="bg-white p-2 rounded-full hover:bg-red-50 transition-colors"
           >
-            <lucide-icon
-              [img]="icons.Trash2"
-              class="w-4 h-4 text-red-500"
-            ></lucide-icon>
+            <app-icon
+              name="Trash2"
+              size="16"
+              className="text-red-500"
+            ></app-icon>
           </button>
         </div>
         <div class="absolute top-2 right-2 flex gap-1">
@@ -97,10 +99,11 @@
           {{ banner.subtitle }}
         </p>
         <div class="flex items-center gap-2">
-          <lucide-icon
-            [img]="icons.Link"
-            class="w-3.5 h-3.5 text-gray-400"
-          ></lucide-icon>
+          <app-icon
+            name="Link"
+            size="14"
+            className="text-gray-400"
+          ></app-icon>
           <span class="text-[10px] text-gray-400 truncate">{{
             banner.linkUrl || "No Link"
           }}</span>
@@ -114,10 +117,11 @@
     *ngIf="banners.length === 0"
     class="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200"
   >
-    <lucide-icon
-      [img]="icons.Image"
-      class="w-16 h-16 text-gray-300 mb-4"
-    ></lucide-icon>
+    <app-icon
+      name="Image"
+      size="64"
+      className="text-gray-300 mb-4"
+    ></app-icon>
     <h3 class="text-lg font-medium text-gray-600">No banners found</h3>
     <p class="text-gray-500 mb-6">
       Create your first hero banner to engage customers.
@@ -149,10 +153,11 @@
         (click)="closeModal()"
         class="p-2 hover:bg-gray-200 rounded-full transition-colors"
       >
-        <lucide-icon
-          [img]="icons.X"
-          class="w-5 h-5 text-gray-500"
-        ></lucide-icon>
+        <app-icon
+          name="X"
+          size="20"
+          className="text-gray-500"
+        ></app-icon>
       </button>
     </div>
 
@@ -276,10 +281,10 @@
                   *ngIf="!bannerForm.get('imageUrl')?.value"
                   class="text-gray-400 flex flex-col items-center"
                 >
-                  <lucide-icon
-                    [img]="icons.Image"
-                    class="w-6 h-6"
-                  ></lucide-icon>
+                  <app-icon
+                    name="Image"
+                    size="24"
+                  ></app-icon>
                   <span class="text-[10px]">No image selected</span>
                 </div>
                 <input
@@ -309,10 +314,10 @@
                   *ngIf="!bannerForm.get('mobileImageUrl')?.value"
                   class="text-gray-400 flex flex-col items-center"
                 >
-                  <lucide-icon
-                    [img]="icons.Smartphone"
-                    class="w-6 h-6"
-                  ></lucide-icon>
+                  <app-icon
+                    name="Smartphone"
+                    size="24"
+                  ></app-icon>
                   <span class="text-[10px]">No image selected</span>
                 </div>
                 <input
@@ -351,11 +356,12 @@
           [disabled]="isSubmitting"
           class="px-8 py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
         >
-          <lucide-icon
+          <app-icon
             *ngIf="isSubmitting"
-            [img]="icons.Loader2"
-            class="w-5 h-5 animate-spin"
-          ></lucide-icon>
+            name="Loader2"
+            size="20"
+            className="animate-spin"
+          ></app-icon>
           {{ isEditing ? "Update Banner" : "Create Banner" }}
         </button>
       </div>

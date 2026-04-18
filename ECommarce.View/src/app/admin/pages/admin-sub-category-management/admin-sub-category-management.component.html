@@ -9,19 +9,21 @@
           routerLink="/admin/dashboard"
           >Dashboard</a
         >
-        <lucide-icon
-          [img]="icons.ChevronRight"
-          class="w-4 h-4 mx-1"
-        ></lucide-icon>
+        <app-icon
+          name="ChevronRight"
+          size="16"
+          className="mx-1"
+        ></app-icon>
         <a
           class="hover:text-primary transition-colors"
           routerLink="/admin/products"
           >Products</a
         >
-        <lucide-icon
-          [img]="icons.ChevronRight"
-          class="w-4 h-4 mx-1"
-        ></lucide-icon>
+        <app-icon
+          name="ChevronRight"
+          size="16"
+          className="mx-1"
+        ></app-icon>
         <span class="font-medium text-primary dark:text-white"
           >Sub Categories</span
         >
@@ -41,7 +43,7 @@
       type="button"
       (click)="startCreate()"
     >
-      <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
+      <app-icon name="Plus" size="20"></app-icon>
       <span class="font-medium">Add Sub Category</span>
     </button>
   </div>
@@ -50,10 +52,11 @@
     <div class="w-full lg:w-2/3 flex flex-col gap-4">
       <div class="flex items-center justify-between gap-4 p-1">
         <div class="relative flex-1 max-w-sm">
-          <lucide-icon
-            [img]="icons.Search"
-            class="absolute left-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-text-sub/50"
-          ></lucide-icon>
+          <app-icon
+            name="Search"
+            size="18"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-text-sub/50"
+          ></app-icon>
           <input
             class="w-full pl-9 pr-4 py-2 bg-white dark:bg-background-dark border border-border-color rounded-xl text-sm focus:ring-1 focus:ring-primary focus:border-primary placeholder:text-text-sub/40 transition-all"
             placeholder="Filter categories..."
@@ -68,7 +71,7 @@
             type="button"
             (click)="collapseAll()"
           >
-            <lucide-icon [img]="icons.ChevronUp" class="w-5 h-5"></lucide-icon>
+            <app-icon name="ChevronUp" size="20"></app-icon>
           </button>
           <button
             class="p-2 text-slate-500 hover:text-primary hover:bg-slate-100 rounded-lg transition-colors"
@@ -76,10 +79,10 @@
             type="button"
             (click)="expandAll()"
           >
-            <lucide-icon
-              [img]="icons.ChevronDown"
-              class="w-5 h-5"
-            ></lucide-icon>
+            <app-icon
+              name="ChevronDown"
+              size="20"
+            ></app-icon>
           </button>
         </div>
       </div>
@@ -132,10 +135,11 @@
           <h3
             class="text-lg font-bold text-primary dark:text-white flex items-center gap-2"
           >
-            <lucide-icon
-              [img]="icons.Edit"
-              class="w-5 h-5 text-accent"
-            ></lucide-icon>
+            <app-icon
+              name="Edit"
+              size="20"
+              className="text-accent"
+            ></app-icon>
             {{
               mode === "create" ? "Create Sub Category" : "Edit Sub Category"
             }}
@@ -230,10 +234,11 @@
               <div
                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500"
               >
-                <lucide-icon
-                  [img]="icons.ChevronDown"
-                  class="w-5 h-5 text-slate-500"
-                ></lucide-icon>
+                <app-icon
+                  name="ChevronDown"
+                  size="20"
+                  className="text-slate-500"
+                ></app-icon>
               </div>
             </div>
             <p
@@ -262,11 +267,12 @@
                     : 'none',
                 }"
               >
-                <lucide-icon
+                <app-icon
                   *ngIf="!getPreviewUrl()"
-                  [img]="icons.Image"
-                  class="w-10 h-10 text-slate-300"
-                ></lucide-icon>
+                  name="Image"
+                  size="40"
+                  className="text-slate-300"
+                ></app-icon>
                 <div
                   *ngIf="isUploadingImage"
                   class="absolute inset-0 bg-black/50 flex items-center justify-center"
@@ -282,10 +288,11 @@
                   [class.opacity-50]="isUploadingImage"
                 >
                   <span class="flex items-center space-x-2">
-                    <lucide-icon
-                      [img]="icons.Upload"
-                      class="w-6 h-6 text-slate-400"
-                    ></lucide-icon>
+                    <app-icon
+                      name="Upload"
+                      size="24"
+                      className="text-slate-400"
+                    ></app-icon>
                     <span
                       class="font-medium text-slate-600 dark:text-slate-400 text-xs"
                     >
@@ -335,11 +342,11 @@
                 *ngIf="isUploadingImage"
                 class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"
               ></div>
-              <lucide-icon
+              <app-icon
                 *ngIf="!isUploadingImage"
-                [img]="icons.Save"
-                class="w-4.5 h-4.5"
-              ></lucide-icon>
+                name="Save"
+                size="18"
+              ></app-icon>
               {{ isUploadingImage ? "Uploading..." : "Save Changes" }}
             </button>
           </div>
@@ -350,10 +357,11 @@
         class="mt-4 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30 text-blue-800 dark:text-blue-200 text-xs"
       >
         <div class="flex items-start gap-2">
-          <lucide-icon
-            [img]="icons.AlertCircle"
-            class="w-4 h-4 mt-0.5 text-blue-800 dark:text-blue-200"
-          ></lucide-icon>
+          <app-icon
+            name="AlertCircle"
+            size="16"
+            className="mt-0.5 text-blue-800 dark:text-blue-200"
+          ></app-icon>
           <p>
             When processing orders for products in "{{
               categoryForm.get("name")?.value || "this category"
@@ -382,33 +390,33 @@
         (click)="selectCategory(node.category)"
       >
         <div class="col-span-8 flex items-center gap-3">
-          <lucide-icon
-            [img]="icons.GripVertical"
-            class="w-5 h-5 cursor-grab"
-            [ngClass]="
+          <app-icon
+            name="GripVertical"
+            size="20"
+            [className]="
               isSelected(node.category.id)
-                ? 'text-primary'
-                : 'text-slate-300 hover:text-slate-500'
+                ? 'text-primary cursor-grab'
+                : 'text-slate-300 hover:text-slate-500 cursor-grab'
             "
             draggable="true"
             (dragstart)="onDragStart(node.category.id, $event)"
-          ></lucide-icon>
+          ></app-icon>
           <button
             class="size-6 flex items-center justify-center rounded hover:bg-slate-200 text-slate-500"
             type="button"
             [disabled]="node.children.length === 0"
             (click)="$event.stopPropagation(); toggleExpanded(node.category.id)"
           >
-            <lucide-icon
-              [img]="
+            <app-icon
+              [name]="
                 node.children.length === 0
-                  ? icons.ChevronRight
+                  ? 'ChevronRight'
                   : isExpanded(node.category.id)
-                    ? icons.ChevronDown
-                    : icons.ChevronRight
+                    ? 'ChevronDown'
+                    : 'ChevronRight'
               "
-              class="w-4 h-4"
-            ></lucide-icon>
+              size="16"
+            ></app-icon>
           </button>
           <div
             class="size-10 rounded bg-slate-100 shrink-0 bg-cover bg-center"
@@ -460,15 +468,15 @@
             type="button"
             (click)="selectCategory(node.category)"
           >
-            <lucide-icon
-              [img]="icons.Edit"
-              class="w-5 h-5"
-              [ngClass]="
+            <app-icon
+              name="Edit"
+              size="20"
+              [className]="
                 isSelected(node.category.id)
                   ? 'text-primary'
                   : 'text-slate-400 hover:text-primary'
               "
-            ></lucide-icon>
+            ></app-icon>
           </button>
           <button
             *ngIf="authService.isSuperAdmin()"
@@ -476,10 +484,11 @@
             type="button"
             (click)="deleteCategory(node.category)"
           >
-            <lucide-icon
-              [img]="icons.Trash2"
-              class="w-4.5 h-4.5 text-slate-400 hover:text-red-500"
-            ></lucide-icon>
+            <app-icon
+              name="Trash2"
+              size="18"
+              className="text-slate-400 hover:text-red-500"
+            ></app-icon>
           </button>
         </div>
       </div>
@@ -522,12 +531,13 @@
         [style.padding-left.px]="depth * 16 + 16"
       >
         <div class="w-4 border-b-2 border-slate-200 h-0 mr-1"></div>
-        <lucide-icon
-          [img]="icons.GripVertical"
-          class="w-4.5 h-4.5 text-slate-300 cursor-grab hover:text-slate-500"
+        <app-icon
+          name="GripVertical"
+          size="18"
+          className="text-slate-300 cursor-grab hover:text-slate-500"
           draggable="true"
           (dragstart)="onDragStart(node.category.id, $event)"
-        ></lucide-icon>
+        ></app-icon>
         <span
           class="text-sm"
           [ngClass]="
@@ -561,25 +571,26 @@
           type="button"
           (click)="selectCategory(node.category)"
         >
-          <lucide-icon
-            [img]="icons.Edit"
-            class="w-4.5 h-4.5"
-            [ngClass]="
+          <app-icon
+            name="Edit"
+            size="18"
+            [className]="
               isSelected(node.category.id)
                 ? 'text-primary'
                 : 'text-slate-400 hover:text-primary'
             "
-          ></lucide-icon>
+          ></app-icon>
         </button>
         <button
           class="p-1 text-slate-400 hover:text-red-500 rounded"
           type="button"
           (click)="deleteCategory(node.category)"
         >
-          <lucide-icon
-            [img]="icons.Trash2"
-            class="w-4 h-4 text-slate-400 hover:text-red-500"
-          ></lucide-icon>
+          <app-icon
+            name="Trash2"
+            size="16"
+            className="text-slate-400 hover:text-red-500"
+          ></app-icon>
         </button>
       </div>
     </div>

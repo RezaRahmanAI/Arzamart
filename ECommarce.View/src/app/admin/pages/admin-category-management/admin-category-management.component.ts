@@ -12,26 +12,7 @@ import {
 import { CategoriesService } from "../../services/categories.service";
 import { environment } from "../../../../environments/environment";
 import { AuthService } from "../../../core/services/auth.service";
-import {
-  LucideAngularModule,
-  Search,
-  Plus,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp,
-  Edit,
-  Trash2,
-  Save,
-  X,
-  Image,
-  Folder,
-  Tag,
-  Link,
-  Check,
-  Upload,
-  GripVertical,
-  AlertCircle,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 interface ParentOption {
   id: number | null;
@@ -45,30 +26,12 @@ interface ParentOption {
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./admin-category-management.component.html",
 })
 export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    Search,
-    Plus,
-    ChevronRight,
-    ChevronDown,
-    ChevronUp,
-    Edit,
-    Trash2,
-    Save,
-    X,
-    Image,
-    Folder,
-    Tag,
-    Link,
-    Check,
-    Upload,
-    GripVertical,
-    AlertCircle,
-  };
+
   private categoriesService = inject(CategoriesService);
   private formBuilder = inject(FormBuilder);
   private route = inject(ActivatedRoute);

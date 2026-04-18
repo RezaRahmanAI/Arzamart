@@ -1,13 +1,14 @@
-<ng-container *ngIf="order$ | async as order; else loadingOrError">
+@if (order$ | async; as order) {
   <main class="flex-grow w-full max-w-7xl mx-auto px-4 md:px-8 py-10">
     <div class="flex flex-col items-center justify-center text-center mb-12">
       <div
         class="w-16 h-16 rounded-full bg-accent mb-6 flex items-center justify-center animate-pulse"
       >
-        <lucide-icon
-          [img]="icons.CheckCircle2"
-          class="text-primary w-8 h-8 font-bold"
-        ></lucide-icon>
+        <app-icon
+          name="CheckCircle2"
+          size="32"
+          className="text-primary font-bold"
+        ></app-icon>
       </div>
       <h1 class="text-3xl md:text-4xl font-bold mb-3">
         Thank you for your order!
@@ -27,7 +28,7 @@
           type="button"
           routerLink="/profile"
         >
-          <lucide-icon [img]="icons.Truck" class="w-5 h-5"></lucide-icon>
+          <app-icon name="Truck" size="20"></app-icon>
           Track Order
         </button>
         <button
@@ -43,10 +44,10 @@
       <div class="min-w-[600px] flex items-center justify-between px-4">
         <div class="flex flex-col items-center relative group">
           <div [class]="stepIconClasses(order, OrderStatus.Confirmed)">
-            <lucide-icon
-              [img]="icons.CheckCircle2"
-              class="w-5 h-5"
-            ></lucide-icon>
+            <app-icon
+              name="CheckCircle2"
+              size="20"
+            ></app-icon>
           </div>
           <p [ngClass]="stepLabelClasses(order, OrderStatus.Confirmed)">
             Confirmed
@@ -55,7 +56,7 @@
         <div [class]="connectorClasses(order, 0)"></div>
         <div class="flex flex-col items-center relative group">
           <div [class]="stepIconClasses(order, OrderStatus.Processing)">
-            <lucide-icon [img]="icons.Package" class="w-5 h-5"></lucide-icon>
+            <app-icon name="Package" size="20"></app-icon>
           </div>
           <p [ngClass]="stepLabelClasses(order, OrderStatus.Processing)">
             Processing
@@ -64,7 +65,7 @@
         <div [class]="connectorClasses(order, 1)"></div>
         <div class="flex flex-col items-center relative group">
           <div [class]="stepIconClasses(order, OrderStatus.Shipped)">
-            <lucide-icon [img]="icons.Truck" class="w-5 h-5"></lucide-icon>
+            <app-icon name="Truck" size="20"></app-icon>
           </div>
           <p [ngClass]="stepLabelClasses(order, OrderStatus.Shipped)">
             Shipped
@@ -73,7 +74,7 @@
         <div [class]="connectorClasses(order, 2)"></div>
         <div class="flex flex-col items-center relative group">
           <div [class]="stepIconClasses(order, OrderStatus.Delivered)">
-            <lucide-icon [img]="icons.Home" class="w-5 h-5"></lucide-icon>
+            <app-icon name="Home" size="20"></app-icon>
           </div>
           <p [ngClass]="stepLabelClasses(order, OrderStatus.Delivered)">
             Delivered
@@ -95,43 +96,44 @@
             >
           </div>
           <div class="divide-y divide-gray-100 dark:divide-gray-700">
-            <div
-              class="p-6 flex gap-4 hover:bg-gray-50/30 transition-colors"
-              *ngFor="let item of order.items; trackBy: trackOrderItem"
-            >
+            @for (item of order.items; track item.productId) {
               <div
-                class="w-24 h-32 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 relative"
+                class="p-6 flex gap-4 hover:bg-gray-50/30 transition-colors"
               >
-                <img
-                  class="w-full h-full object-cover"
-                  [src]="imageUrlService.getImageUrl(item.imageUrl)"
-                  [alt]="item.productName"
-                />
-              </div>
-              <div class="flex flex-col flex-grow justify-between py-1">
-                <div>
-                  <div class="flex justify-between items-start">
-                    <h3 class="font-semibold text-lg">
-                      {{ item.productName }}
-                    </h3>
-                    <app-price-display
-                      class="font-bold"
-                      [amount]="item.unitPrice"
-                      size="sm"
-                    ></app-price-display>
+                <div
+                  class="w-24 h-32 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 relative"
+                >
+                  <img
+                    class="w-full h-full object-cover"
+                    [src]="imageUrlService.getImageUrl(item.imageUrl)"
+                    [alt]="item.productName"
+                  />
+                </div>
+                <div class="flex flex-col flex-grow justify-between py-1">
+                  <div>
+                    <div class="flex justify-between items-start">
+                      <h3 class="font-semibold text-lg">
+                        {{ item.productName }}
+                      </h3>
+                      <app-price-display
+                        class="font-bold"
+                        [amount]="item.unitPrice"
+                        size="sm"
+                      ></app-price-display>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">
+                      {{ item.size }}
+                    </p>
                   </div>
-                  <p class="text-sm text-gray-500 mt-1">
-                    {{ item.size }}
-                  </p>
-                </div>
-                <div class="flex items-center gap-2 mt-2">
-                  <span
-                    class="text-xs font-medium bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded"
-                    >Qty: {{ item.quantity }}</span
-                  >
+                  <div class="flex items-center gap-2 mt-2">
+                    <span
+                      class="text-xs font-medium bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded"
+                      >Qty: {{ item.quantity }}</span
+                    >
+                  </div>
                 </div>
               </div>
-            </div>
+            }
           </div>
         </div>
         <div
@@ -141,10 +143,10 @@
             <div
               class="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center shadow-sm"
             >
-              <lucide-icon
-                [img]="icons.Headphones"
-                class="w-5 h-5"
-              ></lucide-icon>
+              <app-icon
+                name="Headphones"
+                size="20"
+              ></app-icon>
             </div>
             <div>
               <p class="font-semibold text-primary">
@@ -168,10 +170,11 @@
           class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
         >
           <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-            <lucide-icon
-              [img]="icons.Truck"
-              class="text-gray-400 w-5 h-5"
-            ></lucide-icon>
+            <app-icon
+              name="Truck"
+              size="20"
+              className="text-gray-400"
+            ></app-icon>
             Delivery Details
           </h3>
           <div class="space-y-4">
@@ -202,10 +205,11 @@
           class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
         >
           <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-            <lucide-icon
-              [img]="icons.FileText"
-              class="text-gray-400 w-5 h-5"
-            ></lucide-icon>
+            <app-icon
+              name="FileText"
+              size="20"
+              className="text-gray-400"
+            ></app-icon>
             Order Totals
           </h3>
           <div class="space-y-2">
@@ -223,17 +227,14 @@
             >
               <span>Shipping</span>
               <span class="text-green-600 font-medium">
-                <ng-container
-                  *ngIf="order.shippingCost === 0; else confirmationShipping"
-                >
+                @if (order.shippingCost === 0) {
                   Free
-                </ng-container>
-                <ng-template #confirmationShipping>
+                } @else {
                   <app-price-display
                     [amount]="order.shippingCost"
                     size="sm"
                   ></app-price-display>
-                </ng-template>
+                }
               </span>
             </div>
 
@@ -253,15 +254,13 @@
           class="w-full py-3 text-primary text-sm font-semibold hover:underline flex items-center justify-center gap-1"
           type="button"
         >
-          <lucide-icon [img]="icons.Printer" class="w-4.5 h-4.5"></lucide-icon>
+          <app-icon name="Printer" size="18"></app-icon>
           Print Invoice
         </button>
       </div>
     </div>
   </main>
-</ng-container>
-
-<ng-template #loadingOrError>
+} @else {
   <div
     class="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center"
   >
@@ -286,4 +285,4 @@
       </p>
     </div>
   </div>
-</ng-template>
+}

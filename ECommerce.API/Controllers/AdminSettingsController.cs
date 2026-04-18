@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ECommerce.API.Controllers;
 
@@ -17,13 +18,15 @@ public class AdminSettingsController : ControllerBase
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
     private readonly IMemoryCache _cache;
+    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminSettingsController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config, IMemoryCache cache)
+    public AdminSettingsController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config, IMemoryCache cache, IOutputCacheStore cacheStore)
     {
         _context = context;
         _environment = environment;
         _config = config;
         _cache = cache;
+        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -96,6 +99,7 @@ public class AdminSettingsController : ControllerBase
 
         _cache.Remove("site_settings");
         _cache.Remove("delivery_methods_active");
+        await _cacheStore.EvictByTagAsync("config", default);
 
         return Ok(dto);
     }

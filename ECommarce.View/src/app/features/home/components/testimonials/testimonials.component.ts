@@ -3,22 +3,16 @@ import { CommonModule } from "@angular/common";
 import { ReviewService } from "../../../../core/services/review.service";
 import { Review } from "../../../../core/models/review";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
-
-import { LucideAngularModule, Quote, Star, StarHalf } from "lucide-angular";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-testimonials",
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, AppIconComponent],
   templateUrl: "./testimonials.component.html",
   styleUrl: "./testimonials.component.css",
 })
 export class TestimonialsComponent implements OnInit {
-  readonly icons = {
-    Quote,
-    Star,
-    StarHalf,
-  };
   reviews: Review[] = [];
   stars = [1, 2, 3, 4, 5];
 
@@ -31,15 +25,15 @@ export class TestimonialsComponent implements OnInit {
     });
   }
 
-  getStarIcon(rating: number, star: number): any {
+  getStarIcon(rating: number, star: number): string {
     if (rating >= star) {
-      return this.icons.Star;
+      return 'Star';
     }
 
     if (rating + 0.5 >= star) {
-      return this.icons.StarHalf;
+      return 'StarHalf';
     }
 
-    return this.icons.Star;
+    return 'Star';
   }
 }

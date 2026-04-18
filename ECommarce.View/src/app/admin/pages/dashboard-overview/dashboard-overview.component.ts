@@ -4,7 +4,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
 import {
   Observable,
-  firstValueFrom,
   shareReplay,
   switchMap,
   timer,
@@ -19,20 +18,7 @@ import { AdminDashboardService } from "../../services/admin-dashboard.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { SiteSettingsService } from "../../../core/services/site-settings.service";
-import {
-  LucideAngularModule,
-  Receipt,
-  Eye,
-  CreditCard,
-  Truck,
-  Clock,
-  Package,
-  Users,
-  RotateCcw,
-  PlusCircle,
-  ShoppingCart,
-  PackagePlus,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-dashboard-overview",
@@ -41,24 +27,11 @@ import {
     CommonModule,
     RouterModule,
     PriceDisplayComponent,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./dashboard-overview.component.html",
 })
 export class DashboardOverviewComponent {
-  readonly icons = {
-    Receipt,
-    Eye,
-    CreditCard,
-    Truck,
-    Clock,
-    Package,
-    Users,
-    RotateCcw,
-    PlusCircle,
-    ShoppingCart,
-    PackagePlus,
-  };
   private adminDashboardService = inject(AdminDashboardService);
   private settingsService = inject(SiteSettingsService);
   readonly imageUrlService = inject(ImageUrlService);

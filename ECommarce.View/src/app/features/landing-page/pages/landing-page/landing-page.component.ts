@@ -1,5 +1,5 @@
 import { Component, DestroyRef, OnInit, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { AsyncPipe, NgClass } from "@angular/common";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -12,31 +12,7 @@ import {
   map,
   of,
   switchMap,
-  tap,
 } from "rxjs";
-import {
-  LucideAngularModule,
-  Loader2,
-  ChevronLeft,
-  ChevronRight,
-  CheckCircle2,
-  Truck,
-  Lock,
-  ArrowRight,
-  Plus,
-  Minus,
-  ShoppingCart,
-  User,
-  Search,
-  ChevronDown,
-  ChevronUp,
-  Star,
-  Maximize2,
-  ShieldCheck,
-  ShoppingBag,
-  CreditCard,
-  MessageCircle,
-} from "lucide-angular";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 
 import { ProductService } from "../../../../core/services/product.service";
@@ -51,44 +27,24 @@ import { SettingsService } from "../../../../admin/services/settings.service";
 import { DeliveryMethod } from "../../../../admin/models/settings.models";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { SizeGuideComponent } from "../../../../shared/components/size-guide/size-guide.component";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-landing-page",
   standalone: true,
   imports: [
-    CommonModule,
+    AsyncPipe,
+    NgClass,
     ReactiveFormsModule,
     RouterModule,
     PriceDisplayComponent,
-    LucideAngularModule,
     SizeGuideComponent,
+    AppIconComponent,
   ],
   templateUrl: "./landing-page.component.html",
   styleUrl: "./landing-page.component.css",
 })
 export class LandingPageComponent implements OnInit {
-  readonly icons = {
-    Loader2,
-    ChevronLeft,
-    ChevronRight,
-    CheckCircle2,
-    Truck,
-    Lock,
-    ArrowRight,
-    Plus,
-    Minus,
-    ShoppingCart,
-    User,
-    Search,
-    ChevronDown,
-    ChevronUp,
-    Star,
-    Maximize2,
-    ShieldCheck,
-    ShoppingBag,
-    CreditCard,
-    MessageCircle,
-  };
   private readonly route = inject(ActivatedRoute);
   private readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);
@@ -155,7 +111,6 @@ export class LandingPageComponent implements OnInit {
           this.isLoading = false;
 
           if (product) {
-            // Set defaults
             const sizes = Array.from(
               new Set(product.variants?.map((v) => v.size).filter(Boolean)),
             );
@@ -177,7 +132,6 @@ export class LandingPageComponent implements OnInit {
             });
             this.selectedMethod = defaultMethod;
             
-            // Initial city/area setup
             const initialCity = this.checkoutForm.controls.city.value;
             this.areas = BANGLADESH_LOCATIONS[initialCity] || [];
             this.filteredAreas = [...this.areas];
@@ -339,7 +293,6 @@ export class LandingPageComponent implements OnInit {
     return subtotal + shipping;
   }
 
-  // UI Helpers matching ProductDetailsPageComponent
   currentImageIndex = 0;
 
   get gallery(): string[] {
@@ -412,14 +365,13 @@ export class LandingPageComponent implements OnInit {
 
   private calculateShipping(subtotal: number, city: string): number {
     const isInsideDhaka = city.toLowerCase().includes("dhaka");
-    return isInsideDhaka ? 60 : 120; // Default values consistent with user's earlier message
+    return isInsideDhaka ? 60 : 120;
   }
 
   placeOrder(): void {
     if (this.isOrdering || !this.product) return;
     this.errorMessage = "";
 
-    // Manual validation check for required variants
     const sizes = Array.from(
       new Set(this.product.variants?.map((v) => v.size).filter(Boolean)),
     );
@@ -444,7 +396,6 @@ export class LandingPageComponent implements OnInit {
 
     const form = this.checkoutForm.getRawValue();
 
-    // 1. Construct local order payload to bypass global cart
     const cartItem: CartItem = {
       id: "landing-" + Date.now(),
       productId: this.product.id,
@@ -473,7 +424,6 @@ export class LandingPageComponent implements OnInit {
       freeShippingProgress: 100
     };
 
-    // 2. Place order directly via OrderService
     this.orderService.placeOrder({
       state: {
         fullName: form.fullName,

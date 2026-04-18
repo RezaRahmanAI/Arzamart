@@ -1,18 +1,15 @@
 import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { LucideAngularModule, ShoppingCart } from "lucide-angular";
+import { NgClass } from "@angular/common";
+import { AppIconComponent } from "../app-icon/app-icon.component";
 
 @Component({
   selector: "app-icon-button",
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [NgClass, AppIconComponent],
   templateUrl: "./icon-button.component.html",
   styleUrl: "./icon-button.component.css",
 })
 export class IconButtonComponent {
-  readonly icons = {
-    ShoppingCart,
-  };
-  @Input() icon: any = ShoppingCart;
+  @Input() icon: string = "ShoppingCart";
   @Input() variant: "light" | "dark" = "light";
 }

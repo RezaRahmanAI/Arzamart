@@ -10,6 +10,7 @@ import { Router, RouterModule } from "@angular/router";
 import { finalize } from "rxjs/operators";
 import { ContactPayload, ContactService } from "./contact.service";
 import { SiteSettingsService } from "../../core/services/site-settings.service";
+import { AppIconComponent } from "../../shared/components/app-icon/app-icon.component";
 
 type SocialLink = {
   name: string;
@@ -24,17 +25,6 @@ type InquiryTopic = {
   label: string;
 };
 
-import {
-  LucideAngularModule,
-  Mail,
-  Phone,
-  MapPin,
-  HelpCircle,
-  ArrowRight,
-  ChevronDown,
-  Store,
-} from "lucide-angular";
-
 @Component({
   selector: "app-contact",
   standalone: true,
@@ -42,20 +32,11 @@ import {
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./contact.component.html",
 })
 export class ContactComponent {
-  readonly icons = {
-    Mail,
-    Phone,
-    MapPin,
-    HelpCircle,
-    ArrowRight,
-    ChevronDown,
-    Store,
-  };
   supportEmail = "support@arzamart.com";
   phone = "+8801XXXXXXXXX";
   phoneDial = "+8801XXXXXXXXX";

@@ -9,6 +9,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/banners")]
+[Microsoft.AspNetCore.OutputCaching.OutputCache(Tags = new[] { "home" })]
 public class BannersController : ControllerBase
 {
     private readonly IGenericRepository<HeroBanner> _bannerRepo;

@@ -1,12 +1,13 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
+import { RouterModule } from "@angular/router";
 import { SiteSettingsService } from "../../core/services/site-settings.service";
 import { ImageUrlService } from "../../core/services/image-url.service";
 
 @Component({
   selector: "app-footer",
   standalone: true,
-  imports: [CommonModule],
+  imports: [AsyncPipe, RouterModule],
   templateUrl: "./footer.component.html",
   styleUrl: "./footer.component.css",
 })

@@ -5,6 +5,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ECommerce.API.Controllers;
 
@@ -17,13 +18,15 @@ public class AdminSubCategoryController : ControllerBase
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
     private readonly ICacheService _cache;
+    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminSubCategoryController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config, ICacheService cache)
+    public AdminSubCategoryController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config, ICacheService cache, IOutputCacheStore cacheStore)
     {
         _context = context;
         _environment = environment;
         _config = config;
         _cache = cache;
+        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -99,6 +102,7 @@ public class AdminSubCategoryController : ControllerBase
         await _context.SaveChangesAsync();
 
         await InvalidateSubCategoryCacheAsync();
+        await _cacheStore.EvictByTagAsync("catalog", default);
 
         var result = new SubCategoryDto
         {
@@ -141,6 +145,7 @@ public class AdminSubCategoryController : ControllerBase
         await _context.SaveChangesAsync();
 
         await InvalidateSubCategoryCacheAsync();
+        await _cacheStore.EvictByTagAsync("catalog", default);
 
         var result = new SubCategoryDto
         {
@@ -166,6 +171,7 @@ public class AdminSubCategoryController : ControllerBase
         await _context.SaveChangesAsync();
 
         await InvalidateSubCategoryCacheAsync();
+        await _cacheStore.EvictByTagAsync("catalog", default);
 
         return NoContent();
     }

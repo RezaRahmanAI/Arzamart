@@ -10,7 +10,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Microsoft.AspNetCore.OutputCaching.OutputCache(PolicyName = "Categories")]
+[Microsoft.AspNetCore.OutputCaching.OutputCache(Tags = new[] { "catalog" })]
 public class CategoriesController : ControllerBase
 {
     private readonly IGenericRepository<Category> _categoryRepo;

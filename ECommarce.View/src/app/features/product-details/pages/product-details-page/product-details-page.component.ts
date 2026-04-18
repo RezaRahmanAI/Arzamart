@@ -1,5 +1,5 @@
 import { Component, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { AsyncPipe, NgClass, DecimalPipe, DatePipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { HttpContext } from "@angular/common/http";
@@ -30,53 +30,28 @@ import { SHOW_LOADING } from "../../../../core/services/loading.service";
 import { ProductCardComponent } from "../../../../shared/components/product-card/product-card.component";
 import { SizeGuideComponent } from "../../../../shared/components/size-guide/size-guide.component";
 import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
-import {
-  LucideAngularModule,
-  ChevronLeft,
-  ChevronRight,
-  ShoppingBag,
-  CreditCard,
-  Star,
-  Plus,
-  Minus,
-  Maximize2,
-  Loader2,
-  MessageCircle,
-  Truck,
-  ShieldCheck,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-product-details-page",
   standalone: true,
   imports: [
-    CommonModule,
+    AsyncPipe,
+    NgClass,
+    DecimalPipe,
+    DatePipe,
     RouterLink,
     FormsModule,
     PriceDisplayComponent,
     ProductCardComponent,
     SizeGuideComponent,
-    LucideAngularModule,
+    AppIconComponent,
     SafeHtmlPipe,
   ],
   templateUrl: "./product-details-page.component.html",
   styleUrl: "./product-details-page.component.css",
 })
 export class ProductDetailsPageComponent {
-  readonly icons = {
-    ChevronLeft,
-    ChevronRight,
-    ShoppingBag,
-    CreditCard,
-    Star,
-    Plus,
-    Minus,
-    Maximize2,
-    Loader2,
-    MessageCircle,
-    Truck,
-    ShieldCheck,
-  };
   private readonly route = inject(ActivatedRoute);
   private readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);

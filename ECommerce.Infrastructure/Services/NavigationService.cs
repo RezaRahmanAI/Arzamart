@@ -33,6 +33,7 @@ public class NavigationService : INavigationService
 
             var allCategories = await _context.Categories
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Include(c => c.SubCategories) // Include legacy subcategories for now
                     .ThenInclude(sc => sc.Collections)
                 .Include(c => c.ChildCategories) // Include new recursive children

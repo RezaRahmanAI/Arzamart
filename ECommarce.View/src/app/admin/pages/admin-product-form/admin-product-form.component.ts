@@ -25,21 +25,7 @@ import {
 } from "../../models/categories.models";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
-import {
-  LucideAngularModule,
-  ChevronRight,
-  Check,
-  Bold,
-  Italic,
-  Underline,
-  List,
-  Link,
-  Upload,
-  PlayCircle,
-  PlusCircle,
-  Eye,
-  ChevronDown
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 interface MediaFormValue {
   id: string;
@@ -59,7 +45,7 @@ interface MediaFormValue {
     ReactiveFormsModule,
     RouterModule,
     PriceDisplayComponent,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   host: {
     '(document:click)': 'onDocumentClick($event)'
@@ -67,20 +53,7 @@ interface MediaFormValue {
   templateUrl: "./admin-product-form.component.html",
 })
 export class AdminProductFormComponent implements OnDestroy {
-  readonly icons = {
-    ChevronRight,
-    Check,
-    Bold,
-    Italic,
-    Underline,
-    List,
-    Link,
-    Upload,
-    PlayCircle,
-    PlusCircle,
-    Eye,
-    ChevronDown
-  };
+
   private formBuilder = inject(FormBuilder);
   private productsService = inject(ProductsService);
   private categoriesService = inject(CategoriesService);

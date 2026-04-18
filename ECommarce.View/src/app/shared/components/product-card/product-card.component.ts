@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgClass } from "@angular/common";
 import { RouterLink } from "@angular/router";
 
 import {
@@ -7,23 +7,20 @@ import {
   RelatedProduct,
   ProductVariant,
 } from "../../../core/models/product";
-import { BadgeComponent } from "../badge/badge.component";
-import { IconButtonComponent } from "../icon-button/icon-button.component";
 import { PriceDisplayComponent } from "../price-display/price-display.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { CartService } from "../../../core/services/cart.service";
-import { LucideAngularModule, ShoppingCart } from "lucide-angular";
 import { QuickAddModalComponent } from "../quick-add-modal/quick-add-modal.component";
-import { ProductImage } from "../../../core/models/product";
+import { AppIconComponent } from "../app-icon/app-icon.component";
 
 @Component({
   selector: "app-product-card",
   standalone: true,
   imports: [
-    CommonModule,
+    NgClass,
     RouterLink,
     PriceDisplayComponent,
-    LucideAngularModule,
+    AppIconComponent,
     QuickAddModalComponent,
   ],
   templateUrl: "./product-card.component.html",
@@ -34,7 +31,6 @@ export class ProductCardComponent {
   @Input({ required: true }) product!: Product | RelatedProduct;
   selectedSize: string | null = null;
 
-  readonly icons = { ShoppingCart };
   showQuickAdd = false;
   isOrdering = false;
 

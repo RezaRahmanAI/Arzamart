@@ -17,6 +17,7 @@ import { SidebarService } from "../../services/sidebar.service";
     AdminSidebarComponent,
   ],
   templateUrl: "./admin-layout.component.html",
+  styleUrl: "../../admin-styles.css",
 })
 export class AdminLayoutComponent {
   protected sidebarService = inject(SidebarService);

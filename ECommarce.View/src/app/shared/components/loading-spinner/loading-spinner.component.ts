@@ -1,18 +1,20 @@
 import { Component, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { LoadingService } from "../../../core/services/loading.service";
 
 @Component({
   selector: "app-loading-spinner",
   standalone: true,
-  imports: [CommonModule],
+  imports: [AsyncPipe],
   template: `
-    <div *ngIf="loadingService.loading$ | async" class="loading-overlay">
-      <div class="spinner-container">
-        <div class="luxury-spinner"></div>
-        <div class="loading-text">Loading...</div>
+    @if (loadingService.loading$ | async) {
+      <div class="loading-overlay">
+        <div class="spinner-container">
+          <div class="luxury-spinner"></div>
+          <div class="loading-text">Loading...</div>
+        </div>
       </div>
-    </div>
+    }
   `,
   styles: [
     `

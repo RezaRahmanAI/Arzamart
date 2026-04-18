@@ -16,29 +16,9 @@ import {
   of,
   catchError,
   Observable,
+  forkJoin,
 } from "rxjs";
-import {
-  LucideAngularModule,
-  Search,
-  ShoppingCart,
-  User,
-  MapPin,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp,
-  Plus,
-  Minus,
-  Trash2,
-  CheckCircle2,
-  PackagePlus,
-  ChevronLeft,
-  Loader2,
-  AlertCircle,
-  Truck,
-  X,
-  Phone,
-  PackageX,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 import { ProductsService } from "../../services/products.service";
 import { OrdersService } from "../../services/orders.service";
@@ -67,7 +47,7 @@ interface CartItem {
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    LucideAngularModule,
+    AppIconComponent,
     PriceDisplayComponent,
   ],
   templateUrl: "./admin-manual-order.component.html",
@@ -83,27 +63,7 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
   public imageUrlService = inject(ImageUrlService);
   private sourceService = inject(SourceManagementService);
 
-  readonly icons = {
-    Search,
-    ShoppingCart,
-    User,
-    MapPin,
-    ChevronRight,
-    ChevronDown,
-    ChevronUp,
-    Plus,
-    Minus,
-    Trash2,
-    CheckCircle2,
-    PackagePlus,
-    ChevronLeft,
-    Loader2,
-    AlertCircle,
-    Truck,
-    X,
-    Phone,
-    PackageX,
-  };
+
 
   private destroy$ = new Subject<void>();
   isPreOrderMode = false;
@@ -155,25 +115,30 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     
     // Detect mode and edit
     this.isPreOrderMode = this.router.url.includes("pre-order");
-    this.route.params.subscribe(params => {
-      if (params["id"]) {
-        this.isEditMode = true;
-        this.orderId = +params["id"];
-        this.loadOrderForEdit(this.orderId);
-      }
-    });
-    
-    // Load delivery methods
-    this.settingsService.getDeliveryMethods().subscribe((methods) => {
-      this.deliveryMethods = methods;
-      if (methods.length > 0) {
-        this.orderForm.patchValue({ deliveryMethodId: methods[0].id });
-      }
+    // Load data with forkJoin to avoid race conditions when editing
+    const sources$ = forkJoin({
+      pages: this.sourceService.getActiveSourcePages(),
+      sources: this.sourceService.getActiveSocialMediaSources(),
+      methods: this.settingsService.getDeliveryMethods()
     });
 
-    // Load active sources
-    this.sourceService.getActiveSourcePages().subscribe(pages => this.sourcePages = pages);
-    this.sourceService.getActiveSocialMediaSources().subscribe(sources => this.socialMediaSources = sources);
+    sources$.subscribe(({ pages, sources, methods }) => {
+      this.sourcePages = pages;
+      this.socialMediaSources = sources;
+      this.deliveryMethods = methods;
+      
+      // If we are in edit mode, wait until sources are loaded before loading the order
+      this.route.params.subscribe(params => {
+        if (params["id"]) {
+          this.isEditMode = true;
+          this.orderId = +params["id"];
+          this.loadOrderForEdit(this.orderId);
+        } else if (methods.length > 0) {
+          // Set default delivery method for new orders
+          this.orderForm.patchValue({ deliveryMethodId: methods[0].id });
+        }
+      });
+    });
 
     // Setup product search
     this.searchControl.valueChanges

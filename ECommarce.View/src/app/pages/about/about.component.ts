@@ -1,20 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
-
-import {
-  LucideAngularModule,
-  ShieldCheck,
-  Heart,
-  Leaf,
-  ArrowLeft,
-  ArrowRight,
-  Flower2,
-} from "lucide-angular";
+import { AppIconComponent } from "../../shared/components/app-icon/app-icon.component";
 
 type CoreValue = {
   title: string;
-  icon: any;
+  icon: string;
   description: string;
 };
 
@@ -28,18 +19,10 @@ type ProcessStep = {
 @Component({
   selector: "app-about",
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, RouterModule, AppIconComponent],
   templateUrl: "./about.component.html",
 })
 export class AboutComponent {
-  readonly icons = {
-    ShieldCheck,
-    Heart,
-    Leaf,
-    ArrowLeft,
-    ArrowRight,
-    Flower2,
-  };
   heroEyebrow = "Our Journey";
   heroTitle = "Modesty in Every Stitch";
   heroSubtitle =
@@ -48,19 +31,19 @@ export class AboutComponent {
   values: CoreValue[] = [
     {
       title: "Uncompromising Quality",
-      icon: ShieldCheck,
+      icon: "ShieldCheck",
       description:
         "We source premium fabrics that stand the test of time, ensuring each garment remains a staple in your wardrobe for years.",
     },
     {
       title: "Modesty First",
-      icon: Heart,
+      icon: "Heart",
       description:
         "Our designs are centered around coverage and comfort, giving you the confidence to move through the world freely.",
     },
     {
       title: "Sustainable Future",
-      icon: Leaf,
+      icon: "Leaf",
       description:
         "We are committed to ethical manufacturing processes and reducing our environmental footprint for a better tomorrow.",
     },

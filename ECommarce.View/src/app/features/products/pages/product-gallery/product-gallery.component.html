@@ -23,46 +23,56 @@
           
           <div class="p-2">
             <!-- Normal Sidebar -->
-            <nav *ngIf="!isOffersPage" class="flex flex-col gap-0.5">
-              <button 
-                *ngFor="let sub of subCategories"
-                (click)="navigateToSub('/subcategory/' + sub.slug)"
-                class="w-full flex items-center justify-between p-3 text-[11px] font-bold text-text-sub hover:bg-supporting/40 hover:text-accent rounded-lg transition-all group"
-              >
-                <div class="flex items-center gap-3">
-                  <div class="w-1.5 h-1.5 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-all"></div>
-                  {{ sub.name }}
-                </div>
-                <lucide-icon [name]="icons.ChevronRight" class="w-4 h-4 opacity-20"></lucide-icon>
-              </button>
-            </nav>
-
-            <!-- Hierarchical Sidebar (Offers Page) -->
-            <div *ngIf="isOffersPage" class="flex flex-col gap-4 p-2">
-              <div *ngFor="let cat of offerCategories" class="flex flex-col gap-2">
-                <div class="flex items-center gap-2 px-2 py-1">
-                  <span class="text-[10px] font-black text-primary uppercase tracking-tighter opacity-70">{{ cat.name }}</span>
-                  <div class="h-[1px] flex-1 bg-border-color opacity-50"></div>
-                </div>
-                <nav class="flex flex-col gap-0.5">
+            @if (!isOffersPage) {
+              <nav class="flex flex-col gap-0.5">
+                @for (sub of subCategories; track sub.id) {
                   <button 
-                    *ngFor="let sub of cat.subCategories"
-                    (click)="navigateToSub('/subcategory/' + sub.slug + '?isOffer=true')"
-                    class="w-full flex items-center justify-between p-2.5 text-[11px] font-bold text-text-sub hover:bg-supporting/40 hover:text-accent rounded-lg transition-all group"
+                    (click)="navigateToSub('/subcategory/' + sub.slug)"
+                    class="w-full flex items-center justify-between p-3 text-[11px] font-bold text-text-sub hover:bg-supporting/40 hover:text-accent rounded-lg transition-all group"
                   >
-                    <div class="flex items-center gap-3 pl-2">
-                      <div class="w-1 h-1 bg-accent rounded-full opacity-30 group-hover:opacity-100 transition-all"></div>
+                    <div class="flex items-center gap-3">
+                      <div class="w-1.5 h-1.5 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-all"></div>
                       {{ sub.name }}
                     </div>
-                    <lucide-icon [name]="icons.ChevronRight" class="w-3.5 h-3.5 opacity-20"></lucide-icon>
+                    <app-icon name="ChevronRight" size="16" className="opacity-20"></app-icon>
                   </button>
-                </nav>
+                }
+              </nav>
+            }
+
+            <!-- Hierarchical Sidebar (Offers Page) -->
+            @if (isOffersPage) {
+              <div class="flex flex-col gap-4 p-2">
+                @for (cat of offerCategories; track cat.id) {
+                  <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2 px-2 py-1">
+                      <span class="text-[10px] font-black text-primary uppercase tracking-tighter opacity-70">{{ cat.name }}</span>
+                      <div class="h-[1px] flex-1 bg-border-color opacity-50"></div>
+                    </div>
+                    <nav class="flex flex-col gap-0.5">
+                      @for (sub of cat.subCategories; track sub.id) {
+                        <button 
+                          (click)="navigateToSub('/subcategory/' + sub.slug + '?isOffer=true')"
+                          class="w-full flex items-center justify-between p-2.5 text-[11px] font-bold text-text-sub hover:bg-supporting/40 hover:text-accent rounded-lg transition-all group"
+                        >
+                          <div class="flex items-center gap-3 pl-2">
+                            <div class="w-1 h-1 bg-accent rounded-full opacity-30 group-hover:opacity-100 transition-all"></div>
+                            {{ sub.name }}
+                          </div>
+                          <app-icon name="ChevronRight" size="14" className="opacity-20"></app-icon>
+                        </button>
+                      }
+                    </nav>
+                  </div>
+                }
               </div>
-            </div>
+            }
             
-            <div *ngIf="(!isOffersPage && subCategories.length === 0) || (isOffersPage && offerCategories.length === 0)" class="py-6 text-center">
-              <p class="text-[10px] text-text-sub uppercase tracking-widest">No Categories Found</p>
-            </div>
+            @if ((!isOffersPage && subCategories.length === 0) || (isOffersPage && offerCategories.length === 0)) {
+              <div class="py-6 text-center">
+                <p class="text-[10px] text-text-sub uppercase tracking-widest">No Categories Found</p>
+              </div>
+            }
           </div>
         </div>
       </aside>
@@ -70,29 +80,40 @@
       <!-- Main Content Area -->
       <div class="flex-1 flex flex-col gap-6">
           <!-- Grid Configuration (Alzeena 5-Column) -->
-          <div *ngIf="!loading && filteredProducts.length > 0" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
-            <app-product-card
-              *ngFor="let product of filteredProducts; trackBy: trackByProductId"
-              [product]="product"
-            ></app-product-card>
-          </div>
+          @if (!loading && filteredProducts.length > 0) {
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+              @for (product of filteredProducts; track trackByProductId($index, product)) {
+                <app-product-card
+                  [product]="product"
+                ></app-product-card>
+              }
+            </div>
+          }
 
           <!-- Loading State -->
-          <div *ngIf="loading" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
-            <div *ngFor="let item of skeletonItems" class="animate-pulse">
-              <div class="aspect-[3/4] bg-gray-100 rounded sm:rounded-lg mb-2 sm:mb-3"></div>
-              <div class="h-2 sm:h-3 bg-gray-100 w-3/4 rounded-full mb-1 sm:mb-2"></div>
-              <div class="h-2 sm:h-3 bg-gray-100 w-1/2 rounded-full"></div>
+          @if (loading) {
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+              @for (item of skeletonItems; track $index) {
+                <div class="animate-pulse">
+                  <div class="aspect-[3/4] bg-gray-100 rounded sm:rounded-lg mb-2 sm:mb-3"></div>
+                  <div class="h-2 sm:h-3 bg-gray-100 w-3/4 rounded-full mb-1 sm:mb-2"></div>
+                  <div class="h-2 sm:h-3 bg-gray-100 w-1/2 rounded-full"></div>
+                </div>
+              }
             </div>
-          </div>
+          }
 
           <!-- No Products Found -->
-          <div *ngIf="!loading && filteredProducts.length === 0" class="flex flex-col items-center justify-center py-20 text-center bg-white border border-gray-100 rounded-xl">
-            <lucide-icon [name]="icons.Package" class="w-12 h-12 text-gray-200 mb-4"></lucide-icon>
-            <h3 class="text-lg font-black text-primary mb-2">No products found</h3>
-            <p class="text-gray-400 text-xs max-w-xs mx-auto">Try a different size or clear filters.</p>
-            <button *ngIf="selectedSize !== 'All Sizes'" (click)="selectSizeFilter('All Sizes')" class="mt-4 px-6 py-2 bg-accent text-white text-xs font-black uppercase rounded-xl">Clear Size Filter</button>
-          </div>
+          @if (!loading && filteredProducts.length === 0) {
+            <div class="flex flex-col items-center justify-center py-20 text-center bg-white border border-gray-100 rounded-xl">
+              <app-icon name="Package" size="48" className="text-gray-200 mb-4"></app-icon>
+              <h3 class="text-lg font-black text-primary mb-2">No products found</h3>
+              <p class="text-gray-400 text-xs max-w-xs mx-auto">Try a different size or clear filters.</p>
+              @if (selectedSize !== 'All Sizes') {
+                <button (click)="selectSizeFilter('All Sizes')" class="mt-4 px-6 py-2 bg-accent text-white text-xs font-black uppercase rounded-xl">Clear Size Filter</button>
+              }
+            </div>
+          }
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ScrollingModule } from "@angular/cdk/scrolling";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest } from "rxjs";
 import { ProductService } from "../../../../core/services/product.service";
@@ -9,7 +8,7 @@ import { ProductCardComponent } from "../../../../shared/components/product-card
 import { ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
-import { LucideAngularModule, Package, ChevronRight } from "lucide-angular";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { CategoryService } from "../../../../core/services/category.service";
 import { Category } from "../../../../core/models/category";
 import { Router } from "@angular/router";
@@ -17,15 +16,11 @@ import { Router } from "@angular/router";
 @Component({
   selector: "app-product-gallery",
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, LucideAngularModule, ScrollingModule],
+  imports: [CommonModule, ProductCardComponent, AppIconComponent],
   templateUrl: "./product-gallery.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductGalleryComponent implements OnInit {
-  readonly icons = {
-    Package,
-    ChevronRight,
-  };
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly productService = inject(ProductService);

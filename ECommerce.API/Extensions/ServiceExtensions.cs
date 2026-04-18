@@ -36,10 +36,12 @@ public static class ServiceExtensions
             options.EnableForHttps = true;
             options.Providers.Add<BrotliCompressionProvider>();
             options.Providers.Add<GzipCompressionProvider>();
+            options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                new[] { "image/svg+xml", "application/json", "application/javascript", "text/css" });
         });
 
-        services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
-        services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+        services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest); // Fastest is often better for shared hosting CPU
+        services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 
         // 3. Caching
         services.AddMemoryCache();
@@ -232,16 +234,16 @@ public static class ServiceExtensions
                 {
                     // Production: Use configured origins
                     builder.WithOrigins(allowedOrigins)
-                           .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                           .WithHeaders("Content-Type", "Authorization", "X-Session-Id", "X-Requested-With")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
                            .AllowCredentials();
                 }
                 else
                 {
                     // Production Fallback: Hardcoded safe defaults
                     builder.WithOrigins("https://arzamart.com", "https://www.arzamart.com", "https://api.arzamart.com")
-                           .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                           .WithHeaders("Content-Type", "Authorization", "X-Session-Id", "X-Requested-With")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
                            .AllowCredentials();
                 }
                 

@@ -13,16 +13,19 @@ namespace ECommerce.API.Controllers;
 public class AdminPagesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly Microsoft.AspNetCore.OutputCaching.IOutputCacheStore _cacheStore;
 
-    public AdminPagesController(ApplicationDbContext context)
+    public AdminPagesController(ApplicationDbContext context, Microsoft.AspNetCore.OutputCaching.IOutputCacheStore cacheStore)
     {
         _context = context;
+        _cacheStore = cacheStore;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<PageDto>>> GetAllPages()
     {
         var pages = await _context.Pages
+            .AsNoTracking()
             .Select(p => new PageDto
             {
                 Id = p.Id,
@@ -41,7 +44,7 @@ public class AdminPagesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<PageDto>> GetPageById(int id)
     {
-        var page = await _context.Pages.FindAsync(id);
+        var page = await _context.Pages.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         if (page == null) return NotFound();
 
         return Ok(new PageDto
@@ -72,6 +75,8 @@ public class AdminPagesController : ControllerBase
         _context.Pages.Add(page);
         await _context.SaveChangesAsync();
 
+        await _cacheStore.EvictByTagAsync("content", default);
+
         return CreatedAtAction(nameof(GetPageById), new { id = page.Id }, new PageDto
         {
             Id = page.Id,
@@ -100,6 +105,8 @@ public class AdminPagesController : ControllerBase
 
         await _context.SaveChangesAsync();
 
+        await _cacheStore.EvictByTagAsync("content", default);
+
         return Ok(new PageDto
         {
             Id = page.Id,
@@ -121,6 +128,8 @@ public class AdminPagesController : ControllerBase
 
         _context.Pages.Remove(page);
         await _context.SaveChangesAsync();
+
+        await _cacheStore.EvictByTagAsync("content", default);
 
         return NoContent();
     }

@@ -20,11 +20,12 @@
             [src]="review.userAvatar"
             class="w-full h-full object-cover"
           />
-          <lucide-icon
+          <app-icon
             *ngIf="!review.userAvatar"
-            [img]="icons.User"
-            class="w-6 h-6 text-gray-400"
-          ></lucide-icon>
+            name="User"
+            size="24"
+            className="text-gray-400"
+          ></app-icon>
         </div>
         <div>
           <h3 class="font-bold text-gray-800">{{ review.userName }}</h3>
@@ -34,10 +35,10 @@
               *ngIf="review.isVerifiedPurchase"
               class="text-accent font-bold flex items-center gap-0.5"
             >
-              <lucide-icon
-                [img]="icons.CheckCircle2"
-                class="w-3.5 h-3.5"
-              ></lucide-icon>
+              <app-icon
+                name="CheckCircle2"
+                size="14"
+              ></app-icon>
               Verified
             </span>
           </div>
@@ -46,16 +47,18 @@
 
       <div class="flex-grow">
         <div class="flex items-center gap-1 mb-2">
-          <lucide-icon
+          <app-icon
             *ngFor="let s of getStars(review.rating)"
-            [img]="icons.Star"
-            class="w-4 h-4 text-yellow-400 fill-yellow-400"
-          ></lucide-icon>
-          <lucide-icon
+            name="Star"
+            size="16"
+            className="text-yellow-400 fill-yellow-400"
+          ></app-icon>
+          <app-icon
             *ngFor="let s of [1, 2, 3, 4, 5].slice(review.rating)"
-            [img]="icons.Star"
-            class="w-4 h-4 text-gray-200"
-          ></lucide-icon>
+            name="Star"
+            size="16"
+            className="text-gray-200"
+          ></app-icon>
         </div>
         <p class="text-gray-600 text-sm leading-relaxed mb-4">
           {{ review.comment }}
@@ -64,14 +67,14 @@
           class="flex items-center gap-4 text-xs text-gray-400 border-t border-gray-50 pt-4"
         >
           <span class="flex items-center gap-1"
-            ><lucide-icon
-              [img]="icons.ShoppingBag"
-              class="w-4 h-4"
-            ></lucide-icon>
+            ><app-icon
+              name="ShoppingBag"
+              size="16"
+            ></app-icon>
             {{ review.productName }}</span
           >
           <span class="flex items-center gap-1"
-            ><lucide-icon [img]="icons.ThumbsUp" class="w-4 h-4"></lucide-icon>
+            ><app-icon name="ThumbsUp" size="16"></app-icon>
             {{ review.likes }} Likes</span
           >
         </div>
@@ -84,10 +87,11 @@
           (click)="openEditModal(review)"
           class="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors text-sm font-medium"
         >
-          <lucide-icon
-            [img]="icons.Edit"
-            class="w-5 h-5 text-gray-600"
-          ></lucide-icon>
+          <app-icon
+            name="Edit"
+            size="20"
+            className="text-gray-600"
+          ></app-icon>
           Edit
         </button>
         <button
@@ -95,10 +99,11 @@
           (click)="deleteReview(review.id)"
           class="flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 transition-colors text-sm font-medium"
         >
-          <lucide-icon
-            [img]="icons.Trash2"
-            class="w-5 h-5 text-red-500"
-          ></lucide-icon>
+          <app-icon
+            name="Trash2"
+            size="20"
+            className="text-red-500"
+          ></app-icon>
           Remove
         </button>
       </div>
@@ -110,10 +115,11 @@
     *ngIf="reviews.length === 0"
     class="py-20 text-center bg-gray-50 rounded-3xl border-2 border-dashed border-gray-100"
   >
-    <lucide-icon
-      [img]="icons.MessageSquare"
-      class="w-16 h-16 text-gray-200 mb-4 mx-auto"
-    ></lucide-icon>
+    <app-icon
+      name="MessageSquare"
+      size="64"
+      className="text-gray-200 mb-4 mx-auto"
+    ></app-icon>
     <h3 class="text-lg font-medium text-gray-600">No reviews found</h3>
     <p class="text-gray-500">Reviews from your customers will appear here.</p>
   </div>
@@ -131,10 +137,11 @@
         (click)="closeModal()"
         class="p-2 hover:bg-gray-100 rounded-full transition-colors"
       >
-        <lucide-icon
-          [img]="icons.X"
-          class="w-5 h-5 text-gray-500"
-        ></lucide-icon>
+        <app-icon
+          name="X"
+          size="20"
+          className="text-gray-500"
+        ></app-icon>
       </button>
     </div>
 
@@ -156,13 +163,11 @@
                 : 'text-gray-200'
             "
           >
-            <lucide-icon
-              [img]="icons.Star"
-              class="w-10 h-10"
-              [ngClass]="{
-                'fill-yellow-400': reviewForm.get('rating')?.value! >= r,
-              }"
-            ></lucide-icon>
+            <app-icon
+              name="Star"
+              size="40"
+              [className]="reviewForm.get('rating')?.value! >= r ? 'fill-yellow-400' : ''"
+            ></app-icon>
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Component, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { AsyncPipe, NgClass } from "@angular/common";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { combineLatest, map } from "rxjs";
 
@@ -10,40 +10,22 @@ import { ImageUrlService } from "../../../../core/services/image-url.service";
 
 import { AnalyticsService } from "../../../../core/services/analytics.service";
 import { tap } from "rxjs/operators";
-
-import {
-  LucideAngularModule,
-  CheckCircle2,
-  Truck,
-  Package,
-  Home,
-  Headphones,
-  FileText,
-  Printer,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 @Component({
   selector: "app-order-confirmation-page",
   standalone: true,
   imports: [
-    CommonModule,
+    AsyncPipe,
+    NgClass,
     RouterModule,
     PriceDisplayComponent,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./order-confirmation-page.component.html",
   styleUrl: "./order-confirmation-page.component.css",
 })
 export class OrderConfirmationPageComponent {
-  readonly icons = {
-    CheckCircle2,
-    Truck,
-    Package,
-    Home,
-    Headphones,
-    FileText,
-    Printer,
-  };
   private readonly route = inject(ActivatedRoute);
   private readonly orderService = inject(OrderService);
   private readonly analyticsService = inject(AnalyticsService);
@@ -60,10 +42,8 @@ export class OrderConfirmationPageComponent {
   readonly order$ = combineLatest([
     this.route.paramMap,
     this.orderService.orders$.pipe(
-      // Wait for orders to be loaded if they are empty
       tap((orders) => {
         if (!orders || orders.length === 0) {
-          // You might want to trigger a refresh here if orders are empty
         }
       }),
     ),
@@ -75,8 +55,6 @@ export class OrderConfirmationPageComponent {
       const orderId = Number(orderIdStr);
       const foundOrder = orders.find((order) => order.id === orderId);
 
-      // If not found, and we have orders, just take the first one as fallback
-      // (This handles cases where IDs might change but we still want to show SOMETHING)
       return foundOrder || (orders.length > 0 ? orders[0] : null);
     }),
     tap((order) => {

@@ -30,6 +30,8 @@ export interface CustomerOrderRequest {
   total: number;
   items: OrderItemRequest[];
   isPreOrder?: boolean;
+  sourcePageId?: number | null;
+  socialMediaSourceId?: number | null;
 }
 
 export interface CustomerOrderResponse {

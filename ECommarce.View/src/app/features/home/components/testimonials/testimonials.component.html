@@ -23,10 +23,11 @@
           class="flex flex-col items-center text-center group"
         >
           <div class="mb-8 text-accent">
-            <lucide-icon
-              [img]="icons.Quote"
-              class="w-10 h-10 opacity-40 group-hover:opacity-100 transition-opacity duration-500 stroke-[1.5]"
-            ></lucide-icon>
+            <app-icon
+              name="Quote"
+              size="40"
+              className="opacity-40 group-hover:opacity-100 transition-opacity duration-500"
+            ></app-icon>
           </div>
 
           <p
@@ -59,16 +60,16 @@
                 {{ review.customerName }}
               </p>
               <div class="flex text-accent scale-75 mt-1 gap-1">
-                <lucide-icon
+                <app-icon
                   *ngFor="let star of stars"
-                  [img]="getStarIcon(review.rating, star)"
-                  class="w-3.5 h-3.5 stroke-[1.5]"
+                  [name]="getStarIcon(review.rating, star)"
+                  size="14"
                   [ngClass]="{
                     'fill-accent': review.rating >= star,
                     'fill-accent/50':
                       review.rating + 0.5 >= star && review.rating < star,
                   }"
-                ></lucide-icon>
+                ></app-icon>
               </div>
             </div>
           </div>

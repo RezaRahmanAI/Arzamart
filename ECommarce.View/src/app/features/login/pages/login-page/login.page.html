@@ -63,11 +63,12 @@
               type="text"
               formControlName="emailOrUsername"
             />
-            <span
-              class="text-sm text-red-500 mt-2"
-              *ngIf="emailOrUsername.touched && emailOrUsername.invalid"
-              >Email or username is required.</span
-            >
+            @if (emailOrUsername.touched && emailOrUsername.invalid) {
+              <span
+                class="text-sm text-red-500 mt-2"
+                >Email or username is required.</span
+              >
+            }
           </label>
           <!-- Password Input -->
           <label class="flex flex-col w-full">
@@ -88,17 +89,18 @@
                 class="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-[#4d8799] cursor-pointer hover:text-primary transition-colors"
                 (click)="togglePasswordVisibility()"
               >
-                <lucide-icon
-                  [img]="isPasswordVisible ? icons.Eye : icons.EyeOff"
-                  class="w-6 h-6"
-                ></lucide-icon>
+                <app-icon
+                  [name]="isPasswordVisible ? 'Eye' : 'EyeOff'"
+                  size="24"
+                ></app-icon>
               </div>
             </div>
-            <span
-              class="text-sm text-red-500 mt-2"
-              *ngIf="password.touched && password.invalid"
-              >Password must be at least 6 characters.</span
-            >
+            @if (password.touched && password.invalid) {
+              <span
+                class="text-sm text-red-500 mt-2"
+                >Password must be at least 6 characters.</span
+              >
+            }
           </label>
           <!-- Remember Me & Forgot Password -->
           <div class="flex items-center justify-between mt-1">
@@ -122,9 +124,11 @@
           >
             {{ isLoading ? 'Logging in...' : 'Log In' }}
           </button>
-          <span class="text-sm text-red-500 text-center" *ngIf="errorMessage"
-            >{{ errorMessage }}</span
-          >
+          @if (errorMessage) {
+            <span class="text-sm text-red-500 text-center"
+              >{{ errorMessage }}</span
+            >
+          }
         </form>
       </div>
     </div>

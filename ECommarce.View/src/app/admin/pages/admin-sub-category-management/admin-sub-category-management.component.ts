@@ -7,32 +7,12 @@ import { Subject, takeUntil } from "rxjs";
 import {
   Category,
   CategoryNode,
-  ReorderPayload,
 } from "../../models/categories.models";
 import { CategoriesService } from "../../services/categories.service";
 import { SubCategoriesService } from "../../services/sub-categories.service";
 import { environment } from "../../../../environments/environment";
 import { AuthService } from "../../../core/services/auth.service";
-import {
-  LucideAngularModule,
-  Search,
-  Plus,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp,
-  Edit,
-  Trash2,
-  Save,
-  X,
-  Image,
-  Folder,
-  Tag,
-  Link,
-  Check,
-  Upload,
-  GripVertical,
-  AlertCircle,
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 interface ParentOption {
   id: string | null;
@@ -46,30 +26,11 @@ interface ParentOption {
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./admin-sub-category-management.component.html",
 })
 export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
-  readonly icons = {
-    Search,
-    Plus,
-    ChevronRight,
-    ChevronDown,
-    ChevronUp,
-    Edit,
-    Trash2,
-    Save,
-    X,
-    Image,
-    Folder,
-    Tag,
-    Link,
-    Check,
-    Upload,
-    GripVertical,
-    AlertCircle,
-  };
   private categoriesService = inject(CategoriesService);
   private subCategoriesService = inject(SubCategoriesService);
   private formBuilder = inject(FormBuilder);
@@ -95,7 +56,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
 
   filterControl = this.formBuilder.control("", { nonNullable: true });
 
-  // Enforce parentId as required for Sub Categories
   categoryForm = this.formBuilder.group({
     name: ["", [Validators.required, Validators.minLength(2)]],
     slug: ["", [Validators.required]],
@@ -131,13 +91,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
           this.slugManuallyEdited = true;
         }
       });
-
-    const initialId = this.route.snapshot.queryParamMap.get("category");
-    if (initialId) {
-      // Try to find if it's a sub category ID first, then category
-      // Since we don't know the type from just ID, we might need to check both prefixes or just wait for load
-      // For simplicity, we skip auto-select from URL unless we implement robust lookup
-    }
   }
 
   ngOnDestroy(): void {
@@ -156,7 +109,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
     this.categoryForm.reset({
       name: "",
       slug: "",
-      parentId: null, // User must select a parent
+      parentId: null,
       imageUrl: "",
       isActive: true,
     });
@@ -210,11 +163,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
     return this.selectedId === categoryId;
   }
 
-  // --- Drag & Drop (Disabled for now or strictly for reordering within same parent) ---
-  // Reordering SubCategories is supported by backend? backend SubCategory has DisplayOrder.
-  // Reordering Root Categories is supported by backend.
-  // Moving SubCategory to another Parent? Supported by Update.
-
   onDragStart(categoryId: string, event: DragEvent): void {
     this.draggingId = categoryId;
     if (event.dataTransfer) {
@@ -231,25 +179,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   onDrop(targetCategory: Category): void {
-    // Basic implementation: prevent nesting into itself
-    // And allow reordering only if we support it.
-    // For now, let's just stick to rudimentary check
-    if (!this.draggingId || this.draggingId === (targetCategory.id as unknown as string)) {
-      return;
-    }
-
-    // Prevent dropping a Root into a Sub (Sub cannot have children)
-    const isDraggingRoot = this.draggingId.startsWith("cat_");
-    const isTargetRoot = (targetCategory.id as unknown as string).startsWith("cat_");
-
-    // Allow dragging Sub into Root (Re-parenting)
-    // Allow dragging Sub into Sub (Re-ordering or Re-parenting to target's parent)
-
-    // Implementation of complex DnD with mixed types is risky without more time.
-    // I will disable DnD logic for mixed types for safety in this pass,
-    // or just allow re-ordering SIBLINGS.
-
-    // Simply return for now to avoid breaking things until logic is fully mapped
     return;
   }
 
@@ -266,13 +195,8 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Upload Image First if needed
     if (this.selectedImageFile) {
       this.isUploadingImage = true;
-      // Determine service based on context.
-      // If creating, we are creating a SubCategory (implied by this page purpose).
-      // If editing, check ID prefix.
-
       let uploadObs;
       if (this.mode === "create") {
         uploadObs = this.subCategoriesService.uploadImage(
@@ -301,7 +225,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.isUploadingImage = false;
           window.alert("Failed to upload image.");
-          console.error("Image upload error:", error);
         },
       });
     } else {
@@ -311,10 +234,8 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
 
   private performSave(): void {
     const formValue = this.categoryForm.getRawValue();
-    const parentIdStr = formValue.parentId; // "cat_5"
+    const parentIdStr = formValue.parentId;
 
-    // If Mode Create: Always create Sub Category
-    // (User should not create Root categories here, simpler UX)
     if (this.mode === "create") {
       if (!parentIdStr || !parentIdStr.startsWith("cat_")) {
         window.alert("Please select a valid Parent Category.");
@@ -331,19 +252,17 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
         description: "",
       };
 
-      this.subCategoriesService.create(payload as any).subscribe((created) => {
-        this.loadCategories(); // Reload to refresh tree
+      this.subCategoriesService.create(payload as any).subscribe(() => {
+        this.loadCategories();
         window.alert("Sub Category created successfully.");
         this.startCreate();
       });
       return;
     }
 
-    // Mode Edit
     if (!this.selectedId) return;
 
     if (this.selectedId.startsWith("sub_")) {
-      // Update SubCategory
       const id = parseInt(this.selectedId.replace("sub_", ""));
       const catId = parentIdStr ? parseInt(parentIdStr.replace("cat_", "")) : 0;
 
@@ -357,23 +276,21 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
 
       this.subCategoriesService
         .update(id, payload as any)
-        .subscribe((updated) => {
+        .subscribe(() => {
           this.loadCategories();
           window.alert("Sub Category updated.");
         });
     } else if (this.selectedId.startsWith("cat_")) {
-      // Update Root Category
       const id = parseInt(this.selectedId.replace("cat_", ""));
       const payload: Partial<Category> = {
         name: formValue.name ?? "",
         slug: formValue.slug ?? "",
         imageUrl: formValue.imageUrl ?? "",
         isActive: formValue.isActive ?? true,
-        // parentId is null for root
         parentId: null,
       };
 
-      this.categoriesService.update(id, payload).subscribe((updated) => {
+      this.categoriesService.update(id, payload).subscribe(() => {
         this.loadCategories();
         window.alert("Category updated.");
       });
@@ -386,7 +303,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
       if (this.previousSelectedId) {
         this.selectCategoryById(this.previousSelectedId);
       } else {
-        this.startCreate(); // Reset form
+        this.startCreate();
       }
       return;
     }
@@ -400,7 +317,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
     const isSub = (category.id as unknown as string).startsWith("sub_");
 
     if (!isSub) {
-      // If deleting Root Category, warn if it has children
       const hasChildren = this.categoriesFlat.some(
         (c) => (c.parentId as unknown as string) === (category.id as unknown as string),
       );
@@ -422,7 +338,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
         window.alert("Sub Category deleted.");
       });
     } else {
-      // Delete Root
       const id = parseInt((category.id as unknown as string).replace("cat_", ""));
       this.categoriesService.delete(id).subscribe(() => {
         this.loadCategories();
@@ -431,8 +346,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
       });
     }
   }
-
-  // ... Helpers ...
 
   handleImageUpload(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -451,7 +364,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   getParentOptions(): ParentOption[] {
-    // Only Root Categories can be parents
     return this.categoriesFlat
       .filter((c) => (c.id as unknown as string).startsWith("cat_"))
       .map((c) => ({
@@ -460,13 +372,11 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
       }));
   }
 
-  // --- Tree Building specific to our prefixes ---
   private loadCategories(): void {
     this.categoriesService.getAll().subscribe((categories) => {
       const displayList: Category[] = [];
 
       categories.forEach((cat) => {
-        // Root
         const rootId = `cat_${cat.id}`;
         displayList.push({
           id: rootId as any,
@@ -479,10 +389,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
           sortOrder: cat.sortOrder,
         });
 
-        // Children (SubCategories)
-        // Note: Category interface has subCategories optional property?
-        // "subCategories" property comes from backend DTO, but interface might not have it defined strictly
-        // We use 'any' cast or check if property exists if strict
         const subCats = (cat as any).subCategories || [];
 
         subCats.forEach((sub: any) => {
@@ -493,7 +399,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
             parentId: rootId as any,
             imageUrl: sub.imageUrl,
             isActive: sub.isActive,
-            productCount: 0, // Not available yet
+            productCount: 0,
             sortOrder: sub.displayOrder || 0,
           });
         });
@@ -503,7 +409,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
       this.rebuildTree();
       this.expandAll();
 
-      // Retain selection if exists
       if (this.selectedId) {
         const found = this.categoriesFlat.find((c) => (c.id as unknown as string) === this.selectedId);
         if (found) {
@@ -517,7 +422,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Standard Tree Logic (same as before mostly)
   buildTree(categories: Category[]): CategoryNode[] {
     const grouped = new Map<string | null, Category[]>();
     categories.forEach((category) => {
@@ -556,7 +460,6 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Same helper methods
   filterTree(
     nodes: CategoryNode[],
     term: string,

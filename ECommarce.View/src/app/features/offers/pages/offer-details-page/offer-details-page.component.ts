@@ -1,9 +1,8 @@
-import { CommonModule } from "@angular/common";
+import { NgClass } from "@angular/common";
 import { Component, DestroyRef, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { LucideAngularModule, X, Search, ChevronDown, ChevronUp } from "lucide-angular";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 import { OrderService } from "../../../../core/services/order.service";
 import { OrderItem } from "../../../../core/models/order";
@@ -12,6 +11,7 @@ import { CustomerProfileService } from "../../../../core/services/customer-profi
 
 import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
+import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 
 interface OfferDetails {
   slug: string;
@@ -35,32 +35,24 @@ const OFFERS: OfferDetails[] = [
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1000&q=80",
     price: 89,
     badge: "Pop-up exclusive",
-    productId: 1, // Placeholder for the Midnight Luxe set in DB
+    productId: 1,
   },
 ];
-
-
 
 @Component({
   selector: "app-offer-details-page",
   standalone: true,
   imports: [
-    CommonModule,
+    NgClass,
     ReactiveFormsModule,
     RouterModule,
     PriceDisplayComponent,
-    LucideAngularModule,
+    AppIconComponent,
   ],
   templateUrl: "./offer-details-page.component.html",
   styleUrl: "./offer-details-page.component.css",
 })
 export class OfferDetailsPageComponent {
-  readonly icons = {
-    X: X,
-    Search: Search,
-    ChevronDown: ChevronDown,
-    ChevronUp: ChevronUp,
-  };
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
@@ -113,10 +105,9 @@ export class OfferDetailsPageComponent {
         this.filteredAreas = [...this.areas];
         this.orderForm.patchValue({ area: "" });
         this.areaSearch = "";
-        this.citySearch = city; // Keep search input synced
+        this.citySearch = city;
       });
 
-    // Initialize areas for default city
     this.areas = BANGLADESH_LOCATIONS["Dhaka"] || [];
     this.filteredAreas = [...this.areas];
   }
@@ -144,7 +135,7 @@ export class OfferDetailsPageComponent {
   toggleCityDropdown(): void {
     this.isCityDropdownOpen = !this.isCityDropdownOpen;
     if (this.isCityDropdownOpen) {
-      this.isAreaDropdownOpen = false; // Close other
+      this.isAreaDropdownOpen = false;
       this.filteredCities = [...this.cities];
       this.citySearch = this.orderForm.get('city')?.value || "";
     }
@@ -166,7 +157,7 @@ export class OfferDetailsPageComponent {
     if (!this.orderForm.get('city')?.value) return;
     this.isAreaDropdownOpen = !this.isAreaDropdownOpen;
     if (this.isAreaDropdownOpen) {
-      this.isCityDropdownOpen = false; // Close other
+      this.isCityDropdownOpen = false;
       this.filteredAreas = [...this.areas];
       this.areaSearch = this.orderForm.get('area')?.value || "";
     }
@@ -208,7 +199,6 @@ export class OfferDetailsPageComponent {
           this.isLoading = false;
           this.profileService.storePhone(this.orderForm.controls.phone.value);
 
-          // Build a virtual OrderItem for consistent confirmation display
           const virtualItem: OrderItem = {
             productId: 0,
             productName: this.offer?.title ?? "Special Offer",
@@ -219,7 +209,6 @@ export class OfferDetailsPageComponent {
             totalPrice: this.total,
           };
 
-          // Save to history so confirmation page can find it
           this.orderService.buildAndSaveOrder(
             response,
             [virtualItem],

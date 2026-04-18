@@ -12,6 +12,7 @@ namespace ECommerce.API.Controllers
 {
     [ApiController]
     [Route("api/sitesettings")]
+    [Microsoft.AspNetCore.OutputCaching.OutputCache(Tags = new[] { "config" })]
     public class SiteSettingsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -24,30 +25,31 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
+        [Microsoft.AspNetCore.OutputCaching.OutputCache(Duration = 3600)]
+        [ResponseCache(Duration = 600)]
         public async Task<ActionResult<SiteSetting>> GetSettings()
         {
             const string cacheKey = "site_settings";
-
-            // Clear cache to ensure fresh data
-            _cache.Remove(cacheKey);
 
             if (_cache.TryGetValue(cacheKey, out SiteSetting? cached) && cached != null)
             {
                 return Ok(cached);
             }
 
-            var settings = await _context.SiteSettings.FirstOrDefaultAsync();
+            var settings = await _context.SiteSettings.AsNoTracking().FirstOrDefaultAsync();
             
             if (settings == null)
             {
                 settings = new SiteSetting();
             }
 
-            _cache.Set(cacheKey, settings, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
+            _cache.Set(cacheKey, settings, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60) });
             return Ok(settings);
         }
 
         [HttpGet("delivery-methods")]
+        [Microsoft.AspNetCore.OutputCaching.OutputCache(Duration = 3600)]
+        [ResponseCache(Duration = 600)]
         public async Task<ActionResult<IEnumerable<DeliveryMethod>>> GetDeliveryMethods()
         {
             const string cacheKey = "delivery_methods_active";
@@ -58,10 +60,11 @@ namespace ECommerce.API.Controllers
             }
 
             var methods = await _context.DeliveryMethods
+                .AsNoTracking()
                 .Where(m => m.IsActive)
                 .ToListAsync();
 
-            _cache.Set(cacheKey, methods, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
+            _cache.Set(cacheKey, methods, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60) });
             return Ok(methods);
         }
     }

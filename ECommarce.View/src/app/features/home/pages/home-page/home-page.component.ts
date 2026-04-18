@@ -1,5 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { ProductService } from "../../../../core/services/product.service";
 import { map } from "rxjs";
@@ -11,7 +11,6 @@ import { FeaturedProductsComponent } from "../../components/featured-products/fe
 import { WhyChooseUsComponent } from "../../components/why-choose-us/why-choose-us.component";
 import { TestimonialsComponent } from "../../components/testimonials/testimonials.component";
 import { NewsletterComponent } from "../../components/newsletter/newsletter.component";
-import { CampaignSpotlightComponent } from "../../components/campaign-spotlight/campaign-spotlight.component";
 
 import { CategorySectionComponent } from "../../components/category-section/category-section.component";
 import { PromoBannerComponent } from "../../components/promo-banner/promo-banner.component";
@@ -20,14 +19,12 @@ import { PromoBannerComponent } from "../../components/promo-banner/promo-banner
   selector: "app-home-page",
   standalone: true,
   imports: [
-    CommonModule,
+    AsyncPipe,
     RouterModule,
     HeroComponent,
     NewArrivalsComponent,
-    FeaturedProductsComponent,
     WhyChooseUsComponent,
     TestimonialsComponent,
-    NewsletterComponent,
     CategorySectionComponent,
     PromoBannerComponent
 ],

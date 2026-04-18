@@ -6,25 +6,7 @@ import { OrderDetail, OrderStatus } from "../../models/orders.models";
 import { OrdersService } from "../../services/orders.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
-import {
-  LucideAngularModule,
-  ChevronLeft,
-  Printer,
-  Clock,
-  ArrowRight,
-  MapPin,
-  CreditCard,
-  Package,
-  History,
-  Mail,
-  Phone,
-  Check,
-  ChevronDown,
-  Send,
-  Loader2,
-  MessageSquare,
-  MessageCircle
-} from "lucide-angular";
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
 import { FormsModule } from "@angular/forms";
 
@@ -35,30 +17,14 @@ import { FormsModule } from "@angular/forms";
     CommonModule,
     RouterModule,
     PriceDisplayComponent,
-    LucideAngularModule,
+    PriceDisplayComponent,
+    AppIconComponent,
     FormsModule,
   ],
   templateUrl: "./admin-order-details.component.html",
 })
 export class AdminOrderDetailsComponent implements OnInit {
-  readonly icons = {
-    ChevronLeft,
-    Printer,
-    Clock,
-    ArrowRight,
-    MapPin,
-    CreditCard,
-    Package,
-    History,
-    Mail,
-    Phone,
-    Check,
-    ChevronDown,
-    Send,
-    Loader2,
-    MessageSquare,
-    MessageCircle
-  };
+
   private route = inject(ActivatedRoute);
   private destroy$ = new Subject<void>();
   private ordersService = inject(OrdersService);

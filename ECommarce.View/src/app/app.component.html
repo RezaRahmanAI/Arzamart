@@ -1,16 +1,27 @@
 <div
   class="relative flex min-h-screen w-full flex-col group/design-root font-display bg-background-light dark:bg-background-dark text-[#0e181b] dark:text-gray-100 overflow-x-hidden"
 >
-  <ng-container *ngIf="showPublicLayout$ | async; else adminLayout">
-    <app-navbar *ngIf="showNavbar$ | async"></app-navbar>
+  @if (showPublicLayout$ | async) {
+    @if (showNavbar$ | async) {
+      <app-navbar></app-navbar>
+    }
     <router-outlet></router-outlet>
-    <app-footer *ngIf="showNavbar$ | async"></app-footer>
-  </ng-container>
-  <ng-template #adminLayout>
+    
+    @defer (on idle) {
+      @if (showNavbar$ | async) {
+        <app-footer></app-footer>
+      }
+    }
+  } @else {
     <router-outlet></router-outlet>
-  </ng-template>
-  <app-toast></app-toast>
-  <app-contact-fab *ngIf="showNavbar$ | async"></app-contact-fab>
+  }
+
+  @defer (on idle) {
+    <app-toast></app-toast>
+    @if (showNavbar$ | async) {
+      <app-contact-fab></app-contact-fab>
+    }
+  }
 </div>
 
 <app-loading-spinner></app-loading-spinner>

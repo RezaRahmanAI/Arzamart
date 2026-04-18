@@ -1,14 +1,13 @@
 import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { Product, ProductImage, ProductVariant } from "../../../core/models/product";
 import { ImageUrlService } from "../../../core/services/image-url.service";
-import { LucideAngularModule, X, ShoppingBag } from "lucide-angular";
 import { PriceDisplayComponent } from "../price-display/price-display.component";
+import { AppIconComponent } from "../app-icon/app-icon.component";
 
 @Component({
   selector: "app-quick-add-modal",
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, PriceDisplayComponent],
+  imports: [PriceDisplayComponent, AppIconComponent],
   template: `
     <div
       class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
@@ -30,7 +29,7 @@ import { PriceDisplayComponent } from "../price-display/price-display.component"
           (click)="close.emit()"
           class="absolute top-4 right-4 z-10 p-2 text-gray-400 hover:text-black transition-colors"
         >
-          <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+          <app-icon name="X" size="20"></app-icon>
         </button>
 
         <div class="flex flex-col sm:flex-row h-full">
@@ -55,46 +54,47 @@ import { PriceDisplayComponent } from "../price-display/price-display.component"
                 [amount]="currentPrice"
                 class="text-lg font-bold block"
               ></app-price-display>
-              <app-price-display
-                *ngIf="originalPrice > 0"
-                [amount]="originalPrice"
-                size="sm"
-                class="line-through opacity-50"
-              ></app-price-display>
+              @if (originalPrice > 0) {
+                <app-price-display
+                  [amount]="originalPrice"
+                  size="sm"
+                  class="line-through opacity-50"
+                ></app-price-display>
+              }
             </div>
-
-
 
             <!-- Size Selection -->
-            <div class="mb-8" *ngIf="availableSizes.length > 0">
-              <label class="text-[10px] uppercase tracking-widest font-bold text-gray-500 block mb-3">
-                Select Size: <span class="text-black">{{ selectedSize || 'required' }}</span>
-              </label>
-              <div class="flex flex-wrap gap-2">
-                <button
-                  *ngFor="let size of availableSizes"
-                  (click)="selectSize(size)"
-                  class="min-w-10 h-10 px-2 flex items-center justify-center border text-[11px] font-bold transition-all duration-300"
-                  [class.bg-primary]="selectedSize === size"
-                  [class.text-white]="selectedSize === size"
-                  [class.border-primary]="selectedSize === size"
-                  [class.bg-white]="selectedSize !== size"
-                  [class.text-primary]="selectedSize !== size"
-                  [class.border-gray-200]="selectedSize !== size"
-                  [class.hover:border-primary]="selectedSize !== size"
-                  class="rounded-lg"
-                >
-                  {{ size }}
-                </button>
+            @if (availableSizes.length > 0) {
+              <div class="mb-8">
+                <label class="text-[10px] uppercase tracking-widest font-bold text-gray-500 block mb-3">
+                  Select Size: <span class="text-black">{{ selectedSize || 'required' }}</span>
+                </label>
+                <div class="flex flex-wrap gap-2">
+                  @for (size of availableSizes; track size) {
+                    <button
+                      (click)="selectSize(size)"
+                      class="min-w-10 h-10 px-2 flex items-center justify-center border text-[11px] font-bold transition-all duration-300 rounded-lg"
+                      [class.bg-primary]="selectedSize === size"
+                      [class.text-white]="selectedSize === size"
+                      [class.border-primary]="selectedSize === size"
+                      [class.bg-white]="selectedSize !== size"
+                      [class.text-primary]="selectedSize !== size"
+                      [class.border-gray-200]="selectedSize !== size"
+                      [class.hover:border-primary]="selectedSize !== size"
+                    >
+                      {{ size }}
+                    </button>
+                  }
+                </div>
               </div>
-            </div>
+            }
 
             <button
               (click)="confirm()"
               [disabled]="availableSizes.length > 0 && !selectedSize"
               class="w-full py-4 bg-accent text-white text-[11px] uppercase tracking-[0.3em] font-bold transition-all duration-300 hover:opacity-90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-xl shadow-lg shadow-accent/20"
             >
-              <lucide-icon [img]="icons.ShoppingBag" class="w-4 h-4"></lucide-icon>
+              <app-icon name="ShoppingBag" size="16"></app-icon>
               Confirm Selection
             </button>
           </div>
@@ -111,7 +111,6 @@ export class QuickAddModalComponent {
   @Output() close = new EventEmitter<void>();
   @Output() added = new EventEmitter<{ size?: string }>();
 
-  readonly icons = { X, ShoppingBag };
   readonly imageUrlService = inject(ImageUrlService);
 
   selectedSize: string | null = null;

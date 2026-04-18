@@ -10,6 +10,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Microsoft.AspNetCore.OutputCaching.OutputCache(Tags = new[] { "home" })]
 public class HomeController : ControllerBase
 {
     private readonly IGenericRepository<HeroBanner> _bannerRepo;
@@ -36,6 +37,7 @@ public class HomeController : ControllerBase
     }
 
     [HttpGet]
+    [Microsoft.AspNetCore.OutputCaching.OutputCache(Duration = 600)]
     public async Task<ActionResult<HomePageDto>> GetHomeData()
     {
         // 1. Banners (home_banners)
