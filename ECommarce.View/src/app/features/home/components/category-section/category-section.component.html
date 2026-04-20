@@ -17,6 +17,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
       <ng-container *ngFor="let category of categories">
         <a
+          *ngIf="category.imageUrl"
           [routerLink]="category.href"
           class="group relative block aspect-[3/4] overflow-hidden bg-gray-100"
         >

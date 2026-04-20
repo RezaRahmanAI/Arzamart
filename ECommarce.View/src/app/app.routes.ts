@@ -38,14 +38,7 @@ export const appRoutes: Routes = [
         (m) => m.AccessoriesPageComponent,
       ),
   },
-  {
-    path: "offers",
-    loadComponent: () =>
-      import(
-        "./features/products/pages/product-gallery/product-gallery.component"
-      ).then((m) => m.ProductGalleryComponent),
-    title: "Sale & Offers",
-  },
+
   { path: "products", redirectTo: "women", pathMatch: "full" },
   {
     path: "search",
@@ -90,13 +83,7 @@ export const appRoutes: Routes = [
         (m) => m.ProductDetailsPageComponent,
       ),
   },
-  {
-    path: "offer/:slug",
-    loadComponent: () =>
-      import("./features/offers/pages/offer-details-page/offer-details-page.component").then(
-        (m) => m.OfferDetailsPageComponent,
-      ),
-  },
+
   {
     path: "cart",
     loadComponent: () =>

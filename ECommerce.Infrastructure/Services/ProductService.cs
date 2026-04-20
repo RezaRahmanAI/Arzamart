@@ -10,6 +10,7 @@ using ECommerce.Core.Specifications;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Core.Enums;
+using ECommerce.Core.Constants;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
@@ -35,7 +36,13 @@ public class ProductService : IProductService
         return await _cache.GetOrCreateAsync(cacheKey, async () => 
         {
             var spec = new ProductsWithCategoriesSpecification(slug);
-            return await _unitOfWork.Repository<Product>().GetEntityWithSpec<ProductDto>(spec);
+            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
+            var dto = _mapper.Map<Product, ProductDto>(product);
+            if (dto != null)
+            {
+                dto.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? "";
+            }
+            return dto;
         }, TimeSpan.FromMinutes(60));
     }
 
@@ -46,16 +53,21 @@ public class ProductService : IProductService
         return await _cache.GetOrCreateAsync(cacheKey, async () => 
         {
             var spec = new ProductsWithCategoriesSpecification(id);
-            return await _unitOfWork.Repository<Product>().GetEntityWithSpec<ProductDto>(spec);
+            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
+            var dto = _mapper.Map<Product, ProductDto>(product);
+            if (dto != null)
+            {
+                dto.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? "";
+            }
+            return dto;
         }, TimeSpan.FromMinutes(60));
     }
 
     public async Task<ProductDto?> CreateProductAsync(ProductCreateDto dto)
     {
-        var categorySpec = new CategoriesWithSubCategoriesSpec(dto.Category);
-        var category = await _unitOfWork.Repository<Category>().GetEntityWithSpec(categorySpec);
-        
+        var category = CategoryConstants.AllCategories.FirstOrDefault(c => c.Name.Equals(dto.Category, StringComparison.OrdinalIgnoreCase) || c.Id.ToString() == dto.Category);
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
+
 
         var product = new Product
         {
@@ -128,7 +140,12 @@ public class ProductService : IProductService
         // Invalidate product lists
         await InvalidateProductCacheAsync(product);
 
-        return _mapper.Map<Product, ProductDto>(product);
+        var dtoResult = _mapper.Map<Product, ProductDto>(product);
+        if (dtoResult != null)
+        {
+            dtoResult.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? "";
+        }
+        return dtoResult;
     }
 
     public async Task<ProductDto?> UpdateProductAsync(int id, ProductUpdateDto dto)
@@ -139,9 +156,10 @@ public class ProductService : IProductService
         if (product == null) throw new KeyNotFoundException("Product not found");
 
         var oldSlug = product.Slug;
-        var categorySpec = new CategoriesWithSubCategoriesSpec(dto.Category);
-        var category = await _unitOfWork.Repository<Category>().GetEntityWithSpec<Category>(categorySpec);
+        var category = CategoryConstants.AllCategories.FirstOrDefault(c => c.Name.Equals(dto.Category, StringComparison.OrdinalIgnoreCase) || c.Id.ToString() == dto.Category);
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
+
+        
 
         product.Name = dto.Name;
         product.Description = dto.Description;
@@ -206,7 +224,12 @@ public class ProductService : IProductService
         // Invalidate Product-specific cache and all lists
         await InvalidateProductCacheAsync(product, oldSlug);
 
-        return _mapper.Map<Product, ProductDto>(product);
+        var dtoResult = _mapper.Map<Product, ProductDto>(product);
+        if (dtoResult != null)
+        {
+            dtoResult.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? "";
+        }
+        return dtoResult;
     }
 
     private async Task InvalidateProductCacheAsync(Product product, string? oldSlug = null)

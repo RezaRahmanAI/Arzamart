@@ -1,6 +1,7 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable, inject, PLATFORM_ID, TransferState, makeStateKey } from "@angular/core";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { HttpContext } from "@angular/common/http";
-import { Observable, of, shareReplay, BehaviorSubject, switchMap } from "rxjs";
+import { Observable, of, shareReplay, BehaviorSubject, switchMap, tap } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { HomeData } from "../models/home-data";
 
@@ -15,6 +16,8 @@ import { environment } from "../../../environments/environment";
 })
 export class ProductService {
   private readonly api = inject(ApiHttpClient);
+  private readonly transferState = inject(TransferState);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly baseUrl = "/products";
   private readonly adminBaseUrl = "/admin/products";
 
@@ -22,8 +25,10 @@ export class ProductService {
 
   // Reactive Data Streams
   readonly homeData$ = this.refreshSubject.pipe(
-    switchMap(() => this.api.get<HomeData>("/home").pipe(
-      catchError(() => of(this.fallbackHomeData))
+    switchMap(() => this.withTransfer("home_data", 
+      this.api.get<HomeData>("/home").pipe(
+        catchError(() => of(this.fallbackHomeData))
+      )
     )),
     shareReplay(1)
   );
@@ -44,6 +49,26 @@ export class ProductService {
     featuredProducts: []
   };
 
+  private withTransfer<T>(keyString: string, apiObs: Observable<T>): Observable<T> {
+    const key = makeStateKey<T>(keyString);
+    const ssrData = this.transferState.get(key, null);
+    
+    if (ssrData) {
+      if (isPlatformBrowser(this.platformId)) {
+        this.transferState.remove(key);
+      }
+      return of(ssrData);
+    }
+
+    return apiObs.pipe(
+      tap(data => {
+        if (isPlatformServer(this.platformId)) {
+          this.transferState.set(key, data);
+        }
+      })
+    );
+  }
+
   refreshData(): void {
     this.refreshSubject.next();
   }
@@ -56,7 +81,10 @@ export class ProductService {
     params?: any,
     context?: HttpContext,
   ): Observable<Pagination<Product>> {
-    return this.api.get<Pagination<Product>>(this.baseUrl, { params, context });
+    const paramKey = JSON.stringify(params || {});
+    return this.withTransfer(`products_${paramKey}`,
+      this.api.get<Pagination<Product>>(this.baseUrl, { params, context })
+    );
   }
 
   getFeaturedProducts(
@@ -95,11 +123,15 @@ export class ProductService {
   }
 
   getById(id: number, context?: HttpContext): Observable<Product> {
-    return this.api.get<Product>(`${this.baseUrl}/${id}`, { context });
+    return this.withTransfer(`product_id_${id}`, 
+      this.api.get<Product>(`${this.baseUrl}/${id}`, { context })
+    );
   }
 
   getBySlug(slug: string, context?: HttpContext): Observable<Product> {
-    return this.api.get<Product>(`${this.baseUrl}/${slug}`, { context });
+    return this.withTransfer(`product_slug_${slug}`, 
+      this.api.get<Product>(`${this.baseUrl}/${slug}`, { context })
+    );
   }
 
   getReviewsByProductId(productId: number): Observable<Review[]> {

@@ -13,7 +13,7 @@ public class NavigationMenu : BaseEntity
     
     // Optional Link to Category
     public int? CategoryId { get; set; }
-    public Category? Category { get; set; }
+
     
     // Self-Referencing for Hierarchy
     public int? ParentMenuId { get; set; }

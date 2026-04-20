@@ -41,7 +41,15 @@ interface Slide {
 export class HeroComponent implements OnInit, OnDestroy {
   public imageUrlService = inject(ImageUrlService);
 
-  @Input() slides: Slide[] = [];
+  private _slides: Slide[] = [];
+  @Input() 
+  set slides(value: Slide[]) {
+    this._slides = value || [];
+    this.updateSlides();
+  }
+  get slides(): Slide[] {
+    return this._slides;
+  }
   spotlightSlide: Slide | null = null;
   mainSlides: Slide[] = [];
 
@@ -51,10 +59,15 @@ export class HeroComponent implements OnInit, OnDestroy {
   currentYear = new Date().getFullYear();
 
   ngOnInit() {
-    this.spotlightSlide = this.slides.find(s => s.type === 'Spotlight') || null;
-    this.mainSlides = this.slides.filter(s => s.type === 'Hero' || !s.type);
+    this.updateSlides();
+  }
+
+  private updateSlides() {
+    this.spotlightSlide = this._slides.find(s => s.type === 'Spotlight') || null;
+    this.mainSlides = this._slides.filter(s => s.type === 'Hero' || !s.type);
     
     if (this.mainSlides.length > 0) {
+      this.stopTimer();
       this.startTimer();
     }
   }

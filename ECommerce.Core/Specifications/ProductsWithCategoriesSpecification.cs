@@ -7,10 +7,9 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
     public ProductsWithCategoriesSpecification(string? sort, int? categoryId, int? subCategoryId, int? collectionId, string? categorySlug, string? subCategorySlug, string? collectionSlug, string? search, string? tier, string? tags, bool? isNew = null, bool? isFeatured = null, int? skip = null, int? take = null)
         : base(x => 
             (string.IsNullOrEmpty(search) || x.Name.ToLower().Contains(search.ToLower()) || (x.Description != null && x.Description.ToLower().Contains(search.ToLower()))) &&
-            (!categoryId.HasValue || x.CategoryId == categoryId) &&
+            (!categoryId.HasValue || x.CategoryId == categoryId.Value) &&
             (!subCategoryId.HasValue || x.SubCategoryId == subCategoryId) &&
             (!collectionId.HasValue || x.CollectionId == collectionId) &&
-            (string.IsNullOrEmpty(categorySlug) || (x.Category != null && x.Category.Slug == categorySlug)) &&
             (string.IsNullOrEmpty(subCategorySlug) || (x.SubCategory != null && x.SubCategory.Slug == subCategorySlug)) &&
             (string.IsNullOrEmpty(collectionSlug) || (x.Collection != null && x.Collection.Slug == collectionSlug)) &&
             (string.IsNullOrEmpty(tier) || x.Tier == tier) &&
@@ -20,7 +19,7 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
         )
 
     {
-        AddInclude(x => x.Category!);
+
         AddInclude(x => x.SubCategory!);
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);
@@ -87,7 +86,7 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
 
     private void AddIncludes()
     {
-        AddInclude(x => x.Category!);
+
         AddInclude(x => x.SubCategory!);
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);

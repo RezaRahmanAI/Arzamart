@@ -226,8 +226,6 @@ public class CartController : ControllerBase
 
         if (cart == null)
         {
-            // If the user is a guest but didn't provide a valid SessionId (e.g. because we stripped an invalid one),
-            // generate a fresh distinct one for the database to avoid orphaned carts grouping together on SessionId = null
             var finalSessionId = sessionId;
             if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(finalSessionId))
             {
@@ -237,9 +235,12 @@ public class CartController : ControllerBase
             cart = new Cart
             {
                 UserId = userId,
-                SessionId = string.IsNullOrEmpty(userId) ? finalSessionId : null
+                SessionId = string.IsNullOrEmpty(userId) ? finalSessionId : null,
+                Items = new List<CartItem>() // Initialize empty items
             };
             
+            // Note: We don't save here immediately to avoid blocking GetCart with a write
+            // We only save when something is actually added, or we can save it as-is
             _context.Carts.Add(cart);
             await _context.SaveChangesAsync();
         }
@@ -249,22 +250,21 @@ public class CartController : ControllerBase
 
     private IQueryable<Cart> GetCartQuery(int? id = null)
     {
-        var query = _context.Carts
-            .Include(c => c.Items)
-                .ThenInclude(i => i.Product!)
-                    .ThenInclude(p => p!.Images)
-            .Include(c => c.Items)
-                .ThenInclude(i => i.Product!)
-                    .ThenInclude(p => p!.Variants)
-            .AsSplitQuery()
-            .AsQueryable();
+        var query = _context.Carts.AsQueryable();
 
         if (id.HasValue)
         {
             query = query.Where(c => c.Id == id.Value);
         }
 
-        return query;
+        // Only include complex relations if we are fetching a specific cart or for merging
+        return query.Include(c => c.Items)
+                .ThenInclude(i => i.Product!)
+                    .ThenInclude(p => p!.Images)
+                .Include(c => c.Items)
+                .ThenInclude(i => i.Product!)
+                    .ThenInclude(p => p!.Variants)
+                .AsSplitQuery();
     }
 
     private CartDto MapToDto(Cart cart)

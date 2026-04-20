@@ -25,7 +25,7 @@ public class CustomLandingPageController : ControllerBase
         var product = await _context.Products
             .Include(p => p.Images)
             .Include(p => p.Variants)
-            .Include(p => p.Category)
+
             .FirstOrDefaultAsync(p => p.Slug == slug);
 
         if (product == null)

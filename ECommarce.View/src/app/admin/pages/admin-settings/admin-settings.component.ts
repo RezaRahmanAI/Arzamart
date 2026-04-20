@@ -22,6 +22,7 @@ import { SettingsService } from "../../services/settings.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { AuthService } from "../../../core/services/auth.service";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
+import { NotificationService } from "../../../core/services/notification.service";
 
 @Component({
   selector: "app-admin-settings",
@@ -39,6 +40,7 @@ export class AdminSettingsComponent implements OnInit {
   private formBuilder = inject(NonNullableFormBuilder);
   private settingsService = inject(SettingsService);
   readonly authService = inject(AuthService);
+  private notification = inject(NotificationService);
 
   @ViewChild("fileUpload") fileUpload?: ElementRef<HTMLInputElement>;
 
@@ -167,9 +169,7 @@ export class AdminSettingsComponent implements OnInit {
       Object.keys(this.settingsForm.controls).forEach((key) => {
         if (this.settingsForm.get(key)?.invalid) invalidFields.push(key);
       });
-      window.alert(
-        `Please fill in all required fields: ${invalidFields.join(", ")}`,
-      );
+      this.notification.warn(`Please fill in all required fields: ${invalidFields.join(", ")}`);
       return;
     }
 
@@ -205,7 +205,7 @@ export class AdminSettingsComponent implements OnInit {
     this.settingsService.saveSettings(payload).subscribe({
       next: (settings) => {
         this.isSaving = false;
-        this.saveMessage = "Settings saved successfully!";
+        this.notification.success("Settings saved successfully!");
         this.lastSettings = settings;
         this.shippingZones = settings.shippingZones || [];
         this.deliveryMethods = settings.deliveryMethods || [];
@@ -213,7 +213,7 @@ export class AdminSettingsComponent implements OnInit {
       },
       error: (err) => {
         this.isSaving = false;
-        this.saveError = "Failed to save settings. Please try again.";
+        this.notification.error("Failed to save settings. Please try again.");
         console.error("Save settings failed", err);
         setTimeout(() => (this.saveError = ""), 5000);
       },
@@ -364,9 +364,7 @@ export class AdminSettingsComponent implements OnInit {
       Object.keys(this.zoneForm.controls).forEach((key) => {
         if (this.zoneForm.get(key)?.invalid) invalidFields.push(key);
       });
-      window.alert(
-        `Please fill in all required fields: ${invalidFields.join(", ")}`,
-      );
+      this.notification.warn(`Please fill in all required fields: ${invalidFields.join(", ")}`);
       return;
     }
 
@@ -455,9 +453,7 @@ export class AdminSettingsComponent implements OnInit {
       Object.keys(this.deliveryForm.controls).forEach((key) => {
         if (this.deliveryForm.get(key)?.invalid) invalidFields.push(key);
       });
-      window.alert(
-        `Please fill in all required fields: ${invalidFields.join(", ")}`,
-      );
+      this.notification.warn(`Please fill in all required fields: ${invalidFields.join(", ")}`);
       return;
     }
 

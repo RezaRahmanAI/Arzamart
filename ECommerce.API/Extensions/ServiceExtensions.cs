@@ -114,17 +114,6 @@ public static class ServiceExtensions
         services.AddScoped<IReviewService, ReviewService>();
         services.AddSignalR();
 
-        services.Configure<SteadfastSettings>(config.GetSection("Steadfast"));
-        services.AddHttpClient<ISteadfastService, SteadfastService>()
-            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
-            {
-                PooledConnectionLifetime = TimeSpan.FromMinutes(2),
-                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(1),
-                MaxConnectionsPerServer = 100,
-                EnableMultipleHttp2Connections = true
-            });
-        services.AddHostedService<SteadfastWorker>();
-
         return services;
     }
 
@@ -148,6 +137,7 @@ public static class ServiceExtensions
                         maxRetryDelay: TimeSpan.FromSeconds(5),
                         errorNumbersToAdd: null);
                     sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    sqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "dbo");
                 }));
 
         return services;

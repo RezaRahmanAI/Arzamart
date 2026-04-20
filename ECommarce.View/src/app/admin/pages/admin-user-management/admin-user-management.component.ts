@@ -5,6 +5,7 @@ import { AdminUsersService, AdminUser, CreateAdminRequest } from "../../services
 import { AuthService } from "../../../core/services/auth.service";
 import { User as AuthUser } from "../../../core/models/entities";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
+import { NotificationService } from "../../../core/services/notification.service";
 
 @Component({
   selector: "app-admin-user-management",
@@ -16,6 +17,7 @@ export class AdminUserManagementComponent implements OnInit {
   private usersService = inject(AdminUsersService);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private notification = inject(NotificationService);
 
   admins: AdminUser[] = [];
   isLoading = false;
@@ -66,7 +68,7 @@ export class AdminUserManagementComponent implements OnInit {
 
   toggleStatus(admin: AdminUser): void {
     if (admin.role === 'SuperAdmin' && this.currentUserRole !== 'SuperAdmin') {
-        window.alert("Only a SuperAdmin can toggle another SuperAdmin's status.");
+        this.notification.warn("Only a SuperAdmin can toggle another SuperAdmin's status.");
         return;
     }
 
@@ -74,7 +76,7 @@ export class AdminUserManagementComponent implements OnInit {
       next: () => {
         admin.isActive = !admin.isActive;
       },
-      error: () => window.alert("Failed to update status")
+      error: () => this.notification.error("Failed to update status")
     });
   }
 
@@ -91,11 +93,11 @@ export class AdminUserManagementComponent implements OnInit {
         this.isSubmitting = false;
         this.isCreateModalOpen = false;
         this.createForm.reset({ role: 'Admin' });
-        window.alert("Admin user created successfully!");
+        this.notification.success("Admin user created successfully!");
       },
       error: (err) => {
         this.isSubmitting = false;
-        window.alert(err.error?.message || "Failed to create admin user");
+        this.notification.error(err.error?.message || "Failed to create admin user");
       }
     });
   }
@@ -103,14 +105,14 @@ export class AdminUserManagementComponent implements OnInit {
   resetPassword(admin: AdminUser): void {
     const newPassword = window.prompt(`Enter new password for ${admin.userName}:`);
     if (!newPassword || newPassword.length < 6) {
-        if (newPassword) window.alert("Password must be at least 6 characters.");
+        if (newPassword) this.notification.warn("Password must be at least 6 characters.");
         return;
     }
 
     if (window.confirm(`Are you sure you want to reset the password for ${admin.userName}?`)) {
         this.usersService.resetPassword(admin.id, newPassword).subscribe({
-            next: () => window.alert("Password reset successfully!"),
-            error: (err) => window.alert(err.error?.message || "Failed to reset password")
+            next: () => this.notification.success("Password reset successfully!"),
+            error: (err) => this.notification.error(err.error?.message || "Failed to reset password")
         });
     }
   }
@@ -144,23 +146,23 @@ export class AdminUserManagementComponent implements OnInit {
             }
             this.isSubmitting = false;
             this.isEditModalOpen = false;
-            window.alert("Staff member updated successfully!");
+            this.notification.success("Staff member updated successfully!");
         },
         error: (err) => {
             this.isSubmitting = false;
-            window.alert(err.error?.message || "Failed to update staff member");
+            this.notification.error(err.error?.message || "Failed to update staff member");
         }
     });
   }
 
   deleteAdmin(admin: AdminUser): void {
     if (admin.role === 'SuperAdmin') {
-        window.alert("SuperAdmin accounts cannot be deleted for safety.");
+        this.notification.warn("SuperAdmin accounts cannot be deleted for safety.");
         return;
     }
     
     if (window.confirm(`Are you sure you want to delete ${admin.fullName}? This action cannot be undone.`)) {
-        window.alert("Deletion is disabled. Please deactivate the user instead.");
+        this.notification.warn("Deletion is disabled. Please deactivate the user instead.");
     }
   }
 

@@ -44,9 +44,6 @@ public class Order : BaseEntity
     
     public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
     
-    public long? SteadfastConsignmentId { get; set; }
-    public string? SteadfastTrackingCode { get; set; }
-    public string? SteadfastStatus { get; set; }
     public string? CreatedIp { get; set; }
     public bool IsPreOrder { get; set; }
     public string? AdminNote { get; set; }

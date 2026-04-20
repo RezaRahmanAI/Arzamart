@@ -1,45 +1,67 @@
-using AutoMapper;
 using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
+using ECommerce.Core.Constants;
 using ECommerce.Core.Interfaces;
-using ECommerce.Core.Specifications;
+using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-[Microsoft.AspNetCore.OutputCaching.OutputCache(Tags = new[] { "catalog" })]
+[Route("api/categories")]
 public class CategoriesController : ControllerBase
 {
-    private readonly IGenericRepository<Category> _categoryRepo;
-    private readonly IMapper _mapper;
-    private readonly IMemoryCache _cache;
+    private readonly ApplicationDbContext _context;
+    private readonly ICacheService _cache;
 
-    public CategoriesController(IGenericRepository<Category> categoryRepo, IMapper mapper, IMemoryCache cache)
+    public CategoriesController(ApplicationDbContext context, ICacheService cache)
     {
-        _categoryRepo = categoryRepo;
-        _mapper = mapper;
+        _context = context;
         _cache = cache;
     }
 
     [HttpGet]
-    [ResponseCache(Duration = 600)]
-    public async Task<ActionResult<IReadOnlyList<CategoryDto>>> GetCategories()
+    public async Task<ActionResult<List<CategoryDto>>> GetCategories()
     {
-        const string cacheKey = "categories_all";
-
-        if (_cache.TryGetValue(cacheKey, out IReadOnlyList<CategoryDto>? cached) && cached != null)
+        return await _cache.GetOrCreateAsync("categories_hybrid_list", async () =>
         {
-            return Ok(cached);
-        }
+            var categories = CategoryConstants.AllCategories;
+            var dbSubCategories = await _context.SubCategories
+                .AsNoTracking()
+                .Where(sc => sc.IsActive)
+                .Include(sc => sc.Collections)
+                .ToListAsync();
 
-        var spec = new CategoriesWithSubCategoriesSpec();
-        var categories = await _categoryRepo.ListAsync(spec);
-        var result = _mapper.Map<IReadOnlyList<CategoryDto>>(categories);
-        
-        _cache.Set(cacheKey, result, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
-        return Ok(result);
+            foreach (var cat in categories)
+            {
+                cat.SubCategories = dbSubCategories
+                    .Where(sc => sc.CategoryId == cat.Id)
+                    .OrderBy(sc => sc.DisplayOrder)
+                    .Select(sc => new SubCategoryDto
+                    {
+                        Id = sc.Id,
+                        Name = sc.Name,
+                        Slug = sc.Slug,
+                        CategoryId = sc.CategoryId,
+                        ImageUrl = sc.ImageUrl,
+                        Collections = sc.Collections
+                            .Where(c => c.IsActive)
+                            .Select(c => new CollectionDto
+                            {
+                                Id = c.Id,
+                                Name = c.Name,
+                                Slug = c.Slug
+                            }).ToList()
+                    }).ToList();
+            }
+            return categories;
+        }, TimeSpan.FromMinutes(60));
+    }
+
+    [HttpGet("nav")]
+    public async Task<ActionResult<List<CategoryDto>>> GetNavCategories()
+    {
+        // Reuse same logic
+        return await GetCategories();
     }
 }

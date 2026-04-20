@@ -15,20 +15,19 @@ namespace ECommerce.API.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IGenericRepository<Product> _productsRepo;
-    private readonly IGenericRepository<Category> _categoryRepo;
+
     private readonly IMapper _mapper;
     private readonly IProductService _productService;
     private readonly IMemoryCache _cache;
 
     public ProductsController(
         IGenericRepository<Product> productsRepo, 
-        IGenericRepository<Category> categoryRepo, 
         IMapper mapper,
         IProductService productService,
         IMemoryCache cache)
     {
         _productsRepo = productsRepo;
-        _categoryRepo = categoryRepo;
+
         _mapper = mapper;
         _productService = productService;
         _cache = cache;
@@ -61,6 +60,22 @@ public class ProductsController : ControllerBase
             return Ok(cached);
         }
 
+        // Map categorySlug to categoryId if not provided
+        if (!categoryId.HasValue && !string.IsNullOrEmpty(categorySlug))
+        {
+            var staticCat = ECommerce.Core.Constants.CategoryConstants.AllCategories
+                .FirstOrDefault(c => c.Slug.Equals(categorySlug, StringComparison.OrdinalIgnoreCase));
+            if (staticCat != null)
+            {
+                categoryId = staticCat.Id;
+            }
+            else
+            {
+                // If slug is provided but not found, ensure no products are returned
+                categoryId = -1;
+            }
+        }
+
         var skip = (pageIndex - 1) * pageSize;
         var take = pageSize;
 
@@ -68,7 +83,15 @@ public class ProductsController : ControllerBase
         var countSpec = new ProductsWithCategoriesSpecification(sort, categoryId, subCategoryId, collectionId, categorySlug, subCategorySlug, collectionSlug, searchTerm, tier, tags, isNew, isFeatured);
 
         var totalItems = await _productsRepo.CountAsync(countSpec);
-        var dtos = await _productsRepo.ListAsync<ProductListDto>(spec);
+        var products = await _productsRepo.ListAsync(spec);
+        var dtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(products);
+        
+        // Manual Category Mapping
+        foreach (var d in dtos)
+        {
+            var p = products.FirstOrDefault(x => x.Id == d.Id);
+            if (p != null) d.CategoryName = ECommerce.Core.Constants.CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == p.CategoryId)?.Name ?? "";
+        }
         
         var result = new PaginationDto<ProductListDto>(pageIndex, pageSize, totalItems, dtos);
         

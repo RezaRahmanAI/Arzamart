@@ -17,6 +17,7 @@ namespace ECommerce.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("dbo")
                 .HasAnnotation("ProductVersion", "8.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -69,7 +70,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.ApplicationUser", b =>
@@ -174,7 +175,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[Phone] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("AspNetUsers", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.BlockedIp", b =>
@@ -202,7 +203,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BlockedIps");
+                    b.ToTable("BlockedIps", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Cart", b =>
@@ -233,7 +234,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.CartItem", b =>
@@ -269,59 +270,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
-                });
-
-            modelBuilder.Entity("ECommerce.Core.Entities.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MetaDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetaTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.HasIndex("Slug");
-
-                    b.ToTable("Categories");
+                    b.ToTable("CartItems", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Collection", b =>
@@ -331,9 +280,6 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -366,13 +312,11 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("Slug");
 
                     b.HasIndex("SubCategoryId");
 
-                    b.ToTable("Collections");
+                    b.ToTable("Collections", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.CustomLandingPageConfig", b =>
@@ -382,12 +326,6 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BannerSubtitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BannerTitle")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -438,7 +376,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CustomLandingPageConfigs");
+                    b.ToTable("CustomLandingPageConfigs", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Customer", b =>
@@ -477,7 +415,7 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.DailyTraffic", b =>
@@ -505,7 +443,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DailyTraffics");
+                    b.ToTable("DailyTraffics", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.DeliveryMethod", b =>
@@ -539,7 +477,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryMethods");
+                    b.ToTable("DeliveryMethods", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.HeroBanner", b =>
@@ -592,7 +530,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HeroBanners");
+                    b.ToTable("HeroBanners", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.NavigationMenu", b =>
@@ -636,15 +574,13 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("DisplayOrder");
 
                     b.HasIndex("IsActive");
 
                     b.HasIndex("ParentMenuId");
 
-                    b.ToTable("NavigationMenus");
+                    b.ToTable("NavigationMenus", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Order", b =>
@@ -706,15 +642,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<long?>("SteadfastConsignmentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("SteadfastStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SteadfastTrackingCode")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("SubTotal")
                         .HasColumnType("decimal(18,2)");
 
@@ -741,7 +668,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.OrderItem", b =>
@@ -786,7 +713,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.OrderLog", b =>
@@ -824,7 +751,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderLog");
+                    b.ToTable("OrderLog", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.OrderNote", b =>
@@ -856,7 +783,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderNotes");
+                    b.ToTable("OrderNotes", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Page", b =>
@@ -895,7 +822,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pages");
+                    b.ToTable("Pages", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Product", b =>
@@ -1010,7 +937,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasDatabaseName("IX_Products_Storefront_Active")
                         .HasFilter("[IsActive] = 1");
 
-                    b.ToTable("Products", t =>
+                    b.ToTable("Products", "dbo", t =>
                         {
                             t.HasCheckConstraint("CK_Product_Name", "LEN(Name) > 0");
                         });
@@ -1057,7 +984,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.ProductVariant", b =>
@@ -1104,7 +1031,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVariants");
+                    b.ToTable("ProductVariants", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Review", b =>
@@ -1163,7 +1090,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId1");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.SiteSetting", b =>
@@ -1232,7 +1159,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SiteSettings");
+                    b.ToTable("SiteSettings", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.SocialMediaSource", b =>
@@ -1258,7 +1185,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SocialMediaSources");
+                    b.ToTable("SocialMediaSources", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.SourcePage", b =>
@@ -1284,7 +1211,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SourcePages");
+                    b.ToTable("SourcePages", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.SubCategory", b =>
@@ -1300,9 +1227,6 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
@@ -1328,9 +1252,10 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("Slug");
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
-                    b.ToTable("SubCategories");
+                    b.ToTable("SubCategories", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1357,7 +1282,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("AspNetRoles", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1382,7 +1307,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("AspNetRoleClaims", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -1407,7 +1332,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("AspNetUserClaims", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -1429,7 +1354,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("AspNetUserLogins", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -1444,7 +1369,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("AspNetUserRoles", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -1463,7 +1388,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("AspNetUserTokens", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.AppRefreshToken", b =>
@@ -1496,22 +1421,8 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ECommerce.Core.Entities.Category", b =>
-                {
-                    b.HasOne("ECommerce.Core.Entities.Category", "Parent")
-                        .WithMany("ChildCategories")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Parent");
-                });
-
             modelBuilder.Entity("ECommerce.Core.Entities.Collection", b =>
                 {
-                    b.HasOne("ECommerce.Core.Entities.Category", null)
-                        .WithMany("Collections")
-                        .HasForeignKey("CategoryId");
-
                     b.HasOne("ECommerce.Core.Entities.SubCategory", "SubCategory")
                         .WithMany("Collections")
                         .HasForeignKey("SubCategoryId")
@@ -1534,16 +1445,10 @@ namespace ECommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("ECommerce.Core.Entities.NavigationMenu", b =>
                 {
-                    b.HasOne("ECommerce.Core.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId");
-
                     b.HasOne("ECommerce.Core.Entities.NavigationMenu", "ParentMenu")
                         .WithMany("ChildMenus")
                         .HasForeignKey("ParentMenuId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Category");
 
                     b.Navigation("ParentMenu");
                 });
@@ -1612,12 +1517,6 @@ namespace ECommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("ECommerce.Core.Entities.Product", b =>
                 {
-                    b.HasOne("ECommerce.Core.Entities.Category", "Category")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("ECommerce.Core.Entities.Collection", "Collection")
                         .WithMany("Products")
                         .HasForeignKey("CollectionId")
@@ -1627,8 +1526,6 @@ namespace ECommerce.Infrastructure.Migrations
                         .WithMany("Products")
                         .HasForeignKey("SubCategoryId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Category");
 
                     b.Navigation("Collection");
 
@@ -1670,17 +1567,6 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasForeignKey("ProductId1");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ECommerce.Core.Entities.SubCategory", b =>
-                {
-                    b.HasOne("ECommerce.Core.Entities.Category", "Category")
-                        .WithMany("SubCategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1742,17 +1628,6 @@ namespace ECommerce.Infrastructure.Migrations
             modelBuilder.Entity("ECommerce.Core.Entities.Cart", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("ECommerce.Core.Entities.Category", b =>
-                {
-                    b.Navigation("ChildCategories");
-
-                    b.Navigation("Collections");
-
-                    b.Navigation("Products");
-
-                    b.Navigation("SubCategories");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.Collection", b =>

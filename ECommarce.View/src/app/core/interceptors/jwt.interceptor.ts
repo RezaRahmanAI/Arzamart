@@ -7,11 +7,8 @@ import { finalize, retry, timer } from "rxjs";
 import { LoadingService } from "../services/loading.service";
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const loading = inject(LoadingService);
   const token = localStorage.getItem("arza_token");
   const isFormData = req.body instanceof FormData;
-
-  loading.show();
 
   const headers: Record<string, string> = {
     Accept: "application/json",
@@ -27,7 +24,6 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
       count: 2,
       delay: (error, retryCount) => timer(retryCount * 1000),
     }),
-    finalize(() => loading.hide()),
   );
 };
 

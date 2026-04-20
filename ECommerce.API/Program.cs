@@ -100,26 +100,19 @@ try
 
     app.MapControllers();
 
-    // Redirect root to swagger
-    app.MapGet("/", () => Results.Redirect("/swagger"));
-
-    // ── 5. Database Seeding (Manual Migrations Required) ──────────────
+    // ── 5. Smart One-Time Seeder ────────────────────────────────────
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
-        try
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        
+        // Very fast check: Only seed if the user table is completely empty
+        // Subsequent cold starts will skip this entirely after the first success
+        if (!await userManager.Users.AnyAsync())
         {
-            var context = services.GetRequiredService<ApplicationDbContext>();
-            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-            
-            // Ensure database is up to date and seed data
-            context.Database.Migrate();
-            DataSeeder.SeedAsync(userManager, roleManager, context).GetAwaiter().GetResult();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "An error occurred during seeding.");
+            await DataSeeder.SeedAsync(userManager, roleManager);
+            Log.Information("Initial data seeding completed (Super Admin created).");
         }
     }
 

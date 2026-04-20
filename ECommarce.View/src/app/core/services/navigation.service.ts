@@ -29,14 +29,14 @@ export interface MegaMenuCollection {
 })
 export class NavigationService {
   private readonly api = inject(ApiHttpClient);
-  private readonly baseUrl = "/navigation";
+  private readonly baseUrl = "/categories"; // Using categories endpoint for mega menu data
 
   private readonly refreshSubject = new BehaviorSubject<void>(void 0);
   
-  // Data stream that re-triggers on refreshSubject.next()
+  // Dynamic stream from API
   readonly megaMenu$ = this.refreshSubject.pipe(
-    switchMap(() => this.api.get<any>(`${this.baseUrl}/mega-menu`).pipe(
-      map((response) => response?.categories || response?.Categories || []),
+    switchMap(() => this.api.get<any[]>(this.baseUrl).pipe(
+      map((response) => response || []),
       catchError((err) => {
         console.error("Mega menu failed to load:", err);
         return of([]);

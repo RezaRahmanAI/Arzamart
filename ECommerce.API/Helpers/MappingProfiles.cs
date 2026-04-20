@@ -1,4 +1,5 @@
 using AutoMapper;
+using ECommerce.Core.Constants;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Enums;
@@ -13,11 +14,11 @@ public class MappingProfiles : Profile
         // Safe mapping to prevent recursive Entity mapping crashes during DTO flattening
         CreateMap<Product, Product>().MaxDepth(1);
         CreateMap<ProductVariant, ProductVariant>().MaxDepth(1);
-        CreateMap<Category, Category>().MaxDepth(1);
+
         
         CreateMap<Product, ProductDto>()
-            .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : ""))
-            .ForMember(d => d.SubCategoryName, o => o.MapFrom(s => s.SubCategory != null ? s.SubCategory.Name : null))
+            .ForMember(d => d.CategoryName, o => o.Ignore())
+            .ForMember(d => d.SubCategoryName, o => o.MapFrom(s => s.SubCategory != null ? s.SubCategory.Name : ""))
             .ForMember(d => d.CollectionName, o => o.MapFrom(s => s.Collection != null ? s.Collection.Name : null))
             .ForMember(d => d.Price, o => o.MapFrom(s => 
                 s.Variants.Any(v => v.Price > 0) 
@@ -56,7 +57,7 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Description, o => o.MapFrom(s => s.Description));
 
         CreateMap<Product, ProductListDto>()
-            .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : ""))
+            .ForMember(d => d.CategoryName, o => o.Ignore())
             .ForMember(d => d.Price, o => o.MapFrom(s => 
                 s.Variants.Any(v => v.Price > 0) 
                     ? s.Variants.Where(v => v.Price > 0).Min(v => v.Price) ?? 0 
@@ -85,7 +86,7 @@ public class MappingProfiles : Profile
                 Type = i.MediaType ?? "image"
             })));
 
-        CreateMap<Category, CategoryDto>();
+
         CreateMap<SubCategory, SubCategoryDto>();
         CreateMap<Collection, CollectionDto>();
         

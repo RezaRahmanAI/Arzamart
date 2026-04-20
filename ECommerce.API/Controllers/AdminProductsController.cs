@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
 using Microsoft.AspNetCore.OutputCaching;
+using ECommerce.Core.Constants;
 
 namespace ECommerce.API.Controllers;
 
@@ -111,7 +112,11 @@ public class AdminProductsController : ControllerBase
 
         if (!string.IsNullOrEmpty(category) && category != "all")
         {
-            query = query.Where(p => p.Category != null && p.Category.Name == category);
+            var staticCat = CategoryConstants.AllCategories.FirstOrDefault(c => c.Name.Equals(category, StringComparison.OrdinalIgnoreCase));
+            if (staticCat != null)
+            {
+                query = query.Where(p => p.CategoryId == staticCat.Id);
+            }
         }
 
         if (!string.IsNullOrEmpty(statusTab) && statusTab != "all")
@@ -133,38 +138,40 @@ public class AdminProductsController : ControllerBase
         }
 
         var total = await query.CountAsync();
-        var products = await query
-            .Include(p => p.Category)
+        var rawProducts = await query
+            .Include(p => p.SubCategory)
             .Include(p => p.Images)
             .Include(p => p.Variants)
             .AsSplitQuery()
             .OrderByDescending(p => p.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(p => new
-            {
-                p.Id,
-                p.Name,
-                p.Description,
-                p.ShortDescription,
-                p.Sku,
-                Price = p.Variants.FirstOrDefault() != null ? p.Variants.FirstOrDefault()!.Price ?? 0 : 0,
-                SalePrice = p.Variants.FirstOrDefault() != null ? p.Variants.FirstOrDefault()!.CompareAtPrice ?? null : null,
-                PurchaseRate = p.Variants.FirstOrDefault() != null ? p.Variants.FirstOrDefault()!.PurchaseRate ?? null : null,
-                p.StockQuantity,
-                p.IsNew,
-                p.IsFeatured,
-                Status = p.IsActive ? "Active" : "Draft",
-                p.ImageUrl,
-                Category = p.Category != null ? p.Category.Name : "",
-                CategoryId = p.CategoryId,
-                MediaUrls = p.Images.Select(i => i.Url).ToList(),
-                Images = p.Images.Select(i => new { i.Url }).ToList(),
-                Variants = p.Variants.Select(v => new { v.Id, v.Size, v.StockQuantity, v.Price }).ToList(),
-                p.CreatedAt,
-                p.Slug
-            })
             .ToListAsync();
+
+        var products = rawProducts.Select(p => new
+        {
+            p.Id,
+            p.Name,
+            p.Description,
+            p.ShortDescription,
+            p.Sku,
+            Price = p.Variants.FirstOrDefault()?.Price ?? 0,
+            SalePrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
+            PurchaseRate = p.Variants.FirstOrDefault()?.PurchaseRate,
+            p.StockQuantity,
+            p.IsNew,
+            p.IsFeatured,
+            Status = p.IsActive ? "Active" : "Draft",
+            p.ImageUrl,
+            Category = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == p.CategoryId)?.Name ?? "",
+            SubCategory = p.SubCategory?.Name ?? "",
+            CategoryId = p.CategoryId,
+            MediaUrls = p.Images.Select(i => i.Url).ToList(),
+            Images = p.Images.Select(i => new { i.Url }).ToList(),
+            Variants = p.Variants.Select(v => new { v.Id, v.Size, v.StockQuantity, v.Price }).ToList(),
+            p.CreatedAt,
+            p.Slug
+        }).ToList();
 
         return Ok(new { items = products, total });
     }

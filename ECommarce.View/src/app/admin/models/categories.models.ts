@@ -17,7 +17,7 @@ export interface SubCategory {
   categoryId: number;
   isActive: boolean;
   imageUrl?: string;
-  description?: string;
+
   displayOrder?: number;
   collections?: Collection[];
 }

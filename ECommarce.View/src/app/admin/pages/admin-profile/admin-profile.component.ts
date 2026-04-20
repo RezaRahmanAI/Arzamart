@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { ProfileService, UserProfile, UpdateProfileRequest } from "../../services/profile.service";
 import { AuthService } from "../../../core/services/auth.service";
+import { NotificationService } from "../../../core/services/notification.service";
 
 @Component({
   selector: "app-admin-profile",
@@ -15,6 +16,7 @@ export class AdminProfileComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly profileService = inject(ProfileService);
   private readonly authService = inject(AuthService);
+  private readonly notification = inject(NotificationService);
 
 
 
@@ -65,7 +67,7 @@ export class AdminProfileComponent implements OnInit {
     const emailChanged = this.profileForm.get('email')?.value !== this.userProfile?.email;
 
     if (isSuperAdmin && emailChanged && !this.profileForm.get('currentPassword')?.value) {
-      window.alert("Please provide your current password to change your SuperAdmin email address.");
+      this.notification.warn("Please provide your current password to change your SuperAdmin email address.");
       return;
     }
 
@@ -81,7 +83,7 @@ export class AdminProfileComponent implements OnInit {
     this.profileService.updateProfile(updateData).subscribe({
       next: (res) => {
         this.isSubmitting = false;
-        window.alert(res.message || "Profile updated successfully!");
+        this.notification.success(res.message || "Profile updated successfully!");
         this.loadProfile();
         // Update local session if needed
         this.authService.updateCurrentUser({
@@ -92,7 +94,7 @@ export class AdminProfileComponent implements OnInit {
       },
       error: (err) => {
         this.isSubmitting = false;
-        window.alert(err.error?.message || "Failed to update profile");
+        this.notification.error(err.error?.message || "Failed to update profile");
       }
     });
   }
@@ -101,7 +103,7 @@ export class AdminProfileComponent implements OnInit {
     if (this.passwordForm.invalid) return;
 
     if (this.passwordForm.value.newPassword !== this.passwordForm.value.confirmPassword) {
-      window.alert("Passwords do not match!");
+      this.notification.error("Passwords do not match!");
       return;
     }
 
@@ -112,12 +114,12 @@ export class AdminProfileComponent implements OnInit {
     }).subscribe({
       next: (res) => {
         this.isPasswordSubmitting = false;
-        window.alert(res.message || "Password changed successfully!");
+        this.notification.success(res.message || "Password changed successfully!");
         this.passwordForm.reset();
       },
       error: (err) => {
         this.isPasswordSubmitting = false;
-        window.alert(err.error?.message || "Failed to change password");
+        this.notification.error(err.error?.message || "Failed to change password");
       }
     });
   }

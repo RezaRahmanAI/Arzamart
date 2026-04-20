@@ -9,23 +9,10 @@ export const SHOW_LOADING = new HttpContextToken<boolean>(() => false);
   providedIn: "root",
 })
 export class LoadingService {
-  private activeRequests = 0;
   private readonly loadingSubject = new BehaviorSubject<boolean>(false);
-
   readonly loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
-  show(): void {
-    this.activeRequests++;
-    if (this.activeRequests === 1) {
-      this.loadingSubject.next(true);
-    }
-  }
-
-  hide(): void {
-    this.activeRequests--;
-    if (this.activeRequests <= 0) {
-      this.activeRequests = 0;
-      this.loadingSubject.next(false);
-    }
+  setLoading(isLoading: boolean): void {
+    this.loadingSubject.next(isLoading);
   }
 }

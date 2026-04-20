@@ -15,7 +15,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-    public DbSet<Category> Categories { get; set; }
+
     public DbSet<SubCategory> SubCategories { get; set; }
     public DbSet<Collection> Collections { get; set; }
     public DbSet<Cart> Carts { get; set; }
@@ -42,11 +42,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.HasDefaultSchema("dbo");
         base.OnModelCreating(builder);
         
         // Global Query Filters for Soft Delete & Active Status
         builder.Entity<Product>().HasQueryFilter(p => p.IsActive);
-        builder.Entity<Category>().HasQueryFilter(c => c.IsActive);
+
         builder.Entity<SubCategory>().HasQueryFilter(sc => sc.IsActive);
         builder.Entity<Collection>().HasQueryFilter(c => c.IsActive);
         builder.Entity<NavigationMenu>().HasQueryFilter(n => n.IsActive);
@@ -70,16 +71,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // Product Configuration
         builder.Entity<Product>(entity =>
         {
-            entity.HasOne(p => p.Category)
-                  .WithMany(c => c.Products)
-                  .HasForeignKey(p => p.CategoryId)
-                  .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(p => p.SubCategory)
-                  .WithMany(sc => sc.Products)
-                  .HasForeignKey(p => p.SubCategoryId)
-                  .OnDelete(DeleteBehavior.Restrict);
-
             entity.HasOne(p => p.Collection)
                   .WithMany(c => c.Products)
                   .HasForeignKey(p => p.CollectionId)
@@ -103,6 +94,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
             // Constraint
             entity.ToTable(t => t.HasCheckConstraint("CK_Product_Name", "LEN(Name) > 0")); 
+
+
+
+            entity.HasOne(p => p.SubCategory)
+                  .WithMany(sc => sc.Products)
+                  .HasForeignKey(p => p.SubCategoryId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+
+
+        // SubCategory Configuration
+        builder.Entity<SubCategory>(entity =>
+        {
+            entity.HasKey(sc => sc.Id);
+            entity.HasIndex(sc => sc.Slug).IsUnique();
+            entity.HasIndex(sc => sc.CategoryId);
+
+
         });
         
         // Product Variant Configuration
@@ -119,28 +129,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
             entity.HasIndex(v => v.ProductId);
             entity.HasIndex(v => v.Price);
-        });
-
-        // Category Self-Referencing Hierarchy
-        builder.Entity<Category>(entity =>
-        {
-            entity.HasOne(c => c.Parent)
-                  .WithMany(c => c.ChildCategories)
-                  .HasForeignKey(c => c.ParentId)
-                  .OnDelete(DeleteBehavior.Restrict);
-            
-            entity.HasIndex(c => c.Slug);
-        });
-
-        // Category Hierarchy
-        builder.Entity<SubCategory>(entity =>
-        {
-            entity.HasOne(sc => sc.Category)
-                  .WithMany(c => c.SubCategories)
-                  .HasForeignKey(sc => sc.CategoryId)
-                  .OnDelete(DeleteBehavior.Cascade);
-            
-            entity.HasIndex(sc => sc.Slug);
         });
 
         builder.Entity<Collection>(entity =>

@@ -44,7 +44,7 @@ public class AdminSubCategoryController : ControllerBase
                 CategoryId = sc.CategoryId,
                 IsActive = sc.IsActive,
                 ImageUrl = sc.ImageUrl,
-                Description = sc.Description,
+
                 DisplayOrder = sc.DisplayOrder
             })
             .ToListAsync();
@@ -68,7 +68,7 @@ public class AdminSubCategoryController : ControllerBase
             CategoryId = sc.CategoryId,
             IsActive = sc.IsActive,
             ImageUrl = sc.ImageUrl,
-            Description = sc.Description,
+
             DisplayOrder = sc.DisplayOrder
         };
 
@@ -81,9 +81,9 @@ public class AdminSubCategoryController : ControllerBase
         if (string.IsNullOrWhiteSpace(dto.Name))
             return BadRequest("SubCategory name is required");
 
-        // Validate Category exists
-        if (!await _context.Categories.AnyAsync(c => c.Id == dto.CategoryId))
-             return BadRequest("Invalid CategoryId");
+        // Category exists validation removed as categories are now Enum-based constants.
+        // If needed, you can validate against CategoryConstants.AllCategories.any(c => c.Id == dto.CategoryId)
+
 
         var slug = string.IsNullOrWhiteSpace(dto.Slug) ? GenerateSlug(dto.Name) : dto.Slug;
 
@@ -93,7 +93,7 @@ public class AdminSubCategoryController : ControllerBase
             Slug = slug,
             CategoryId = dto.CategoryId,
             ImageUrl = dto.ImageUrl,
-            Description = dto.Description,
+
             IsActive = dto.IsActive ?? true,
             DisplayOrder = dto.DisplayOrder ?? 0
         };
@@ -126,12 +126,9 @@ public class AdminSubCategoryController : ControllerBase
         if (string.IsNullOrWhiteSpace(dto.Name))
             return BadRequest("Name is required");
 
-        if (dto.CategoryId != subCategory.CategoryId)
-        {
-             if (!await _context.Categories.AnyAsync(c => c.Id == dto.CategoryId))
-                 return BadRequest("Invalid CategoryId");
-             subCategory.CategoryId = dto.CategoryId;
-        }
+        // Category validation removed for static categories
+        subCategory.CategoryId = dto.CategoryId;
+
 
         subCategory.Name = dto.Name;
         subCategory.Slug = string.IsNullOrWhiteSpace(dto.Slug) ? GenerateSlug(dto.Name) : dto.Slug;
@@ -140,7 +137,7 @@ public class AdminSubCategoryController : ControllerBase
         if (dto.DisplayOrder.HasValue) subCategory.DisplayOrder = dto.DisplayOrder.Value;
         
         if (dto.ImageUrl != null) subCategory.ImageUrl = dto.ImageUrl;
-        if (dto.Description != null) subCategory.Description = dto.Description;
+
 
         await _context.SaveChangesAsync();
 
@@ -215,6 +212,7 @@ public class AdminSubCategoryController : ControllerBase
     }
 
     private async Task InvalidateSubCategoryCacheAsync()
+
     {
         await _cache.RemoveAsync("nav:mega-menu");
         await _cache.RemoveByPrefixAsync("product:list");

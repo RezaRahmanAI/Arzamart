@@ -248,51 +248,47 @@
                   Size
                   <div class="flex gap-2 relative">
                     <div class="flex-1 min-w-0 relative">
-                      <button type="button" 
-                              (click)="toggleSizeDropdown(sizeIndex, $event)"
-                              class="flex w-full items-center justify-between rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark">
-                        <span>{{ size.get('label')?.value && standardSizes.includes(size.get('label')?.value) ? size.get('label')?.value : (size.get('label')?.value ? 'Custom...' : 'Select Size') }}</span>
-                        <app-icon name="ChevronDown" size="16" className="opacity-50"></app-icon>
-                      </button>
-                      
-                      <div *ngIf="openSizeDropdownIndex === sizeIndex" 
-                           class="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        
-                        <div (click)="selectSize(sizeIndex, '', $event)"
-                             class="relative cursor-pointer select-none py-2 px-3 hover:bg-primary/10 hover:text-primary text-text-main-light dark:text-text-main-dark transition-colors duration-150">
-                             Select Size
-                        </div>
-                        
-                        <div *ngFor="let sz of allAvailableSizes" 
-                             (click)="selectSize(sizeIndex, sz, $event)"
-                             class="relative cursor-pointer select-none py-2 px-3 hover:bg-primary/10 hover:text-primary text-text-main-light dark:text-text-main-dark text-sm transition-colors duration-150 flex justify-between items-center group">
+                      <div
+                        class="flex items-center gap-0 border border-border-light dark:border-border-dark rounded-lg bg-white dark:bg-black/20 focus-within:ring-1 focus-within:ring-primary focus-within:border-primary overflow-hidden"
+                      >
+                        <input
+                          class="flex-1 min-w-0 border-none bg-transparent px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark focus:ring-0"
+                          formControlName="label"
+                          placeholder="Size (e.g. M, 32, XL)"
+                          (click)="$event.stopPropagation()"
+                        />
+                        <button
+                          type="button"
+                          (click)="toggleSizeDropdown(sizeIndex, $event)"
+                          class="p-2 border-l border-border-light dark:border-border-dark hover:bg-black/5 transition-colors"
+                        >
+                          <app-icon
+                            name="ChevronDown"
+                            size="16"
+                            className="opacity-50"
+                          ></app-icon>
+                        </button>
+                      </div>
+
+                      <div
+                        *ngIf="openSizeDropdownIndex === sizeIndex"
+                        class="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                      >
+                        <div
+                          *ngFor="let sz of allAvailableSizes"
+                          (click)="selectSize(sizeIndex, sz, $event)"
+                          class="relative cursor-pointer select-none py-2 px-3 hover:bg-primary/10 hover:text-primary text-text-main-light dark:text-text-main-dark text-sm transition-colors duration-150 flex justify-between items-center group"
+                        >
                           <span>{{ sz }}</span>
-                          <app-icon *ngIf="size.get('label')?.value === sz" name="Check" size="16" className="text-primary"></app-icon>
-                        </div>
-                        
-                        <div (click)="selectSize(sizeIndex, 'custom', $event)"
-                             class="relative cursor-pointer select-none py-2 px-3 hover:bg-primary/10 hover:text-primary text-text-main-light dark:text-text-main-dark border-t border-border-light dark:border-border-dark transition-colors duration-150">
-                             Custom...
+                          <app-icon
+                            *ngIf="size.get('label')?.value === sz"
+                            name="Check"
+                            size="16"
+                            className="text-primary"
+                          ></app-icon>
                         </div>
                       </div>
                     </div>
-                    <input
-                      *ngIf="
-                        size.get('label')?.value === 'custom' ||
-                        (size.get('label')?.value &&
-                          !standardSizes.includes(size.get('label')?.value) && 
-                          !allAvailableSizes.includes(size.get('label')?.value))
-                      "
-                      class="flex-1 min-w-0 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                      formControlName="label"
-                      placeholder="Enter size"
-                      (click)="$event.stopPropagation()"
-                    />
-                    <input
-                      type="hidden"
-                      formControlName="label"
-                      *ngIf="allAvailableSizes.includes(size.get('label')?.value) || standardSizes.includes(size.get('label')?.value)"
-                    />
                   </div>
                 </label>
                 <label
@@ -549,7 +545,7 @@
                 <img
                   [alt]="media.get('alt')?.value || 'Product media'"
                   class="h-full w-full object-cover"
-                  [src]="imageUrlService.getImageUrl(media.get('url')?.value)"
+                  [src]="imageUrlService.getImageUrl(getMediaUrl(media))"
                 />
                 <div
                   *ngIf="media.get('type')?.value === 'video'"

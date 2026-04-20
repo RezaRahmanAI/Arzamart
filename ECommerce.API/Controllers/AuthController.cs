@@ -82,7 +82,7 @@ public class AuthController : ControllerBase
         }
 
         var roles = await _userManager.GetRolesAsync(user);
-        var role = roles.FirstOrDefault() ?? user.Role ?? "Customer";
+        var role = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? user.Role ?? "Customer");
 
         return Ok(ToSummary(user, role));
     }

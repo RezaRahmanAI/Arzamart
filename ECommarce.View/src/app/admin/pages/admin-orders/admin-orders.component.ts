@@ -20,6 +20,7 @@ import { PriceDisplayComponent } from "../../../shared/components/price-display/
 import { SourceManagementService } from "../../../core/services/source-management.service";
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
+import { NotificationService } from "../../../core/services/notification.service";
 
 interface OrderStats {
   totalOrders: number;
@@ -46,6 +47,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private sourceService = inject(SourceManagementService);
+  private notification = inject(NotificationService);
   private destroy$ = new Subject<void>();
 
   isLoading = false;
@@ -304,7 +306,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     
     this.ordersService.updateStatus(orderId, newStatus, `Status updated to ${newStatus}`).subscribe({
         next: () => this.loadOrders(false),
-        error: () => window.alert("Failed to update status")
+        error: () => this.notification.error("Failed to update status")
     });
   }
 
@@ -344,7 +346,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   showMoreFilters(event: Event): void {
     event.stopPropagation();
-    window.alert("More filters coming soon.");
+    this.notification.info("More filters coming soon.");
   }
 
   toggleSelectAll(event: Event): void {
@@ -431,7 +433,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.isSavingNote = false;
-        window.alert("Failed to add note");
+        this.notification.error("Failed to add note");
       }
     });
   }
@@ -455,7 +457,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   sendReminder(order: Order, event: Event): void {
     event.stopPropagation();
     const msg = `Hello ${order.customerName || 'Customer'}, your order #${order.orderNumber} is pending. Please confirm by calling this number(01725455554).`;
-    window.alert("Reminder Text copied to clipboard: \n\n" + msg);
+    this.notification.success("Reminder Text copied to clipboard!");
     navigator.clipboard.writeText(msg);
   }
 
@@ -486,7 +488,10 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   printInvoice(order: Order, event: Event): void {
     event.stopPropagation();
-    this.router.navigate(['/admin/orders', order.id]);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/admin/orders', order.id])
+    );
+    window.open(url, '_blank');
   }
 
   goToPreviousPage(): void {

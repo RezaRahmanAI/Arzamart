@@ -24,8 +24,9 @@ import {
   Collection,
 } from "../../models/categories.models";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
-import { ImageUrlService } from "../../../core/services/image-url.service";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
+import { ImageUrlService } from "../../../core/services/image-url.service";
+import { NotificationService } from "../../../core/services/notification.service";
 
 interface MediaFormValue {
   id: string;
@@ -60,6 +61,7 @@ export class AdminProductFormComponent implements OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   public imageUrlService = inject(ImageUrlService);
+  private notification = inject(NotificationService);
 
   // Mode detection
   isEditMode = false;
@@ -142,7 +144,7 @@ export class AdminProductFormComponent implements OnDestroy {
       isBundle: [false],
       bundleQuantity: [1, [Validators.min(1)]],
     },
-    { validators: [this.salePriceValidator] },
+    {},
   );
 
   allProducts: AdminProduct[] = []; // To select components for combo
@@ -278,6 +280,11 @@ export class AdminProductFormComponent implements OnDestroy {
     this.mediaFileMap.clear();
   }
 
+  getMediaUrl(media: AbstractControl): string {
+    return media.get('url')?.value || '';
+  }
+
+  // Media Management
   get mediaItemsArray(): FormArray {
     return this.form.get("mediaItems") as FormArray;
   }
@@ -379,14 +386,9 @@ export class AdminProductFormComponent implements OnDestroy {
           });
         }
 
-        // Load existing media
-        // 1. Parse Variants First (Colors needed for Media Dropdowns)
-
-
         // 2. Sizes from Variants
         this.sizesArray.clear();
-        const variants =
-          (product as any).variants || (product as any).Variants || [];
+        const variants = (product as any).variants || (product as any).Variants || [];
 
         if (variants && variants.length > 0) {
           variants.forEach((v: any) => {
@@ -552,8 +554,7 @@ export class AdminProductFormComponent implements OnDestroy {
   }
 
   discard(): void {
-    const confirmed = window.confirm("Discard changes?");
-    if (!confirmed) {
+    if (!window.confirm("Discard changes?")) {
       return;
     }
     this.resetForm();
@@ -604,17 +605,7 @@ export class AdminProductFormComponent implements OnDestroy {
     }, 0);
   }
 
-  onSizeSelectChange(event: Event, index: number): void {
-    const select = event.target as HTMLSelectElement;
-    const value = select.value;
-    const sizeForm = this.sizesArray.at(index);
 
-    if (value === "custom") {
-      sizeForm.patchValue({ label: "custom" });
-    } else {
-      sizeForm.patchValue({ label: value });
-    }
-  }
 
   toggleSizeDropdown(index: number, event: Event): void {
     event.stopPropagation();
@@ -657,13 +648,9 @@ export class AdminProductFormComponent implements OnDestroy {
           else errorMessages.push(`${key} is invalid`);
         }
       });
-      if (this.form.errors?.['salePriceExceedsBase']) {
-        errorMessages.push("Sale Price must be lower than Price");
-      }
 
-      window.alert(
-        `Form has errors:\n${errorMessages.join("\n")}`
-      );
+
+      this.notification.error(`Form has errors:\n${errorMessages.join("\n")}`);
       return;
     }
 
@@ -694,7 +681,7 @@ export class AdminProductFormComponent implements OnDestroy {
         next: (product) => {
           const action = this.isEditMode ? "updated" : "created";
           console.log(`Product ${action} successfully:`, product);
-          window.alert(`Product ${action} successfully.`);
+          this.notification.success(`Product ${action} successfully.`);
           void this.router.navigate(["/admin/products"]);
         },
         error: (error) => {
@@ -704,7 +691,7 @@ export class AdminProductFormComponent implements OnDestroy {
             error?.error?.message ||
             error?.message ||
             `Failed to ${action} product. Please try again.`;
-          window.alert(`Error: ${errorMessage}`);
+          this.notification.error(`Error: ${errorMessage}`);
         },
       });
   }
@@ -738,21 +725,7 @@ export class AdminProductFormComponent implements OnDestroy {
     });
   }
 
-  private salePriceValidator(
-    control: AbstractControl,
-  ): ValidationErrors | null {
-    const basePrice = Number(control.get("price")?.value ?? 0);
-    const salePriceControl = control.get("salePrice");
-    const salePrice = salePriceControl?.value;
-    if (salePrice === null || salePrice === undefined) {
-      return null;
-    }
-    const saleValue = Number(salePrice);
-    if (Number.isNaN(saleValue)) {
-      return null;
-    }
-    return saleValue > basePrice ? { salePriceExceedsBase: true } : null;
-  }
+
 
   private addFiles(files: File[]): void {
     files.forEach((file) => {

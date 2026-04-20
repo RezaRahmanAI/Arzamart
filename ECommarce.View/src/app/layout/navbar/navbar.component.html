@@ -39,10 +39,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           </button>
           
-          <a routerLink="/offers" class="flex items-center gap-1.5 text-primary hover:text-accent transition-colors cursor-pointer group">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-primary/40 group-hover:text-accent transition-colors"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
-            <span class="text-[11px] font-bold uppercase tracking-wider hidden sm:inline">Offer</span>
-          </a>
+
           
           <a routerLink="/cart" class="relative group p-1 text-primary hover:text-accent transition-all duration-300 cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 stroke-[2]"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -178,10 +175,7 @@
       }
     </nav>
     <div class="mt-8 pb-8">
-      <a routerLink="/offers" (click)="closeMenu()" class="flex items-center gap-3 py-3 px-2 text-sm font-semibold uppercase tracking-wider text-text-main hover:text-primary hover:bg-gray-50 transition-colors rounded-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
-        Offers
-      </a>
+
       <a routerLink="/cart" (click)="closeMenu()" class="flex items-center gap-3 py-3 px-2 text-sm font-semibold uppercase tracking-wider text-text-main hover:text-primary hover:bg-gray-50 transition-colors rounded-lg">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         Cart

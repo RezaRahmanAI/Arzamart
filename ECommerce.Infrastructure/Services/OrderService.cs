@@ -17,14 +17,13 @@ public class OrderService : IOrderService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly CustomerService _customerService;
-    private readonly ISteadfastService _steadfastService;
+    // Removed SteadfastService
 
-    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, CustomerService customerService, ISteadfastService steadfastService)
+    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, CustomerService customerService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _customerService = customerService;
-        _steadfastService = steadfastService;
     }
 
     public async Task<OrderDto> CreateOrderAsync(OrderCreateDto orderDto)
@@ -356,26 +355,7 @@ public class OrderService : IOrderService
             };
             _unitOfWork.Repository<OrderLog>().Add(log);
 
-            if (newStatus == OrderStatus.Confirmed && order.SteadfastConsignmentId == null)
-            {
-                try
-                {
-                    var (consignmentId, trackingCode) = await _steadfastService.CreateOrderAsync(order);
-                    if (!string.IsNullOrEmpty(consignmentId))
-                    {
-                        if (long.TryParse(consignmentId, out var cid))
-                        {
-                            order.SteadfastConsignmentId = cid;
-                        }
-                        order.SteadfastTrackingCode = trackingCode;
-                        order.SteadfastStatus = "in_review";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error sending order {order.Id} to Steadfast: {ex.Message}");
-                }
-            }
+            // Removed Steadfast consignment creation
             
             _unitOfWork.Repository<Order>().Update(order);
             return await _unitOfWork.Complete() > 0;

@@ -32,7 +32,7 @@ public class DashboardService : IDashboardService
 
             var validStatuses = new[] { OrderStatus.Pending, OrderStatus.Confirmed, OrderStatus.Processing, OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered };
 
-            // Single combined query for order stats
+            // Sequential queries to avoid DbContext threading issues
             var orderStats = await _context.Orders
                 .AsNoTracking()
                 .GroupBy(o => 1)
@@ -47,31 +47,29 @@ public class DashboardService : IDashboardService
                 })
                 .FirstOrDefaultAsync();
 
-            var totalOrders = orderStats?.TotalOrders ?? 0;
             var totalProducts = await _context.Products.AsNoTracking().CountAsync();
             var totalCustomers = await _context.Customers.AsNoTracking().CountAsync();
-
-            // Single query for sold items with product costs (fixed N+1)
-            var soldItemsWithCosts = await _context.Orders
+            
+            // Optimized query for sold items with purchase rates
+            var soldItems = await _context.OrderItems
                 .AsNoTracking()
-                .Where(o => validStatuses.Contains(o.Status))
-                .SelectMany(o => o.Items)
-                .GroupBy(i => i.ProductId)
-                .Select(g => new
+                .Where(i => validStatuses.Contains(i.Order.Status))
+                .Select(i => new
                 {
-                    ProductId = g.Key,
-                    Quantity = g.Sum(i => i.Quantity),
-                    Product = _context.Products
-                        .Where(p => p.Id == g.Key)
-                        .Select(p => p.Variants.OrderBy(v => v.Id).Select(v => (decimal?)v.PurchaseRate).FirstOrDefault() ?? 0)
-                        .FirstOrDefault()
+                    i.Quantity,
+                    PurchaseRate = _context.ProductVariants
+                        .Where(v => v.ProductId == i.ProductId)
+                        .OrderBy(v => v.Id)
+                        .Select(v => (decimal?)v.PurchaseRate)
+                        .FirstOrDefault() ?? 0
                 })
                 .ToListAsync();
 
-            var totalItemsSold = soldItemsWithCosts.Sum(s => s.Quantity);
+            var totalOrders = orderStats?.TotalOrders ?? 0;
             var totalRevenue = orderStats?.TotalRevenue ?? 0;
+            var totalItemsSold = soldItems.Sum(s => s.Quantity);
+            var totalPurchaseCost = soldItems.Sum(s => s.Quantity * s.PurchaseRate);
             var avgSellingPrice = totalItemsSold > 0 ? totalRevenue / totalItemsSold : 0;
-            var totalPurchaseCost = soldItemsWithCosts.Sum(s => s.Quantity * s.Product);
 
             return new DashboardStatsDto
             {
@@ -96,21 +94,26 @@ public class DashboardService : IDashboardService
     {
         var validStatuses = new[] { OrderStatus.Confirmed, OrderStatus.Processing, OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered };
 
-        // Get sold counts per product in a single query
-        var soldCounts = await _context.Orders
+        // Get top 5 sold product IDs directly from DB
+        var topProductIds = await _context.OrderItems
             .AsNoTracking()
-            .Where(o => validStatuses.Contains(o.Status))
-            .SelectMany(o => o.Items)
+            .Where(i => validStatuses.Contains(i.Order.Status))
             .GroupBy(i => i.ProductId)
+            .OrderByDescending(g => g.Sum(i => i.Quantity))
+            .Take(5)
             .Select(g => new { ProductId = g.Key, SoldCount = g.Sum(i => i.Quantity) })
-            .ToDictionaryAsync(x => x.ProductId, x => x.SoldCount);
+            .ToListAsync();
 
-        // Get products with includes
+        if (!topProductIds.Any()) return new List<PopularProductDto>();
+
+        var productIds = topProductIds.Select(x => x.ProductId).ToList();
+
+        // Fetch only the relevant products with necessary includes
         var products = await _context.Products
             .AsNoTracking()
+            .Where(p => productIds.Contains(p.Id))
             .Include(p => p.Images)
             .Include(p => p.Variants)
-            .Take(100) // Limit initial fetch
             .ToListAsync();
 
         var result = products
@@ -118,13 +121,12 @@ public class DashboardService : IDashboardService
             {
                 Id = p.Id,
                 Name = p.Name,
-                Price = p.Variants.FirstOrDefault()?.Price ?? 0,
+                Price = p.Variants.OrderBy(v => v.Id).FirstOrDefault()?.Price ?? 0,
                 Stock = p.StockQuantity,
-                SoldCount = soldCounts.GetValueOrDefault(p.Id, 0),
+                SoldCount = topProductIds.First(x => x.ProductId == p.Id).SoldCount,
                 ImageUrl = p.ImageUrl ?? p.Images.FirstOrDefault()?.Url ?? ""
             })
             .OrderByDescending(x => x.SoldCount)
-            .Take(5)
             .ToList();
 
         return result;

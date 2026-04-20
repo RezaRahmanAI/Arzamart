@@ -6,13 +6,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ECommerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "dbo");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -27,6 +31,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUsers",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -61,6 +66,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "BlockedIps",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -77,6 +83,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Carts",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -93,36 +100,8 @@ namespace ECommerce.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    ParentId = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Categories_Categories_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Customers",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -141,6 +120,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "DailyTraffics",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -158,6 +138,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "DeliveryMethods",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -176,6 +157,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "HeroBanners",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -200,7 +182,38 @@ namespace ECommerce.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NavigationMenus",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsMegaMenu = table.Column<bool>(type: "bit", nullable: false),
+                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: true),
+                    ParentMenuId = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NavigationMenus", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NavigationMenus_NavigationMenus_ParentMenuId",
+                        column: x => x.ParentMenuId,
+                        principalSchema: "dbo",
+                        principalTable: "NavigationMenus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pages",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -221,6 +234,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "SiteSettings",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -250,7 +264,63 @@ namespace ECommerce.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SocialMediaSources",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SocialMediaSources", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SourcePages",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SourcePages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubCategories",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -265,6 +335,7 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
+                        principalSchema: "dbo",
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -272,6 +343,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -286,6 +358,7 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserClaims_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "dbo",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -293,6 +366,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserLogins",
+                schema: "dbo",
                 columns: table => new
                 {
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -306,6 +380,7 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "dbo",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -313,6 +388,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserRoles",
+                schema: "dbo",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -324,12 +400,14 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
                         column: x => x.RoleId,
+                        principalSchema: "dbo",
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "dbo",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -337,6 +415,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserTokens",
+                schema: "dbo",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -350,6 +429,7 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "dbo",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -357,6 +437,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "RefreshTokens",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -378,73 +459,15 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_RefreshTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "dbo",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "NavigationMenus",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsMegaMenu = table.Column<bool>(type: "bit", nullable: false),
-                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: true),
-                    ParentMenuId = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_NavigationMenus", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_NavigationMenus_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_NavigationMenus_NavigationMenus_ParentMenuId",
-                        column: x => x.ParentMenuId,
-                        principalTable: "NavigationMenus",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SubCategories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SubCategories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SubCategories_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Orders",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -461,12 +484,11 @@ namespace ECommerce.Infrastructure.Migrations
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DeliveryMethodId = table.Column<int>(type: "int", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    SteadfastConsignmentId = table.Column<long>(type: "bigint", nullable: true),
-                    SteadfastTrackingCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SteadfastStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedIp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsPreOrder = table.Column<bool>(type: "bit", nullable: false),
                     AdminNote = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SourcePageId = table.Column<int>(type: "int", nullable: true),
+                    SocialMediaSourceId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -476,12 +498,28 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Orders_DeliveryMethods_DeliveryMethodId",
                         column: x => x.DeliveryMethodId,
+                        principalSchema: "dbo",
                         principalTable: "DeliveryMethods",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_SocialMediaSources_SocialMediaSourceId",
+                        column: x => x.SocialMediaSourceId,
+                        principalSchema: "dbo",
+                        principalTable: "SocialMediaSources",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_SourcePages_SourcePageId",
+                        column: x => x.SourcePageId,
+                        principalSchema: "dbo",
+                        principalTable: "SourcePages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Collections",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -493,7 +531,6 @@ namespace ECommerce.Infrastructure.Migrations
                     DisplayOrder = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     SubCategoryId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -501,13 +538,9 @@ namespace ECommerce.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Collections", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Collections_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Collections_SubCategories_SubCategoryId",
                         column: x => x.SubCategoryId,
+                        principalSchema: "dbo",
                         principalTable: "SubCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -515,6 +548,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OrderLog",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -533,6 +567,7 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_OrderLog_Orders_OrderId",
                         column: x => x.OrderId,
+                        principalSchema: "dbo",
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -540,6 +575,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OrderNotes",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -556,6 +592,7 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_OrderNotes_Orders_OrderId",
                         column: x => x.OrderId,
+                        principalSchema: "dbo",
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -563,6 +600,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Products",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -598,20 +636,16 @@ namespace ECommerce.Infrastructure.Migrations
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.CheckConstraint("CK_Product_Name", "LEN(Name) > 0");
                     table.ForeignKey(
-                        name: "FK_Products_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_Products_Collections_CollectionId",
                         column: x => x.CollectionId,
+                        principalSchema: "dbo",
                         principalTable: "Collections",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Products_SubCategories_SubCategoryId",
                         column: x => x.SubCategoryId,
+                        principalSchema: "dbo",
                         principalTable: "SubCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -619,6 +653,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "CartItems",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -626,7 +661,6 @@ namespace ECommerce.Infrastructure.Migrations
                     CartId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -637,19 +671,57 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_CartItems_Carts_CartId",
                         column: x => x.CartId,
+                        principalSchema: "dbo",
                         principalTable: "Carts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CartItems_Products_ProductId",
                         column: x => x.ProductId,
+                        principalSchema: "dbo",
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomLandingPageConfigs",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    RelativeTimerTotalMinutes = table.Column<int>(type: "int", nullable: true),
+                    IsTimerVisible = table.Column<bool>(type: "bit", nullable: false),
+                    HeaderTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsProductDetailsVisible = table.Column<bool>(type: "bit", nullable: false),
+                    ProductDetailsTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsFabricVisible = table.Column<bool>(type: "bit", nullable: false),
+                    IsDesignVisible = table.Column<bool>(type: "bit", nullable: false),
+                    IsTrustBannerVisible = table.Column<bool>(type: "bit", nullable: false),
+                    TrustBannerText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FeaturedProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PromoPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    OriginalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomLandingPageConfigs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomLandingPageConfigs_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalSchema: "dbo",
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "OrderItems",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -657,7 +729,6 @@ namespace ECommerce.Infrastructure.Migrations
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Size = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -671,12 +742,14 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
+                        principalSchema: "dbo",
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderItems_Products_ProductId",
                         column: x => x.ProductId,
+                        principalSchema: "dbo",
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -684,6 +757,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "ProductImages",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -694,7 +768,6 @@ namespace ECommerce.Infrastructure.Migrations
                     MediaType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsMain = table.Column<bool>(type: "bit", nullable: false),
                     DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -705,6 +778,7 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_ProductImages_Products_ProductId",
                         column: x => x.ProductId,
+                        principalSchema: "dbo",
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -712,13 +786,13 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "ProductVariants",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Sku = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Size = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     CompareAtPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     PurchaseRate = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -734,6 +808,7 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_ProductVariants_Products_ProductId",
                         column: x => x.ProductId,
+                        principalSchema: "dbo",
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -741,6 +816,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Reviews",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -755,6 +831,7 @@ namespace ECommerce.Infrastructure.Migrations
                     IsFeatured = table.Column<bool>(type: "bit", nullable: false),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false),
                     Likes = table.Column<int>(type: "int", nullable: false),
+                    ProductId1 = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -764,18 +841,27 @@ namespace ECommerce.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Reviews_Products_ProductId",
                         column: x => x.ProductId,
+                        principalSchema: "dbo",
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Products_ProductId1",
+                        column: x => x.ProductId1,
+                        principalSchema: "dbo",
+                        principalTable: "Products",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
+                schema: "dbo",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
+                schema: "dbo",
                 table: "AspNetRoles",
                 column: "NormalizedName",
                 unique: true,
@@ -783,26 +869,31 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
+                schema: "dbo",
                 table: "AspNetUserClaims",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserLogins_UserId",
+                schema: "dbo",
                 table: "AspNetUserLogins",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserRoles_RoleId",
+                schema: "dbo",
                 table: "AspNetUserRoles",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
+                schema: "dbo",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_Phone",
+                schema: "dbo",
                 table: "AspNetUsers",
                 column: "Phone",
                 unique: true,
@@ -810,6 +901,7 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
+                schema: "dbo",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true,
@@ -817,298 +909,376 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_CartId",
+                schema: "dbo",
                 table: "CartItems",
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_ProductId",
+                schema: "dbo",
                 table: "CartItems",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Carts_SessionId",
+                schema: "dbo",
                 table: "Carts",
                 column: "SessionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_ParentId",
-                table: "Categories",
-                column: "ParentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Categories_Slug",
-                table: "Categories",
-                column: "Slug");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Collections_CategoryId",
-                table: "Collections",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Collections_Slug",
+                schema: "dbo",
                 table: "Collections",
                 column: "Slug");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Collections_SubCategoryId",
+                schema: "dbo",
                 table: "Collections",
                 column: "SubCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_CreatedAt",
+                schema: "dbo",
                 table: "Customers",
                 column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_Phone",
+                schema: "dbo",
                 table: "Customers",
                 column: "Phone",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_NavigationMenus_CategoryId",
-                table: "NavigationMenus",
-                column: "CategoryId");
+                name: "IX_CustomLandingPageConfigs_ProductId",
+                schema: "dbo",
+                table: "CustomLandingPageConfigs",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NavigationMenus_DisplayOrder",
+                schema: "dbo",
                 table: "NavigationMenus",
                 column: "DisplayOrder");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NavigationMenus_IsActive",
+                schema: "dbo",
                 table: "NavigationMenus",
                 column: "IsActive");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NavigationMenus_ParentMenuId",
+                schema: "dbo",
                 table: "NavigationMenus",
                 column: "ParentMenuId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
+                schema: "dbo",
                 table: "OrderItems",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_ProductId",
+                schema: "dbo",
                 table: "OrderItems",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderLog_OrderId",
+                schema: "dbo",
                 table: "OrderLog",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderNotes_OrderId",
+                schema: "dbo",
                 table: "OrderNotes",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CreatedAt",
+                schema: "dbo",
                 table: "Orders",
                 column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_DeliveryMethodId",
+                schema: "dbo",
                 table: "Orders",
                 column: "DeliveryMethodId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_OrderNumber",
+                schema: "dbo",
                 table: "Orders",
                 column: "OrderNumber");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_SocialMediaSourceId",
+                schema: "dbo",
+                table: "Orders",
+                column: "SocialMediaSourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_SourcePageId",
+                schema: "dbo",
+                table: "Orders",
+                column: "SourcePageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_Status",
+                schema: "dbo",
                 table: "Orders",
                 column: "Status");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductImages_ProductId",
+                schema: "dbo",
                 table: "ProductImages",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
+                schema: "dbo",
                 table: "Products",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CollectionId",
+                schema: "dbo",
                 table: "Products",
                 column: "CollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CreatedAt",
+                schema: "dbo",
                 table: "Products",
                 column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_IsFeatured",
+                schema: "dbo",
                 table: "Products",
                 column: "IsFeatured");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_IsNew",
+                schema: "dbo",
                 table: "Products",
                 column: "IsNew");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_Sku",
+                schema: "dbo",
                 table: "Products",
                 column: "Sku",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_Slug",
+                schema: "dbo",
                 table: "Products",
                 column: "Slug",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_StockQuantity",
+                schema: "dbo",
                 table: "Products",
                 column: "StockQuantity");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_Storefront_Active",
+                schema: "dbo",
                 table: "Products",
                 columns: new[] { "IsActive", "CategoryId" },
                 filter: "[IsActive] = 1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_SubCategoryId",
+                schema: "dbo",
                 table: "Products",
                 column: "SubCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductVariants_Price",
+                schema: "dbo",
                 table: "ProductVariants",
                 column: "Price");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductVariants_ProductId",
+                schema: "dbo",
                 table: "ProductVariants",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_RefreshToken",
+                schema: "dbo",
                 table: "RefreshTokens",
                 column: "RefreshToken");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
+                schema: "dbo",
                 table: "RefreshTokens",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_ProductId",
+                schema: "dbo",
                 table: "Reviews",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Reviews_ProductId1",
+                schema: "dbo",
+                table: "Reviews",
+                column: "ProductId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SubCategories_CategoryId",
+                schema: "dbo",
                 table: "SubCategories",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubCategories_Slug",
+                schema: "dbo",
                 table: "SubCategories",
-                column: "Slug");
+                column: "Slug",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AspNetRoleClaims");
+                name: "AspNetRoleClaims",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserClaims");
+                name: "AspNetUserClaims",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserLogins");
+                name: "AspNetUserLogins",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserRoles");
+                name: "AspNetUserRoles",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserTokens");
+                name: "AspNetUserTokens",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "BlockedIps");
+                name: "BlockedIps",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "CartItems");
+                name: "CartItems",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Customers",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "DailyTraffics");
+                name: "CustomLandingPageConfigs",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "HeroBanners");
+                name: "DailyTraffics",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "NavigationMenus");
+                name: "HeroBanners",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "OrderItems");
+                name: "NavigationMenus",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "OrderLog");
+                name: "OrderItems",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "OrderNotes");
+                name: "OrderLog",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Pages");
+                name: "OrderNotes",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "ProductImages");
+                name: "Pages",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "ProductVariants");
+                name: "ProductImages",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "RefreshTokens");
+                name: "ProductVariants",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Reviews");
+                name: "RefreshTokens",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "SiteSettings");
+                name: "Reviews",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "SiteSettings",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Carts");
+                name: "AspNetRoles",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Carts",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Orders",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "AspNetUsers",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "DeliveryMethods");
+                name: "Products",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Collections");
+                name: "DeliveryMethods",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "SubCategories");
+                name: "SocialMediaSources",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "SourcePages",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "Collections",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "SubCategories",
+                schema: "dbo");
         }
     }
 }

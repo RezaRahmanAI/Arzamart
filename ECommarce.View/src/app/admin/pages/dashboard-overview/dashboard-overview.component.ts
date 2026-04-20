@@ -1,5 +1,5 @@
-import { CommonModule } from "@angular/common";
-import { Component, DestroyRef, inject } from "@angular/core";
+import { isPlatformBrowser, CommonModule } from "@angular/common";
+import { Component, DestroyRef, inject, PLATFORM_ID } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
 import {
@@ -36,6 +36,7 @@ export class DashboardOverviewComponent {
   private settingsService = inject(SiteSettingsService);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
 
   settings$ = this.settingsService.getSettings();
 
@@ -52,7 +53,12 @@ export class DashboardOverviewComponent {
   );
 
   private createLiveStream<T>(source: () => Observable<T>): Observable<T> {
-    return timer(0, this.refreshIntervalMs).pipe(
+    const isBrowser = isPlatformBrowser(this.platformId);
+    const stream$ = isBrowser 
+      ? timer(0, this.refreshIntervalMs) 
+      : timer(0);
+
+    return stream$.pipe(
       switchMap(() => source()),
       takeUntilDestroyed(this.destroyRef),
       shareReplay({ bufferSize: 1, refCount: true }),
