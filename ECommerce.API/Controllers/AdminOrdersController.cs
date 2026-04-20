@@ -56,9 +56,26 @@ public class AdminOrdersController : ControllerBase
         [FromQuery] int? sourcePageId = null,
         [FromQuery] int? socialMediaSourceId = null)
     {
-        // Fetch all matching orders for stats calculation (page 1, max size)
+        // Keep for backward compatibility if needed, but this is the slow one
         var (items, _) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, 1, 100000, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
         return Ok(items);
+    }
+
+    [HttpGet("stats")]
+    public async Task<ActionResult<OrderStatsDto>> GetOrderStats(
+        [FromQuery] string? searchTerm,
+        [FromQuery] string? status,
+        [FromQuery] string? dateRange,
+        [FromQuery] DateTime? startDate,
+        [FromQuery] DateTime? endDate,
+        [FromQuery] bool preOrderOnly = false,
+        [FromQuery] bool websiteOnly = false,
+        [FromQuery] bool manualOnly = false,
+        [FromQuery] int? sourcePageId = null,
+        [FromQuery] int? socialMediaSourceId = null)
+    {
+        var stats = await _orderService.GetOrderStatsAsync(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
+        return Ok(stats);
     }
 
     [HttpGet("{id}")]

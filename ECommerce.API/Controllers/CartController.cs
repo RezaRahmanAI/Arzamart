@@ -263,8 +263,7 @@ public class CartController : ControllerBase
                     .ThenInclude(p => p!.Images)
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Product!)
-                    .ThenInclude(p => p!.Variants)
-                .AsSplitQuery();
+                    .ThenInclude(p => p!.Variants);
     }
 
     private CartDto MapToDto(Cart cart)

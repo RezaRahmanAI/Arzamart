@@ -87,3 +87,10 @@ export interface OrdersQueryParams {
   sourcePageId?: number;
   socialMediaSourceId?: number;
 }
+
+export interface OrderStats {
+  totalOrders: number;
+  processing: number;
+  totalRevenue: number;
+  refundRequests: number;
+}

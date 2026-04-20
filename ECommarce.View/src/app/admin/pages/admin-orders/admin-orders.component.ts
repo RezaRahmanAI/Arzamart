@@ -15,6 +15,7 @@ import {
   OrderDetail,
   OrderStatus,
   OrdersQueryParams,
+  OrderStats,
 } from "../../models/orders.models";
 import { OrdersService } from "../../services/orders.service";
 import { AdminOrderInvoiceComponent } from "./components/admin-order-invoice/admin-order-invoice.component";
@@ -23,13 +24,6 @@ import { SourceManagementService } from "../../../core/services/source-managemen
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { NotificationService } from "../../../core/services/notification.service";
-
-interface OrderStats {
-  totalOrders: number;
-  processing: number;
-  totalRevenue: number;
-  refundRequests: number;
-}
 
 @Component({
   selector: "app-admin-orders",
@@ -58,7 +52,6 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   searchControl = new FormControl("", { nonNullable: true });
 
   orders: Order[] = [];
-  filteredOrders: Order[] = [];
   invoiceOrder: OrderDetail | null = null;
   isInvoiceLoading = false;
   totalResults = 0;
@@ -627,11 +620,10 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       });
 
     this.ordersService
-      .getFilteredOrders(params)
+      .getOrderStats(params)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((orders) => {
-        this.filteredOrders = orders;
-        this.updateStats(orders);
+      .subscribe((stats) => {
+        this.stats = stats;
       });
   }
 
@@ -650,18 +642,4 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       .toUpperCase();
   }
 
-  private updateStats(orders: Order[]): void {
-    const processing = orders.filter(
-      (order) => order.status === "Processing" || order.status === "Pending",
-    ).length;
-    const refunds = orders.filter((order) => order.status === "Refund").length;
-    const revenue = orders.reduce((total, order) => total + order.total, 0);
-
-    this.stats = {
-      totalOrders: orders.length,
-      processing,
-      totalRevenue: revenue,
-      refundRequests: refunds,
-    };
-  }
 }

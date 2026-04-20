@@ -7,6 +7,7 @@ import {
   OrderDetail,
   OrderStatus,
   OrdersQueryParams,
+  OrderStats,
 } from "../models/orders.models";
 import { ApiHttpClient } from "../../core/http/http-client";
 
@@ -70,6 +71,28 @@ export class OrdersService {
     const queryParams = new HttpParams({ fromObject });
 
     return this.api.get<Order[]>("/admin/orders/filtered", {
+      params: queryParams,
+    });
+  }
+
+  getOrderStats(params: OrdersQueryParams): Observable<OrderStats> {
+    const fromObject: any = {
+      searchTerm: params.searchTerm,
+      status: params.status,
+      dateRange: params.dateRange,
+      preOrderOnly: params.preOrderOnly ?? false,
+      websiteOnly: params.websiteOnly ?? false,
+      manualOnly: params.manualOnly ?? false,
+    };
+
+    if (params.startDate) fromObject.startDate = params.startDate;
+    if (params.endDate) fromObject.endDate = params.endDate;
+    if (params.sourcePageId) fromObject.sourcePageId = params.sourcePageId;
+    if (params.socialMediaSourceId) fromObject.socialMediaSourceId = params.socialMediaSourceId;
+
+    const queryParams = new HttpParams({ fromObject });
+
+    return this.api.get<OrderStats>("/admin/orders/stats", {
       params: queryParams,
     });
   }

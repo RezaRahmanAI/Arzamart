@@ -215,8 +215,8 @@ public class OrderService : IOrderService
         _unitOfWork.Repository<Order>().Add(order);
         await _unitOfWork.Complete();
 
-        // 5. Update OrderNumber to be a simple ID-based string
-        order.OrderNumber = (270000 + order.Id).ToString(); 
+        // 5. Update OrderNumber to be a 4-digit string (e.g., 0001, 0002)
+        order.OrderNumber = order.Id.ToString("D4"); 
         _unitOfWork.Repository<Order>().Update(order);
         await _unitOfWork.Complete();
 
@@ -484,5 +484,24 @@ public class OrderService : IOrderService
         await _unitOfWork.Complete();
 
         return _mapper.Map<Order, OrderDto>(order);
+    }
+
+    public async Task<OrderStatsDto> GetOrderStatsAsync(string? searchTerm, string? status, string? dateRange, bool preOrderOnly = false, bool websiteOnly = false, bool manualOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null)
+    {
+        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
+        
+        var query = _unitOfWork.Repository<Order>().GetQueryWithSpec(spec);
+
+        var stats = await query.GroupBy(_ => 1)
+            .Select(g => new OrderStatsDto
+            {
+                TotalOrders = g.Count(),
+                Processing = g.Count(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Pending),
+                TotalRevenue = g.Sum(o => o.Total),
+                RefundRequests = g.Count(o => o.Status == OrderStatus.Refund)
+            })
+            .FirstOrDefaultAsync();
+
+        return stats ?? new OrderStatsDto();
     }
 }

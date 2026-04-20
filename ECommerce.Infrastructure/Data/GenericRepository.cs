@@ -71,6 +71,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         return _context.Set<T>().AsNoTracking().AsQueryable();
     }
+    
+    public IQueryable<T> GetQueryWithSpec(ISpecification<T> spec)
+    {
+        return ApplySpecification(spec);
+    }
 
     public void Add(T entity)
     {
