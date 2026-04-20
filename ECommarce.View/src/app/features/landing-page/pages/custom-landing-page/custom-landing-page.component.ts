@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass, isPlatformBrowser } from "@angular/common";
+import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe } from "@angular/common";
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -22,6 +22,8 @@ import { CustomerOrderApiService } from "../../../../core/services/customer-orde
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DestroyRef } from "@angular/core";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
+import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
+import { NotificationService } from "../../../../core/services/notification.service";
 
 interface LandingPageData {
   product: Product;
@@ -31,7 +33,7 @@ interface LandingPageData {
 @Component({
   selector: "app-custom-landing-page",
   standalone: true,
-  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, PriceDisplayComponent, AppIconComponent],
+  imports: [AsyncPipe, NgClass, NgIf, DecimalPipe, ReactiveFormsModule, RouterModule, PriceDisplayComponent, AppIconComponent],
   templateUrl: "./custom-landing-page.component.html",
   styleUrl: "./custom-landing-page.component.css"
 })
@@ -48,6 +50,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private readonly productService = inject(ProductService);
   private readonly customerOrderApi = inject(CustomerOrderApiService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly userPersistence = inject(UserPersistenceService);
+  private readonly notification = inject(NotificationService);
 
   brandName$ = this.siteSettingsService.getSettings().pipe(map(s => s.websiteName));
 
@@ -59,6 +63,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
   private timerInterval: any;
   selectedImage: string = "";
+  showAutofillPrompt = false;
 
   readonly orderForm = this.fb.nonNullable.group({
     fullName: ["", [Validators.required, Validators.minLength(2)]],
@@ -120,15 +125,64 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       .subscribe((customer: any) => {
         if (customer) {
           this.didAutofill = true;
+          
+          if (customer.city) {
+            this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
+            this.filteredAreas = [...this.areas];
+            this.citySearch = customer.city;
+            this.updateDeliveryMethodByCity(customer.city);
+          }
+
           this.orderForm.patchValue(
             {
               fullName: customer.name,
               address: customer.address,
+              city: customer.city || "Dhaka",
+              area: customer.area || ""
             },
             { emitEvent: false },
           );
+
+          if (customer.area) {
+            this.areaSearch = customer.area;
+          }
         }
       });
+
+    // Check for local saved details
+    if (this.userPersistence.hasSavedDetails()) {
+      this.showAutofillPrompt = true;
+    }
+  }
+
+  applyAutofill(): void {
+    const details = this.userPersistence.getUserDetails();
+    if (details) {
+      if (details.city) {
+        this.areas = BANGLADESH_LOCATIONS[details.city] || [];
+        this.filteredAreas = [...this.areas];
+        this.citySearch = details.city;
+        this.updateDeliveryMethodByCity(details.city);
+      }
+
+      this.orderForm.patchValue({
+        fullName: details.fullName,
+        phone: details.phone,
+        address: details.address,
+        city: details.city,
+        area: details.area
+      });
+
+      if (details.area) {
+        this.areaSearch = details.area;
+      }
+      this.showAutofillPrompt = false;
+      this.notification.success("Information filled successfully!");
+    }
+  }
+
+  dismissAutofill(): void {
+    this.showAutofillPrompt = false;
   }
 
   ngOnDestroy(): void {
@@ -291,6 +345,14 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       next: (order) => {
         this.isOrdering = false;
         if (order?.id) {
+          // Save user details for next time
+          this.userPersistence.saveUserDetails({
+            fullName: form.fullName,
+            phone: form.phone,
+            address: form.address,
+            city: form.city,
+            area: form.area
+          });
           void this.router.navigate(["/order-confirmation", order.id]);
         }
       },

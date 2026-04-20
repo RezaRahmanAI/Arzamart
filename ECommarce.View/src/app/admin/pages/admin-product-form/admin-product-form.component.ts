@@ -27,6 +27,8 @@ import { PriceDisplayComponent } from "../../../shared/components/price-display/
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { NotificationService } from "../../../core/services/notification.service";
+import { ProductService } from "../../../core/services/product.service";
+import { BannerService } from "../../../core/services/banner.service";
 
 interface MediaFormValue {
   id: string;
@@ -62,6 +64,8 @@ export class AdminProductFormComponent implements OnDestroy {
   private route = inject(ActivatedRoute);
   public imageUrlService = inject(ImageUrlService);
   private notification = inject(NotificationService);
+  private publicProductService = inject(ProductService);
+  private publicBannerService = inject(BannerService);
 
   // Mode detection
   isEditMode = false;
@@ -681,6 +685,7 @@ export class AdminProductFormComponent implements OnDestroy {
         next: (product) => {
           const action = this.isEditMode ? "updated" : "created";
           console.log(`Product ${action} successfully:`, product);
+          this.refreshAllData();
           this.notification.success(`Product ${action} successfully.`);
           void this.router.navigate(["/admin/products"]);
         },
@@ -1021,5 +1026,11 @@ export class AdminProductFormComponent implements OnDestroy {
 
   private generateId(prefix: string): string {
     return `${prefix}-${Math.random().toString(36).slice(2, 10)}`;
+  }
+
+  private refreshAllData(): void {
+    // Notify all services that data has changed to clear caches
+    this.publicProductService.refreshData();
+    this.publicBannerService.refresh();
   }
 }

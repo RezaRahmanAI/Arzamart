@@ -7,6 +7,9 @@ export interface VariantInventoryDto {
   sku: string;
   size: string;
   stockQuantity: number;
+  price?: number;
+  compareAtPrice?: number;
+  purchaseRate?: number;
 }
 
 export interface ProductInventoryDto {
@@ -16,6 +19,9 @@ export interface ProductInventoryDto {
   imageUrl: string;
   totalStock: number;
   stockQuantity: number;
+  price?: number;
+  compareAtPrice?: number;
+  purchaseRate?: number;
   variants: VariantInventoryDto[];
 }
 
@@ -30,11 +36,11 @@ export class InventoryService {
     return this.api.get<ProductInventoryDto[]>(this.baseUrl);
   }
 
-  updateStock(productId: number, quantity: number): Observable<any> {
-    return this.api.post(`${this.baseUrl}/product/${productId}`, { quantity });
+  updateStock(productId: number, data: { quantity: number; price?: number; compareAtPrice?: number; purchaseRate?: number }): Observable<any> {
+    return this.api.post(`${this.baseUrl}/product/${productId}`, data);
   }
 
-  updateVariantStock(variantId: number, quantity: number): Observable<any> {
-    return this.api.post(`${this.baseUrl}/${variantId}`, { quantity });
+  updateVariantStock(variantId: number, data: { quantity: number; price?: number; compareAtPrice?: number; purchaseRate?: number }): Observable<any> {
+    return this.api.post(`${this.baseUrl}/${variantId}`, data);
   }
 }

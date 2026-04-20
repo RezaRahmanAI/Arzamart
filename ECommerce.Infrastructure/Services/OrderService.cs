@@ -38,6 +38,41 @@ public class OrderService : IOrderService
         var products = await _unitOfWork.Repository<Product>().ListAsync(productSpec, track: true);
         var productDict = products.ToDictionary(p => p.Id);
 
+        // 2. Pre-scan for stock availability to determine if this should be an auto Pre-Order
+        bool autoPreOrder = false;
+        if (!orderDto.IsPreOrder)
+        {
+            foreach (var itemDto in orderDto.Items)
+            {
+                if (productDict.TryGetValue(itemDto.ProductId, out var product))
+                {
+                    int multiplier = product.IsBundle ? product.BundleQuantity : 1;
+                    int needed = itemDto.Quantity * multiplier;
+
+                    if (product.StockQuantity < needed)
+                    {
+                        autoPreOrder = true;
+                        break;
+                    }
+
+                    if (!string.IsNullOrEmpty(itemDto.Size))
+                    {
+                        var normalizedSize = itemDto.Size.Trim().ToLower();
+                        var variant = product.Variants.FirstOrDefault(v => 
+                            v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                        
+                        if (variant != null && variant.StockQuantity < needed)
+                        {
+                            autoPreOrder = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        bool finalIsPreOrder = orderDto.IsPreOrder || autoPreOrder;
+
         foreach (var itemDto in orderDto.Items)
         {
             if (!productDict.TryGetValue(itemDto.ProductId, out var product))
@@ -50,7 +85,7 @@ public class OrderService : IOrderService
             int totalDeduction = itemDto.Quantity * multiplier;
 
             // 1 & 2. Deduct from stock ONLY if NOT a pre-order
-            if (!orderDto.IsPreOrder)
+            if (!finalIsPreOrder)
             {
                 // 1. Deduct from specific variant if size/variant is selected
                 if (!string.IsNullOrEmpty(itemDto.Size))
@@ -61,20 +96,22 @@ public class OrderService : IOrderService
                     
                     if (variant != null)
                     {
-                        if (variant.StockQuantity < totalDeduction)
-                            throw new InvalidOperationException($"Insufficient stock for {product.Name} ({itemDto.Size}). Needed: {totalDeduction}, Available: {variant.StockQuantity}");
-                        
-                        variant.StockQuantity -= totalDeduction;
-                        _unitOfWork.Repository<ProductVariant>().Update(variant);
+                        // We already pre-scanned, so this shouldn't fail if logic is correct, 
+                        // but keeping a safety check that won't throw because we auto-pre-ordered
+                        if (variant.StockQuantity >= totalDeduction)
+                        {
+                            variant.StockQuantity -= totalDeduction;
+                            _unitOfWork.Repository<ProductVariant>().Update(variant);
+                        }
                     }
                 }
 
                 // 2. Deduct from main product stock
-                if (product.StockQuantity < totalDeduction)
-                    throw new InvalidOperationException($"Insufficient stock for {product.Name}. Needed: {totalDeduction}, Available: {product.StockQuantity}");
-
-                product.StockQuantity -= totalDeduction;
-                _unitOfWork.Repository<Product>().Update(product);
+                if (product.StockQuantity >= totalDeduction)
+                {
+                    product.StockQuantity -= totalDeduction;
+                    _unitOfWork.Repository<Product>().Update(product);
+                }
             }
 
             // Price Fallback logic (Keep as is)
@@ -166,8 +203,8 @@ public class OrderService : IOrderService
             Tax = 0,
             ShippingCost = shippingCost,
             DeliveryMethodId = orderDto.DeliveryMethodId,
-            Status = orderDto.IsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending,
-            IsPreOrder = orderDto.IsPreOrder,
+            Status = finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending,
+            IsPreOrder = finalIsPreOrder,
             SourcePageId = orderDto.SourcePageId,
             SocialMediaSourceId = orderDto.SocialMediaSourceId,
             CreatedAt = DateTime.UtcNow
@@ -410,9 +447,9 @@ public class OrderService : IOrderService
         }
     }
 
-    public async Task<(IReadOnlyList<OrderDto> Items, int Total)> GetOrdersForAdminAsync(string? searchTerm, string? status, string? dateRange, int page, int pageSize, bool preOrderOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null)
+    public async Task<(IReadOnlyList<OrderDto> Items, int Total)> GetOrdersForAdminAsync(string? searchTerm, string? status, string? dateRange, int page, int pageSize, bool preOrderOnly = false, bool websiteOnly = false, bool manualOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null)
     {
-        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange, preOrderOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
+        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
         var total = await _unitOfWork.Repository<Order>().CountAsync(spec);
         
         spec.ApplyPaging(pageSize * (page - 1), pageSize);

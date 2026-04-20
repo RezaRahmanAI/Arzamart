@@ -394,12 +394,18 @@ public class AdminProductsController : ControllerBase
             ImageUrl = p.ImageUrl ?? string.Empty,
             TotalStock = p.StockQuantity,
             StockQuantity = p.StockQuantity,
+            Price = p.Variants.FirstOrDefault()?.Price,
+            CompareAtPrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
+            PurchaseRate = p.Variants.FirstOrDefault()?.PurchaseRate,
             Variants = p.Variants.Select(v => new VariantInventoryDto
             {
                 VariantId = v.Id,
                 Sku = v.Sku ?? string.Empty,
                 Size = v.Size ?? string.Empty,
-                StockQuantity = v.StockQuantity
+                StockQuantity = v.StockQuantity,
+                Price = v.Price,
+                CompareAtPrice = v.CompareAtPrice,
+                PurchaseRate = v.PurchaseRate
             }).ToList()
         }).ToList();
 
@@ -407,7 +413,7 @@ public class AdminProductsController : ControllerBase
     }
 
     [HttpPost("inventory/{variantId}")]
-    public async Task<ActionResult> UpdateStock(int variantId, UpdateStockDto dto)
+    public async Task<ActionResult> UpdateStock(int variantId, UpdateInventoryDto dto)
     {
         var variant = await _unitOfWork.Repository<ProductVariant>().GetByIdAsync(variantId);
         if (variant == null) return NotFound(new { message = "Variant not found" });
@@ -415,8 +421,12 @@ public class AdminProductsController : ControllerBase
         var product = await _unitOfWork.Repository<Product>().GetByIdAsync(variant.ProductId);
         if (product == null) return NotFound(new { message = "Parent product not found" });
         
-        // Update variant stock
+        // Update variant stock and prices
         variant.StockQuantity = dto.Quantity;
+        if (dto.Price.HasValue) variant.Price = dto.Price;
+        if (dto.CompareAtPrice.HasValue) variant.CompareAtPrice = dto.CompareAtPrice;
+        if (dto.PurchaseRate.HasValue) variant.PurchaseRate = dto.PurchaseRate;
+
         _unitOfWork.Repository<ProductVariant>().Update(variant);
 
         // Recalculate total stock for product
@@ -449,12 +459,25 @@ public class AdminProductsController : ControllerBase
     }
 
     [HttpPost("inventory/product/{productId}")]
-    public async Task<ActionResult> UpdateProductStock(int productId, UpdateStockDto dto)
+    public async Task<ActionResult> UpdateProductStock(int productId, UpdateInventoryDto dto)
     {
         var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
         if (product == null) return NotFound(new { message = "Product not found" });
 
         product.StockQuantity = dto.Quantity;
+        
+        // If updating main product price (usually for products without variants or to set a default)
+        // We'll update the first variant's price as well if it exists
+        var spec = new BaseSpecification<ProductVariant>(v => v.ProductId == productId);
+        var variants = await _unitOfWork.Repository<ProductVariant>().ListAsync(spec);
+        foreach (var v in variants)
+        {
+            if (dto.Price.HasValue) v.Price = dto.Price;
+            if (dto.CompareAtPrice.HasValue) v.CompareAtPrice = dto.CompareAtPrice;
+            if (dto.PurchaseRate.HasValue) v.PurchaseRate = dto.PurchaseRate;
+            _unitOfWork.Repository<ProductVariant>().Update(v);
+        }
+
         _unitOfWork.Repository<Product>().Update(product);
 
         if (await _unitOfWork.Complete() > 0)

@@ -1,0 +1,140 @@
+<div class="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm print:p-0 print:bg-white print:backdrop-blur-none" (click)="close.emit()">
+  <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[1.5rem] w-full max-w-4xl max-h-[95vh] overflow-hidden shadow-2xl flex flex-col print:border-none print:shadow-none print:rounded-none print:max-h-none print:w-auto" (click)="$event.stopPropagation()">
+    <!-- Modal Header (Hidden on Print) -->
+    <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-white dark:bg-surface-dark shrink-0 print:hidden">
+      <div class="flex items-center gap-3">
+        <app-icon name="FileText" size="20" className="text-primary"></app-icon>
+        <h3 class="text-base font-bold text-primary dark:text-white uppercase tracking-wider">Order Details</h3>
+      </div>
+      <div class="flex items-center gap-2">
+        <button (click)="printInvoice()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all shadow-sm">
+          <app-icon name="Printer" size="14"></app-icon>
+          <span>Print</span>
+        </button>
+        <button (click)="close.emit()" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+          <app-icon name="X" size="20"></app-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Invoice Content -->
+    <div class="flex-1 overflow-y-auto p-8 print:p-0 bg-gray-50 dark:bg-gray-900 print:bg-white custom-scrollbar">
+      <div id="invoice-paper" class="bg-white p-10 shadow-lg mx-auto print:shadow-none print:p-0 max-w-[800px] text-gray-900 border border-gray-100 print:border-none">
+        
+        <!-- Header Section -->
+        <div class="flex justify-between items-start mb-8 border-b pb-8">
+          <div class="flex flex-col gap-2">
+            <img *ngIf="logoUrl" [src]="logoUrl" class="h-12 w-auto object-contain mb-2" alt="Company Logo">
+            <div class="text-xs font-bold text-gray-800 uppercase tracking-tighter">
+                <p>Phone: {{ settings?.contactPhone }}</p>
+                <p>Web: {{ settings?.websiteName }}</p>
+            </div>
+          </div>
+          
+          <div class="flex flex-col items-end">
+            <img [src]="getBarcodeUrl(order.orderNumber)" class="h-14 mb-1" alt="Barcode">
+            <span class="text-xs font-black tracking-[0.3em] mr-2">{{ order.orderNumber }}</span>
+          </div>
+        </div>
+
+        <!-- Customer & Order Info Grid -->
+        <div class="border border-gray-400 mb-8 overflow-hidden rounded-sm">
+            <div class="grid grid-cols-12 divide-x divide-gray-400">
+                <div class="col-span-12 p-1 bg-gray-50 border-b border-gray-400 text-center font-black text-[10px] uppercase tracking-[0.2em]">Customer Info</div>
+                
+                <div class="col-span-5 p-4 space-y-2 text-[11px] font-bold">
+                    <p class="flex justify-between"><span class="text-gray-500">Order ID:</span> <span class="text-gray-900">{{ order.orderNumber }}</span></p>
+                    <p class="flex justify-between"><span class="text-gray-500">Order Date:</span> <span class="text-gray-900">{{ order.createdAt | date:'dd/MM/yyyy' }}</span></p>
+                </div>
+                
+                <div class="col-span-7 p-4 space-y-2 text-[11px] font-bold">
+                    <p><span class="text-gray-500">Name:</span> {{ order.customerName }}</p>
+                    <p><span class="text-gray-500">Address:</span> {{ order.shippingAddress }} {{ order.area ? ', ' + order.area : '' }} {{ order.city ? ', ' + order.city : '' }}</p>
+                    <p><span class="text-gray-500">Phone:</span> {{ order.customerPhone }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <table class="w-full text-left border border-gray-400 border-collapse mb-8 text-[11px]">
+          <thead class="bg-gray-50">
+            <tr class="divide-x divide-gray-400 border-b border-gray-400">
+              <th class="p-2 w-12 text-center uppercase tracking-wider font-black">Product</th>
+              <th class="p-2 uppercase tracking-wider font-black">Item Name</th>
+              <th class="p-2 w-16 text-center uppercase tracking-wider font-black">Size</th>
+              <th class="p-2 w-20 text-center uppercase tracking-wider font-black">Unit Cost</th>
+              <th class="p-2 w-16 text-center uppercase tracking-wider font-black">Discount</th>
+              <th class="p-2 w-12 text-center uppercase tracking-wider font-black">Qty</th>
+              <th class="p-2 w-20 text-right uppercase tracking-wider font-black">Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-400">
+            <tr *ngFor="let item of order.items" class="divide-x divide-gray-400 font-bold">
+              <td class="p-2 text-center">
+                <img *ngIf="item.imageUrl" [src]="imageUrlService.getImageUrl(item.imageUrl)" class="h-10 w-10 object-cover mx-auto rounded border" alt="">
+              </td>
+              <td class="p-2">{{ item.productName }}</td>
+              <td class="p-2 text-center uppercase">{{ item.size || '-' }}</td>
+              <td class="p-2 text-center">{{ item.unitPrice }}</td>
+              <td class="p-2 text-center">0</td>
+              <td class="p-2 text-center">{{ item.quantity }}</td>
+              <td class="p-2 text-right">{{ item.totalPrice }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Totals & Summary -->
+        <div class="flex justify-between items-start mb-8 gap-8">
+            <div class="flex flex-col items-center">
+                <img [src]="getBarcodeUrl(order.orderNumber)" class="h-12 mb-1" alt="Barcode">
+                <span class="text-[10px] font-black tracking-widest">{{ order.orderNumber }}</span>
+                <p class="text-[10px] font-bold text-gray-500 mt-2">Delivery Partner: NA</p>
+                <p class="text-[10px] font-bold text-gray-500 mt-1">Page Name: {{ order.sourcePageName || 'Website' }}</p>
+                <p class="text-[10px] font-bold text-gray-400 mt-2">Print: {{ currentDate | date:'dd/MM/yyyy, h:mm:ss a' }}</p>
+            </div>
+
+            <div class="w-72">
+                <table class="w-full text-left border border-gray-400 border-collapse text-[11px] font-bold">
+                    <tr class="border-b border-gray-400">
+                        <td class="p-2 bg-gray-50 uppercase w-32 tracking-wider">Total Qty:</td>
+                        <td class="p-2 text-right text-red-500">{{ order.itemsCount }}</td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="p-2 bg-gray-50 uppercase tracking-wider">Sub Total:</td>
+                        <td class="p-2 text-right">{{ order.subTotal }}</td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="p-2 bg-gray-50 uppercase tracking-wider">Delivery Charge:</td>
+                        <td class="p-2 text-right text-pink-500">{{ order.shippingCost }}</td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="p-2 bg-gray-50 uppercase tracking-wider">Discount:</td>
+                        <td class="p-2 text-right text-blue-500">0</td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="p-2 bg-gray-50 uppercase tracking-wider">Total:</td>
+                        <td class="p-2 text-right">{{ order.total }}</td>
+                    </tr>
+                    <tr class="border-b border-gray-400">
+                        <td class="p-2 bg-gray-50 uppercase tracking-wider">Paid:</td>
+                        <td class="p-2 text-right">0</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 bg-gray-50 uppercase tracking-wider">Due:</td>
+                        <td class="p-2 text-right">{{ order.total }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="border border-gray-400 p-3 text-center bg-gray-50">
+            <p class="text-xs font-bold text-gray-700 leading-relaxed">
+                প্রোডাক্টটি ভালো লাগলে অবশ্যই আমাদের ফেসবুক পেজে লাইক এবং রিভিউ দিবেন। আপনাদের রিভিউ আমাদের কাজ করতে আরো উৎসাহিত করে।
+            </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

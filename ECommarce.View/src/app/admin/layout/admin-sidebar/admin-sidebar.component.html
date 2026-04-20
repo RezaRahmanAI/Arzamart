@@ -78,7 +78,98 @@
               <div *ngIf="rla.isActive" class="absolute left-0 w-1 h-5 bg-accent rounded-r-full shadow-[0_0_12px_rgba(var(--color-accent),0.5)]"></div>
             </a>
 
-            <!-- Products Multi-level -->
+
+            <!-- Orders Dropdown -->
+            <div class="space-y-1">
+              <button
+                type="button"
+                class="flex items-center justify-between gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group w-full text-left relative"
+                (click)="toggleOrdersMenu()"
+                [ngClass]="isOrdersMenuOpen ? 'text-white bg-white/5 ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+              >
+                <div class="flex items-center gap-3.5">
+                  <app-icon name="PlusCircle" size="20" className="group-hover:scale-110 transition-transform duration-300" [className]="isOrdersMenuOpen ? 'text-accent' : ''"></app-icon>
+                  <span class="text-sm font-display font-semibold">Orders</span>
+                </div>
+                <app-icon
+                  [name]="isOrdersMenuOpen ? 'ChevronUp' : 'ChevronDown'"
+                  size="16"
+                  className="text-white/20 group-hover:text-white transition-colors"
+                ></app-icon>
+              </button>
+              
+              <div class="overflow-hidden transition-all duration-500" [style.max-height]="isOrdersMenuOpen ? '400px' : '0px'">
+                <div class="pl-12 pr-4 py-2 space-y-1 border-l-[1.5px] border-white/5 ml-6.5">
+                  <a
+                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    routerLink="/admin/orders/pre-order"
+                    routerLinkActive="nav-sub-active text-accent"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                  >
+                    Pre-Order Create
+                  </a>
+                  <a
+                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    routerLink="/admin/orders/create"
+                    routerLinkActive="nav-sub-active text-accent"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                  >
+                    Manual Order Create
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order View Dropdown -->
+            <div class="space-y-1">
+              <button
+                type="button"
+                class="flex items-center justify-between gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group w-full text-left relative"
+                (click)="toggleOrderViewMenu()"
+                [ngClass]="isOrderViewMenuOpen ? 'text-white bg-white/5 ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+              >
+                <div class="flex items-center gap-3.5">
+                  <app-icon name="Eye" size="20" className="group-hover:scale-110 transition-transform duration-300" [className]="isOrderViewMenuOpen ? 'text-accent' : ''"></app-icon>
+                  <span class="text-sm font-display font-semibold">Order View</span>
+                </div>
+                <app-icon
+                  [name]="isOrderViewMenuOpen ? 'ChevronUp' : 'ChevronDown'"
+                  size="16"
+                  className="text-white/20 group-hover:text-white transition-colors"
+                ></app-icon>
+              </button>
+              
+              <div class="overflow-hidden transition-all duration-500" [style.max-height]="isOrderViewMenuOpen ? '400px' : '0px'">
+                <div class="pl-12 pr-4 py-2 space-y-1 border-l-[1.5px] border-white/5 ml-6.5">
+                  <a
+                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    routerLink="/admin/orders"
+                    routerLinkActive="nav-sub-active text-accent"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                  >
+                    All Orders
+                  </a>
+                  <a
+                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    routerLink="/admin/orders/pre-orders"
+                    routerLinkActive="nav-sub-active text-accent"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                  >
+                    Pre Orders
+                  </a>
+                  <a
+                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    routerLink="/admin/orders/website"
+                    routerLinkActive="nav-sub-active text-accent"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                  >
+                    Website Orders
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Inventory Dropdown -->
             <div class="space-y-1">
               <button
                 type="button"
@@ -115,11 +206,17 @@
                   >
                     Sub Collections
                   </a>
+                  <a
+                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    routerLink="/admin/inventory"
+                    routerLinkActive="nav-sub-active text-accent"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                  >
+                    Inventory Management
+                  </a>
                 </div>
               </div>
             </div>
-
-
 
             <a
               *ngFor="let item of navItems"

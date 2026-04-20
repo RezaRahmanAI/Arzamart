@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { HttpParams } from "@angular/common/http";
+import { HttpParams, HttpHeaders } from "@angular/common/http";
 import { Observable, map } from "rxjs";
 
 import {
@@ -22,6 +22,7 @@ export class OrdersService {
 
   getOrders(
     params: OrdersQueryParams,
+    forceRefresh = false
   ): Observable<{ items: Order[]; total: number }> {
     const fromObject: any = {
       searchTerm: params.searchTerm,
@@ -30,15 +31,24 @@ export class OrdersService {
       page: params.page,
       pageSize: params.pageSize,
       preOrderOnly: params.preOrderOnly ?? false,
+      websiteOnly: params.websiteOnly ?? false,
+      manualOnly: params.manualOnly ?? false,
     };
 
     if (params.startDate) fromObject.startDate = params.startDate;
     if (params.endDate) fromObject.endDate = params.endDate;
+    if (params.sourcePageId) fromObject.sourcePageId = params.sourcePageId;
+    if (params.socialMediaSourceId) fromObject.socialMediaSourceId = params.socialMediaSourceId;
 
     const queryParams = new HttpParams({ fromObject });
+    let headers = new HttpHeaders();
+    if (forceRefresh) {
+      headers = headers.set("X-Refresh", "true");
+    }
 
     return this.api.get<{ items: Order[]; total: number }>("/admin/orders", {
       params: queryParams,
+      headers: headers
     });
   }
 
@@ -48,10 +58,14 @@ export class OrdersService {
       status: params.status,
       dateRange: params.dateRange,
       preOrderOnly: params.preOrderOnly ?? false,
+      websiteOnly: params.websiteOnly ?? false,
+      manualOnly: params.manualOnly ?? false,
     };
 
     if (params.startDate) fromObject.startDate = params.startDate;
     if (params.endDate) fromObject.endDate = params.endDate;
+    if (params.sourcePageId) fromObject.sourcePageId = params.sourcePageId;
+    if (params.socialMediaSourceId) fromObject.socialMediaSourceId = params.socialMediaSourceId;
 
     const queryParams = new HttpParams({ fromObject });
 

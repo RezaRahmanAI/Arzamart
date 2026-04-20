@@ -48,6 +48,23 @@
         >
           <h2 class="text-lg font-semibold text-primary">Place your order</h2>
 
+          <!-- Saved Info Prompt -->
+          @if (showAutofillPrompt) {
+            <div class="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-1">
+              <div class="flex items-center gap-3">
+                <app-icon name="User" size="18" className="text-gray-400"></app-icon>
+                <div>
+                  <p class="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Use saved info?</p>
+                  <p class="text-[9px] text-gray-500">Fill form with your last order details.</p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button type="button" (click)="dismissAutofill()" class="px-2 py-1 text-[9px] font-bold text-gray-400 hover:text-gray-600 uppercase">No</button>
+                <button type="button" (click)="applyAutofill()" class="px-3 py-1 bg-black text-white text-[9px] font-bold uppercase rounded-md shadow-sm active:scale-95 transition-all">Yes</button>
+              </div>
+            </div>
+          }
+
           <div class="field-grid">
             <label>
               <span>Full name</span>
@@ -55,6 +72,7 @@
                 type="text"
                 formControlName="fullName"
                 placeholder="Enter your name"
+                autocomplete="name"
               />
             </label>
             <label>
@@ -63,6 +81,7 @@
                 type="tel"
                 formControlName="phone"
                 placeholder="e.g. +1 555 123 4567"
+                autocomplete="tel"
               />
             </label>
           </div>
@@ -180,6 +199,7 @@
               rows="2"
               formControlName="address"
               placeholder="House, Road, Block etc."
+              autocomplete="street-address"
             ></textarea>
           </label>
 

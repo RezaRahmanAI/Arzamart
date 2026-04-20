@@ -272,7 +272,7 @@
 
                       <div
                         *ngIf="openSizeDropdownIndex === sizeIndex"
-                        class="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                        class="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-border-light dark:border-border-dark bg-white dark:bg-[#1e1e1e] py-1 text-base shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                       >
                         <div
                           *ngFor="let sz of allAvailableSizes"
@@ -514,7 +514,7 @@
               or drag and drop
             </p>
             <p class="mt-1 text-xs text-text-secondary-light">
-              Recommended: 1200x1600px (3:4 Ratio). SVG, PNG, JPG or GIF supported.
+              Recommended: <span class="text-primary font-bold">1200x1600px</span> (3:4 Portrait Ratio). <br>Supported: SVG, PNG, JPG or GIF. Max 5MB.
             </p>
           </div>
           <input

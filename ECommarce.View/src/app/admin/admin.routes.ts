@@ -101,6 +101,14 @@ export const ADMIN_ROUTES: Routes = [
         data: { title: "Pre-order Management", preOrderOnly: true },
       },
       {
+        path: "orders/website",
+        loadComponent: () =>
+          import("./pages/admin-orders/admin-orders.component").then(
+            (m) => m.AdminOrdersComponent,
+          ),
+        data: { title: "Website Orders", websiteOnly: true },
+      },
+      {
         path: "orders/:id",
         loadComponent: () =>
           import("./pages/admin-order-details/admin-order-details.component").then(

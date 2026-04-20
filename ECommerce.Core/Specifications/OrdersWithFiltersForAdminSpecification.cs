@@ -6,8 +6,8 @@ namespace ECommerce.Core.Specifications;
 
 public class OrdersWithFiltersForAdminSpecification : BaseSpecification<Order>
 {
-    public OrdersWithFiltersForAdminSpecification(string? searchTerm, string? status, string? dateRange, bool preOrderOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null) 
-        : base(GenerateCriteria(searchTerm, status, dateRange, preOrderOnly, startDate, endDate, sourcePageId, socialMediaSourceId))
+    public OrdersWithFiltersForAdminSpecification(string? searchTerm, string? status, string? dateRange, bool preOrderOnly = false, bool websiteOnly = false, bool manualOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null) 
+        : base(GenerateCriteria(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId))
     {
         AddInclude(o => o.Items);
         AddInclude(o => o.Logs);
@@ -17,7 +17,7 @@ public class OrdersWithFiltersForAdminSpecification : BaseSpecification<Order>
         AddOrderByDescending(o => o.CreatedAt);
     }
 
-    private static Expression<Func<Order, bool>> GenerateCriteria(string? searchTerm, string? status, string? dateRange, bool preOrderOnly, DateTime? startDate, DateTime? endDate, int? sourcePageId, int? socialMediaSourceId)
+    private static Expression<Func<Order, bool>> GenerateCriteria(string? searchTerm, string? status, string? dateRange, bool preOrderOnly, bool websiteOnly, bool manualOnly, DateTime? startDate, DateTime? endDate, int? sourcePageId, int? socialMediaSourceId)
     {
         OrderStatus? statusEnum = null;
         if (!string.IsNullOrEmpty(status) && status != "All")
@@ -27,7 +27,9 @@ public class OrdersWithFiltersForAdminSpecification : BaseSpecification<Order>
         }
 
         return o => 
-            (preOrderOnly ? o.IsPreOrder : !o.IsPreOrder) &&
+            (preOrderOnly ? o.IsPreOrder : (status == "All" || !string.IsNullOrEmpty(status) ? true : !o.IsPreOrder)) &&
+            (!websiteOnly || (!o.SourcePageId.HasValue && !o.SocialMediaSourceId.HasValue)) &&
+            (!manualOnly || (o.SourcePageId.HasValue || o.SocialMediaSourceId.HasValue)) &&
             (string.IsNullOrEmpty(searchTerm) || o.OrderNumber.Contains(searchTerm) || o.CustomerName.Contains(searchTerm) || o.CustomerPhone.Contains(searchTerm)) &&
             (!statusEnum.HasValue || o.Status == statusEnum.Value) &&
             (!sourcePageId.HasValue || o.SourcePageId == sourcePageId.Value) &&

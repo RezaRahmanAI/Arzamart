@@ -1,1 +1,345 @@
-<div>Checkout</div>
+<div class="min-h-screen bg-gray-50 dark:bg-background-dark py-12">
+  <div class="site-container">
+    @if (vm$ | async; as vm) {
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <!-- Main Content -->
+        <div class="lg:col-span-7 xl:col-span-8 space-y-8">
+          <div class="flex items-center gap-4 mb-2">
+            <a routerLink="/cart" class="w-10 h-10 rounded-full bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 flex items-center justify-center text-gray-400 hover:text-primary transition-colors">
+              <app-icon name="ChevronLeft" size="20"></app-icon>
+            </a>
+            <h1 class="text-3xl font-bold text-primary dark:text-white tracking-tight">Checkout</h1>
+          </div>
+
+          <!-- Saved Info Prompt -->
+          @if (showAutofillPrompt) {
+            <div class="p-6 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
+              <div class="flex items-center gap-4 text-center sm:text-left">
+                <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                  <app-icon name="User" size="24"></app-icon>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-primary dark:text-white uppercase tracking-wider">Welcome back!</h3>
+                  <p class="text-xs text-gray-500 font-medium">We found your information from a previous order. Would you like to use it?</p>
+                </div>
+              </div>
+              <div class="flex gap-3 w-full sm:w-auto">
+                <button (click)="dismissAutofill()" class="flex-1 sm:flex-none px-6 py-2.5 text-xs font-bold text-gray-400 hover:text-gray-600 uppercase tracking-widest transition-colors">No, thanks</button>
+                <button (click)="applyAutofill()" class="flex-1 sm:flex-none px-8 py-2.5 bg-primary text-white text-xs font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">Yes, apply</button>
+              </div>
+            </div>
+          }
+
+          <form [formGroup]="checkoutForm" class="space-y-8">
+            <!-- Contact Information -->
+            <section class="bg-white dark:bg-surface-dark p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm space-y-6">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center">
+                  <app-icon name="User" size="16"></app-icon>
+                </div>
+                <h2 class="text-xl font-bold text-primary dark:text-white tracking-tight">Contact Information</h2>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Full Name</label>
+                  <div class="relative group">
+                    <app-icon name="User" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></app-icon>
+                    <input
+                      formControlName="fullName"
+                      type="text"
+                      placeholder="e.g. Rizve Rahman"
+                      autocomplete="name"
+                      class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Phone Number</label>
+                  <div class="relative group">
+                    <app-icon name="Phone" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></app-icon>
+                    <input
+                      formControlName="phone"
+                      type="tel"
+                      placeholder="017XXXXXXXX"
+                      autocomplete="tel"
+                      class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Shipping Address -->
+            <section class="bg-white dark:bg-surface-dark p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm space-y-6">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center">
+                  <app-icon name="MapPin" size="16"></app-icon>
+                </div>
+                <h2 class="text-xl font-bold text-primary dark:text-white tracking-tight">Shipping Address</h2>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- City Selection -->
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">City / District</label>
+                  <div class="relative" (click)="$event.stopPropagation()">
+                    <button
+                      type="button"
+                      (click)="toggleCityDropdown()"
+                      class="w-full flex items-center justify-between pl-5 pr-4 py-3.5 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium hover:bg-gray-100 transition-all outline-none"
+                    >
+                      <span [class.text-gray-400]="!checkoutForm.get('city')?.value">
+                        {{ checkoutForm.get('city')?.value || 'Select City' }}
+                      </span>
+                      <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="text-gray-400"></app-icon>
+                    </button>
+
+                    @if (isCityDropdownOpen) {
+                      <div class="absolute z-50 left-0 right-0 mt-2 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                        <div class="p-3 border-b border-gray-100 dark:border-gray-800">
+                          <input
+                            type="text"
+                            placeholder="Search cities..."
+                            [value]="citySearch"
+                            (input)="filterCities($event)"
+                            class="w-full px-4 py-2 bg-gray-50 dark:bg-background-dark border-none rounded-xl text-xs outline-none"
+                            autofocus
+                          />
+                        </div>
+                        <ul class="max-h-60 overflow-y-auto py-2 custom-scrollbar">
+                          @for (city of filteredCities; track city) {
+                            <li>
+                              <button
+                                type="button"
+                                (click)="selectCity(city)"
+                                class="w-full px-5 py-2.5 text-left text-xs font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                [class.text-primary]="checkoutForm.get('city')?.value === city"
+                              >
+                                {{ city }}
+                              </button>
+                            </li>
+                          }
+                        </ul>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Area Selection -->
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Area / Thana</label>
+                  <div class="relative" (click)="$event.stopPropagation()">
+                    <button
+                      type="button"
+                      (click)="toggleAreaDropdown()"
+                      [disabled]="!checkoutForm.get('city')?.value"
+                      class="w-full flex items-center justify-between pl-5 pr-4 py-3.5 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all outline-none"
+                    >
+                      <span [class.text-gray-400]="!checkoutForm.get('area')?.value">
+                        {{ checkoutForm.get('area')?.value || 'Select Area' }}
+                      </span>
+                      <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="text-gray-400"></app-icon>
+                    </button>
+
+                    @if (isAreaDropdownOpen) {
+                      <div class="absolute z-50 left-0 right-0 mt-2 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                        <div class="p-3 border-b border-gray-100 dark:border-gray-800">
+                          <input
+                            type="text"
+                            placeholder="Search areas..."
+                            [value]="areaSearch"
+                            (input)="filterAreas($event)"
+                            class="w-full px-4 py-2 bg-gray-50 dark:bg-background-dark border-none rounded-xl text-xs outline-none"
+                            autofocus
+                          />
+                        </div>
+                        <ul class="max-h-60 overflow-y-auto py-2 custom-scrollbar">
+                          @for (area of filteredAreas; track area) {
+                            <li>
+                              <button
+                                type="button"
+                                (click)="selectArea(area)"
+                                class="w-full px-5 py-2.5 text-left text-xs font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                [class.text-primary]="checkoutForm.get('area')?.value === area"
+                              >
+                                {{ area }}
+                              </button>
+                            </li>
+                          }
+                        </ul>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Detailed Address -->
+                <div class="md:col-span-2 space-y-2">
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Detailed Address</label>
+                  <div class="relative group">
+                    <app-icon name="Home" size="16" className="absolute left-4 top-5 text-gray-400 group-focus-within:text-primary transition-colors"></app-icon>
+                    <textarea
+                      formControlName="address"
+                      rows="3"
+                      placeholder="House #12, Road #4, Block B..."
+                      autocomplete="street-address"
+                      class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none resize-none"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Delivery Method -->
+            <section class="bg-white dark:bg-surface-dark p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm space-y-6">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center">
+                  <app-icon name="Truck" size="16"></app-icon>
+                </div>
+                <h2 class="text-xl font-bold text-primary dark:text-white tracking-tight">Delivery Method</h2>
+              </div>
+
+              <div class="grid grid-cols-1 gap-4">
+                @for (method of vm.deliveryMethods; track method.id) {
+                  <div 
+                    class="relative flex items-center justify-between p-5 rounded-2xl border-2 cursor-pointer transition-all group"
+                    [ngClass]="{
+                      'border-primary': checkoutForm.get('deliveryMethodId')?.value === method.id,
+                      'bg-primary/5': checkoutForm.get('deliveryMethodId')?.value === method.id,
+                      'border-gray-100': checkoutForm.get('deliveryMethodId')?.value !== method.id,
+                      'dark:border-gray-800': checkoutForm.get('deliveryMethodId')?.value !== method.id,
+                      'hover:border-gray-200': checkoutForm.get('deliveryMethodId')?.value !== method.id
+                    }"
+                  >
+                    <input
+                      type="radio"
+                      formControlName="deliveryMethodId"
+                      [value]="method.id"
+                      [id]="'method-' + method.id"
+                      class="hidden"
+                    />
+                    <label [for]="'method-' + method.id" class="absolute inset-0 z-10 cursor-pointer"></label>
+                    
+                    <div class="flex items-center gap-4">
+                      <div class="w-10 h-10 rounded-xl bg-white dark:bg-gray-800 flex items-center justify-center text-primary shadow-sm">
+                        <app-icon [name]="method.name.toLowerCase().includes('inside') ? 'Building2' : 'Truck'" size="20"></app-icon>
+                      </div>
+                      <div>
+                        <p class="text-sm font-bold text-primary dark:text-white">{{ method.name }}</p>
+                        <p class="text-xs text-gray-500">{{ method.estimatedDays }} estimated delivery</p>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-sm font-black text-primary dark:text-white">
+                        {{ method.cost === 0 ? 'FREE' : (method.cost | number:'1.0-0') + ' ৳' }}
+                      </p>
+                    </div>
+                    
+                    @if (checkoutForm.get('deliveryMethodId')?.value === method.id) {
+                      <div class="absolute -top-2 -right-2 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center shadow-lg animate-in zoom-in duration-300">
+                        <app-icon name="Check" size="14"></app-icon>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </section>
+          </form>
+        </div>
+
+        <!-- Sidebar Summary -->
+        <div class="lg:col-span-5 xl:col-span-4">
+          <div class="sticky top-24 space-y-6">
+            <div class="bg-white dark:bg-surface-dark p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-xl overflow-hidden relative">
+              <div class="absolute top-0 left-0 w-full h-2 bg-primary"></div>
+              
+              <h2 class="text-xl font-bold text-primary dark:text-white tracking-tight mb-6">Order Summary</h2>
+
+              <!-- Items List -->
+              <div class="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar mb-8">
+                @for (item of vm.cartItems; track trackCartItem($index, item)) {
+                  <div class="flex gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 overflow-hidden shrink-0">
+                      <img [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-xs font-bold text-primary dark:text-white truncate">{{ item.name }}</p>
+                      <p class="text-[10px] text-gray-500 font-medium">Qty: {{ item.quantity }} • Size: {{ item.size }}</p>
+                      <app-price-display [amount]="item.price * item.quantity" size="sm" className="mt-1 font-bold text-primary"></app-price-display>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <!-- Price Breakdown -->
+              <div class="space-y-3 pt-6 border-t border-gray-50 dark:border-gray-800">
+                <div class="flex justify-between text-xs font-medium text-gray-500">
+                  <span>Subtotal</span>
+                  <app-price-display [amount]="vm.summary.subtotal"></app-price-display>
+                </div>
+                <div class="flex justify-between text-xs font-medium text-gray-500">
+                  <span>Shipping</span>
+                  @if (vm.summary.shipping === 0) {
+                    <span class="text-emerald-500">FREE</span>
+                  } @else {
+                    <app-price-display [amount]="vm.summary.shipping"></app-price-display>
+                  }
+                </div>
+                @if (vm.summary.tax > 0) {
+                  <div class="flex justify-between text-xs font-medium text-gray-500">
+                    <span>Tax</span>
+                    <app-price-display [amount]="vm.summary.tax"></app-price-display>
+                  </div>
+                }
+                
+                <div class="pt-4 mt-2 border-t-2 border-dashed border-gray-100 dark:border-gray-800">
+                  <div class="flex justify-between items-end">
+                    <div>
+                      <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Amount</p>
+                      <app-price-display [amount]="vm.summary.total" size="lg" className="text-primary dark:text-white font-black"></app-price-display>
+                    </div>
+                    <div class="bg-primary/5 px-3 py-1.5 rounded-xl border border-primary/10">
+                      <p class="text-[9px] font-black text-primary uppercase">Cash on Delivery</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                (click)="placeOrder()"
+                [disabled]="isLoading || checkoutForm.invalid"
+                class="w-full mt-8 py-5 bg-primary text-white rounded-2xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all flex items-center justify-center gap-3"
+              >
+                @if (isLoading) {
+                  <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
+                  <span>Processing...</span>
+                } @else {
+                  <app-icon name="ShoppingBag" size="20"></app-icon>
+                  <span>Complete Order</span>
+                }
+              </button>
+              
+              <p class="mt-4 text-[9px] text-gray-400 text-center font-medium">
+                By completing your order, you agree to our Terms of Service and Privacy Policy.
+              </p>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-4 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-2xl flex items-center gap-3">
+                <app-icon name="ShieldCheck" size="20" className="text-emerald-500"></app-icon>
+                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-tight">Secure Payment</span>
+              </div>
+              <div class="p-4 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-2xl flex items-center gap-3">
+                <app-icon name="RotateCcw" size="20" className="text-blue-500"></app-icon>
+                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-tight">Easy Returns</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+

@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject } from "@angular/core";
-import { AsyncPipe, NgClass, DecimalPipe } from "@angular/common";
+import { AsyncPipe, NgClass, DecimalPipe, NgIf } from "@angular/common";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
 import {
@@ -32,6 +32,8 @@ import {
 } from "../../../../admin/models/settings.models";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
+import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
+import { NotificationService } from "../../../../core/services/notification.service";
 
 @Component({
   selector: "app-checkout-page",
@@ -43,6 +45,8 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
     RouterModule,
     PriceDisplayComponent,
     AppIconComponent,
+    NgClass,
+    NgIf
   ],
   templateUrl: "./checkout-page.component.html",
   styleUrl: "./checkout-page.component.css",
@@ -57,6 +61,9 @@ export class CheckoutPageComponent {
   private readonly customerOrderApi = inject(CustomerOrderApiService);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly analyticsService = inject(AnalyticsService);
+  private readonly settingsService = inject(SettingsService);
+  private readonly userPersistence = inject(UserPersistenceService);
+  private readonly notification = inject(NotificationService);
 
   readonly checkoutForm = this.formBuilder.nonNullable.group({
     fullName: ["", [Validators.required, Validators.minLength(2)]],
@@ -81,8 +88,7 @@ export class CheckoutPageComponent {
   isLoading = false;
   errorMessage = "";
   didAutofill = false;
-
-  private readonly settingsService = inject(SettingsService);
+  showAutofillPrompt = false;
 
   readonly deliveryMethods$ = this.settingsService
     .getPublicDeliveryMethods()
@@ -121,24 +127,20 @@ export class CheckoutPageComponent {
     ),
   ]).pipe(
     map(([cartItems, summary, settings, deliveryMethods, currentMethodId]) => {
-      // Fallback to settings.deliveryMethods if public call is empty but settings has them
       const rawMethods = (deliveryMethods && deliveryMethods.length > 0) 
         ? deliveryMethods 
         : (settings?.deliveryMethods || []);
       
       const activeMethods = rawMethods.filter(m => m.isActive);
-
       const freeShippingThreshold = settings?.freeShippingThreshold ?? 0;
       const isFreeShipping =
         freeShippingThreshold > 0 && summary.subtotal >= freeShippingThreshold;
 
-      // Update delivery methods costs if free shipping applies
       const effectiveDeliveryMethods = activeMethods.map((m) => ({
         ...m,
         cost: isFreeShipping ? 0 : m.cost,
       }));
 
-      // Find the currently selected method in the effective list (to get the updated cost)
       const selectedMethod =
         effectiveDeliveryMethods.find((m) => m.id === currentMethodId) || null;
 
@@ -166,8 +168,23 @@ export class CheckoutPageComponent {
           fullName: state.fullName,
           phone: state.phone,
           address: state.address,
+          city: state.city,
+          area: state.area
         });
+        if (state.city) {
+          this.areas = BANGLADESH_LOCATIONS[state.city] || [];
+          this.filteredAreas = [...this.areas];
+          this.citySearch = state.city;
+          this.updateDeliveryMethodByCity(state.city);
+        }
+        if (state.area) {
+          this.areaSearch = state.area;
+        }
       });
+
+    if (this.userPersistence.hasSavedDetails()) {
+      this.showAutofillPrompt = true;
+    }
 
     this.checkoutForm.controls.city.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -176,7 +193,7 @@ export class CheckoutPageComponent {
         this.filteredAreas = [...this.areas];
         this.checkoutForm.patchValue({ area: "" });
         this.areaSearch = "";
-        this.citySearch = city; // Keep search input synced
+        this.citySearch = city;
         this.updateDeliveryMethodByCity(city);
       });
 
@@ -201,18 +218,56 @@ export class CheckoutPageComponent {
       .subscribe((customer) => {
         if (customer) {
           this.didAutofill = true;
+          if (customer.city) {
+            this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
+            this.filteredAreas = [...this.areas];
+            this.citySearch = customer.city;
+            this.updateDeliveryMethodByCity(customer.city);
+          }
           this.checkoutForm.patchValue(
             {
               fullName: customer.name,
               address: customer.address,
+              city: customer.city || "Dhaka",
+              area: customer.area || ""
             },
             { emitEvent: false },
           );
+          if (customer.area) {
+            this.areaSearch = customer.area;
+          }
           return;
         }
-
         this.didAutofill = false;
       });
+  }
+
+  applyAutofill(): void {
+    const details = this.userPersistence.getUserDetails();
+    if (details) {
+      if (details.city) {
+        this.areas = BANGLADESH_LOCATIONS[details.city] || [];
+        this.filteredAreas = [...this.areas];
+        this.citySearch = details.city;
+        this.updateDeliveryMethodByCity(details.city);
+      }
+      this.checkoutForm.patchValue({
+        fullName: details.fullName,
+        phone: details.phone,
+        address: details.address,
+        city: details.city,
+        area: details.area
+      });
+      if (details.area) {
+        this.areaSearch = details.area;
+      }
+      this.showAutofillPrompt = false;
+      this.notification.success("Information filled successfully!");
+    }
+  }
+
+  dismissAutofill(): void {
+    this.showAutofillPrompt = false;
   }
 
   placeOrder(): void {
@@ -230,17 +285,13 @@ export class CheckoutPageComponent {
       .subscribe({
         next: (orderId) => {
           this.isLoading = false;
-          if (!orderId) {
-            return;
-          }
+          if (!orderId) return;
 
           if (!this.authService.isLoggedIn()) {
             const phone = this.checkoutForm.controls.phone.value;
             this.authService.customerPhoneLogin(phone).subscribe({
-              next: () =>
-                void this.router.navigate(["/order-confirmation", orderId]),
-              error: () =>
-                void this.router.navigate(["/order-confirmation", orderId]),
+              next: () => void this.router.navigate(["/order-confirmation", orderId]),
+              error: () => void this.router.navigate(["/order-confirmation", orderId]),
             });
           } else {
             void this.router.navigate(["/order-confirmation", orderId]);
@@ -282,7 +333,7 @@ export class CheckoutPageComponent {
   toggleCityDropdown(): void {
     this.isCityDropdownOpen = !this.isCityDropdownOpen;
     if (this.isCityDropdownOpen) {
-      this.isAreaDropdownOpen = false; // Close other
+      this.isAreaDropdownOpen = false;
       this.filteredCities = [...this.cities];
       this.citySearch = this.checkoutForm.get('city')?.value || "";
     }
@@ -304,7 +355,7 @@ export class CheckoutPageComponent {
     if (!this.checkoutForm.get('city')?.value) return;
     this.isAreaDropdownOpen = !this.isAreaDropdownOpen;
     if (this.isAreaDropdownOpen) {
-      this.isCityDropdownOpen = false; // Close other
+      this.isCityDropdownOpen = false;
       this.filteredAreas = [...this.areas];
       this.areaSearch = this.checkoutForm.get('area')?.value || "";
     }
@@ -321,8 +372,7 @@ export class CheckoutPageComponent {
       address: this.checkoutForm.controls.address.value ?? "",
       city: this.checkoutForm.controls.city.value ?? "",
       area: this.checkoutForm.controls.area.value ?? "",
-      deliveryMethodId:
-        this.checkoutForm.controls.deliveryMethodId.value ?? undefined,
+      deliveryMethodId: this.checkoutForm.controls.deliveryMethodId.value ?? undefined,
     });
   }
 }

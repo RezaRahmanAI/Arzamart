@@ -31,12 +31,14 @@ public class AdminOrdersController : ControllerBase
         [FromQuery] DateTime? startDate,
         [FromQuery] DateTime? endDate,
         [FromQuery] bool preOrderOnly = false,
+        [FromQuery] bool websiteOnly = false,
+        [FromQuery] bool manualOnly = false,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] int? sourcePageId = null,
         [FromQuery] int? socialMediaSourceId = null)
     {
-        var (items, total) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, page, pageSize, preOrderOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
+        var (items, total) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, page, pageSize, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
         // Ensure properties are lowercase to match frontend expectations if JSON serialization doesn't do it automatically
         return Ok(new { items, total });
     }
@@ -49,11 +51,13 @@ public class AdminOrdersController : ControllerBase
         [FromQuery] DateTime? startDate,
         [FromQuery] DateTime? endDate,
         [FromQuery] bool preOrderOnly = false,
+        [FromQuery] bool websiteOnly = false,
+        [FromQuery] bool manualOnly = false,
         [FromQuery] int? sourcePageId = null,
         [FromQuery] int? socialMediaSourceId = null)
     {
         // Fetch all matching orders for stats calculation (page 1, max size)
-        var (items, _) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, 1, 100000, preOrderOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
+        var (items, _) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, 1, 100000, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
         return Ok(items);
     }
 

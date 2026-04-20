@@ -32,7 +32,15 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
   showStockModal = false;
   selectedProduct: ProductInventoryDto | null = null;
   newStockValue = 0;
+  newPriceValue = 0;
+  newComparePriceValue = 0;
+  newPurchasePriceValue = 0;
+
   variantStockValues: number[] = [];
+  variantPriceValues: number[] = [];
+  variantComparePriceValues: number[] = [];
+  variantPurchasePriceValues: number[] = [];
+  
   isSaving = false;
 
   ngOnInit(): void {
@@ -75,8 +83,23 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
 
   openStockModal(product: ProductInventoryDto) {
     this.selectedProduct = product;
-    this.newStockValue = product.totalStock;
-    this.variantStockValues = product.variants ? product.variants.map(v => v.stockQuantity) : [];
+    this.newStockValue = product.stockQuantity;
+    this.newPriceValue = product.price || 0;
+    this.newComparePriceValue = product.compareAtPrice || 0;
+    this.newPurchasePriceValue = product.purchaseRate || 0;
+
+    if (product.variants && product.variants.length > 0) {
+      this.variantStockValues = product.variants.map(v => v.stockQuantity);
+      this.variantPriceValues = product.variants.map(v => v.price || 0);
+      this.variantComparePriceValues = product.variants.map(v => v.compareAtPrice || 0);
+      this.variantPurchasePriceValues = product.variants.map(v => v.purchaseRate || 0);
+    } else {
+      this.variantStockValues = [];
+      this.variantPriceValues = [];
+      this.variantComparePriceValues = [];
+      this.variantPurchasePriceValues = [];
+    }
+    
     this.showStockModal = true;
   }
 
@@ -84,6 +107,9 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
     this.showStockModal = false;
     this.selectedProduct = null;
     this.variantStockValues = [];
+    this.variantPriceValues = [];
+    this.variantComparePriceValues = [];
+    this.variantPurchasePriceValues = [];
   }
 
   adjustStock(amount: number) {
@@ -111,10 +137,15 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
     
     this.isSaving = true;
 
-    // If product has variants, save each variant stock
+    // If product has variants, save each variant stock and prices
     if (this.selectedProduct.variants && this.selectedProduct.variants.length > 0) {
       const updateRequests = this.selectedProduct.variants.map((variant, index) => {
-        return this.inventoryService.updateVariantStock(variant.variantId, this.variantStockValues[index]);
+        return this.inventoryService.updateVariantStock(variant.variantId, {
+          quantity: this.variantStockValues[index],
+          price: this.variantPriceValues[index],
+          compareAtPrice: this.variantComparePriceValues[index],
+          purchaseRate: this.variantPurchasePriceValues[index]
+        });
       });
 
       // Execute all updates
@@ -123,33 +154,46 @@ export class AdminInventoryComponent implements OnInit, OnDestroy {
         request.subscribe({
           next: () => {
             this.selectedProduct!.variants![index].stockQuantity = this.variantStockValues[index];
+            this.selectedProduct!.variants![index].price = this.variantPriceValues[index];
+            this.selectedProduct!.variants![index].compareAtPrice = this.variantComparePriceValues[index];
+            this.selectedProduct!.variants![index].purchaseRate = this.variantPurchasePriceValues[index];
+            
             completed++;
             if (completed === updateRequests.length) {
               this.loadInventory();
-              this.notification.success('Stock updated successfully');
+              this.notification.success('Inventory updated successfully');
               this.closeStockModal();
               this.isSaving = false;
             }
           },
           error: (err) => {
-            this.notification.error(err.error?.message || "Failed to update stock");
+            this.notification.error(err.error?.message || "Failed to update inventory");
             this.isSaving = false;
           },
         });
       });
     } else {
-      // No variants - update product stock directly
-      this.inventoryService.updateStock(this.selectedProduct.productId, this.newStockValue).subscribe({
+      // No variants - update product stock and prices directly
+      this.inventoryService.updateStock(this.selectedProduct.productId, {
+        quantity: this.newStockValue,
+        price: this.newPriceValue,
+        compareAtPrice: this.newComparePriceValue,
+        purchaseRate: this.newPurchasePriceValue
+      }).subscribe({
         next: () => {
           this.selectedProduct!.stockQuantity = this.newStockValue;
           this.selectedProduct!.totalStock = this.newStockValue;
+          this.selectedProduct!.price = this.newPriceValue;
+          this.selectedProduct!.compareAtPrice = this.newComparePriceValue;
+          this.selectedProduct!.purchaseRate = this.newPurchasePriceValue;
+          
           this.loadInventory();
-          this.notification.success('Stock updated successfully');
+          this.notification.success('Inventory updated successfully');
           this.closeStockModal();
           this.isSaving = false;
         },
         error: (err) => {
-          this.notification.error(err.error?.message || "Failed to update stock");
+          this.notification.error(err.error?.message || "Failed to update inventory");
           this.isSaving = false;
         },
       });

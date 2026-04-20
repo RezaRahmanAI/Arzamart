@@ -253,6 +253,25 @@
                               }
                           </div>
                       </div>
+
+                      <!-- Saved Info Prompt -->
+                      @if (showAutofillPrompt) {
+                        <div class="mb-8 p-4 bg-orange-50 border border-orange-100 rounded-2xl flex items-center justify-between gap-4 animate-in slide-in-from-top duration-300">
+                          <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                              <app-icon name="User" size="20" className="text-[#ff7a00]"></app-icon>
+                            </div>
+                            <div>
+                              <p class="text-[11px] font-black text-slate-900 uppercase tracking-wide">Save information available!</p>
+                              <p class="text-[10px] text-slate-500">Would you like to use your last order details?</p>
+                            </div>
+                          </div>
+                          <div class="flex gap-2">
+                            <button type="button" (click)="dismissAutofill()" class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase hover:text-slate-600 transition-colors">No</button>
+                            <button type="button" (click)="applyAutofill()" class="px-4 py-1.5 bg-[#ff7a00] text-white text-[10px] font-black uppercase rounded-lg shadow-md shadow-orange-200 active:scale-95 transition-all">Yes, Use Info</button>
+                          </div>
+                        </div>
+                      }
                       
                       <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="space-y-8">
                           <!-- Size Selection -->
@@ -296,14 +315,14 @@
                               <!-- Full Name -->
                               <div class="relative group">
                                   <app-icon name="User" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></app-icon>
-                                  <input type="text" formControlName="fullName" placeholder="Full Name" 
+                                  <input type="text" formControlName="fullName" placeholder="Full Name" autocomplete="name"
                                          class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
                               </div>
     
                               <!-- Phone -->
                               <div class="relative group">
                                   <app-icon name="Phone" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></app-icon>
-                                  <input type="tel" formControlName="phone" placeholder="Phone Number"
+                                  <input type="tel" formControlName="phone" placeholder="Phone Number" autocomplete="tel"
                                          class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
                               </div>
     
@@ -364,7 +383,7 @@
                               <!-- Full Address -->
                               <div class="md:col-span-2 relative group">
                                   <app-icon name="MapPin" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></app-icon>
-                                  <input type="text" formControlName="address" placeholder="House/Road/Block (Detailed Address)"
+                                  <input type="text" formControlName="address" placeholder="House/Road/Block (Detailed Address)" autocomplete="street-address"
                                          class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
                               </div>
                           </div>

@@ -1,5 +1,5 @@
 import { Component, DestroyRef, OnInit, inject } from "@angular/core";
-import { AsyncPipe, NgClass } from "@angular/common";
+import { AsyncPipe, NgClass, DecimalPipe, NgIf } from "@angular/common";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -28,6 +28,8 @@ import { DeliveryMethod } from "../../../../admin/models/settings.models";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { SizeGuideComponent } from "../../../../shared/components/size-guide/size-guide.component";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
+import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
+import { NotificationService } from "../../../../core/services/notification.service";
 
 @Component({
   selector: "app-landing-page",
@@ -35,6 +37,8 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
   imports: [
     AsyncPipe,
     NgClass,
+    NgIf,
+    DecimalPipe,
     ReactiveFormsModule,
     RouterModule,
     PriceDisplayComponent,
@@ -56,6 +60,8 @@ export class LandingPageComponent implements OnInit {
   private readonly settingsService = inject(SettingsService);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly orderService = inject(OrderService);
+  private readonly userPersistence = inject(UserPersistenceService);
+  private readonly notification = inject(NotificationService);
 
   product: Product | null = null;
   isLoading = false;
@@ -65,6 +71,7 @@ export class LandingPageComponent implements OnInit {
   isSizeGuideOpen = false;
   deliveryMethods: DeliveryMethod[] = [];
   selectedMethod: DeliveryMethod | null = null;
+  showAutofillPrompt = false;
 
   readonly checkoutForm = this.formBuilder.nonNullable.group({
     fullName: ["", [Validators.required, Validators.minLength(2)]],
@@ -90,6 +97,41 @@ export class LandingPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadProductAndSettings();
     this.setupFormWatchers();
+    
+    // Check for saved user details
+    if (this.userPersistence.hasSavedDetails()) {
+      this.showAutofillPrompt = true;
+    }
+  }
+
+  applyAutofill(): void {
+    const details = this.userPersistence.getUserDetails();
+    if (details) {
+      if (details.city) {
+        this.areas = BANGLADESH_LOCATIONS[details.city] || [];
+        this.filteredAreas = [...this.areas];
+        this.citySearch = details.city;
+        this.updateDeliveryMethodByCity(details.city);
+      }
+
+      this.checkoutForm.patchValue({
+        fullName: details.fullName,
+        phone: details.phone,
+        address: details.address,
+        city: details.city,
+        area: details.area
+      });
+
+      if (details.area) {
+        this.areaSearch = details.area;
+      }
+      this.showAutofillPrompt = false;
+      this.notification.success("Information filled successfully!");
+    }
+  }
+
+  dismissAutofill(): void {
+    this.showAutofillPrompt = false;
   }
 
   private loadProductAndSettings(): void {
@@ -162,13 +204,28 @@ export class LandingPageComponent implements OnInit {
       .subscribe((customer) => {
         if (customer) {
           this.didAutofill = true;
+          
+          // Patch city first to trigger areas update
+          if (customer.city) {
+            this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
+            this.filteredAreas = [...this.areas];
+            this.citySearch = customer.city;
+            this.updateDeliveryMethodByCity(customer.city);
+          }
+
           this.checkoutForm.patchValue(
             {
               fullName: customer.name,
               address: customer.address,
+              city: customer.city || "Dhaka",
+              area: customer.area || ""
             },
             { emitEvent: false },
           );
+
+          if (customer.area) {
+            this.areaSearch = customer.area;
+          }
         }
       });
 
@@ -444,6 +501,14 @@ export class LandingPageComponent implements OnInit {
       next: (order) => {
         this.isOrdering = false;
         if (order?.id) {
+          // Save user details for next time
+          this.userPersistence.saveUserDetails({
+            fullName: form.fullName,
+            phone: form.phone,
+            address: form.address,
+            city: form.city,
+            area: form.area
+          });
           void this.router.navigate(["/order-confirmation", order.id]);
         }
       },

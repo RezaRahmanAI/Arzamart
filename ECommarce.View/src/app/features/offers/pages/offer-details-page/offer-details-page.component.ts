@@ -1,4 +1,4 @@
-import { NgClass } from "@angular/common";
+import { NgClass, NgIf, DecimalPipe } from "@angular/common";
 import { Component, DestroyRef, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
@@ -12,6 +12,8 @@ import { CustomerProfileService } from "../../../../core/services/customer-profi
 import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
+import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
+import { NotificationService } from "../../../../core/services/notification.service";
 
 interface OfferDetails {
   slug: string;
@@ -48,6 +50,8 @@ const OFFERS: OfferDetails[] = [
     RouterModule,
     PriceDisplayComponent,
     AppIconComponent,
+    NgIf,
+    DecimalPipe,
   ],
   templateUrl: "./offer-details-page.component.html",
   styleUrl: "./offer-details-page.component.css",
@@ -61,11 +65,14 @@ export class OfferDetailsPageComponent {
   private readonly destroyRef = inject(DestroyRef);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly profileService = inject(CustomerProfileService);
+  private readonly userPersistence = inject(UserPersistenceService);
+  private readonly notification = inject(NotificationService);
 
   offer: OfferDetails | null = null;
   isLoading = false;
   errorMessage = "";
   successMessage = "";
+  showAutofillPrompt = false;
 
   readonly orderForm = this.formBuilder.nonNullable.group({
     fullName: ["", [Validators.required, Validators.minLength(2)]],
@@ -108,8 +115,80 @@ export class OfferDetailsPageComponent {
         this.citySearch = city;
       });
 
+    this.orderForm.controls.phone.valueChanges
+      .pipe(
+        map((value) => value.trim()),
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter((value) => value.length >= 7),
+        switchMap((phone) =>
+          this.customerOrderApi
+            .lookupCustomer(phone)
+            .pipe(catchError(() => of(null))),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((customer) => {
+        if (customer) {
+          // Patch city first to trigger areas update
+          if (customer.city) {
+            this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
+            this.filteredAreas = [...this.areas];
+            this.citySearch = customer.city;
+          }
+
+          this.orderForm.patchValue(
+            {
+              fullName: customer.name,
+              address: customer.address,
+              city: customer.city || "Dhaka",
+              area: customer.area || ""
+            },
+            { emitEvent: false },
+          );
+
+          if (customer.area) {
+            this.areaSearch = customer.area;
+          }
+        }
+      });
+
     this.areas = BANGLADESH_LOCATIONS["Dhaka"] || [];
     this.filteredAreas = [...this.areas];
+
+    // Check for saved user details
+    if (this.userPersistence.hasSavedDetails()) {
+      this.showAutofillPrompt = true;
+    }
+  }
+
+  applyAutofill(): void {
+    const details = this.userPersistence.getUserDetails();
+    if (details) {
+      if (details.city) {
+        this.areas = BANGLADESH_LOCATIONS[details.city] || [];
+        this.filteredAreas = [...this.areas];
+        this.citySearch = details.city;
+      }
+
+      this.orderForm.patchValue({
+        fullName: details.fullName,
+        phone: details.phone,
+        address: details.address,
+        city: details.city,
+        area: details.area
+      });
+
+      if (details.area) {
+        this.areaSearch = details.area;
+      }
+      this.showAutofillPrompt = false;
+      this.notification.success("Information filled successfully!");
+    }
+  }
+
+  dismissAutofill(): void {
+    this.showAutofillPrompt = false;
   }
 
   get total(): number {
@@ -216,6 +295,15 @@ export class OfferDetailsPageComponent {
             0,
             0,
           );
+
+          // Save user details for next time
+          this.userPersistence.saveUserDetails({
+            fullName: this.orderForm.controls.fullName.value,
+            phone: this.orderForm.controls.phone.value,
+            address: this.orderForm.controls.address.value,
+            city: this.orderForm.controls.city.value,
+            area: this.orderForm.controls.area.value
+          });
 
           void this.router.navigate(["/order-confirmation", response.id]);
 

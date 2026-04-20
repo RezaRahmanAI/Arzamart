@@ -9,7 +9,17 @@
         {{ isPreOrderMode ? 'Manage and track customer pre-orders.' : 'Command center for order fulfillment and tracking.' }}
       </p>
     </div>
-    <div class="flex flex-wrap gap-3">
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- Proper Refresh Button with Text -->
+      <button
+        (click)="refreshOrders()"
+        [disabled]="isRefreshing"
+        class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 text-primary dark:text-white text-sm font-semibold shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-all hover:-translate-y-0.5 active:scale-95 disabled:opacity-50"
+      >
+        <app-icon name="RotateCw" size="16" [className]="isRefreshing ? 'animate-spin' : ''"></app-icon>
+        <span>{{ isRefreshing ? 'Refreshing...' : 'Refresh' }}</span>
+      </button>
+
       <!-- New Order Actions -->
       <a
         routerLink="/admin/orders/create"
@@ -20,7 +30,7 @@
       </a>
       <a
         routerLink="/admin/orders/pre-order"
-        class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 bg-violet-500 hover:bg-violet-600 text-white text-sm font-semibold shadow-lg shadow-violet-500/20 transition-all hover:-translate-y-0.5 mr-2"
+        class="flex items-center justify-center gap-2 rounded-xl h-11 px-5 bg-violet-500 hover:bg-violet-600 text-white text-sm font-semibold shadow-lg shadow-violet-500/20 transition-all hover:-translate-y-0.5"
       >
         <app-icon name="PackagePlus" size="16"></app-icon>
         <span>New Pre-order</span>
@@ -33,19 +43,19 @@
     <div class="relative flex-1 max-w-md">
       <app-icon name="Search" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
       <input
-        class="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium text-primary dark:text-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none"
-        placeholder="Search by name, phone or #ID..."
+        class="w-full pl-11 pr-4 h-[46px] bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium text-primary dark:text-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none"
+        placeholder="Search orders..."
         type="text"
         [formControl]="searchControl"
       />
     </div>
 
-    <div class="flex items-center gap-3">
-        <!-- Status Filter (Refactored) -->
+    <div class="flex flex-wrap items-center gap-3">
+        <!-- Status Filter -->
         <div class="relative" (click)="$event.stopPropagation()">
             <button
               (click)="toggleStatusMenu($event)"
-              class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
+              class="flex items-center gap-3 px-5 h-[46px] rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
             >
               <app-icon name="Check" size="16" className="text-emerald-500"></app-icon>
               <span class="text-gray-400 uppercase text-[10px] tracking-wider hidden sm:inline">Filter By:</span>
@@ -73,11 +83,25 @@
             </div>
         </div>
 
+        <!-- Order Type Filter -->
+        <div class="relative min-w-[140px]" (click)="$event.stopPropagation()">
+            <select
+              (change)="setOrderTypeFilter($any($event.target).value)"
+              class="w-full h-[46px] pl-5 pr-10 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none outline-none focus:ring-2 focus:ring-primary/10"
+            >
+              <option value="All" [selected]="selectedOrderType === 'All'">All Types</option>
+              <option value="PreOrder" [selected]="selectedOrderType === 'PreOrder'">Pre-Orders</option>
+              <option value="Website" [selected]="selectedOrderType === 'Website'">Website Orders</option>
+              <option value="Manual" [selected]="selectedOrderType === 'Manual'">Manual Orders</option>
+            </select>
+            <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
+        </div>
+
         <!-- Date Filter (Advanced) -->
         <div class="relative" (click)="$event.stopPropagation()">
             <button
               (click)="toggleDateMenu($event)"
-              class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
+              class="flex items-center gap-3 px-5 h-[46px] rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
             >
               <app-icon name="Calendar" size="16" className="text-gray-400"></app-icon>
               <span class="text-gray-400 uppercase text-[10px] tracking-wider hidden sm:inline">Range:</span>
@@ -147,10 +171,10 @@
         </div>
 
         <!-- Page Source Filter -->
-        <div class="relative" (click)="$event.stopPropagation()">
+        <div class="relative min-w-[140px]" (click)="$event.stopPropagation()">
             <select
               (change)="setSourcePageFilter($any($event.target).value)"
-              class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none pr-10"
+              class="w-full h-[46px] pl-5 pr-10 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none outline-none focus:ring-2 focus:ring-primary/10"
             >
               <option [value]="null">All Pages</option>
               <option *ngFor="let page of sourcePages" [value]="page.id" [selected]="selectedSourcePageId === page.id">
@@ -161,10 +185,10 @@
         </div>
 
         <!-- Social Media Filter -->
-        <div class="relative" (click)="$event.stopPropagation()">
+        <div class="relative min-w-[140px]" (click)="$event.stopPropagation()">
             <select
               (change)="setSocialMediaFilter($any($event.target).value)"
-              class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none pr-10"
+              class="w-full h-[46px] pl-5 pr-10 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none outline-none focus:ring-2 focus:ring-primary/10"
             >
               <option [value]="null">All Social Media</option>
               <option *ngFor="let source of socialMediaSources" [value]="source.id" [selected]="selectedSocialMediaSourceId === source.id">
@@ -177,8 +201,8 @@
   </div>
 
   <!-- Orders Table -->
-  <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2rem] overflow-hidden shadow-sm shadow-gray-200/50">
-    <div class="overflow-x-auto">
+  <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2rem] shadow-sm shadow-gray-200/50">
+    <div class="overflow-visible min-h-[450px]">
       <table class="w-full text-left border-separate border-spacing-0">
         <thead>
           <tr class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
@@ -186,6 +210,11 @@
             <th class="px-6 py-4 text-left">
               <div class="flex items-center gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                 <span>Order Info</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-left">
+              <div class="flex items-center gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                <span>Type</span>
               </div>
             </th>
             <th class="px-6 py-4 text-left">
@@ -227,6 +256,22 @@
               </div>
             </td>
             <td class="px-6 py-6">
+              <div class="flex flex-col gap-2">
+                <span *ngIf="order.isPreOrder" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300 border border-violet-200 dark:border-violet-800 w-fit">
+                  <app-icon name="ArrowRightCircle" size="12"></app-icon>
+                  Pre-Order
+                </span>
+                <span *ngIf="!order.isPreOrder && (order.sourcePageId || order.socialMediaSourceId)" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800 w-fit">
+                  <app-icon name="MessageSquare" size="12"></app-icon>
+                  Manual
+                </span>
+                <span *ngIf="!order.isPreOrder && !order.sourcePageId && !order.socialMediaSourceId" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 w-fit">
+                  <app-icon name="Globe" size="12"></app-icon>
+                  Website
+                </span>
+              </div>
+            </td>
+            <td class="px-6 py-6">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <app-icon name="User" size="20" className="text-gray-400"></app-icon>
@@ -251,40 +296,40 @@
                     
                     <!-- Premium Status Update Menu -->
                     <div *ngIf="statusUpdateOrderId === order.id" 
-                         class="absolute left-0 mt-3 w-56 bg-white/95 dark:bg-surface-dark/95 backdrop-blur-xl border border-gray-100 dark:border-gray-700 rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-[200] p-3 animate-in fade-in zoom-in-95 duration-200">
+                         class="absolute left-0 mt-3 w-[560px] bg-white/95 dark:bg-surface-dark/95 backdrop-blur-xl border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-[200] p-3 animate-in fade-in zoom-in-95 duration-200">
                       
                       <div class="flex items-center justify-between px-2 py-1 mb-2">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Update State</span>
                         <div class="w-1.5 h-1.5 rounded-full bg-primary/20 animate-ping"></div>
                       </div>
 
-                      <div class="space-y-1">
-                        <div *ngFor="let status of updateStatusOptions" 
-                                (click)="updateOrderStatus(order.id, status, $event)" 
-                                class="w-full px-3 py-2.5 text-left text-[11px] font-bold rounded-xl transition-all flex items-center justify-between group overflow-hidden relative cursor-pointer"
-                                [ngClass]="{
-                                  'bg-primary text-white': order.status === status,
-                                  'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50': order.status !== status
-                                }">
-                          
-                          <div class="flex items-center gap-3 relative z-10">
-                            <div class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors shadow-sm"
-                                 [ngClass]="order.status === status ? 'bg-white/20' : 'bg-gray-50 dark:bg-gray-900 group-hover:bg-white dark:group-hover:bg-gray-800'">
-                                <app-icon [name]="getStatusIconName(status)" size="14" [className]="order.status === status ? 'text-white' : ''" [ngStyle]="{ color: order.status === status ? 'white' : getStatusColor(status) }"></app-icon>
+                      <div class="grid grid-cols-3 gap-1.5">
+                        <ng-container *ngFor="let status of updateStatusOptions">
+                            <div *ngIf="status !== 'PreOrder' || order.status === 'Pending' || order.status === 'PreOrder'" 
+                                    (click)="updateOrderStatus(order.id, status, $event)" 
+                                    class="px-2 py-1.5 text-left text-[10px] font-bold rounded-lg transition-all flex items-center gap-2 group overflow-hidden relative cursor-pointer"
+                                    [ngClass]="{
+                                    'bg-primary text-white': order.status === status,
+                                    'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50': order.status !== status
+                                    }">
+                            
+                            <div class="w-5 h-5 rounded-md flex items-center justify-center transition-colors shadow-sm shrink-0"
+                                [ngClass]="order.status === status ? 'bg-white/20' : 'bg-gray-50 dark:bg-gray-900 group-hover:bg-white dark:group-hover:bg-gray-800'">
+                                <app-icon [name]="getStatusIconName(status)" size="10" [className]="order.status === status ? 'text-white' : ''" [ngStyle]="{ color: order.status === status ? 'white' : getStatusColor(status) }"></app-icon>
                             </div>
-                            <span>{{ status }}</span>
-                          </div>
+                            <span class="truncate">{{ status }}</span>
 
-                          <app-icon *ngIf="order.status === status" name="Check" size="12" className="relative z-10"></app-icon>
-                          
-                          <!-- Subtle Background hover effect -->
-                          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                        </div>
+                            <app-icon *ngIf="order.status === status" name="Check" size="8" className="ml-auto"></app-icon>
+                            
+                            <!-- Subtle Background hover effect -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                            </div>
+                        </ng-container>
                       </div>
                       
                       <!-- Footer Hint -->
-                      <div class="mt-3 pt-2 border-t border-gray-50 dark:border-gray-800/50 px-2">
-                        <p class="text-[8px] font-medium text-gray-400 italic text-center">Selecting a state will notify the customer.</p>
+                      <div class="mt-3 pt-2 border-t border-gray-50 dark:border-gray-800/50 px-2 text-center">
+                        <p class="text-[8px] font-medium text-gray-400 italic">Notifies customer on select.</p>
                       </div>
                     </div>
                 </div>
@@ -347,7 +392,7 @@
 
                 <!-- Row 3: Centered Special Action -->
                 <div class="col-span-3 flex justify-center mt-1 pt-1 border-t border-gray-50 dark:border-gray-800/50">
-                  <button *ngIf="order.status !== 'PreOrder'" 
+                  <button *ngIf="order.status === 'Pending'" 
                           (click)="moveToPreOrder(order, $event)" 
                           class="w-full h-10 rounded-xl bg-violet-50 dark:bg-violet-900/10 border border-violet-100 dark:border-violet-900/30 text-violet-500 hover:bg-violet-500 hover:text-white transition-all shadow-sm flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-wider group" 
                           title="Move to Pre-Order">
@@ -423,52 +468,57 @@
 
   <!-- Tracking Modal Overlay -->
   <div *ngIf="isTrackingModalOpen && trackingOrder" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in" (click)="isTrackingModalOpen = false">
-    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2.5rem] w-full max-w-lg overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
-      <div class="p-8">
-        <div class="flex items-center justify-between mb-8">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-              <app-icon name="History" size="24"></app-icon>
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold text-primary dark:text-white">Order Tracking</h3>
-              <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mt-1">#{{ trackingOrder.orderNumber }}</p>
-            </div>
-          </div>
-          <button (click)="isTrackingModalOpen = false" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500">
-            <app-icon name="X" size="20"></app-icon>
-          </button>
+    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2rem] w-full max-w-lg overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
+      <!-- Gradient Header -->
+      <div class="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 p-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <app-icon name="History" size="24" className="text-white"></app-icon>
+          <h3 class="text-lg font-bold text-white tracking-tight">Order Tracking - {{ trackingOrder.orderNumber }}</h3>
         </div>
+        <button (click)="isTrackingModalOpen = false" class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+          <app-icon name="X" size="18"></app-icon>
+        </button>
+      </div>
 
-        <div class="space-y-6 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-          <div *ngFor="let log of trackingOrder.logs; let last = last" class="relative pl-8">
-            <div *ngIf="!last" class="absolute left-[11px] top-6 bottom-0 w-0.5 bg-gray-100 dark:bg-gray-800"></div>
-            <div class="absolute left-0 top-1.5 w-6 h-6 rounded-full border-4 border-white dark:border-surface-dark shadow-sm flex items-center justify-center transition-colors" [ngClass]="log.statusTo ? 'bg-primary' : 'bg-gray-300'"></div>
-            <div class="flex flex-col">
-              <div class="flex items-center justify-between gap-4 mb-1">
-                <span class="text-sm font-semibold text-primary dark:text-white">{{ log.statusTo ? 'Status updated to ' + log.statusTo : 'Admin Note added' }}</span>
-                <span class="text-[10px] font-semibold text-gray-400 whitespace-nowrap">{{ log.createdAt | date:'MMM d, h:mm a' }}</span>
+      <div class="p-6">
+        <div class="space-y-4 max-h-[450px] overflow-y-auto pr-2 custom-scrollbar">
+          <div *ngFor="let log of trackingOrder.logs; let i = index" class="p-5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all group">
+            <div class="flex items-start gap-4">
+              <!-- Sequence Number Badge -->
+              <div class="w-10 h-10 rounded-full bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center text-violet-600 dark:text-violet-400 font-bold text-xs border border-violet-100 dark:border-violet-800 shrink-0">
+                {{ (trackingOrder.logs?.length ?? 0) - i }}
               </div>
-              <p *ngIf="log.note" class="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-3 rounded-2xl border border-gray-100 dark:border-gray-800 italic mt-2">
-                "{{ log.note }}"
-              </p>
-              <div class="flex items-center gap-2 mt-2">
-                  <div class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                    <app-icon name="User" size="10" className="text-gray-400"></app-icon>
-                  </div>
-                  <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">{{ log.changedBy }}</span>
+              
+              <div class="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <div class="flex flex-col">
+                  <span class="text-base font-bold text-primary dark:text-white">{{ log.statusTo || 'System Update' }}</span>
+                  <span class="text-[11px] font-semibold text-gray-400 mt-1 uppercase tracking-wider">{{ log.createdAt | date:'dd/MM/yyyy at h:mm:ss a' }}</span>
+                </div>
+                
+                <div class="flex flex-col md:items-end">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Updated by</span>
+                    <span class="text-xs font-bold text-primary dark:text-white capitalize">{{ log.changedBy }}</span>
+                </div>
               </div>
             </div>
+
+            <!-- Optional Note -->
+            <div *ngIf="log.note" class="mt-4 ml-14 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                <p class="text-xs text-gray-500 dark:text-gray-400 italic">"{{ log.note }}"</p>
+            </div>
           </div>
 
-          <div *ngIf="!trackingOrder.logs || trackingOrder.logs.length === 0" class="py-12 text-center">
-              <app-icon name="PackageX" size="48" className="mx-auto mb-4 text-gray-100 dark:bg-gray-800"></app-icon>
-              <p class="text-sm font-semibold text-gray-400">No activity logs found for this order</p>
+          <!-- Empty State -->
+          <div *ngIf="!trackingOrder.logs || trackingOrder.logs.length === 0" class="py-16 text-center">
+              <div class="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-gray-100 dark:border-gray-700">
+                  <app-icon name="PackageX" size="32" className="text-gray-300"></app-icon>
+              </div>
+              <p class="text-sm font-bold text-gray-400 uppercase tracking-widest">No tracking logs found</p>
           </div>
         </div>
 
-        <button (click)="isTrackingModalOpen = false" class="w-full mt-8 py-5 rounded-[1.5rem] bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-xl">
-          Close Tracking
+        <button (click)="isTrackingModalOpen = false" class="w-full mt-6 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold text-sm hover:scale-[1.01] active:scale-95 transition-all shadow-xl">
+          Dismiss History
         </button>
       </div>
     </div>
@@ -476,7 +526,7 @@
 
   <!-- Notes Modal Overlay (Threaded Conversation) -->
   <div *ngIf="isNotesModalOpen && notesOrder" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in" (click)="isNotesModalOpen = false">
-    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
+    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2.5rem] w-full max-xl overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
       <div class="flex flex-col h-[600px] max-h-[90vh]">
         <!-- Header -->
         <div class="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-white dark:bg-surface-dark shrink-0">
@@ -543,6 +593,21 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Invoice Modal -->
+  <app-admin-order-invoice
+    *ngIf="invoiceOrder"
+    [order]="invoiceOrder"
+    (close)="invoiceOrder = null"
+  ></app-admin-order-invoice>
+
+  <!-- Global Invoice Loading Overlay -->
+  <div *ngIf="isInvoiceLoading" class="fixed inset-0 z-[400] flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
+    <div class="bg-white dark:bg-surface-dark p-6 rounded-3xl shadow-2xl flex flex-col items-center gap-4 border border-gray-100 dark:border-gray-800">
+      <app-icon name="Loader2" size="40" className="animate-spin text-primary"></app-icon>
+      <p class="text-sm font-bold text-primary dark:text-white uppercase tracking-widest">Preparing Invoice...</p>
     </div>
   </div>
 </div>

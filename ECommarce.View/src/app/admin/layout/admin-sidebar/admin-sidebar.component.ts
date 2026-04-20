@@ -38,18 +38,21 @@ export class AdminSidebarComponent implements OnInit {
 
 
   ngOnInit() {
-    // Open menu if we are on a products route
-    if (this.router.url.includes("/admin/products")) {
+    // Open menu if we are on a relevant route
+    const url = this.router.url;
+    if (url.includes("/admin/products") || url.includes("/admin/inventory")) {
       this.isProductsMenuOpen = true;
+    }
+    if (url.includes("/admin/orders/create") || url.includes("/admin/orders/pre-order")) {
+      this.isOrdersMenuOpen = true;
+    }
+    if (url === "/admin/orders" || url.includes("/admin/orders/pre-orders") || url.includes("/admin/orders/website")) {
+      this.isOrderViewMenuOpen = true;
     }
 
   }
 
   navItems: AdminNavItem[] = [
-    { label: "Sales Orders", icon: "ShoppingBag", route: "/admin/orders" },
-    { label: "Pre-orders", icon: "Box", route: "/admin/orders/pre-orders" },
-    { label: "Manual Order", icon: "ShoppingCart", route: "/admin/orders/create" },
-    { label: "Inventory Management", icon: "PackagePlus", route: "/admin/inventory" },
     { label: "Banners & Campaigns", icon: "GalleryVertical", route: "/admin/banners" },
     { label: "Site Content", icon: "FileText", route: "/admin/pages" },
     { label: "Order Sources", icon: "Globe", route: "/admin/order-sources" },
@@ -60,6 +63,8 @@ export class AdminSidebarComponent implements OnInit {
   bottomItems: AdminNavItem[] = [];
 
   isProductsMenuOpen = false;
+  isOrdersMenuOpen = false;
+  isOrderViewMenuOpen = false;
 
   constructor() {
     // Check initial state
@@ -70,5 +75,13 @@ export class AdminSidebarComponent implements OnInit {
 
   toggleProductsMenu() {
     this.isProductsMenuOpen = !this.isProductsMenuOpen;
+  }
+
+  toggleOrdersMenu() {
+    this.isOrdersMenuOpen = !this.isOrdersMenuOpen;
+  }
+
+  toggleOrderViewMenu() {
+    this.isOrderViewMenuOpen = !this.isOrderViewMenuOpen;
   }
 }

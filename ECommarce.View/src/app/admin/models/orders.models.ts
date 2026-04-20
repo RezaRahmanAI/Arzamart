@@ -82,6 +82,8 @@ export interface OrdersQueryParams {
   page: number;
   pageSize: number;
   preOrderOnly?: boolean;
+  websiteOnly?: boolean;
+  manualOnly?: boolean;
   sourcePageId?: number;
   socialMediaSourceId?: number;
 }

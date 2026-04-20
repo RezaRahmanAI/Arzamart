@@ -12,10 +12,12 @@ import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
 
 import {
   Order,
+  OrderDetail,
   OrderStatus,
   OrdersQueryParams,
 } from "../../models/orders.models";
 import { OrdersService } from "../../services/orders.service";
+import { AdminOrderInvoiceComponent } from "./components/admin-order-invoice/admin-order-invoice.component";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { SourceManagementService } from "../../../core/services/source-management.service";
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
@@ -39,6 +41,7 @@ interface OrderStats {
     RouterModule,
     PriceDisplayComponent,
     AppIconComponent,
+    AdminOrderInvoiceComponent,
   ],
   templateUrl: "./admin-orders.component.html",
 })
@@ -51,10 +54,13 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   isLoading = false;
+  isRefreshing = false;
   searchControl = new FormControl("", { nonNullable: true });
 
   orders: Order[] = [];
   filteredOrders: Order[] = [];
+  invoiceOrder: OrderDetail | null = null;
+  isInvoiceLoading = false;
   totalResults = 0;
   page = 1;
   pageSize = 10;
@@ -186,6 +192,8 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   statusUpdateOrderId: number | null = null;
   actionMenuOpenId: number | null = null;
   isPreOrderMode = false;
+  isWebsiteOnlyMode = false;
+  selectedOrderType: 'All' | 'PreOrder' | 'Website' | 'Manual' = 'All';
 
   selectedOrderIds = new Set<number>();
 
@@ -221,6 +229,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.isPreOrderMode = !!data['preOrderOnly'];
+      this.isWebsiteOnlyMode = !!data['websiteOnly'];
       this.loadOrders();
       this.loadSources();
     });
@@ -246,6 +255,12 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   setSocialMediaFilter(id: number | null): void {
     this.selectedSocialMediaSourceId = id;
+    this.page = 1;
+    this.loadOrders();
+  }
+
+  setOrderTypeFilter(type: any): void {
+    this.selectedOrderType = type;
     this.page = 1;
     this.loadOrders();
   }
@@ -456,9 +471,21 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   sendReminder(order: Order, event: Event): void {
     event.stopPropagation();
-    const msg = `Hello ${order.customerName || 'Customer'}, your order #${order.orderNumber} is pending. Please confirm by calling this number(01725455554).`;
-    this.notification.success("Reminder Text copied to clipboard!");
+    const phone = order.customerPhone.replace(/\D/g, '');
+    const msg = `Hello ${order.customerName || 'Customer'}, your order #${order.orderNumber} is pending. Please confirm by calling this number (01725455554).`;
+    
+    // Copy to clipboard as a backup
     navigator.clipboard.writeText(msg);
+    
+    // Trigger SMS protocol - Using '?' for compatibility, though iOS sometimes prefers ';'
+    const smsUrl = `sms:${phone}?body=${encodeURIComponent(msg)}`;
+    
+    try {
+      window.location.href = smsUrl;
+      this.notification.success("Opening SMS app...");
+    } catch (err) {
+      this.notification.success("Reminder Text copied to clipboard!");
+    }
   }
 
   sendWhatsApp(order: Order, event: Event): void {
@@ -488,10 +515,17 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   printInvoice(order: Order, event: Event): void {
     event.stopPropagation();
-    const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/admin/orders', order.id])
-    );
-    window.open(url, '_blank');
+    this.isInvoiceLoading = true;
+    this.ordersService.getOrderById(order.id).subscribe({
+      next: (details) => {
+        this.invoiceOrder = details;
+        this.isInvoiceLoading = false;
+      },
+      error: () => {
+        this.isInvoiceLoading = false;
+        this.notification.error("Failed to load order details for invoice");
+      }
+    });
   }
 
   goToPreviousPage(): void {
@@ -550,7 +584,9 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       dateRange: this.selectedDateRange,
       page: this.page,
       pageSize: this.pageSize,
-      preOrderOnly: this.isPreOrderMode,
+      preOrderOnly: this.isPreOrderMode || this.selectedOrderType === 'PreOrder',
+      websiteOnly: this.isWebsiteOnlyMode || this.selectedOrderType === 'Website',
+      manualOnly: this.selectedOrderType === 'Manual',
       sourcePageId: this.selectedSourcePageId || undefined,
       socialMediaSourceId: this.selectedSocialMediaSourceId || undefined,
     };
@@ -563,11 +599,16 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     return params;
   }
 
-  loadOrders(resetSelection = true): void {
+  refreshOrders(): void {
+    this.isRefreshing = true;
+    this.loadOrders(false, true);
+  }
+
+  loadOrders(resetSelection = true, forceRefresh = false): void {
     const params = this.buildParams();
     this.isLoading = true;
     this.ordersService
-      .getOrders(params)
+      .getOrders(params, forceRefresh)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
@@ -577,8 +618,12 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
             this.selectedOrderIds.clear();
           }
           this.isLoading = false;
+          this.isRefreshing = false;
         },
-        error: () => (this.isLoading = false),
+        error: () => {
+            this.isLoading = false;
+            this.isRefreshing = false;
+        }
       });
 
     this.ordersService

@@ -7,6 +7,8 @@ import { AdminBannersService } from "../../services/admin-banners.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { AuthService } from "../../../core/services/auth.service";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
+import { ProductService } from "../../../core/services/product.service";
+import { BannerService } from "../../../core/services/banner.service";
 
 @Component({
   selector: "app-admin-banners",
@@ -20,6 +22,8 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   readonly imageUrlService = inject(ImageUrlService);
   readonly authService = inject(AuthService);
+  private productService = inject(ProductService);
+  private publicBannerService = inject(BannerService);
   private destroy$ = new Subject<void>();
 
   banners: AdminBanner[] = [];
@@ -136,6 +140,7 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
     if (this.isEditing && this.selectedBannerId) {
       this.bannersService.update(this.selectedBannerId, bannerData).subscribe({
         next: () => {
+          this.refreshAllData();
           this.loadBanners();
           this.closeModal();
           this.isSubmitting = false;
@@ -145,6 +150,7 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
     } else {
       this.bannersService.create(bannerData).subscribe({
         next: () => {
+          this.refreshAllData();
           this.loadBanners();
           this.closeModal();
           this.isSubmitting = false;
@@ -154,9 +160,16 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
     }
   }
 
+  private refreshAllData(): void {
+    // Notify all services that data has changed to clear caches
+    this.productService.refreshData();
+    this.publicBannerService.refresh();
+  }
+
   deleteBanner(id: number): void {
     if (confirm("Are you sure you want to delete this banner?")) {
       this.bannersService.delete(id).subscribe(() => {
+        this.refreshAllData();
         this.loadBanners();
       });
     }
