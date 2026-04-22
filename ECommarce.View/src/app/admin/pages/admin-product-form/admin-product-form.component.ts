@@ -113,6 +113,8 @@ export class AdminProductFormComponent implements OnDestroy {
   private mediaFileMap = new Map<string, File>();
 
   openSizeDropdownIndex: number | null = null;
+  bundleSearchQuery = "";
+  showBundleSearchResults = false;
 
   form = this.formBuilder.group(
     {
@@ -176,6 +178,29 @@ export class AdminProductFormComponent implements OnDestroy {
 
     // Setup cascading listeners
     this.setupCascadingSelects();
+    this.setupBundleListeners();
+  }
+
+  get filteredBundleProducts(): AdminProduct[] {
+    if (!this.bundleSearchQuery) {
+      return this.allProducts.slice(0, 5); // Show first 5 if no search
+    }
+    const query = this.bundleSearchQuery.toLowerCase();
+    return this.allProducts.filter(
+      (p) =>
+        p.name.toLowerCase().includes(query) ||
+        p.sku?.toLowerCase().includes(query),
+    );
+  }
+
+  setupBundleListeners(): void {
+    this.form.get("isBundle")?.valueChanges.subscribe((isBundle) => {
+      if (isBundle) {
+        this.form.patchValue({ productType: ProductType.Combo });
+      } else {
+        this.form.patchValue({ productType: ProductType.Simple });
+      }
+    });
   }
 
   loadCategories(): void {
@@ -303,13 +328,30 @@ export class AdminProductFormComponent implements OnDestroy {
     return this.form.get("bundleItems") as FormArray;
   }
 
-  addBundleItem(): void {
+  addBundleItem(product: AdminProduct): void {
+    // Check if already added
+    const exists = this.bundleItemsArray.controls.some(
+      (c) => String(c.get("componentProductId")?.value) === String(product.id),
+    );
+
+    if (exists) {
+      this.notification.info("Product already added to bundle");
+      return;
+    }
+
     const group = this.formBuilder.group({
-      componentProductId: ["", Validators.required],
+      componentProductId: [product.id, Validators.required],
       componentVariantId: [null],
       quantity: [1, [Validators.required, Validators.min(1)]],
+      // Extra fields for UI display
+      _name: [product.name],
+      _sku: [product.sku],
+      _image: [product.imageUrl],
+      _variants: [product.variants || []],
     });
     this.bundleItemsArray.push(group);
+    this.bundleSearchQuery = "";
+    this.showBundleSearchResults = false;
   }
 
   removeBundleItem(index: number): void {
@@ -374,6 +416,9 @@ export class AdminProductFormComponent implements OnDestroy {
         this.bundleItemsArray.clear();
         if (product.bundleItems && product.bundleItems.length > 0) {
           product.bundleItems.forEach((item) => {
+            const compProduct = this.allProducts.find(
+              (p) => String(p.id) === String(item.componentProductId),
+            );
             this.bundleItemsArray.push(
               this.formBuilder.group({
                 componentProductId: [
@@ -385,6 +430,10 @@ export class AdminProductFormComponent implements OnDestroy {
                   item.quantity,
                   [Validators.required, Validators.min(1)],
                 ],
+                _name: [compProduct?.name || item.componentProductName || ""],
+                _sku: [compProduct?.sku || ""],
+                _image: [compProduct?.imageUrl || ""],
+                _variants: [compProduct?.variants || []],
               }),
             );
           });
