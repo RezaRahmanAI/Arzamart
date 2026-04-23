@@ -352,27 +352,6 @@
                     <div class="space-y-2">
                       <label
                         class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
-                        >Full Name</label
-                      >
-                      <input
-                        type="text"
-                        formControlName="fullName"
-                        placeholder="e.g. Abdullah"
-                        autocomplete="name"
-                        class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc]"
-                      />
-                      @if (checkoutForm.controls.fullName.touched && checkoutForm.controls.fullName.invalid) {
-                        <p
-                          class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
-                        >
-                          Required
-                        </p>
-                      }
-                    </div>
-
-                    <div class="space-y-2">
-                      <label
-                        class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
                         >Mobile Number</label
                       >
                       <div class="relative flex">
@@ -386,6 +365,27 @@
                         />
                       </div>
                       @if (checkoutForm.controls.phone.touched && checkoutForm.controls.phone.invalid) {
+                        <p
+                          class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
+                        >
+                          Required
+                        </p>
+                      }
+                    </div>
+
+                    <div class="space-y-2">
+                      <label
+                        class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                        >Full Name</label
+                      >
+                      <input
+                        type="text"
+                        formControlName="fullName"
+                        placeholder="e.g. Abdullah"
+                        autocomplete="name"
+                        class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc]"
+                      />
+                      @if (checkoutForm.controls.fullName.touched && checkoutForm.controls.fullName.invalid) {
                         <p
                           class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
                         >

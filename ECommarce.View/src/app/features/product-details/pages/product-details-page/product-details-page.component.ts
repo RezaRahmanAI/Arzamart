@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, DestroyRef, OnInit } from "@angular/core";
 import { AsyncPipe, NgClass, DecimalPipe, DatePipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
@@ -13,7 +13,11 @@ import {
   tap,
   shareReplay,
   startWith,
+  interval,
+  Subject,
+  takeUntil,
 } from "rxjs";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { ProductService } from "../../../../core/services/product.service";
 import { Product, ProductImage } from "../../../../core/models/product";
@@ -26,6 +30,7 @@ import { NotificationService } from "../../../../core/services/notification.serv
 import { AnalyticsService } from "../../../../core/services/analytics.service";
 import { SiteSettingsService } from "../../../../core/services/site-settings.service";
 import { SHOW_LOADING } from "../../../../core/services/loading.service";
+import { sortProductSizes } from "../../../../core/constants/product.constants";
 
 import { ProductCardComponent } from "../../../../shared/components/product-card/product-card.component";
 import { SizeGuideComponent } from "../../../../shared/components/size-guide/size-guide.component";
@@ -62,9 +67,14 @@ export class ProductDetailsPageComponent {
   private readonly analyticsService = inject(AnalyticsService);
   private readonly siteSettingsService = inject(SiteSettingsService);
   readonly settings$ = this.siteSettingsService.getSettings();
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly destroy$ = new Subject<void>();
 
   isSizeGuideOpen = false;
   currentImageIndex = 0;
+  isZooming = false;
+  zoomX = 0;
+  zoomY = 0;
 
 
   private readonly selectedSizeSubject = new BehaviorSubject<string | null>(
@@ -88,35 +98,16 @@ export class ProductDetailsPageComponent {
     filter((product): product is Product => Boolean(product)),
     tap((product) => {
       const sizes = Array.from(
-        new Set(product.variants?.map((v) => v.size).filter(Boolean)),
+        new Set(product.variants?.map((v) => v.size).filter((s): s is string => !!s)),
       );
-      // Sort sizes to select smallest first
-      const sizeOrder = [
-        "xs",
-        "s",
-        "m",
-        "l",
-        "xl",
-        "xxl",
-        "2xl",
-        "3xl",
-        "4xl",
-        "5xl",
-      ];
-      const sortedSizes = [...sizes].sort((a, b) => {
-        const aIdx = sizeOrder.indexOf((a || "").toLowerCase());
-        const bIdx = sizeOrder.indexOf((b || "").toLowerCase());
-        if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
-        if (aIdx !== -1) return -1;
-        if (bIdx !== -1) return 1;
-        return (a || "").localeCompare(b || "");
-      });
+      const sortedSizes = sortProductSizes(sizes);
       this.selectedSizeSubject.next(sortedSizes[0] ?? null);
 
       this.quantitySubject.next(1);
       this.selectedMediaSubject.next(null); // Reset or set to first image
       this.currentImageIndex = 0;
       this.analyticsService.trackViewContent(product);
+      this.startAutoSlide(product);
     }),
     shareReplay(1),
   );
@@ -161,29 +152,9 @@ export class ProductDetailsPageComponent {
 
 
         const uniqueSizes = Array.from(
-          new Set(product.variants?.map((v) => v.size).filter(Boolean)),
+          new Set(product.variants?.map((v) => v.size).filter((s): s is string => !!s)),
         );
-        // Sort sizes consistently
-        const sizeOrder = [
-          "xs",
-          "s",
-          "m",
-          "l",
-          "xl",
-          "xxl",
-          "2xl",
-          "3xl",
-          "4xl",
-          "5xl",
-        ];
-        const sortedUniqueSizes = [...uniqueSizes].sort((a, b) => {
-          const aIdx = sizeOrder.indexOf((a || "").toLowerCase());
-          const bIdx = sizeOrder.indexOf((b || "").toLowerCase());
-          if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
-          if (aIdx !== -1) return -1;
-          if (bIdx !== -1) return 1;
-          return (a || "").localeCompare(b || "");
-        });
+        const sortedUniqueSizes = sortProductSizes(uniqueSizes);
 
         const selectedVariant = product.variants?.find(
           (v) =>
@@ -374,6 +345,31 @@ export class ProductDetailsPageComponent {
 
   goToImage(index: number): void {
     this.currentImageIndex = index;
+  }
+
+  private startAutoSlide(product: Product): void {
+    const gallery = this.buildGallery(product);
+    if (gallery.length <= 1) return;
+
+    interval(4000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (!this.isZooming) {
+          this.nextImage(gallery);
+        }
+      });
+  }
+
+  handleMouseMove(event: MouseEvent): void {
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    this.zoomX = x;
+    this.zoomY = y;
+  }
+
+  toggleZoom(state: boolean): void {
+    this.isZooming = state;
   }
 
   private buildGallery(product: Product): string[] {

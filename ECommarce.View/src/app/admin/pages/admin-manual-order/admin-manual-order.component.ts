@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy, inject, signal } from "@angular/core";
 import {
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
@@ -45,6 +46,7 @@ interface CartItem {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     RouterModule,
     AppIconComponent,
@@ -91,8 +93,10 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     city: new FormControl(""),
     area: new FormControl(""),
     deliveryMethodId: new FormControl<number | null>(null, [Validators.required]),
-    sourcePageId: new FormControl<number | null>(null, [Validators.required]),
-    socialMediaSourceId: new FormControl<number | null>(null, [Validators.required]),
+    sourcePageId: new FormControl<number | null>(null),
+    socialMediaSourceId: new FormControl<number | null>(null),
+    noteType: new FormControl<"Customer" | "Official">("Official"),
+    noteText: new FormControl(""),
   });
 
   deliveryMethods: DeliveryMethod[] = [];
@@ -117,8 +121,8 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     this.isPreOrderMode = this.router.url.includes("pre-order");
     // Load data with forkJoin to avoid race conditions when editing
     const sources$ = forkJoin({
-      pages: this.sourceService.getActiveSourcePages(),
-      sources: this.sourceService.getActiveSocialMediaSources(),
+      pages: this.sourceService.getAllSourcePages(),
+      sources: this.sourceService.getAllSocialMediaSources(),
       methods: this.settingsService.getDeliveryMethods()
     });
 
@@ -345,6 +349,11 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     return this.subtotal + this.shippingCost;
   }
 
+  onPriceChange() {
+    // Totals are calculated via getters, so we just need to trigger change detection if needed
+    // or perform any additional logic like updating a "Custom Price" flag
+  }
+
   submitOrder() {
     if (this.orderForm.invalid) {
       this.orderForm.markAllAsTouched();
@@ -370,10 +379,13 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
       isPreOrder: this.isPreOrderMode,
       sourcePageId: this.orderForm.value.sourcePageId,
       socialMediaSourceId: this.orderForm.value.socialMediaSourceId,
+      adminNote: this.orderForm.value.noteType === "Official" ? this.orderForm.value.noteText : undefined,
+      customerNote: this.orderForm.value.noteType === "Customer" ? this.orderForm.value.noteText : undefined,
       items: this.cart().map(i => ({
         productId: i.product.id,
         quantity: i.quantity,
         size: i.selectedSize,
+        unitPrice: i.unitPrice,
       }))
     };
 
@@ -403,12 +415,19 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
           city: order.city || "",
           area: order.area || "",
           sourcePageId: order.sourcePageId,
-          socialMediaSourceId: order.socialMediaSourceId
+          socialMediaSourceId: order.socialMediaSourceId,
+          noteType: order.customerNote ? "Customer" : "Official",
+          noteText: order.customerNote || order.adminNote || ""
         });
 
         if (order.city) {
-            this.areas = (BANGLADESH_LOCATIONS as any)[order.city] || [];
-            this.filteredAreas = this.areas;
+            const cleanCity = order.city.trim();
+            // Find city name case-insensitively in BANGLADESH_LOCATIONS keys
+            const cityKey = Object.keys(BANGLADESH_LOCATIONS).find(k => k.toLowerCase() === cleanCity.toLowerCase());
+            if (cityKey) {
+              this.areas = (BANGLADESH_LOCATIONS as any)[cityKey] || [];
+              this.filteredAreas = this.areas;
+            }
         }
 
         // Map items to cart
@@ -421,9 +440,13 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
         this.cart.set(cartItems);
 
         // Selection of delivery method
-        // Try to match cost or ID if available in more detailed model
-        const method = this.deliveryMethods.find(m => m.cost === order.shippingCost);
-        if (method) this.orderForm.patchValue({ deliveryMethodId: method.id });
+        if (order.deliveryMethodId) {
+          this.orderForm.patchValue({ deliveryMethodId: order.deliveryMethodId });
+        } else {
+          // Fallback to cost matching if ID is missing (legacy)
+          const method = this.deliveryMethods.find(m => m.cost === order.shippingCost);
+          if (method) this.orderForm.patchValue({ deliveryMethodId: method.id });
+        }
       },
       error: (err: any) => this.notification.error("Failed to load order for editing")
     });

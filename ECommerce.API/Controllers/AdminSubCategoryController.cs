@@ -110,7 +110,9 @@ public class AdminSubCategoryController : ControllerBase
             Name = subCategory.Name,
             Slug = subCategory.Slug,
             CategoryId = subCategory.CategoryId,
-            IsActive = subCategory.IsActive
+            IsActive = subCategory.IsActive,
+            ImageUrl = subCategory.ImageUrl,
+            DisplayOrder = subCategory.DisplayOrder
         };
 
         return CreatedAtAction(nameof(GetSubCategoryById), new { id = subCategory.Id }, result);

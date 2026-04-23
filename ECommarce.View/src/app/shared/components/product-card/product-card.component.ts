@@ -12,6 +12,7 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
 import { CartService } from "../../../core/services/cart.service";
 import { QuickAddModalComponent } from "../quick-add-modal/quick-add-modal.component";
 import { AppIconComponent } from "../app-icon/app-icon.component";
+import { sortProductSizes } from "../../../core/constants/product.constants";
 
 @Component({
   selector: "app-product-card",
@@ -68,28 +69,9 @@ export class ProductCardComponent {
     const variants = this.variants;
     if (!variants || !variants.length) return null;
 
-    // Just sort by size, because price filtering strictly removes 0 prices which may validly fallback to product.price
-    const sizeOrder = [
-      "xs",
-      "s",
-      "m",
-      "l",
-      "xl",
-      "xxl",
-      "2xl",
-      "3xl",
-      "4xl",
-      "5xl",
-    ];
-
-    const sorted = [...variants].sort((a, b) => {
-      const aIdx = sizeOrder.indexOf((a.size || "").toLowerCase());
-      const bIdx = sizeOrder.indexOf((b.size || "").toLowerCase());
-      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
-      if (aIdx !== -1) return -1;
-      if (bIdx !== -1) return 1;
-      return (a.size || "").localeCompare(b.size || "");
-    });
+    const sorted = sortProductSizes(variants.map(v => v.size || ""))
+      .map(size => variants.find(v => (v.size || "") === size)!)
+      .filter(v => !!v);
 
     return sorted[0] ?? null;
   }
@@ -186,34 +168,12 @@ export class ProductCardComponent {
     const variants = this.variants;
     if (!variants || !variants.length) return [];
 
-    const sizeOrder = [
-      "xs",
-      "s",
-      "m",
-      "l",
-      "xl",
-      "xxl",
-      "2xl",
-      "3xl",
-      "4xl",
-      "5xl",
-    ];
-
-    return variants
+    const uniqueSizes = variants
       .filter((v: ProductVariant) => v.size && v.size.trim() !== "")
       .map((v: ProductVariant) => v.size as string)
-      .filter(
-        (value: string, index: number, self: string[]) =>
-          self.indexOf(value) === index,
-      ) // Unique sizes
-      .sort((a: string, b: string) => {
-        const aIdx = sizeOrder.indexOf(a.toLowerCase());
-        const bIdx = sizeOrder.indexOf(b.toLowerCase());
-        if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
-        if (aIdx !== -1) return -1;
-        if (bIdx !== -1) return 1;
-        return a.localeCompare(b);
-      });
+      .filter((value: string, index: number, self: string[]) => self.indexOf(value) === index);
+
+    return sortProductSizes(uniqueSizes);
   }
 
   get description(): string {

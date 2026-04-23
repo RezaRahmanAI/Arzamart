@@ -46,16 +46,19 @@ public class ProductService : IProductService
         }, TimeSpan.FromMinutes(60));
     }
 
-    public async Task<ProductDto?> GetProductByIdAsync(int id)
+    public async Task<ProductDto?> GetProductByIdAsync(int id, bool ignoreFilters = false)
     {
-        var cacheKey = $"product:details:id:{id}";
+        var cacheKey = $"product:details:id:{id}{(ignoreFilters ? "_ignoreFilters" : "")}";
         
         return await _cache.GetOrCreateAsync(cacheKey, async () => 
         {
             var spec = new ProductsWithCategoriesSpecification(id);
-            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
+            var product = ignoreFilters 
+                ? await _unitOfWork.Repository<Product>().GetEntityWithSpecIgnoreFiltersAsync(spec)
+                : await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
+                
             var dto = _mapper.Map<Product, ProductDto>(product);
-            if (dto != null)
+            if (dto != null && product != null)
             {
                 dto.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? "";
             }
@@ -84,14 +87,13 @@ public class ProductService : IProductService
             Sku = $"PRD-{DateTime.UtcNow.Ticks}",
             FabricAndCare = dto.Meta?.FabricAndCare,
             ShippingAndReturns = dto.Meta?.ShippingAndReturns,
+            SizeChartUrl = dto.Meta?.SizeChartUrl,
             Tier = dto.Tier,
             Tags = dto.Tags,
             SortOrder = dto.SortOrder,
             SubCategoryId = dto.SubCategoryId,
             CollectionId = dto.CollectionId,
-            ProductType = dto.ProductType,
-            IsBundle = dto.IsBundle,
-            BundleQuantity = dto.BundleQuantity > 0 ? dto.BundleQuantity : 1
+            ProductType = dto.ProductType
         };
 
         _unitOfWork.Repository<Product>().Add(product);
@@ -148,10 +150,12 @@ public class ProductService : IProductService
         return dtoResult;
     }
 
-    public async Task<ProductDto?> UpdateProductAsync(int id, ProductUpdateDto dto)
+    public async Task<ProductDto?> UpdateProductAsync(int id, ProductUpdateDto dto, bool ignoreFilters = false)
     {
         var spec = new ProductsWithCategoriesSpecification(id);
-        var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
+        var product = ignoreFilters
+            ? await _unitOfWork.Repository<Product>().GetEntityWithSpecIgnoreFiltersAsync(spec, track: true)
+            : await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec, track: true);
 
         if (product == null) throw new KeyNotFoundException("Product not found");
 
@@ -171,14 +175,13 @@ public class ProductService : IProductService
         product.IsFeatured = dto.IsFeatured;
         product.FabricAndCare = dto.Meta?.FabricAndCare;
         product.ShippingAndReturns = dto.Meta?.ShippingAndReturns;
+        product.SizeChartUrl = dto.Meta?.SizeChartUrl;
         product.Tier = dto.Tier;
         product.Tags = dto.Tags;
         product.SortOrder = dto.SortOrder;
         product.SubCategoryId = dto.SubCategoryId;
         product.CollectionId = dto.CollectionId;
         product.ProductType = dto.ProductType;
-        product.IsBundle = dto.IsBundle;
-        product.BundleQuantity = dto.BundleQuantity > 0 ? dto.BundleQuantity : 1;
 
         // Sync images and variants ... (keep existing logic)
         foreach (var img in product.Images.ToList()) _unitOfWork.Repository<ProductImage>().Delete(img);
@@ -263,13 +266,23 @@ public class ProductService : IProductService
     {
         return await _cache.GetOrCreateAsync("product:sizes", async () => 
         {
-            return await _unitOfWork.Repository<ProductVariant>()
+            var sizes = await _unitOfWork.Repository<ProductVariant>()
                 .GetQueryable()
                 .Where(v => !string.IsNullOrEmpty(v.Size))
                 .Select(v => v.Size!)
                 .Distinct()
-                .OrderBy(s => s)
                 .ToListAsync();
+
+            var sizeOrder = new List<string> { 
+                "2", "4", "6", "8", "10", "12", "14", "16",
+                "28", "30", "32", "34", "36", "38", "40", "42", "44",
+                "xs", "s", "m", "l", "xl", "xxl", "2xl", "xxxl", "3xl", "4xl", "5xl" 
+            };
+
+            return sizes.OrderBy(s => {
+                var index = sizeOrder.IndexOf(s.ToLower());
+                return index == -1 ? 999 : index;
+            }).ThenBy(s => s).ToList();
         }, TimeSpan.FromHours(24));
     }
 }

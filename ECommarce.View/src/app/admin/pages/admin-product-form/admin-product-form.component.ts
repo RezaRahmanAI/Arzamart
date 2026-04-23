@@ -113,8 +113,6 @@ export class AdminProductFormComponent implements OnDestroy {
   private mediaFileMap = new Map<string, File>();
 
   openSizeDropdownIndex: number | null = null;
-  bundleSearchQuery = "";
-  showBundleSearchResults = false;
 
   form = this.formBuilder.group(
     {
@@ -144,16 +142,13 @@ export class AdminProductFormComponent implements OnDestroy {
       meta: this.formBuilder.group({
         fabricAndCare: [""],
         shippingAndReturns: [""],
+        sizeChartUrl: [""],
       }),
       productType: [ProductType.Simple],
-      bundleItems: this.formBuilder.array([]),
-      isBundle: [false],
-      bundleQuantity: [1, [Validators.min(1)]],
     },
     {},
   );
 
-  allProducts: AdminProduct[] = []; // To select components for combo
   ProductType = ProductType; // For template access
 
   constructor() {
@@ -178,30 +173,9 @@ export class AdminProductFormComponent implements OnDestroy {
 
     // Setup cascading listeners
     this.setupCascadingSelects();
-    this.setupBundleListeners();
   }
 
-  get filteredBundleProducts(): AdminProduct[] {
-    if (!this.bundleSearchQuery) {
-      return this.allProducts.slice(0, 5); // Show first 5 if no search
-    }
-    const query = this.bundleSearchQuery.toLowerCase();
-    return this.allProducts.filter(
-      (p) =>
-        p.name.toLowerCase().includes(query) ||
-        p.sku?.toLowerCase().includes(query),
-    );
-  }
 
-  setupBundleListeners(): void {
-    this.form.get("isBundle")?.valueChanges.subscribe((isBundle) => {
-      if (isBundle) {
-        this.form.patchValue({ productType: ProductType.Combo });
-      } else {
-        this.form.patchValue({ productType: ProductType.Simple });
-      }
-    });
-  }
 
   loadCategories(): void {
     this.categoriesService.getAll().subscribe((categories) => {
@@ -211,8 +185,6 @@ export class AdminProductFormComponent implements OnDestroy {
       if (this.isEditMode && this.productId) {
         this.loadProduct(this.productId);
       }
-      // Also load all products for combo selection
-      this.loadAllProducts();
       // Load available sizes for datalist
       this.loadAvailableSizes();
     });
@@ -229,19 +201,7 @@ export class AdminProductFormComponent implements OnDestroy {
     });
   }
 
-  loadAllProducts(): void {
-    this.productsService
-      .getProducts({
-        pageSize: 1000,
-        page: 1,
-        searchTerm: "",
-        category: "",
-        statusTab: "all",
-      })
-      .subscribe((res) => {
-        this.allProducts = res.items;
-      });
-  }
+
 
   setupCascadingSelects(): void {
     this.form.get("category")?.valueChanges.subscribe((categoryId) => {
@@ -324,46 +284,7 @@ export class AdminProductFormComponent implements OnDestroy {
     return this.form.get("variants.sizes") as FormArray;
   }
 
-  get bundleItemsArray(): FormArray {
-    return this.form.get("bundleItems") as FormArray;
-  }
 
-  addBundleItem(product: AdminProduct): void {
-    // Check if already added
-    const exists = this.bundleItemsArray.controls.some(
-      (c) => String(c.get("componentProductId")?.value) === String(product.id),
-    );
-
-    if (exists) {
-      this.notification.info("Product already added to bundle");
-      return;
-    }
-
-    const group = this.formBuilder.group({
-      componentProductId: [product.id, Validators.required],
-      componentVariantId: [null],
-      quantity: [1, [Validators.required, Validators.min(1)]],
-      // Extra fields for UI display
-      _name: [product.name],
-      _sku: [product.sku],
-      _image: [product.imageUrl],
-      _variants: [product.variants || []],
-    });
-    this.bundleItemsArray.push(group);
-    this.bundleSearchQuery = "";
-    this.showBundleSearchResults = false;
-  }
-
-  removeBundleItem(index: number): void {
-    this.bundleItemsArray.removeAt(index);
-  }
-
-  getComponentVariants(productId: any): any[] {
-    const product = this.allProducts.find(
-      (p) => String(p.id) === String(productId),
-    );
-    return product?.variants || [];
-  }
 
   loadProduct(productId: number): void {
     this.productsService
@@ -408,36 +329,7 @@ export class AdminProductFormComponent implements OnDestroy {
           tags: (product as any).tags || "",
           sortOrder: product.sortOrder,
           productType: product.productType,
-          isBundle: product.isBundle,
-          bundleQuantity: product.bundleQuantity || 1,
         });
-
-        // Load bundle items if any
-        this.bundleItemsArray.clear();
-        if (product.bundleItems && product.bundleItems.length > 0) {
-          product.bundleItems.forEach((item) => {
-            const compProduct = this.allProducts.find(
-              (p) => String(p.id) === String(item.componentProductId),
-            );
-            this.bundleItemsArray.push(
-              this.formBuilder.group({
-                componentProductId: [
-                  item.componentProductId,
-                  Validators.required,
-                ],
-                componentVariantId: [item.componentVariantId],
-                quantity: [
-                  item.quantity,
-                  [Validators.required, Validators.min(1)],
-                ],
-                _name: [compProduct?.name || item.componentProductName || ""],
-                _sku: [compProduct?.sku || ""],
-                _image: [compProduct?.imageUrl || ""],
-                _variants: [compProduct?.variants || []],
-              }),
-            );
-          });
-        }
 
         // 2. Sizes from Variants
         this.sizesArray.clear();
@@ -527,6 +419,10 @@ export class AdminProductFormComponent implements OnDestroy {
               product.shippingAndReturns ||
               (product as any).meta?.shippingAndReturns ||
               "",
+            sizeChartUrl:
+              (product as any).sizeChartUrl ||
+              (product as any).meta?.sizeChartUrl ||
+              "",
           },
         });
       });
@@ -612,6 +508,28 @@ export class AdminProductFormComponent implements OnDestroy {
     }
     this.resetForm();
     void this.router.navigate(["/admin/products"]);
+  }
+
+  openImageUploader(target: string): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e: any) => {
+      const file = e.target.files[0];
+      if (file) {
+        this.productsService.uploadProductMedia([file]).subscribe({
+          next: (urls) => {
+            if (urls && urls.length > 0) {
+              if (target === 'sizeChart') {
+                this.form.get('meta.sizeChartUrl')?.setValue(urls[0]);
+              }
+            }
+          },
+          error: (err) => this.notification.error("Failed to upload image")
+        });
+      }
+    };
+    input.click();
   }
 
   applyFormatting(type: string, textarea: HTMLTextAreaElement): void {
@@ -958,6 +876,7 @@ export class AdminProductFormComponent implements OnDestroy {
       meta: {
         fabricAndCare: raw.meta?.fabricAndCare ?? "",
         shippingAndReturns: raw.meta?.shippingAndReturns ?? "",
+        sizeChartUrl: raw.meta?.sizeChartUrl ?? "",
       },
 
       ratings: {
@@ -965,25 +884,12 @@ export class AdminProductFormComponent implements OnDestroy {
         count: 0,
       },
 
-      // Legacy/Extra fields for updated backend
       tier: raw.tier ?? "",
       tags: raw.tags ?? "",
       sortOrder: Number(raw.sortOrder ?? 0),
       subCategoryId: raw.subCategory ? Number(raw.subCategory) : null,
       collectionId: raw.collection ? Number(raw.collection) : null,
       productType: raw.productType as ProductType,
-      bundleItems:
-        raw.productType === ProductType.Combo
-          ? (raw.bundleItems as any[]).map((bi) => ({
-              componentProductId: Number(bi.componentProductId),
-              componentVariantId: bi.componentVariantId
-                ? Number(bi.componentVariantId)
-                : undefined,
-              quantity: Number(bi.quantity),
-            }))
-          : [],
-      isBundle: Boolean(raw.isBundle),
-      bundleQuantity: Number(raw.bundleQuantity || 1),
     };
     // but we want to match backend DTO structure primarily.
     // Actually the interface is updated, so it should be fine.
@@ -1042,8 +948,6 @@ export class AdminProductFormComponent implements OnDestroy {
         shippingAndReturns: "",
       },
       productType: ProductType.Simple,
-      isBundle: false,
-      bundleQuantity: 1,
     });
     this.mediaError = "";
 

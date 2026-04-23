@@ -40,6 +40,7 @@ public class ProductDto
     public string? MetaDescription { get; set; }
     public string? FabricAndCare { get; set; }
     public string? ShippingAndReturns { get; set; }
+    public string? SizeChartUrl { get; set; }
     
     // ilyn.global Design Fields
     public string? Tier { get; set; }
@@ -47,10 +48,6 @@ public class ProductDto
     public int SortOrder { get; set; }
 
     public ProductType ProductType { get; set; }
-
-    // Simplified Bundle System
-    public bool IsBundle { get; set; }
-    public int BundleQuantity { get; set; }
 }
 
 public class ProductImageDto
@@ -74,14 +71,7 @@ public class ProductVariantDto
     public int StockQuantity { get; set; }
 }
 
-public class ProductBundleItemDto
-{
-    public int ComponentProductId { get; set; }
-    public string? ComponentProductName { get; set; }
-    public int? ComponentVariantId { get; set; }
-    public string? ComponentVariantName { get; set; }
-    public int Quantity { get; set; }
-}
+
 
 public class ProductListDto
 {

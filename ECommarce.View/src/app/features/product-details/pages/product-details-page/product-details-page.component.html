@@ -21,9 +21,6 @@
           {{ vm.product.name }}
         </h1>
         <div class="flex items-center justify-center gap-3 text-[9px] uppercase tracking-[0.2em] font-bold text-[#bbb]">
-          @if (vm.product.shortDescription) {
-            <span class="text-accent">{{ vm.product.shortDescription }}</span>
-          }
         </div>
       </div>
 
@@ -62,16 +59,24 @@
               <!-- Main Image Area -->
               <div class="relative flex-1">
                 <div
-                  class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4] max-h-[50vh] md:max-h-[60vh] lg:max-h-[550px]"
+                  class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4] max-h-[50vh] md:max-h-[60vh] lg:max-h-[550px] cursor-zoom-in"
+                  (mousemove)="handleMouseMove($event)"
+                  (mouseenter)="toggleZoom(true)"
+                  (mouseleave)="toggleZoom(false)"
                 >
                   <!-- Images -->
                   @for (url of vm.gallery; track url; let i = $index) {
                     <img
                       [src]="imageUrlService.getImageUrl(url)"
                       [alt]="vm.product.name"
-                      class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out"
-                      [class.opacity-100]="i === currentImageIndex"
-                      [class.opacity-0]="i !== currentImageIndex"
+                      class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out pointer-events-none"
+                      [style.transform-origin]="zoomX + '% ' + zoomY + '%'"
+                      [ngClass]="{
+                        'opacity-100': i === currentImageIndex,
+                        'opacity-0': i !== currentImageIndex,
+                        'scale-[2.5]': isZooming && i === currentImageIndex
+                      }"
+                      style="transition: opacity 1200ms ease-in-out, transform 0.3s ease-out;"
                     />
                   }
 
@@ -84,6 +89,15 @@
                         class="px-4 py-1.5 bg-white/95 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] border border-[#eee] backdrop-blur-sm shadow-sm"
                       >
                         {{ vm.product.tier }}
+                      </span>
+                    </div>
+                  }
+
+                  <!-- Offer Badge -->
+                  @if (vm.currentCompareAtPrice && vm.currentCompareAtPrice > vm.currentPrice) {
+                    <div class="absolute top-6 left-6 z-10">
+                      <span class="px-4 py-1.5 bg-accent text-white text-[10px] uppercase tracking-[0.3em] font-bold shadow-lg shadow-accent/20">
+                        Offer -৳{{ getDiscountAmount({ price: vm.currentPrice, compareAtPrice: vm.currentCompareAtPrice }) }}
                       </span>
                     </div>
                   }
@@ -205,11 +219,6 @@
               >
                 <span class="text-[#bbb]">Item Ref:</span>
                 <span class="text-[#1a1a1a]">{{ vm.product.sku }}</span>
-                @if (vm.product.shortDescription) {
-                  <span class="text-[#c8922a]"
-                    >• {{ vm.product.shortDescription }}</span
-                  >
-                }
               </div>
             </div>
 
@@ -228,16 +237,6 @@
                   size="sm"
                 ></app-price-display>
 
-                <span
-                  class="text-[12px] font-bold text-red-500 uppercase tracking-[0.3em] ml-auto"
-                >
-                  Offer -৳{{
-                    getDiscountAmount({
-                      price: vm.currentPrice,
-                      compareAtPrice: vm.currentCompareAtPrice,
-                    })
-                  }}
-                </span>
               }
             </div>
 
@@ -339,7 +338,7 @@
                   [disabled]="!vm.currentStock"
                   class="w-full h-14 bg-accent text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all duration-300 disabled:opacity-20 rounded-xl shadow-lg shadow-accent/20"
                 >
-                  Secure Checkout
+                  ORDER NOW
                 </button>
               </div>
 
@@ -624,6 +623,7 @@
 
   @if (isSizeGuideOpen) {
     <app-size-guide
+      [customImageUrl]="vm.product.sizeChartUrl || null"
       (close)="closeSizeGuide()"
     ></app-size-guide>
   }

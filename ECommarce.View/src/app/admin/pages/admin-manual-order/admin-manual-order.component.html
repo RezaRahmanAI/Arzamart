@@ -19,11 +19,187 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-20">
-    <!-- Left Column: Customer Info & Cart -->
-    <div class="lg:col-span-5 space-y-6">
-      <!-- Customer Info Card -->
-      <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
+    <!-- Main Content Area -->
+    <div class="lg:col-span-12 space-y-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Cart Section (Stays on top/left) -->
+        <div class="lg:col-span-5 space-y-6">
+          <!-- Order Items Card -->
+          <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-white">
+                  <app-icon name="ShoppingCart" size="24"></app-icon>
+                </div>
+                <h2 class="text-xl font-bold text-primary dark:text-white">Order Items</h2>
+              </div>
+              <div class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-300">
+                {{ cart().length }} lines
+              </div>
+            </div>
+
+            <div *ngIf="cart().length > 0" class="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+              <div *ngFor="let item of cart()" class="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-800 group">
+                <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-white border border-gray-200 dark:border-gray-800">
+                  <img [src]="imageUrlService.getImageUrl(item.product.imageUrl || '')" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h4 class="text-xs font-bold text-primary dark:text-white truncate">{{ item.product.name }}</h4>
+                  <div *ngIf="item.selectedSize" class="mt-1">
+                    <span class="px-1.5 py-0.5 bg-primary/10 text-primary dark:text-primary-light rounded text-[9px] font-black uppercase tracking-wider border border-primary/20">
+                      Size: {{ item.selectedSize }}
+                    </span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button (click)="updateQuantity(item, -1)" class="w-6 h-6 rounded-md bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-red-500 border border-gray-100 dark:border-gray-700 transition-colors">
+                    <app-icon name="Minus" size="12"></app-icon>
+                  </button>
+                  <span class="text-xs font-bold text-primary dark:text-white w-4 text-center">{{ item.quantity }}</span>
+                  <button (click)="updateQuantity(item, 1)" class="w-6 h-6 rounded-md bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-primary border border-gray-100 dark:border-gray-700 transition-colors">
+                    <app-icon name="Plus" size="12"></app-icon>
+                  </button>
+                </div>
+                <div class="flex flex-col items-end gap-1 ml-2 min-w-[90px]">
+                  <div class="flex items-center gap-1 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg px-2 py-1 shadow-sm">
+                    <span class="text-[10px] font-bold text-gray-400">৳</span>
+                    <input 
+                      type="number" 
+                      [(ngModel)]="item.unitPrice" 
+                      (ngModelChange)="onPriceChange()"
+                      class="w-14 bg-transparent border-none p-0 text-xs font-bold text-primary dark:text-white focus:ring-0 outline-none"
+                    >
+                  </div>
+                  <app-price-display [amount]="item.unitPrice * item.quantity" className="text-[10px] font-black text-gray-400"></app-price-display>
+                </div>
+                <button (click)="removeFromCart(item)" class="p-1.5 text-red-500/50 hover:text-red-500 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/50">
+                  <app-icon name="Trash2" size="16"></app-icon>
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="cart().length === 0" class="py-8 text-center text-gray-400 border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-2xl">
+              <app-icon name="PackagePlus" size="32" className="mx-auto mb-2 opacity-20"></app-icon>
+              <p class="text-xs">No items in cart</p>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-500">Subtotal</span>
+                <app-price-display [amount]="subtotal" className="text-primary dark:text-white font-bold"></app-price-display>
+              </div>
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-500">Shipping</span>
+                <app-price-display [amount]="shippingCost" className="text-primary dark:text-white font-bold"></app-price-display>
+              </div>
+              <div class="flex justify-between items-center p-4 bg-primary text-white rounded-xl shadow-lg shadow-primary/20">
+                <span class="font-bold">Total</span>
+                <div class="text-right">
+                    <app-price-display [amount]="total" className="text-xl font-black text-white"></app-price-display>
+                </div>
+              </div>
+
+              <button 
+                (click)="submitOrder()"
+                [disabled]="isSubmitting || cart().length === 0"
+                class="w-full py-4 rounded-xl font-black text-base flex items-center justify-center gap-2 transition-all shadow-lg"
+                [ngClass]="(isSubmitting || cart().length === 0) ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-primary hover:bg-primary-hover text-white hover:scale-[1.02] active:scale-95 shadow-primary/30'"
+              >
+                <app-icon *ngIf="isSubmitting" name="Loader2" size="20" className="animate-spin"></app-icon>
+                <span>{{ isSubmitting ? 'Processing...' : (isEditMode ? 'UPDATE ORDER NOW' : 'CONFIRM ORDER NOW') }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Search & Selection (Now easier to reach) -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="relative">
+            <app-icon name="Search" size="20" className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
+            <input 
+              [formControl]="searchControl"
+              type="text" 
+              placeholder="Search products by name or SKU..."
+              class="w-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-2xl py-4 pl-14 pr-5 text-primary dark:text-white focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-base font-medium shadow-sm"
+            >
+            <div *ngIf="isLoadingProducts" class="absolute right-5 top-1/2 -translate-y-1/2">
+              <app-icon name="Loader2" size="20" className="text-primary animate-spin"></app-icon>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden h-[600px] flex flex-col">
+            <div class="overflow-y-auto flex-1 custom-scrollbar p-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div 
+                      *ngFor="let product of products()" 
+                      class="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-3 shadow-sm hover:shadow-md transition-all group relative flex flex-col"
+                    >
+                      <!-- Total Stock Badge -->
+                      <div class="absolute top-2 right-2 z-10">
+                        <span class="px-2 py-1 rounded-lg text-[10px] font-black shadow-sm" 
+                              [ngClass]="product.stockQuantity > 0 ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'">
+                          {{ product.stockQuantity }}
+                        </span>
+                      </div>
+
+                      <!-- Product Image -->
+                      <div class="relative aspect-square rounded-xl overflow-hidden mb-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+                        <img 
+                          [src]="imageUrlService.getImageUrl(product.imageUrl || '')" 
+                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        >
+                        <!-- Quick Add Overlay (Click card to open size selector if needed) -->
+                        <div 
+                          (click)="handleProductClick(product)"
+                          class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                        >
+                          <app-icon name="Plus" size="32" className="text-white"></app-icon>
+                        </div>
+                      </div>
+
+                      <!-- Product Info -->
+                      <div class="flex-1 min-w-0 mb-3">
+                        <h4 class="text-xs font-bold text-primary dark:text-white truncate mb-1">{{ product.name }}</h4>
+                        <div class="flex items-center gap-2">
+                           <app-price-display [amount]="product.price" className="text-xs font-black text-primary dark:text-white"></app-price-display>
+                           <span *ngIf="product.compareAtPrice" class="text-[10px] text-gray-400 line-through">৳{{ product.compareAtPrice }}</span>
+                        </div>
+                        <div *ngIf="product.compareAtPrice" class="mt-1">
+                          <span class="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Discount: ৳{{ product.compareAtPrice - product.price }}</span>
+                        </div>
+                      </div>
+
+                      <!-- Sizes with Individual Stock -->
+                      <div class="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-gray-50 dark:border-gray-800">
+                        <ng-container *ngFor="let variant of product.variants">
+                          <button 
+                            *ngIf="variant.size"
+                            (click)="addToCart(product, variant.size); $event.stopPropagation()"
+                            class="px-2 py-1 rounded-lg border text-[9px] font-bold transition-all flex items-center gap-1.5 hover:scale-105 active:scale-95"
+                            [ngClass]="variant.stockQuantity > 0 
+                                ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-primary hover:text-primary' 
+                                : 'bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 text-gray-300 cursor-not-allowed'"
+                          >
+                            <span>{{ variant.size }}</span>
+                            <span class="opacity-50">:</span>
+                            <span [ngClass]="variant.stockQuantity <= 5 ? 'text-red-500' : 'text-emerald-500'">{{ variant.stockQuantity }}</span>
+                          </button>
+                        </ng-container>
+                      </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!isLoadingProducts && products().length === 0" class="py-20 text-center">
+                    <app-icon name="PackageX" size="48" className="mx-auto mb-4 text-gray-200 dark:text-gray-800"></app-icon>
+                    <p class="text-gray-500 text-sm font-bold">Search and select products to add</p>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Info Card (Now below items and search for better flow) -->
+      <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-3xl p-8 shadow-sm max-w-4xl mx-auto">
         <div class="flex items-center gap-4 mb-6">
           <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
             <app-icon name="User" size="24"></app-icon>
@@ -181,151 +357,34 @@
                 </div>
               </div>
             </div>
+            <div class="grid grid-cols-1 gap-4">
+               <div>
+                  <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Note Type</label>
+                  <div class="relative">
+                    <select 
+                      formControlName="noteType"
+                      class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white appearance-none focus:outline-none"
+                    >
+                      <option value="Official">Official Note (Internal)</option>
+                      <option value="Customer">Customer Note (On Invoice)</option>
+                    </select>
+                    <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
+                  </div>
+               </div>
+               <div>
+                  <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Note Content</label>
+                  <textarea 
+                    formControlName="noteText" 
+                    rows="2"
+                    placeholder="Enter note here..."
+                    class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                  ></textarea>
+               </div>
+            </div>
           </div>
         </form>
       </div>
-
-      <!-- Order Items Card -->
-      <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-white">
-              <app-icon name="ShoppingCart" size="24"></app-icon>
-            </div>
-            <h2 class="text-xl font-bold text-primary dark:text-white">Order Items</h2>
-          </div>
-          <div class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-300">
-            {{ cart().length }} lines
-          </div>
-        </div>
-
-        <div *ngIf="cart().length > 0" class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-          <div *ngFor="let item of cart()" class="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-800 group">
-            <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-white border border-gray-200 dark:border-gray-800">
-              <img [src]="imageUrlService.getImageUrl(item.product.imageUrl || '')" class="w-full h-full object-cover">
-            </div>
-            <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-bold text-primary dark:text-white truncate">{{ item.product.name }}</h4>
-              <p class="text-[10px] text-gray-400 mt-0.5">{{ item.selectedSize }}</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button (click)="updateQuantity(item, -1)" class="w-6 h-6 rounded-md bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-red-500 border border-gray-100 dark:border-gray-700 transition-colors">
-                <app-icon name="Minus" size="12"></app-icon>
-              </button>
-              <span class="text-xs font-bold text-primary dark:text-white w-4 text-center">{{ item.quantity }}</span>
-              <button (click)="updateQuantity(item, 1)" class="w-6 h-6 rounded-md bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-primary border border-gray-100 dark:border-gray-700 transition-colors">
-                <app-icon name="Plus" size="12"></app-icon>
-              </button>
-            </div>
-            <div class="text-right ml-2 min-w-[70px]">
-              <app-price-display [amount]="item.unitPrice * item.quantity" className="text-sm font-bold text-primary dark:text-white"></app-price-display>
-            </div>
-            <button (click)="removeFromCart(item)" class="p-1.5 text-red-500/50 hover:text-red-500 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/50">
-              <app-icon name="Trash2" size="16"></app-icon>
-            </button>
-          </div>
-        </div>
-
-        <div *ngIf="cart().length === 0" class="py-12 text-center text-gray-400 border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-2xl">
-          <app-icon name="PackagePlus" size="40" className="mx-auto mb-3 opacity-20"></app-icon>
-          <p class="text-sm">No items in cart</p>
-        </div>
-
-        <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
-          <div class="flex justify-between items-center text-sm">
-            <span class="text-gray-500">Subtotal</span>
-            <app-price-display [amount]="subtotal" className="text-primary dark:text-white font-bold"></app-price-display>
-          </div>
-          <div class="flex justify-between items-center text-sm">
-            <span class="text-gray-500">Shipping</span>
-            <app-price-display [amount]="shippingCost" className="text-primary dark:text-white font-bold"></app-price-display>
-          </div>
-          <div class="flex justify-between items-center p-4 bg-primary text-white rounded-xl shadow-lg shadow-primary/20">
-            <span class="font-bold">Total Payable</span>
-            <div class="text-right">
-                <app-price-display [amount]="total" className="text-2xl font-black text-white"></app-price-display>
-            </div>
-          </div>
-
-          <button 
-            (click)="submitOrder()"
-            [disabled]="isSubmitting || cart().length === 0"
-            class="w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
-            [ngClass]="(isSubmitting || cart().length === 0) ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:scale-[1.02] active:scale-95 shadow-xl'"
-          >
-            <app-icon *ngIf="isSubmitting" name="Loader2" size="20" className="animate-spin"></app-icon>
-            <span>{{ isSubmitting ? 'Processing...' : (isEditMode ? 'Update Order' : 'Create Order') }}</span>
-          </button>
-        </div>
-      </div>
     </div>
-
-    <!-- Right Column: Product Selection -->
-    <div class="lg:col-span-7 space-y-6">
-      <div class="relative">
-        <app-icon name="Search" size="20" className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
-        <input 
-          [formControl]="searchControl"
-          type="text" 
-          placeholder="Search products by name or SKU..."
-          class="w-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-2xl py-5 pl-14 pr-5 text-primary dark:text-white focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-lg font-medium shadow-sm"
-        >
-        <div *ngIf="isLoadingProducts" class="absolute right-5 top-1/2 -translate-y-1/2">
-          <app-icon name="Loader2" size="24" className="text-primary animate-spin"></app-icon>
-        </div>
-      </div>
-
-      <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden min-h-[600px]">
-        <table class="w-full text-left">
-          <thead>
-            <tr class="bg-gray-50/50 dark:bg-gray-800/20 border-b border-gray-100 dark:border-gray-800 text-[10px] uppercase font-bold text-gray-400 tracking-widest">
-              <th class="px-6 py-5">Product</th>
-              <th class="px-6 py-5">Price</th>
-              <th class="px-6 py-5">Stock</th>
-              <th class="px-6 py-5 text-right">Add</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-            <tr 
-              *ngFor="let product of products()" 
-              (click)="handleProductClick(product)"
-              class="hover:bg-gray-50/80 dark:hover:bg-gray-800/30 transition-all cursor-pointer group"
-            >
-              <td class="px-6 py-5">
-                <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 group-hover:scale-110 transition-transform">
-                    <img [src]="imageUrlService.getImageUrl(product.imageUrl || '')" class="w-full h-full object-cover">
-                  </div>
-                  <div>
-                    <div class="text-sm font-bold text-primary dark:text-white">{{ product.name }}</div>
-                    <div class="text-[10px] text-gray-400 font-medium">{{ product.sku }}</div>
-                  </div>
-                </div>
-              </td>
-              <td class="px-6 py-5">
-                <app-price-display [amount]="product.price" className="text-sm font-bold text-primary dark:text-white"></app-price-display>
-              </td>
-              <td class="px-6 py-5">
-                <span class="px-2.5 py-1 rounded-full text-[10px] font-black" [ngClass]="product.stockQuantity > 0 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'">
-                  {{ product.stockQuantity }} IN STOCK
-                </span>
-              </td>
-              <td class="px-6 py-5 text-right font-medium">
-                <div class="w-10 h-10 ml-auto rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all border border-gray-100 dark:border-gray-700">
-                  <app-icon name="Plus" size="20"></app-icon>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div *ngIf="!isLoadingProducts && products().length === 0" class="py-20 text-center">
-            <app-icon name="PackageX" size="64" className="mx-auto mb-4 text-gray-200 dark:text-gray-800"></app-icon>
-            <p class="text-gray-500 font-bold">Search and select products to add to cart</p>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- Selection Modal Overlay -->
   <div 

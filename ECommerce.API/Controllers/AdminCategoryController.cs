@@ -78,6 +78,11 @@ public class AdminCategoryController : ControllerBase
         { 
             Id = sc.Id, 
             Name = sc.Name,
+            Slug = sc.Slug,
+            CategoryId = sc.CategoryId,
+            IsActive = sc.IsActive,
+            ImageUrl = sc.ImageUrl,
+            DisplayOrder = sc.DisplayOrder,
             Collections = sc.Collections.Select(c => new CollectionDto { Id = c.Id, Name = c.Name }).ToList()
         }).ToList();
 

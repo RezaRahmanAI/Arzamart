@@ -32,7 +32,7 @@ const OFFERS: OfferDetails[] = [
     title: "Midnight Luxe Co-Ord Set",
     subtitle: "Exclusive drop for the weekend campaign",
     description:
-      "A breathable satin blend with tailored lines that transitions from day to evening. Limited inventory with bundled pricing just for this pop-up.",
+      "A breathable satin blend with tailored lines that transitions from day to evening. Limited inventory with special pricing just for this pop-up.",
     imageUrl:
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1000&q=80",
     price: 89,

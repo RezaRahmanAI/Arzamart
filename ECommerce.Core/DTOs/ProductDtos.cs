@@ -63,11 +63,6 @@ public class ProductCreateDto
     public int? CollectionId { get; set; }
 
     public ProductType ProductType { get; set; } = ProductType.Simple;
-    public List<ProductBundleItemCreateDto> BundleItems { get; set; } = new();
-
-    // Simplified Bundle System
-    public bool IsBundle { get; set; }
-    public int BundleQuantity { get; set; } = 1;
 }
 
 // Product update DTO
@@ -128,11 +123,6 @@ public class ProductUpdateDto
     public int? CollectionId { get; set; }
 
     public ProductType ProductType { get; set; } = ProductType.Simple;
-    public List<ProductBundleItemCreateDto> BundleItems { get; set; } = new();
-
-    // Simplified Bundle System
-    public bool IsBundle { get; set; }
-    public int BundleQuantity { get; set; } = 1;
 }
 
 public class ProductVariantEditDto
@@ -147,12 +137,7 @@ public class ProductVariantEditDto
     public string? ImageUrl { get; set; }
 }
 
-public class ProductBundleItemCreateDto
-{
-    public int ComponentProductId { get; set; }
-    public int? ComponentVariantId { get; set; }
-    public int Quantity { get; set; } = 1;
-}
+
 
 // Supporting DTOs
 public class ProductMediaDto
@@ -188,6 +173,7 @@ public class ProductMetaDto
 {
     public string FabricAndCare { get; set; } = string.Empty;
     public string ShippingAndReturns { get; set; } = string.Empty;
+    public string? SizeChartUrl { get; set; }
 }
 
 public class ProductRatingsDto

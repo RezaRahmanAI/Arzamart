@@ -47,7 +47,9 @@ export interface Order {
   city?: string;
   area?: string;
   isPreOrder: boolean;
+  isStockAvailable: boolean;
   adminNote?: string;
+  customerNote?: string;
   sourcePageId?: number;
   sourcePageName?: string;
   socialMediaSourceId?: number;
@@ -86,6 +88,9 @@ export interface OrdersQueryParams {
   manualOnly?: boolean;
   sourcePageId?: number;
   socialMediaSourceId?: number;
+  customerPhone?: string;
+  productId?: number;
+  orderNumber?: string;
 }
 
 export interface OrderStats {

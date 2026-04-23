@@ -23,6 +23,7 @@ public class Product : BaseEntity
     public string? MetaDescription { get; set; }
     public string? FabricAndCare { get; set; }
     public string? ShippingAndReturns { get; set; }
+    public string? SizeChartUrl { get; set; }
     
     // ilyn.global Design Fields
     public string? Tier { get; set; } // Premium, Luxury, Platinum, Sahara
@@ -44,7 +45,4 @@ public class Product : BaseEntity
     public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
-    // Simplified Bundle System
-    public bool IsBundle { get; set; } = false;
-    public int BundleQuantity { get; set; } = 1;
 }

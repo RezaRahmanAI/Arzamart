@@ -15,6 +15,8 @@ public class OrderCreateDto
     public bool IsPreOrder { get; set; }
     public int? SourcePageId { get; set; }
     public int? SocialMediaSourceId { get; set; }
+    public string? AdminNote { get; set; }
+    public string? CustomerNote { get; set; }
     public List<OrderItemDto> Items { get; set; } = new();
 }
 
@@ -43,10 +45,13 @@ public class OrderDto
     public decimal ShippingCost { get; set; }
     public decimal Total { get; set; }
     public int ItemsCount { get; set; }
+    public int? DeliveryMethodId { get; set; }
     public string Status { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public bool IsPreOrder { get; set; }
+    public bool IsStockAvailable { get; set; }
     public string? AdminNote { get; set; }
+    public string? CustomerNote { get; set; }
     public int? SourcePageId { get; set; }
     public string? SourcePageName { get; set; }
     public int? SocialMediaSourceId { get; set; }

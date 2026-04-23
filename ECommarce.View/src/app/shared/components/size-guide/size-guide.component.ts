@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, inject } from "@angular/core";
+import { Component, EventEmitter, Output, OnInit, inject, Input } from "@angular/core";
 import { AsyncPipe, NgClass } from "@angular/common";
 import { SiteSettingsService } from "../../../core/services/site-settings.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
@@ -46,30 +46,41 @@ import { map } from "rxjs";
             class="text-[11px] text-slate-500 uppercase tracking-widest mb-8 text-center font-medium"
           >
             {{
-              (settings$ | async)?.sizeGuideImageUrl
+              customImageUrl || (settings$ | async)?.sizeGuideImageUrl
                 ? "Reference Chart"
                 : "Find your perfect fit"
             }}
           </p>
 
-          <!-- Custom Image Display -->
-          @if ((settings$ | async)?.sizeGuideImageUrl; as imageUrl) {
-            <div
-              class="mb-10 group"
-            >
-              <div
-                class="rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50/30"
-              >
+          <!-- Product Specific Image -->
+          @if (customImageUrl) {
+            <div class="mb-10 group">
+              <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50/30">
                 <img
-                  [src]="getImageUrl(imageUrl)"
-                  alt="Size Guide"
+                  [src]="getImageUrl(customImageUrl)"
+                  alt="Product Size Chart"
                   class="w-full h-auto object-contain"
                 />
               </div>
               <p class="mt-4 text-[10px] text-slate-400 text-center italic">
-                * Measurements shown in the image are for reference.
+                * This chart is specifically for this product.
               </p>
             </div>
+          } @else if ((settings$ | async)?.sizeGuideImageUrl) {
+            @if ((settings$ | async)?.sizeGuideImageUrl; as globalImageUrl) {
+              <div class="mb-10 group">
+                <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50/30">
+                  <img
+                    [src]="getImageUrl(globalImageUrl)"
+                    alt="Global Size Guide"
+                    class="w-full h-auto object-contain"
+                  />
+                </div>
+                <p class="mt-4 text-[10px] text-slate-400 text-center italic">
+                  * Measurements shown in the image are for reference.
+                </p>
+              </div>
+            }
           } @else {
               <!-- Unit Toggle -->
               <div class="flex justify-center mb-8">
@@ -186,6 +197,7 @@ import { map } from "rxjs";
   ],
 })
 export class SizeGuideComponent implements OnInit {
+  @Input() customImageUrl: string | null = null;
   @Output() close = new EventEmitter<void>();
 
   private settingsService = inject(SiteSettingsService);

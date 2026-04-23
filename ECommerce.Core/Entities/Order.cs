@@ -47,6 +47,7 @@ public class Order : BaseEntity
     public string? CreatedIp { get; set; }
     public bool IsPreOrder { get; set; }
     public string? AdminNote { get; set; }
+    public string? CustomerNote { get; set; }
     public int? SourcePageId { get; set; }
     public SourcePage? SourcePage { get; set; }
 

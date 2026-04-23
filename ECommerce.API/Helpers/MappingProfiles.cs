@@ -20,6 +20,7 @@ public class MappingProfiles : Profile
             .ForMember(d => d.CategoryName, o => o.Ignore())
             .ForMember(d => d.SubCategoryName, o => o.MapFrom(s => s.SubCategory != null ? s.SubCategory.Name : ""))
             .ForMember(d => d.CollectionName, o => o.MapFrom(s => s.Collection != null ? s.Collection.Name : null))
+            .ForMember(d => d.StockQuantity, o => o.MapFrom(s => s.Variants.Any() ? s.Variants.Sum(v => v.StockQuantity) : s.StockQuantity))
             .ForMember(d => d.Price, o => o.MapFrom(s => 
                 s.Variants.Any(v => v.Price > 0) 
                     ? s.Variants.Where(v => v.Price > 0).Min(v => v.Price) ?? 0 
@@ -51,8 +52,6 @@ public class MappingProfiles : Profile
                 PurchaseRate = v.PurchaseRate,
                 StockQuantity = v.StockQuantity
             })))
-            .ForMember(d => d.IsBundle, o => o.MapFrom(s => s.IsBundle))
-            .ForMember(d => d.BundleQuantity, o => o.MapFrom(s => s.BundleQuantity))
             .ForMember(d => d.FabricAndCare, o => o.MapFrom(s => s.FabricAndCare))
             .ForMember(d => d.Description, o => o.MapFrom(s => s.Description));
 

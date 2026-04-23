@@ -102,7 +102,13 @@
                 Safe
               </span>
             </td>
-            <td class="p-4 text-right">
+            <td class="p-4 text-right flex flex-col items-end gap-1">
+              <a 
+                [routerLink]="['/admin/customers', customer.phone, 'history']"
+                class="text-xs font-semibold underline text-primary hover:text-primary/80"
+              >
+                View History
+              </a>
               <button
                 (click)="toggleSuspicious(customer)"
                 [class]="

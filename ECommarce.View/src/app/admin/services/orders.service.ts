@@ -38,8 +38,11 @@ export class OrdersService {
 
     if (params.startDate) fromObject.startDate = params.startDate;
     if (params.endDate) fromObject.endDate = params.endDate;
-    if (params.sourcePageId) fromObject.sourcePageId = params.sourcePageId;
-    if (params.socialMediaSourceId) fromObject.socialMediaSourceId = params.socialMediaSourceId;
+    if (params.sourcePageId != null && (params.sourcePageId as any) !== 'null') fromObject.sourcePageId = params.sourcePageId;
+    if (params.socialMediaSourceId != null && (params.socialMediaSourceId as any) !== 'null') fromObject.socialMediaSourceId = params.socialMediaSourceId;
+    if (params.customerPhone) fromObject.customerPhone = params.customerPhone;
+    if (params.productId) fromObject.productId = params.productId;
+    if (params.orderNumber) fromObject.orderNumber = params.orderNumber;
 
     const queryParams = new HttpParams({ fromObject });
     let headers = new HttpHeaders();
@@ -65,8 +68,11 @@ export class OrdersService {
 
     if (params.startDate) fromObject.startDate = params.startDate;
     if (params.endDate) fromObject.endDate = params.endDate;
-    if (params.sourcePageId) fromObject.sourcePageId = params.sourcePageId;
-    if (params.socialMediaSourceId) fromObject.socialMediaSourceId = params.socialMediaSourceId;
+    if (params.sourcePageId != null && (params.sourcePageId as any) !== 'null') fromObject.sourcePageId = params.sourcePageId;
+    if (params.socialMediaSourceId != null && (params.socialMediaSourceId as any) !== 'null') fromObject.socialMediaSourceId = params.socialMediaSourceId;
+    if (params.customerPhone) fromObject.customerPhone = params.customerPhone;
+    if (params.productId) fromObject.productId = params.productId;
+    if (params.orderNumber) fromObject.orderNumber = params.orderNumber;
 
     const queryParams = new HttpParams({ fromObject });
 
@@ -87,8 +93,11 @@ export class OrdersService {
 
     if (params.startDate) fromObject.startDate = params.startDate;
     if (params.endDate) fromObject.endDate = params.endDate;
-    if (params.sourcePageId) fromObject.sourcePageId = params.sourcePageId;
-    if (params.socialMediaSourceId) fromObject.socialMediaSourceId = params.socialMediaSourceId;
+    if (params.sourcePageId != null && (params.sourcePageId as any) !== 'null') fromObject.sourcePageId = params.sourcePageId;
+    if (params.socialMediaSourceId != null && (params.socialMediaSourceId as any) !== 'null') fromObject.socialMediaSourceId = params.socialMediaSourceId;
+    if (params.customerPhone) fromObject.customerPhone = params.customerPhone;
+    if (params.productId) fromObject.productId = params.productId;
+    if (params.orderNumber) fromObject.orderNumber = params.orderNumber;
 
     const queryParams = new HttpParams({ fromObject });
 
@@ -126,6 +135,10 @@ export class OrdersService {
   
   updateOrder(orderId: number, payload: any): Observable<Order> {
     return this.api.post<Order>(`/admin/orders/${orderId}`, payload);
+  }
+
+  transferToMainOrder(orderId: number): Observable<any> {
+    return this.api.post<any>(`/admin/orders/${orderId}/transfer`, {});
   }
 
   private buildCsv(rows: Order[]): string {

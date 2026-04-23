@@ -36,9 +36,12 @@ public class AdminOrdersController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] int? sourcePageId = null,
-        [FromQuery] int? socialMediaSourceId = null)
+        [FromQuery] int? socialMediaSourceId = null,
+        [FromQuery] string? customerPhone = null,
+        [FromQuery] int? productId = null,
+        [FromQuery] string? orderNumber = null)
     {
-        var (items, total) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, page, pageSize, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
+        var (items, total) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, page, pageSize, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber);
         // Ensure properties are lowercase to match frontend expectations if JSON serialization doesn't do it automatically
         return Ok(new { items, total });
     }
@@ -54,10 +57,13 @@ public class AdminOrdersController : ControllerBase
         [FromQuery] bool websiteOnly = false,
         [FromQuery] bool manualOnly = false,
         [FromQuery] int? sourcePageId = null,
-        [FromQuery] int? socialMediaSourceId = null)
+        [FromQuery] int? socialMediaSourceId = null,
+        [FromQuery] string? customerPhone = null,
+        [FromQuery] int? productId = null,
+        [FromQuery] string? orderNumber = null)
     {
         // Keep for backward compatibility if needed, but this is the slow one
-        var (items, _) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, 1, 100000, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
+        var (items, _) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, 1, 100000, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber);
         return Ok(items);
     }
 
@@ -72,9 +78,12 @@ public class AdminOrdersController : ControllerBase
         [FromQuery] bool websiteOnly = false,
         [FromQuery] bool manualOnly = false,
         [FromQuery] int? sourcePageId = null,
-        [FromQuery] int? socialMediaSourceId = null)
+        [FromQuery] int? socialMediaSourceId = null,
+        [FromQuery] string? customerPhone = null,
+        [FromQuery] int? productId = null,
+        [FromQuery] string? orderNumber = null)
     {
-        var stats = await _orderService.GetOrderStatsAsync(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
+        var stats = await _orderService.GetOrderStatsAsync(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber);
         return Ok(stats);
     }
 
@@ -139,6 +148,18 @@ public class AdminOrdersController : ControllerBase
         {
             return BadRequest(new { message = ex.Message });
         }
+    }
+
+    [HttpPost("{id}/transfer")]
+    public async Task<ActionResult> TransferToMainOrder(int id)
+    {
+        var adminName = GetCurrentAdminName();
+        var success = await _orderService.TransferToMainOrderAsync(id, adminName);
+        if (!success) return BadRequest(new { message = "Error transferring order to main pool" });
+
+        await _cacheStore.EvictByTagAsync("catalog", default);
+
+        return Ok(new { message = "Order transferred to main pool successfully" });
     }
 }
 

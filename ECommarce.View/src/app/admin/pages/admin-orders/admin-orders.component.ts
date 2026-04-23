@@ -19,6 +19,7 @@ import {
 } from "../../models/orders.models";
 import { OrdersService } from "../../services/orders.service";
 import { AdminOrderInvoiceComponent } from "./components/admin-order-invoice/admin-order-invoice.component";
+import { ProductsService } from "../../services/products.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { SourceManagementService } from "../../../core/services/source-management.service";
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
@@ -45,11 +46,14 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private sourceService = inject(SourceManagementService);
   private notification = inject(NotificationService);
+  private productService = inject(ProductsService);
   private destroy$ = new Subject<void>();
 
   isLoading = false;
   isRefreshing = false;
-  searchControl = new FormControl("", { nonNullable: true });
+  orderIdSearchControl = new FormControl("", { nonNullable: true });
+  phoneSearchControl = new FormControl("", { nonNullable: true });
+  productSearchControl = new FormControl("", { nonNullable: true });
 
   orders: Order[] = [];
   invoiceOrder: OrderDetail | null = null;
@@ -176,9 +180,13 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   selectedDateRange: OrdersQueryParams["dateRange"] = "Last 30 Days";
   selectedSourcePageId: number | null = null;
   selectedSocialMediaSourceId: number | null = null;
+  selectedCustomerPhone: string | null = null;
+  selectedProductId: number | null = null;
   
   sourcePages: SourcePage[] = [];
   socialMediaSources: SocialMediaSource[] = [];
+  suggestedProducts: any[] = [];
+  showProductSuggestions = false;
 
   statusMenuOpen = false;
   dateMenuOpen = false;
@@ -223,15 +231,44 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.route.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.isPreOrderMode = !!data['preOrderOnly'];
       this.isWebsiteOnlyMode = !!data['websiteOnly'];
-      this.loadOrders();
-      this.loadSources();
+      
+      // Check for phone param in route
+      this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
+        if (params['phone']) {
+          this.selectedCustomerPhone = params['phone'];
+          this.selectedDateRange = "All Time"; // default to all time for history
+        }
+        this.loadOrders();
+        this.loadSources();
+      });
     });
 
-    this.searchControl.valueChanges
+    this.orderIdSearchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.page = 1;
         this.loadOrders();
+      });
+
+    this.phoneSearchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.page = 1;
+        this.loadOrders();
+      });
+
+    this.productSearchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(query => {
+        if (query.length >= 2) {
+          this.productService.getProducts({ searchTerm: query, pageSize: 10, category: 'All', statusTab: 'All', page: 1 }).subscribe(res => {
+            this.suggestedProducts = res.items;
+            this.showProductSuggestions = true;
+          });
+        } else {
+          this.suggestedProducts = [];
+          this.showProductSuggestions = false;
+        }
       });
   }
 
@@ -240,20 +277,34 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.sourceService.getAllSocialMediaSources().subscribe(sources => this.socialMediaSources = sources);
   }
 
-  setSourcePageFilter(id: number | null): void {
-    this.selectedSourcePageId = id;
+  setSourcePageFilter(id: any): void {
+    const value = id === 'null' || id === null ? null : Number(id);
+    this.selectedSourcePageId = value;
     this.page = 1;
     this.loadOrders();
   }
 
-  setSocialMediaFilter(id: number | null): void {
-    this.selectedSocialMediaSourceId = id;
+  setSocialMediaFilter(id: any): void {
+    const value = id === 'null' || id === null ? null : Number(id);
+    this.selectedSocialMediaSourceId = value;
     this.page = 1;
     this.loadOrders();
   }
 
   setOrderTypeFilter(type: any): void {
     this.selectedOrderType = type;
+    this.page = 1;
+    this.loadOrders();
+  }
+
+  setProductFilter(productId: number | null, productName?: string): void {
+    this.selectedProductId = productId;
+    if (productName) {
+      this.productSearchControl.setValue(productName, { emitEvent: false });
+    } else if (productId === null) {
+      this.productSearchControl.setValue('', { emitEvent: false });
+    }
+    this.showProductSuggestions = false;
     this.page = 1;
     this.loadOrders();
   }
@@ -499,9 +550,13 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   moveToMainOrder(order: Order, event: Event): void {
     event.stopPropagation();
-    if (window.confirm("Move this Pre-Order to Main Order (Pending)?")) {
-      this.ordersService.updateStatus(order.id, "Pending", "Converted from Pre-Order").subscribe(() => {
-        this.loadOrders(false);
+    if (window.confirm("Transfer this Pre-Order to Main Order? This will enable stock deduction logic.")) {
+      this.ordersService.transferToMainOrder(order.id).subscribe({
+        next: () => {
+            this.notification.success("Order transferred to main pool");
+            this.loadOrders(false);
+        },
+        error: () => this.notification.error("Failed to transfer order")
       });
     }
   }
@@ -572,7 +627,9 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   private buildParams(): OrdersQueryParams {
     const params: OrdersQueryParams = {
-      searchTerm: this.searchControl.value,
+      searchTerm: "", // Clearing general search
+      orderNumber: this.orderIdSearchControl.value || undefined,
+      customerPhone: this.phoneSearchControl.value || this.selectedCustomerPhone || undefined,
       status: this.selectedStatus,
       dateRange: this.selectedDateRange,
       page: this.page,
@@ -582,6 +639,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       manualOnly: this.selectedOrderType === 'Manual',
       sourcePageId: this.selectedSourcePageId || undefined,
       socialMediaSourceId: this.selectedSocialMediaSourceId || undefined,
+      productId: this.selectedProductId || undefined,
     };
 
     if (this.selectedDateRange === "Custom" && this.customStartDate && this.customEndDate) {
@@ -640,6 +698,15 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       .slice(0, 2)
       .join("")
       .toUpperCase();
+  }
+
+  copyToClipboard(text: string, event: Event): void {
+    event.stopPropagation();
+    navigator.clipboard.writeText(text).then(() => {
+      this.notification.success(`Copied: ${text}`);
+    }).catch(() => {
+      this.notification.error("Failed to copy to clipboard");
+    });
   }
 
 }

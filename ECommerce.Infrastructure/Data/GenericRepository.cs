@@ -39,6 +39,13 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await query.FirstOrDefaultAsync();
     }
 
+    public async Task<T?> GetEntityWithSpecIgnoreFiltersAsync(ISpecification<T> spec, bool track = false)
+    {
+        var query = ApplySpecification(spec, ignoreFilters: true);
+        if (!track) query = query.AsNoTracking();
+        return await query.FirstOrDefaultAsync();
+    }
+
     public async Task<TResult?> GetEntityWithSpec<TResult>(ISpecification<T> spec)
     {
         return await ApplySpecification(spec)
@@ -93,8 +100,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         _context.Set<T>().Remove(entity);
     }
 
-    private IQueryable<T> ApplySpecification(ISpecification<T> spec, bool evaluateIncludes = true)
+    private IQueryable<T> ApplySpecification(ISpecification<T> spec, bool evaluateIncludes = true, bool ignoreFilters = false)
     {
-        return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec, evaluateIncludes);
+        var query = _context.Set<T>().AsQueryable();
+        if (ignoreFilters) query = query.IgnoreQueryFilters();
+        return SpecificationEvaluator<T>.GetQuery(query, spec, evaluateIncludes);
     }
 }

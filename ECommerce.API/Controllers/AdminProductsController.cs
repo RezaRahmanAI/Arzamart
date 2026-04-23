@@ -101,6 +101,7 @@ public class AdminProductsController : ControllerBase
         [FromQuery] int pageSize = 10)
     {
         var query = _context.Products
+            .IgnoreQueryFilters()
             .AsNoTracking()
             .AsQueryable();
 
@@ -158,7 +159,7 @@ public class AdminProductsController : ControllerBase
             Price = p.Variants.FirstOrDefault()?.Price ?? 0,
             SalePrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
             PurchaseRate = p.Variants.FirstOrDefault()?.PurchaseRate,
-            p.StockQuantity,
+            StockQuantity = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
             p.IsNew,
             p.IsFeatured,
             Status = p.IsActive ? "Active" : "Draft",
@@ -179,7 +180,7 @@ public class AdminProductsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<ProductDto>> GetProductById(int id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var product = await _productService.GetProductByIdAsync(id, ignoreFilters: true);
 
         if (product == null) return NotFound();
 
@@ -253,14 +254,8 @@ public class AdminProductsController : ControllerBase
     {
         try
         {
-            Console.WriteLine($"[ADMIN_DEBUG] Updating Product {id}: {dto.Name}, Type: {dto.ProductType}, BundleItems: {dto.BundleItems?.Count ?? -1}");
-            if (dto.BundleItems != null)
-            {
-                foreach(var bi in dto.BundleItems) {
-                    Console.WriteLine($"  [ADMIN_DEBUG] Component: {bi.ComponentProductId}, Variant: {bi.ComponentVariantId}, Qty: {bi.Quantity}");
-                }
-            }
-            var result = await _productService.UpdateProductAsync(id, dto);
+            Console.WriteLine($"[ADMIN_DEBUG] Updating Product {id}: {dto.Name}, Type: {dto.ProductType}");
+            var result = await _productService.UpdateProductAsync(id, dto, ignoreFilters: true);
             if (result == null) return BadRequest(new { message = "Error updating product" });
 
             await _cache.RemoveAsync("home_new_arrivals");
@@ -284,6 +279,7 @@ public class AdminProductsController : ControllerBase
     public async Task<ActionResult<bool>> DeleteProduct(int id)
     {
         var product = await _context.Products
+            .IgnoreQueryFilters()
             .Include(p => p.Images)
             .Include(p => p.Variants)
             .FirstOrDefaultAsync(p => p.Id == id);
@@ -392,8 +388,8 @@ public class AdminProductsController : ControllerBase
             ProductName = p.Name,
             ProductSku = p.Sku ?? string.Empty,
             ImageUrl = p.ImageUrl ?? string.Empty,
-            TotalStock = p.StockQuantity,
-            StockQuantity = p.StockQuantity,
+            TotalStock = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
+            StockQuantity = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
             Price = p.Variants.FirstOrDefault()?.Price,
             CompareAtPrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
             PurchaseRate = p.Variants.FirstOrDefault()?.PurchaseRate,
@@ -464,12 +460,20 @@ public class AdminProductsController : ControllerBase
         var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
         if (product == null) return NotFound(new { message = "Product not found" });
 
-        product.StockQuantity = dto.Quantity;
-        
-        // If updating main product price (usually for products without variants or to set a default)
-        // We'll update the first variant's price as well if it exists
         var spec = new BaseSpecification<ProductVariant>(v => v.ProductId == productId);
         var variants = await _unitOfWork.Repository<ProductVariant>().ListAsync(spec);
+
+        // Update main product stock only if no variants exist, 
+        // otherwise it MUST be the sum of variants to avoid drift.
+        if (variants.Any())
+        {
+            product.StockQuantity = variants.Sum(v => v.StockQuantity);
+        }
+        else 
+        {
+            product.StockQuantity = dto.Quantity;
+        }
+        
         foreach (var v in variants)
         {
             if (dto.Price.HasValue) v.Price = dto.Price;
@@ -492,5 +496,35 @@ public class AdminProductsController : ControllerBase
         }
 
         return BadRequest(new { message = "Failed to update stock" });
+    }
+
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpPost("inventory/sync-all")]
+    public async Task<ActionResult> SyncAllInventory()
+    {
+        var products = await _context.Products.Include(p => p.Variants).ToListAsync();
+        int fixedCount = 0;
+
+        foreach (var product in products)
+        {
+            if (product.Variants.Any())
+            {
+                int correctStock = product.Variants.Sum(v => v.StockQuantity);
+                if (product.StockQuantity != correctStock)
+                {
+                    product.StockQuantity = correctStock;
+                    fixedCount++;
+                }
+            }
+        }
+
+        if (fixedCount > 0)
+        {
+            await _context.SaveChangesAsync();
+            await _cacheStore.EvictByTagAsync("catalog", default);
+            return Ok(new { message = $"Synchronized {fixedCount} products successfully." });
+        }
+
+        return Ok(new { message = "All products are already synchronized." });
     }
 }

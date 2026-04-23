@@ -141,6 +141,12 @@
             </div>
         </div>
 
+        <!-- Customer Note Section -->
+        <div *ngIf="order.customerNote" class="mb-4 border border-gray-900 p-2 bg-gray-50/50">
+            <p class="text-[9px] uppercase font-black text-gray-500 mb-1">Customer Note:</p>
+            <p class="text-[11px] font-bold text-gray-900 leading-tight italic">"{{ order.customerNote }}"</p>
+        </div>
+
         <!-- Footer Message -->
         <div class="border border-gray-900 p-2 text-center bg-white mt-auto">
             <p class="text-[11px] font-bold text-gray-900 leading-snug">

@@ -46,8 +46,7 @@ public class OrderService : IOrderService
             {
                 if (productDict.TryGetValue(itemDto.ProductId, out var product))
                 {
-                    int multiplier = product.IsBundle ? product.BundleQuantity : 1;
-                    int needed = itemDto.Quantity * multiplier;
+                    int needed = itemDto.Quantity;
 
                     if (product.StockQuantity < needed)
                     {
@@ -80,12 +79,11 @@ public class OrderService : IOrderService
                 throw new KeyNotFoundException($"Product {itemDto.ProductId} not found");
             }
 
-            // Calculate total units to deduct (Quantity * BundleMultiplier)
-            int multiplier = product.IsBundle ? product.BundleQuantity : 1;
-            int totalDeduction = itemDto.Quantity * multiplier;
+            int totalDeduction = itemDto.Quantity;
 
-            // 1 & 2. Deduct from stock ONLY if NOT a pre-order
-            if (!finalIsPreOrder)
+            // 1 & 2. Deduct from stock ONLY if NOT a pre-order AND status is a "Deducted" status
+            // Note: Since CreateOrderAsync usually defaults to Pending or PreOrder, stock will NOT be deducted here by default.
+            if (!finalIsPreOrder && ShouldDeductStock(finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending))
             {
                 // 1. Deduct from specific variant if size/variant is selected
                 if (!string.IsNullOrEmpty(itemDto.Size))
@@ -207,6 +205,8 @@ public class OrderService : IOrderService
             IsPreOrder = finalIsPreOrder,
             SourcePageId = orderDto.SourcePageId,
             SocialMediaSourceId = orderDto.SocialMediaSourceId,
+            AdminNote = orderDto.AdminNote,
+            CustomerNote = orderDto.CustomerNote,
             CreatedAt = DateTime.UtcNow
         };
         
@@ -238,8 +238,8 @@ public class OrderService : IOrderService
 
         if (order == null) throw new KeyNotFoundException("Order not found");
 
-        // 1. Handle Stock Reversal for existing items (if NOT pre-order)
-        if (!order.IsPreOrder)
+        // 1. Handle Stock Reversal for existing items (if stock was already deducted)
+        if (!order.IsPreOrder && ShouldDeductStock(order.Status))
         {
             await AdjustStockOnStatusChangeAsync(order, returnToStock: true);
         }
@@ -259,10 +259,9 @@ public class OrderService : IOrderService
         {
             if (!productDict.TryGetValue(itemDto.ProductId, out var product)) continue;
 
-            if (!orderDto.IsPreOrder)
+            if (!orderDto.IsPreOrder && ShouldDeductStock(order.Status))
             {
-                int multiplier = product.IsBundle ? product.BundleQuantity : 1;
-                int deduction = itemDto.Quantity * multiplier;
+                int deduction = itemDto.Quantity;
 
                 product.StockQuantity -= deduction;
                 if (!string.IsNullOrEmpty(itemDto.Size))
@@ -293,6 +292,8 @@ public class OrderService : IOrderService
         order.DeliveryMethodId = orderDto.DeliveryMethodId;
         order.SourcePageId = orderDto.SourcePageId;
         order.SocialMediaSourceId = orderDto.SocialMediaSourceId;
+        order.AdminNote = orderDto.AdminNote;
+        order.CustomerNote = orderDto.CustomerNote;
         
         order.SubTotal = newItems.Sum(i => i.UnitPrice * i.Quantity);
         
@@ -329,7 +330,15 @@ public class OrderService : IOrderService
         spec.AddInclude(x => x.SocialMediaSource!);
         var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
-        return _mapper.Map<Order, OrderDto>(order!);
+        if (order == null) return null;
+
+        var dto = _mapper.Map<Order, OrderDto>(order);
+        if (order.IsPreOrder)
+        {
+            dto.IsStockAvailable = await CalculateIsStockAvailableAsync(order);
+        }
+        
+        return dto;
     }
 
     public async Task<bool> UpdateOrderStatusAsync(int id, string status, string? updatedBy = null, string? note = null)
@@ -345,37 +354,23 @@ public class OrderService : IOrderService
         {
             var oldStatus = order.Status;
             
-            // Return stock if moving TO Cancelled from something else
-            if (newStatus == OrderStatus.Cancelled && oldStatus != OrderStatus.Cancelled)
+            bool wasDeducted = ShouldDeductStock(oldStatus) && !order.IsPreOrder;
+            bool shouldBeDeducted = ShouldDeductStock(newStatus) && !order.IsPreOrder;
+
+            if (wasDeducted && !shouldBeDeducted)
             {
                 await AdjustStockOnStatusChangeAsync(order, returnToStock: true);
             }
-            // Deduct stock if moving FROM Cancelled to something else
-            else if (oldStatus == OrderStatus.Cancelled && newStatus != OrderStatus.Cancelled)
+            else if (!wasDeducted && shouldBeDeducted)
             {
-                 await AdjustStockOnStatusChangeAsync(order, returnToStock: false);
+                await AdjustStockOnStatusChangeAsync(order, returnToStock: false);
             }
 
-            // Handle Pre-order conversion
-            if (newStatus == OrderStatus.PreOrder && !order.IsPreOrder)
+            // Sync IsPreOrder flag ONLY when moving TO PreOrder status.
+            // Do NOT automatically clear it when moving away from PreOrder status (requires explicit transfer).
+            if (newStatus == OrderStatus.PreOrder)
             {
-                // Moving FROM Main Order TO Pre-Order: Return items to stock
-                if (oldStatus != OrderStatus.Cancelled) // Already returned if it was cancelled
-                {
-                    await AdjustStockOnStatusChangeAsync(order, returnToStock: true);
-                }
                 order.IsPreOrder = true;
-            }
-            else if (order.IsPreOrder && newStatus != OrderStatus.PreOrder)
-            {
-                // Moving FROM Pre-Order TO Main Order: Restore flag and deduct stock
-                order.IsPreOrder = false;
-                
-                // If moving to a standard active status (not Cancelled), deduct stock
-                if (oldStatus == OrderStatus.PreOrder && newStatus != OrderStatus.Cancelled)
-                {
-                    await AdjustStockOnStatusChangeAsync(order, returnToStock: false);
-                }
             }
 
             order.Status = newStatus;
@@ -401,6 +396,19 @@ public class OrderService : IOrderService
         return false;
     }
 
+    private bool ShouldDeductStock(OrderStatus status)
+    {
+        return status switch
+        {
+            OrderStatus.Confirmed => true,
+            OrderStatus.Processing => true,
+            OrderStatus.Packed => true,
+            OrderStatus.Shipped => true,
+            OrderStatus.Delivered => true,
+            _ => false
+        };
+    }
+
     private async Task AdjustStockOnStatusChangeAsync(Order order, bool returnToStock)
     {
         if (order.IsPreOrder) return;
@@ -414,8 +422,7 @@ public class OrderService : IOrderService
         {
             if (productDict.TryGetValue(item.ProductId, out var product))
             {
-                int multiplier = product.IsBundle ? product.BundleQuantity : 1;
-                int totalChange = item.Quantity * multiplier;
+                int totalChange = item.Quantity;
 
                 if (returnToStock)
                 {
@@ -447,15 +454,24 @@ public class OrderService : IOrderService
         }
     }
 
-    public async Task<(IReadOnlyList<OrderDto> Items, int Total)> GetOrdersForAdminAsync(string? searchTerm, string? status, string? dateRange, int page, int pageSize, bool preOrderOnly = false, bool websiteOnly = false, bool manualOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null)
+    public async Task<(IReadOnlyList<OrderDto> Items, int Total)> GetOrdersForAdminAsync(string? searchTerm, string? status, string? dateRange, int page, int pageSize, bool preOrderOnly = false, bool websiteOnly = false, bool manualOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null, string? customerPhone = null, int? productId = null, string? orderNumber = null)
     {
-        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
+        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber);
         var total = await _unitOfWork.Repository<Order>().CountAsync(spec);
         
         spec.ApplyPaging(pageSize * (page - 1), pageSize);
         var orders = await _unitOfWork.Repository<Order>().ListAsync(spec);
         
-        return (_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderDto>>(orders), total);
+        var dtos = _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderDto>>(orders);
+
+        // For pre-orders, calculate stock availability
+        foreach (var dto in dtos.Where(d => d.IsPreOrder))
+        {
+            var order = orders.First(o => o.Id == dto.Id);
+            dto.IsStockAvailable = await CalculateIsStockAvailableAsync(order);
+        }
+        
+        return (dtos, total);
     }
 
     public async Task<OrderDto> AddOrderNoteAsync(int id, string adminName, string note)
@@ -486,9 +502,9 @@ public class OrderService : IOrderService
         return _mapper.Map<Order, OrderDto>(order);
     }
 
-    public async Task<OrderStatsDto> GetOrderStatsAsync(string? searchTerm, string? status, string? dateRange, bool preOrderOnly = false, bool websiteOnly = false, bool manualOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null)
+    public async Task<OrderStatsDto> GetOrderStatsAsync(string? searchTerm, string? status, string? dateRange, bool preOrderOnly = false, bool websiteOnly = false, bool manualOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null, string? customerPhone = null, int? productId = null, string? orderNumber = null)
     {
-        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId);
+        var spec = new OrdersWithFiltersForAdminSpecification(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber);
         
         var query = _unitOfWork.Repository<Order>().GetQueryWithSpec(spec);
 
@@ -503,5 +519,71 @@ public class OrderService : IOrderService
             .FirstOrDefaultAsync();
 
         return stats ?? new OrderStatsDto();
+    }
+
+    public async Task<bool> TransferToMainOrderAsync(int id, string? adminName)
+    {
+        var spec = new BaseSpecification<Order>(o => o.Id == id);
+        spec.AddInclude(o => o.Items);
+        spec.AddInclude(o => o.Logs);
+        
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+        if (order == null || !order.IsPreOrder) return false;
+
+        // 1. Clear PreOrder flag
+        order.IsPreOrder = false;
+
+        // 2. If status is already "Confirmed" or other active states, deduct stock now
+        if (ShouldDeductStock(order.Status))
+        {
+            await AdjustStockOnStatusChangeAsync(order, returnToStock: false);
+        }
+
+        // 3. Log the transfer
+        var log = new OrderLog
+        {
+            OrderId = order.Id,
+            StatusFrom = "PreOrder Pool",
+            StatusTo = "Main Order Pool",
+            ChangedBy = adminName ?? "System",
+            Note = "Transferred from Pre-Order to Main Order",
+            CreatedAt = DateTime.UtcNow
+        };
+        _unitOfWork.Repository<OrderLog>().Add(log);
+
+        _unitOfWork.Repository<Order>().Update(order);
+        return await _unitOfWork.Complete() > 0;
+    }
+
+    private async Task<bool> CalculateIsStockAvailableAsync(Order order)
+    {
+        if (!order.Items.Any()) return false;
+
+        var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
+        var products = await _unitOfWork.Repository<Product>().ListAsync(
+            new ProductsWithCategoriesSpecification(productIds));
+        var productDict = products.ToDictionary(p => p.Id);
+
+        foreach (var item in order.Items)
+        {
+            if (!productDict.TryGetValue(item.ProductId, out var product)) return false;
+
+            int needed = item.Quantity;
+
+            if (!string.IsNullOrEmpty(item.Size))
+            {
+                var normalizedSize = item.Size.Trim().ToLower();
+                var variant = product.Variants.FirstOrDefault(v => 
+                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                
+                if (variant == null || variant.StockQuantity < needed) return false;
+            }
+            else
+            {
+                if (product.StockQuantity < needed) return false;
+            }
+        }
+
+        return true;
     }
 }

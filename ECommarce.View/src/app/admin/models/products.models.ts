@@ -4,7 +4,6 @@ import {
   ProductVariant,
   RelatedProduct,
   ProductType,
-  ProductBundleItem,
 } from "../../core/models/product";
 
 export type ProductStatus = "Active" | "Draft" | "Archived" | "Out of Stock";
@@ -91,6 +90,7 @@ export interface ProductCreatePayload {
   meta: {
     fabricAndCare: string;
     shippingAndReturns: string;
+    sizeChartUrl: string;
   };
 
   ratings: {
@@ -105,9 +105,6 @@ export interface ProductCreatePayload {
   subCategoryId?: number | null;
   collectionId?: number | null;
   productType: ProductType;
-  bundleItems?: ProductBundleItem[];
-  isBundle: boolean;
-  bundleQuantity: number;
 }
 
 export interface ProductUpdatePayload {
@@ -173,9 +170,6 @@ export interface ProductUpdatePayload {
   subCategoryId?: number | null;
   collectionId?: number | null;
   productType: ProductType;
-  bundleItems?: ProductBundleItem[];
-  isBundle: boolean;
-  bundleQuantity: number;
 }
 
 export type ProductsStatusTab = "All Items" | "Active" | "Drafts" | "Archived";
