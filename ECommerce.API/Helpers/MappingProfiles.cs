@@ -94,7 +94,9 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Tags, o => o.MapFrom(s => s.Tags))
             .ForMember(d => d.SortOrder, o => o.MapFrom(s => s.SortOrder))
             .ForMember(d => d.Description, o => o.MapFrom(s => s.Description))
-            .ForMember(d => d.ShortDescription, o => o.MapFrom(s => s.ShortDescription));
+            .ForMember(d => d.ShortDescription, o => o.MapFrom(s => s.ShortDescription))
+            .ForMember(d => d.SubCategoryName, o => o.MapFrom(s => s.SubCategory != null ? s.SubCategory.Name : ""))
+            .ForMember(d => d.CollectionName, o => o.MapFrom(s => s.Collection != null ? s.Collection.Name : null));
 
 
         CreateMap<SubCategory, SubCategoryDto>();

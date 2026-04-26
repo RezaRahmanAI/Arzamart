@@ -39,7 +39,7 @@ export class AdminBannersService {
   }
 
   delete(id: number): Observable<void> {
-    return this.api.delete<void>(`${this.baseUrl}/${id}`);
+    return this.api.post<void>(`${this.baseUrl}/${id}/delete`, {});
   }
 
   uploadImage(file: File): Observable<{ url: string }> {

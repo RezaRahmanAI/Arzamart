@@ -36,7 +36,7 @@ export class SubCategoriesService {
   }
 
   delete(id: number): Observable<void> {
-    return this.api.delete<void>(`/admin/subcategories/${id}`);
+    return this.api.post<void>(`/admin/subcategories/${id}/delete`, {});
   }
 
   uploadImage(file: File): Observable<string> {

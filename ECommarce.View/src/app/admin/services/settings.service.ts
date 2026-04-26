@@ -77,7 +77,7 @@ export class SettingsService {
   }
 
   deleteDeliveryMethod(id: number): Observable<void> {
-    return this.api.delete<void>(`/admin/settings/delivery-methods/${id}`);
+    return this.api.post<void>(`/admin/settings/delivery-methods/${id}/delete`, {});
   }
 
   uploadLogo(file: File): Observable<{ url: string }> {
