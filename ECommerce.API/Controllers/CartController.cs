@@ -58,14 +58,7 @@ public class CartController : ControllerBase
             
         if (product == null) return NotFound("Product not found");
 
-        var normalizedSize = (dto.Size ?? "").Trim().ToLower();
-        var variant = product.Variants.FirstOrDefault(v => 
-            v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-            
-        if (variant != null && variant.StockQuantity < dto.Quantity)
-        {
-            return BadRequest("Insufficient stock");
-        }
+        // Removed stock check to allow pre-ordering out-of-stock items
 
         var existingItem = cart.Items.FirstOrDefault(i => 
             i.ProductId == dto.ProductId && 

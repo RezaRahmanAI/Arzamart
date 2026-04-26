@@ -90,13 +90,35 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
               </div>
             }
 
+            <!-- Quantity Selection -->
+            <div class="mb-8">
+              <label class="text-[10px] uppercase tracking-widest font-bold text-gray-500 block mb-3">
+                Quantity
+              </label>
+              <div class="flex items-center gap-4">
+                <button 
+                  (click)="decreaseQuantity()"
+                  class="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-black transition-colors"
+                >
+                  <app-icon name="Minus" size="16"></app-icon>
+                </button>
+                <span class="text-lg font-bold w-8 text-center">{{ quantity }}</span>
+                <button 
+                  (click)="increaseQuantity()"
+                  class="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-black transition-colors"
+                >
+                  <app-icon name="Plus" size="16"></app-icon>
+                </button>
+              </div>
+            </div>
+
             <button
               (click)="confirm()"
               [disabled]="availableSizes.length > 0 && !selectedSize"
               class="w-full py-4 bg-accent text-white text-[11px] uppercase tracking-[0.3em] font-bold transition-all duration-300 hover:opacity-90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-xl shadow-lg shadow-accent/20"
             >
               <app-icon name="ShoppingBag" size="16"></app-icon>
-              Confirm Selection
+              {{ (selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity) > 0 ? 'Confirm Selection' : 'Confirm Pre-order' }}
             </button>
           </div>
         </div>
@@ -110,12 +132,13 @@ export class QuickAddModalComponent {
     if (val) this.selectedSize = val;
   }
   @Output() close = new EventEmitter<void>();
-  @Output() added = new EventEmitter<{ size?: string }>();
+  @Output() added = new EventEmitter<{ size?: string; quantity: number }>();
 
   readonly imageUrlService = inject(ImageUrlService);
 
   selectedSize: string | null = null;
   selectedImage: string | null = null;
+  quantity = 1;
 
 
 
@@ -165,12 +188,23 @@ export class QuickAddModalComponent {
     this.selectedSize = size;
   }
 
+  increaseQuantity(): void {
+    this.quantity++;
+  }
+
+  decreaseQuantity(): void {
+    if (this.quantity > 1) {
+      this.quantity--;
+    }
+  }
+
   confirm(): void {
     const sizeValid = this.availableSizes.length === 0 || !!this.selectedSize;
 
     if (sizeValid) {
       this.added.emit({
         size: this.selectedSize || undefined,
+        quantity: this.quantity,
       });
     }
   }

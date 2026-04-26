@@ -719,6 +719,74 @@
         </div>
       </div>
     </div>
+    <!-- More Offers Section - PSYCHOLOGICALLY PLACED AT THE END -->
+    <section class="relative py-24 px-6 overflow-hidden mt-10">
+      <!-- Ambient Background Glow -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#1a1a1a]/5 rounded-full blur-[120px] -z-10"></div>
+      
+      <div class="max-w-[1200px] mx-auto">
+        <div class="bg-[#1a1a1a] rounded-[3rem] p-12 md:p-20 relative overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.4)]">
+          <!-- Decorative Elements -->
+          <div class="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl -mr-40 -mt-40"></div>
+          <div class="absolute bottom-0 left-0 w-80 h-80 bg-[#c8922a]/10 rounded-full blur-3xl -ml-40 -mb-40 animate-pulse"></div>
+          
+          <div class="relative z-10 max-w-3xl mx-auto text-center space-y-10">
+            <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+              <span class="text-white/80 text-[10px] font-black uppercase tracking-[0.4em]">Premium Shopping Experience</span>
+            </div>
+            
+            <h2 class="text-4xl md:text-7xl font-serif italic text-white leading-[1.1] tracking-tight">
+              Explore Our <span class="text-[#c8922a]">Full</span> Gallery
+            </h2>
+            
+            <p class="text-white/50 text-lg md:text-xl font-light leading-relaxed max-w-xl mx-auto">
+              Discover over 500+ exclusive designs and limited-edition collections on our main boutique website.
+            </p>
+            
+            <div class="pt-8">
+              <a routerLink="/" class="group relative inline-flex items-center gap-5 bg-white text-[#1a1a1a] px-12 py-6 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl transition-all duration-700 hover:-translate-y-3 active:scale-95 overflow-hidden">
+                <span class="relative z-10 flex items-center gap-4">
+                  <app-icon name="ArrowRight" size="20" className="transition-transform group-hover:translate-x-2"></app-icon>
+                  Visit Main Website
+                </span>
+                
+                <!-- Hover fill effect -->
+                <div class="absolute inset-0 bg-[#c8922a] translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+              </a>
+              
+              <!-- Subtle shadow glow -->
+              <div class="w-48 h-8 bg-[#c8922a]/30 blur-2xl mx-auto -mt-4 rounded-full animate-pulse"></div>
+            </div>
+            
+            <div class="pt-16 border-t border-white/5 grid grid-cols-2 md:grid-cols-4 gap-10">
+              <div class="space-y-1">
+                <p class="text-white font-black text-3xl tabular-nums tracking-tighter">500+</p>
+                <p class="text-white/30 text-[9px] font-black uppercase tracking-[0.2em]">Unique Items</p>
+              </div>
+              <div class="space-y-1">
+                <p class="text-white font-black text-3xl tabular-nums tracking-tighter">Fast</p>
+                <p class="text-white/30 text-[9px] font-black uppercase tracking-[0.2em]">Worldwide Shipping</p>
+              </div>
+              <div class="space-y-1">
+                <p class="text-white font-black text-3xl tabular-nums tracking-tighter">Easy</p>
+                <p class="text-white/30 text-[9px] font-black uppercase tracking-[0.2em]">Return Policy</p>
+              </div>
+              <div class="space-y-1">
+                <p class="text-white font-black text-3xl tabular-nums tracking-tighter">Safe</p>
+                <p class="text-white/30 text-[9px] font-black uppercase tracking-[0.2em]">Cash On Delivery</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-16 text-center">
+          <p class="text-[#1a1a1a]/30 text-[10px] font-black uppercase tracking-[0.5em]">
+            © {{ 2024 }} {{ brandName$ | async }} • Timeless Elegance
+          </p>
+        </div>
+      </div>
+    </section>
   }
 </div>
 

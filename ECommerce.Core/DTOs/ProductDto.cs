@@ -89,6 +89,8 @@ public class ProductListDto
     public bool IsActive { get; set; }
     public bool IsItemProduct { get; set; }
     public string? Tier { get; set; }
+    public string? Tags { get; set; }
+    public int SortOrder { get; set; }
     public string? CollectionName { get; set; }
 
     public List<ProductVariantDto> Variants { get; set; } = new();

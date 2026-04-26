@@ -52,16 +52,16 @@
                 <span class="col-span-8 text-gray-900">{{ order.createdAt | date:'dd/MM/yyyy' }}</span>
               </div>
               <div class="grid grid-cols-12 gap-1">
+                <span class="col-span-4 text-gray-600">Phone:</span>
+                <span class="col-span-8 text-gray-900">{{ order.customerPhone }}</span>
+              </div>
+              <div class="grid grid-cols-12 gap-1">
                 <span class="col-span-4 text-gray-600">Name:</span>
                 <span class="col-span-8 text-gray-900">{{ order.customerName }}</span>
               </div>
               <div class="grid grid-cols-12 gap-1">
                 <span class="col-span-4 text-gray-600">Address:</span>
                 <span class="col-span-8 text-gray-900 leading-tight">{{ order.shippingAddress }} {{ order.area ? ', ' + order.area : '' }} {{ order.city ? ', ' + order.city : '' }}</span>
-              </div>
-              <div class="grid grid-cols-12 gap-1">
-                <span class="col-span-4 text-gray-600">Phone:</span>
-                <span class="col-span-8 text-gray-900">{{ order.customerPhone }}</span>
               </div>
             </div>
           </div>
@@ -141,10 +141,10 @@
             </div>
         </div>
 
-        <!-- Customer Note Section -->
-        <div *ngIf="order.customerNote" class="mb-4 border border-gray-900 p-2 bg-gray-50/50">
-            <p class="text-[9px] uppercase font-black text-gray-500 mb-1">Customer Note:</p>
-            <p class="text-[11px] font-bold text-gray-900 leading-tight italic">"{{ order.customerNote }}"</p>
+        <!-- Customer Note Section (Compact Design) -->
+        <div *ngIf="order.customerNote" class="mb-4 border-l-2 border-gray-900 bg-gray-50 px-3 py-1.5 flex items-start gap-2">
+            <span class="text-[9px] uppercase font-black text-gray-400 shrink-0 mt-0.5">Note:</span>
+            <p class="text-[10px] font-bold text-gray-800 leading-relaxed">"{{ order.customerNote }}"</p>
         </div>
 
         <!-- Footer Message -->

@@ -35,6 +35,8 @@ public class Order : BaseEntity
     public decimal SubTotal { get; set; }
     public decimal Tax { get; set; }
     public decimal ShippingCost { get; set; }
+    public decimal Discount { get; set; }
+    public decimal AdvancePayment { get; set; }
     public decimal Total { get; set; }
     
     public int? DeliveryMethodId { get; set; }

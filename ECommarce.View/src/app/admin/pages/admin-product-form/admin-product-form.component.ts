@@ -150,42 +150,68 @@ export class AdminProductFormComponent implements OnDestroy {
   );
 
   ProductType = ProductType; // For template access
+  isLoading = false;
 
   constructor() {
-    this.loadCategories(); // Load categories first
-
-    // Detect edit mode from route params
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get("id");
-      if (id) {
-        const parsedId = Number(id);
-        if (Number.isFinite(parsedId)) {
-          this.isEditMode = true;
-          this.productId = parsedId;
-          this.pageTitle = "Edit Product";
-          // We call loadProduct inside loadCategories subscription or after
-          // But since loadCategories is async, we might race.
-          // However, patchValue works even if options aren't rendered yet (model value is set).
-          // But filtering needs data.
-        }
-      }
-    });
-
     // Setup cascading listeners
     this.setupCascadingSelects();
+  }
+
+  ngOnInit(): void {
+    this.loadInitialData();
+  }
+
+  private loadInitialData(): void {
+    this.isLoading = true;
+    
+    // Load categories first as they are needed for form population
+    this.categoriesService.getAll().pipe(
+      switchMap(categories => {
+        this.categories = categories;
+        this.loadAvailableSizes();
+        
+        // Return paramMap to handle route changes (component reuse)
+        return this.route.paramMap;
+      })
+    ).subscribe({
+      next: (params) => {
+        const id = params.get("id");
+        if (id) {
+          const parsedId = Number(id);
+          if (Number.isFinite(parsedId)) {
+            this.isEditMode = true;
+            this.productId = parsedId;
+            this.pageTitle = "Edit Product";
+            this.loadProduct(parsedId);
+          } else {
+            this.handleCreateMode();
+          }
+        } else {
+          this.handleCreateMode();
+        }
+      },
+      error: (err) => {
+        console.error("Error loading initial data:", err);
+        this.isLoading = false;
+        this.notification.error("Failed to load categories.");
+      }
+    });
+  }
+
+  private handleCreateMode(): void {
+    this.isEditMode = false;
+    this.productId = null;
+    this.pageTitle = "Create Product";
+    this.resetForm();
+    this.isLoading = false;
   }
 
 
 
   loadCategories(): void {
+    // Legacy - keeping for compatibility if called elsewhere, but we use pipe in ngOnInit
     this.categoriesService.getAll().subscribe((categories) => {
       this.categories = categories;
-
-      // If edit mode, we might need to trigger filtering after data load if product loaded first
-      if (this.isEditMode && this.productId) {
-        this.loadProduct(this.productId);
-      }
-      // Load available sizes for datalist
       this.loadAvailableSizes();
     });
   }
@@ -287,12 +313,17 @@ export class AdminProductFormComponent implements OnDestroy {
 
 
   loadProduct(productId: number): void {
+    this.isLoading = true;
     this.productsService
       .getProductById(productId)
-      .subscribe((product: AdminProduct) => {
-        console.log("Admin Product Edit - Full Product Response:", product);
-
-        // Populate form with product data
+      .subscribe({
+        next: (product: AdminProduct) => {
+          console.log("Admin Product Edit - Full Product Response:", product);
+          
+          // CRITICAL: Clear existing arrays before repopulating
+          this.mediaItemsArray.clear();
+          this.mediaFileMap.clear();
+          this.sizesArray.clear();
         // Pre-fill filtered lists based on product data BEFORE patching
         if (product.categoryId) {
           const category = this.categories.find(
@@ -308,27 +339,27 @@ export class AdminProductFormComponent implements OnDestroy {
         }
 
         this.form.patchValue({
-          name: product.name,
-          description: product.description,
-          shortDescription: product.shortDescription || "",
-          statusActive: product.isActive,
-          category: String(product.categoryId),
-          subCategory: product.subCategoryId
-            ? String(product.subCategoryId)
+          name: product.name || (product as any).Name || "",
+          description: product.description || (product as any).Description || "",
+          shortDescription: product.shortDescription || (product as any).ShortDescription || "",
+          statusActive: product.isActive ?? (product as any).IsActive ?? true,
+          category: String(product.categoryId ?? (product as any).CategoryId ?? ""),
+          subCategory: (product.subCategoryId ?? (product as any).SubCategoryId)
+            ? String(product.subCategoryId ?? (product as any).SubCategoryId)
             : "",
-          collection: product.collectionId ? String(product.collectionId) : "",
-          gender: "women", 
-          price: product.compareAtPrice ?? product.price,
-          salePrice: product.compareAtPrice ? product.price : null,
-          purchaseRate: product.purchaseRate || product.price,
+          collection: (product.collectionId ?? (product as any).CollectionId) ? String(product.collectionId ?? (product as any).CollectionId) : "",
+          gender: (product as any).gender || (product as any).Gender || "women", 
+          price: product.compareAtPrice ?? (product as any).CompareAtPrice ?? product.price ?? (product as any).Price,
+          salePrice: (product.compareAtPrice ?? (product as any).CompareAtPrice) ? (product.price ?? (product as any).Price) : null,
+          purchaseRate: product.purchaseRate ?? (product as any).PurchaseRate ?? product.price ?? (product as any).Price,
 
-          newArrival: product.isNew || false,
-          isFeatured: product.isFeatured || false,
+          newArrival: product.isNew ?? (product as any).IsNew ?? false,
+          isFeatured: product.isFeatured ?? (product as any).IsFeatured ?? false,
 
-          tier: (product as any).tier || "",
-          tags: (product as any).tags || "",
-          sortOrder: product.sortOrder,
-          productType: product.productType,
+          tier: product.tier || (product as any).Tier || "",
+          tags: product.tags || (product as any).Tags || "",
+          sortOrder: product.sortOrder ?? (product as any).SortOrder ?? 0,
+          productType: product.productType ?? (product as any).ProductType,
         });
 
         // 2. Sizes from Variants
@@ -425,7 +456,15 @@ export class AdminProductFormComponent implements OnDestroy {
               "",
           },
         });
-      });
+        
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error("Error loading product:", err);
+        this.isLoading = false;
+        this.notification.error("Failed to load product details.");
+      }
+    });
   }
 
 

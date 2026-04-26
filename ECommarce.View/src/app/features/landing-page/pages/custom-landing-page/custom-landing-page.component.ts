@@ -63,6 +63,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
   private timerInterval: any;
   selectedImage: string = "";
+  slideProgress = 0;
+  private autoSlideInterval: any;
   showAutofillPrompt = false;
 
   readonly orderForm = this.fb.nonNullable.group({
@@ -189,6 +191,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
+    if (this.autoSlideInterval) {
+      clearInterval(this.autoSlideInterval);
+    }
   }
 
   loadData(slug: string): void {
@@ -222,6 +227,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
               next: (related) => {
                 this.selectedImage = res.product.imageUrl || "";
                 this.relatedProducts = related.data.filter(p => p.id !== res.product.id);
+                this.startAutoSlide();
               }
             });
         }
@@ -342,7 +348,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       summary,
       deliveryMethodId: form.deliveryMethodId
     }).subscribe({
-      next: (order) => {
+      next: (order: any) => {
         this.isOrdering = false;
         if (order?.id) {
           // Save user details for next time
@@ -425,8 +431,26 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  startAutoSlide(): void {
+    if (this.autoSlideInterval) clearInterval(this.autoSlideInterval);
+    if (!this.data?.product?.images || this.data.product.images.length <= 1) return;
+
+    const step = 100 / (4000 / 50);
+    this.autoSlideInterval = setInterval(() => {
+      this.slideProgress += step;
+      if (this.slideProgress >= 100) {
+        const images = this.data!.product.images;
+        const currentIndex = images.findIndex(img => img.imageUrl === this.selectedImage);
+        const nextIndex = (currentIndex + 1) % images.length;
+        this.selectedImage = images[nextIndex].imageUrl;
+        this.slideProgress = 0;
+      }
+    }, 50);
+  }
+
   selectImage(url: string): void {
     this.selectedImage = url;
+    this.slideProgress = 0;
   }
 
   scrollToOrder(): void {

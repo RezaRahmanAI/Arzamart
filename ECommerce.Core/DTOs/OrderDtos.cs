@@ -11,6 +11,8 @@ public class OrderCreateDto
     public string Area { get; set; } = string.Empty;
     public int ItemsCount { get; set; }
     public decimal Total { get; set; }
+    public decimal Discount { get; set; }
+    public decimal AdvancePayment { get; set; }
     public int? DeliveryMethodId { get; set; }
     public bool IsPreOrder { get; set; }
     public int? SourcePageId { get; set; }
@@ -29,6 +31,7 @@ public class OrderItemDto
     public decimal? TotalPrice { get; set; }
     public string? Size { get; set; }
     public string? ImageUrl { get; set; }
+    public bool IsStockAvailable { get; set; }
 }
 
 public class OrderDto
@@ -43,6 +46,8 @@ public class OrderDto
     public decimal SubTotal { get; set; }
     public decimal Tax { get; set; }
     public decimal ShippingCost { get; set; }
+    public decimal Discount { get; set; }
+    public decimal AdvancePayment { get; set; }
     public decimal Total { get; set; }
     public int ItemsCount { get; set; }
     public int? DeliveryMethodId { get; set; }

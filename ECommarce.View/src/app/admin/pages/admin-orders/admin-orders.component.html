@@ -1,8 +1,8 @@
-<div [ngClass]="isPreOrderMode ? 'bg-violet-50/30 dark:bg-violet-950/10' : 'bg-gray-50 dark:bg-[#0b1120]'" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 min-h-screen">
+<div [ngClass]="isPreOrderMode ? 'bg-violet-50/30 dark:bg-violet-950/10' : 'bg-gray-50 dark:bg-[#0b1120]'" class="flex-1 space-y-6">
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div>
-      <h2 class="text-primary dark:text-white text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+      <h2 class="text-primary dark:text-white text-2xl md:text-3xl font-semibold leading-tight tracking-tight">
         {{ selectedCustomerPhone ? 'Order History' : (isPreOrderMode ? 'Pre-orders' : 'Orders') }}
       </h2>
       <p class="text-gray-500 dark:text-gray-400 text-sm mt-1 font-medium flex items-center gap-2">
@@ -46,224 +46,192 @@
   </div>
 
   <!-- Filters Toolbar -->
-  <div class="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center bg-white dark:bg-surface-dark p-4 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
-    <!-- Dual Search: Order ID & Phone -->
-    <div class="flex flex-col sm:flex-row gap-3 flex-1 max-w-2xl">
-      <div class="relative flex-1">
-        <app-icon name="Hash" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
+  <div class="bg-white dark:bg-surface-dark p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm transition-all duration-300">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <!-- Order ID Search -->
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+          <app-icon name="Hash" size="18"></app-icon>
+        </div>
         <input
-          class="w-full pl-11 pr-4 h-[46px] bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium text-primary dark:text-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none"
+          class="w-full pl-11 pr-4 h-[48px] bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none placeholder:text-gray-400"
           placeholder="Order ID..."
           type="text"
           [formControl]="orderIdSearchControl"
         />
+        <div class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-[8px] font-bold text-gray-400 uppercase tracking-widest pointer-events-none">
+          ID
+        </div>
       </div>
-      <div class="relative flex-1">
-        <app-icon name="Phone" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
+
+      <!-- Phone Search -->
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+          <app-icon name="Phone" size="18"></app-icon>
+        </div>
         <input
-          class="w-full pl-11 pr-4 h-[46px] bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium text-primary dark:text-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none"
-          placeholder="Phone No..."
+          class="w-full pl-11 pr-4 h-[48px] bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none placeholder:text-gray-400"
+          placeholder="Phone Number..."
           type="text"
           [formControl]="phoneSearchControl"
         />
-      </div>
-    </div>
-
-    <!-- Product Filter -->
-    <div class="relative flex-1 max-w-xs group" (click)="$event.stopPropagation()">
-      <app-icon name="Package" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
-      <input
-        class="w-full pl-11 pr-10 h-[46px] bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-medium text-primary dark:text-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none"
-        [ngClass]="{'border-violet-500/50 ring-violet-500/5': isPreOrderMode && selectedProductId}"
-        placeholder="Filter by product..."
-        type="text"
-        [formControl]="productSearchControl"
-        (focus)="showProductSuggestions = suggestedProducts.length > 0"
-      />
-      <button *ngIf="selectedProductId" 
-              (click)="setProductFilter(null)"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors">
-        <app-icon name="X" size="14"></app-icon>
-      </button>
-
-      <!-- Suggestions Dropdown -->
-      <div *ngIf="showProductSuggestions && suggestedProducts.length > 0" 
-           class="absolute left-0 right-0 mt-2 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl z-[150] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-        <div class="max-h-60 overflow-y-auto py-2">
-          <button *ngFor="let product of suggestedProducts"
-                  (click)="setProductFilter(product.id, product.name)"
-                  class="w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-3 transition-colors border-b border-gray-50 dark:border-gray-800 last:border-0">
-            <img [src]="product.imageUrl" class="w-8 h-8 rounded-lg object-cover bg-gray-100 shrink-0" alt="">
-            <div class="flex flex-col min-w-0">
-              <span class="text-xs font-bold text-primary dark:text-white truncate">{{ product.name }}</span>
-              <span class="text-[9px] font-semibold text-gray-400">Stock: {{ product.stockQuantity }}</span>
-            </div>
-          </button>
+        <div class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-[8px] font-bold text-gray-400 uppercase tracking-widest pointer-events-none">
+          PHONE
         </div>
       </div>
-    </div>
 
-    <div class="flex flex-wrap items-center gap-3">
-        <!-- Status Filter -->
-        <div class="relative" (click)="$event.stopPropagation()">
-            <button
-              (click)="toggleStatusMenu($event)"
-              class="flex items-center gap-3 px-5 h-[46px] rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
-            >
-              <app-icon name="Check" size="16" className="text-emerald-500"></app-icon>
-              <span class="text-gray-400 uppercase text-[10px] tracking-wider hidden sm:inline">Filter By:</span>
-              <span class="min-w-[80px] text-center">{{ selectedStatus === 'All' ? 'All Statuses' : selectedStatus }}</span>
-              <app-icon name="ChevronDown" size="16" className="text-gray-400" [className]="statusMenuOpen ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
+      <!-- Status Filter -->
+      <div class="relative" (click)="$event.stopPropagation()">
+        <button
+          (click)="toggleStatusMenu($event)"
+          class="w-full flex items-center justify-between px-4 h-[48px] rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
+        >
+          <div class="flex items-center gap-3">
+            <app-icon name="Filter" size="16" className="text-gray-400"></app-icon>
+            <span class="truncate">{{ selectedStatus === 'All' ? 'All Statuses' : selectedStatus }}</span>
+          </div>
+          <app-icon name="ChevronDown" size="14" className="text-gray-400" [className]="statusMenuOpen ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
+        </button>
+        
+        <div *ngIf="statusMenuOpen" class="absolute right-0 left-0 mt-3 w-full bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl z-[100] p-3 animate-in fade-in zoom-in duration-200">
+          <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-3">Filter by status</p>
+          <div class="grid grid-cols-1 gap-1 max-h-[300px] overflow-y-auto custom-scrollbar-thin">
+            <button *ngFor="let status of statusOptions" 
+                    (click)="setStatusFilter(status, $event)" 
+                    class="w-full px-3 py-2 text-left text-xs font-semibold rounded-xl transition-all group flex items-center justify-between"
+                    [class.bg-primary]="selectedStatus === status"
+                    [class.text-white]="selectedStatus === status"
+                    [class.hover:bg-gray-50]="selectedStatus !== status"
+                    [class.dark:hover:bg-gray-800]="selectedStatus !== status">
+              <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full" [ngStyle]="{ backgroundColor: getStatusColor(status) }"></div>
+                <span>{{ status }}</span>
+              </div>
+              <app-icon *ngIf="selectedStatus === status" name="Check" size="12"></app-icon>
             </button>
-            
-            <div *ngIf="statusMenuOpen" class="absolute left-0 lg:right-0 lg:left-auto mt-3 w-[280px] bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl z-[100] p-4 animate-in fade-in zoom-in duration-200">
-                <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-4">Operational States</p>
-                <div class="grid grid-cols-1 gap-1">
-                    <button *ngFor="let status of statusOptions" 
-                            (click)="setStatusFilter(status, $event)" 
-                            class="w-full px-4 py-2.5 text-left text-xs font-semibold rounded-xl transition-all group flex items-center justify-between"
-                            [class.bg-primary]="selectedStatus === status"
-                            [class.text-white]="selectedStatus === status"
-                            [class.hover:bg-gray-50]="selectedStatus !== status"
-                            [class.dark:hover:bg-gray-800]="selectedStatus !== status">
-                        <div class="flex items-center gap-3">
-                            <div class="w-2 h-2 rounded-full" [ngStyle]="{ backgroundColor: getStatusColor(status) }"></div>
-                            <span>{{ status }}</span>
-                        </div>
-                        <app-icon *ngIf="selectedStatus === status" name="Check" size="12"></app-icon>
-                    </button>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Order Type Filter -->
-        <div class="relative min-w-[140px]" (click)="$event.stopPropagation()">
-            <select
-              (change)="setOrderTypeFilter($any($event.target).value)"
-              class="w-full h-[46px] pl-5 pr-10 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none outline-none focus:ring-2 focus:ring-primary/10"
-            >
-              <option value="All" [selected]="selectedOrderType === 'All'">All Types</option>
-              <option value="PreOrder" [selected]="selectedOrderType === 'PreOrder'">Pre-Orders</option>
-              <option value="Website" [selected]="selectedOrderType === 'Website'">Website Orders</option>
-              <option value="Manual" [selected]="selectedOrderType === 'Manual'">Manual Orders</option>
-            </select>
-            <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
-        </div>
+      <!-- Order Type Filter -->
+      <div class="relative">
+        <select
+          (change)="setOrderTypeFilter($any($event.target).value)"
+          class="w-full h-[48px] pl-5 pr-10 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none outline-none focus:ring-2 focus:ring-primary/10"
+        >
+          <option value="All" [selected]="selectedOrderType === 'All'">All Order Types</option>
+          <option value="PreOrder" [selected]="selectedOrderType === 'PreOrder'">Pre-Orders</option>
+          <option value="Website" [selected]="selectedOrderType === 'Website'">Website Orders</option>
+          <option value="Manual" [selected]="selectedOrderType === 'Manual'">Manual Orders</option>
+        </select>
+        <app-icon name="ChevronDown" size="14" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
+      </div>
 
-        <!-- Date Filter (Advanced) -->
-        <div class="relative" (click)="$event.stopPropagation()">
-            <button
-              (click)="toggleDateMenu($event)"
-              class="flex items-center gap-3 px-5 h-[46px] rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
-            >
-              <app-icon name="Calendar" size="16" className="text-gray-400"></app-icon>
-              <span class="text-gray-400 uppercase text-[10px] tracking-wider hidden sm:inline">Range:</span>
-              <span class="min-w-[80px] text-center">{{ activeDateRangeLabel }}</span>
-              <app-icon name="ChevronDown" size="16" className="text-gray-400" [className]="dateMenuOpen ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
+      <!-- Date Filter -->
+      <div class="relative" (click)="$event.stopPropagation()">
+        <button
+          (click)="toggleDateMenu($event)"
+          class="w-full flex items-center justify-between px-4 h-[48px] rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95"
+        >
+          <div class="flex items-center gap-3">
+            <app-icon name="Calendar" size="16" className="text-gray-400"></app-icon>
+            <span class="truncate">{{ activeDateRangeLabel }}</span>
+          </div>
+          <app-icon name="ChevronDown" size="14" className="text-gray-400" [className]="dateMenuOpen ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
+        </button>
+        
+        <div *ngIf="dateMenuOpen" class="absolute right-0 lg:right-auto lg:left-0 mt-3 w-[420px] bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-[2.5rem] shadow-2xl z-[100] overflow-hidden flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-800 animate-in fade-in zoom-in duration-200">
+          <!-- Shortcuts -->
+          <div class="w-full md:w-1/3 bg-gray-50/50 dark:bg-gray-800/10 p-4 space-y-1.5">
+            <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-3">Quick Ranges</p>
+            <button *ngFor="let range of dateRanges" 
+                    (click)="setDateRange(range, $event)" 
+                    class="w-full px-3 py-2 text-left text-xs font-semibold rounded-xl transition-all group flex items-center justify-between"
+                    [class.bg-primary]="selectedDateRange === range"
+                    [class.text-white]="selectedDateRange === range"
+                    [class.hover:bg-gray-100]="selectedDateRange !== range"
+                    [class.dark:hover:bg-gray-800]="selectedDateRange !== range">
+              <span>{{ range }}</span>
+              <app-icon *ngIf="selectedDateRange === range" name="Check" size="12"></app-icon>
             </button>
-            
-            <div *ngIf="dateMenuOpen" class="absolute right-0 mt-3 w-[450px] bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl z-[100] overflow-hidden flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-800 animate-in fade-in zoom-in duration-200">
-                <!-- Direct Shortcuts Sidebar -->
-                <div class="w-full md:w-1/3 bg-gray-50/50 dark:bg-gray-800/10 p-4 space-y-2">
-                    <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-4">Quick Ranges</p>
-                    <button *ngFor="let range of dateRanges" 
-                            (click)="setDateRange(range, $event)" 
-                            class="w-full px-4 py-2 text-left text-xs font-semibold rounded-xl transition-all group flex items-center justify-between"
-                            [class.bg-primary]="selectedDateRange === range"
-                            [class.text-white]="selectedDateRange === range"
-                            [class.hover:bg-gray-100]="selectedDateRange !== range"
-                            [class.dark:hover:bg-gray-800]="selectedDateRange !== range">
-                        <span>{{ range }}</span>
-                        <app-icon *ngIf="selectedDateRange === range" name="Check" size="12"></app-icon>
-                    </button>
+          </div>
+
+          <!-- Custom Range -->
+          <div class="w-full md:w-2/3 p-5 flex flex-col justify-between bg-white dark:bg-surface-dark">
+            <div class="space-y-4">
+              <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50 dark:border-gray-800 pb-2">Custom Range</p>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1.5">
+                  <label class="text-[9px] font-black text-gray-500 uppercase tracking-wider ml-1">From</label>
+                  <input type="date" [(ngModel)]="tempStartDate" class="w-full px-3 py-2 bg-gray-50 dark:bg-background-dark border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary/20 transition-all">
                 </div>
-
-                <!-- Custom Calendar Inputs -->
-                <div class="w-full md:w-2/3 p-6 flex flex-col justify-between">
-                    <div>
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 border-b border-gray-100 dark:border-gray-800 pb-2">Custom Range Selector</p>
-                        
-                        <div class="grid grid-cols-2 gap-4 h-fit">
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-gray-500 uppercase tracking-wider ml-1">From Date</label>
-                                <div class="relative group">
-                                    <app-icon name="Calendar" size="12" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></app-icon>
-                                    <input type="date" 
-                                           [(ngModel)]="tempStartDate"
-                                           class="w-full pl-9 pr-3 py-2.5 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-xl text-xs font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
-                                </div>
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-gray-500 uppercase tracking-wider ml-1">To Date</label>
-                                <div class="relative group">
-                                    <app-icon name="Calendar" size="12" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></app-icon>
-                                    <input type="date" 
-                                           [(ngModel)]="tempEndDate"
-                                           class="w-full pl-9 pr-3 py-2.5 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-xl text-xs font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 p-3 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/30 rounded-xl">
-                            <p class="text-[9px] font-medium text-blue-600 dark:text-blue-400 leading-relaxed italic text-center">
-                                *Orders placed between these dates will be displayed. Time is calculated in UTC.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 flex gap-3">
-                        <button (click)="dateMenuOpen = false" class="flex-1 px-4 py-2.5 rounded-xl border border-gray-100 dark:border-gray-700 text-xs font-bold text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">Cancel</button>
-                        <button (click)="applyCustomRange($event)" 
-                                [disabled]="!tempStartDate || !tempEndDate"
-                                class="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] disabled:opacity-50 disabled:scale-100 transition-all">
-                            Apply Range
-                        </button>
-                    </div>
+                <div class="space-y-1.5">
+                  <label class="text-[9px] font-black text-gray-500 uppercase tracking-wider ml-1">To</label>
+                  <input type="date" [(ngModel)]="tempEndDate" class="w-full px-3 py-2 bg-gray-50 dark:bg-background-dark border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary/20 transition-all">
                 </div>
+              </div>
             </div>
+            <div class="mt-6 flex gap-2">
+              <button (click)="dateMenuOpen = false" class="flex-1 px-3 py-2 rounded-xl border border-gray-100 dark:border-gray-700 text-[10px] font-bold text-gray-500 hover:bg-gray-50 transition-all">Cancel</button>
+              <button (click)="applyCustomRange($event)" [disabled]="!tempStartDate || !tempEndDate" class="flex-1 px-3 py-2 rounded-xl bg-primary text-white text-[10px] font-bold shadow-lg shadow-primary/20 disabled:opacity-50 transition-all">Apply</button>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Page Source Filter -->
-        <div class="relative min-w-[140px]" (click)="$event.stopPropagation()">
-            <select
-              (change)="setSourcePageFilter($any($event.target).value)"
-              class="w-full h-[46px] pl-5 pr-10 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none outline-none focus:ring-2 focus:ring-primary/10"
-            >
-              <option [value]="null">All Pages</option>
-              <option *ngFor="let page of sourcePages" [value]="page.id" [selected]="selectedSourcePageId === page.id">
-                {{ page.name }}
-              </option>
-            </select>
-            <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
-        </div>
+      <!-- Pages Filter -->
+      <div class="relative">
+        <select
+          (change)="setSourcePageFilter($any($event.target).value)"
+          class="w-full h-[48px] pl-5 pr-10 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none outline-none focus:ring-2 focus:ring-primary/10"
+        >
+          <option [value]="null">All Source Pages</option>
+          <option *ngFor="let page of sourcePages" [value]="page.id" [selected]="selectedSourcePageId === page.id">{{ page.name }}</option>
+        </select>
+        <app-icon name="ChevronDown" size="14" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
+      </div>
 
-        <!-- Social Media Filter -->
-        <div class="relative min-w-[140px]" (click)="$event.stopPropagation()">
-            <select
-              (change)="setSocialMediaFilter($any($event.target).value)"
-              class="w-full h-[46px] pl-5 pr-10 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none outline-none focus:ring-2 focus:ring-primary/10"
-            >
-              <option [value]="null">All Social Media</option>
-              <option *ngFor="let source of socialMediaSources" [value]="source.id" [selected]="selectedSocialMediaSourceId === source.id">
-                {{ source.name }}
-              </option>
-            </select>
-            <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
-        </div>
+      <!-- Social Filter -->
+      <div class="relative">
+        <select
+          (change)="setSocialMediaFilter($any($event.target).value)"
+          class="w-full h-[48px] pl-5 pr-10 bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-semibold text-primary dark:text-white hover:bg-gray-100 transition-all shadow-sm active:scale-95 appearance-none outline-none focus:ring-2 focus:ring-primary/10"
+        >
+          <option [value]="null">All Social Sources</option>
+          <option *ngFor="let source of socialMediaSources" [value]="source.id" [selected]="selectedSocialMediaSourceId === source.id">{{ source.name }}</option>
+        </select>
+        <app-icon name="ChevronDown" size="14" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
+      </div>
     </div>
   </div>
 
   <!-- Orders Table -->
-  <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2rem] shadow-sm shadow-gray-200/50">
+  <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2rem] shadow-sm shadow-gray-200/50 relative overflow-hidden">
+    <!-- Local Loader Overlay -->
+    <div *ngIf="isLoading" class="absolute inset-0 bg-white/60 dark:bg-surface-dark/60 backdrop-blur-[2px] z-[50] flex items-center justify-center animate-in fade-in duration-300">
+      <div class="flex flex-col items-center gap-4">
+        <div class="relative w-12 h-12">
+          <div class="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+          <div class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <p class="text-xs font-bold text-primary dark:text-accent uppercase tracking-widest animate-pulse">Fetching Orders...</p>
+      </div>
+    </div>
+
     <div class="overflow-visible min-h-[450px]">
       <table class="w-full text-left border-separate border-spacing-0">
         <thead>
           <tr class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
-            <th class="px-6 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] w-12 text-center">#</th>
+            <th class="px-6 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] w-20 text-center">Order ID</th>
             <th class="px-6 py-4 text-left">
               <div class="flex items-center gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                 <app-icon *ngIf="isPreOrderMode" name="Clock" size="12" className="text-violet-500"></app-icon>
-                <span>Order Info</span>
+                <span>Order No.</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-left">
+              <div class="flex items-center gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                <span>Products</span>
               </div>
             </th>
             <th class="px-6 py-4 text-left">
@@ -303,22 +271,41 @@
             <td class="px-6 py-6 text-center">
               <span 
                 (click)="copyToClipboard(order.id.toString(), $event)"
-                class="text-xs font-semibold text-gray-300 dark:text-gray-700 font-mono cursor-pointer transition-colors" 
-                [ngClass]="isPreOrderMode ? 'hover:text-violet-500' : 'hover:text-primary'"
+                class="text-xs font-bold text-gray-400 dark:text-gray-500 font-mono cursor-pointer transition-colors hover:text-primary" 
                 title="Click to copy ID">
-                #{{ order.id }}
+                {{ order.id }}
               </span>
             </td>
             <td class="px-6 py-6">
               <div class="flex flex-col">
                 <span 
                   (click)="copyToClipboard(order.orderNumber, $event)"
-                  class="text-sm font-semibold tracking-tight mb-1 transition-colors cursor-pointer" 
+                  class="text-sm font-black tracking-tight mb-0.5 transition-colors cursor-pointer" 
                   [ngClass]="isPreOrderMode ? 'text-violet-600 dark:text-violet-400 hover:text-violet-700' : 'text-primary dark:text-white hover:text-primary'"
                   title="Click to copy Order Number">
                   #{{ order.orderNumber }}
                 </span>
-                <span class="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{{ order.createdAt | date: 'MMM d, h:mm a' }}</span>
+                <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{{ order.createdAt | date: 'MMM d, h:mm a' }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-6 min-w-[200px]">
+              <div class="flex flex-col gap-2">
+                <div *ngFor="let item of order.items" class="flex items-start gap-2 group/item">
+                  <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 group-hover/item:bg-primary transition-colors shrink-0"></div>
+                  <div class="flex flex-col">
+                    <span class="text-[11px] font-bold text-gray-700 dark:text-gray-200 leading-tight">
+                      {{ item.productName }}
+                    </span>
+                    <div class="flex items-center gap-2 mt-0.5">
+                      <span class="text-[10px] font-black text-gray-400 uppercase tracking-tighter bg-gray-50 dark:bg-gray-800/50 px-1 rounded">{{ item.size || 'N/A' }}</span>
+                      <span *ngIf="order.isPreOrder" 
+                            [ngClass]="item.isStockAvailable ? 'text-emerald-500' : 'text-red-500'" 
+                            class="text-[10px] font-black uppercase tracking-tighter">
+                        — {{ item.isStockAvailable ? 'In Stock' : 'Out of Stock' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </td>
             <td class="px-6 py-6">
@@ -354,9 +341,9 @@
                     class="text-sm font-semibold tracking-tight hover:underline"
                     [ngClass]="isPreOrderMode ? 'text-violet-600 dark:text-violet-400' : 'text-primary dark:text-white'"
                   >
-                    {{ order.customerName }}
+                    {{ order.customerPhone }}
                   </a>
-                  <span class="text-[10px] font-medium text-gray-400 tracking-wide">{{ order.customerPhone }}</span>
+                  <span class="text-[10px] font-medium text-gray-400 tracking-wide">{{ order.customerName }}</span>
                 </div>
               </div>
             </td>

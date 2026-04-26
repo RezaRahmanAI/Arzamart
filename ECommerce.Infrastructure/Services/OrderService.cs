@@ -207,10 +207,12 @@ public class OrderService : IOrderService
             SocialMediaSourceId = orderDto.SocialMediaSourceId,
             AdminNote = orderDto.AdminNote,
             CustomerNote = orderDto.CustomerNote,
+            Discount = orderDto.Discount,
+            AdvancePayment = orderDto.AdvancePayment,
             CreatedAt = DateTime.UtcNow
         };
         
-        order.Total = order.SubTotal + order.Tax + order.ShippingCost;
+        order.Total = order.SubTotal + order.Tax + order.ShippingCost - order.Discount;
 
         _unitOfWork.Repository<Order>().Add(order);
         await _unitOfWork.Complete();
@@ -294,16 +296,28 @@ public class OrderService : IOrderService
         order.SocialMediaSourceId = orderDto.SocialMediaSourceId;
         order.AdminNote = orderDto.AdminNote;
         order.CustomerNote = orderDto.CustomerNote;
+        order.Discount = orderDto.Discount;
+        order.AdvancePayment = orderDto.AdvancePayment;
         
         order.SubTotal = newItems.Sum(i => i.UnitPrice * i.Quantity);
         
         // Recalculate Shipping
-        if (order.DeliveryMethodId.HasValue) {
-            var method = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(order.DeliveryMethodId.Value);
-            order.ShippingCost = method?.Cost ?? 0;
-        }
+        decimal shippingCost = 0;
+        var siteSettings = await _unitOfWork.Repository<SiteSetting>().ListAllAsync();
+        var settings = siteSettings.FirstOrDefault();
+        var freeShippingThreshold = settings?.FreeShippingThreshold ?? 0;
 
-        order.Total = order.SubTotal + order.ShippingCost;
+        if (order.DeliveryMethodId.HasValue)
+        {
+            var method = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(order.DeliveryMethodId.Value);
+            if (method != null)
+            {
+                shippingCost = (freeShippingThreshold > 0 && order.SubTotal >= freeShippingThreshold) ? 0 : method.Cost;
+            }
+        }
+        order.ShippingCost = shippingCost;
+        order.Total = order.SubTotal + order.Tax + order.ShippingCost - order.Discount;
+        await _unitOfWork.Complete();
 
         _unitOfWork.Repository<Order>().Update(order);
         await _unitOfWork.Complete();
@@ -335,7 +349,7 @@ public class OrderService : IOrderService
         var dto = _mapper.Map<Order, OrderDto>(order);
         if (order.IsPreOrder)
         {
-            dto.IsStockAvailable = await CalculateIsStockAvailableAsync(order);
+            await PopulateItemsStockStatusAsync(order, dto);
         }
         
         return dto;
@@ -468,7 +482,7 @@ public class OrderService : IOrderService
         foreach (var dto in dtos.Where(d => d.IsPreOrder))
         {
             var order = orders.First(o => o.Id == dto.Id);
-            dto.IsStockAvailable = await CalculateIsStockAvailableAsync(order);
+            await PopulateItemsStockStatusAsync(order, dto);
         }
         
         return (dtos, total);
@@ -553,6 +567,37 @@ public class OrderService : IOrderService
 
         _unitOfWork.Repository<Order>().Update(order);
         return await _unitOfWork.Complete() > 0;
+    }
+
+    private async Task PopulateItemsStockStatusAsync(Order order, OrderDto dto)
+    {
+        if (!order.Items.Any()) return;
+
+        var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
+        var products = await _unitOfWork.Repository<Product>().ListAsync(
+            new ProductsWithCategoriesSpecification(productIds));
+        var productDict = products.ToDictionary(p => p.Id);
+
+        foreach (var itemDto in dto.Items)
+        {
+            if (productDict.TryGetValue(itemDto.ProductId, out var product))
+            {
+                int needed = itemDto.Quantity;
+                if (!string.IsNullOrEmpty(itemDto.Size))
+                {
+                    var normalizedSize = itemDto.Size.Trim().ToLower();
+                    var variant = product.Variants.FirstOrDefault(v => 
+                        v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                    itemDto.IsStockAvailable = variant != null && variant.StockQuantity >= needed;
+                }
+                else
+                {
+                    itemDto.IsStockAvailable = product.StockQuantity >= needed;
+                }
+            }
+        }
+        
+        dto.IsStockAvailable = dto.Items.All(i => i.IsStockAvailable);
     }
 
     private async Task<bool> CalculateIsStockAvailableAsync(Order order)

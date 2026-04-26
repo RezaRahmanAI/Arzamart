@@ -53,7 +53,13 @@ public class MappingProfiles : Profile
                 StockQuantity = v.StockQuantity
             })))
             .ForMember(d => d.FabricAndCare, o => o.MapFrom(s => s.FabricAndCare))
-            .ForMember(d => d.Description, o => o.MapFrom(s => s.Description));
+            .ForMember(d => d.Description, o => o.MapFrom(s => s.Description))
+            .ForMember(d => d.ShortDescription, o => o.MapFrom(s => s.ShortDescription))
+            .ForMember(d => d.Tier, o => o.MapFrom(s => s.Tier))
+            .ForMember(d => d.Tags, o => o.MapFrom(s => s.Tags))
+            .ForMember(d => d.SortOrder, o => o.MapFrom(s => s.SortOrder))
+            .ForMember(d => d.MetaTitle, o => o.MapFrom(s => s.MetaTitle))
+            .ForMember(d => d.MetaDescription, o => o.MapFrom(s => s.MetaDescription));
 
         CreateMap<Product, ProductListDto>()
             .ForMember(d => d.CategoryName, o => o.Ignore())
@@ -83,7 +89,12 @@ public class MappingProfiles : Profile
                 Label = i.Label,
                 IsPrimary = i.IsMain,
                 Type = i.MediaType ?? "image"
-            })));
+            })))
+            .ForMember(d => d.Tier, o => o.MapFrom(s => s.Tier))
+            .ForMember(d => d.Tags, o => o.MapFrom(s => s.Tags))
+            .ForMember(d => d.SortOrder, o => o.MapFrom(s => s.SortOrder))
+            .ForMember(d => d.Description, o => o.MapFrom(s => s.Description))
+            .ForMember(d => d.ShortDescription, o => o.MapFrom(s => s.ShortDescription));
 
 
         CreateMap<SubCategory, SubCategoryDto>();

@@ -170,6 +170,9 @@ public class AdminProductsController : ControllerBase
             MediaUrls = p.Images.Select(i => i.Url).ToList(),
             Images = p.Images.Select(i => new { i.Url }).ToList(),
             Variants = p.Variants.Select(v => new { v.Id, v.Size, v.StockQuantity, v.Price }).ToList(),
+            p.Tier,
+            p.Tags,
+            p.SortOrder,
             p.CreatedAt,
             p.Slug
         }).ToList();

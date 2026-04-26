@@ -9,11 +9,12 @@ import { OrderItem } from "../../../../core/models/order";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { CustomerProfileService } from "../../../../core/services/customer-profile.service";
 
-import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
+import { CustomerOrderApiService, CustomerLookupResponse } from "../../../../core/services/customer-order-api.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
+import { map, debounceTime, distinctUntilChanged, filter, switchMap, catchError, of } from 'rxjs';
 
 interface OfferDetails {
   slug: string;
@@ -128,7 +129,7 @@ export class OfferDetailsPageComponent {
         ),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((customer) => {
+      .subscribe((customer: CustomerLookupResponse | null) => {
         if (customer) {
           // Patch city first to trigger areas update
           if (customer.city) {

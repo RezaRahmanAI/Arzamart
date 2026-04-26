@@ -69,6 +69,7 @@ export interface OrderItem {
   totalPrice: number;
   size?: string;
   color?: string;
+  isStockAvailable: boolean;
 }
 
 export interface OrderDetail extends Order {

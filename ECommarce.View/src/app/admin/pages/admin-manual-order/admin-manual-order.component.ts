@@ -69,10 +69,14 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   isPreOrderMode = false;
+  showPreOrderWarningModal = signal(false);
+  outOfStockItems = signal<{name: string, size?: string, needed: number, stock: number}[]>([]);
+  pendingOrderPayload: any = null;
   isEditMode = false;
   orderId: number | null = null;
   isLoadingProducts = false;
   isSubmitting = false;
+  isLoading = false;
 
   // Search
   searchControl = new FormControl("");
@@ -97,6 +101,8 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     socialMediaSourceId: new FormControl<number | null>(null),
     noteType: new FormControl<"Customer" | "Official">("Official"),
     noteText: new FormControl(""),
+    additionalDiscount: new FormControl(0),
+    advancePayment: new FormControl(0),
   });
 
   deliveryMethods: DeliveryMethod[] = [];
@@ -126,22 +132,28 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
       methods: this.settingsService.getDeliveryMethods()
     });
 
-    sources$.subscribe(({ pages, sources, methods }) => {
-      this.sourcePages = pages;
-      this.socialMediaSources = sources;
-      this.deliveryMethods = methods;
-      
-      // If we are in edit mode, wait until sources are loaded before loading the order
-      this.route.params.subscribe(params => {
-        if (params["id"]) {
-          this.isEditMode = true;
-          this.orderId = +params["id"];
-          this.loadOrderForEdit(this.orderId);
-        } else if (methods.length > 0) {
-          // Set default delivery method for new orders
-          this.orderForm.patchValue({ deliveryMethodId: methods[0].id });
-        }
-      });
+    sources$.subscribe({
+      next: ({ pages, sources, methods }) => {
+        this.sourcePages = pages;
+        this.socialMediaSources = sources;
+        this.deliveryMethods = methods;
+        
+        // If we are in edit mode, wait until sources are loaded before loading the order
+        this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
+          if (params["id"]) {
+            this.isEditMode = true;
+            this.orderId = +params["id"];
+            this.loadOrderForEdit(this.orderId);
+          } else if (methods.length > 0) {
+            // Set default delivery method for new orders
+            this.orderForm.patchValue({ deliveryMethodId: methods[0].id });
+          }
+        });
+      },
+      error: (err) => {
+        console.error("Error loading sources:", err);
+        this.notification.error("Failed to load order settings.");
+      }
     });
 
     // Setup product search
@@ -287,6 +299,11 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
   }
 
   addToCart(product: AdminProduct, size?: string) {
+    if (product.variants?.length && product.variants.some(v => v.size) && !size) {
+      this.notification.error("Please select a size first.");
+      return;
+    }
+
     let price = product.price;
 
     // Lookup variant price if size is selected
@@ -325,6 +342,11 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     this.cart.update(c => c.filter(i => i !== item));
   }
 
+  clearCart() {
+    this.cart.set([]);
+    this.notification.info("Cart cleared.");
+  }
+
   updateQuantity(item: CartItem, delta: number) {
     this.cart.update(c => c.map(i => {
       if (i === item) {
@@ -346,12 +368,18 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
   }
 
   get total() {
-    return this.subtotal + this.shippingCost;
+    const discount = this.orderForm.get('additionalDiscount')?.value || 0;
+    return Math.max(0, this.subtotal + this.shippingCost - discount);
+  }
+
+  get dueAmount() {
+    const paid = this.orderForm.get('advancePayment')?.value || 0;
+    return Math.max(0, this.total - paid);
   }
 
   onPriceChange() {
-    // Totals are calculated via getters, so we just need to trigger change detection if needed
-    // or perform any additional logic like updating a "Custom Price" flag
+    // Totals are calculated via getters, but we need to trigger signal update
+    this.cart.update(c => [...c]);
   }
 
   submitOrder() {
@@ -379,8 +407,10 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
       isPreOrder: this.isPreOrderMode,
       sourcePageId: this.orderForm.value.sourcePageId,
       socialMediaSourceId: this.orderForm.value.socialMediaSourceId,
-      adminNote: this.orderForm.value.noteType === "Official" ? this.orderForm.value.noteText : undefined,
-      customerNote: this.orderForm.value.noteType === "Customer" ? this.orderForm.value.noteText : undefined,
+      discount: this.orderForm.value.additionalDiscount || 0,
+      advancePayment: this.orderForm.value.advancePayment || 0,
+      adminNote: this.orderForm.value.noteType === "Official" && this.orderForm.value.noteText ? this.orderForm.value.noteText : undefined,
+      customerNote: this.orderForm.value.noteType === "Customer" && this.orderForm.value.noteText ? this.orderForm.value.noteText : undefined,
       items: this.cart().map(i => ({
         productId: i.product.id,
         quantity: i.quantity,
@@ -389,6 +419,50 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
       }))
     };
 
+    const outOfStockList: {name: string, size?: string, needed: number, stock: number}[] = [];
+    
+    this.cart().forEach(item => {
+      let stock = item.product.stockQuantity;
+      if (item.selectedSize) {
+         const variant = item.product.variants?.find(v => v.size === item.selectedSize);
+         stock = variant ? variant.stockQuantity : 0;
+      }
+      
+      if (stock < item.quantity) {
+        outOfStockList.push({
+          name: item.product.name,
+          size: item.selectedSize,
+          needed: item.quantity,
+          stock: Math.max(0, stock)
+        });
+      }
+    });
+
+    if (outOfStockList.length > 0 && !this.isPreOrderMode) {
+      this.pendingOrderPayload = payload;
+      this.outOfStockItems.set(outOfStockList);
+      this.showPreOrderWarningModal.set(true);
+      return;
+    }
+
+    this.executeOrder(payload);
+  }
+
+  confirmOrder() {
+    this.showPreOrderWarningModal.set(false);
+    if (this.pendingOrderPayload) {
+      this.executeOrder(this.pendingOrderPayload);
+      this.pendingOrderPayload = null;
+    }
+  }
+
+  cancelOrder() {
+    this.showPreOrderWarningModal.set(false);
+    this.pendingOrderPayload = null;
+    this.isSubmitting = false;
+  }
+
+  private executeOrder(payload: any) {
     const request = this.isEditMode && this.orderId
       ? this.ordersService.updateOrder(this.orderId, payload)
       : this.orderApi.placeOrder(payload);
@@ -406,23 +480,26 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
   }
 
   private loadOrderForEdit(id: number) {
+    this.isLoading = true;
     this.ordersService.getOrderById(id).subscribe({
       next: (order: any) => {
+        console.log("Loading order for edit:", order);
         this.orderForm.patchValue({
           phone: order.customerPhone,
           name: order.customerName,
           address: order.shippingAddress,
           city: order.city || "",
           area: order.area || "",
-          sourcePageId: order.sourcePageId,
-          socialMediaSourceId: order.socialMediaSourceId,
+          sourcePageId: order.sourcePageId || null,
+          socialMediaSourceId: order.socialMediaSourceId || null,
           noteType: order.customerNote ? "Customer" : "Official",
-          noteText: order.customerNote || order.adminNote || ""
+          noteText: order.customerNote || order.adminNote || "",
+          additionalDiscount: order.discount || 0,
+          advancePayment: order.advancePayment || 0
         });
 
         if (order.city) {
             const cleanCity = order.city.trim();
-            // Find city name case-insensitively in BANGLADESH_LOCATIONS keys
             const cityKey = Object.keys(BANGLADESH_LOCATIONS).find(k => k.toLowerCase() === cleanCity.toLowerCase());
             if (cityKey) {
               this.areas = (BANGLADESH_LOCATIONS as any)[cityKey] || [];
@@ -432,7 +509,12 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
 
         // Map items to cart
         const cartItems: CartItem[] = (order.items || []).map((item: any) => ({
-          product: { id: item.productId, name: item.productName, price: item.unitPrice, imageUrl: item.imageUrl } as any,
+          product: { 
+            id: item.productId, 
+            name: item.productName, 
+            price: item.unitPrice, 
+            imageUrl: item.imageUrl 
+          } as any,
           quantity: item.quantity,
           selectedSize: item.size,
           unitPrice: item.unitPrice
@@ -443,12 +525,16 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
         if (order.deliveryMethodId) {
           this.orderForm.patchValue({ deliveryMethodId: order.deliveryMethodId });
         } else {
-          // Fallback to cost matching if ID is missing (legacy)
           const method = this.deliveryMethods.find(m => m.cost === order.shippingCost);
           if (method) this.orderForm.patchValue({ deliveryMethodId: method.id });
         }
+        this.isLoading = false;
       },
-      error: (err: any) => this.notification.error("Failed to load order for editing")
+      error: (err: any) => {
+        console.error("Error loading order:", err);
+        this.notification.error("Failed to load order for editing");
+        this.isLoading = false;
+      }
     });
   }
 }

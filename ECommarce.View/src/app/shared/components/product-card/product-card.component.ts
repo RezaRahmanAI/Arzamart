@@ -164,6 +164,22 @@ export class ProductCardComponent {
     return 0;
   }
 
+  get currentStock(): number {
+    const variant = this.hoverVariant;
+    if (variant) return variant.stockQuantity;
+
+    if ("stockQuantity" in this.product) {
+      return (this.product as any).stockQuantity;
+    }
+
+    const variants = this.variants;
+    if (variants && variants.length > 0) {
+      return variants.reduce((sum, v) => sum + v.stockQuantity, 0);
+    }
+
+    return 0;
+  }
+
   get availableSizes(): string[] {
     const variants = this.variants;
     if (!variants || !variants.length) return [];
@@ -209,13 +225,13 @@ export class ProductCardComponent {
     }
   }
 
-  onQuickAddConfirm(selection: { size?: string }): void {
+  onQuickAddConfirm(selection: { size?: string; quantity: number }): void {
     if ("id" in this.product) {
       this.showQuickAdd = false;
       this.cartService
         .addItem(
           this.product as Product,
-          1,
+          selection.quantity,
           selection.size ?? this.selectedSize ?? undefined,
         )
         .subscribe(() => {
@@ -230,20 +246,7 @@ export class ProductCardComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    const sizes = this.availableSizes;
-    if (sizes.length > 0 && !this.selectedSize) {
-      this.isOrdering = true;
-      this.showQuickAdd = true;
-      return;
-    }
-
     this.isOrdering = true;
-    if ("id" in this.product) {
-      this.cartService
-        .addItem(this.product as Product, 1, this.selectedSize ?? undefined)
-        .subscribe(() => {
-          window.location.href = "/checkout";
-        });
-    }
+    this.showQuickAdd = true;
   }
 }

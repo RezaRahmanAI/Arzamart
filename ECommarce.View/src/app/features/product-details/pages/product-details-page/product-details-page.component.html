@@ -118,6 +118,16 @@
                     </button>
                   }
                 </div>
+
+                <!-- Progress Bar -->
+                @if (vm.gallery.length > 1) {
+                  <div class="mt-4 w-full h-0.5 bg-[#eee] relative overflow-hidden">
+                    <div
+                      class="absolute top-0 left-0 h-full bg-[#1a1a1a] transition-all duration-75"
+                      [style.width.%]="slideProgress"
+                    ></div>
+                  </div>
+                }
               </div>
 
               <!-- Mobile Thumbnails (Right side on mobile) -->
@@ -253,9 +263,9 @@
                   </p>
                   <button
                     (click)="openSizeGuide()"
-                    class="text-[9px] uppercase tracking-[0.2em] text-[#999] hover:text-[#1a1a1a] transition-colors border-b border-[#eee] pb-0.5"
+                    class="glowing-btn px-6 py-2 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] relative overflow-hidden bg-white border border-[#eee] hover:border-black transition-all"
                   >
-                    Size Guide
+                    <span class="relative z-10">Size Guide</span>
                   </button>
                 </div>
                 <div class="flex flex-wrap gap-2">
@@ -322,23 +332,20 @@
                 </p>
               }
 
-              <!-- Main Buttons -->
               <div class="grid grid-cols-1 gap-3">
                 <button
                   (click)="addToCart(vm.product)"
-                  [disabled]="!vm.currentStock"
-                  class="w-full h-14 bg-primary text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all duration-300 disabled:opacity-20 flex items-center justify-center gap-4 rounded-xl shadow-lg shadow-primary/10"
+                  class="w-full h-14 bg-primary text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-4 rounded-xl shadow-lg shadow-primary/10"
                 >
                   <app-icon name="ShoppingBag" size="16"></app-icon>
-                  {{ vm.currentStock ? "Add to Shopping Bag" : "Sold Out" }}
+                  {{ vm.currentStock > 0 ? "Add to Shopping Bag" : "Pre-order Now" }}
                 </button>
 
                 <button
                   (click)="buyNow(vm.product)"
-                  [disabled]="!vm.currentStock"
-                  class="w-full h-14 bg-accent text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all duration-300 disabled:opacity-20 rounded-xl shadow-lg shadow-accent/20"
+                  class="w-full h-14 bg-accent text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all duration-300 rounded-xl shadow-lg shadow-accent/20"
                 >
-                  ORDER NOW
+                  {{ vm.currentStock > 0 ? "ORDER NOW" : "PRE-ORDER NOW" }}
                 </button>
               </div>
 

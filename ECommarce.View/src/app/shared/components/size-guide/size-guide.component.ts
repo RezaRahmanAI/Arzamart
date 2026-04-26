@@ -66,7 +66,7 @@ import { map } from "rxjs";
                 * This chart is specifically for this product.
               </p>
             </div>
-          } @else if ((settings$ | async)?.sizeGuideImageUrl) {
+          } @else {
             @if ((settings$ | async)?.sizeGuideImageUrl; as globalImageUrl) {
               <div class="mb-10 group">
                 <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50/30">
@@ -80,8 +80,7 @@ import { map } from "rxjs";
                   * Measurements shown in the image are for reference.
                 </p>
               </div>
-            }
-          } @else {
+            } @else {
               <!-- Unit Toggle -->
               <div class="flex justify-center mb-8">
                 <div
@@ -183,6 +182,7 @@ import { map } from "rxjs";
                   </p>
                 </div>
               </div>
+            }
           }
         </div>
       </div>

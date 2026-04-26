@@ -133,6 +133,16 @@
                         <div class="relative w-full aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-full overflow-hidden rounded-2xl sm:rounded-none lg:rounded-3xl">
                             <img [src]="imageUrlService.getImageUrl(selectedImage || data.product.imageUrl || '')" alt="Product Gallery" class="absolute inset-0 w-full h-full object-cover">
                         </div>
+
+                        <!-- Progress Bar -->
+                        @if (data.product.images.length > 1) {
+                          <div class="mt-4 w-full h-1 bg-slate-200 relative overflow-hidden rounded-full">
+                            <div
+                              class="absolute top-0 left-0 h-full bg-[#ff7a00] transition-all duration-75"
+                              [style.width.%]="slideProgress"
+                            ></div>
+                          </div>
+                        }
                         
                         <!-- Thumbnails: Positioned below on mobile, glass-morphism overlay on desktop -->
                         <div class="relative z-10 p-4 sm:p-0 sm:absolute sm:bottom-8 sm:left-1/2 sm:-translate-x-1/2 w-full flex justify-center">
@@ -435,23 +445,69 @@
         </section>
       </main>
     
-      <!-- Footer - REDESIGNED -->
-      <footer class="bg-slate-900 text-white py-24 px-6">
-        <div class="site-container text-center">
-          <div class="text-4xl font-headline font-black text-white mb-10 tracking-tight">{{ brandName$ | async }}</div>
-          <div class="flex flex-wrap justify-center gap-x-12 gap-y-6 mb-12">
-            <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Privacy Policy</a>
-            <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Terms of Service</a>
-            <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Returns & Refunds</a>
-            <a class="font-label text-[10px] tracking-[0.2em] text-white/50 hover:text-white transition-colors" href="javascript:void(0)">Contact Us</a>
-          </div>
-          <div class="pt-12 border-t border-white/5">
-              <p class="font-label text-[9px] tracking-[0.3em] text-white/30">
-                  © {{ 2024 }} {{ brandName$ | async }}. CRAFTED WITH PASSION FOR ELEGANCE.
+      <!-- More Offers Section - PSYCHOLOGICALLY PLACED AT THE END -->
+      <section class="relative py-24 px-6 overflow-hidden">
+        <!-- Ambient Background Glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-clp/5 rounded-full blur-[120px] -z-10"></div>
+        
+        <div class="site-container">
+          <div class="bg-slate-900 rounded-[40px] p-12 md:p-20 relative overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]">
+            <!-- Decorative Elements -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-primary-clp/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -ml-32 -mb-32"></div>
+            
+            <div class="relative z-10 max-w-3xl mx-auto text-center space-y-8">
+              <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-white/70 text-[10px] font-black uppercase tracking-[0.3em]">Exclusive Online Collection</span>
+              </div>
+              
+              <h2 class="text-4xl md:text-6xl font-headline font-black text-white leading-[1.1] tracking-tighter">
+                Want to see <span class="text-primary-clp italic">more</span> amazing offers?
+              </h2>
+              
+              <p class="text-white/50 text-lg md:text-xl font-medium leading-relaxed max-w-xl mx-auto">
+                Our main website features hundreds of premium products with exclusive discounts you won't find anywhere else.
               </p>
+              
+              <div class="pt-6">
+                <a routerLink="/" class="group relative inline-flex items-center gap-4 bg-white text-slate-900 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(255,255,255,0.2)] hover:bg-primary-clp hover:text-white transition-all duration-500 hover:-translate-y-2 active:scale-95">
+                  <app-icon name="ExternalLink" size="20" className="transition-transform group-hover:rotate-12"></app-icon>
+                  Visit Our Website
+                  
+                  <!-- Pulsing Glow effect -->
+                  <div class="absolute -inset-1 bg-white/20 rounded-2xl blur-lg group-hover:bg-primary-clp/50 transition-all duration-500 -z-10 animate-pulse"></div>
+                </a>
+              </div>
+              
+              <div class="pt-12 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-40">
+                <div class="flex flex-col items-center gap-2">
+                  <span class="text-white font-black text-2xl tracking-tighter">500+</span>
+                  <span class="text-white/60 text-[9px] font-black uppercase tracking-widest">Products</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                  <span class="text-white font-black text-2xl tracking-tighter">24/7</span>
+                  <span class="text-white/60 text-[9px] font-black uppercase tracking-widest">Support</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                  <span class="text-white font-black text-2xl tracking-tighter">100%</span>
+                  <span class="text-white/60 text-[9px] font-black uppercase tracking-widest">Secure</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                  <span class="text-white font-black text-2xl tracking-tighter">FREE</span>
+                  <span class="text-white/60 text-[9px] font-black uppercase tracking-widest">Returns</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-12 text-center">
+            <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">
+              © {{ 2024 }} {{ brandName$ | async }} • Elevating Your Style
+            </p>
           </div>
         </div>
-      </footer>
+      </section>
   </div>
 }
 

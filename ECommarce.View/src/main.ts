@@ -14,6 +14,7 @@ import {
 } from "@angular/common/http";
 import { provideZoneChangeDetection } from "@angular/core";
 import { provideClientHydration } from "@angular/platform-browser";
+import { DATE_PIPE_DEFAULT_OPTIONS } from "@angular/common";
 import { AppComponent } from "./app/app.component";
 import { appRoutes } from "./app/app.routes";
 import { API_CONFIG } from "./app/core/config/api.config";
@@ -53,6 +54,10 @@ bootstrapApplication(AppComponent, {
       useValue: {
         baseUrl: environment.apiBaseUrl,
       },
+    },
+    {
+      provide: DATE_PIPE_DEFAULT_OPTIONS,
+      useValue: { timezone: "+0600" },
     },
   ],
 });

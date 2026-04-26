@@ -20,6 +20,7 @@ import { Product } from "../../../../core/models/product";
 import { CartService } from "../../../../core/services/cart.service";
 import { OrderService } from "../../../../core/services/order.service";
 import { CartItem, CartSummary } from "../../../../core/models/cart";
+import { SiteSettingsService } from "../../../../core/services/site-settings.service";
 import { CheckoutService } from "../../../../core/services/checkout.service";
 import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
@@ -59,9 +60,12 @@ export class LandingPageComponent implements OnInit {
   private readonly customerOrderApi = inject(CustomerOrderApiService);
   private readonly settingsService = inject(SettingsService);
   readonly imageUrlService = inject(ImageUrlService);
+  private readonly siteSettingsService = inject(SiteSettingsService);
   private readonly orderService = inject(OrderService);
   private readonly userPersistence = inject(UserPersistenceService);
   private readonly notification = inject(NotificationService);
+
+  brandName$ = this.siteSettingsService.getSettings().pipe(map((s: any) => s.websiteName));
 
   product: Product | null = null;
   isLoading = false;
@@ -498,7 +502,7 @@ export class LandingPageComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     )
     .subscribe({
-      next: (order) => {
+      next: (order: any) => {
         this.isOrdering = false;
         if (order?.id) {
           // Save user details for next time

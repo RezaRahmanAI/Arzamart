@@ -151,13 +151,13 @@
             <div
               class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold"
             >
-              {{ order.customerName.charAt(0) }}
+              {{ order.customerName.charAt(0) || 'U' }}
             </div>
             <div>
               <p class="font-medium text-primary dark:text-white">
-                {{ order.customerName }}
+                {{ order.customerPhone }}
               </p>
-              <p class="text-sm text-gray-500">{{ order.customerPhone }}</p>
+              <p class="text-sm text-gray-500">{{ order.customerName }}</p>
             </div>
           </div>
         </div>

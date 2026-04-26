@@ -53,14 +53,14 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   isRefreshing = false;
   orderIdSearchControl = new FormControl("", { nonNullable: true });
   phoneSearchControl = new FormControl("", { nonNullable: true });
-  productSearchControl = new FormControl("", { nonNullable: true });
+
 
   orders: Order[] = [];
   invoiceOrder: OrderDetail | null = null;
   isInvoiceLoading = false;
   totalResults = 0;
   page = 1;
-  pageSize = 10;
+  pageSize = 50;
 
   statusOptions: OrdersQueryParams["status"][] = [
     "All",
@@ -181,12 +181,11 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   selectedSourcePageId: number | null = null;
   selectedSocialMediaSourceId: number | null = null;
   selectedCustomerPhone: string | null = null;
-  selectedProductId: number | null = null;
+
   
   sourcePages: SourcePage[] = [];
   socialMediaSources: SocialMediaSource[] = [];
-  suggestedProducts: any[] = [];
-  showProductSuggestions = false;
+
 
   statusMenuOpen = false;
   dateMenuOpen = false;
@@ -257,19 +256,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
         this.loadOrders();
       });
 
-    this.productSearchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(query => {
-        if (query.length >= 2) {
-          this.productService.getProducts({ searchTerm: query, pageSize: 10, category: 'All', statusTab: 'All', page: 1 }).subscribe(res => {
-            this.suggestedProducts = res.items;
-            this.showProductSuggestions = true;
-          });
-        } else {
-          this.suggestedProducts = [];
-          this.showProductSuggestions = false;
-        }
-      });
+
   }
 
   loadSources(): void {
@@ -297,17 +284,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.loadOrders();
   }
 
-  setProductFilter(productId: number | null, productName?: string): void {
-    this.selectedProductId = productId;
-    if (productName) {
-      this.productSearchControl.setValue(productName, { emitEvent: false });
-    } else if (productId === null) {
-      this.productSearchControl.setValue('', { emitEvent: false });
-    }
-    this.showProductSuggestions = false;
-    this.page = 1;
-    this.loadOrders();
-  }
+
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -639,7 +616,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       manualOnly: this.selectedOrderType === 'Manual',
       sourcePageId: this.selectedSourcePageId || undefined,
       socialMediaSourceId: this.selectedSocialMediaSourceId || undefined,
-      productId: this.selectedProductId || undefined,
+
     };
 
     if (this.selectedDateRange === "Custom" && this.customStartDate && this.customEndDate) {

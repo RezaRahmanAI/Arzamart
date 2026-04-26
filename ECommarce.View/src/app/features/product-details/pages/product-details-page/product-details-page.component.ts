@@ -75,6 +75,8 @@ export class ProductDetailsPageComponent {
   isZooming = false;
   zoomX = 0;
   zoomY = 0;
+  slideProgress = 0;
+  private autoSlideInterval: any;
 
 
   private readonly selectedSizeSubject = new BehaviorSubject<string | null>(
@@ -341,21 +343,35 @@ export class ProductDetailsPageComponent {
 
   nextImage(gallery: string[]): void {
     this.currentImageIndex = (this.currentImageIndex + 1) % gallery.length;
+    this.resetProgress();
   }
 
   goToImage(index: number): void {
     this.currentImageIndex = index;
+    this.resetProgress();
+  }
+
+  private resetProgress(): void {
+    this.slideProgress = 0;
   }
 
   private startAutoSlide(product: Product): void {
     const gallery = this.buildGallery(product);
     if (gallery.length <= 1) return;
 
-    interval(4000)
+    // Use a smaller interval for smooth progress bar (e.g., 50ms)
+    // 4000ms / 50ms = 80 steps
+    const step = 100 / (4000 / 50);
+
+    interval(50)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         if (!this.isZooming) {
-          this.nextImage(gallery);
+          this.slideProgress += step;
+          if (this.slideProgress >= 100) {
+            this.nextImage(gallery);
+            this.slideProgress = 0;
+          }
         }
       });
   }

@@ -62,13 +62,13 @@
           (click)="addToCart($event)"
           class="w-full h-8 sm:h-10 md:h-12 bg-white text-primary border border-gray-300 rounded text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-wider hover:bg-primary hover:text-white hover:border-primary transition-all duration-300"
         >
-          ADD TO CART
+          {{ currentStock > 0 ? 'ADD TO CART' : 'PRE-ORDER' }}
         </button>
         <button
           (click)="orderNow($event)"
           class="w-full h-8 sm:h-10 md:h-12 bg-accent text-white rounded text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm"
         >
-          ORDER NOW
+          {{ currentStock > 0 ? 'ORDER NOW' : 'PRE-ORDER NOW' }}
         </button>
       </div>
     </div>
