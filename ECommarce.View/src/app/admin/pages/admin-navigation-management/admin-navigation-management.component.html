@@ -219,9 +219,10 @@
         <button
           type="submit"
           [disabled]="isSubmitting"
-          class="flex-1 py-3 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20"
+          class="flex-1 py-3 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
         >
-          {{ isEditing ? "Save" : "Create" }}
+          <app-icon *ngIf="isSubmitting" name="Loader2" size="20" className="animate-spin"></app-icon>
+          {{ isSubmitting ? "Saving..." : (isEditing ? "Save" : "Create") }}
         </button>
       </div>
     </form>

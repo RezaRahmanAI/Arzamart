@@ -379,10 +379,13 @@ export class AdminSettingsComponent implements OnInit {
         .filter(Boolean),
     };
 
+    this.isSaving = true;
+
     if (this.editingZoneId) {
       this.settingsService
         .updateShippingZone(this.editingZoneId, updatedZone)
         .subscribe((zone) => {
+          this.isSaving = false;
           this.shippingZones = this.shippingZones.map((item) =>
             item.id === zone.id ? zone : item,
           );
@@ -394,6 +397,7 @@ export class AdminSettingsComponent implements OnInit {
     }
 
     this.settingsService.createShippingZone(updatedZone).subscribe((zone) => {
+      this.isSaving = false;
       this.shippingZones = [...this.shippingZones, zone];
       this.zoneForm.reset({ id: 0, name: "", region: "", rates: "" });
       this.showZoneForm = false;
@@ -466,10 +470,13 @@ export class AdminSettingsComponent implements OnInit {
       isActive: formValue.isActive,
     };
 
+    this.isSaving = true;
+
     if (this.editingDeliveryId) {
       this.settingsService
         .updateDeliveryMethod(this.editingDeliveryId, payload)
         .subscribe(() => {
+          this.isSaving = false;
           this.deliveryMethods = this.deliveryMethods.map((m) =>
             m.id === this.editingDeliveryId
               ? ({ ...m, ...payload } as DeliveryMethod)
@@ -481,6 +488,7 @@ export class AdminSettingsComponent implements OnInit {
       this.settingsService
         .createDeliveryMethod(payload)
         .subscribe((newMethod) => {
+          this.isSaving = false;
           this.deliveryMethods = [...this.deliveryMethods, newMethod];
           this.closeDeliveryForm();
         });

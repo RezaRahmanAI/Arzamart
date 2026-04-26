@@ -151,6 +151,7 @@ export class AdminProductFormComponent implements OnDestroy {
 
   ProductType = ProductType; // For template access
   isLoading = false;
+  isSubmitting = false;
 
   constructor() {
     // Setup cascading listeners
@@ -637,6 +638,8 @@ export class AdminProductFormComponent implements OnDestroy {
   }
 
   saveProduct(): void {
+    if (this.isSubmitting) return;
+
     console.log("=== Save Product Started ===");
     this.mediaError = "";
 
@@ -667,6 +670,7 @@ export class AdminProductFormComponent implements OnDestroy {
     const files = this.getSelectedFiles();
     console.log("Files to upload:", files.length);
 
+    this.isSubmitting = true;
     this.productsService
       .uploadProductMedia(files)
       .pipe(
@@ -689,6 +693,7 @@ export class AdminProductFormComponent implements OnDestroy {
       )
       .subscribe({
         next: (product) => {
+          this.isSubmitting = false;
           const action = this.isEditMode ? "updated" : "created";
           console.log(`Product ${action} successfully:`, product);
           this.refreshAllData();
@@ -696,6 +701,7 @@ export class AdminProductFormComponent implements OnDestroy {
           void this.router.navigate(["/admin/products"]);
         },
         error: (error) => {
+          this.isSubmitting = false;
           const action = this.isEditMode ? "update" : "create";
           console.error(`Error ${action}ing product:`, error);
           const errorMessage =

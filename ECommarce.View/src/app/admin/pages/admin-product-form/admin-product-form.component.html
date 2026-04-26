@@ -44,11 +44,13 @@
         Discard
       </button>
       <button
-        class="flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-bold text-white hover:bg-[#083a4a] shadow-lg shadow-primary/20"
+        class="flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-bold text-white hover:bg-[#083a4a] shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
         type="submit"
+        [disabled]="isSubmitting"
       >
-        <app-icon name="Check" size="20"></app-icon>
-        {{ isEditMode ? "Update Product" : "Save Product" }}
+        <app-icon *ngIf="isSubmitting" name="Loader2" size="20" className="animate-spin"></app-icon>
+        <app-icon *ngIf="!isSubmitting" name="Check" size="20"></app-icon>
+        <span>{{ isSubmitting ? 'Processing...' : (isEditMode ? "Update Product" : "Save Product") }}</span>
       </button>
     </div>
   </div>

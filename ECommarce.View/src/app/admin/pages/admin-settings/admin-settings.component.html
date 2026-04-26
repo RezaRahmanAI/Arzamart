@@ -43,26 +43,12 @@
         (click)="saveChanges()"
         [disabled]="isSaving"
       >
-        <svg
+        <app-icon
           *ngIf="isSaving"
-          class="animate-spin w-4 h-4"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          ></circle>
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-          ></path>
-        </svg>
+          name="Loader2"
+          size="18"
+          className="animate-spin"
+        ></app-icon>
         <app-icon
           *ngIf="!isSaving"
           name="Save"
@@ -814,11 +800,13 @@
               Cancel
             </button>
             <button
-              class="px-6 py-2 bg-primary text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
+              class="px-6 py-2 bg-primary text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-primary/20 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
               type="button"
               (click)="saveDelivery()"
+              [disabled]="isSaving"
             >
-              {{ editingDeliveryId ? "Update Method" : "Save Method" }}
+              <app-icon *ngIf="isSaving" name="Loader2" size="18" className="animate-spin"></app-icon>
+              {{ isSaving ? "Processing..." : (editingDeliveryId ? "Update Method" : "Save Method") }}
             </button>
           </div>
         </div>

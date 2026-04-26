@@ -194,12 +194,10 @@
           <div class="pt-4 flex items-center gap-4">
             <button class="flex-1 px-6 py-3 rounded-2xl text-xs font-bold text-slate-500 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200"
                     type="button" (click)="cancelEdit()">Cancel</button>
-            <button class="flex-[2] arza-btn-primary py-3 relative overflow-hidden"
+            <button class="flex-[2] arza-btn-primary py-3 flex items-center justify-center gap-2 disabled:opacity-70"
                     type="submit" [disabled]="isUploadingImage || isSaving">
-              <span [class.opacity-0]="isSaving">{{ mode === 'create' ? 'Create Collection' : 'Update Collection' }}</span>
-              <div *ngIf="isSaving" class="absolute inset-0 flex items-center justify-center">
-                <div class="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-b-white"></div>
-              </div>
+              <app-icon *ngIf="isSaving" name="Loader2" size="20" className="animate-spin"></app-icon>
+              <span>{{ isSaving ? 'Processing...' : (mode === 'create' ? 'Create Collection' : 'Update Collection') }}</span>
             </button>
           </div>
         </form>

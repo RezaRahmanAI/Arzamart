@@ -158,6 +158,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(o => o.SubTotal).HasColumnType("decimal(18,2)");
             entity.Property(o => o.Tax).HasColumnType("decimal(18,2)");
             entity.Property(o => o.ShippingCost).HasColumnType("decimal(18,2)");
+            entity.Property(o => o.Discount).HasColumnType("decimal(18,2)");
+            entity.Property(o => o.AdvancePayment).HasColumnType("decimal(18,2)");
             entity.Property(o => o.Total).HasColumnType("decimal(18,2)");
             
             entity.HasMany(o => o.Items)
