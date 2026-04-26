@@ -31,6 +31,7 @@ import { SizeGuideComponent } from "../../../../shared/components/size-guide/siz
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
+import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
 
 @Component({
   selector: "app-landing-page",
@@ -45,6 +46,7 @@ import { NotificationService } from "../../../../core/services/notification.serv
     PriceDisplayComponent,
     SizeGuideComponent,
     AppIconComponent,
+    SafeHtmlPipe,
   ],
   templateUrl: "./landing-page.component.html",
   styleUrl: "./landing-page.component.css",

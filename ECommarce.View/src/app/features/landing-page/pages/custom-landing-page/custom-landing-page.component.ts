@@ -24,6 +24,7 @@ import { DestroyRef } from "@angular/core";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
+import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
 
 interface LandingPageData {
   product: Product;
@@ -33,7 +34,7 @@ interface LandingPageData {
 @Component({
   selector: "app-custom-landing-page",
   standalone: true,
-  imports: [AsyncPipe, NgClass, NgIf, DecimalPipe, ReactiveFormsModule, RouterModule, PriceDisplayComponent, AppIconComponent],
+  imports: [AsyncPipe, NgClass, NgIf, DecimalPipe, ReactiveFormsModule, RouterModule, PriceDisplayComponent, AppIconComponent, SafeHtmlPipe],
   templateUrl: "./custom-landing-page.component.html",
   styleUrl: "./custom-landing-page.component.css"
 })

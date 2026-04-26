@@ -140,7 +140,7 @@
               <span>Item Ref:</span>
               <span class="text-[#1a1a1a]">{{ product.sku }}</span>
               @if (product.shortDescription) {
-                <span class="text-[#c8922a]">• {{ product.shortDescription }}</span>
+                <span class="text-[#c8922a] whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></span>
               }
             </div>
           </div>
@@ -208,7 +208,7 @@
             @if (product.description) {
               <div class="space-y-4">
                 <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#c8922a]">Description</h3>
-                <p class="text-[16px] text-[#444] leading-[1.7] font-light">{{ product.description }}</p>
+                <div class="text-[16px] text-[#444] leading-[1.7] font-light whitespace-pre-line prose prose-slate prose-sm max-w-none" [innerHTML]="product.description | safeHtml"></div>
               </div>
             }
 
@@ -249,8 +249,7 @@
                   className="text-[#888] transition-transform duration-300 group-open:rotate-45"
                 ></app-icon>
               </summary>
-              <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium">
-                {{ product.fabricAndCare }}
+              <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium whitespace-pre-line" [innerHTML]="product.fabricAndCare | safeHtml">
               </div>
             </details>
           }
@@ -268,11 +267,7 @@
                 className="text-[#888] transition-transform duration-300 group-open:rotate-45"
               ></app-icon>
             </summary>
-            <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium">
-              {{
-                product.shippingAndReturns ||
-                  "Express delivery in 24-48 hours. Stress-free returns."
-              }}
+            <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium whitespace-pre-line" [innerHTML]="(product.shippingAndReturns || 'Express delivery in 24-48 hours. Stress-free returns.') | safeHtml">
             </div>
           </details>
         </div>

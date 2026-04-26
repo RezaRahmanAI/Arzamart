@@ -97,7 +97,7 @@
                                   </div>
                                   <div class="flex-1">
                                       <h4 class="font-label text-xs text-slate-400 mb-1">Design & Quality</h4>
-                                      <div class="prose prose-slate prose-sm max-w-none text-slate-700 font-medium leading-relaxed" [innerHTML]="data.product.description"></div>
+                                      <div class="prose prose-slate prose-sm max-w-none text-slate-700 font-medium leading-relaxed whitespace-pre-line" [innerHTML]="data.product.description | safeHtml"></div>
                                   </div>
                               </div>
                             }

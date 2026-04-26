@@ -183,9 +183,9 @@
                       <app-icon name="Plus" size="16" className="text-[#bbb] group-open:rotate-45 transition-transform duration-300"></app-icon>
                     </summary>
                     <div
-                      class="pb-8 text-[14px] text-[#666] leading-relaxed font-light"
+                      class="pb-8 text-[14px] text-[#666] leading-relaxed font-light whitespace-pre-line"
+                      [innerHTML]="vm.product.fabricAndCare | safeHtml"
                     >
-                      {{ vm.product.fabricAndCare }}
                     </div>
                   </details>
                 }
@@ -201,14 +201,9 @@
                     <app-icon name="Plus" size="16" className="text-[#bbb] group-open:rotate-45 transition-transform duration-300"></app-icon>
                   </summary>
                   <div
-                    class="pb-8 text-[14px] text-[#666] leading-relaxed font-light space-y-4"
+                    class="pb-8 text-[14px] text-[#666] leading-relaxed font-light space-y-4 whitespace-pre-line"
+                    [innerHTML]="(vm.product.shippingAndReturns || 'Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary.') | safeHtml"
                   >
-                    <p>
-                      {{
-                        vm.product.shippingAndReturns ||
-                          "Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary."
-                      }}
-                    </p>
                   </div>
                 </details>
               </div>
