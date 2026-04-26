@@ -94,6 +94,7 @@ public class ProductListDto
     public string? Tags { get; set; }
     public int SortOrder { get; set; }
     public string? CollectionName { get; set; }
+    public string? SubCategoryName { get; set; }
 
     public List<ProductVariantDto> Variants { get; set; } = new();
     public IEnumerable<ProductImageDto> Images { get; set; } = new List<ProductImageDto>();
