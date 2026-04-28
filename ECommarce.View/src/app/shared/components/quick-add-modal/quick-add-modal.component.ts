@@ -11,7 +11,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
   imports: [PriceDisplayComponent, AppIconComponent],
   template: `
     <div
-      class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+      class="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-6"
       role="dialog"
       aria-modal="true"
     >
@@ -23,7 +23,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
 
       <!-- Modal Content -->
       <div
-        class="relative w-full max-w-lg bg-white shadow-2xl overflow-hidden transform transition-all duration-500 ease-out"
+        class="relative w-full max-w-lg bg-white shadow-2xl overflow-hidden transform transition-all duration-500 ease-out max-h-[90vh] overflow-y-auto sm:overflow-visible rounded-3xl"
       >
         <!-- Close Button -->
         <button
@@ -35,7 +35,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
 
         <div class="flex flex-col sm:flex-row h-full">
           <!-- Product Image Preview -->
-          <div class="w-full sm:w-1/2 aspect-[3/4] bg-gray-50">
+          <div class="w-full sm:w-1/2 aspect-square sm:aspect-[3/4] bg-gray-50">
             <img
               [src]="imageUrlService.getImageUrl(selectedImage || product.imageUrl || '')"
               [alt]="product.name"
@@ -44,13 +44,13 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
           </div>
 
           <!-- Selection Details -->
-          <div class="flex-1 p-6 flex flex-col justify-center">
+          <div class="flex-1 p-5 sm:p-6 flex flex-col justify-center">
             <h2 class="text-sm uppercase tracking-[0.2em] font-bold text-gray-400 mb-1">
               Quick Add
             </h2>
-            <h3 class="text-xl font-bold text-black mb-2">{{ product.name }}</h3>
+            <h3 class="text-lg font-bold text-black mb-2">{{ product.name }}</h3>
             
-            <div class="flex items-center gap-2 mb-6">
+            <div class="flex items-center gap-2 mb-4">
               <app-price-display
                 [amount]="currentPrice"
                 class="text-lg font-bold block"
@@ -66,7 +66,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
 
             <!-- Size Selection -->
             @if (availableSizes.length > 0) {
-              <div class="mb-8">
+              <div class="mb-5">
                 <label class="text-[10px] uppercase tracking-widest font-bold text-gray-500 block mb-3">
                   Select Size: <span class="text-black">{{ selectedSize || 'required' }}</span>
                 </label>
@@ -91,7 +91,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
             }
 
             <!-- Quantity Selection -->
-            <div class="mb-8">
+            <div class="mb-6">
               <label class="text-[10px] uppercase tracking-widest font-bold text-gray-500 block mb-3">
                 Quantity
               </label>

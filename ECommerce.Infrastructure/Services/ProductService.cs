@@ -10,7 +10,6 @@ using ECommerce.Core.Specifications;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Core.Enums;
-using ECommerce.Core.Constants;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
@@ -38,10 +37,6 @@ public class ProductService : IProductService
             var spec = new ProductsWithCategoriesSpecification(slug);
             var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
             var dto = _mapper.Map<Product, ProductDto>(product);
-            if (dto != null)
-            {
-                dto.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? "";
-            }
             return dto;
         }, TimeSpan.FromMinutes(60));
     }
@@ -58,17 +53,15 @@ public class ProductService : IProductService
                 : await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
                 
             var dto = _mapper.Map<Product, ProductDto>(product);
-            if (dto != null && product != null)
-            {
-                dto.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? "";
-            }
             return dto;
         }, TimeSpan.FromMinutes(60));
     }
 
     public async Task<ProductDto?> CreateProductAsync(ProductCreateDto dto)
     {
-        var category = CategoryConstants.AllCategories.FirstOrDefault(c => c.Name.Equals(dto.Category, StringComparison.OrdinalIgnoreCase) || c.Id.ToString() == dto.Category);
+        var category = await _unitOfWork.Repository<Category>().GetQueryable()
+            .FirstOrDefaultAsync(c => c.Name.Equals(dto.Category, StringComparison.OrdinalIgnoreCase) || c.Id.ToString() == dto.Category);
+        
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
 
 
@@ -143,10 +136,6 @@ public class ProductService : IProductService
         await InvalidateProductCacheAsync(product);
 
         var dtoResult = _mapper.Map<Product, ProductDto>(product);
-        if (dtoResult != null)
-        {
-            dtoResult.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? "";
-        }
         return dtoResult;
     }
 
@@ -160,7 +149,9 @@ public class ProductService : IProductService
         if (product == null) throw new KeyNotFoundException("Product not found");
 
         var oldSlug = product.Slug;
-        var category = CategoryConstants.AllCategories.FirstOrDefault(c => c.Name.Equals(dto.Category, StringComparison.OrdinalIgnoreCase) || c.Id.ToString() == dto.Category);
+        var category = await _unitOfWork.Repository<Category>().GetQueryable()
+            .FirstOrDefaultAsync(c => c.Name.Equals(dto.Category, StringComparison.OrdinalIgnoreCase) || c.Id.ToString() == dto.Category);
+        
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
 
         
@@ -228,10 +219,6 @@ public class ProductService : IProductService
         await InvalidateProductCacheAsync(product, oldSlug);
 
         var dtoResult = _mapper.Map<Product, ProductDto>(product);
-        if (dtoResult != null)
-        {
-            dtoResult.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? "";
-        }
         return dtoResult;
     }
 

@@ -16,6 +16,7 @@ public class HomeController : ControllerBase
 {
     private readonly IGenericRepository<HeroBanner> _bannerRepo;
     private readonly IGenericRepository<Product> _productRepo;
+    private readonly IGenericRepository<Category> _categoryRepo;
 
     private readonly IMapper _mapper;
     private readonly IMemoryCache _cache;
@@ -24,6 +25,7 @@ public class HomeController : ControllerBase
     public HomeController(
         IGenericRepository<HeroBanner> bannerRepo,
         IGenericRepository<Product> productRepo,
+        IGenericRepository<Category> categoryRepo,
 
         IMapper mapper,
         IMemoryCache cache,
@@ -31,6 +33,7 @@ public class HomeController : ControllerBase
     {
         _bannerRepo = bannerRepo;
         _productRepo = productRepo;
+        _categoryRepo = categoryRepo;
 
         _mapper = mapper;
         _cache = cache;
@@ -68,13 +71,7 @@ public class HomeController : ControllerBase
                 sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
                 categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
                 tier: null, tags: null, isNew: true, isFeatured: null, skip: 0, take: 10));
-            var dtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(items);
-            foreach (var d in dtos)
-            {
-                var p = items.FirstOrDefault(x => x.Id == d.Id);
-                if (p != null) d.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == p.CategoryId)?.Name ?? "";
-            }
-            return dtos;
+            return _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(items);
         });
 
         // 3. Featured Products (home_featured_products)
@@ -85,17 +82,16 @@ public class HomeController : ControllerBase
                 sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
                 categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
                 tier: null, tags: null, isNew: null, isFeatured: true, skip: 0, take: 10));
-            var dtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(items);
-            foreach (var d in dtos)
-            {
-                var p = items.FirstOrDefault(x => x.Id == d.Id);
-                if (p != null) d.CategoryName = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == p.CategoryId)?.Name ?? "";
-            }
-            return dtos;
+            return _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(items);
         });
 
         // 4. Categories (home_categories)
-        var categories = CategoryConstants.AllCategories;
+        var categories = await _cache.GetOrCreateAsync("home_categories", async entry =>
+        {
+            entry.SlidingExpiration = TimeSpan.FromHours(1);
+            var items = await _categoryRepo.ListAsync(new BaseSpecification<Category>(c => c.IsActive));
+            return _mapper.Map<IReadOnlyList<Category>, IReadOnlyList<CategoryDto>>(items);
+        });
 
 
         return Ok(new HomePageDto

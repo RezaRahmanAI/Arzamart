@@ -20,6 +20,7 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
 
     {
 
+        AddInclude(x => x.Category!);
         AddInclude(x => x.SubCategory!);
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);
@@ -87,6 +88,7 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
     private void AddIncludes()
     {
 
+        AddInclude(x => x.Category!);
         AddInclude(x => x.SubCategory!);
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);

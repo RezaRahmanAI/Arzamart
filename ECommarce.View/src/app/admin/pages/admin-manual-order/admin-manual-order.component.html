@@ -1,401 +1,283 @@
 <div class="h-full bg-white dark:bg-surface-dark/50">
-  <!-- Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 py-8 border-b border-gray-100 dark:border-gray-800 mb-8">
-    <div class="flex items-center gap-4">
-      <button 
-        routerLink="/admin/orders"
-        class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:text-primary transition-colors border border-gray-100 dark:border-gray-700"
-      >
-        <app-icon name="ChevronLeft" size="20"></app-icon>
-      </button>
-      <div>
-        <h1 class="text-3xl font-black text-primary dark:text-white tracking-tight">
-          {{ isEditMode ? 'Edit Order' : (isPreOrderMode ? 'Manual Pre-Order' : 'Manual Order') }}
-        </h1>
-        <p class="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1">
-          {{ isEditMode ? 'Modify items and customer details' : 'Create a new order for a customer manually' }}
-        </p>
-      </div>
-    </div>
-  </div>
 
     <!-- Main Content Area -->
-    <div class="lg:col-span-12 space-y-8">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- Cart Section (Stays on top/left) -->
-        <div class="lg:col-span-5 space-y-6">
-          <!-- Order Items Card -->
-          <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-6">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-white">
-                  <app-icon name="ShoppingCart" size="24"></app-icon>
-                </div>
-                <h2 class="text-xl font-bold text-primary dark:text-white">Order Items</h2>
-              </div>
+    <div class="lg:col-span-12 space-y-3">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+        <!-- Compact POS Side Panel (Left) -->
+        <div class="lg:col-span-5 space-y-2">
+          <!-- POS Cart Card -->
+          <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden">
+            <div class="bg-gray-50 dark:bg-gray-900 px-3 py-2 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <button 
-                  *ngIf="cart().length > 0"
-                  (click)="clearCart()"
-                  class="px-2 py-1 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg text-[10px] font-bold transition-colors flex items-center gap-1"
-                >
-                  <app-icon name="Trash2" size="12"></app-icon>
-                  Clear
-                </button>
-                <div class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-300">
-                  {{ cart().length }} lines
-                </div>
+                <app-icon name="ShoppingCart" size="16" className="text-primary"></app-icon>
+                <h2 class="text-xs font-black uppercase tracking-wider text-primary dark:text-white">Online POS</h2>
               </div>
-            </div>
-
-            <div *ngIf="cart().length > 0" class="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-              <div *ngFor="let item of cart()" class="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-800 group">
-                <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-white border border-gray-200 dark:border-gray-800">
-                  <img [src]="imageUrlService.getImageUrl(item.product.imageUrl || '')" class="w-full h-full object-cover">
-                </div>
-                <div class="flex-1 min-w-0">
-                  <h4 class="text-xs font-bold text-primary dark:text-white truncate">{{ item.product.name }}</h4>
-                  <div *ngIf="item.selectedSize" class="mt-1">
-                    <span class="px-1.5 py-0.5 bg-primary/10 text-primary dark:text-primary-light rounded text-[9px] font-black uppercase tracking-wider border border-primary/20">
-                      Size: {{ item.selectedSize }}
-                    </span>
-                  </div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <button (click)="updateQuantity(item, -1)" class="w-6 h-6 rounded-md bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-red-500 border border-gray-100 dark:border-gray-700 transition-colors">
-                    <app-icon name="Minus" size="12"></app-icon>
-                  </button>
-                  <span class="text-xs font-bold text-primary dark:text-white w-4 text-center">{{ item.quantity }}</span>
-                  <button (click)="updateQuantity(item, 1)" class="w-6 h-6 rounded-md bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-primary border border-gray-100 dark:border-gray-700 transition-colors">
-                    <app-icon name="Plus" size="12"></app-icon>
-                  </button>
-                </div>
-                <div class="flex flex-col items-end gap-1 ml-2 min-w-[90px]">
-                  <div class="flex items-center gap-1 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg px-2 py-1 shadow-sm">
-                    <span class="text-[10px] font-bold text-gray-400">৳</span>
-                    <input 
-                      type="number" 
-                      [(ngModel)]="item.unitPrice" 
-                      (ngModelChange)="onPriceChange()"
-                      class="w-14 bg-transparent border-none p-0 text-xs font-bold text-primary dark:text-white focus:ring-0 outline-none"
-                    >
-                  </div>
-                  <app-price-display [amount]="item.unitPrice * item.quantity" className="text-[10px] font-black text-gray-400"></app-price-display>
-                </div>
-                <button (click)="removeFromCart(item)" class="p-1.5 text-red-500/50 hover:text-red-500 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/50">
-                  <app-icon name="Trash2" size="16"></app-icon>
-                </button>
-              </div>
-            </div>
-
-            <div *ngIf="cart().length === 0" class="py-8 text-center text-gray-400 border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-2xl">
-              <app-icon name="PackagePlus" size="32" className="mx-auto mb-2 opacity-20"></app-icon>
-              <p class="text-xs">No items in cart</p>
-            </div>
-
-            <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
-              <div class="flex justify-between items-center text-sm">
-                <span class="text-gray-500">Subtotal</span>
-                <app-price-display [amount]="subtotal" className="text-primary dark:text-white font-bold"></app-price-display>
-              </div>
-              <div class="flex justify-between items-center text-sm">
-                <span class="text-gray-500">Shipping</span>
-                <app-price-display [amount]="shippingCost" className="text-primary dark:text-white font-bold"></app-price-display>
-              </div>
-              <div [formGroup]="orderForm" class="grid grid-cols-2 gap-4">
-                 <div class="space-y-1">
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Additional Discount</label>
-                    <div class="flex items-center px-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg focus-within:border-primary transition-all">
-                       <span class="text-xs text-gray-400 mr-1">৳</span>
-                       <input type="number" formControlName="additionalDiscount" class="w-full bg-transparent border-none p-0 text-xs font-bold text-primary dark:text-white focus:ring-0 outline-none" placeholder="0">
-                    </div>
-                 </div>
-                 <div class="space-y-1">
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Advance Payment</label>
-                    <div class="flex items-center px-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg focus-within:border-primary transition-all">
-                       <span class="text-xs text-gray-400 mr-1">৳</span>
-                       <input type="number" formControlName="advancePayment" class="w-full bg-transparent border-none p-0 text-xs font-bold text-primary dark:text-white focus:ring-0 outline-none" placeholder="0">
-                    </div>
-                 </div>
-              </div>
-
-              <div class="flex justify-between items-center p-4 bg-primary text-white rounded-xl shadow-lg shadow-primary/20">
-                <span class="font-bold">Total</span>
-                <div class="text-right">
-                    <app-price-display [amount]="total" className="text-xl font-black text-white"></app-price-display>
-                </div>
-              </div>
-
-              <div *ngIf="dueAmount > 0" class="flex justify-between items-center p-4 bg-orange-500 text-white rounded-xl shadow-lg shadow-orange-500/20 animate-fade-in">
-                <span class="font-bold">Due Amount</span>
-                <app-price-display [amount]="dueAmount" className="text-xl font-black text-white"></app-price-display>
-              </div>
-
-            </div>
-          </div>
-
-      <!-- Customer Info Card (Moved below items for better flow) -->
-      <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-3xl p-8 shadow-sm">
-        <div class="flex items-center gap-4 mb-6">
-          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-            <app-icon name="User" size="24"></app-icon>
-          </div>
-          <h2 class="text-xl font-bold text-primary dark:text-white">Customer Info</h2>
-        </div>
-
-        <form [formGroup]="orderForm" class="space-y-4">
-          <div class="grid grid-cols-1 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Phone</label>
-              <input 
-                formControlName="phone" 
-                type="text" 
-                placeholder="01XXXXXXXXX"
-                class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-              >
-            </div>
-            
-            <div>
-              <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Name</label>
-              <input 
-                formControlName="name" 
-                type="text" 
-                placeholder="Full name"
-                class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-              >
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Address</label>
-              <textarea 
-                formControlName="address" 
-                rows="2"
-                placeholder="Street address..."
-                class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
-              ></textarea>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">City</label>
-                <div class="relative">
-                  <div class="relative items-center flex" (click)="toggleCityDropdown()">
-                    <input
-                      class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white cursor-pointer pr-10 focus:outline-none"
-                      type="text"
-                      [value]="orderForm.get('city')?.value"
-                      placeholder="Select city"
-                      readonly
-                    />
-                    <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-3 text-gray-400 pointer-events-none"></app-icon>
-                  </div>
-                  <div *ngIf="isCityDropdownOpen" class="absolute z-50 w-full mt-2 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden">
-                    <div class="p-2 border-b border-gray-100 dark:border-gray-700">
-                      <input
-                        type="text"
-                        class="w-full px-3 py-1.5 bg-gray-50 dark:bg-gray-800 border-none rounded-lg text-sm focus:ring-0 outline-none"
-                        placeholder="Search..."
-                        (input)="filterCities($event)"
-                        [value]="citySearch"
-                      />
-                    </div>
-                    <ul class="max-h-60 overflow-y-auto py-1">
-                      <li *ngIf="filteredCities.length === 0" class="px-4 py-2 text-sm text-gray-500">No cities</li>
-                      <li *ngFor="let city of filteredCities" (click)="selectCity(city)" class="px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
-                        {{ city }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Area</label>
-                <div class="relative">
-                  <div class="relative items-center flex" (click)="toggleAreaDropdown()">
-                    <input
-                      class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white cursor-pointer pr-10 focus:outline-none"
-                      type="text"
-                      [value]="orderForm.get('area')?.value"
-                      placeholder="Select area"
-                      readonly
-                    />
-                    <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-3 text-gray-400 pointer-events-none"></app-icon>
-                  </div>
-                  <div *ngIf="isAreaDropdownOpen" class="absolute z-50 w-full mt-2 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden">
-                    <div class="p-2 border-b border-gray-100 dark:border-gray-700">
-                      <input
-                        type="text"
-                        class="w-full px-3 py-1.5 bg-gray-50 dark:bg-gray-800 border-none rounded-lg text-sm focus:ring-0 outline-none"
-                        placeholder="Search..."
-                        (input)="filterAreas($event)"
-                        [value]="areaSearch"
-                      />
-                    </div>
-                    <ul class="max-h-60 overflow-y-auto py-1">
-                      <li *ngIf="filteredAreas.length === 0" class="px-4 py-2 text-sm text-gray-500">No areas</li>
-                      <li *ngFor="let area of filteredAreas" (click)="selectArea(area)" class="px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
-                        {{ area }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Delivery Method</label>
-              <div class="relative">
-                <select 
-                  formControlName="deliveryMethodId"
-                  class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white appearance-none focus:outline-none"
-                >
-                  <option [value]="null">Select delivery method</option>
-                  <option *ngFor="let method of deliveryMethods" [value]="method.id">
-                    {{ method.name }} - ৳{{ method.cost }}
-                  </option>
-                </select>
-                <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Page Source</label>
-                <div class="relative">
-                  <select 
-                    formControlName="sourcePageId"
-                    class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white appearance-none focus:outline-none"
-                    [class.border-red-300]="orderForm.get('sourcePageId')?.touched && orderForm.get('sourcePageId')?.invalid"
-                  >
-                    <option [value]="null">Select Page</option>
-                    <option *ngFor="let page of sourcePages" [value]="page.id">
-                      {{ page.name }}
-                    </option>
-                  </select>
-                  <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
-                </div>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Social Media Source</label>
-                <div class="relative">
-                  <select 
-                    formControlName="socialMediaSourceId"
-                    class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white appearance-none focus:outline-none"
-                    [class.border-red-300]="orderForm.get('socialMediaSourceId')?.touched && orderForm.get('socialMediaSourceId')?.invalid"
-                  >
-                    <option [value]="null">Select Social Media</option>
-                    <option *ngFor="let source of socialMediaSources" [value]="source.id">
-                      {{ source.name }}
-                    </option>
-                  </select>
-                  <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
-                </div>
-              </div>
-            </div>
-            <div class="grid grid-cols-1 gap-4">
-               <div>
-                  <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Note Type</label>
-                  <div class="relative">
-                    <select 
-                      formControlName="noteType"
-                      class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white appearance-none focus:outline-none"
-                    >
-                      <option value="Official">Official Note (Internal)</option>
-                      <option value="Customer">Customer Note (On Invoice)</option>
-                    </select>
-                    <app-icon name="ChevronDown" size="16" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></app-icon>
-                  </div>
-               </div>
-               <div>
-                  <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Note Content</label>
-                  <textarea 
-                    formControlName="noteText" 
-                    rows="2"
-                    placeholder="Enter note here..."
-                    class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
-                  ></textarea>
-               </div>
-            </div>
-            <div class="mt-6 pt-4">
               <button 
-                (click)="submitOrder()"
-                [disabled]="isSubmitting || cart().length === 0"
-                class="w-full py-4 rounded-xl font-black text-base flex items-center justify-center gap-2 transition-all shadow-lg"
-                [ngClass]="(isSubmitting || cart().length === 0) ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-primary hover:bg-primary-hover text-white hover:scale-[1.02] active:scale-95 shadow-primary/30'"
+                *ngIf="cart().length > 0"
+                (click)="clearCart()"
+                class="px-2 py-0.5 bg-red-500 text-white hover:bg-red-600 rounded text-[10px] font-bold transition-colors flex items-center gap-1"
               >
-                <app-icon *ngIf="isSubmitting" name="Loader2" size="20" className="animate-spin"></app-icon>
-                <span>{{ isSubmitting ? 'Processing...' : (isEditMode ? 'UPDATE ORDER NOW' : 'CONFIRM ORDER NOW') }}</span>
+                Clear <app-icon name="RotateCcw" size="10"></app-icon>
               </button>
             </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-800">
+                    <th class="px-3 py-2 text-[10px] font-bold text-gray-500 uppercase">Name</th>
+                    <th class="px-2 py-2 text-[10px] font-bold text-gray-500 uppercase text-center">Qty</th>
+                    <th class="px-2 py-2 text-[10px] font-bold text-gray-500 uppercase text-center">Size</th>
+                    <th class="px-2 py-2 text-[10px] font-bold text-gray-500 uppercase text-center">Unit</th>
+                    <th class="px-2 py-2 text-[10px] font-bold text-gray-500 uppercase text-center">Total</th>
+                    <th class="px-2 py-2 text-[10px] font-bold text-gray-500 uppercase text-center"></th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+                  <tr *ngFor="let item of cart()" class="hover:bg-gray-50/50 dark:hover:bg-gray-900/20 transition-colors">
+                    <td class="px-3 py-2 min-w-[120px]">
+                      <p class="text-[10px] font-bold text-primary dark:text-white truncate">{{ item.product.name }}</p>
+                    </td>
+                    <td class="px-2 py-2">
+                      <div class="flex items-center justify-center gap-1">
+                        <button (click)="updateQuantity(item, -1)" class="w-4 h-4 rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:text-red-500">-</button>
+                        <span class="text-[10px] font-bold w-4 text-center">{{ item.quantity }}</span>
+                        <button (click)="updateQuantity(item, 1)" class="w-4 h-4 rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:text-primary">+</button>
+                      </div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                      <span *ngIf="item.selectedSize" class="px-1.5 py-0.5 bg-primary/5 text-primary rounded text-[9px] font-bold border border-primary/10 uppercase">{{ item.selectedSize }}</span>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                      <input 
+                        type="number" 
+                        [(ngModel)]="item.unitPrice" 
+                        (ngModelChange)="onPriceChange()"
+                        class="w-12 bg-transparent border-none p-0 text-[10px] font-bold text-primary dark:text-white text-center focus:ring-0 outline-none"
+                      >
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                      <span class="text-[10px] font-black text-primary dark:text-white">৳{{ item.unitPrice * item.quantity }}</span>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                      <button (click)="removeFromCart(item)" class="w-5 h-5 rounded bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
+                        <app-icon name="X" size="10"></app-icon>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <div *ngIf="cart().length === 0" class="py-10 text-center">
+                <app-icon name="PackagePlus" size="32" className="mx-auto mb-2 opacity-10"></app-icon>
+                <p class="text-[10px] font-bold text-gray-400">Cart is empty</p>
+              </div>
+            </div>
           </div>
-        </form>
-      </div>
+
+          <!-- Summary & Customer Form Combined for Extreme Compactness -->
+          <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm p-3">
+            <div class="space-y-2">
+              <!-- Summary Rows -->
+              <div class="flex justify-between items-center text-[11px] font-bold">
+                <span class="text-gray-500">Total Quantity:</span>
+                <span class="text-primary dark:text-white">{{ totalItemsCount }}</span>
+              </div>
+              <div class="flex justify-between items-center text-[11px] font-bold">
+                <span class="text-gray-500">Sub Total:</span>
+                <span class="text-primary dark:text-white font-black">৳{{ subtotal }} Tk</span>
+              </div>
+              
+              <div [formGroup]="orderForm" class="space-y-1.5">
+                <div class="flex justify-between items-center">
+                  <span class="text-[11px] font-bold text-gray-500">Discount</span>
+                  <div class="flex items-center px-2 py-0.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded w-32">
+                    <input type="number" formControlName="additionalDiscount" class="w-full bg-transparent border-none p-0 text-[11px] font-bold text-red-500 focus:ring-0 outline-none text-right" placeholder="0">
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <span class="text-[11px] font-bold text-gray-500">Delivery Charge</span>
+                  <div class="text-[11px] font-black text-primary dark:text-white">৳{{ shippingCost }} Tk</div>
+                </div>
+
+                <div class="flex justify-between items-center pt-1 border-t border-dashed border-gray-200 dark:border-gray-800">
+                  <span class="text-xs font-black text-primary dark:text-white uppercase">Total</span>
+                  <span class="text-xs font-black text-primary dark:text-white">৳{{ total }} Tk</span>
+                </div>
+
+                <!-- Customer Form Fields -->
+                <div class="space-y-1.5 pt-2">
+                  <div class="grid grid-cols-1 gap-1.5">
+                    <div class="flex items-center gap-2">
+                      <label class="w-20 text-[10px] font-bold text-gray-500 shrink-0">Phone *</label>
+                      <input formControlName="phone" type="text" placeholder="Phone" class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-[11px] focus:outline-none focus:border-primary">
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="w-20 text-[10px] font-bold text-gray-500 shrink-0">Full Name *</label>
+                      <input formControlName="name" type="text" placeholder="Full Name" class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-[11px] focus:outline-none focus:border-primary">
+                    </div>
+                    <div class="flex items-start gap-2">
+                      <label class="w-20 text-[10px] font-bold text-gray-500 shrink-0 pt-1">Address *</label>
+                      <textarea formControlName="address" rows="1" placeholder="Address" class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-[11px] focus:outline-none focus:border-primary resize-none"></textarea>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                      <label class="w-20 text-[10px] font-bold text-gray-500 shrink-0">Pay</label>
+                      <input type="number" formControlName="advancePayment" placeholder="0" class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-[11px] font-bold text-emerald-600 focus:outline-none focus:border-primary">
+                    </div>
+
+                    <div class="flex justify-between items-center px-1">
+                      <span class="text-[11px] font-bold text-gray-500">Due</span>
+                      <span class="text-[11px] font-black text-orange-600">Tk {{ dueAmount }}</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-1.5">
+                      <div class="relative">
+                        <select formControlName="sourcePageId" class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-[10px] appearance-none focus:outline-none">
+                          <option [value]="null">Select Page</option>
+                          <option *ngFor="let page of sourcePages" [value]="page.id">{{ page.name }}</option>
+                        </select>
+                        <app-icon name="ChevronDown" size="10" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
+                      </div>
+                      <div class="relative">
+                        <select formControlName="socialMediaSourceId" class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-[10px] appearance-none focus:outline-none">
+                          <option [value]="null">Select Source</option>
+                          <option *ngFor="let source of socialMediaSources" [value]="source.id">{{ source.name }}</option>
+                        </select>
+                        <app-icon name="ChevronDown" size="10" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-1.5">
+                      <div class="relative" (click)="toggleCityDropdown()">
+                        <input class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-[10px] cursor-pointer" type="text" [value]="orderForm.get('city')?.value || 'Select City'" readonly />
+                        <app-icon name="ChevronDown" size="10" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
+                        <!-- Floating City Search -->
+                        <div *ngIf="isCityDropdownOpen" class="absolute bottom-full left-0 z-[100] w-full mb-1 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded shadow-xl overflow-hidden" (click)="$event.stopPropagation()">
+                           <input type="text" class="w-full px-2 py-1 bg-gray-50 dark:bg-gray-800 border-b border-gray-100 text-[10px] outline-none" placeholder="Search..." (input)="filterCities($event)" [value]="citySearch" />
+                           <ul class="max-h-32 overflow-y-auto py-1">
+                             <li *ngFor="let city of filteredCities" (click)="selectCity(city)" class="px-2 py-1 text-[10px] hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">{{ city }}</li>
+                           </ul>
+                        </div>
+                      </div>
+                      <div class="relative" (click)="toggleAreaDropdown()">
+                        <input class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-[10px] cursor-pointer" type="text" [value]="orderForm.get('area')?.value || 'Select Area'" readonly />
+                        <app-icon name="ChevronDown" size="10" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
+                         <!-- Floating Area Search -->
+                         <div *ngIf="isAreaDropdownOpen" class="absolute bottom-full left-0 z-[100] w-full mb-1 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded shadow-xl overflow-hidden" (click)="$event.stopPropagation()">
+                            <input type="text" class="w-full px-2 py-1 bg-gray-50 dark:bg-gray-800 border-b border-gray-100 text-[10px] outline-none" placeholder="Search..." (input)="filterAreas($event)" [value]="areaSearch" />
+                            <ul class="max-h-32 overflow-y-auto py-1">
+                              <li *ngFor="let area of filteredAreas" (click)="selectArea(area)" class="px-2 py-1 text-[10px] hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">{{ area }}</li>
+                            </ul>
+                         </div>
+                      </div>
+                    </div>
+
+                    <div class="relative">
+                      <select formControlName="deliveryMethodId" class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-[10px] appearance-none focus:outline-none">
+                        <option [value]="null">Select delivery method</option>
+                        <option *ngFor="let method of deliveryMethods" [value]="method.id">{{ method.name }} - ৳{{ method.cost }}</option>
+                      </select>
+                      <app-icon name="ChevronDown" size="10" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
+                    </div>
+
+                    <div class="flex items-start gap-2">
+                      <label class="w-20 text-[10px] font-bold text-gray-500 shrink-0 pt-1">Other Note</label>
+                      <textarea formControlName="noteText" rows="1" placeholder="Note" class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 text-[11px] focus:outline-none focus:border-primary resize-none"></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-1">
+                  <button 
+                    (click)="submitOrder()"
+                    [disabled]="isSubmitting || cart().length === 0"
+                    class="w-full py-2 bg-primary text-white rounded font-black text-xs hover:bg-primary-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider"
+                  >
+                    {{ isSubmitting ? 'Processing...' : (isEditMode ? 'Update Order' : 'Confirm Order') }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+      <!-- Notes Removed to save space (Integrated into customer form) -->
     </div>
         <!-- Product Search & Selection (Now easier to reach) -->
         <div class="lg:col-span-7 space-y-6">
-          <div class="relative">
-            <app-icon name="Search" size="20" className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
-            <input 
-              [formControl]="searchControl"
-              type="text" 
-              placeholder="Search products by name or SKU..."
-              class="w-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-2xl py-4 pl-14 pr-5 text-primary dark:text-white focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-base font-medium shadow-sm"
-            >
-            <div *ngIf="isLoadingProducts" class="absolute right-5 top-1/2 -translate-y-1/2">
-              <app-icon name="Loader2" size="20" className="text-primary animate-spin"></app-icon>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <app-icon name="Search" size="18" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></app-icon>
+              <input 
+                [formControl]="searchControl"
+                type="text" 
+                placeholder="Search products..."
+                class="w-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 pl-11 pr-5 text-primary dark:text-white focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-sm font-medium shadow-sm"
+              >
+              <div *ngIf="isLoadingProducts" class="absolute right-4 top-1/2 -translate-y-1/2">
+                <app-icon name="Loader2" size="16" className="text-primary animate-spin"></app-icon>
+              </div>
             </div>
+            <button 
+              (click)="onSearchClick()"
+              class="bg-primary text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-primary-hover transition-colors"
+            >
+              Search
+            </button>
           </div>
 
           <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden h-[600px] flex flex-col">
-            <div class="overflow-y-auto flex-1 custom-scrollbar p-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div class="overflow-y-auto flex-1 custom-scrollbar p-3">
+                <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
                     <div 
                       *ngFor="let product of products()" 
-                      class="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-3 shadow-sm hover:shadow-md transition-all group relative flex flex-col"
+                      class="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-2 shadow-sm hover:shadow-md transition-all group relative flex flex-col"
                     >
-                      <!-- Total Stock Badge -->
-                      <div class="absolute top-2 right-2 z-10">
-                        <span class="px-2 py-1 rounded-lg text-[10px] font-black shadow-sm" 
+                      <!-- Total Stock Badge (Moved to Top-Left) -->
+                      <div class="absolute top-1.5 left-1.5 z-10">
+                        <span class="px-1.5 py-0.5 rounded-md text-[8px] font-black shadow-sm" 
                               [ngClass]="product.stockQuantity > 0 ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'">
-                          {{ product.stockQuantity }}
+                          ST: {{ product.stockQuantity }}
                         </span>
                       </div>
 
+                      <!-- Quick Add Button (Always Visible in Top-Right) -->
+                      <button 
+                        (click)="handleProductClick(product)"
+                        class="absolute top-1.5 right-1.5 z-20 w-8 h-8 rounded-lg bg-primary text-white shadow-lg flex items-center justify-center hover:scale-110 active:scale-90 transition-all border border-white/20"
+                        title="Quick Add to Cart"
+                      >
+                        <app-icon name="Plus" size="20" className="font-bold"></app-icon>
+                      </button>
+
                       <!-- Product Image -->
-                      <div class="relative aspect-square rounded-xl overflow-hidden mb-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+                      <div class="relative aspect-[3/4] rounded-lg overflow-hidden mb-2 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
                         <img 
                           [src]="imageUrlService.getImageUrl(product.imageUrl || '')" 
                           class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         >
-                        <!-- Quick Add Overlay (Click card to open size selector if needed) -->
-                        <div 
-                          (click)="handleProductClick(product)"
-                          class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
-                        >
-                          <app-icon name="Plus" size="32" className="text-white"></app-icon>
-                        </div>
                       </div>
 
                       <!-- Product Info -->
-                      <div class="flex-1 min-w-0 mb-3">
-                        <h4 class="text-xs font-bold text-primary dark:text-white truncate mb-1">{{ product.name }}</h4>
-                        <div class="flex items-center gap-2">
-                           <app-price-display [amount]="product.price" className="text-xs font-black text-primary dark:text-white"></app-price-display>
-                           <span *ngIf="product.compareAtPrice" class="text-[10px] text-gray-400 line-through">৳{{ product.compareAtPrice }}</span>
+                      <div class="flex-1 min-w-0 mb-2">
+                        <h4 class="text-[10px] font-bold text-primary dark:text-white truncate mb-0.5" [title]="product.name">{{ product.name }}</h4>
+                        <div class="flex items-center gap-1.5">
+                           <app-price-display [amount]="product.price" className="text-[10px] font-black text-primary dark:text-white"></app-price-display>
+                           <span *ngIf="product.compareAtPrice" class="text-[8px] text-gray-400 line-through">৳{{ product.compareAtPrice }}</span>
                         </div>
-                        <div *ngIf="product.compareAtPrice" class="mt-1">
-                          <span class="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Discount: ৳{{ product.compareAtPrice - product.price }}</span>
+                        <div *ngIf="product.compareAtPrice" class="mt-0.5">
+                          <span class="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[8px] font-bold px-1 py-0.5 rounded uppercase">Disc: ৳{{ product.compareAtPrice - product.price }}</span>
                         </div>
                       </div>
 
                       <!-- Sizes with Individual Stock -->
-                      <div class="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-gray-50 dark:border-gray-800">
+                      <div class="flex flex-wrap gap-1 mt-auto pt-2 border-t border-gray-50 dark:border-gray-800">
                         <ng-container *ngFor="let variant of product.variants">
                           <button 
                             *ngIf="variant.size"
                             (click)="addToCart(product, variant.size); $event.stopPropagation()"
-                            class="px-2 py-1 rounded-lg border text-[9px] font-bold transition-all flex items-center gap-1.5 hover:scale-105 active:scale-95"
+                            class="px-1.5 py-0.5 rounded-md border text-[8px] font-bold transition-all flex items-center gap-1 hover:scale-105 active:scale-95"
                             [ngClass]="variant.stockQuantity > 0 
                                 ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-primary hover:text-primary' 
                                 : 'bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 text-gray-300 cursor-not-allowed'"

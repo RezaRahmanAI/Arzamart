@@ -15,6 +15,7 @@ namespace ECommerce.API.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IGenericRepository<Product> _productsRepo;
+    private readonly IGenericRepository<Category> _categoriesRepo;
 
     private readonly IMapper _mapper;
     private readonly IProductService _productService;
@@ -22,12 +23,13 @@ public class ProductsController : ControllerBase
 
     public ProductsController(
         IGenericRepository<Product> productsRepo, 
+        IGenericRepository<Category> categoriesRepo,
         IMapper mapper,
         IProductService productService,
         IMemoryCache cache)
     {
         _productsRepo = productsRepo;
-
+        _categoriesRepo = categoriesRepo;
         _mapper = mapper;
         _productService = productService;
         _cache = cache;
@@ -63,15 +65,13 @@ public class ProductsController : ControllerBase
         // Map categorySlug to categoryId if not provided
         if (!categoryId.HasValue && !string.IsNullOrEmpty(categorySlug))
         {
-            var staticCat = ECommerce.Core.Constants.CategoryConstants.AllCategories
-                .FirstOrDefault(c => c.Slug.Equals(categorySlug, StringComparison.OrdinalIgnoreCase));
-            if (staticCat != null)
+            var dbCat = await _categoriesRepo.GetEntityWithSpec(new BaseSpecification<Category>(c => c.Slug == categorySlug));
+            if (dbCat != null)
             {
-                categoryId = staticCat.Id;
+                categoryId = dbCat.Id;
             }
             else
             {
-                // If slug is provided but not found, ensure no products are returned
                 categoryId = -1;
             }
         }
@@ -85,13 +85,6 @@ public class ProductsController : ControllerBase
         var totalItems = await _productsRepo.CountAsync(countSpec);
         var products = await _productsRepo.ListAsync(spec);
         var dtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(products);
-        
-        // Manual Category Mapping
-        foreach (var d in dtos)
-        {
-            var p = products.FirstOrDefault(x => x.Id == d.Id);
-            if (p != null) d.CategoryName = ECommerce.Core.Constants.CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == p.CategoryId)?.Name ?? "";
-        }
         
         var result = new PaginationDto<ProductListDto>(pageIndex, pageSize, totalItems, dtos);
         

@@ -84,4 +84,8 @@ export class AdminSidebarComponent implements OnInit {
   toggleOrderViewMenu() {
     this.isOrderViewMenuOpen = !this.isOrderViewMenuOpen;
   }
+
+  isGroupActive(paths: string[]): boolean {
+    return paths.some(path => this.router.url.includes(path));
+  }
 }

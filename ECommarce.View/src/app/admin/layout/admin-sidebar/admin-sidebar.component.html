@@ -85,7 +85,7 @@
                 type="button"
                 class="flex items-center justify-between gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group w-full text-left relative"
                 (click)="toggleOrdersMenu()"
-                [ngClass]="isOrdersMenuOpen ? 'text-white bg-white/5 ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+                [ngClass]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'text-accent bg-accent/10 shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
               >
                 <div class="flex items-center gap-3.5">
                   <app-icon name="PlusCircle" size="20" className="group-hover:scale-110 transition-transform duration-300" [className]="isOrdersMenuOpen ? 'text-accent' : ''"></app-icon>
@@ -106,7 +106,7 @@
                     routerLinkActive="nav-sub-active text-accent"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
-                    Pre-Order Create
+                    Our Orders
                   </a>
                   <a
                     class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
@@ -126,7 +126,7 @@
                 type="button"
                 class="flex items-center justify-between gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group w-full text-left relative"
                 (click)="toggleOrderViewMenu()"
-                [ngClass]="isOrderViewMenuOpen ? 'text-white bg-white/5 ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+                [ngClass]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders/pre-orders'])) ? 'text-accent bg-accent/10 shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
               >
                 <div class="flex items-center gap-3.5">
                   <app-icon name="Eye" size="20" className="group-hover:scale-110 transition-transform duration-300" [className]="isOrderViewMenuOpen ? 'text-accent' : ''"></app-icon>
@@ -143,27 +143,11 @@
                 <div class="pl-12 pr-4 py-2 space-y-1 border-l-[1.5px] border-white/5 ml-6.5">
                   <a
                     class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
-                    routerLink="/admin/orders"
-                    routerLinkActive="nav-sub-active text-accent"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    All Orders
-                  </a>
-                  <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
                     routerLink="/admin/orders/pre-orders"
                     routerLinkActive="nav-sub-active text-accent"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
-                    Pre Orders
-                  </a>
-                  <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
-                    routerLink="/admin/orders/website"
-                    routerLinkActive="nav-sub-active text-accent"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    Website Orders
+                    Our Orders List
                   </a>
                 </div>
               </div>
@@ -175,7 +159,7 @@
                 type="button"
                 class="flex items-center justify-between gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group w-full text-left relative"
                 (click)="toggleProductsMenu()"
-                [ngClass]="isProductsMenuOpen ? 'text-white bg-white/5 ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+                [ngClass]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'text-accent bg-accent/10 shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
               >
                 <div class="flex items-center gap-3.5">
                   <app-icon name="ShoppingBag" size="20" className="group-hover:scale-110 transition-transform duration-300" [className]="isProductsMenuOpen ? 'text-accent' : ''"></app-icon>
@@ -197,6 +181,14 @@
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
                     Product Catalog
+                  </a>
+                  <a
+                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    routerLink="/admin/products/categories"
+                    routerLinkActive="nav-sub-active text-accent"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                  >
+                    Main Collections
                   </a>
                   <a
                     class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"

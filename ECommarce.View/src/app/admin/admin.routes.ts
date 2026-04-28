@@ -29,6 +29,14 @@ export const ADMIN_ROUTES: Routes = [
       },
 
       {
+        path: "products/categories",
+        loadComponent: () =>
+          import("./pages/admin-category-management/admin-category-management.component").then(
+            (m) => m.AdminCategoryManagementComponent,
+          ),
+        data: { title: "Main Collections Management" },
+      },
+      {
         path: "products/sub-categories",
         loadComponent: () =>
           import("./pages/admin-sub-category-management/admin-sub-category-management.component").then(

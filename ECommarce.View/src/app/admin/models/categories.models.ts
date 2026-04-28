@@ -6,7 +6,9 @@ export interface Category {
   imageUrl?: string;
   isActive: boolean;
   productCount: number;
-  sortOrder: number;
+  displayOrder: number;
+  metaTitle?: string;
+  metaDescription?: string;
   subCategories?: SubCategory[];
 }
 

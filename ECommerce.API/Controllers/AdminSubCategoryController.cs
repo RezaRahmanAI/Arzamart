@@ -81,8 +81,9 @@ public class AdminSubCategoryController : ControllerBase
         if (string.IsNullOrWhiteSpace(dto.Name))
             return BadRequest("SubCategory name is required");
 
-        // Category exists validation removed as categories are now Enum-based constants.
-        // If needed, you can validate against CategoryConstants.AllCategories.any(c => c.Id == dto.CategoryId)
+        // Validate category exists in DB
+        if (!await _context.Categories.AnyAsync(c => c.Id == dto.CategoryId))
+            return BadRequest($"Category with ID {dto.CategoryId} not found");
 
 
         var slug = string.IsNullOrWhiteSpace(dto.Slug) ? GenerateSlug(dto.Name) : dto.Slug;
@@ -128,7 +129,9 @@ public class AdminSubCategoryController : ControllerBase
         if (string.IsNullOrWhiteSpace(dto.Name))
             return BadRequest("Name is required");
 
-        // Category validation removed for static categories
+        // Validate category exists in DB
+        if (!await _context.Categories.AnyAsync(c => c.Id == dto.CategoryId))
+            return BadRequest($"Category with ID {dto.CategoryId} not found");
         subCategory.CategoryId = dto.CategoryId;
 
 

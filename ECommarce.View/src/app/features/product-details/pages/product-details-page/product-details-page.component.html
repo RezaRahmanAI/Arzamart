@@ -17,7 +17,7 @@
     <div class="site-container pb-8 md:pb-12">
       <!-- Mobile-only header (shown above image) -->
       <div class="lg:hidden mb-4 space-y-2 text-center">
-        <h1 class="text-xl sm:text-2xl font-serif italic text-[#1a1a1a] leading-tight">
+        <h1 class="text-xl sm:text-2xl font-bold text-[#1a1a1a] leading-tight">
           {{ vm.product.name }}
         </h1>
         <div class="flex items-center justify-center gap-3 text-[9px] uppercase tracking-[0.2em] font-bold text-[#bbb]">
@@ -60,6 +60,7 @@
               <div class="relative flex-1">
                 <div
                   class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4] max-h-[50vh] md:max-h-[60vh] lg:max-h-[550px] cursor-zoom-in"
+                  (click)="openLightbox(currentImageIndex)"
                   (mousemove)="handleMouseMove($event)"
                   (mouseenter)="toggleZoom(true)"
                   (mouseleave)="toggleZoom(false)"
@@ -95,8 +96,8 @@
 
                   <!-- Offer Badge -->
                   @if (vm.currentCompareAtPrice && vm.currentCompareAtPrice > vm.currentPrice) {
-                    <div class="absolute top-6 left-6 z-10">
-                      <span class="px-4 py-1.5 bg-accent text-white text-[10px] uppercase tracking-[0.3em] font-bold shadow-lg shadow-accent/20">
+                    <div class="absolute top-2 left-2 z-10">
+                      <span class="px-6 py-2.5 bg-accent text-white text-xs uppercase tracking-[0.3em] font-black shadow-2xl shadow-accent/40 rounded-br-2xl">
                         Offer -৳{{ getDiscountAmount({ price: vm.currentPrice, compareAtPrice: vm.currentCompareAtPrice }) }}
                       </span>
                     </div>
@@ -216,21 +217,15 @@
           <div class="flex flex-col">
             <!-- Product Identity (Desktop Only) -->
             <div class="hidden lg:block space-y-4">
-              <h1 class="text-2xl lg:text-3xl font-serif italic text-[#1a1a1a] leading-[1.2]">
+              <h1 class="text-2xl lg:text-3xl font-bold text-[#1a1a1a] leading-[1.2]">
                 {{ vm.product.name }}
               </h1>
-              <div
-                class="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold"
-              >
-                <span class="text-[#bbb]">Item Ref:</span>
-                <span class="text-[#1a1a1a]">{{ vm.product.sku }}</span>
-              </div>
             </div>
 
             <!-- Pricing Section -->
             <div class="flex items-baseline gap-4 py-5 border-y border-[#eee]">
               <app-price-display
-                class="text-2xl font-serif italic text-[#1a1a1a]"
+                class="text-2xl font-bold text-[#1a1a1a]"
                 [amount]="vm.currentPrice"
                 size="md"
               ></app-price-display>
@@ -450,147 +445,6 @@
 
     <!-- ===== FOOTER SECTIONS: Reviews & Related ===== -->
     <div class="site-container space-y-32">
-      <!-- Reviews -->
-      @defer (on viewport) {
-        <section id="reviews" class="pt-24 border-t border-[#eee]">
-          <div
-            class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8"
-          >
-            <div class="space-y-3">
-              <p
-                class="text-[11px] uppercase tracking-[0.4em] text-[#c8922a] font-bold"
-              >
-                Community
-              </p>
-              <h3 class="text-4xl lg:text-5xl font-serif italic text-[#1a1a1a]">
-                Client Feedback
-              </h3>
-            </div>
-            <button
-              (click)="toggleReviewForm()"
-              class="px-10 py-5 bg-accent text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all rounded-xl shadow-xl shadow-accent/20"
-            >
-              Share Experience
-            </button>
-          </div>
-
-          <!-- Review Form -->
-          @if (isReviewFormOpen) {
-            <div
-              class="mb-20 bg-white p-10 lg:p-16 border border-[#eee] max-w-4xl"
-            >
-              <h4 class="text-xl font-serif italic text-[#1a1a1a] mb-10">
-                Write your review
-              </h4>
-              <div class="space-y-8">
-                <div>
-                  <label
-                    class="block text-[10px] uppercase tracking-[0.3em] font-bold text-[#888] mb-4"
-                    >Select Rating</label
-                  >
-                  <div class="flex gap-2">
-                    @for (star of [1, 2, 3, 4, 5]; track star) {
-                      <button
-                        (click)="setRating(star)"
-                        class="transition-colors"
-                        [class.text-[#c8922a]]="star <= reviewRating"
-                        [class.text-[#eee]]="star > reviewRating"
-                      >
-                        <app-icon name="Star" size="32" [className]="star <= reviewRating ? 'fill-current' : ''"></app-icon>
-                      </button>
-                    }
-                  </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div class="space-y-2">
-                    <label
-                      class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
-                      >Your Name</label
-                    >
-                    <input
-                      [(ngModel)]="reviewName"
-                      class="w-full border-b border-[#eee] py-4 bg-transparent focus:border-[#1a1a1a] outline-none transition-colors text-sm"
-                      placeholder="Full name"
-                    />
-                  </div>
-                </div>
-                <div class="space-y-2">
-                  <label
-                    class="block text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
-                    >Your Message</label
-                  >
-                  <textarea
-                    [(ngModel)]="reviewComment"
-                    rows="4"
-                    class="w-full border border-[#eee] p-5 bg-transparent focus:border-[#1a1a1a] outline-none transition-colors text-sm"
-                    placeholder="What was your impression?"
-                  ></textarea>
-                </div>
-                @if (reviewError) {
-                  <div
-                    class="text-xs text-red-500 tracking-wider"
-                  >
-                    {{ reviewError }}
-                  </div>
-                }
-                <div class="flex gap-4 pt-4">
-                  <button
-                    (click)="submitReview(vm.product.id)"
-                    [disabled]="isSubmittingReview"
-                    class="px-10 h-14 bg-[#1a1a1a] text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black"
-                  >
-                    {{ isSubmittingReview ? "Processing..." : "Post Review" }}
-                  </button>
-                  <button
-                    (click)="toggleReviewForm()"
-                    class="px-10 h-14 border border-[#eee] text-[#999] text-[10px] font-bold uppercase tracking-[0.2em] hover:border-[#1a1a1a]"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          }
-
-          <!-- Review List -->
-          @if (reviews$ | async; as reviews) {
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-              @for (review of reviews; track review.id) {
-                <div
-                  class="bg-white p-8 lg:p-12 border border-[#eee] space-y-6"
-                >
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold uppercase tracking-[0.1em]">{{
-                      review.customerName
-                    }}</span>
-                    <span class="text-[10px] text-[#bbb] tracking-[0.1em]">{{
-                      review.date | date: "MMM dd, yyyy"
-                    }}</span>
-                  </div>
-                  <div class="flex gap-1 text-[#c8922a]">
-                    @for (_ of fullStars(review.rating); track $index) {
-                      <app-icon name="Star" size="14" className="fill-[#c8922a]"></app-icon>
-                    }
-                  </div>
-                  <p
-                    class="text-[15px] text-[#555] leading-relaxed italic font-light"
-                  >
-                    "{{ review.comment }}"
-                  </p>
-                </div>
-              } @empty {
-                <div
-                  class="col-span-full text-center py-20 text-xs uppercase tracking-[0.2em] text-[#bbb]"
-                >
-                  Be the first to share your thoughts on this piece.
-                </div>
-              }
-            </div>
-          }
-        </section>
-      } @placeholder {
-        <div class="h-40 animate-pulse bg-gray-50"></div>
-      }
 
       <!-- Related Items -->
       @defer (on viewport) {
@@ -604,7 +458,7 @@
               >
                 Curated Selection
               </p>
-              <h3 class="text-4xl lg:text-5xl font-serif italic text-[#1a1a1a]">
+              <h3 class="text-4xl lg:text-5xl font-bold text-[#1a1a1a]">
                 Complete The Look
               </h3>
             </div>
@@ -622,6 +476,59 @@
       }
     </div>
   </div>
+
+  <!-- Lightbox Gallery Overlay -->
+  @if (isLightboxOpen && (vm$ | async); as vm) {
+    <div
+      class="fixed inset-0 z-[1000] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center animate-in fade-in duration-300"
+      (click)="closeLightbox()"
+    >
+      <!-- Close Button -->
+      <button
+        (click)="closeLightbox()"
+        class="absolute top-6 right-6 z-[1010] p-3 text-white/60 hover:text-white transition-colors bg-white/5 hover:bg-white/10 rounded-full"
+      >
+        <app-icon name="X" size="24"></app-icon>
+      </button>
+
+      <!-- Main Image -->
+      <div
+        class="relative w-full max-w-5xl aspect-[3/4] md:aspect-auto md:h-[80vh] flex items-center justify-center p-4"
+        (click)="$event.stopPropagation()"
+      >
+        <img
+          [src]="imageUrlService.getImageUrl(vm.gallery[lightboxIndex])"
+          class="max-w-full max-h-full object-contain shadow-2xl animate-in zoom-in-95 duration-500"
+          [alt]="vm.product.name"
+        />
+
+        <!-- Nav Arrows -->
+        @if (vm.gallery.length > 1) {
+          <button
+            (click)="prevLightbox(vm.gallery)"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all border border-white/10"
+          >
+            <app-icon name="ChevronLeft" size="24"></app-icon>
+          </button>
+          <button
+            (click)="nextLightbox(vm.gallery)"
+            class="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all border border-white/10"
+          >
+            <app-icon name="ChevronRight" size="24"></app-icon>
+          </button>
+        }
+      </div>
+
+      <!-- Counter -->
+      @if (vm.gallery.length > 1) {
+        <div class="absolute bottom-10 px-6 py-2 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
+          <span class="text-white/80 text-xs font-bold uppercase tracking-[0.3em]">
+            {{ lightboxIndex + 1 }} / {{ vm.gallery.length }}
+          </span>
+        </div>
+      }
+    </div>
+  }
 
   @if (isSizeGuideOpen) {
     <app-size-guide

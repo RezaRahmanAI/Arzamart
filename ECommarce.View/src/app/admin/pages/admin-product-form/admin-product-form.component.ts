@@ -9,6 +9,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { Router, RouterModule, ActivatedRoute } from "@angular/router";
+import { combineLatest } from "rxjs";
 import { switchMap } from "rxjs/operators";
 
 import {
@@ -29,6 +30,7 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { ProductService } from "../../../core/services/product.service";
 import { BannerService } from "../../../core/services/banner.service";
+import { SubCategoriesService } from "../../services/sub-categories.service";
 
 interface MediaFormValue {
   id: string;
@@ -60,6 +62,7 @@ export class AdminProductFormComponent implements OnDestroy {
   private formBuilder = inject(FormBuilder);
   private productsService = inject(ProductsService);
   private categoriesService = inject(CategoriesService);
+  private subCategoriesService = inject(SubCategoriesService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   public imageUrlService = inject(ImageUrlService);
@@ -165,10 +168,14 @@ export class AdminProductFormComponent implements OnDestroy {
   private loadInitialData(): void {
     this.isLoading = true;
     
-    // Load categories first as they are needed for form population
-    this.categoriesService.getAll().pipe(
-      switchMap(categories => {
+    // Load categories and subcategories
+    combineLatest([
+      this.categoriesService.getAll(),
+      this.subCategoriesService.getAll()
+    ]).pipe(
+      switchMap(([categories, subCategories]) => {
         this.categories = categories;
+        this.subCategories = subCategories;
         this.loadAvailableSizes();
         
         // Return paramMap to handle route changes (component reuse)
@@ -242,11 +249,10 @@ export class AdminProductFormComponent implements OnDestroy {
         return;
       }
 
-      // Find selected category
-      const category = this.categories.find(
-        (c) => String(c.id) === String(categoryId),
+      // Filter subcategories based on parent category
+      this.filteredSubCategories = this.subCategories.filter(
+        (sc) => String(sc.categoryId) === String(categoryId),
       );
-      this.filteredSubCategories = category?.subCategories || [];
 
       // Clear downstream if user manually changed it (not programmatic patch)
       // We can distinguish via options or just always clear if value doesn't match?
@@ -327,10 +333,9 @@ export class AdminProductFormComponent implements OnDestroy {
           this.sizesArray.clear();
         // Pre-fill filtered lists based on product data BEFORE patching
         if (product.categoryId) {
-          const category = this.categories.find(
-            (c) => String(c.id) === String(product.categoryId),
+          this.filteredSubCategories = this.subCategories.filter(
+            (sc) => String(sc.categoryId) === String(product.categoryId),
           );
-          this.filteredSubCategories = category?.subCategories || [];
         }
         if (product.subCategoryId) {
           const subCategory = this.filteredSubCategories.find(

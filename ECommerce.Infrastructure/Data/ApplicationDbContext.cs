@@ -16,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
 
+    public DbSet<Category> Categories { get; set; }
     public DbSet<SubCategory> SubCategories { get; set; }
     public DbSet<Collection> Collections { get; set; }
     public DbSet<Cart> Carts { get; set; }
@@ -101,9 +102,27 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .WithMany(sc => sc.Products)
                   .HasForeignKey(p => p.SubCategoryId)
                   .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(p => p.Category)
+                  .WithMany(c => c.Products)
+                  .HasForeignKey(p => p.CategoryId)
+                  .OnDelete(DeleteBehavior.Restrict);
         });
 
 
+
+        // Category Configuration
+        builder.Entity<Category>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.HasIndex(c => c.Slug).IsUnique();
+            entity.HasIndex(c => c.ParentId);
+
+            entity.HasOne(c => c.ParentCategory)
+                  .WithMany(c => c.ChildCategories)
+                  .HasForeignKey(c => c.ParentId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
 
         // SubCategory Configuration
         builder.Entity<SubCategory>(entity =>
@@ -112,7 +131,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasIndex(sc => sc.Slug).IsUnique();
             entity.HasIndex(sc => sc.CategoryId);
 
-
+            entity.HasOne(sc => sc.Category)
+                  .WithMany(c => c.SubCategories)
+                  .HasForeignKey(sc => sc.CategoryId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
         
         // Product Variant Configuration

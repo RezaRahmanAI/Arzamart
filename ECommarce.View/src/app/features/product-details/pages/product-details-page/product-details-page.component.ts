@@ -414,11 +414,33 @@ export class ProductDetailsPageComponent {
   }
   // Review Logic
   isReviewFormOpen = false;
+  isLightboxOpen = false;
+  lightboxIndex = 0;
   reviewRating = 5;
   reviewComment = "";
   reviewName = "";
   reviewError = "";
   isSubmittingReview = false;
+
+  openLightbox(index: number): void {
+    this.lightboxIndex = index;
+    this.isLightboxOpen = true;
+    document.body.style.overflow = "hidden";
+  }
+
+  closeLightbox(): void {
+    this.isLightboxOpen = false;
+    document.body.style.overflow = "";
+  }
+
+  nextLightbox(gallery: string[]): void {
+    this.lightboxIndex = (this.lightboxIndex + 1) % gallery.length;
+  }
+
+  prevLightbox(gallery: string[]): void {
+    this.lightboxIndex =
+      (this.lightboxIndex - 1 + gallery.length) % gallery.length;
+  }
 
   toggleReviewForm(): void {
     this.isReviewFormOpen = !this.isReviewFormOpen;

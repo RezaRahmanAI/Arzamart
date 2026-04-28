@@ -105,13 +105,14 @@ try
     {
         var services = scope.ServiceProvider;
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var context = services.GetRequiredService<ApplicationDbContext>();
         
-        // Very fast check: Only seed if the user table is completely empty
-        // Subsequent cold starts will skip this entirely after the first success
+        // Ensure static categories exist (this method has internal check to skip if already present)
+        await DataSeeder.SeedAsync(userManager, roleManager, context);
+
         if (!await userManager.Users.AnyAsync())
         {
-            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-            await DataSeeder.SeedAsync(userManager, roleManager);
             Log.Information("Initial data seeding completed (Super Admin created).");
         }
     }

@@ -113,10 +113,10 @@ public class AdminProductsController : ControllerBase
 
         if (!string.IsNullOrEmpty(category) && category != "all")
         {
-            var staticCat = CategoryConstants.AllCategories.FirstOrDefault(c => c.Name.Equals(category, StringComparison.OrdinalIgnoreCase));
-            if (staticCat != null)
+            var dbCat = await _context.Categories.FirstOrDefaultAsync(c => c.Name.Equals(category, StringComparison.OrdinalIgnoreCase));
+            if (dbCat != null)
             {
-                query = query.Where(p => p.CategoryId == staticCat.Id);
+                query = query.Where(p => p.CategoryId == dbCat.Id);
             }
         }
 
@@ -140,6 +140,7 @@ public class AdminProductsController : ControllerBase
 
         var total = await query.CountAsync();
         var rawProducts = await query
+            .Include(p => p.Category)
             .Include(p => p.SubCategory)
             .Include(p => p.Images)
             .Include(p => p.Variants)
@@ -164,7 +165,7 @@ public class AdminProductsController : ControllerBase
             p.IsFeatured,
             Status = p.IsActive ? "Active" : "Draft",
             p.ImageUrl,
-            Category = CategoryConstants.AllCategories.FirstOrDefault(c => c.Id == p.CategoryId)?.Name ?? "",
+            Category = p.Category?.Name ?? "",
             SubCategory = p.SubCategory?.Name ?? "",
             CategoryId = p.CategoryId,
             MediaUrls = p.Images.Select(i => i.Url).ToList(),

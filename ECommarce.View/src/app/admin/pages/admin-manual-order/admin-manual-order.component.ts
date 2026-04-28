@@ -163,6 +163,10 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         takeUntil(this.destroy$),
         switchMap((term) => {
+          if (!term || term.trim().length === 0) {
+            this.isLoadingProducts = false;
+            return of({ items: [], total: 0 });
+          }
           this.isLoadingProducts = true;
           return this.productsService.getProducts({
             searchTerm: term || "",
@@ -208,6 +212,30 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
 
     // Initial load
     this.searchControl.setValue("");
+  }
+
+  onSearchClick() {
+    const term = this.searchControl.value;
+    if (term && term.trim()) {
+      // Force a search by re-triggering the switchMap
+      this.isLoadingProducts = true;
+      this.productsService.getProducts({
+        searchTerm: term,
+        category: "all",
+        statusTab: "Active",
+        stockStatus: "all",
+        page: 1,
+        pageSize: 50,
+      }).subscribe({
+        next: (res) => {
+          this.products.set(res.items);
+          this.isLoadingProducts = false;
+        },
+        error: () => {
+          this.isLoadingProducts = false;
+        }
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -357,6 +385,10 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     }));
   }
 
+  get totalItemsCount() {
+    return this.cart().reduce((sum, item) => sum + item.quantity, 0);
+  }
+
   get subtotal() {
     return this.cart().reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
   }
@@ -375,6 +407,23 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
   get dueAmount() {
     const paid = this.orderForm.get('advancePayment')?.value || 0;
     return Math.max(0, this.total - paid);
+  }
+
+  resetOrder() {
+    this.cart.set([]);
+    this.orderForm.reset({
+      additionalDiscount: 0,
+      advancePayment: 0,
+      noteType: 'Official'
+    });
+    this.searchControl.setValue("");
+    
+    // Set default delivery method if available
+    if (this.deliveryMethods.length > 0) {
+      this.orderForm.patchValue({ deliveryMethodId: this.deliveryMethods[0].id });
+    }
+    
+    this.notification.info("Order cleared successfully.");
   }
 
   onPriceChange() {

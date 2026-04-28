@@ -133,22 +133,18 @@
         <!-- ===== RIGHT: Product Info ===== -->
         <div class="lg:col-span-5 space-y-8 lg:pl-4">
           <div class="space-y-4">
-            <h1 class="text-3xl lg:text-4xl font-serif italic text-[#1a1a1a] leading-tight">
+            <h1 class="text-3xl lg:text-4xl font-sans font-bold text-[#1a1a1a] leading-tight">
               {{ product.name }}
             </h1>
-            <div class="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold text-[#bbb]">
-              <span>Item Ref:</span>
-              <span class="text-[#1a1a1a]">{{ product.sku }}</span>
-              @if (product.shortDescription) {
-                <span class="text-[#c8922a] whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></span>
-              }
-            </div>
+            @if (product.shortDescription) {
+              <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#c8922a] whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></div>
+            }
           </div>
 
           <!-- Pricing Section -->
           <div class="flex items-baseline gap-4 py-5 border-y border-[#eee]">
             <app-price-display
-              class="text-3xl font-serif italic text-[#1a1a1a]"
+              class="text-3xl font-sans font-bold text-[#1a1a1a]"
               [amount]="currentPrice"
               size="md"
             ></app-price-display>

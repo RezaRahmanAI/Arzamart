@@ -28,8 +28,12 @@ public class NavigationService : INavigationService
     {
         return await _cache.GetOrCreateAsync(MegaMenuCacheKey, async () =>
         {
-            // 1. Get Static Parent Categories
-            var categories = CategoryConstants.AllCategories;
+            // 1. Get Active Categories from DB
+            var dbCategories = await _context.Categories
+                .AsNoTracking()
+                .Where(c => c.IsActive)
+                .OrderBy(c => c.DisplayOrder)
+                .ToListAsync();
 
             // 2. Get All Active SubCategories with their Collections from DB
             var dbSubCategories = await _context.SubCategories
@@ -41,12 +45,12 @@ public class NavigationService : INavigationService
 
             var menuDto = new MegaMenuDto
             {
-                Categories = categories.Select(c => new MegaMenuCategoryDto
+                Categories = dbCategories.Select(c => new MegaMenuCategoryDto
                 {
                     Id = c.Id,
                     Name = c.Name,
                     Slug = c.Slug,
-                    Icon = c.ImageUrl, // Using ImageUrl as icon for now
+                    Icon = c.ImageUrl, 
                     SubCategories = dbSubCategories
                         .Where(sc => sc.CategoryId == c.Id)
                         .Select(sc => new MegaMenuSubCategoryDto
