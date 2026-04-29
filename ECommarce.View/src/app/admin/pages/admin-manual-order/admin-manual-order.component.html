@@ -76,33 +76,33 @@
         <div class="space-y-ds-1.5">
           <!-- Summary Matrix -->
           <div class="grid grid-cols-2 gap-ds-3">
-            <div class="flex justify-between items-center px-ds-3 py-ds-1.5 bg-ds-bg border border-ds-border rounded-sm">
+            <div class="flex justify-between items-center px-ds-3 py-ds-2 bg-ds-bg border border-ds-border rounded-sm">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Total Qty</span>
               <span class="text-[11px] font-bold text-ds-text uppercase">{{ totalItemsCount }}</span>
             </div>
-            <div class="flex justify-between items-center px-ds-3 py-ds-1.5 bg-ds-bg border border-ds-border rounded-sm">
+            <div class="flex justify-between items-center px-ds-3 py-ds-2 bg-ds-bg border border-ds-border rounded-sm">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Sub Total</span>
               <span class="text-[11px] font-bold text-ds-text uppercase">৳{{ subtotal }}</span>
             </div>
           </div>
 
-          <div class="flex justify-between items-center px-ds-3 py-ds-1.5 bg-ds-bg border border-ds-border rounded-sm">
+          <div class="flex justify-between items-center px-ds-3 py-ds-2 bg-ds-bg border border-ds-border rounded-sm">
             <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Delivery Charge</span>
             <span class="text-[11px] font-bold text-ds-text uppercase">৳{{ shippingCost }}</span>
           </div>
 
           <!-- Adjustments -->
           <div class="grid grid-cols-3 gap-ds-3" [formGroup]="orderForm">
-            <div class="p-ds-3 bg-red-500/5 border border-red-500/10 rounded-sm">
-              <span class="block text-[7px] font-bold text-red-500 uppercase tracking-widest mb-1">Discount</span>
-              <input type="number" formControlName="additionalDiscount" class="w-full bg-transparent border-none p-0 text-[10px] font-bold text-red-500 outline-none" placeholder="0">
+            <div class="flex justify-between items-center px-ds-3 h-9 bg-red-500/5 border border-red-500/10 rounded-sm">
+              <span class="text-[7px] font-bold text-red-500 uppercase tracking-widest">Discount</span>
+              <input type="number" formControlName="additionalDiscount" class="w-16 bg-transparent border-none p-0 text-[10px] font-bold text-red-500 text-right outline-none" placeholder="0">
             </div>
-            <div class="p-ds-3 bg-ds-success/5 border border-ds-success/10 rounded-sm">
-              <span class="block text-[7px] font-bold text-ds-success uppercase tracking-widest mb-1">Advance</span>
-              <input type="number" formControlName="advancePayment" class="w-full bg-transparent border-none p-0 text-[10px] font-bold text-ds-success outline-none" placeholder="0">
+            <div class="flex justify-between items-center px-ds-3 h-9 bg-ds-success/5 border border-ds-success/10 rounded-sm">
+              <span class="text-[7px] font-bold text-ds-success uppercase tracking-widest">Advance</span>
+              <input type="number" formControlName="advancePayment" class="w-16 bg-transparent border-none p-0 text-[10px] font-bold text-ds-success text-right outline-none" placeholder="0">
             </div>
-            <div class="p-ds-3 bg-ds-text/5 border border-ds-border rounded-sm">
-              <span class="block text-[7px] font-bold text-ds-text-muted uppercase tracking-widest mb-1">Arrears</span>
+            <div class="flex justify-between items-center px-ds-3 h-9 bg-ds-text/5 border border-ds-border rounded-sm">
+              <span class="text-[7px] font-bold text-ds-text-muted uppercase tracking-widest">Arrears</span>
               <span class="text-[10px] font-bold text-ds-text">৳{{ dueAmount }}</span>
             </div>
           </div>
