@@ -21,10 +21,12 @@ public class CustomLandingPageConfig : BaseEntity
 
     // Trust Banner
     public bool IsTrustBannerVisible { get; set; } = true;
-    public string? TrustBannerText { get; set; } // "দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই"
+    public string? TrustBannerText { get; set; }
+    public string? TrustBannerDescription { get; set; }
 
     // Configuration / Form Section
-    public string? FeaturedProductName { get; set; } // "The Signature Suit"
+    public bool IsFeaturedOrderVisible { get; set; } = true;
+    public string? FeaturedProductName { get; set; }
     public decimal? PromoPrice { get; set; }
     public decimal? OriginalPrice { get; set; }
 }

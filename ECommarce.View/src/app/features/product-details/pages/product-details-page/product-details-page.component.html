@@ -43,7 +43,7 @@
                     >
                       <img
                         [src]="imageUrlService.getImageUrl(url)"
-                        class="w-full h-full object-cover"
+                        class="w-full h-full object-contain p-1"
                         [class.opacity-60]="i !== currentImageIndex"
                       />
                       @if (i === currentImageIndex) {
@@ -70,7 +70,7 @@
                     <img
                       [src]="imageUrlService.getImageUrl(url)"
                       [alt]="vm.product.name"
-                      class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out pointer-events-none"
+                      class="absolute inset-0 w-full h-full object-contain p-4 transition-opacity duration-[1200ms] ease-in-out pointer-events-none"
                       [style.transform-origin]="zoomX + '% ' + zoomY + '%'"
                       [ngClass]="{
                         'opacity-100': i === currentImageIndex,
@@ -146,7 +146,7 @@
                     >
                       <img
                         [src]="imageUrlService.getImageUrl(url)"
-                        class="w-full h-full object-cover"
+                        class="w-full h-full object-contain p-1"
                         [class.opacity-60]="i !== currentImageIndex"
                       />
                     </button>
@@ -358,7 +358,7 @@
               <!-- Primary Description -->
               <div class="space-y-3">
                 <h3
-                  class="text-[10px] uppercase tracking-[0.3em] font-bold text-[#c8922a]"
+                  class="text-[10px] uppercase tracking-[0.3em] font-bold text-[#ff7a00]"
                 >
                   Description
                 </h3>
@@ -454,7 +454,7 @@
           >
             <div class="text-center mb-20 space-y-3">
               <p
-                class="text-[11px] uppercase tracking-[0.4em] text-[#c8922a] font-bold"
+                class="text-[11px] uppercase tracking-[0.4em] text-[#ff7a00] font-bold"
               >
                 Curated Selection
               </p>

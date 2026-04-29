@@ -184,8 +184,45 @@
     backdrop-filter: blur(20px) saturate(180%);
   }
 
+  /* Standard Website Container (80% Width on Large Screens) */
   .site-container {
-    @apply w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10;
+    @apply w-full mx-auto px-3 sm:px-4 md:px-6;
+  }
+
+  @media (min-width: 1024px) {
+    .site-container {
+      width: 80%;
+      max-width: 1600px;
+    }
+  }
+
+  /* Custom Landing Page Container (Stays 70% on Desktop) */
+  .clp-container {
+    @apply w-full mx-auto px-3 sm:px-4 md:px-6;
+  }
+
+  /* Laptop screens (Standard) */
+  @media (min-width: 1024px) {
+    .clp-container {
+      width: 90%;
+      max-width: 1400px;
+    }
+  }
+
+  /* Large Laptop / Medium Desktop */
+  @media (min-width: 1280px) {
+    .clp-container {
+      width: 85%;
+      max-width: 1440px;
+    }
+  }
+
+  /* Large Desktop screens (20-22 inch) */
+  @media (min-width: 1536px) {
+    .clp-container {
+      width: 70%;
+      max-width: 1500px;
+    }
   }
 
   /* Glowing Button Effect */
@@ -211,10 +248,10 @@
     height: 300%;
     background: conic-gradient(
       transparent,
-      #c8922a,
+      #ff7a00,
       transparent 30%,
       transparent 50%,
-      #c8922a,
+      #ff7a00,
       transparent 80%
     );
     animation: rotate-glow 4s linear infinite;

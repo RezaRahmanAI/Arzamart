@@ -137,7 +137,7 @@
               {{ product.name }}
             </h1>
             @if (product.shortDescription) {
-              <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#c8922a] whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></div>
+              <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#ff7a00] whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></div>
             }
           </div>
 
@@ -203,7 +203,7 @@
           <div class="space-y-8 pt-8 border-t border-[#eee]">
             @if (product.description) {
               <div class="space-y-4">
-                <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#c8922a]">Description</h3>
+                <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#ff7a00]">Description</h3>
                 <div class="text-[16px] text-[#444] leading-[1.7] font-light whitespace-pre-line prose prose-slate prose-sm max-w-none" [innerHTML]="product.description | safeHtml"></div>
               </div>
             }
@@ -714,7 +714,7 @@
     <div class="fixed bottom-8 right-8 z-[100] group">
       <a 
         routerLink="/" 
-        class="glowing-btn flex items-center gap-3 px-8 py-5 rounded-2xl shadow-[0_20px_50px_-10px_rgba(200,146,42,0.4)] hover:-translate-y-2 transition-all duration-500 border border-[#c8922a]/20"
+        class="glowing-btn flex items-center gap-3 px-8 py-5 rounded-2xl shadow-[0_20px_50px_-10px_rgba(200,146,42,0.4)] hover:-translate-y-2 transition-all duration-500 border border-[#ff7a00]/20"
       >
         <div class="flex items-center gap-3">
           <app-icon name="ExternalLink" size="18" className="text-[#1a1a1a]"></app-icon>
@@ -722,7 +722,7 @@
         </div>
       </a>
       <!-- Subtle pulse ripple -->
-      <div class="absolute -inset-2 bg-[#c8922a]/10 rounded-3xl blur-xl animate-pulse -z-10 group-hover:bg-[#c8922a]/20"></div>
+      <div class="absolute -inset-2 bg-[#ff7a00]/10 rounded-3xl blur-xl animate-pulse -z-10 group-hover:bg-[#ff7a00]/20"></div>
     </div>
 
     <div class="mt-16 text-center pb-12">

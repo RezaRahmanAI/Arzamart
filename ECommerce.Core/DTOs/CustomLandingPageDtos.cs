@@ -18,7 +18,9 @@ public class CustomLandingPageConfigDto
 
     public bool IsTrustBannerVisible { get; set; }
     public string? TrustBannerText { get; set; }
+    public string? TrustBannerDescription { get; set; }
 
+    public bool IsFeaturedOrderVisible { get; set; }
     public string? FeaturedProductName { get; set; }
     public decimal? PromoPrice { get; set; }
     public decimal? OriginalPrice { get; set; }
@@ -39,7 +41,9 @@ public class CustomLandingPageConfigUpdateDto
 
     public bool IsTrustBannerVisible { get; set; }
     public string? TrustBannerText { get; set; }
+    public string? TrustBannerDescription { get; set; }
 
+    public bool IsFeaturedOrderVisible { get; set; }
     public string? FeaturedProductName { get; set; }
     public decimal? PromoPrice { get; set; }
     public decimal? OriginalPrice { get; set; }
