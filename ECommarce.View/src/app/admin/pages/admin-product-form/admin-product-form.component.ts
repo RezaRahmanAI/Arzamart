@@ -374,28 +374,27 @@ export class AdminProductFormComponent implements OnDestroy {
 
         if (variants && variants.length > 0) {
           variants.forEach((v: any) => {
-            this.sizesArray.push(
-              this.formBuilder.group({
-                label: [v.size ?? v.Size ?? ""],
-                price: [
-                  v.compareAtPrice ?? v.price ?? v.Price ?? product.compareAtPrice ?? product.price ?? 0,
-                  [Validators.required, Validators.min(0)],
-                ],
-                salePrice: [
-                  v.compareAtPrice ? (v.price ?? v.Price ?? product.price ?? 0) : null,
-                  [Validators.min(0)],
-                ],
-                purchaseRate: [
-                  v.purchaseRate ?? v.PurchaseRate ?? product.purchaseRate ?? product.price ?? 0,
-                  [Validators.required, Validators.min(0)],
-                ],
-                stock: [
-                  v.stockQuantity ?? v.StockQuantity ?? 0,
-                  [Validators.min(0)],
-                ],
-                selected: [true],
-              }),
-            );
+            const sizeGroup = this.formBuilder.group({
+              label: [v.size ?? v.Size ?? ""],
+              price: [
+                v.compareAtPrice ?? v.price ?? v.Price ?? product.compareAtPrice ?? product.price ?? 0,
+                [Validators.required, Validators.min(0)],
+              ],
+              salePrice: [
+                v.compareAtPrice ? (v.price ?? v.Price ?? product.price ?? 0) : null,
+                [Validators.min(0)],
+              ],
+              purchaseRate: [
+                v.purchaseRate ?? v.PurchaseRate ?? product.purchaseRate ?? product.price ?? 0,
+                [Validators.required, Validators.min(0)],
+              ],
+              stock: [
+                v.stockQuantity ?? v.StockQuantity ?? 0,
+                [Validators.min(0)],
+              ],
+              selected: [true],
+            });
+            this.sizesArray.push(sizeGroup);
           });
         } else {
           this.sizesArray.push(this.createSizeGroup(true));
@@ -692,7 +691,7 @@ export class AdminProductFormComponent implements OnDestroy {
             );
           } else {
             console.log("Creating product with payload:", payload);
-            return this.productsService.createProduct(payload);
+            return this.productsService.createProduct(payload as any);
           }
         }),
       )
@@ -874,7 +873,7 @@ export class AdminProductFormComponent implements OnDestroy {
             ? Number(s.salePrice)
             : undefined,
         purchaseRate: Number(s.purchaseRate || raw.purchaseRate),
-        sku: `${raw.name?.slice(0, 3)}-${sizeLabel}`
+        sku: `${raw.name?.slice(0, 5)}-${sizeLabel}-${Math.random().toString(36).slice(-3)}`
           .toUpperCase()
           .replace(/\s+/g, ""),
         inventory: Number(s.stock || 0),
@@ -937,8 +936,8 @@ export class AdminProductFormComponent implements OnDestroy {
       tier: raw.tier ?? "",
       tags: raw.tags ?? "",
       sortOrder: Number(raw.sortOrder ?? 0),
-      subCategoryId: raw.subCategory ? Number(raw.subCategory) : null,
-      collectionId: raw.collection ? Number(raw.collection) : null,
+      subCategoryId: (raw.subCategory && raw.subCategory !== "null" && raw.subCategory !== "0") ? Number(raw.subCategory) : null,
+      collectionId: (raw.collection && raw.collection !== "null" && raw.collection !== "0") ? Number(raw.collection) : null,
       productType: raw.productType as ProductType,
     };
     // but we want to match backend DTO structure primarily.

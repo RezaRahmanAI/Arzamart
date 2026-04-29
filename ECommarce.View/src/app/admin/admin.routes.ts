@@ -143,8 +143,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: "customers/:phone/history",
         loadComponent: () =>
-          import("./pages/admin-orders/admin-orders.component").then(
-            (m) => m.AdminOrdersComponent,
+          import("./pages/admin-customer-history/admin-customer-history.component").then(
+            (m) => m.AdminCustomerHistoryComponent,
           ),
         data: { title: "Customer History" },
       },

@@ -60,7 +60,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   isInvoiceLoading = false;
   totalResults = 0;
   page = 1;
-  pageSize = 50;
+  pageSize = 10;
 
   statusOptions: OrdersQueryParams["status"][] = [
     "All",
@@ -230,16 +230,8 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.route.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.isPreOrderMode = !!data['preOrderOnly'];
       this.isWebsiteOnlyMode = !!data['websiteOnly'];
-      
-      // Check for phone param in route
-      this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
-        if (params['phone']) {
-          this.selectedCustomerPhone = params['phone'];
-          this.selectedDateRange = "All Time"; // default to all time for history
-        }
-        this.loadOrders();
-        this.loadSources();
-      });
+      this.loadOrders();
+      this.loadSources();
     });
 
     this.orderIdSearchControl.valueChanges
@@ -665,16 +657,6 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   avatarClass(order: Order): string {
     const index = order.id % this.avatarStyles.length;
     return this.avatarStyles[index];
-  }
-
-  getCustomerInitials(name: string): string {
-    if (!name) return "";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase();
   }
 
   copyToClipboard(text: string, event: Event): void {

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.OutputCaching;
+using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
 
@@ -17,17 +18,20 @@ public class AdminCategoryController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _environment;
+    private readonly IConfiguration _config;
     private readonly ICacheService _cache;
     private readonly IOutputCacheStore _cacheStore;
 
     public AdminCategoryController(
         ApplicationDbContext context, 
         IWebHostEnvironment environment,
+        IConfiguration config,
         ICacheService cache,
         IOutputCacheStore cacheStore)
     {
         _context = context;
         _environment = environment;
+        _config = config;
         _cache = cache;
         _cacheStore = cacheStore;
     }
@@ -150,7 +154,7 @@ public class AdminCategoryController : ControllerBase
         return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, category);
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public async Task<IActionResult> UpdateCategory(int id, CategoryUpdateDto dto)
     {
         var category = await _context.Categories.FindAsync(id);
@@ -236,14 +240,8 @@ public class AdminCategoryController : ControllerBase
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
 
-            var externalPath = Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads");
-            var uploadsFolder = Path.Combine(externalPath, "categories");
+            var uploadsFolder = PathHelper.GetUploadsFolder(_config, _environment, "categories");
             
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
             var fileExtension = Path.GetExtension(file.FileName);
             var fileName = $"{Guid.NewGuid()}{fileExtension}";
             var filePath = Path.Combine(uploadsFolder, fileName);

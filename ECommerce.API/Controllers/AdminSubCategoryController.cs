@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.OutputCaching;
+using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
 
@@ -190,13 +191,8 @@ public class AdminSubCategoryController : ControllerBase
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
 
-            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads");
-            var uploadsFolder = Path.Combine(externalPath, "subcategories");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
+            var uploadsFolder = PathHelper.GetUploadsFolder(_config, _environment, "subcategories");
+            
             var fileExtension = Path.GetExtension(file.FileName);
             var fileName = $"{Guid.NewGuid()}{fileExtension}";
             var filePath = Path.Combine(uploadsFolder, fileName);
@@ -219,10 +215,10 @@ public class AdminSubCategoryController : ControllerBase
     }
 
     private async Task InvalidateSubCategoryCacheAsync()
-
     {
         await _cache.RemoveAsync("nav:mega-menu");
         await _cache.RemoveByPrefixAsync("product:list");
+        await _cacheStore.EvictByTagAsync("categories", default);
     }
 
     private static string GenerateSlug(string name)

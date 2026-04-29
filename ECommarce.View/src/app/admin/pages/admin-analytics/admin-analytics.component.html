@@ -1,33 +1,32 @@
-<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth">
+<div class="flex-1 overflow-y-auto p-3 space-y-4 scroll-smooth">
   <!-- Section Header -->
   <div>
-    <h2 class="text-primary dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight">
+    <h2 class="text-primary dark:text-white text-xl font-black uppercase tracking-tight">
       Analytics
     </h2>
-    <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
+    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest opacity-70">
       Performance metrics and insights.
     </p>
   </div>
 
   <!-- Main Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
     
     <!-- Sales Chart Section -->
-    <div class="col-span-1 lg:col-span-2 bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-      <div class="flex items-center justify-between mb-6">
+    <div class="col-span-1 lg:col-span-2 bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
         <div>
-           <h3 class="text-lg font-bold text-primary dark:text-white">Revenue Overview</h3>
-           <p class="text-sm text-gray-500">Total sales over time</p>
+           <h3 class="text-xs font-black text-primary dark:text-white uppercase tracking-tight">Revenue Overview</h3>
+           <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Total sales</p>
         </div>
-        <div class="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+        <div class="flex bg-gray-50 dark:bg-gray-800 rounded-xl p-1">
           <button 
             *ngFor="let p of periods"
             (click)="onPeriodChange(p)"
             [class.bg-white]="salesPeriod === p"
-            [class.dark:bg-gray-700]="salesPeriod === p"
             [class.shadow-sm]="salesPeriod === p"
-            class="px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all"
-            [ngClass]="salesPeriod === p ? 'text-primary dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'"
+            class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all"
+            [ngClass]="salesPeriod === p ? 'text-primary dark:text-white' : 'text-gray-400 hover:text-gray-700'"
           >
             {{ p }}
           </button>
@@ -58,21 +57,21 @@
     </div>
 
     <!-- Top Products -->
-    <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-      <h3 class="text-lg font-bold text-primary dark:text-white mb-6">Top Selling Products</h3>
-      <div class="space-y-4">
-        <div *ngFor="let product of topProducts; let i = index" class="flex items-center gap-4">
-           <span class="text-lg font-bold text-gray-300 w-6">{{ i + 1 }}</span>
+    <div class="bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+      <h3 class="text-xs font-black text-primary dark:text-white mb-4 uppercase tracking-tight">Top Products</h3>
+      <div class="space-y-2">
+        <div *ngFor="let product of topProducts; let i = index" class="flex items-center gap-3">
+           <span class="text-xs font-black text-slate-300 w-4">{{ i + 1 }}</span>
            <div 
-             class="w-12 h-12 rounded-lg bg-gray-100 bg-cover bg-center border border-gray-200"
+             class="size-8 rounded-lg bg-gray-50 bg-cover bg-center border border-gray-100"
              [style.background-image]="'url(' + imageUrlService.getImageUrl(product.imageUrl) + ')'"
            ></div>
            <div class="flex-1 min-w-0">
-             <h4 class="font-medium text-primary dark:text-white truncate" [title]="product.name">{{ product.name }}</h4>
-             <p class="text-xs text-gray-500">{{ product.soldCount }} sold</p>
+             <h4 class="text-[10px] font-black text-primary dark:text-white truncate" [title]="product.name">{{ product.name }}</h4>
+             <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">{{ product.soldCount }} sold</p>
            </div>
            <div class="text-right">
-             <app-price-display [amount]="product.price" class="font-medium text-sm"></app-price-display>
+             <app-price-display [amount]="product.price" class="font-black text-[10px]"></app-price-display>
            </div>
         </div>
          <div *ngIf="topProducts.length === 0" class="text-center text-gray-500 py-8">
@@ -82,13 +81,13 @@
     </div>
 
     <!-- Order Status Distribution -->
-    <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-      <h3 class="text-lg font-bold text-primary dark:text-white mb-6">Order Status</h3>
-      <div class="space-y-4">
+    <div class="bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+      <h3 class="text-xs font-black text-primary dark:text-white mb-4 uppercase tracking-tight">Order Status</h3>
+      <div class="space-y-2">
         <div *ngFor="let item of statusDistribution">
-           <div class="flex justify-between text-sm mb-1">
-             <span class="text-gray-600 dark:text-gray-300">{{ item.status }}</span>
-             <span class="font-medium text-primary dark:text-white">{{ item.count }}</span>
+           <div class="flex justify-between text-[10px] font-black uppercase tracking-widest mb-1">
+             <span class="text-gray-500">{{ item.status }}</span>
+             <span class="text-primary dark:text-white">{{ item.count }}</span>
            </div>
            <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
              <div 
@@ -112,8 +111,8 @@
     </div>
 
     <!-- Customer Growth -->
-    <div class="col-span-1 lg:col-span-2 bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-      <h3 class="text-lg font-bold text-primary dark:text-white mb-4">Customer Growth (Last 6 Months)</h3>
+    <div class="col-span-1 lg:col-span-2 bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+      <h3 class="text-xs font-black text-primary dark:text-white mb-3 uppercase tracking-tight">Customer Growth</h3>
       <div class="flex items-end justify-between gap-4 h-48 px-4">
          <div *ngIf="customerGrowth.length === 0" class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
           No new customers recently.

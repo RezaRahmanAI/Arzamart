@@ -22,8 +22,13 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req.clone({ setHeaders: headers })).pipe(
     retry({
       count: 2,
-      delay: (error, retryCount) => timer(retryCount * 1000),
+      delay: (error, retryCount) => {
+        // Only retry GET requests and avoid retrying on 4xx/5xx application errors
+        if (req.method !== "GET" || (error.status >= 400 && error.status < 600)) {
+          throw error;
+        }
+        return timer(retryCount * 1000);
+      },
     }),
   );
 };
-

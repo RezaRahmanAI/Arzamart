@@ -1,19 +1,19 @@
-<div class="p-8">
-  <div class="mb-8">
-    <h1 class="text-2xl font-bold text-gray-800">Review Moderation</h1>
-    <p class="text-gray-500">
-      Manage and moderate product reviews from your customers.
+<div class="p-3">
+  <div class="mb-4">
+    <h1 class="text-xl font-black text-primary uppercase tracking-tight">Reviews</h1>
+    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest opacity-70">
+      Moderate customer feedback
     </p>
   </div>
 
-  <div class="grid grid-cols-1 gap-4">
+  <div class="grid grid-cols-1 gap-2">
     <div
       *ngFor="let review of reviews"
-      class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6 hover:shadow-md transition-shadow"
+      class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 hover:shadow-md transition-shadow"
     >
-      <div class="flex-shrink-0 flex items-start gap-4">
+      <div class="flex-shrink-0 flex items-start gap-3">
         <div
-          class="size-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden"
+          class="size-8 rounded-full bg-gray-50 flex items-center justify-center overflow-hidden"
         >
           <img
             *ngIf="review.userAvatar"
@@ -23,22 +23,18 @@
           <app-icon
             *ngIf="!review.userAvatar"
             name="User"
-            size="24"
-            className="text-gray-400"
+            size="16"
+            className="text-gray-300"
           ></app-icon>
         </div>
         <div>
-          <h3 class="font-bold text-gray-800">{{ review.userName }}</h3>
-          <div class="flex items-center gap-1 text-xs text-gray-400">
+          <h3 class="text-xs font-black text-primary">{{ review.userName }}</h3>
+          <div class="flex items-center gap-1 text-[8px] font-bold text-gray-400 uppercase tracking-tighter">
             <span>{{ review.createdAt | date: "mediumDate" }}</span>
             <span
               *ngIf="review.isVerifiedPurchase"
-              class="text-accent font-bold flex items-center gap-0.5"
+              class="text-emerald-500 flex items-center gap-0.5"
             >
-              <app-icon
-                name="CheckCircle2"
-                size="14"
-              ></app-icon>
               Verified
             </span>
           </div>
@@ -46,65 +42,54 @@
       </div>
 
       <div class="flex-grow">
-        <div class="flex items-center gap-1 mb-2">
+        <div class="flex items-center gap-0.5 mb-1">
           <app-icon
             *ngFor="let s of getStars(review.rating)"
             name="Star"
-            size="16"
+            size="12"
             className="text-yellow-400 fill-yellow-400"
           ></app-icon>
           <app-icon
             *ngFor="let s of [1, 2, 3, 4, 5].slice(review.rating)"
             name="Star"
-            size="16"
+            size="12"
             className="text-gray-200"
           ></app-icon>
         </div>
-        <p class="text-gray-600 text-sm leading-relaxed mb-4">
+        <p class="text-gray-600 text-[10px] font-medium leading-relaxed mb-1">
           {{ review.comment }}
         </p>
         <div
-          class="flex items-center gap-4 text-xs text-gray-400 border-t border-gray-50 pt-4"
+          class="flex items-center gap-3 text-[9px] font-black uppercase tracking-widest text-gray-400 border-t border-gray-50 pt-2"
         >
-          <span class="flex items-center gap-1"
-            ><app-icon
-              name="ShoppingBag"
-              size="16"
-            ></app-icon>
-            {{ review.productName }}</span
-          >
-          <span class="flex items-center gap-1"
-            ><app-icon name="ThumbsUp" size="16"></app-icon>
-            {{ review.likes }} Likes</span
-          >
+          <span class="flex items-center gap-1">
+            <app-icon name="ShoppingBag" size="12"></app-icon>
+            {{ review.productName }}
+          </span>
+          <span class="flex items-center gap-1">
+            <app-icon name="ThumbsUp" size="12"></app-icon>
+            {{ review.likes }}
+          </span>
         </div>
       </div>
 
       <div
-        class="flex md:flex-col gap-2 justify-center border-l md:pl-6 border-gray-50"
+        class="flex md:flex-col gap-1 justify-center border-l md:pl-4 border-gray-50"
       >
         <button
           (click)="openEditModal(review)"
-          class="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors text-sm font-medium"
+          class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-primary hover:bg-gray-50 transition-all"
+          title="Edit"
         >
-          <app-icon
-            name="Edit"
-            size="20"
-            className="text-gray-600"
-          ></app-icon>
-          Edit
+          <app-icon name="Edit" size="16"></app-icon>
         </button>
         <button
           *ngIf="authService.isSuperAdmin()"
           (click)="deleteReview(review.id)"
-          class="flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 transition-colors text-sm font-medium"
+          class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
+          title="Delete"
         >
-          <app-icon
-            name="Trash2"
-            size="20"
-            className="text-red-500"
-          ></app-icon>
-          Remove
+          <app-icon name="Trash2" size="16"></app-icon>
         </button>
       </div>
     </div>
@@ -130,74 +115,60 @@
   *ngIf="isModalOpen"
   class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
 >
-  <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl">
-    <div class="p-6 border-b border-gray-50 flex justify-between items-center">
-      <h2 class="text-xl font-bold text-gray-800">Edit Review</h2>
+  <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+    <div class="px-4 py-3 border-b border-gray-50 flex justify-between items-center">
+      <h2 class="text-sm font-black text-primary uppercase tracking-tight">Edit Review</h2>
       <button
         (click)="closeModal()"
-        class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+        class="size-7 hover:bg-gray-50 rounded-lg flex items-center justify-center transition-all"
       >
-        <app-icon
-          name="X"
-          size="20"
-          className="text-gray-500"
-        ></app-icon>
+        <app-icon name="X" size="14" className="text-gray-400"></app-icon>
       </button>
     </div>
 
-    <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="p-8">
-      <div class="mb-6">
-        <label
-          class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"
-          >Rating</label
-        >
-        <div class="flex gap-2">
+    <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="p-4">
+      <div class="mb-4">
+        <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Rating</label>
+        <div class="flex gap-1">
           <button
             type="button"
             *ngFor="let r of [1, 2, 3, 4, 5]"
             (click)="reviewForm.patchValue({ rating: r })"
             class="transition-all"
-            [ngClass]="
-              reviewForm.get('rating')?.value! >= r
-                ? 'text-yellow-400'
-                : 'text-gray-200'
-            "
+            [ngClass]="reviewForm.get('rating')?.value! >= r ? 'text-yellow-400' : 'text-gray-200'"
           >
             <app-icon
               name="Star"
-              size="40"
+              size="24"
               [className]="reviewForm.get('rating')?.value! >= r ? 'fill-yellow-400' : ''"
             ></app-icon>
           </button>
         </div>
       </div>
 
-      <div class="mb-8">
-        <label
-          class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"
-          >Comment</label
-        >
+      <div class="mb-4">
+        <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Comment</label>
         <textarea
           formControlName="comment"
-          rows="4"
-          class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+          rows="3"
+          class="w-full px-3 py-2 rounded-xl border border-gray-100 bg-gray-50/50 text-xs font-bold text-primary focus:ring-1 focus:ring-primary outline-none resize-none"
         ></textarea>
       </div>
 
-      <div class="flex gap-3">
+      <div class="flex gap-2">
         <button
           type="button"
           (click)="closeModal()"
-          class="flex-1 py-3 rounded-2xl text-gray-600 font-bold hover:bg-gray-50 transition-colors"
+          class="flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-gray-50 transition-all"
         >
           Cancel
         </button>
         <button
           type="submit"
           [disabled]="isSubmitting"
-          class="flex-1 py-3 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20"
+          class="flex-1 py-2 rounded-xl bg-primary text-white text-[10px] font-black uppercase tracking-widest hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20"
         >
-          Save Changes
+          Save
         </button>
       </div>
     </form>

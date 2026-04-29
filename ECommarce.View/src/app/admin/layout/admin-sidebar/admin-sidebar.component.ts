@@ -49,7 +49,6 @@ export class AdminSidebarComponent implements OnInit {
     if (url === "/admin/orders" || url.includes("/admin/orders/pre-orders") || url.includes("/admin/orders/website")) {
       this.isOrderViewMenuOpen = true;
     }
-
   }
 
   navItems: AdminNavItem[] = [
@@ -57,7 +56,7 @@ export class AdminSidebarComponent implements OnInit {
     { label: "Site Content", icon: "FileText", route: "/admin/pages" },
     { label: "Order Sources", icon: "Globe", route: "/admin/order-sources" },
     { label: "Customer Reviews", icon: "MessageSquare", route: "/admin/reviews" },
-    { label: "CRM", icon: "Users", route: "/admin/customers" },
+    { label: "Customers", icon: "Users", route: "/admin/customers" },
   ];
 
   bottomItems: AdminNavItem[] = [];
@@ -67,10 +66,6 @@ export class AdminSidebarComponent implements OnInit {
   isOrderViewMenuOpen = false;
 
   constructor() {
-    // Check initial state
-    // We can't easily check router state here without injecting Router,
-    // but we can default to false or rely on the user opening it.
-    // Better: Inject Router to set initial state.
   }
 
   toggleProductsMenu() {

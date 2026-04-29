@@ -477,12 +477,37 @@ public class OrderService : IOrderService
         var orders = await _unitOfWork.Repository<Order>().ListAsync(spec);
         
         var dtos = _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderDto>>(orders);
-
-        // For pre-orders, calculate stock availability
-        foreach (var dto in dtos.Where(d => d.IsPreOrder))
+        
+        // Performance Optimization: Bulk fetch products for all pre-orders in the current page
+        var preOrders = orders.Where(o => o.IsPreOrder).ToList();
+        if (preOrders.Any())
         {
-            var order = orders.First(o => o.Id == dto.Id);
-            await PopulateItemsStockStatusAsync(order, dto);
+            var productIds = preOrders.SelectMany(o => o.Items.Select(i => i.ProductId)).Distinct().ToList();
+            var products = await _unitOfWork.Repository<Product>().ListAsync(new ProductsWithCategoriesSpecification(productIds));
+            var productDict = products.ToDictionary(p => p.Id);
+
+            foreach (var dto in dtos.Where(d => d.IsPreOrder))
+            {
+                var order = preOrders.First(o => o.Id == dto.Id);
+                foreach (var itemDto in dto.Items)
+                {
+                    if (productDict.TryGetValue(itemDto.ProductId, out var product))
+                    {
+                        int needed = itemDto.Quantity;
+                        if (!string.IsNullOrEmpty(itemDto.Size))
+                        {
+                            var normalizedSize = itemDto.Size.Trim().ToLower();
+                            var variant = product.Variants.FirstOrDefault(v => v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                            itemDto.IsStockAvailable = variant != null && variant.StockQuantity >= needed;
+                        }
+                        else
+                        {
+                            itemDto.IsStockAvailable = product.StockQuantity >= needed;
+                        }
+                    }
+                }
+                dto.IsStockAvailable = dto.Items.All(i => i.IsStockAvailable);
+            }
         }
         
         return (dtos, total);

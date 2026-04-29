@@ -73,7 +73,7 @@ public static class ServiceExtensions
                        .Tag("products"));
 
             options.AddPolicy("Categories", builder =>
-                builder.Expire(TimeSpan.FromHours(1))
+                builder.Expire(TimeSpan.FromMinutes(5))
                        .Tag("categories"));
         });
 

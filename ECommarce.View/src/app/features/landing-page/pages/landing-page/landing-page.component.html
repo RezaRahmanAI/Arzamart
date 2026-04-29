@@ -39,7 +39,7 @@
                 >
                   <img
                     [src]="imageUrlService.getImageUrl(url)"
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-contain p-1"
                     [class.opacity-60]="i !== currentImageIndex"
                   />
                   @if (i === currentImageIndex) {
@@ -62,7 +62,7 @@
                 <img
                   [src]="imageUrlService.getImageUrl(url)"
                   [alt]="product.name"
-                  class="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out"
+                  class="absolute inset-0 w-full h-full object-contain p-4 transition-opacity duration-[1200ms] ease-in-out"
                   [class.opacity-100]="i === currentImageIndex"
                   [class.opacity-0]="i !== currentImageIndex"
                 />
@@ -120,7 +120,7 @@
                   >
                     <img
                       [src]="imageUrlService.getImageUrl(url)"
-                      class="w-full h-full object-cover"
+                      class="w-full h-full object-contain p-1"
                       [class.opacity-60]="i !== currentImageIndex"
                     />
                   </button>

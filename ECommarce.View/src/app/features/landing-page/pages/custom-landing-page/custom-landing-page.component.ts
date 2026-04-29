@@ -152,9 +152,60 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         }
       });
 
+    this.orderForm.controls.address.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((address) => {
+        if (!address || address.length < 3) return;
+        this.intelligentLocationMatch(address);
+      });
+
     // Check for local saved details
     if (this.userPersistence.hasSavedDetails()) {
       this.showAutofillPrompt = true;
+    }
+  }
+
+  intelligentLocationMatch(address: string): void {
+    const addr = address.toLowerCase();
+    
+    // Check for cities first
+    for (const city of this.cities) {
+      if (addr.includes(city.toLowerCase())) {
+        if (this.orderForm.get("city")?.value !== city) {
+          this.selectCity(city);
+        }
+        break; 
+      }
+    }
+
+    // Check for areas
+    const currentCity = this.orderForm.get("city")?.value;
+    if (currentCity) {
+      const cityAreas = BANGLADESH_LOCATIONS[currentCity] || [];
+      for (const area of cityAreas) {
+        if (addr.includes(area.toLowerCase())) {
+          if (this.orderForm.get("area")?.value !== area) {
+            this.selectArea(area);
+          }
+          break;
+        }
+      }
+    } else {
+      // If no city selected yet, check all areas across all cities
+      for (const city of this.cities) {
+        const cityAreas = BANGLADESH_LOCATIONS[city] || [];
+        for (const area of cityAreas) {
+          if (addr.includes(area.toLowerCase())) {
+            this.selectCity(city);
+            this.selectArea(area);
+            return;
+          }
+        }
+      }
     }
   }
 

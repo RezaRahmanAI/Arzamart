@@ -1,9 +1,9 @@
-<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-3">
   <!-- Header Section -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
-      <h2 class="text-2xl font-display font-bold text-primary dark:text-white tracking-tight">Main Collections</h2>
-      <p class="text-slate-500 dark:text-slate-400 text-sm">Manage top-level categories and collections for your storefront.</p>
+      <h2 class="text-xl font-black text-primary dark:text-white uppercase tracking-wider">Collections</h2>
+      <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-tight opacity-70">Manage top-level categories</p>
     </div>
     <button class="arza-btn-primary" type="button" (click)="startCreate()" *ngIf="mode === 'edit'">
       <app-icon name="Plus" size="20"></app-icon>
@@ -11,14 +11,14 @@
     </button>
   </div>
 
-  <div class="flex flex-col lg:flex-row gap-8 items-start">
+  <div class="flex flex-col lg:flex-row gap-4 items-start">
     <!-- List Section (Table) -->
     <div class="w-full lg:w-[60%] flex flex-col gap-4">
       <!-- Search -->
       <div class="relative max-w-sm">
-        <app-icon name="Search" size="18" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></app-icon>
+        <app-icon name="Search" size="14" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></app-icon>
         <input
-          class="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm focus:ring-4 focus:ring-primary/5 transition-all outline-none"
+          class="w-full pl-9 pr-4 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-4 focus:ring-primary/5 transition-all outline-none"
           placeholder="Filter collections..."
           type="text"
           [formControl]="filterControl"
@@ -30,21 +30,21 @@
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-slate-50/50 dark:bg-slate-800/50 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100 dark:border-slate-800">
-                <th class="px-6 py-4">Collection</th>
-                <th class="px-6 py-4">Slug</th>
-                <th class="px-6 py-4">Order</th>
-                <th class="px-6 py-4">Status</th>
-                <th class="px-6 py-4 text-right">Actions</th>
+              <tr class="bg-slate-50/50 dark:bg-slate-800/50 text-[9px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <th class="px-3 py-2">Collection</th>
+                <th class="px-3 py-2">Slug</th>
+                <th class="px-3 py-2">Order</th>
+                <th class="px-3 py-2">Status</th>
+                <th class="px-3 py-2 text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
               @for (cat of filteredCategories; track cat.id) {
                 <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
                     (click)="editCategory(cat)">
-                  <td class="px-6 py-4">
-                    <div class="flex items-center gap-4">
-                      <div class="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex-shrink-0">
+                  <td class="px-3 py-2">
+                    <div class="flex items-center gap-2">
+                      <div class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex-shrink-0">
                         @if (cat.imageUrl) {
                           <img [src]="getImageUrl(cat.imageUrl)" class="w-full h-full object-cover" [alt]="cat.name" />
                         } @else {
@@ -54,27 +54,27 @@
                         }
                       </div>
                       <div class="flex flex-col">
-                        <span class="font-bold text-primary dark:text-white text-sm group-hover:text-accent transition-colors">{{ cat.name }}</span>
-                        <span class="text-[10px] text-slate-400 font-medium">Main Category</span>
+                        <span class="font-black text-primary dark:text-white text-xs group-hover:text-accent transition-colors leading-tight">{{ cat.name }}</span>
+                        <span class="text-[8px] text-slate-400 font-bold uppercase">Main Category</span>
                       </div>
                     </div>
                   </td>
-                  <td class="px-6 py-4">
-                    <span class="text-xs font-mono text-slate-400">{{ cat.slug }}</span>
+                  <td class="px-3 py-2">
+                    <span class="text-[10px] font-mono text-slate-400">{{ cat.slug }}</span>
                   </td>
-                  <td class="px-6 py-4">
-                    <span class="text-sm font-medium text-slate-500">{{ cat.displayOrder }}</span>
+                  <td class="px-3 py-2">
+                    <span class="text-xs font-bold text-slate-500">{{ cat.displayOrder }}</span>
                   </td>
-                  <td class="px-6 py-4">
+                  <td class="px-3 py-2">
                     <div class="flex items-center gap-1.5">
-                      <div [class]="cat.isActive ? 'bg-emerald-500' : 'bg-slate-300'" class="size-1.5 rounded-full"></div>
+                      <div [class]="cat.isActive ? 'bg-emerald-500' : 'bg-slate-300'" class="size-1 rounded-full"></div>
                       <span [class]="cat.isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'"
-                            class="text-[10px] font-bold uppercase tracking-wider">
+                            class="text-[9px] font-black uppercase tracking-wider">
                         {{ cat.isActive ? 'Active' : 'Hidden' }}
                       </span>
                     </div>
                   </td>
-                  <td class="px-6 py-4 text-right">
+                  <td class="px-3 py-2 text-right">
                     <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button class="p-2 text-slate-400 hover:text-primary hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all"
                               (click)="$event.stopPropagation(); editCategory(cat)">
@@ -104,31 +104,31 @@
     </div>
 
     <!-- Right Sidebar Form -->
-    <div class="w-full lg:w-[40%] sticky top-8">
-      <div class="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-2xl shadow-primary/5 overflow-hidden">
-        <div class="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/30 dark:bg-white/[0.02]">
+    <div class="w-full lg:w-[40%] sticky top-4">
+      <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/30 dark:bg-white/[0.02]">
           <div>
-            <h3 class="text-lg font-bold text-primary dark:text-white flex items-center gap-2">
-              <app-icon [name]="mode === 'create' ? 'Plus' : 'Edit3'" size="20" className="text-accent"></app-icon>
-              {{ mode === "create" ? "Add New Category" : "Modify Category" }}
+            <h3 class="text-sm font-black text-primary dark:text-white flex items-center gap-2 uppercase tracking-wide">
+              <app-icon [name]="mode === 'create' ? 'Plus' : 'Edit3'" size="16" className="text-accent"></app-icon>
+              {{ mode === "create" ? "New Category" : "Modify Category" }}
             </h3>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Category Details</p>
+            <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Details & Settings</p>
           </div>
           
-          <div class="flex items-center gap-3 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
-            <span class="text-[10px] font-black uppercase text-slate-400">Visible</span>
+          <div class="flex items-center gap-2 bg-white dark:bg-slate-800 px-2 py-1 rounded-xl border border-slate-100 dark:border-slate-700">
+            <span class="text-[8px] font-black uppercase text-slate-400">Status</span>
             <label class="relative inline-flex items-center cursor-pointer">
-              <input class="sr-only peer" type="checkbox" formControlName="isActive" />
-              <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary shadow-inner"></div>
+              <input class="sr-only peer" type="checkbox" [formControl]="categoryForm.controls.isActive" />
+              <div class="w-7 h-4 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-primary shadow-inner"></div>
             </label>
           </div>
         </div>
 
-        <form class="p-8 flex flex-col gap-6" [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+        <form class="p-4 flex flex-col gap-3" [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
           <!-- Name -->
-          <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]" for="cat-name">Category Name</label>
-            <input class="w-full px-5 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm font-bold text-primary dark:text-white focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600"
+          <div class="space-y-1">
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider" for="cat-name">Category Name</label>
+            <input class="w-full px-4 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-xs font-bold text-primary dark:text-white outline-none transition-all placeholder:text-slate-300"
                    id="cat-name" type="text" formControlName="name" placeholder="e.g. Men's Fashion" />
             @if (categoryForm.get('name')?.touched && categoryForm.get('name')?.errors?.['required']) {
               <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider pl-1">Name is required</p>
@@ -136,34 +136,34 @@
           </div>
 
           <!-- Slug -->
-          <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]" for="cat-slug">Slug</label>
-            <input class="w-full px-5 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm font-mono text-slate-400 outline-none cursor-not-allowed"
+          <div class="space-y-1">
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider" for="cat-slug">Slug</label>
+            <input class="w-full px-4 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-xs font-mono text-slate-400 outline-none cursor-not-allowed"
                    id="cat-slug" type="text" formControlName="slug" readonly />
           </div>
 
           <!-- Image Upload -->
-          <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Banner Image</label>
-            <div class="flex items-center gap-6 p-4 bg-slate-50 dark:bg-white/[0.02] rounded-3xl border border-slate-100 dark:border-slate-800">
-              <div class="size-20 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 relative overflow-hidden flex items-center justify-center shadow-sm">
+          <div class="space-y-1">
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider">Banner Image</label>
+            <div class="flex items-center gap-4 p-2 bg-slate-50 dark:bg-white/[0.02] rounded-2xl border border-slate-100 dark:border-slate-800">
+              <div class="size-12 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 relative overflow-hidden flex items-center justify-center shadow-sm">
                 @if (getPreviewUrl()) {
                   <img [src]="getPreviewUrl()" class="w-full h-full object-cover" alt="Preview" />
                 } @else {
-                  <app-icon name="Image" size="24" className="text-slate-200"></app-icon>
+                  <app-icon name="Image" size="16" className="text-slate-200"></app-icon>
                 }
                 
                 @if (isUploadingImage) {
                   <div class="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm">
-                    <div class="animate-spin rounded-full h-6 w-6 border-2 border-white/30 border-b-white"></div>
+                    <div class="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-b-white"></div>
                   </div>
                 }
               </div>
               
-              <div class="flex-1 flex flex-col gap-2">
-                <label class="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer hover:border-accent hover:text-accent transition-all group">
-                  <app-icon name="UploadCloud" size="18" className="text-slate-400 mr-2 group-hover:text-accent transition-colors"></app-icon>
-                  <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 group-hover:text-accent">
+              <div class="flex-1 flex flex-col">
+                <label class="flex items-center justify-center px-3 py-1.5 bg-white dark:bg-slate-800 border border-dashed border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:border-accent hover:text-accent transition-all group">
+                  <app-icon name="UploadCloud" size="14" className="text-slate-400 mr-2 group-hover:text-accent transition-colors"></app-icon>
+                  <span class="text-[9px] font-black uppercase text-slate-500 group-hover:text-accent">
                     {{ selectedImageFile ? 'Change' : 'Pick Photo' }}
                   </span>
                   <input class="hidden" type="file" accept="image/*" (change)="handleImageUpload($event)" />
@@ -173,33 +173,33 @@
           </div>
 
           <!-- Meta Info -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Display Order</label>
-              <input class="w-full px-5 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm font-bold text-primary dark:text-white focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+          <div class="grid grid-cols-2 gap-3">
+            <div class="space-y-1">
+              <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider">Display Order</label>
+              <input class="w-full px-4 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-xs font-bold text-primary dark:text-white outline-none transition-all"
                      type="number" formControlName="displayOrder" />
             </div>
-            <div class="space-y-2">
-              <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">SEO Title</label>
-              <input class="w-full px-5 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm font-bold text-primary dark:text-white focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+            <div class="space-y-1">
+              <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider">SEO Title</label>
+              <input class="w-full px-4 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-xs font-bold text-primary dark:text-white outline-none transition-all"
                      type="text" formControlName="metaTitle" />
             </div>
           </div>
 
-          <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">SEO Description</label>
-            <textarea class="w-full px-5 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm font-bold text-primary dark:text-white focus:ring-4 focus:ring-primary/5 outline-none transition-all resize-none"
+          <div class="space-y-1">
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider">SEO Description</label>
+            <textarea class="w-full px-4 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-xs font-bold text-primary dark:text-white outline-none transition-all resize-none"
                       rows="2" formControlName="metaDescription"></textarea>
           </div>
 
           <!-- Actions -->
-          <div class="pt-4 flex items-center gap-4">
-            <button class="flex-1 px-6 py-3 rounded-2xl text-xs font-bold text-slate-500 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200"
+          <div class="pt-2 flex items-center gap-3">
+            <button class="flex-1 px-4 py-2 rounded-xl text-xs font-bold text-slate-500 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200"
                     type="button" (click)="cancelEdit()">Cancel</button>
-            <button class="flex-[2] arza-btn-primary py-3 flex items-center justify-center gap-2 disabled:opacity-70"
+            <button class="flex-[2] arza-btn-primary py-2 flex items-center justify-center gap-2 disabled:opacity-70 text-xs font-black uppercase tracking-wider"
                     type="submit" [disabled]="isUploadingImage || isSaving">
-              <app-icon *ngIf="isSaving" name="Loader" size="20" className="animate-spin"></app-icon>
-              <span>{{ isSaving ? 'Saving...' : (mode === 'create' ? 'Create Category' : 'Save Changes') }}</span>
+              <app-icon *ngIf="isSaving" name="Loader" size="14" className="animate-spin"></app-icon>
+              <span>{{ isSaving ? 'Saving...' : (mode === 'create' ? 'Create' : 'Update') }}</span>
             </button>
           </div>
         </form>

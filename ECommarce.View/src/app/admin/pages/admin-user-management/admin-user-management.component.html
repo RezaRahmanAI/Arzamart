@@ -1,38 +1,38 @@
-<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 bg-gray-50 dark:bg-[#0b1120] min-h-screen">
+<div class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-[#0b1120] min-h-screen">
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div>
-      <h2 class="text-primary dark:text-white text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+      <h2 class="text-primary dark:text-white text-xl font-black uppercase tracking-tight">
         Admin Management
       </h2>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mt-1 font-medium">
-        Manage administrative staff and define access permissions.
+      <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-tight opacity-70">
+        Staff & permissions control
       </p>
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2">
       <button
         *ngIf="currentUserRole === 'SuperAdmin'"
         (click)="isCreateModalOpen = true"
-        class="flex items-center justify-center gap-2 rounded-xl h-11 px-6 bg-primary text-white text-sm font-semibold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+        class="arza-btn-primary px-4 py-1.5"
       >
-        <app-icon name="UserPlus" size="16"></app-icon>
-        <span>Add New Admin</span>
+        <app-icon name="UserPlus" size="14"></app-icon>
+        <span class="text-[10px] font-black uppercase tracking-wider">Add Staff</span>
       </button>
     </div>
   </div>
 
   <!-- Admin Users List -->
-  <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2rem] overflow-hidden shadow-sm shadow-gray-200/50">
-    <div class="p-6 border-b border-gray-50 dark:border-gray-800 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-primary">
-                <app-icon name="Shield" size="20"></app-icon>
+  <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm shadow-gray-200/50">
+    <div class="px-4 py-3 border-b border-gray-50 dark:border-gray-800 flex items-center justify-between bg-slate-50/50">
+        <div class="flex items-center gap-2">
+            <div class="size-8 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-primary">
+                <app-icon name="Shield" size="16"></app-icon>
             </div>
-            <h3 class="text-lg font-semibold text-primary dark:text-white">Internal Staff members</h3>
+            <h3 class="text-xs font-black text-primary dark:text-white uppercase tracking-tight">Staff Members</h3>
         </div>
-        <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-lg">
-            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-            <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">{{ admins.length }} Active Admins</span>
+        <div class="flex items-center gap-2 px-2 py-1 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-lg">
+            <div class="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span class="text-[9px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">{{ admins.length }} Active</span>
         </div>
     </div>
 
@@ -40,69 +40,66 @@
       <table class="w-full text-left">
         <thead>
           <tr class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-50 dark:border-gray-800">
-            <th class="px-8 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em]">Profile</th>
-            <th class="px-8 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em]">Role & Security</th>
-            <th class="px-8 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em]">Date Joined</th>
-            <th class="px-8 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] text-center">Status</th>
-            <th class="px-8 py-5 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.2em] text-right" *ngIf="currentUserRole === 'SuperAdmin'">Actions</th>
+            <th class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">Profile</th>
+            <th class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">Security</th>
+            <th class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">Joined</th>
+            <th class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status</th>
+            <th class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right" *ngIf="currentUserRole === 'SuperAdmin'">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-          <tr *ngFor="let admin of admins" class="hover:bg-gray-50/80 dark:hover:bg-gray-800/20 transition-all group">
-            <td class="px-8 py-6">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary font-bold text-sm border border-primary/10 shadow-inner group-hover:scale-110 transition-transform">
+          <tr *ngFor="let admin of admins" class="hover:bg-gray-50/80 dark:hover:bg-gray-800/20 transition-all group border-b border-gray-50 dark:border-gray-800">
+            <td class="px-4 py-2">
+              <div class="flex items-center gap-3">
+                <div class="size-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary font-black text-[10px] border border-primary/10 shadow-inner group-hover:scale-105 transition-transform">
                   {{ getInitials(admin.fullName) }}
                 </div>
-                  <div class="flex flex-col">
-                    <span class="text-sm font-semibold text-primary dark:text-white">{{ admin.fullName }}</span>
-                    <div class="flex flex-col gap-0.5">
-                      <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">User: {{ admin.userName }}</span>
-                      <span class="text-xs text-gray-400 font-medium tracking-tight" *ngIf="admin.email">{{ admin.email }}</span>
-                    </div>
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-xs font-black text-primary dark:text-white truncate">{{ admin.fullName }}</span>
+                    <span class="text-[9px] text-gray-400 font-bold uppercase tracking-tight truncate">&#64;{{ admin.userName }}</span>
                   </div>
               </div>
             </td>
-            <td class="px-8 py-6">
-                <div class="flex items-center gap-3">
-                    <div class="px-3 py-1.5 rounded-xl border flex items-center gap-2" 
+            <td class="px-4 py-2">
+                <div class="flex items-center">
+                    <div class="px-2 py-0.5 rounded-lg border flex items-center gap-1.5" 
                          [ngClass]="admin.role === 'SuperAdmin' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-blue-50 border-blue-200 text-blue-700'">
-                        <app-icon [name]="admin.role === 'SuperAdmin' ? 'ShieldCheck' : 'Shield'" size="14"></app-icon>
-                        <span class="text-[10px] font-black uppercase tracking-wider">{{ admin.role }}</span>
+                        <app-icon [name]="admin.role === 'SuperAdmin' ? 'ShieldCheck' : 'Shield'" size="12"></app-icon>
+                        <span class="text-[9px] font-black uppercase tracking-tighter">{{ admin.role }}</span>
                     </div>
                 </div>
             </td>
-            <td class="px-8 py-6">
-              <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest">{{ admin.createdAt | date: 'MMM d, yyyy' }}</span>
+            <td class="px-4 py-2">
+              <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ admin.createdAt | date: 'MMM d, yy' }}</span>
             </td>
-            <td class="px-8 py-6">
+            <td class="px-4 py-2">
               <div class="flex items-center justify-center">
                   <button (click)="toggleStatus(admin)" 
                           [disabled]="currentUserRole !== 'SuperAdmin'"
-                          class="flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50">
+                          class="flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50">
                       <app-icon [name]="admin.isActive ? 'ToggleRight' : 'ToggleLeft'" 
-                                size="32"
+                                size="24"
                                 [className]="admin.isActive ? 'text-emerald-500' : 'text-gray-300'"></app-icon>
-                      <span class="text-[10px] font-black uppercase tracking-widest w-12 text-left"
+                      <span class="text-[9px] font-black uppercase tracking-widest w-10 text-left"
                             [ngClass]="admin.isActive ? 'text-emerald-600' : 'text-gray-400'">
-                          {{ admin.isActive ? 'Active' : 'Locked' }}
+                          {{ admin.isActive ? 'Live' : 'Locked' }}
                       </span>
                   </button>
               </div>
             </td>
-            <td class="px-8 py-6 text-right" *ngIf="currentUserRole === 'SuperAdmin'">
-                <div class="flex items-center justify-end gap-2">
-                    <button (click)="openEditModal(admin)" title="Edit Staff Member"
-                            class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-primary hover:border-primary transition-all flex items-center justify-center">
-                        <app-icon name="Edit" size="16"></app-icon>
+            <td class="px-4 py-2 text-right" *ngIf="currentUserRole === 'SuperAdmin'">
+                <div class="flex items-center justify-end gap-1.5">
+                    <button (click)="openEditModal(admin)" title="Edit"
+                            class="size-7 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-primary hover:border-primary transition-all flex items-center justify-center">
+                        <app-icon name="Edit" size="14"></app-icon>
                     </button>
-                    <button (click)="resetPassword(admin)" title="Reset Password"
-                            class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-amber-500 hover:border-amber-500 transition-all flex items-center justify-center">
-                        <app-icon name="Lock" size="16"></app-icon>
+                    <button (click)="resetPassword(admin)" title="Reset"
+                            class="size-7 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-amber-500 hover:border-amber-500 transition-all flex items-center justify-center">
+                        <app-icon name="Lock" size="14"></app-icon>
                     </button>
-                    <button (click)="deleteAdmin(admin)" title="Archive User"
-                            class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-red-500 hover:border-red-500 transition-all flex items-center justify-center">
-                        <app-icon name="Trash2" size="16"></app-icon>
+                    <button (click)="deleteAdmin(admin)" title="Delete"
+                            class="size-7 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-red-500 hover:border-red-500 transition-all flex items-center justify-center">
+                        <app-icon name="Trash2" size="14"></app-icon>
                     </button>
                 </div>
             </td>
@@ -125,72 +122,72 @@
   </div>
 
   <!-- Create Admin Modal -->
-  <div *ngIf="isCreateModalOpen" class="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in" (click)="isCreateModalOpen = false">
-    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
-      <div class="p-8">
-          <div class="flex items-center justify-between mb-8">
-              <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                      <app-icon name="UserPlus" size="24"></app-icon>
+  <div *ngIf="isCreateModalOpen" class="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" (click)="isCreateModalOpen = false">
+    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
+      <div class="p-4">
+          <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                  <div class="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <app-icon name="UserPlus" size="20"></app-icon>
                   </div>
                   <div>
-                      <h3 class="text-2xl font-semibold text-primary dark:text-white">Add New Member</h3>
-                      <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mt-1">Hire a new administrative staff</p>
+                      <h3 class="text-lg font-black text-primary dark:text-white uppercase">Add Member</h3>
+                      <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">New Staff Account</p>
                   </div>
               </div>
-              <button (click)="isCreateModalOpen = false" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
-                  <app-icon name="X" size="20"></app-icon>
+              <button (click)="isCreateModalOpen = false" class="size-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+                  <app-icon name="X" size="16"></app-icon>
               </button>
           </div>
 
-          <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div class="space-y-2">
-                      <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Full Identity</label>
+          <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="space-y-3">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                      <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
                       <div class="relative group">
-                          <app-icon name="User" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
-                          <input type="text" formControlName="fullName" placeholder="Reza Rahman" 
-                                 class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                          <app-icon name="User" size="14" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                          <input type="text" formControlName="fullName" placeholder="Full Identity" 
+                                 class="w-full pl-10 pr-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-xs font-bold focus:ring-1 focus:ring-primary outline-none">
                       </div>
                   </div>
-                  <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Username</label>
+                  <div class="space-y-1">
+                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Username</label>
                     <div class="relative group">
-                        <app-icon name="Plus" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
-                        <input type="text" formControlName="userName" placeholder="reza_admin" 
-                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                        <app-icon name="Plus" size="14" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                        <input type="text" formControlName="userName" placeholder="Username" 
+                               class="w-full pl-10 pr-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-xs font-bold focus:ring-1 focus:ring-primary outline-none">
                     </div>
                 </div>
               </div>
 
-              <div class="space-y-2">
-                  <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Email Address (Optional)</label>
+              <div class="space-y-1">
+                  <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
                   <div class="relative group">
-                      <app-icon name="Mail" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                      <app-icon name="Mail" size="14" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
                       <input type="email" formControlName="email" placeholder="reza@example.com" 
-                             class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                             class="w-full pl-10 pr-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-xs font-bold focus:ring-1 focus:ring-primary outline-none">
                   </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Initial Password</label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="space-y-1">
+                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Password</label>
                     <div class="relative group">
-                        <app-icon name="Lock" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                        <app-icon name="Lock" size="14" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
                         <input [type]="isCreatePasswordVisible ? 'text' : 'password'" formControlName="password" placeholder="••••••••" 
-                               class="w-full pl-12 pr-12 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                               class="w-full pl-10 pr-10 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-xs font-bold focus:ring-1 focus:ring-primary outline-none">
                         <button type="button" (click)="isCreatePasswordVisible = !isCreatePasswordVisible" 
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
-                            <app-icon [name]="isCreatePasswordVisible ? 'Eye' : 'EyeOff'" size="16"></app-icon>
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
+                            <app-icon [name]="isCreatePasswordVisible ? 'Eye' : 'EyeOff'" size="14"></app-icon>
                         </button>
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Access Tier</label>
-                    <select formControlName="role" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none appearance-none cursor-pointer">
-                        <option value="Admin">Staff Admin (Restricted)</option>
-                        <option value="SuperAdmin">Super Admin (Full Access)</option>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Access Tier</label>
+                    <select formControlName="role" class="w-full px-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-xs font-bold focus:ring-1 focus:ring-primary outline-none appearance-none cursor-pointer">
+                        <option value="Admin">Staff (Restricted)</option>
+                        <option value="SuperAdmin">Super (Full Access)</option>
                     </select>
                 </div>
               </div>
@@ -205,12 +202,12 @@
                   </p>
               </div>
 
-              <div class="flex gap-4 pt-4">
-                  <button type="button" (click)="isCreateModalOpen = false" class="flex-1 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-all">Cancel</button>
+              <div class="flex gap-2 pt-2">
+                  <button type="button" (click)="isCreateModalOpen = false" class="flex-1 py-1.5 rounded-xl border border-gray-100 dark:border-gray-800 text-[10px] font-black uppercase text-gray-500 hover:bg-gray-50 transition-all">Cancel</button>
                   <button type="submit" [disabled]="createForm.invalid || isSubmitting"
-                          class="flex-[2] py-4 rounded-2xl bg-primary text-white font-semibold text-sm hover:scale-[1.02] active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3">
-                      <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
-                      <span>{{ isSubmitting ? 'Creating User...' : 'Establish Member' }}</span>
+                          class="arza-btn-primary flex-[2] py-1.5">
+                      <app-icon *ngIf="isSubmitting" name="Loader2" size="14" className="animate-spin"></app-icon>
+                      <span class="text-[10px] font-black uppercase tracking-wider">{{ isSubmitting ? 'Wait...' : 'Establish Member' }}</span>
                   </button>
               </div>
           </form>
@@ -219,82 +216,82 @@
   </div>
 
   <!-- Edit Admin Modal -->
-  <div *ngIf="isEditModalOpen" class="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in" (click)="isEditModalOpen = false">
-    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
-      <div class="p-8">
-          <div class="flex items-center justify-between mb-8">
-              <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                      <app-icon name="Edit" size="24"></app-icon>
+  <div *ngIf="isEditModalOpen" class="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" (click)="isEditModalOpen = false">
+    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
+      <div class="p-4">
+          <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                  <div class="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <app-icon name="Edit" size="20"></app-icon>
                   </div>
                   <div>
-                      <h3 class="text-2xl font-semibold text-primary dark:text-white">Update Member</h3>
-                      <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mt-1">Modify staff profile or access level</p>
+                      <h3 class="text-lg font-black text-primary dark:text-white uppercase">Update Member</h3>
+                      <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Modify staff profile</p>
                   </div>
               </div>
-              <button (click)="isEditModalOpen = false" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
-                  <app-icon name="X" size="20"></app-icon>
+              <button (click)="isEditModalOpen = false" class="size-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+                  <app-icon name="X" size="16"></app-icon>
               </button>
           </div>
 
-          <form [formGroup]="editForm" (ngSubmit)="onUpdate()" class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div class="space-y-2">
-                      <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Full Identity</label>
+          <form [formGroup]="editForm" (ngSubmit)="onUpdate()" class="space-y-3">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                      <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
                       <div class="relative group">
-                          <app-icon name="User" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
-                          <input type="text" formControlName="fullName" placeholder="Reza Rahman" 
-                                 class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                          <app-icon name="User" size="14" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                          <input type="text" formControlName="fullName" placeholder="Full Identity" 
+                                 class="w-full pl-10 pr-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-xs font-bold focus:ring-1 focus:ring-primary outline-none">
                       </div>
                   </div>
-                  <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Username</label>
+                  <div class="space-y-1">
+                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Username</label>
                     <div class="relative group">
-                        <app-icon name="Plus" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
-                        <input type="text" formControlName="userName" placeholder="reza_admin" 
-                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                        <app-icon name="Plus" size="14" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                        <input type="text" formControlName="userName" placeholder="Username" 
+                               class="w-full pl-10 pr-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-xs font-bold focus:ring-1 focus:ring-primary outline-none">
                     </div>
                 </div>
               </div>
 
-              <div class="space-y-2">
-                  <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Email Address (Optional)</label>
+              <div class="space-y-1">
+                  <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
                   <div class="relative group">
-                      <app-icon name="Mail" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                      <app-icon name="Mail" size="14" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
                       <input type="email" formControlName="email" placeholder="reza@example.com" 
-                             class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                             class="w-full pl-10 pr-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-xs font-bold focus:ring-1 focus:ring-primary outline-none">
                   </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">New Password (Optional)</label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="space-y-1">
+                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">New Password</label>
                     <div class="relative group">
-                        <app-icon name="Lock" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                        <app-icon name="Lock" size="14" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
                         <input [type]="isEditPasswordVisible ? 'text' : 'password'" formControlName="password" placeholder="••••••••" 
-                               class="w-full pl-12 pr-12 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                               class="w-full pl-10 pr-10 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-xs font-bold focus:ring-1 focus:ring-primary outline-none">
                         <button type="button" (click)="isEditPasswordVisible = !isEditPasswordVisible" 
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
-                            <app-icon [name]="isEditPasswordVisible ? 'Eye' : 'EyeOff'" size="16"></app-icon>
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
+                            <app-icon [name]="isEditPasswordVisible ? 'Eye' : 'EyeOff'" size="14"></app-icon>
                         </button>
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Access Tier</label>
-                    <select formControlName="role" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none appearance-none cursor-pointer">
-                        <option value="Admin">Staff Admin (Restricted)</option>
-                        <option value="SuperAdmin">Super Admin (Full Access)</option>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Access Tier</label>
+                    <select formControlName="role" class="w-full px-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-xs font-bold focus:ring-1 focus:ring-primary outline-none appearance-none cursor-pointer">
+                        <option value="Admin">Staff (Restricted)</option>
+                        <option value="SuperAdmin">Super (Full Access)</option>
                     </select>
                 </div>
               </div>
 
-              <div class="flex gap-4 pt-4">
-                  <button type="button" (click)="isEditModalOpen = false" class="flex-1 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-all">Cancel</button>
+              <div class="flex gap-2 pt-2">
+                  <button type="button" (click)="isEditModalOpen = false" class="flex-1 py-1.5 rounded-xl border border-gray-100 dark:border-gray-800 text-[10px] font-black uppercase text-gray-500 hover:bg-gray-50 transition-all">Cancel</button>
                   <button type="submit" [disabled]="editForm.invalid || isSubmitting"
-                          class="flex-[2] py-4 rounded-2xl bg-primary text-white font-semibold text-sm hover:scale-[1.02] active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3">
-                      <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
-                      <span>{{ isSubmitting ? 'Updating User...' : 'Update Staff Profile' }}</span>
+                          class="arza-btn-primary flex-[2] py-1.5">
+                      <app-icon *ngIf="isSubmitting" name="Loader2" size="14" className="animate-spin"></app-icon>
+                      <span class="text-[10px] font-black uppercase tracking-wider">{{ isSubmitting ? 'Wait...' : 'Update Staff Profile' }}</span>
                   </button>
               </div>
           </form>

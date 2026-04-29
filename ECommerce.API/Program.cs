@@ -82,7 +82,6 @@ try
     {
         OnPrepareResponse = ctx => ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000,immutable")
     });
-    app.ConfigureExternalMedia(builder.Configuration, builder.Environment);
 
     app.UseRouting();
 

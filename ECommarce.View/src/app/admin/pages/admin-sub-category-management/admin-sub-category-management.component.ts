@@ -11,6 +11,7 @@ import { environment } from "../../../../environments/environment";
 import { AuthService } from "../../../core/services/auth.service";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { NotificationService } from "../../../core/services/notification.service";
+import { ImageUrlService } from "../../../core/services/image-url.service";
 
 interface FlatSubCategory extends SubCategory {
   parentName: string;
@@ -33,6 +34,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   private formBuilder = inject(FormBuilder);
   public readonly authService = inject(AuthService);
   private notification = inject(NotificationService);
+  public readonly imageUrlService = inject(ImageUrlService);
   private destroy$ = new Subject<void>();
 
   allSubCategories: FlatSubCategory[] = [];
@@ -258,11 +260,7 @@ export class AdminSubCategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   getImageUrl(imageUrl: string | null | undefined): string {
-    if (!imageUrl) return "";
-    if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://"))
-      return imageUrl;
-    const baseUrl = environment.apiBaseUrl.replace("/api", "");
-    return `${baseUrl}${imageUrl.startsWith("/") ? imageUrl : "/" + imageUrl}`;
+    return this.imageUrlService.getImageUrl(imageUrl);
   }
 
   getPreviewUrl(): string {

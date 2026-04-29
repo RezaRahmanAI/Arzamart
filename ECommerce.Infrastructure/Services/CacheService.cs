@@ -50,7 +50,7 @@ public class CacheService : ICacheService
         // Backfill memory cache
         if (deserialized != null)
         {
-            _memoryCache.Set(key, deserialized, TimeSpan.FromMinutes(1)); // Short backfill TTL
+            _memoryCache.Set(key, deserialized, TimeSpan.FromSeconds(30)); // Short backfill TTL
         }
 
         return deserialized;
@@ -62,13 +62,13 @@ public class CacheService : ICacheService
 
         var options = new DistributedCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1)
+            AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromMinutes(10)
         };
 
         var serialized = JsonSerializer.Serialize(value, _jsonOptions);
         
         await _distributedCache.SetStringAsync(key, serialized, options);
-        _memoryCache.Set(key, value, expiration ?? TimeSpan.FromHours(1));
+        _memoryCache.Set(key, value, expiration ?? TimeSpan.FromMinutes(10));
         
         _cacheKeys.TryAdd(key, 0);
     }

@@ -59,11 +59,11 @@ public class ProductService : IProductService
 
     public async Task<ProductDto?> CreateProductAsync(ProductCreateDto dto)
     {
+        int.TryParse(dto.Category, out int catId);
         var category = await _unitOfWork.Repository<Category>().GetQueryable()
-            .FirstOrDefaultAsync(c => c.Name.Equals(dto.Category, StringComparison.OrdinalIgnoreCase) || c.Id.ToString() == dto.Category);
+            .FirstOrDefaultAsync(c => c.Name.ToLower() == dto.Category.ToLower() || (catId != 0 && c.Id == catId));
         
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
-
 
         var product = new Product
         {
@@ -76,7 +76,7 @@ public class ProductService : IProductService
             ImageUrl = dto.Media?.MainImage?.ImageUrl ?? string.Empty,
             IsNew = dto.NewArrival,
             IsFeatured = dto.IsFeatured,
-            Slug = GenerateSlug(dto.Name),
+            Slug = await GenerateUniqueSlugAsync(dto.Name),
             Sku = $"PRD-{DateTime.UtcNow.Ticks}",
             FabricAndCare = dto.Meta?.FabricAndCare,
             ShippingAndReturns = dto.Meta?.ShippingAndReturns,
@@ -84,14 +84,13 @@ public class ProductService : IProductService
             Tier = dto.Tier,
             Tags = dto.Tags,
             SortOrder = dto.SortOrder,
-            SubCategoryId = dto.SubCategoryId,
-            CollectionId = dto.CollectionId,
+            SubCategoryId = await ValidateSubCategoryId(dto.SubCategoryId, category.Id),
+            CollectionId = await ValidateCollectionId(dto.CollectionId, dto.SubCategoryId),
             ProductType = dto.ProductType
         };
 
         _unitOfWork.Repository<Product>().Add(product);
         
-        // Handle Images & Variants ... (omitted for brevity in instruction but keep logic)
         if (dto.Media?.MainImage != null)
         {
             product.Images.Add(new ProductImage {
@@ -149,12 +148,11 @@ public class ProductService : IProductService
         if (product == null) throw new KeyNotFoundException("Product not found");
 
         var oldSlug = product.Slug;
+        int.TryParse(dto.Category, out int catId);
         var category = await _unitOfWork.Repository<Category>().GetQueryable()
-            .FirstOrDefaultAsync(c => c.Name.Equals(dto.Category, StringComparison.OrdinalIgnoreCase) || c.Id.ToString() == dto.Category);
+            .FirstOrDefaultAsync(c => c.Name.ToLower() == dto.Category.ToLower() || (catId != 0 && c.Id == catId));
         
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
-
-        
 
         product.Name = dto.Name;
         product.Description = dto.Description;
@@ -170,11 +168,11 @@ public class ProductService : IProductService
         product.Tier = dto.Tier;
         product.Tags = dto.Tags;
         product.SortOrder = dto.SortOrder;
-        product.SubCategoryId = dto.SubCategoryId;
-        product.CollectionId = dto.CollectionId;
+        product.SubCategoryId = await ValidateSubCategoryId(dto.SubCategoryId, category.Id);
+        product.CollectionId = await ValidateCollectionId(dto.CollectionId, dto.SubCategoryId);
         product.ProductType = dto.ProductType;
 
-        // Sync images and variants ... (keep existing logic)
+        // Sync images
         foreach (var img in product.Images.ToList()) _unitOfWork.Repository<ProductImage>().Delete(img);
         if (dto.Media?.MainImage != null)
         {
@@ -197,6 +195,7 @@ public class ProductService : IProductService
             });
         }
 
+        // Sync variants
         foreach (var v in product.Variants.ToList()) _unitOfWork.Repository<ProductVariant>().Delete(v);
         foreach (var v in dto.InventoryVariants)
         {
@@ -241,12 +240,50 @@ public class ProductService : IProductService
         await _cache.RemoveAsync("home_page_data"); // Shared landing page data
     }
 
+    private async Task<int?> ValidateSubCategoryId(int? subCatId, int catId)
+    {
+        if (subCatId == null || subCatId <= 0) return null;
+        var exists = await _unitOfWork.Repository<SubCategory>().GetQueryable()
+            .AnyAsync(sc => sc.Id == subCatId && sc.CategoryId == catId);
+        return exists ? subCatId : null;
+    }
+
+    private async Task<int?> ValidateCollectionId(int? collectionId, int? subCatId)
+    {
+        if (collectionId == null || collectionId <= 0) return null;
+        var exists = await _unitOfWork.Repository<Collection>().GetQueryable()
+            .AnyAsync(c => c.Id == collectionId && (subCatId == null || c.SubCategoryId == subCatId));
+        return exists ? collectionId : null;
+    }
+
+    private async Task<string> GenerateUniqueSlugAsync(string name)
+    {
+        var baseSlug = GenerateSlug(name);
+        var slug = baseSlug;
+        int counter = 1;
+
+        while (await _unitOfWork.Repository<Product>().GetQueryable().AnyAsync(p => p.Slug == slug))
+        {
+            var randomSuffix = Guid.NewGuid().ToString().Substring(0, 4);
+            slug = $"{baseSlug}-{randomSuffix}";
+            
+            if (counter++ > 10) break; 
+        }
+
+        return slug;
+    }
+
     private string GenerateSlug(string name)
     {
-        if (string.IsNullOrEmpty(name)) return Guid.NewGuid().ToString();
-        var slug = name.ToLower().Trim()
-            .Replace(" ", "-").Replace("/", "-").Replace("&", "and");
-        return slug.Length > 100 ? slug.Substring(0, 100) : slug;
+        if (string.IsNullOrEmpty(name)) return Guid.NewGuid().ToString().Substring(0, 8);
+        
+        var slug = name.ToLower().Trim();
+        slug = System.Text.RegularExpressions.Regex.Replace(slug, @"[^a-z0-9\s-]", "");
+        slug = System.Text.RegularExpressions.Regex.Replace(slug, @"\s+", "-").Trim('-');
+        
+        if (slug.Length > 150) slug = slug.Substring(0, 150).Trim('-');
+        
+        return string.IsNullOrEmpty(slug) ? Guid.NewGuid().ToString().Substring(0, 8) : slug;
     }
 
     public async Task<List<string>> GetAvailableSizesAsync()

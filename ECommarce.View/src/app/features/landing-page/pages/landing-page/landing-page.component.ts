@@ -252,6 +252,57 @@ export class LandingPageComponent implements OnInit {
         this.citySearch = city;
         this.updateDeliveryMethodByCity(city);
       });
+
+    this.checkoutForm.controls.address.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((address) => {
+        if (!address || address.length < 3) return;
+        this.intelligentLocationMatch(address);
+      });
+  }
+
+  intelligentLocationMatch(address: string): void {
+    const addr = address.toLowerCase();
+    
+    // Check for cities first
+    for (const city of this.cities) {
+      if (addr.includes(city.toLowerCase())) {
+        if (this.checkoutForm.controls.city.value !== city) {
+          this.selectCity(city);
+        }
+        break; 
+      }
+    }
+
+    // Check for areas
+    const currentCity = this.checkoutForm.controls.city.value;
+    if (currentCity) {
+      const cityAreas = BANGLADESH_LOCATIONS[currentCity] || [];
+      for (const area of cityAreas) {
+        if (addr.includes(area.toLowerCase())) {
+          if (this.checkoutForm.controls.area.value !== area) {
+            this.selectArea(area);
+          }
+          break;
+        }
+      }
+    } else {
+      // If no city selected yet, check all areas across all cities
+      for (const city of this.cities) {
+        const cityAreas = BANGLADESH_LOCATIONS[city] || [];
+        for (const area of cityAreas) {
+          if (addr.includes(area.toLowerCase())) {
+            this.selectCity(city);
+            this.selectArea(area);
+            return;
+          }
+        }
+      }
+    }
   }
 
   private updateDeliveryMethodByCity(city: string): void {

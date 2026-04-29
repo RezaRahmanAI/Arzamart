@@ -1,4 +1,4 @@
-<div class="max-w-5xl mx-auto space-y-6">
+<div class="max-w-full mx-auto space-y-3">
   <div
     *ngIf="saveMessage"
     class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 animate-pulse"
@@ -11,34 +11,34 @@
   >
     {{ saveError }}
   </div>
-  <nav class="flex text-sm font-medium text-text-secondary">
+  <nav class="flex text-[10px] font-black uppercase tracking-wider text-text-secondary">
     <a
       class="hover:text-primary transition-colors"
       routerLink="/admin/dashboard"
       >Dashboard</a
     >
-    <span class="mx-2">/</span>
-    <span class="text-primary font-semibold">Settings</span>
+    <span class="mx-2 opacity-30">/</span>
+    <span class="text-primary">Settings</span>
   </nav>
   <div
     class="flex flex-col md:flex-row md:items-start md:justify-between gap-4"
   >
     <div>
-      <h1 class="text-3xl font-bold text-text-main tracking-tight">Settings</h1>
-      <p class="text-text-secondary mt-1">
-        Manage store configuration, contact info, and social links.
+      <h1 class="text-xl font-black text-text-main tracking-tight uppercase">Settings</h1>
+      <p class="text-[10px] font-bold text-text-secondary uppercase tracking-tight opacity-70">
+        Store configuration & contact info
       </p>
     </div>
-    <div class="flex gap-3">
+    <div class="flex gap-2">
       <button
-        class="px-4 py-2 bg-white border border-border rounded-lg text-sm font-medium text-text-main shadow-sm hover:bg-background-light transition-colors"
+        class="px-4 py-1.5 bg-white border border-border rounded-xl text-[10px] font-black uppercase text-text-main shadow-sm hover:bg-background-light transition-colors"
         type="button"
         (click)="resetForm()"
       >
         Cancel
       </button>
       <button
-        class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium shadow-md hover:bg-[#083a4a] transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+        class="arza-btn-primary px-6 py-1.5"
         type="button"
         (click)="saveChanges()"
         [disabled]="isSaving"
@@ -46,28 +46,28 @@
         <app-icon
           *ngIf="isSaving"
           name="Loader2"
-          size="18"
+          size="14"
           className="animate-spin"
         ></app-icon>
         <app-icon
           *ngIf="!isSaving"
           name="Save"
-          size="18"
+          size="14"
         ></app-icon>
-        {{ isSaving ? "Saving..." : "Save Changes" }}
+        <span class="text-[10px] font-black uppercase tracking-wider">{{ isSaving ? "Saving..." : "Save" }}</span>
       </button>
     </div>
   </div>
   <div class="border-b border-border">
-    <nav aria-label="Tabs" class="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto pb-px">
+    <nav aria-label="Tabs" class="-mb-px flex space-x-4 overflow-x-auto pb-px">
       <button
         *ngFor="let tab of tabs"
-        class="whitespace-nowrap py-3 md:py-4 px-1 border-b-2 text-xs md:text-sm"
+        class="whitespace-nowrap py-2 px-1 border-b-2 text-[10px] font-black uppercase tracking-widest"
         type="button"
         [ngClass]="
           activeTab === tab
-            ? 'border-primary text-primary border-b-2 font-semibold'
-            : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300 font-medium'
+            ? 'border-primary text-primary border-b-2'
+            : 'border-transparent text-text-secondary hover:text-primary'
         "
         (click)="setActiveTab(tab)"
       >
@@ -75,33 +75,33 @@
       </button>
     </nav>
   </div>
-  <div class="space-y-8">
-    <form [formGroup]="settingsForm" class="space-y-8">
-      <section *ngIf="activeTab === 'General'" class="flex flex-col gap-8">
+  <div class="space-y-4">
+    <form [formGroup]="settingsForm" class="space-y-4">
+      <section *ngIf="activeTab === 'General'" class="flex flex-col gap-4">
         <!-- Brand Information -->
         <div
-          class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
+          class="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden"
         >
-          <div class="p-6 border-b border-border">
-            <h3 class="text-lg font-bold text-text-main">Brand Information</h3>
-            <p class="text-sm text-text-secondary">
-              Configure how your brand appears to customers.
+          <div class="px-4 py-3 border-b border-border bg-slate-50/50">
+            <h3 class="text-sm font-black text-primary uppercase tracking-wide">Brand Information</h3>
+            <p class="text-[9px] font-bold text-text-secondary uppercase tracking-tighter opacity-70">
+              Visual branding & contact
             </p>
           </div>
-          <div class="p-6 space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-4 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="col-span-1">
-                <label class="block text-sm font-medium text-text-main mb-2"
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   >Store Logo</label
                 >
-                <p class="text-xs text-text-secondary mb-3">
-                  Used on invoices and email headers.
+                <p class="text-[9px] text-text-secondary font-medium">
+                  Invoices & headers
                 </p>
               </div>
               <div class="col-span-2">
-                <div class="flex items-center gap-6">
+                <div class="flex items-center gap-4">
                   <div
-                    class="size-20 rounded-lg bg-background-light border border-border flex items-center justify-center overflow-hidden relative group"
+                    class="size-14 rounded-xl bg-background-light border border-border flex items-center justify-center overflow-hidden relative group shadow-sm"
                     role="button"
                     tabindex="0"
                     (click)="triggerLogoUpload()"
@@ -116,37 +116,32 @@
                     <ng-template #logoPlaceholder>
                       <app-icon
                         name="Image"
-                        size="40"
-                        className="text-text-secondary group-hover:hidden"
+                        size="24"
+                        className="text-text-secondary group-hover:hidden opacity-30"
                       ></app-icon>
                     </ng-template>
                     <div
-                      class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer"
+                      class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center cursor-pointer backdrop-blur-[2px]"
                     >
                       <app-icon
                         name="Edit"
-                        size="20"
+                        size="16"
                         className="text-white"
                       ></app-icon>
                     </div>
                   </div>
                   <div class="flex-1">
                     <div
-                      class="flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:bg-background-light transition-colors cursor-pointer"
+                      class="flex justify-center px-4 pt-3 pb-3 border-2 border-border border-dashed rounded-xl hover:bg-background-light transition-colors cursor-pointer"
                       (click)="triggerLogoUpload()"
                     >
-                      <div class="space-y-1 text-center">
-                        <app-icon
-                          name="Upload"
-                          size="32"
-                          className="text-text-secondary mx-auto mb-2"
-                        ></app-icon>
-                        <div class="flex text-sm text-text-secondary">
+                      <div class="text-center">
+                        <div class="flex text-[10px] text-text-secondary font-black uppercase">
                           <label
-                            class="relative cursor-pointer rounded-md font-medium text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
+                            class="relative cursor-pointer rounded-md font-bold text-primary"
                             for="file-upload"
                           >
-                            <span>Upload a file</span>
+                            <span>Pick Logo</span>
                             <input
                               #fileUpload
                               class="sr-only"
@@ -157,11 +152,7 @@
                               (change)="onLogoSelected($event)"
                             />
                           </label>
-                          <p class="pl-1">or drag and drop</p>
                         </div>
-                        <p class="text-xs text-text-secondary">
-                          PNG, JPG, GIF up to 2MB
-                        </p>
                       </div>
                     </div>
                     <p *ngIf="logoError" class="mt-2 text-xs text-red-600">
@@ -172,20 +163,19 @@
               </div>
             </div>
             <hr class="border-border" />
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="col-span-1">
-                <label class="block text-sm font-medium text-text-main mb-2"
-                  >Size Guide Image</label
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"
+                  >Size Guide</label
                 >
-                <p class="text-xs text-text-secondary mb-3">
-                  This image will be shown to customers when they click "Size
-                  Guide".
+                <p class="text-[9px] text-text-secondary font-medium">
+                  Product page help
                 </p>
               </div>
               <div class="col-span-2">
-                <div class="flex items-center gap-6">
+                <div class="flex items-center gap-4">
                   <div
-                    class="h-32 w-48 rounded-lg bg-background-light border border-border flex items-center justify-center overflow-hidden relative group"
+                    class="h-20 w-32 rounded-xl bg-background-light border border-border flex items-center justify-center overflow-hidden relative group shadow-sm"
                     role="button"
                     tabindex="0"
                     (click)="sizeGuideUpload.click()"
@@ -202,16 +192,16 @@
                     <ng-template #sizeGuidePlaceholder>
                       <app-icon
                         name="Image"
-                        size="40"
-                        className="text-text-secondary group-hover:hidden"
+                        size="24"
+                        className="text-text-secondary group-hover:hidden opacity-30"
                       ></app-icon>
                     </ng-template>
                     <div
-                      class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer"
+                      class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center cursor-pointer backdrop-blur-[2px]"
                     >
                       <app-icon
                         name="Edit"
-                        size="20"
+                        size="16"
                         className="text-white"
                       ></app-icon>
                     </div>
@@ -227,13 +217,13 @@
                     <button
                       type="button"
                       (click)="sizeGuideUpload.click()"
-                      class="px-4 py-2 bg-white border border-border rounded-lg text-sm font-medium text-text-main shadow-sm hover:bg-background-light transition-colors flex items-center gap-2"
+                      class="px-4 py-1.5 bg-white border border-border rounded-xl text-[10px] font-black uppercase text-text-main shadow-sm hover:bg-background-light transition-colors flex items-center gap-2"
                     >
                       <app-icon
                         name="Upload"
-                        size="16"
+                        size="14"
                       ></app-icon>
-                      Upload Size Guide
+                      Upload Guide
                     </button>
                     <p *ngIf="sizeGuideError" class="mt-2 text-xs text-red-600">
                       {{ sizeGuideError }}
@@ -243,114 +233,111 @@
               </div>
             </div>
             <hr class="border-border" />
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="col-span-2 md:col-span-1">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div class="col-span-1">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="website-name"
                   >Website Name</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   id="website-name"
                   type="text"
                   formControlName="websiteName"
                 />
               </div>
-              <div class="col-span-2 md:col-span-1">
+              <div class="col-span-1">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="contact-email"
                   >Contact Email</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   id="contact-email"
                   type="email"
                   formControlName="contactEmail"
                 />
               </div>
-              <div class="col-span-2 md:col-span-1">
+              <div class="col-span-1">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="contact-phone"
                   >Contact Phone</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   id="contact-phone"
                   type="text"
                   formControlName="contactPhone"
                 />
               </div>
-              <div class="col-span-2 md:col-span-1">
+              <div class="col-span-1">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="whatsapp-number"
-                  >WhatsApp Number</label
+                  >WhatsApp</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   id="whatsapp-number"
                   type="text"
                   formControlName="whatsAppNumber"
                 />
               </div>
-              <div class="col-span-2 md:col-span-1">
+              <div class="col-span-1">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="currency"
                   >Currency</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   id="currency"
                   type="text"
                   formControlName="currency"
                 />
               </div>
-              <div class="col-span-2 md:col-span-1">
+              <div class="col-span-1">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="free-shipping-threshold"
-                  >Free Shipping Threshold</label
+                  >Free Ship (৳)</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   id="free-shipping-threshold"
                   type="number"
                   formControlName="freeShippingThreshold"
                   min="0"
                 />
               </div>
-              <div class="col-span-2">
+              <div class="col-span-full">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="address"
                   >Address</label
                 >
                 <textarea
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm resize-none"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none resize-none"
                   id="address"
                   rows="2"
                   formControlName="address"
                 ></textarea>
               </div>
-              <div class="col-span-2">
+              <div class="col-span-full">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="description"
                   >Store Description</label
                 >
                 <textarea
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm resize-none"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none resize-none"
                   id="description"
-                  rows="3"
+                  rows="2"
                   formControlName="description"
                 ></textarea>
-                <p class="mt-2 text-xs text-text-secondary">
-                  Brief description for SEO and footer content.
-                </p>
               </div>
             </div>
           </div>
@@ -358,70 +345,70 @@
 
         <!-- Social Links -->
         <div
-          class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
+          class="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden"
         >
-          <div class="p-6 border-b border-border">
-            <h3 class="text-lg font-bold text-text-main">Social Links</h3>
-            <p class="text-sm text-text-secondary">
-              Connect your social media profiles.
+          <div class="px-4 py-3 border-b border-border bg-slate-50/50">
+            <h3 class="text-sm font-black text-primary uppercase tracking-wide">Social Links</h3>
+            <p class="text-[9px] font-bold text-text-secondary uppercase tracking-tighter opacity-70">
+              Profiles & social proof
             </p>
           </div>
-          <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               <div class="col-span-1">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="facebook-url"
-                  >Facebook / Messenger URL</label
+                  >Facebook</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   id="facebook-url"
                   type="url"
                   formControlName="facebookUrl"
-                  placeholder="https://facebook.com/yourpage"
+                  placeholder="facebook.com/..."
                 />
               </div>
               <div class="col-span-1">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="instagram-url"
-                  >Instagram URL</label
+                  >Instagram</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   id="instagram-url"
                   type="url"
                   formControlName="instagramUrl"
-                  placeholder="https://instagram.com/yourhandle"
+                  placeholder="instagram.com/..."
                 />
               </div>
               <div class="col-span-1">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="twitter-url"
-                  >Twitter (X) URL</label
+                  >Twitter</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   id="twitter-url"
                   type="url"
                   formControlName="twitterUrl"
-                  placeholder="https://twitter.com/yourhandle"
+                  placeholder="twitter.com/..."
                 />
               </div>
               <div class="col-span-1">
                 <label
-                  class="block text-sm font-medium text-text-main mb-1"
+                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   for="youtube-url"
-                  >YouTube URL</label
+                  >YouTube</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   id="youtube-url"
                   type="url"
                   formControlName="youtubeUrl"
-                  placeholder="https://youtube.com/@yourchannel"
+                  placeholder="youtube.com/..."
                 />
               </div>
             </div>
@@ -434,36 +421,36 @@
         <div
           class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
         >
-          <div class="p-6 border-b border-border">
-            <h3 class="text-lg font-bold text-text-main">
+          <div class="px-4 py-3 border-b border-border bg-slate-50/50">
+            <h3 class="text-sm font-black text-primary uppercase tracking-wide">
               Analytics & Retargeting
             </h3>
-            <p class="text-sm text-text-secondary">
-              Configure pixels for tracking and retargeting campaigns.
+            <p class="text-[9px] font-bold text-text-secondary uppercase tracking-tighter opacity-70">
+              Tracking & pixel config
             </p>
           </div>
-          <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div class="col-span-1">
-                <label class="block text-sm font-medium text-text-main mb-1"
+                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   >Facebook Pixel ID</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   type="text"
                   formControlName="facebookPixelId"
                   placeholder="e.g. 1234567890"
                 />
               </div>
               <div class="col-span-1">
-                <label class="block text-sm font-medium text-text-main mb-1"
-                  >Google Tag Manager / Analytics ID</label
+                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
+                  >Google Tag Manager ID</label
                 >
                 <input
-                  class="block w-full rounded-lg border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   type="text"
                   formControlName="googleTagId"
-                  placeholder="e.g. G-XXXXXXXX or GTM-XXXXXX"
+                  placeholder="e.g. G-XXXXXXXX"
                 />
               </div>
             </div>
@@ -474,37 +461,37 @@
       <!-- Payments Section (Keep as is, binding to payment form group) -->
       <section
         *ngIf="activeTab === 'Payments'"
-        class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
+        class="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden"
       >
         <div
-          class="p-6 border-b border-border flex justify-between items-center"
+          class="px-4 py-3 border-b border-border flex justify-between items-center bg-slate-50/50"
         >
           <div>
-            <h3 class="text-lg font-bold text-text-main">Payment Gateways</h3>
-            <p class="text-sm text-text-secondary">
-              Manage how you accept payments.
+            <h3 class="text-sm font-black text-primary uppercase tracking-wide">Payment Gateways</h3>
+            <p class="text-[9px] font-bold text-text-secondary uppercase tracking-tighter opacity-70">
+              Transaction settings
             </p>
           </div>
         </div>
         <div
-          class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6"
+          class="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4"
           formGroupName="payments"
         >
           <!-- Stripe Card -->
           <div
-            class="border border-border rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-primary transition-colors bg-white"
+            class="border border-border rounded-xl p-3 flex flex-col justify-between relative overflow-hidden group hover:border-primary transition-colors bg-white"
           >
-            <div class="flex justify-between items-start mb-4">
-              <div class="flex items-center gap-3">
+            <div class="flex justify-between items-start mb-2">
+              <div class="flex items-center gap-2">
                 <div
-                  class="size-10 bg-[#635BFF] text-white rounded-lg flex items-center justify-center font-bold text-xl"
+                  class="size-8 bg-[#635BFF] text-white rounded-lg flex items-center justify-center font-black text-lg"
                 >
                   S
                 </div>
                 <div>
-                  <h4 class="font-bold text-text-main">Stripe</h4>
-                  <p class="text-xs text-text-secondary">
-                    Credit Card, Apple Pay
+                  <h4 class="font-black text-[10px] text-text-main uppercase tracking-tight">Stripe</h4>
+                  <p class="text-[8px] font-bold text-text-secondary uppercase tracking-tighter">
+                    Cards & Apple Pay
                   </p>
                 </div>
               </div>
@@ -525,16 +512,16 @@
                 ></label>
               </div>
             </div>
-            <div class="space-y-3 mb-4">
+            <div class="space-y-2 mb-2">
               <div>
                 <label
-                  class="text-[10px] uppercase font-bold text-text-secondary tracking-wider"
+                  class="text-[9px] uppercase font-black text-text-secondary tracking-widest"
                   >Publishable Key</label
                 >
                 <div
-                  class="flex items-center bg-background-light rounded border border-border px-2 py-1.5 mt-1"
+                  class="flex items-center bg-background-light rounded-lg border border-border px-2 py-1 mt-0.5"
                 >
-                  <code class="text-xs text-text-main truncate flex-1">{{
+                  <code class="text-[10px] font-mono text-text-main truncate flex-1">{{
                     stripePublishableKey
                   }}</code>
                   <button
@@ -557,18 +544,18 @@
 
           <!-- Paypal Card -->
           <div
-            class="border border-border rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-primary transition-colors bg-white"
+            class="border border-border rounded-xl p-3 flex flex-col justify-between relative overflow-hidden group hover:border-primary transition-colors bg-white"
           >
-            <div class="flex justify-between items-start mb-4">
-              <div class="flex items-center gap-3">
+            <div class="flex justify-between items-start mb-2">
+              <div class="flex items-center gap-2">
                 <div
-                  class="size-10 bg-[#003087] text-white rounded-lg flex items-center justify-center font-bold text-xl italic"
+                  class="size-8 bg-[#003087] text-white rounded-lg flex items-center justify-center font-black text-lg italic"
                 >
                   P
                 </div>
                 <div>
-                  <h4 class="font-bold text-text-main">PayPal</h4>
-                  <p class="text-xs text-text-secondary">Wallet, Pay Later</p>
+                  <h4 class="font-black text-[10px] text-text-main uppercase tracking-tight">PayPal</h4>
+                  <p class="text-[8px] font-bold text-text-secondary uppercase tracking-tighter">Wallet & Credit</p>
                 </div>
               </div>
               <div
@@ -592,27 +579,27 @@
         </div>
       </section>
       <!-- Shipping Section -->
-      <section *ngIf="activeTab === 'Shipping'" class="flex flex-col gap-6">
+      <section *ngIf="activeTab === 'Shipping'" class="flex flex-col gap-4">
         <!-- Delivery Methods Table -->
         <div
-          class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
+          class="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden"
         >
           <div
-            class="p-6 border-b border-border flex justify-between items-center"
+            class="px-4 py-3 border-b border-border flex justify-between items-center bg-slate-50/50"
           >
             <div>
-              <h3 class="text-lg font-bold text-text-main">Delivery Methods</h3>
-              <p class="text-sm text-text-secondary">
-                Add multiple delivery options for customers.
+              <h3 class="text-sm font-black text-primary uppercase tracking-wide">Delivery Methods</h3>
+              <p class="text-[9px] font-bold text-text-secondary uppercase tracking-tighter opacity-70">
+                Manage options
               </p>
             </div>
             <button
-              class="px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              class="arza-btn-primary px-3 py-1.5"
               type="button"
               (click)="startAddDelivery()"
             >
               <app-icon name="Plus" size="14"></app-icon>
-              Add Method
+              <span class="text-[10px]">Add Method</span>
             </button>
           </div>
           <div class="overflow-x-auto">
@@ -620,27 +607,27 @@
               <thead>
                 <tr class="bg-background-light border-b border-border">
                   <th
-                    class="px-6 py-3 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                    class="px-4 py-2 text-[10px] font-black text-text-secondary uppercase tracking-widest"
                   >
                     Method Name
                   </th>
                   <th
-                    class="px-6 py-3 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                    class="px-4 py-2 text-[10px] font-black text-text-secondary uppercase tracking-widest"
                   >
                     Cost
                   </th>
                   <th
-                    class="px-6 py-3 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                    class="px-4 py-2 text-[10px] font-black text-text-secondary uppercase tracking-widest"
                   >
                     Estimated Time
                   </th>
                   <th
-                    class="px-6 py-3 text-xs font-bold text-text-secondary uppercase tracking-wider"
+                    class="px-4 py-2 text-[10px] font-black text-text-secondary uppercase tracking-widest"
                   >
                     Status
                   </th>
                   <th
-                    class="px-6 py-3 text-xs font-bold text-text-secondary uppercase tracking-wider text-right"
+                    class="px-4 py-2 text-[10px] font-black text-text-secondary uppercase tracking-widest text-right"
                   >
                     Actions
                   </th>
@@ -651,30 +638,30 @@
                   *ngFor="let method of deliveryMethods"
                   class="hover:bg-background-light/50 transition-colors"
                 >
-                  <td class="px-6 py-4 text-sm font-medium text-text-main">
+                  <td class="px-4 py-2 text-xs font-bold text-text-main">
                     {{ method.name }}
                   </td>
                   <td
-                    class="px-6 py-4 text-sm text-text-secondary font-semibold"
+                    class="px-4 py-2 text-xs text-text-secondary font-black"
                   >
                     ৳{{ method.cost }}
                   </td>
-                  <td class="px-6 py-4 text-sm text-text-secondary">
+                  <td class="px-4 py-2 text-xs text-text-secondary font-medium">
                     {{ method.estimatedDays || "N/A" }}
                   </td>
-                  <td class="px-6 py-4">
+                  <td class="px-4 py-2">
                     <span
-                      class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-tight"
+                      class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tight"
                       [ngClass]="
                         method.isActive
                           ? 'bg-green-100 text-green-700'
                           : 'bg-gray-100 text-gray-600'
                       "
                     >
-                      {{ method.isActive ? "Active" : "Inactive" }}
+                      {{ method.isActive ? "Active" : "Hidden" }}
                     </span>
                   </td>
-                  <td class="px-6 py-4 text-right">
+                  <td class="px-4 py-2 text-right">
                     <div class="flex justify-end gap-2">
                       <button
                         class="p-1.5 text-text-secondary hover:text-primary transition-colors"
@@ -723,52 +710,52 @@
           [formGroup]="deliveryForm"
         >
           <div
-            class="p-6 border-b border-border flex justify-between items-center bg-background-light/30"
+            class="px-4 py-3 border-b border-border flex justify-between items-center bg-slate-50/50"
           >
-            <h3 class="text-xl font-bold text-text-main">
+            <h3 class="text-sm font-black text-primary uppercase tracking-wide">
               {{
                 editingDeliveryId
-                  ? "Edit Delivery Method"
-                  : "Add Delivery Method"
+                  ? "Edit Delivery"
+                  : "Add Delivery"
               }}
             </h3>
             <button
               class="text-text-secondary hover:text-text-main transition-colors"
               (click)="closeDeliveryForm()"
             >
-              <app-icon name="X" size="20"></app-icon>
+              <app-icon name="X" size="16"></app-icon>
             </button>
           </div>
-          <div class="p-6 space-y-4">
+          <div class="p-4 space-y-3">
             <div>
-              <label class="block text-sm font-medium text-text-main mb-1.5"
+              <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                 >Method Name</label
               >
               <input
-                class="block w-full rounded-xl border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5"
+                class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                 type="text"
                 formControlName="name"
                 placeholder="e.g. Inside Dhaka"
               />
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-sm font-medium text-text-main mb-1.5"
+                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   >Cost (৳)</label
                 >
                 <input
-                  class="block w-full rounded-xl border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   type="number"
                   formControlName="cost"
                   min="0"
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-text-main mb-1.5"
+                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
                   >Est. Days</label
                 >
                 <input
-                  class="block w-full rounded-xl border-border bg-background-light text-text-main shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5"
+                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
                   type="text"
                   formControlName="estimatedDays"
                   placeholder="e.g. 1-2 days"
@@ -790,23 +777,23 @@
             </div>
           </div>
           <div
-            class="p-6 bg-background-light/30 border-t border-border flex justify-end gap-3"
+            class="p-4 bg-background-light/30 border-t border-border flex justify-end gap-2"
           >
             <button
-              class="px-4 py-2 text-sm font-bold text-text-secondary hover:text-text-main transition-colors"
+              class="px-4 py-1.5 text-[10px] font-black uppercase text-text-secondary hover:text-text-main transition-colors"
               type="button"
               (click)="closeDeliveryForm()"
             >
               Cancel
             </button>
             <button
-              class="px-6 py-2 bg-primary text-white rounded-xl text-sm font-bold shadow-lg hover:shadow-primary/20 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+              class="arza-btn-primary px-6 py-1.5"
               type="button"
               (click)="saveDelivery()"
               [disabled]="isSaving"
             >
-              <app-icon *ngIf="isSaving" name="Loader2" size="18" className="animate-spin"></app-icon>
-              {{ isSaving ? "Processing..." : (editingDeliveryId ? "Update Method" : "Save Method") }}
+              <app-icon *ngIf="isSaving" name="Loader2" size="14" className="animate-spin"></app-icon>
+              <span class="text-[10px] font-black uppercase tracking-wider">{{ isSaving ? "Saving..." : "Save Method" }}</span>
             </button>
           </div>
         </div>

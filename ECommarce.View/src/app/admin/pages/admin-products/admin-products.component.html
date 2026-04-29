@@ -1,49 +1,49 @@
-<div class="max-w-[1200px] mx-auto flex flex-col gap-6">
+<div class="max-w-full mx-auto flex flex-col gap-3">
   <!-- Page Heading & Actions -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h2 class="text-3xl font-black text-primary uppercase tracking-tighter mb-1">
-        {{ pageTitle }}
+      <h2 class="text-xl font-black text-primary uppercase tracking-tight">
+        Inventory
       </h2>
-      <p class="text-[10px] font-black uppercase tracking-[0.2em] text-text-sub opacity-50">
-        Inventory management & global pricing
+      <p class="text-[9px] font-black uppercase tracking-widest text-text-sub opacity-50">
+        Management & global pricing
       </p>
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2">
       <button
-        class="arza-btn-secondary h-10 px-4"
+        class="arza-btn-secondary h-8 px-3 text-[10px]"
         type="button"
         (click)="exportProducts()"
       >
-        <app-icon name="FileUp" size="20"></app-icon>
-        Export
+        <app-icon name="FileUp" size="14"></app-icon>
+        <span>Export</span>
       </button>
       <a
-        class="arza-btn-primary h-10 px-4"
+        class="arza-btn-primary h-8 px-3 text-[10px]"
         routerLink="/admin/products/create"
       >
-        <app-icon name="Plus" size="20"></app-icon>
-        Add New Product
+        <app-icon name="Plus" size="14"></app-icon>
+        <span>Add Product</span>
       </a>
     </div>
   </div>
   <!-- Filters & Search -->
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-2">
     <!-- Search -->
     <div class="md:col-span-5">
-      <div class="relative h-11">
+      <div class="relative h-9">
         <div
           class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
         >
           <app-icon
             name="Search"
-            size="20"
+            size="16"
             className="text-slate-400"
           ></app-icon>
         </div>
         <input
-          class="block w-full h-full pl-10 pr-4 rounded-xl border border-border-color bg-white text-sm text-primary placeholder:text-text-sub/40 focus:ring-2 focus:ring-primary/20 transition-all outline-none"
-          placeholder="Search by name, SKU or tag..."
+          class="block w-full h-full pl-9 pr-3 rounded-xl border border-border-color bg-white text-xs font-bold text-primary placeholder:text-text-sub/40 outline-none"
+          placeholder="Search products..."
           type="text"
           [formControl]="searchControl"
         />
@@ -51,18 +51,18 @@
     </div>
     <!-- Category Filter -->
     <div class="md:col-span-3">
-      <div class="relative h-11">
+      <div class="relative h-9">
         <div
           class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
         >
           <app-icon
             name="Filter"
-            size="20"
+            size="16"
             className="text-slate-400"
           ></app-icon>
         </div>
         <select
-          class="block w-full h-full pl-10 pr-10 py-2 text-xs font-bold uppercase tracking-widest border border-border-color rounded-xl focus:ring-2 focus:ring-primary/20 bg-white text-primary appearance-none cursor-pointer outline-none"
+          class="block w-full h-full pl-9 pr-8 text-[10px] font-black uppercase border border-border-color rounded-xl bg-white text-primary appearance-none outline-none cursor-pointer"
           [formControl]="categoryControl"
         >
           <option *ngFor="let category of categories">{{ category }}</option>
@@ -72,7 +72,7 @@
         >
           <app-icon
             name="ChevronDown"
-            size="16"
+            size="12"
             className="text-text-sub/30"
           ></app-icon>
         </div>
@@ -80,18 +80,18 @@
     </div>
     <!-- Status Filter -->
     <div class="md:col-span-4">
-      <div class="relative h-11">
+      <div class="relative h-9">
         <div
           class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
         >
           <app-icon
             name="Filter"
-            size="20"
+            size="16"
             className="text-slate-400"
           ></app-icon>
         </div>
         <select
-          class="block w-full h-full pl-10 pr-10 py-2 text-xs font-bold uppercase tracking-widest border border-border-color rounded-xl focus:ring-2 focus:ring-primary/20 bg-white text-primary appearance-none cursor-pointer outline-none"
+          class="block w-full h-full pl-9 pr-8 text-[10px] font-black uppercase border border-border-color rounded-xl bg-white text-primary appearance-none outline-none cursor-pointer"
           [formControl]="statusControl"
         >
           <option *ngFor="let tab of statusTabs">{{ tab }}</option>
@@ -101,7 +101,7 @@
         >
           <app-icon
             name="ChevronDown"
-            size="16"
+            size="12"
             className="text-text-sub/30"
           ></app-icon>
         </div>
@@ -114,121 +114,116 @@
     <div class="overflow-x-auto min-h-[400px]">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800 text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">
-            <th class="px-6 py-4 w-12">
-              <div class="flex items-center">
-                <input
-                  class="h-4 w-4 text-primary focus:ring-primary border-slate-300 rounded cursor-pointer"
-                  type="checkbox"
-                  [checked]="isAllSelected"
-                  (change)="toggleSelectAll($event)"
-                />
-              </div>
+          <tr class="bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800 text-[9px] uppercase font-black text-slate-400 tracking-widest">
+            <th class="px-3 py-2 w-10 text-center">
+              <input
+                class="size-3.5 text-primary border-slate-300 rounded cursor-pointer"
+                type="checkbox"
+                [checked]="isAllSelected"
+                (change)="toggleSelectAll($event)"
+              />
             </th>
-            <th class="px-6 py-4">Product</th>
-            <th class="px-6 py-4">SKU & Category</th>
-            <th class="px-6 py-4">Pricing</th>
-            <th class="px-6 py-4">Status</th>
-            <th class="px-6 py-4 text-right">Actions</th>
+            <th class="px-3 py-2">Product</th>
+            <th class="px-3 py-2">SKU / Category</th>
+            <th class="px-3 py-2">Pricing</th>
+            <th class="px-3 py-2">Status</th>
+            <th class="px-3 py-2 text-right">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
           <tr 
             *ngFor="let product of products" 
-            class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all group"
+            class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all group border-b border-slate-50 dark:border-slate-800"
             [ngClass]="{ 'opacity-60': isOutOfStock(product) }"
           >
-            <td class="px-6 py-4">
+            <td class="px-3 py-2 text-center">
               <input
-                class="h-4 w-4 text-primary focus:ring-primary border-slate-300 rounded cursor-pointer"
+                class="size-3.5 text-primary border-slate-300 rounded cursor-pointer"
                 type="checkbox"
                 [checked]="isSelected(product.id)"
                 (change)="toggleSelectProduct(product.id, $event)"
               />
             </td>
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex-shrink-0">
+            <td class="px-3 py-2">
+              <div class="flex items-center gap-2">
+                <div class="size-8 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-100 flex-shrink-0">
                   <img 
                     *ngIf="product.imageUrl"
                     [src]="imageUrlService.getImageUrl(product.imageUrl)" 
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    class="w-full h-full object-cover"
                   >
                 </div>
-                <div class="flex flex-col gap-1">
-                  <span class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors line-clamp-1 truncate max-w-[200px]">
+                <div class="flex flex-col min-w-0">
+                  <span class="text-[11px] font-black text-slate-900 dark:text-white truncate max-w-[180px]">
                     {{ product.name }}
                   </span>
-                  <div class="flex gap-2">
-                    <span *ngIf="product.isFeatured" class="text-[8px] font-black bg-amber-400 text-amber-950 px-1.5 py-0.5 rounded uppercase">Offer</span>
-                    <span *ngIf="product.isNew" class="text-[8px] font-black bg-blue-500 text-white px-1.5 py-0.5 rounded uppercase">New</span>
+                  <div class="flex gap-1">
+                    <span *ngIf="product.isFeatured" class="text-[7px] font-black bg-amber-400 text-amber-950 px-1 rounded uppercase">Offer</span>
+                    <span *ngIf="product.isNew" class="text-[7px] font-black bg-blue-500 text-white px-1 rounded uppercase">New</span>
                   </div>
                 </div>
               </div>
             </td>
-            <td class="px-6 py-4">
+            <td class="px-3 py-2">
               <div class="flex flex-col">
-                <span class="text-[10px] font-mono text-slate-400 mb-1">{{ product.sku }}</span>
-                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{{ product.categoryName }}</span>
+                <span class="text-[9px] font-mono text-slate-400">{{ product.sku }}</span>
+                <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">{{ product.categoryName }}</span>
               </div>
             </td>
-            <td class="px-6 py-4">
-              <div class="flex flex-col gap-1">
-                <div class="flex items-center gap-2">
-                  <span class="text-[9px] font-bold text-slate-400 uppercase w-12">Sale:</span>
-                  <app-price-display [amount]="product.price" className="text-sm font-black text-primary dark:text-white" size="sm"></app-price-display>
-                </div>
-                <div class="flex items-center gap-2" *ngIf="product.purchaseRate">
-                  <span class="text-[9px] font-bold text-slate-400 uppercase w-12">Buy:</span>
-                  <app-price-display [amount]="product.purchaseRate" className="text-xs font-bold text-slate-500" size="sm"></app-price-display>
+            <td class="px-3 py-2">
+              <div class="flex flex-col">
+                <app-price-display [amount]="product.price" className="text-xs font-black text-primary" size="sm"></app-price-display>
+                <div class="flex items-center gap-1" *ngIf="product.purchaseRate">
+                  <span class="text-[7px] font-black text-slate-400 uppercase">Buy:</span>
+                  <app-price-display [amount]="product.purchaseRate" className="text-[9px] font-bold text-slate-400" size="sm"></app-price-display>
                 </div>
               </div>
             </td>
-            <td class="px-6 py-4">
-              <span class="px-3 py-1.5 rounded-lg text-[10px] font-black shadow-sm inline-block min-w-[70px] text-center" [ngClass]="statusClasses(product)">
+            <td class="px-3 py-2">
+              <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-tighter" [ngClass]="statusClasses(product)">
                 {{ product.status }}
               </span>
             </td>
-            <td class="px-6 py-4 text-right">
+            <td class="px-3 py-2 text-right">
               <div class="flex items-center justify-end gap-1">
                 <a
-                  class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-transparent hover:border-slate-100 dark:hover:border-slate-600 group/btn"
+                  class="size-7 flex items-center justify-center text-slate-400 hover:text-primary transition-all rounded-lg border border-slate-100"
                   [routerLink]="['/lp', product.slug]"
                   target="_blank"
-                  title="View Standard Landing Page"
+                  title="LP"
                 >
-                  <app-icon name="Rocket" size="18" className="transition-transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5"></app-icon>
+                  <app-icon name="Rocket" size="14"></app-icon>
                 </a>
                 <a
-                  class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-transparent hover:border-slate-100 dark:hover:border-slate-600 group/btn"
+                  class="size-7 flex items-center justify-center text-slate-400 hover:text-primary transition-all rounded-lg border border-slate-100"
                   [routerLink]="['/clp', product.slug]"
                   target="_blank"
-                  title="View Custom Landing Page"
+                  title="View CLP"
                 >
-                  <app-icon name="Monitor" size="18" className="transition-transform group-hover/btn:scale-110"></app-icon>
+                  <app-icon name="Zap" size="14"></app-icon>
                 </a>
                 <a
-                  class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-transparent hover:border-slate-100 dark:hover:border-slate-600 group/btn"
+                  class="size-7 flex items-center justify-center text-slate-400 hover:text-primary transition-all rounded-lg border border-slate-100"
                   [routerLink]="['/admin/products', product.id, 'custom-lp']"
-                  title="Custom LP Settings"
+                  title="Config CLP"
                 >
-                  <app-icon name="Settings" size="18" className="transition-transform group-hover/btn:rotate-90"></app-icon>
+                  <app-icon name="Settings" size="14"></app-icon>
                 </a>
                 <a
-                  class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-primary dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-transparent hover:border-slate-100 dark:hover:border-slate-600"
+                  class="size-7 flex items-center justify-center text-slate-400 hover:text-primary transition-all rounded-lg border border-slate-100"
                   [routerLink]="['/admin/products', product.id, 'edit']"
-                  title="Edit Product"
+                  title="Edit"
                 >
-                  <app-icon name="Edit" size="18"></app-icon>
+                  <app-icon name="Edit" size="14"></app-icon>
                 </a>
                 <button
                   *ngIf="authService.isSuperAdmin()"
-                  class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-red-500 transition-all rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 shadow-sm border border-transparent hover:border-red-100 dark:hover:border-red-900/50 group/del"
+                  class="size-7 flex items-center justify-center text-slate-400 hover:text-red-500 transition-all rounded-lg border border-slate-100"
                   type="button"
                   (click)="deleteProduct(product)"
-                  title="Delete Product"
+                  title="Delete"
                 >
-                  <app-icon name="Trash2" size="18" className="group-hover/del:scale-110"></app-icon>
+                  <app-icon name="Trash2" size="14"></app-icon>
                 </button>
               </div>
             </td>

@@ -210,8 +210,64 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
         }
       });
 
-    // Initial load
-    this.searchControl.setValue("");
+    // Intelligent Address Matching
+    this.orderForm.get("address")?.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((address) => {
+        if (!address || address.length < 3) return;
+        this.intelligentLocationMatch(address);
+      });
+
+    // Initial state: ensure products list is empty
+    this.products.set([]);
+    this.searchControl.setValue("", { emitEvent: false });
+  }
+
+  intelligentLocationMatch(address: string) {
+    const addr = address.toLowerCase();
+    
+    // Check for cities first
+    for (const city of this.cities) {
+      if (addr.includes(city.toLowerCase())) {
+        if (this.orderForm.get("city")?.value !== city) {
+          this.selectCity(city);
+          this.notification.info(`City automatically set to ${city} based on address.`);
+        }
+        break; 
+      }
+    }
+
+    // Check for areas
+    const currentCity = this.orderForm.get("city")?.value;
+    if (currentCity) {
+      const cityAreas = BANGLADESH_LOCATIONS[currentCity] || [];
+      for (const area of cityAreas) {
+        if (addr.includes(area.toLowerCase())) {
+          if (this.orderForm.get("area")?.value !== area) {
+            this.selectArea(area);
+            this.notification.info(`Area automatically set to ${area} based on address.`);
+          }
+          break;
+        }
+      }
+    } else {
+      // If no city selected yet, check all areas across all cities
+      for (const city of this.cities) {
+        const cityAreas = BANGLADESH_LOCATIONS[city] || [];
+        for (const area of cityAreas) {
+          if (addr.includes(area.toLowerCase())) {
+            this.selectCity(city);
+            this.selectArea(area);
+            this.notification.info(`City/Area set to ${city}/${area} based on address.`);
+            return;
+          }
+        }
+      }
+    }
   }
 
   onSearchClick() {
@@ -235,6 +291,9 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
           this.isLoadingProducts = false;
         }
       });
+    } else {
+      this.products.set([]);
+      this.notification.info("Please enter a search term.");
     }
   }
 

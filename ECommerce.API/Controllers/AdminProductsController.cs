@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 using Microsoft.AspNetCore.OutputCaching;
 using ECommerce.Core.Constants;
+using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
 
@@ -48,12 +49,7 @@ public class AdminProductsController : ControllerBase
                 return BadRequest("No files uploaded");
 
             var uploadedUrls = new List<string>();
-            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads");
-            var uploadsFolder = Path.Combine(externalPath, "products");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
+            var uploadsFolder = PathHelper.GetUploadsFolder(_config, _environment, "products");
 
             foreach (var file in files)
             {
@@ -113,7 +109,7 @@ public class AdminProductsController : ControllerBase
 
         if (!string.IsNullOrEmpty(category) && category != "all")
         {
-            var dbCat = await _context.Categories.FirstOrDefaultAsync(c => c.Name.Equals(category, StringComparison.OrdinalIgnoreCase));
+            var dbCat = await _context.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == category.ToLower());
             if (dbCat != null)
             {
                 query = query.Where(p => p.CategoryId == dbCat.Id);
@@ -243,13 +239,9 @@ public class AdminProductsController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ADMIN_ERROR] Error creating product: {ex.Message}");
-            Console.WriteLine($"[ADMIN_ERROR] StackTrace: {ex.StackTrace}");
-            if (ex.InnerException != null)
-            {
-                Console.WriteLine($"[ADMIN_ERROR] InnerException: {ex.InnerException.Message}");
-            }
-            return StatusCode(500, new { message = $"Error creating product: {ex.Message}" });
+            var innerMsg = ex.InnerException != null ? $". Inner: {ex.InnerException.Message}" : "";
+            Console.WriteLine($"[ADMIN_ERROR] Error creating product: {ex.Message}{innerMsg}");
+            return StatusCode(500, new { message = $"Error creating product: {ex.Message}{innerMsg}" });
         }
     }
 
@@ -274,7 +266,9 @@ public class AdminProductsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { message = $"Error updating product: {ex.Message}" });
+            var innerMsg = ex.InnerException != null ? $". Inner: {ex.InnerException.Message}" : "";
+            Console.WriteLine($"[ADMIN_ERROR] Error updating product: {ex.Message}{innerMsg}");
+            return StatusCode(500, new { message = $"Error updating product: {ex.Message}{innerMsg}" });
         }
     }
 
@@ -352,8 +346,8 @@ public class AdminProductsController : ControllerBase
         try
         {
             var fileName = Path.GetFileName(imageUrl);
-            var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads");
-            var filePath = Path.Combine(externalPath, "products", fileName);
+            var uploadsFolder = PathHelper.GetUploadsFolder(_config, _environment, "products");
+            var filePath = Path.Combine(uploadsFolder, fileName);
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
