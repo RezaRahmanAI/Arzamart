@@ -1,44 +1,34 @@
-﻿<div class="max-w-full mx-auto space-y-3">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
   <div
     *ngIf="saveMessage"
-    class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 animate-pulse"
+    class="rounded-sm border border-ds-success/30 bg-ds-success/10 px-ds-6 py-ds-4 text-[10px] font-bold uppercase tracking-[0.2em] text-ds-success animate-pulse"
   >
     {{ saveMessage }}
   </div>
   <div
     *ngIf="saveError"
-    class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800"
+    class="rounded-sm border border-red-500/30 bg-red-500/10 px-ds-6 py-ds-4 text-[10px] font-bold uppercase tracking-[0.2em] text-red-500"
   >
     {{ saveError }}
   </div>
-  <nav class="flex text-[10px] font-black uppercase tracking-wider text-text-secondary">
-    <a
-      class="hover:text-primary transition-colors"
-      routerLink="/admin/dashboard"
-      >Dashboard</a
-    >
-    <span class="mx-2 opacity-30">/</span>
-    <span class="text-primary">Settings</span>
-  </nav>
-  <div
-    class="flex flex-col md:flex-row md:items-start md:justify-between gap-4"
-  >
+
+  <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-ds-6">
     <div>
-      <h1 class="text-xl font-black text-text-main tracking-tight uppercase">Settings</h1>
-      <p class="text-[10px] font-bold text-text-secondary uppercase tracking-tight opacity-70">
-        Store configuration & contact info
+      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">System Parameters</h1>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+        Store Configuration & Global Logistics
       </p>
     </div>
-    <div class="flex gap-2">
+    <div class="flex gap-ds-3">
       <button
-        class="px-4 py-1.5 bg-white border border-border rounded-xl text-[10px] font-black uppercase text-text-main shadow-sm hover:bg-background-light transition-colors"
+        class="btn btn-secondary h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest"
         type="button"
         (click)="resetForm()"
       >
-        Cancel
+        Revert
       </button>
       <button
-        class="arza-btn-primary px-6 py-1.5"
+        class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest"
         type="button"
         (click)="saveChanges()"
         [disabled]="isSaving"
@@ -54,20 +44,21 @@
           name="Save"
           size="14"
         ></app-icon>
-        <span class="text-[10px] font-black uppercase tracking-wider">{{ isSaving ? "Saving..." : "Save" }}</span>
+        <span>{{ isSaving ? "Syncing..." : "Sync Changes" }}</span>
       </button>
     </div>
   </div>
-  <div class="border-b border-border">
-    <nav aria-label="Tabs" class="-mb-px flex space-x-4 overflow-x-auto pb-px">
+
+  <div class="border-b border-ds-border">
+    <nav aria-label="Tabs" class="-mb-px flex space-x-ds-8 overflow-x-auto">
       <button
         *ngFor="let tab of tabs"
-        class="whitespace-nowrap py-2 px-1 border-b-2 text-[10px] font-black uppercase tracking-widest"
+        class="whitespace-nowrap py-ds-4 px-ds-1 border-b-2 text-[10px] font-bold uppercase tracking-[0.3em] transition-colors"
         type="button"
         [ngClass]="
           activeTab === tab
-            ? 'border-primary text-primary border-b-2'
-            : 'border-transparent text-text-secondary hover:text-primary'
+            ? 'border-ds-text text-ds-text'
+            : 'border-transparent text-ds-text-muted hover:text-ds-text'
         "
         (click)="setActiveTab(tab)"
       >
@@ -75,33 +66,28 @@
       </button>
     </nav>
   </div>
-  <div class="space-y-4">
-    <form [formGroup]="settingsForm" class="space-y-4">
-      <section *ngIf="activeTab === 'General'" class="flex flex-col gap-4">
+
+  <div class="space-y-ds-8">
+    <form [formGroup]="settingsForm" class="space-y-ds-8">
+      <section *ngIf="activeTab === 'General'" class="flex flex-col gap-ds-8">
         <!-- Brand Information -->
-        <div
-          class="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden"
-        >
-          <div class="px-4 py-3 border-b border-border bg-slate-50/50">
-            <h3 class="text-sm font-black text-primary uppercase tracking-wide">Brand Information</h3>
-            <p class="text-[9px] font-bold text-text-secondary uppercase tracking-tighter opacity-70">
-              Visual branding & contact
+        <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
+          <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
+            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Visual Architecture</h3>
+            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">
+              Identity Assets & Global Parameters
             </p>
           </div>
-          <div class="p-4 space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="p-ds-8 space-y-ds-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-ds-8">
               <div class="col-span-1">
-                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  >Store Logo</label
-                >
-                <p class="text-[9px] text-text-secondary font-medium">
-                  Invoices & headers
-                </p>
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest mb-1.5">Primary Insignia</label>
+                <p class="text-[8px] text-ds-text-muted font-bold uppercase tracking-wider">Used in headers and generated documents</p>
               </div>
               <div class="col-span-2">
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-ds-6">
                   <div
-                    class="size-14 rounded-xl bg-background-light border border-border flex items-center justify-center overflow-hidden relative group shadow-sm"
+                    class="size-20 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center overflow-hidden relative group"
                     role="button"
                     tabindex="0"
                     (click)="triggerLogoUpload()"
@@ -109,39 +95,30 @@
                     <ng-container *ngIf="logoPreviewUrl; else logoPlaceholder">
                       <img
                         [src]="logoPreviewUrl"
-                        class="w-full h-full object-contain"
-                        alt="Brand Logo"
+                        class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all"
+                        alt="Store Logo"
                       />
                     </ng-container>
                     <ng-template #logoPlaceholder>
                       <app-icon
                         name="Image"
                         size="24"
-                        className="text-text-secondary group-hover:hidden opacity-30"
+                        className="text-ds-text-muted opacity-30"
                       ></app-icon>
                     </ng-template>
-                    <div
-                      class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center cursor-pointer backdrop-blur-[2px]"
-                    >
-                      <app-icon
-                        name="Edit"
-                        size="16"
-                        className="text-white"
-                      ></app-icon>
+                    <div class="absolute inset-0 bg-ds-text/60 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity">
+                      <app-icon name="Edit" size="16" className="text-ds-surface"></app-icon>
                     </div>
                   </div>
                   <div class="flex-1">
                     <div
-                      class="flex justify-center px-4 pt-3 pb-3 border-2 border-border border-dashed rounded-xl hover:bg-background-light transition-colors cursor-pointer"
+                      class="flex justify-center px-ds-6 py-ds-4 border-2 border-ds-border border-dashed rounded-sm hover:border-ds-text hover:bg-ds-bg transition-all cursor-pointer"
                       (click)="triggerLogoUpload()"
                     >
                       <div class="text-center">
-                        <div class="flex text-[10px] text-text-secondary font-black uppercase">
-                          <label
-                            class="relative cursor-pointer rounded-md font-bold text-primary"
-                            for="file-upload"
-                          >
-                            <span>Pick Logo</span>
+                        <div class="flex text-[9px] text-ds-text-muted font-bold uppercase tracking-widest">
+                          <label class="relative cursor-pointer" for="file-upload">
+                            <span>Upload New Insignia</span>
                             <input
                               #fileUpload
                               class="sr-only"
@@ -155,37 +132,29 @@
                         </div>
                       </div>
                     </div>
-                    <p *ngIf="logoError" class="mt-2 text-xs text-red-600">
-                      {{ logoError }}
-                    </p>
+                    <p *ngIf="logoError" class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ logoError }}</p>
                   </div>
                 </div>
               </div>
             </div>
-            <hr class="border-border" />
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <hr class="border-ds-border" />
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-ds-8">
               <div class="col-span-1">
-                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  >Size Guide</label
-                >
-                <p class="text-[9px] text-text-secondary font-medium">
-                  Product page help
-                </p>
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest mb-1.5">Sizing Reference</label>
+                <p class="text-[8px] text-ds-text-muted font-bold uppercase tracking-wider">Product specification guide</p>
               </div>
               <div class="col-span-2">
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-ds-6">
                   <div
-                    class="h-20 w-32 rounded-xl bg-background-light border border-border flex items-center justify-center overflow-hidden relative group shadow-sm"
+                    class="h-24 w-40 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center overflow-hidden relative group"
                     role="button"
                     tabindex="0"
                     (click)="sizeGuideUpload.click()"
                   >
-                    <ng-container
-                      *ngIf="sizeGuidePreviewUrl; else sizeGuidePlaceholder"
-                    >
+                    <ng-container *ngIf="sizeGuidePreviewUrl; else sizeGuidePlaceholder">
                       <img
                         [src]="sizeGuidePreviewUrl"
-                        class="w-full h-full object-contain"
+                        class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all"
                         alt="Size Guide"
                       />
                     </ng-container>
@@ -193,17 +162,11 @@
                       <app-icon
                         name="Image"
                         size="24"
-                        className="text-text-secondary group-hover:hidden opacity-30"
+                        className="text-ds-text-muted opacity-30"
                       ></app-icon>
                     </ng-template>
-                    <div
-                      class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center cursor-pointer backdrop-blur-[2px]"
-                    >
-                      <app-icon
-                        name="Edit"
-                        size="16"
-                        className="text-white"
-                      ></app-icon>
+                    <div class="absolute inset-0 bg-ds-text/60 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity">
+                      <app-icon name="Edit" size="16" className="text-ds-surface"></app-icon>
                     </div>
                   </div>
                   <div class="flex-1">
@@ -217,199 +180,77 @@
                     <button
                       type="button"
                       (click)="sizeGuideUpload.click()"
-                      class="px-4 py-1.5 bg-white border border-border rounded-xl text-[10px] font-black uppercase text-text-main shadow-sm hover:bg-background-light transition-colors flex items-center gap-2"
+                      class="btn btn-secondary !h-10 !px-ds-6 !text-[9px] font-bold uppercase tracking-widest"
                     >
-                      <app-icon
-                        name="Upload"
-                        size="14"
-                      ></app-icon>
-                      Upload Guide
+                      <app-icon name="Upload" size="14"></app-icon>
+                      <span>Replace Guide</span>
                     </button>
-                    <p *ngIf="sizeGuideError" class="mt-2 text-xs text-red-600">
-                      {{ sizeGuideError }}
-                    </p>
+                    <p *ngIf="sizeGuideError" class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ sizeGuideError }}</p>
                   </div>
                 </div>
               </div>
             </div>
-            <hr class="border-border" />
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              <div class="col-span-1">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="website-name"
-                  >Website Name</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  id="website-name"
-                  type="text"
-                  formControlName="websiteName"
-                />
+            <hr class="border-ds-border" />
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-ds-6">
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Store Nomenclature</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" type="text" formControlName="websiteName" />
               </div>
-              <div class="col-span-1">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="contact-email"
-                  >Contact Email</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  id="contact-email"
-                  type="email"
-                  formControlName="contactEmail"
-                />
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Contact Terminal (Email)</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold" type="email" formControlName="contactEmail" />
               </div>
-              <div class="col-span-1">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="contact-phone"
-                  >Contact Phone</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  id="contact-phone"
-                  type="text"
-                  formControlName="contactPhone"
-                />
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Support Line (Phone)</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono" type="text" formControlName="contactPhone" />
               </div>
-              <div class="col-span-1">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="whatsapp-number"
-                  >WhatsApp</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  id="whatsapp-number"
-                  type="text"
-                  formControlName="whatsAppNumber"
-                />
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">WhatsApp Interface</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono" type="text" formControlName="whatsAppNumber" />
               </div>
-              <div class="col-span-1">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="currency"
-                  >Currency</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  id="currency"
-                  type="text"
-                  formControlName="currency"
-                />
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Operational Currency</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" type="text" formControlName="currency" />
               </div>
-              <div class="col-span-1">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="free-shipping-threshold"
-                  >Free Ship (৳)</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  id="free-shipping-threshold"
-                  type="number"
-                  formControlName="freeShippingThreshold"
-                  min="0"
-                />
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Complimentary Ship Threshold (৳)</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono" type="number" formControlName="freeShippingThreshold" min="0" />
               </div>
-              <div class="col-span-full">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="address"
-                  >Address</label
-                >
-                <textarea
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none resize-none"
-                  id="address"
-                  rows="2"
-                  formControlName="address"
-                ></textarea>
+              <div class="col-span-full space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Physical HQ Address</label>
+                <textarea class="form-input !py-ds-3 !px-ds-4 !text-[11px] font-bold uppercase min-h-[80px]" rows="2" formControlName="address"></textarea>
               </div>
-              <div class="col-span-full">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="description"
-                  >Store Description</label
-                >
-                <textarea
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none resize-none"
-                  id="description"
-                  rows="2"
-                  formControlName="description"
-                ></textarea>
+              <div class="col-span-full space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Global SEO Description</label>
+                <textarea class="form-input !py-ds-3 !px-ds-4 !text-[11px] font-bold leading-relaxed min-h-[80px]" rows="2" formControlName="description"></textarea>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Social Links -->
-        <div
-          class="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden"
-        >
-          <div class="px-4 py-3 border-b border-border bg-slate-50/50">
-            <h3 class="text-sm font-black text-primary uppercase tracking-wide">Social Links</h3>
-            <p class="text-[9px] font-bold text-text-secondary uppercase tracking-tighter opacity-70">
-              Profiles & social proof
-            </p>
+        <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
+          <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
+            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Network Nodes</h3>
+            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Social Media Integration</p>
           </div>
-          <div class="p-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-              <div class="col-span-1">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="facebook-url"
-                  >Facebook</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  id="facebook-url"
-                  type="url"
-                  formControlName="facebookUrl"
-                  placeholder="facebook.com/..."
-                />
+          <div class="p-ds-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-ds-6">
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Facebook Archive</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[10px] font-bold" type="url" formControlName="facebookUrl" placeholder="facebook.com/..." />
               </div>
-              <div class="col-span-1">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="instagram-url"
-                  >Instagram</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  id="instagram-url"
-                  type="url"
-                  formControlName="instagramUrl"
-                  placeholder="instagram.com/..."
-                />
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Instagram Feed</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[10px] font-bold" type="url" formControlName="instagramUrl" placeholder="instagram.com/..." />
               </div>
-              <div class="col-span-1">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="twitter-url"
-                  >Twitter</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  id="twitter-url"
-                  type="url"
-                  formControlName="twitterUrl"
-                  placeholder="twitter.com/..."
-                />
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Twitter / X Stream</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[10px] font-bold" type="url" formControlName="twitterUrl" placeholder="twitter.com/..." />
               </div>
-              <div class="col-span-1">
-                <label
-                  class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  for="youtube-url"
-                  >YouTube</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  id="youtube-url"
-                  type="url"
-                  formControlName="youtubeUrl"
-                  placeholder="youtube.com/..."
-                />
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">YouTube Channel</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[10px] font-bold" type="url" formControlName="youtubeUrl" placeholder="youtube.com/..." />
               </div>
             </div>
           </div>
@@ -417,282 +258,130 @@
       </section>
 
       <!-- Analytics & Retargeting -->
-      <section *ngIf="activeTab === 'General'" class="flex flex-col gap-8">
-        <div
-          class="bg-surface rounded-xl border border-border shadow-sm overflow-hidden"
-        >
-          <div class="px-4 py-3 border-b border-border bg-slate-50/50">
-            <h3 class="text-sm font-black text-primary uppercase tracking-wide">
-              Analytics & Retargeting
-            </h3>
-            <p class="text-[9px] font-bold text-text-secondary uppercase tracking-tighter opacity-70">
-              Tracking & pixel config
-            </p>
+      <section *ngIf="activeTab === 'General'" class="flex flex-col gap-ds-8">
+        <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
+          <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
+            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Tracking Logic</h3>
+            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Analytics & Pixel Configuration</p>
           </div>
-          <div class="p-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div class="col-span-1">
-                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  >Facebook Pixel ID</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  type="text"
-                  formControlName="facebookPixelId"
-                  placeholder="e.g. 1234567890"
-                />
+          <div class="p-ds-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-8">
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Facebook Pixel ID</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-mono font-bold" type="text" formControlName="facebookPixelId" placeholder="E.G. 1234567890" />
               </div>
-              <div class="col-span-1">
-                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  >Google Tag Manager ID</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  type="text"
-                  formControlName="googleTagId"
-                  placeholder="e.g. G-XXXXXXXX"
-                />
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Google Tag Manager ID</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-mono font-bold" type="text" formControlName="googleTagId" placeholder="E.G. G-XXXXXXXX" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Payments Section (Keep as is, binding to payment form group) -->
-      <section
-        *ngIf="activeTab === 'Payments'"
-        class="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden"
-      >
-        <div
-          class="px-4 py-3 border-b border-border flex justify-between items-center bg-slate-50/50"
-        >
-          <div>
-            <h3 class="text-sm font-black text-primary uppercase tracking-wide">Payment Gateways</h3>
-            <p class="text-[9px] font-bold text-text-secondary uppercase tracking-tighter opacity-70">
-              Transaction settings
-            </p>
-          </div>
+      <!-- Payments Section -->
+      <section *ngIf="activeTab === 'Payments'" class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
+        <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
+          <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Transaction Protocol</h3>
+          <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Payment Gateway Authorization</p>
         </div>
-        <div
-          class="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4"
-          formGroupName="payments"
-        >
+        <div class="p-ds-8 grid grid-cols-1 lg:grid-cols-2 gap-ds-8" formGroupName="payments">
           <!-- Stripe Card -->
-          <div
-            class="border border-border rounded-xl p-3 flex flex-col justify-between relative overflow-hidden group hover:border-primary transition-colors bg-white"
-          >
-            <div class="flex justify-between items-start mb-2">
-              <div class="flex items-center gap-2">
-                <div
-                  class="size-8 bg-[#635BFF] text-white rounded-lg flex items-center justify-center font-black text-lg"
-                >
-                  S
-                </div>
+          <div class="border border-ds-border rounded-sm p-ds-6 flex flex-col justify-between relative overflow-hidden group hover:border-ds-text transition-colors bg-ds-bg/20">
+            <div class="flex justify-between items-start mb-ds-6">
+              <div class="flex items-center gap-ds-4">
+                <div class="size-10 bg-ds-text text-ds-surface rounded-sm flex items-center justify-center font-bold text-xl">S</div>
                 <div>
-                  <h4 class="font-black text-[10px] text-text-main uppercase tracking-tight">Stripe</h4>
-                  <p class="text-[8px] font-bold text-text-secondary uppercase tracking-tighter">
-                    Cards & Apple Pay
-                  </p>
+                  <h4 class="font-bold text-[11px] text-ds-text uppercase tracking-[0.1em]">Stripe Global</h4>
+                  <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Cards & Apple Pay Interface</p>
                 </div>
               </div>
-              <div
-                class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
-              >
-                <input
-                  class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer checked:right-0 checked:border-primary transition-all duration-300"
-                  id="stripe-toggle"
-                  name="toggle"
-                  type="checkbox"
-                  formControlName="stripeEnabled"
-                />
-                <label
-                  class="toggle-label block overflow-hidden h-5 rounded-full bg-accent cursor-pointer"
-                  for="stripe-toggle"
-                  [ngClass]="stripeEnabled ? '' : 'bg-gray-300'"
-                ></label>
+              <div class="flex items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" formControlName="stripeEnabled" class="sr-only peer">
+                  <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+                </label>
               </div>
             </div>
-            <div class="space-y-2 mb-2">
+            <div class="space-y-ds-4">
               <div>
-                <label
-                  class="text-[9px] uppercase font-black text-text-secondary tracking-widest"
-                  >Publishable Key</label
-                >
-                <div
-                  class="flex items-center bg-background-light rounded-lg border border-border px-2 py-1 mt-0.5"
-                >
-                  <code class="text-[10px] font-mono text-text-main truncate flex-1">{{
-                    stripePublishableKey
-                  }}</code>
-                  <button
-                    class="text-text-secondary hover:text-primary"
-                    type="button"
-                    (click)="copyStripeKey()"
-                  >
-                    <app-icon
-                      name="Copy"
-                      size="16"
-                    ></app-icon>
+                <label class="text-[8px] uppercase font-bold text-ds-text-muted tracking-[0.3em]">Operational Public Key</label>
+                <div class="flex items-center bg-ds-surface rounded-sm border border-ds-border px-ds-3 py-2 mt-1">
+                  <code class="text-[10px] font-mono text-ds-text truncate flex-1 tracking-tight">{{ stripePublishableKey }}</code>
+                  <button class="text-ds-text-muted hover:text-ds-text ml-2" type="button" (click)="copyStripeKey()">
+                    <app-icon name="Copy" size="14"></app-icon>
                   </button>
                 </div>
-                <p *ngIf="copiedKey" class="mt-1 text-xs text-green-600">
-                  Copied
-                </p>
+                <p *ngIf="copiedKey" class="mt-1 text-[8px] font-bold text-ds-success uppercase tracking-widest">Copied to System Clipboard</p>
               </div>
             </div>
           </div>
 
           <!-- Paypal Card -->
-          <div
-            class="border border-border rounded-xl p-3 flex flex-col justify-between relative overflow-hidden group hover:border-primary transition-colors bg-white"
-          >
-            <div class="flex justify-between items-start mb-2">
-              <div class="flex items-center gap-2">
-                <div
-                  class="size-8 bg-[#111111] text-white rounded-lg flex items-center justify-center font-black text-lg italic"
-                >
-                  P
-                </div>
+          <div class="border border-ds-border rounded-sm p-ds-6 flex flex-col justify-between relative overflow-hidden group hover:border-ds-text transition-colors bg-ds-bg/20">
+            <div class="flex justify-between items-start">
+              <div class="flex items-center gap-ds-4">
+                <div class="size-10 bg-ds-text text-ds-surface rounded-sm flex items-center justify-center font-bold text-xl italic">P</div>
                 <div>
-                  <h4 class="font-black text-[10px] text-text-main uppercase tracking-tight">PayPal</h4>
-                  <p class="text-[8px] font-bold text-text-secondary uppercase tracking-tighter">Wallet & Credit</p>
+                  <h4 class="font-bold text-[11px] text-ds-text uppercase tracking-[0.1em]">PayPal Direct</h4>
+                  <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Wallet & Global Credit</p>
                 </div>
               </div>
-              <div
-                class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
-              >
-                <input
-                  class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300"
-                  id="paypal-toggle"
-                  name="toggle"
-                  type="checkbox"
-                  formControlName="paypalEnabled"
-                />
-                <label
-                  class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"
-                  for="paypal-toggle"
-                  [ngClass]="paypalEnabled ? 'bg-accent' : ''"
-                ></label>
+              <div class="flex items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" formControlName="paypalEnabled" class="sr-only peer">
+                  <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+                </label>
               </div>
             </div>
           </div>
         </div>
       </section>
+
       <!-- Shipping Section -->
-      <section *ngIf="activeTab === 'Shipping'" class="flex flex-col gap-4">
+      <section *ngIf="activeTab === 'Shipping'" class="flex flex-col gap-ds-8">
         <!-- Delivery Methods Table -->
-        <div
-          class="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden"
-        >
-          <div
-            class="px-4 py-3 border-b border-border flex justify-between items-center bg-slate-50/50"
-          >
+        <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
+          <div class="px-ds-6 py-ds-4 border-b border-ds-border flex justify-between items-center bg-ds-bg/50">
             <div>
-              <h3 class="text-sm font-black text-primary uppercase tracking-wide">Delivery Methods</h3>
-              <p class="text-[9px] font-bold text-text-secondary uppercase tracking-tighter opacity-70">
-                Manage options
-              </p>
+              <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Logistics Grid</h3>
+              <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Fulfillment & Delivery Methods</p>
             </div>
-            <button
-              class="arza-btn-primary px-3 py-1.5"
-              type="button"
-              (click)="startAddDelivery()"
-            >
+            <button class="btn btn-secondary !h-10 !px-ds-6 !text-[9px] font-bold uppercase tracking-widest" type="button" (click)="startAddDelivery()">
               <app-icon name="Plus" size="14"></app-icon>
-              <span class="text-[10px]">Add Method</span>
+              <span>Initialize Method</span>
             </button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="bg-background-light border-b border-border">
-                  <th
-                    class="px-4 py-2 text-[10px] font-black text-text-secondary uppercase tracking-widest"
-                  >
-                    Method Name
-                  </th>
-                  <th
-                    class="px-4 py-2 text-[10px] font-black text-text-secondary uppercase tracking-widest"
-                  >
-                    Cost
-                  </th>
-                  <th
-                    class="px-4 py-2 text-[10px] font-black text-text-secondary uppercase tracking-widest"
-                  >
-                    Estimated Time
-                  </th>
-                  <th
-                    class="px-4 py-2 text-[10px] font-black text-text-secondary uppercase tracking-widest"
-                  >
-                    Status
-                  </th>
-                  <th
-                    class="px-4 py-2 text-[10px] font-black text-text-secondary uppercase tracking-widest text-right"
-                  >
-                    Actions
-                  </th>
+                <tr class="bg-ds-bg/30 border-b border-ds-border">
+                  <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Nomenclature</th>
+                  <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Tariff</th>
+                  <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Estimated Window</th>
+                  <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Availability</th>
+                  <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-border">
-                <tr
-                  *ngFor="let method of deliveryMethods"
-                  class="hover:bg-background-light/50 transition-colors"
-                >
-                  <td class="px-4 py-2 text-xs font-bold text-text-main">
-                    {{ method.name }}
-                  </td>
-                  <td
-                    class="px-4 py-2 text-xs text-text-secondary font-black"
-                  >
-                    ৳{{ method.cost }}
-                  </td>
-                  <td class="px-4 py-2 text-xs text-text-secondary font-medium">
-                    {{ method.estimatedDays || "N/A" }}
-                  </td>
-                  <td class="px-4 py-2">
-                    <span
-                      class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tight"
-                      [ngClass]="
-                        method.isActive
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-600'
-                      "
-                    >
-                      {{ method.isActive ? "Active" : "Hidden" }}
+              <tbody class="divide-y divide-ds-border/50">
+                <tr *ngFor="let method of deliveryMethods" class="hover:bg-ds-bg transition-colors group">
+                  <td class="px-ds-6 py-ds-4 text-[11px] font-bold text-ds-text uppercase tracking-tight">{{ method.name }}</td>
+                  <td class="px-ds-6 py-ds-4 text-[10px] text-ds-text font-bold font-mono tracking-widest">৳{{ method.cost }}</td>
+                  <td class="px-ds-6 py-ds-4 text-[10px] text-ds-text-muted font-bold uppercase tracking-widest">{{ method.estimatedDays || "N/A" }}</td>
+                  <td class="px-ds-6 py-ds-4">
+                    <span class="px-2 py-0.5 rounded-sm text-[8px] font-bold uppercase tracking-widest border" [ngClass]="method.isActive ? 'bg-ds-success/10 text-ds-success border-ds-success/20' : 'bg-ds-bg text-ds-text-muted border-ds-border'">
+                      {{ method.isActive ? "Operational" : "Offline" }}
                     </span>
                   </td>
-                  <td class="px-4 py-2 text-right">
-                    <div class="flex justify-end gap-2">
-                      <button
-                        class="p-1.5 text-text-secondary hover:text-primary transition-colors"
-                        (click)="editDelivery(method)"
-                      >
-                        <app-icon
-                          name="Edit"
-                          size="16"
-                        ></app-icon>
-                      </button>
-                      <button
-                        *ngIf="authService.isSuperAdmin()"
-                        class="p-1.5 text-text-secondary hover:text-red-600 transition-colors"
-                        (click)="deleteDelivery(method)"
-                      >
-                        <app-icon
-                          name="Trash2"
-                          size="16"
-                        ></app-icon>
-                      </button>
+                  <td class="px-ds-6 py-ds-4 text-right">
+                    <div class="flex justify-end gap-ds-2">
+                      <button class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center" (click)="editDelivery(method)"><app-icon name="Edit" size="14"></app-icon></button>
+                      <button *ngIf="authService.isSuperAdmin()" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center" (click)="deleteDelivery(method)"><app-icon name="Trash2" size="14"></app-icon></button>
                     </div>
                   </td>
                 </tr>
                 <tr *ngIf="deliveryMethods.length === 0">
-                  <td
-                    colspan="5"
-                    class="px-6 py-10 text-center text-sm text-text-secondary italic"
-                  >
-                    No delivery methods defined. Click "Add Method" to create
-                    one.
-                  </td>
+                  <td colspan="5" class="px-ds-6 py-ds-16 text-center text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em] italic">No Logistics parameters defined. Initialize via primary action.</td>
                 </tr>
               </tbody>
             </table>
@@ -701,110 +390,54 @@
       </section>
 
       <!-- Delivery Method Modal -->
-      <div
-        *ngIf="showDeliveryForm"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-      >
-        <div
-          class="bg-surface w-full max-w-md rounded-2xl shadow-2xl border border-border overflow-hidden animate-in fade-in zoom-in duration-200"
-          [formGroup]="deliveryForm"
-        >
-          <div
-            class="px-4 py-3 border-b border-border flex justify-between items-center bg-slate-50/50"
-          >
-            <h3 class="text-sm font-black text-primary uppercase tracking-wide">
-              {{
-                editingDeliveryId
-                  ? "Edit Delivery"
-                  : "Add Delivery"
-              }}
-            </h3>
-            <button
-              class="text-text-secondary hover:text-text-main transition-colors"
-              (click)="closeDeliveryForm()"
-            >
-              <app-icon name="X" size="16"></app-icon>
-            </button>
-          </div>
-          <div class="p-4 space-y-3">
+      <div *ngIf="showDeliveryForm" class="fixed inset-0 z-50 flex items-center justify-center p-ds-4 bg-ds-bg/80 backdrop-blur-md animate-in fade-in duration-300">
+        <div class="bg-ds-surface w-full max-w-lg rounded-sm border border-ds-border overflow-hidden shadow-2xl animate-in zoom-in duration-base" [formGroup]="deliveryForm">
+          <div class="px-ds-8 py-ds-6 border-b border-ds-border bg-ds-text text-ds-surface flex justify-between items-center">
             <div>
-              <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                >Method Name</label
-              >
-              <input
-                class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                type="text"
-                formControlName="name"
-                placeholder="e.g. Inside Dhaka"
-              />
+              <p class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-60 mb-1">Configuration Utility</p>
+              <h3 class="text-ds-lg font-bold uppercase tracking-tight">{{ editingDeliveryId ? "Edit Logistics Parameter" : "Initialize New Parameter" }}</h3>
             </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  >Cost (৳)</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  type="number"
-                  formControlName="cost"
-                  min="0"
-                />
+            <button class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm" (click)="closeDeliveryForm()"><app-icon name="X" size="20"></app-icon></button>
+          </div>
+          <div class="p-ds-8 space-y-ds-6">
+            <div class="space-y-2">
+              <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Method Nomenclature</label>
+              <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" type="text" formControlName="name" placeholder="E.G. DOMESTIC EXPRESS" />
+            </div>
+            <div class="grid grid-cols-2 gap-ds-6">
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Operational Cost (৳)</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono" type="number" formControlName="cost" min="0" />
               </div>
-              <div>
-                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1"
-                  >Est. Days</label
-                >
-                <input
-                  class="block w-full rounded-xl border-border bg-background-light text-xs font-bold text-text-main py-1.5 focus:ring-1 focus:ring-primary outline-none"
-                  type="text"
-                  formControlName="estimatedDays"
-                  placeholder="e.g. 1-2 days"
-                />
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Time Horizon</label>
+                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" type="text" formControlName="estimatedDays" placeholder="E.G. 24-48 HOURS" />
               </div>
             </div>
-            <div class="flex items-center gap-2 pt-2">
-              <input
-                type="checkbox"
-                id="method-active"
-                formControlName="isActive"
-                class="rounded border-border text-primary focus:ring-primary"
-              />
-              <label
-                for="method-active"
-                class="text-sm font-medium text-text-main"
-                >Set as active</label
-              >
+            <div class="flex items-center gap-ds-3 pt-ds-2">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="isActive" class="sr-only peer">
+                <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+              </label>
+              <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">Mark as Operational</span>
             </div>
           </div>
-          <div
-            class="p-4 bg-background-light/30 border-t border-border flex justify-end gap-2"
-          >
-            <button
-              class="px-4 py-1.5 text-[10px] font-black uppercase text-text-secondary hover:text-text-main transition-colors"
-              type="button"
-              (click)="closeDeliveryForm()"
-            >
-              Cancel
-            </button>
-            <button
-              class="arza-btn-primary px-6 py-1.5"
-              type="button"
-              (click)="saveDelivery()"
-              [disabled]="isSaving"
-            >
+          <div class="p-ds-8 bg-ds-bg/30 border-t border-ds-border flex justify-end gap-ds-4">
+            <button class="btn btn-secondary !h-11 !px-ds-8 !text-[10px] font-bold uppercase tracking-widest" type="button" (click)="closeDeliveryForm()">Abort</button>
+            <button class="btn btn-primary !h-11 !px-ds-10 !text-[10px] font-bold uppercase tracking-widest" type="button" (click)="saveDelivery()" [disabled]="isSaving">
               <app-icon *ngIf="isSaving" name="Loader2" size="14" className="animate-spin"></app-icon>
-              <span class="text-[10px] font-black uppercase tracking-wider">{{ isSaving ? "Saving..." : "Save Method" }}</span>
+              <span>{{ isSaving ? "Syncing..." : "Sync Parameter" }}</span>
             </button>
           </div>
         </div>
       </div>
     </form>
   </div>
-  <div class="mt-12 mb-6 text-center text-xs text-text-secondary">
+  
+  <div class="mt-ds-24 mb-ds-12 text-center text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">
     <p>
       © {{ Math.max(2026, date.getFullYear()) }}
-      {{ settingsForm.controls.websiteName.value || "Admin Console" }}. All
-      rights reserved.
+      {{ settingsForm.controls.websiteName.value || "ARZAMART ARCHIVE" }}. ALL RIGHTS RESERVED.
     </p>
   </div>
 </div>

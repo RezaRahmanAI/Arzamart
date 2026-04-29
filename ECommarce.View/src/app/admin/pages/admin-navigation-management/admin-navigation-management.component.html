@@ -1,32 +1,27 @@
-<div class="p-3">
-  <div class="flex justify-between items-center mb-4">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-xl font-black text-primary uppercase tracking-tight">Navigation</h1>
-      <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest opacity-70">
-        Menu structure management
+      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Navigation Architecture</h1>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+        Site Structure & Menu Hierarchy Governance
       </p>
     </div>
     <button
       (click)="openAddModal()"
-      class="flex items-center gap-2 arza-btn-primary h-8 px-3 rounded-lg text-xs"
+      class="btn btn-primary h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest"
     >
       <app-icon name="Plus" size="14"></app-icon>
-      Add Menu
+      <span>Initialize Menu</span>
     </button>
   </div>
 
-  <div
-    class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
-  >
-    <div
-      class="bg-gray-50 px-4 py-2 border-b border-gray-100 flex items-center justify-between"
-    >
-      <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest"
-        >Hierarchy</span
-      >
+  <div class="bg-ds-surface rounded-sm border border-ds-border overflow-hidden shadow-sm">
+    <div class="px-ds-6 py-ds-3 border-b border-ds-border bg-ds-bg/50">
+      <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Operational Hierarchy</span>
     </div>
 
-    <div class="p-3">
+    <div class="p-ds-6">
       <ng-container
         *ngTemplateOutlet="menuTree; context: { $implicit: menus, depth: 0 }"
       ></ng-container>
@@ -34,46 +29,44 @@
 
     <!-- Recursive Template -->
     <ng-template #menuTree let-items let-depth="depth">
-      <div class="flex flex-col gap-2" [style.padding-left.px]="depth * 20">
-        <div *ngFor="let item of items" class="group">
+      <div class="flex flex-col gap-ds-3" [style.padding-left.px]="depth * 24">
+        <div *ngFor="let item of items" class="group/node">
           <div
-            class="flex items-center justify-between p-2 rounded-xl border border-gray-50 hover:border-primary/30 hover:bg-primary/[0.02] transition-all group"
+            class="flex items-center justify-between p-ds-4 rounded-sm border border-ds-border bg-ds-bg/20 hover:border-ds-text hover:bg-ds-surface transition-all group"
           >
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-ds-4">
               <app-icon
                 name="GripVertical"
-                size="14"
-                className="text-gray-200 drag-handle cursor-move group-hover:text-primary/40"
+                size="16"
+                className="text-ds-text-muted/20 drag-handle cursor-move group-hover:text-ds-text transition-colors"
               ></app-icon>
               <div class="flex flex-col">
-                <span class="font-black text-xs text-primary">{{
-                  item.name
-                }}</span>
-                <span class="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">{{ item.link }}</span>
+                <span class="text-[11px] font-bold text-ds-text uppercase tracking-tight">{{ item.name }}</span>
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em] mt-0.5 font-mono">{{ item.link }}</span>
               </div>
             </div>
             <div
-              class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+              class="flex items-center gap-ds-2 opacity-0 group-hover:opacity-100 transition-opacity"
             >
               <button
                 (click)="openAddModal(item.id)"
-                class="size-7 flex items-center justify-center hover:bg-primary/10 rounded-lg text-primary transition-colors"
-                title="Add Sub-menu"
+                class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors"
+                title="Append Sub-menu"
               >
                 <app-icon name="Plus" size="14"></app-icon>
               </button>
               <button
                 (click)="openEditModal(item)"
-                class="size-7 flex items-center justify-center hover:bg-gray-100 rounded-lg text-gray-400 transition-colors"
-                title="Edit"
+                class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors"
+                title="Edit Configuration"
               >
-                <app-icon name="Edit" size="14"></app-icon>
+                <app-icon name="Edit3" size="14"></app-icon>
               </button>
               <button
                 *ngIf="authService.isSuperAdmin()"
                 (click)="deleteMenu(item.id)"
-                class="size-7 flex items-center justify-center hover:bg-red-50 rounded-lg text-red-400 transition-colors"
-                title="Delete"
+                class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors"
+                title="Terminate Node"
               >
                 <app-icon name="Trash2" size="14"></app-icon>
               </button>
@@ -81,7 +74,7 @@
           </div>
           <div
             *ngIf="item.childMenus && item.childMenus.length > 0"
-            class="mt-2 ml-4 border-l-2 border-gray-50 pl-4 py-1"
+            class="mt-ds-3 ml-ds-4 border-l border-ds-border/50 pl-ds-6 py-1"
           >
             <ng-container
               *ngTemplateOutlet="
@@ -95,16 +88,19 @@
     </ng-template>
 
     <!-- Empty State -->
-    <div *ngIf="menus.length === 0" class="p-12 text-center">
+    <div *ngIf="menus.length === 0" class="py-ds-24 text-center">
       <app-icon
-        name="ChevronRight"
-        size="48"
-        className="text-gray-200 mb-4 mx-auto"
+        name="Map"
+        size="64"
+        className="text-ds-text-muted opacity-10 mb-ds-6 mx-auto"
       ></app-icon>
-      <h3 class="text-lg font-medium text-gray-600">No menu items found</h3>
-      <p class="text-gray-500 mb-6">
-        Start building your site navigation structure.
+      <h3 class="text-[12px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mb-2">Structure Undefined</h3>
+      <p class="text-[10px] font-bold text-ds-text-muted/60 uppercase tracking-widest italic mb-ds-8">
+        No navigational nodes detected in current schema.
       </p>
+      <button (click)="openAddModal()" class="btn btn-secondary !h-10 !px-ds-8 !text-[10px] uppercase tracking-widest">
+        Generate Initial Node
+      </button>
     </div>
   </div>
 </div>
@@ -112,100 +108,99 @@
 <!-- Modal -->
 <div
   *ngIf="isModalOpen"
-  class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+  class="fixed inset-0 bg-ds-text/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
+  (click)="closeModal()"
 >
   <div
-    class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden"
+    class="bg-ds-surface rounded-sm border border-ds-border w-full max-w-md shadow-2xl overflow-hidden"
+    (click)="$event.stopPropagation()"
   >
     <div
-      class="px-4 py-3 border-b border-gray-100 flex justify-between items-center bg-gray-50"
+      class="px-ds-8 py-ds-4 border-b border-ds-border flex justify-between items-center bg-ds-bg/50"
     >
-      <h2 class="text-sm font-black text-primary uppercase tracking-tight">
-        {{ isEditing ? "Edit Menu" : "Add Menu" }}
-      </h2>
+      <div>
+        <h2 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">
+          {{ isEditing ? "Modify Configuration" : "Initialize Node" }}
+        </h2>
+        <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Navigation Logic Terminal</p>
+      </div>
       <button
         (click)="closeModal()"
-        class="size-7 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-all"
+        class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm text-ds-text-muted hover:text-ds-text"
       >
-        <app-icon
-          name="X"
-          size="14"
-          className="text-gray-400"
-        ></app-icon>
+        <app-icon name="X" size="18"></app-icon>
       </button>
     </div>
 
-    <form [formGroup]="menuForm" (ngSubmit)="onSubmit()" class="p-4">
-      <div class="space-y-4">
-        <div>
-          <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Display Name</label>
+    <form [formGroup]="menuForm" (ngSubmit)="onSubmit()" class="p-ds-8 flex flex-col gap-ds-6">
+      <div class="space-y-ds-4">
+        <div class="space-y-2">
+          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-1.5">Node Nomenclature</label>
           <input
             type="text"
             formControlName="name"
-            class="w-full h-9 px-3 rounded-xl border border-gray-100 bg-gray-50/50 text-xs font-bold text-primary focus:ring-1 focus:ring-primary outline-none"
-            placeholder="e.g. New Arrivals"
+            class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase"
+            placeholder="E.G. AUTUMN ARCHIVE"
           />
         </div>
 
-        <div>
-          <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Link Target</label>
+        <div class="space-y-2">
+          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-1.5">Routing Destination</label>
           <input
             type="text"
             formControlName="link"
-            class="w-full h-9 px-3 rounded-xl border border-gray-100 bg-gray-50/50 text-xs font-bold text-primary focus:ring-1 focus:ring-primary outline-none"
-            placeholder="e.g. /category/new-arrivals"
+            class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono"
+            placeholder="E.G. /COLLECTIONS/AUTUMN"
           />
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Parent</label>
+        <div class="grid grid-cols-2 gap-ds-4">
+          <div class="space-y-2">
+            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-1.5">Parent Affinity</label>
             <select
               formControlName="parentMenuId"
-              class="w-full h-9 px-3 rounded-xl border border-gray-100 bg-gray-50/50 text-xs font-bold text-primary focus:ring-1 focus:ring-primary outline-none"
+              class="form-input !h-11 !px-ds-4 !text-[10px] font-bold uppercase appearance-none cursor-pointer"
             >
-              <option [ngValue]="null">None (Root)</option>
+              <option [ngValue]="null">Standalone (Root)</option>
               <option *ngFor="let m of getMenuItems()" [ngValue]="m.id">
                 {{ m.name }}
               </option>
             </select>
           </div>
-          <div>
-            <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Order</label>
+          <div class="space-y-2">
+            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-1.5">Sort Sequence</label>
             <input
               type="number"
               formControlName="displayOrder"
-              class="w-full h-9 px-3 rounded-xl border border-gray-100 bg-gray-50/50 text-xs font-bold text-primary focus:ring-1 focus:ring-primary outline-none"
+              class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono"
             />
           </div>
         </div>
 
-        <div class="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="menuIsActive"
-            formControlName="isActive"
-            class="size-4 rounded border-gray-300 text-primary focus:ring-primary"
-          />
-          <label for="menuIsActive" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Active</label>
+        <div class="flex items-center gap-ds-3 pt-ds-2">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" formControlName="isActive" class="sr-only peer">
+            <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+          </label>
+          <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">Mark as Operational</span>
         </div>
       </div>
 
-      <div class="flex gap-2 mt-6">
+      <div class="flex gap-ds-4 mt-ds-4">
         <button
           type="button"
           (click)="closeModal()"
-          class="flex-1 h-9 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-gray-50 transition-all"
+          class="btn btn-secondary flex-1 !h-12 !text-[11px] font-bold uppercase tracking-[0.2em]"
         >
-          Cancel
+          Abort
         </button>
         <button
           type="submit"
           [disabled]="isSubmitting"
-          class="flex-1 h-9 rounded-xl bg-primary text-white text-[10px] font-black uppercase tracking-widest hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+          class="btn btn-primary flex-[2] !h-12 !text-[11px] font-bold uppercase tracking-[0.2em] !bg-ds-text !text-ds-surface flex items-center justify-center gap-ds-2"
         >
-          <app-icon *ngIf="isSubmitting" name="Loader2" size="14" className="animate-spin"></app-icon>
-          {{ isSubmitting ? "Saving" : (isEditing ? "Save" : "Create") }}
+          <app-icon *ngIf="isSubmitting" name="Loader2" size="16" className="animate-spin"></app-icon>
+          <span>{{ isSubmitting ? "Syncing" : (isEditing ? "Establish Change" : "Initialize Node") }}</span>
         </button>
       </div>
     </form>

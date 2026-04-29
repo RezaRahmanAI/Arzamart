@@ -1,32 +1,28 @@
-<div class="flex-1 overflow-y-auto p-3 space-y-4 scroll-smooth">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
   <!-- Section Header -->
   <div>
-    <h2 class="text-primary dark:text-white text-xl font-black uppercase tracking-tight">
-      Analytics
-    </h2>
-    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest opacity-70">
-      Performance metrics and insights.
+    <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Operational Intelligence</h1>
+    <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+      System Analytics & Performance Matrices
     </p>
   </div>
 
   <!-- Main Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-ds-8">
     
     <!-- Sales Chart Section -->
-    <div class="col-span-1 lg:col-span-2 bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
-      <div class="flex items-center justify-between mb-4">
+    <div class="col-span-1 lg:col-span-2 bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
+      <div class="px-ds-6 py-ds-4 border-b border-ds-border flex items-center justify-between bg-ds-bg/50">
         <div>
-           <h3 class="text-xs font-black text-primary dark:text-white uppercase tracking-tight">Revenue Overview</h3>
-           <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Total sales</p>
+           <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Revenue Velocity</h3>
+           <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Global Transactional Overview</p>
         </div>
-        <div class="flex bg-gray-50 dark:bg-gray-800 rounded-xl p-1">
+        <div class="flex gap-1 border border-ds-border p-1 bg-ds-surface rounded-sm">
           <button 
             *ngFor="let p of periods"
             (click)="onPeriodChange(p)"
-            [class.bg-white]="salesPeriod === p"
-            [class.shadow-sm]="salesPeriod === p"
-            class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all"
-            [ngClass]="salesPeriod === p ? 'text-primary dark:text-white' : 'text-gray-400 hover:text-gray-700'"
+            class="px-ds-4 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-widest transition-all"
+            [ngClass]="salesPeriod === p ? 'bg-ds-text text-ds-surface shadow-sm' : 'text-ds-text-muted hover:text-ds-text hover:bg-ds-bg'"
           >
             {{ p }}
           </button>
@@ -34,103 +30,113 @@
       </div>
       
       <!-- CSS Bar Chart -->
-      <div class="h-64 flex items-end justify-between gap-2 mt-4">
-        <div *ngIf="salesData.length === 0" class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-          No sales data for this period.
-        </div>
-        <div 
-          *ngFor="let item of salesData" 
-          class="flex-1 flex flex-col items-center gap-2 group relative"
-        >
-          <!-- Tooltip -->
-          <div class="absolute bottom-full mb-2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
-            {{ item.date | date:'mediumDate' }}: <app-price-display [amount]="item.amount"></app-price-display>
+      <div class="p-ds-8">
+        <div class="h-72 flex items-end justify-between gap-ds-2 bg-ds-bg/30 p-ds-6 rounded-sm border border-ds-border/50 relative">
+          <div *ngIf="salesData.length === 0" class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-ds-text-muted uppercase tracking-widest italic">
+            Zero telemetry captured for this horizon.
           </div>
-          
           <div 
-            class="w-full bg-primary/80 hover:bg-primary rounded-t-sm transition-all"
-            [style.height]="getBarHeight(item.amount)"
-          ></div>
-          <span class="text-[10px] text-gray-400 hidden sm:block rotate-45 sm:rotate-0 mt-1 origin-left">{{ item.date | date:'MM/dd' }}</span>
+            *ngFor="let item of salesData" 
+            class="flex-1 flex flex-col items-center gap-ds-3 group relative h-full justify-end"
+          >
+            <!-- Tooltip -->
+            <div class="absolute bottom-full mb-ds-3 bg-ds-text text-ds-surface text-[8px] font-bold px-ds-3 py-1.5 rounded-sm opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0 whitespace-nowrap z-10 pointer-events-none uppercase tracking-widest">
+              {{ item.date | date:'MMM d' }}: ৳{{ item.amount }}
+            </div>
+            
+            <div 
+              class="w-full bg-ds-text/20 group-hover:bg-ds-text rounded-t-sm transition-all duration-500"
+              [style.height]="getBarHeight(item.amount)"
+            ></div>
+            <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest hidden sm:block">{{ item.date | date:'MM/dd' }}</span>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Top Products -->
-    <div class="bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
-      <h3 class="text-xs font-black text-primary dark:text-white mb-4 uppercase tracking-tight">Top Products</h3>
-      <div class="space-y-2">
-        <div *ngFor="let product of topProducts; let i = index" class="flex items-center gap-3">
-           <span class="text-xs font-black text-slate-300 w-4">{{ i + 1 }}</span>
+    <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden flex flex-col">
+      <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
+        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Inventory Velocity</h3>
+        <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Highest Conversion SKU</p>
+      </div>
+      <div class="p-ds-6 space-y-ds-4 flex-1">
+        <div *ngFor="let product of topProducts; let i = index" class="flex items-center gap-ds-4 group">
+           <span class="text-[10px] font-bold text-ds-text-muted/30 w-4 font-mono">0{{ i + 1 }}</span>
            <div 
-             class="size-8 rounded-lg bg-gray-50 bg-cover bg-center border border-gray-100"
+             class="size-12 rounded-sm bg-ds-bg bg-cover bg-center border border-ds-border grayscale group-hover:grayscale-0 transition-all duration-500"
              [style.background-image]="'url(' + imageUrlService.getImageUrl(product.imageUrl) + ')'"
            ></div>
            <div class="flex-1 min-w-0">
-             <h4 class="text-[10px] font-black text-primary dark:text-white truncate" [title]="product.name">{{ product.name }}</h4>
-             <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">{{ product.soldCount }} sold</p>
+             <h4 class="text-[10px] font-bold text-ds-text uppercase tracking-tight truncate" [title]="product.name">{{ product.name }}</h4>
+             <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-0.5">{{ product.soldCount }} units moved</p>
            </div>
            <div class="text-right">
-             <app-price-display [amount]="product.price" class="font-black text-[10px]"></app-price-display>
+             <span class="text-[10px] font-bold text-ds-text font-mono tracking-tighter">৳{{ product.price }}</span>
            </div>
         </div>
-         <div *ngIf="topProducts.length === 0" class="text-center text-gray-500 py-8">
-          No trending products yet.
+        <div *ngIf="topProducts.length === 0" class="flex flex-col items-center justify-center py-ds-12 text-center">
+          <app-icon name="BarChart3" size="32" className="text-ds-text-muted opacity-10 mb-ds-3"></app-icon>
+          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest italic">No conversion data recorded.</p>
         </div>
       </div>
     </div>
 
     <!-- Order Status Distribution -->
-    <div class="bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
-      <h3 class="text-xs font-black text-primary dark:text-white mb-4 uppercase tracking-tight">Order Status</h3>
-      <div class="space-y-2">
+    <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden flex flex-col">
+      <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
+        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Workflow Allocation</h3>
+        <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Lifecycle State Distribution</p>
+      </div>
+      <div class="p-ds-6 space-y-ds-6 flex-1">
         <div *ngFor="let item of statusDistribution">
-           <div class="flex justify-between text-[10px] font-black uppercase tracking-widest mb-1">
-             <span class="text-gray-500">{{ item.status }}</span>
-             <span class="text-primary dark:text-white">{{ item.count }}</span>
+           <div class="flex justify-between text-[9px] font-bold uppercase tracking-[0.2em] mb-2">
+             <span class="text-ds-text-muted">{{ item.status }}</span>
+             <span class="text-ds-text">{{ item.count }} Units</span>
            </div>
-           <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
+           <div class="w-full bg-ds-bg rounded-sm h-1.5 overflow-hidden">
              <div 
-               class="h-full rounded-full"
+               class="h-full rounded-sm transition-all duration-1000"
                [ngClass]="{
-                 'bg-yellow-500': item.status === 'Processing',
-                 'bg-blue-500': item.status === 'Shipped',
-                 'bg-green-500': item.status === 'Delivered',
-                 'bg-red-500': item.status === 'Cancelled' || item.status === 'Refund',
-                 'bg-gray-400': !['Processing','Shipped','Delivered','Cancelled','Refund'].includes(item.status)
+                 'bg-ds-text': item.status === 'Processing',
+                 'bg-ds-text/60': item.status === 'Shipped',
+                 'bg-ds-success': item.status === 'Delivered',
+                 'bg-red-500/60': item.status === 'Cancelled' || item.status === 'Refund',
+                 'bg-ds-text/30': !['Processing','Shipped','Delivered','Cancelled','Refund'].includes(item.status)
                }"
                style="width: 100%" 
              ></div>
-             <!-- Note: A real percentage logic would be better here but for plain counts this is a visual block -->
            </div>
         </div>
-         <div *ngIf="statusDistribution.length === 0" class="text-center text-gray-500 py-8">
-          No orders data.
+        <div *ngIf="statusDistribution.length === 0" class="flex flex-col items-center justify-center py-ds-12 text-center">
+          <app-icon name="PieChart" size="32" className="text-ds-text-muted opacity-10 mb-ds-3"></app-icon>
+          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest italic">No workflow telemetry captured.</p>
         </div>
       </div>
     </div>
 
     <!-- Customer Growth -->
-    <div class="col-span-1 lg:col-span-2 bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
-      <h3 class="text-xs font-black text-primary dark:text-white mb-3 uppercase tracking-tight">Customer Growth</h3>
-      <div class="flex items-end justify-between gap-4 h-48 px-4">
-         <div *ngIf="customerGrowth.length === 0" class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-          No new customers recently.
-        </div>
-        <div 
-          *ngFor="let item of customerGrowth" 
-          class="flex flex-col items-center gap-2 group flex-1"
-        >
-          <div class="text-sm font-bold text-primary dark:text-white mb-1">{{ item.count }}</div>
-          <!-- Using a simple height scale relative to max for this chart would be ideal too, 
-               but for MVP just showing bubbles or bars. Let's assume max is around 50 for scale. -->
-          <div 
-            class="w-full bg-accent/20 border-t-2 border-accent rounded-t-sm transition-all relative"
-            style="height: 100px; min-height: 20px"
-          >
-             <div class="absolute bottom-0 w-full bg-accent/10 hover:bg-accent/30 transition-colors" style="height: 100%"></div>
+    <div class="col-span-1 lg:col-span-2 bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
+      <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
+        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Network Expansion</h3>
+        <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Customer Acquisition Delta</p>
+      </div>
+      <div class="p-ds-8">
+        <div class="flex items-end justify-between gap-ds-6 h-56 px-ds-4 bg-ds-bg/30 rounded-sm border border-ds-border/50 p-ds-6 relative">
+           <div *ngIf="customerGrowth.length === 0" class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-ds-text-muted uppercase tracking-widest italic">
+            Zero acquisition events recorded.
           </div>
-          <span class="text-xs text-gray-500">{{ item.date }}</span>
+          <div 
+            *ngFor="let item of customerGrowth" 
+            class="flex flex-col items-center gap-ds-3 group flex-1 h-full justify-end"
+          >
+            <div class="text-[10px] font-bold text-ds-text opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-1 group-hover:translate-y-0">{{ item.count }}</div>
+            <div 
+              class="w-full bg-ds-text/10 border-t border-ds-text group-hover:bg-ds-text/30 transition-all duration-700 rounded-t-sm"
+              style="height: 60px; min-height: 4px"
+            ></div>
+            <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">{{ item.date }}</span>
+          </div>
         </div>
       </div>
     </div>

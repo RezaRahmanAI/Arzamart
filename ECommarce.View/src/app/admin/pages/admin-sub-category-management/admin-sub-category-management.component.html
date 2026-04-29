@@ -1,88 +1,87 @@
-<div class="flex flex-col gap-3">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
   <!-- Header Section -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h2 class="text-xl font-black text-primary dark:text-white uppercase tracking-wider">Sub Collections</h2>
-      <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-tight opacity-70">Organize specialized collections</p>
+      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Sub-Taxonomy</h1>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">Specialized Catalog Node Management</p>
     </div>
-    <button class="arza-btn-primary" type="button" (click)="startCreate()" *ngIf="mode === 'edit'">
-      <app-icon name="Plus" size="20"></app-icon>
-      <span>New Collection</span>
+    <button class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest" type="button" (click)="startCreate()" *ngIf="mode === 'edit'">
+      <app-icon name="Plus" size="14"></app-icon>
+      <span>New Sub-Node</span>
     </button>
   </div>
 
-  <div class="flex flex-col lg:flex-row gap-4 items-start">
+  <div class="flex flex-col lg:flex-row gap-ds-8 items-start">
     <!-- List Section (Table) -->
-    <div class="w-full lg:w-[60%] flex flex-col gap-4">
+    <div class="w-full lg:w-[60%] flex flex-col gap-ds-6">
       <!-- Search -->
       <div class="relative max-w-sm">
-        <app-icon name="Search" size="14" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></app-icon>
+        <app-icon name="Search" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted"></app-icon>
         <input
-          class="w-full pl-9 pr-4 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-4 focus:ring-primary/5 transition-all outline-none"
-          placeholder="Filter by name or category..."
+          class="form-input !h-10 !pl-11 !pr-4 !text-[10px] font-bold uppercase"
+          placeholder="Filter Sub-Taxonomy..."
           type="text"
           [formControl]="filterControl"
         />
       </div>
 
       <!-- Table -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm overflow-hidden">
+      <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-slate-50/50 dark:bg-slate-800/50 text-[9px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100 dark:border-slate-800">
-                <th class="px-3 py-2">Collection</th>
-                <th class="px-3 py-2">Parent Category</th>
-                <th class="px-3 py-2">Status</th>
-                <th class="px-3 py-2 text-right">Actions</th>
+              <tr class="bg-ds-bg/30 border-b border-ds-border">
+                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Insignia & Identity</th>
+                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Parent Cluster</th>
+                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Availability</th>
+                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] text-right">Protocol</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
+            <tbody class="divide-y divide-ds-border/50">
               @for (sub of filteredSubCategories; track sub.id) {
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                <tr class="hover:bg-ds-bg transition-colors cursor-pointer group"
                     (click)="editSubCategory(sub)">
-                  <td class="px-3 py-2">
-                    <div class="flex items-center gap-2">
-                      <!-- Image with specific handling for empty states -->
-                      <div class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex-shrink-0">
+                  <td class="px-ds-6 py-ds-4">
+                    <div class="flex items-center gap-ds-4">
+                      <div class="size-10 rounded-sm bg-ds-bg border border-ds-border overflow-hidden flex-shrink-0 grayscale group-hover:grayscale-0 transition-all duration-500">
                         @if (sub.imageUrl) {
                           <img [src]="getImageUrl(sub.imageUrl)" class="w-full h-full object-cover" [alt]="sub.name" />
                         } @else {
-                          <div class="w-full h-full flex items-center justify-center text-slate-300">
-                            <app-icon name="Image" size="20"></app-icon>
+                          <div class="w-full h-full flex items-center justify-center text-ds-text-muted/20">
+                            <app-icon name="Image" size="16"></app-icon>
                           </div>
                         }
                       </div>
                       <div class="flex flex-col">
-                        <span class="font-black text-primary dark:text-white text-xs group-hover:text-accent transition-colors leading-tight">{{ sub.name }}</span>
-                        <span class="text-[8px] text-slate-400 font-bold uppercase tracking-tighter">/{{ sub.slug }}</span>
+                        <span class="font-bold text-ds-text text-[11px] uppercase tracking-tight leading-tight">{{ sub.name }}</span>
+                        <span class="text-[8px] text-ds-text-muted font-bold uppercase tracking-widest mt-0.5">/{{ sub.slug }}</span>
                       </div>
                     </div>
                   </td>
-                  <td class="px-3 py-2">
-                    <span class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[8px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-tighter">
+                  <td class="px-ds-6 py-ds-4">
+                    <span class="px-2 py-0.5 bg-ds-bg border border-ds-border rounded-sm text-[8px] font-bold text-ds-text uppercase tracking-widest">
                       {{ sub.parentName }}
                     </span>
                   </td>
-                  <td class="px-3 py-2">
-                    <div class="flex items-center gap-1.5">
-                      <div [class]="sub.isActive ? 'bg-emerald-500' : 'bg-slate-300'" class="size-1 rounded-full"></div>
-                      <span [class]="sub.isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'"
-                            class="text-[9px] font-black uppercase tracking-wider">
-                        {{ sub.isActive ? 'Active' : 'Hidden' }}
+                  <td class="px-ds-6 py-ds-4">
+                    <div class="flex items-center gap-ds-2">
+                      <div [class]="sub.isActive ? 'bg-ds-success' : 'bg-ds-text-muted/30'" class="size-1.5 rounded-full"></div>
+                      <span [class]="sub.isActive ? 'text-ds-success' : 'text-ds-text-muted'"
+                            class="text-[9px] font-bold uppercase tracking-widest">
+                        {{ sub.isActive ? 'Operational' : 'Offline' }}
                       </span>
                     </div>
                   </td>
-                  <td class="px-3 py-2 text-right">
-                    <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button class="p-2 text-slate-400 hover:text-primary hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all"
+                  <td class="px-ds-6 py-ds-4 text-right">
+                    <div class="flex justify-end gap-ds-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center"
                               (click)="$event.stopPropagation(); editSubCategory(sub)">
-                        <app-icon name="Edit3" size="18"></app-icon>
+                        <app-icon name="Edit3" size="14"></app-icon>
                       </button>
                       @if (authService.isSuperAdmin()) {
-                        <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all"
+                        <button class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center"
                                 (click)="$event.stopPropagation(); deleteSubCategory(sub)">
-                          <app-icon name="Trash2" size="18"></app-icon>
+                          <app-icon name="Trash2" size="14"></app-icon>
                         </button>
                       }
                     </div>
@@ -90,10 +89,10 @@
                 </tr>
               } @empty {
                 <tr>
-                  <td colspan="4" class="px-6 py-20 text-center">
-                    <div class="flex flex-col items-center gap-3 text-slate-400">
-                      <app-icon name="Inbox" size="48" className="opacity-20"></app-icon>
-                      <p class="text-sm font-medium">No sub-collections found matching your search.</p>
+                  <td colspan="4" class="px-ds-6 py-ds-16 text-center">
+                    <div class="flex flex-col items-center gap-ds-3 text-ds-text-muted/40">
+                      <app-icon name="Inbox" size="48" className="opacity-10"></app-icon>
+                      <p class="text-[10px] font-bold uppercase tracking-[0.3em] italic">No Sub-Taxonomy Nodes Detected.</p>
                     </div>
                   </td>
                 </tr>
@@ -105,52 +104,52 @@
     </div>
 
     <!-- Right Sidebar Form -->
-    <div class="w-full lg:w-[40%] sticky top-4">
-      <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
-        <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/30 dark:bg-white/[0.02]">
+    <div class="w-full lg:w-[40%] sticky top-ds-8">
+      <div class="bg-ds-surface rounded-sm border border-ds-border shadow-xl overflow-hidden">
+        <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex justify-between items-center">
           <div>
-            <h3 class="text-sm font-black text-primary dark:text-white flex items-center gap-2 uppercase tracking-wide">
-              <app-icon [name]="mode === 'create' ? 'Plus' : 'Edit3'" size="16" className="text-accent"></app-icon>
-              {{ mode === "create" ? "New Collection" : "Modify Collection" }}
+            <h3 class="text-[11px] font-bold text-ds-text flex items-center gap-ds-3 uppercase tracking-[0.2em]">
+              <app-icon [name]="mode === 'create' ? 'Plus' : 'Edit3'" size="14" className="text-ds-text"></app-icon>
+              {{ mode === "create" ? "Initialize Node" : "Modify Node" }}
             </h3>
-            <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Configuration Panel</p>
+            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Hierarchy Configuration</p>
           </div>
           
-          <div class="flex items-center gap-2 bg-white dark:bg-slate-800 px-2 py-1 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
-            <span class="text-[8px] font-black uppercase text-slate-400">Status</span>
+          <div class="flex items-center gap-ds-3 bg-ds-bg px-ds-3 py-1.5 rounded-sm border border-ds-border">
+            <span class="text-[8px] font-bold uppercase text-ds-text-muted tracking-widest">Status</span>
             <label class="relative inline-flex items-center cursor-pointer">
               <input class="sr-only peer" type="checkbox" [formControl]="categoryForm.controls.isActive" />
-              <div class="w-7 h-4 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-primary shadow-inner"></div>
+              <div class="w-9 h-5 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-4 after:w-4 after:transition-all peer-checked:bg-ds-text"></div>
             </label>
           </div>
         </div>
 
-        <form class="p-4 flex flex-col gap-3" [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+        <form class="p-ds-8 flex flex-col gap-ds-6" [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
           <!-- Parent Selection -->
-          <div class="space-y-1">
-            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider" for="cat-parent">Parent Category</label>
-            <div class="relative group">
-              <select class="w-full px-4 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-xs focus:ring-1 focus:ring-primary outline-none transition-all appearance-none cursor-pointer"
+          <div class="space-y-2">
+            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1" for="cat-parent">Cluster Affiliation</label>
+            <div class="relative">
+              <select class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase appearance-none cursor-pointer"
                       id="cat-parent" formControlName="categoryId">
-                <option [ngValue]="null" disabled>Select parent category...</option>
+                <option [ngValue]="null" disabled>SELECT PARENT CLUSTER...</option>
                 @for (cat of parentCategories; track cat.id) {
-                  <option [ngValue]="cat.id">{{ cat.name }}</option>
+                  <option [ngValue]="cat.id">{{ cat.name | uppercase }}</option>
                 }
               </select>
-              <app-icon name="ChevronDown" size="14" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-primary transition-colors"></app-icon>
+              <app-icon name="ChevronDown" size="14" className="absolute right-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
             </div>
             @if (categoryForm.get('categoryId')?.touched && categoryForm.get('categoryId')?.errors?.['required']) {
-              <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider pl-1">Selection is required</p>
+              <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest ml-1 mt-1">Cluster Required</p>
             }
           </div>
 
           <!-- Name -->
-          <div class="space-y-1">
-            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider" for="cat-name">Collection Name</label>
-            <input class="w-full px-4 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-xs font-bold text-primary dark:text-white outline-none transition-all placeholder:text-slate-300"
-                   id="cat-name" type="text" formControlName="name" placeholder="e.g. Winter Essentials" />
+          <div class="space-y-2">
+            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1" for="cat-name">Node Nomenclature</label>
+            <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase"
+                   id="cat-name" type="text" formControlName="name" placeholder="E.G. ACCESSORIES" />
             @if (categoryForm.get('name')?.touched && categoryForm.get('name')?.errors?.['required']) {
-              <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider pl-1">Name is required</p>
+              <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest ml-1 mt-1">Identity Required</p>
             }
           </div>
 
@@ -158,28 +157,28 @@
           <input type="hidden" formControlName="slug" />
 
           <!-- Image Upload -->
-          <div class="space-y-1">
-            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider">Visual Representation</label>
-            <div class="flex items-center gap-4 p-2 bg-slate-50 dark:bg-white/[0.02] rounded-2xl border border-slate-100 dark:border-slate-800">
-              <div class="size-12 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 relative overflow-hidden flex items-center justify-center shadow-sm">
+          <div class="space-y-2">
+            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Visual Representation</label>
+            <div class="flex items-center gap-ds-6 p-ds-4 bg-ds-bg/30 rounded-sm border border-ds-border">
+              <div class="size-16 rounded-sm bg-ds-surface border border-ds-border relative overflow-hidden flex items-center justify-center shadow-sm">
                 @if (getPreviewUrl()) {
-                  <img [src]="getPreviewUrl()" class="w-full h-full object-cover" alt="Preview" />
+                  <img [src]="getPreviewUrl()" class="w-full h-full object-cover grayscale" alt="Preview" />
                 } @else {
-                  <app-icon name="Image" size="16" className="text-slate-200"></app-icon>
+                  <app-icon name="Image" size="20" className="text-ds-text-muted/20"></app-icon>
                 }
                 
                 @if (isUploadingImage) {
-                  <div class="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm">
-                    <div class="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-b-white"></div>
+                  <div class="absolute inset-0 bg-ds-text/40 flex items-center justify-center backdrop-blur-sm">
+                    <div class="animate-spin rounded-full h-5 w-5 border-2 border-ds-surface/30 border-b-ds-surface"></div>
                   </div>
                 }
               </div>
               
               <div class="flex-1 flex flex-col">
-                <label class="flex items-center justify-center px-3 py-1.5 bg-white dark:bg-slate-800 border border-dashed border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:border-accent hover:text-accent transition-all group">
-                  <app-icon name="UploadCloud" size="14" className="text-slate-400 mr-2 group-hover:text-accent transition-colors"></app-icon>
-                  <span class="text-[9px] font-black uppercase text-slate-500 group-hover:text-accent">
-                    {{ selectedImageFile ? 'Change' : 'Pick Photo' }}
+                <label class="flex items-center justify-center px-ds-4 py-ds-2 bg-ds-surface border border-dashed border-ds-border rounded-sm cursor-pointer hover:border-ds-text transition-all group">
+                  <app-icon name="UploadCloud" size="14" className="text-ds-text-muted mr-ds-3 group-hover:text-ds-text transition-colors"></app-icon>
+                  <span class="text-[9px] font-bold uppercase tracking-widest text-ds-text-muted group-hover:text-ds-text">
+                    {{ selectedImageFile ? 'Replace Asset' : 'Select Asset' }}
                   </span>
                   <input class="hidden" type="file" accept="image/*" (change)="handleImageUpload($event)" />
                 </label>
@@ -187,16 +186,14 @@
             </div>
           </div>
 
-
-
           <!-- Actions -->
-          <div class="pt-2 flex items-center gap-3">
-            <button class="flex-1 px-4 py-2 rounded-xl text-xs font-bold text-slate-500 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200"
-                    type="button" (click)="cancelEdit()">Cancel</button>
-            <button class="flex-[2] arza-btn-primary py-2 flex items-center justify-center gap-2 disabled:opacity-70 text-xs font-black uppercase tracking-wider"
+          <div class="pt-ds-4 flex items-center gap-ds-4">
+            <button class="btn btn-secondary flex-1 !h-11 !text-[10px] font-bold uppercase tracking-widest"
+                    type="button" (click)="cancelEdit()">Abort</button>
+            <button class="btn btn-primary flex-[2] !h-11 !text-[10px] font-bold uppercase tracking-widest"
                     type="submit" [disabled]="isUploadingImage || isSaving">
               <app-icon *ngIf="isSaving" name="Loader2" size="14" className="animate-spin"></app-icon>
-              <span>{{ isSaving ? 'Saving...' : (mode === 'create' ? 'Create' : 'Update') }}</span>
+              <span>{{ isSaving ? 'Syncing...' : (mode === 'create' ? 'Initialize' : 'Synchronize') }}</span>
             </button>
           </div>
         </form>

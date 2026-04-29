@@ -1,87 +1,90 @@
-<div class="p-3 max-w-7xl mx-auto animate-in fade-in duration-500">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
   <!-- Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-xl font-black text-primary uppercase tracking-tight">Order Sources</h1>
-      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest opacity-70">Manage manual order origins</p>
+      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Provenance Directory</h1>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+        Management of Manual Order Origins & Sources
+      </p>
     </div>
     <button
       (click)="openAddModal()"
-      class="arza-btn-primary h-9 px-4 rounded-xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2"
+      class="btn btn-primary h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest"
     >
       <app-icon name="Plus" size="14"></app-icon>
-      Add {{ activeTab === 'pages' ? 'Page' : 'Social' }}
+      <span>Initialize {{ activeTab === 'pages' ? 'Page' : 'Social' }} Node</span>
     </button>
   </div>
 
-  <!-- Tabs -->
-  <div class="flex items-center gap-1 p-1 bg-gray-50 dark:bg-surface-alt rounded-xl w-fit mb-4 border border-gray-100">
-    <button
-      (click)="switchTab('pages')"
-      [class.bg-white]="activeTab === 'pages'"
-      [class.text-primary]="activeTab === 'pages'"
-      [class.shadow-sm]="activeTab === 'pages'"
-      class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all"
-    >
-      <app-icon name="Globe" size="14"></app-icon>
-      Pages
-    </button>
-    <button
-      (click)="switchTab('social')"
-      [class.bg-white]="activeTab === 'social'"
-      [class.text-primary]="activeTab === 'social'"
-      [class.shadow-sm]="activeTab === 'social'"
-      class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all"
-    >
-      <app-icon name="Share2" size="14"></app-icon>
-      Social
-    </button>
+  <!-- Tabs & Controls -->
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-ds-6">
+    <div class="flex p-1 bg-ds-bg border border-ds-border rounded-sm w-fit">
+      <button
+        (click)="switchTab('pages')"
+        [class.bg-ds-surface]="activeTab === 'pages'"
+        [class.text-ds-text]="activeTab === 'pages'"
+        [class.border-ds-border]="activeTab === 'pages'"
+        [class.shadow-sm]="activeTab === 'pages'"
+        class="flex items-center gap-ds-3 px-ds-6 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest border border-transparent transition-all"
+        [class.text-ds-text-muted]="activeTab !== 'pages'"
+      >
+        <app-icon name="Globe" size="14"></app-icon>
+        Pages
+      </button>
+      <button
+        (click)="switchTab('social')"
+        [class.bg-ds-surface]="activeTab === 'social'"
+        [class.text-ds-text]="activeTab === 'social'"
+        [class.border-ds-border]="activeTab === 'social'"
+        [class.shadow-sm]="activeTab === 'social'"
+        class="flex items-center gap-ds-3 px-ds-6 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest border border-transparent transition-all"
+        [class.text-ds-text-muted]="activeTab !== 'social'"
+      >
+        <app-icon name="Share2" size="14"></app-icon>
+        Social
+      </button>
+    </div>
   </div>
 
   <!-- Content Table -->
-  <div class="bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+  <div class="bg-ds-surface rounded-sm border border-ds-border overflow-hidden shadow-sm">
     <div class="overflow-x-auto">
-      <table class="w-full text-left">
+      <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-gray-50 border-b border-gray-100">
-            <th class="px-3 py-2 text-[9px] font-black text-gray-400 uppercase tracking-widest">Name</th>
-            <th class="px-3 py-2 text-[9px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-            <th class="px-3 py-2 text-[9px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+          <tr class="bg-ds-bg/50 border-b border-ds-border">
+            <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Source Identity</th>
+            <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Operational Status</th>
+            <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] text-right">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-50">
+        <tbody class="divide-y divide-ds-border/50">
           <ng-container *ngIf="!isLoading; else loading">
-            <tr *ngFor="let item of (activeTab === 'pages' ? sourcePages : socialMediaSources)" class="hover:bg-gray-50 transition-colors">
-              <td class="px-3 py-2">
-                <span class="text-[11px] font-black text-primary">{{ item.name }}</span>
+            <tr *ngFor="let item of (activeTab === 'pages' ? sourcePages : socialMediaSources)" class="hover:bg-ds-bg transition-colors group">
+              <td class="px-ds-6 py-ds-4">
+                <span class="text-[11px] font-bold text-ds-text uppercase tracking-tight">{{ item.name }}</span>
               </td>
-              <td class="px-3 py-2">
+              <td class="px-ds-6 py-ds-4">
                 <span
-                  [class.bg-emerald-50]="item.isActive"
-                  [class.text-emerald-600]="item.isActive"
-                  [class.bg-red-50]="!item.isActive"
-                  [class.text-red-600]="!item.isActive"
-                  class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest inline-flex items-center gap-1 border border-transparent"
-                  [class.border-emerald-100]="item.isActive"
-                  [class.border-red-100]="!item.isActive"
+                  class="px-ds-3 py-1 rounded-sm text-[8px] font-bold uppercase tracking-widest border"
+                  [ngClass]="item.isActive ? 'bg-ds-success/10 text-ds-success border-ds-success/20' : 'bg-ds-bg text-ds-text-muted border-ds-border'"
                 >
-                  {{ item.isActive ? 'Active' : 'Inactive' }}
+                  {{ item.isActive ? 'Operational' : 'Inactive' }}
                 </span>
               </td>
-              <td class="px-3 py-2 text-right">
-                <div class="flex items-center justify-end gap-1">
+              <td class="px-ds-6 py-ds-4 text-right">
+                <div class="flex items-center justify-end gap-ds-2">
                   <button
                     (click)="openEditModal(item)"
-                    class="size-7 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-all"
-                    title="Edit"
+                    class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors"
+                    title="Edit Record"
                   >
-                    <app-icon name="Edit" size="14"></app-icon>
+                    <app-icon name="Edit3" size="14"></app-icon>
                   </button>
                   <button
                     *ngIf="authService.isSuperAdmin()"
                     (click)="deleteItem(item.id)"
-                    class="size-7 flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                    title="Delete"
+                    class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors"
+                    title="Terminate Node"
                   >
                     <app-icon name="Trash2" size="14"></app-icon>
                   </button>
@@ -89,19 +92,19 @@
               </td>
             </tr>
             <tr *ngIf="(activeTab === 'pages' ? sourcePages : socialMediaSources).length === 0">
-              <td colspan="3" class="px-6 py-8 text-center">
-                <div class="flex flex-col items-center gap-1">
-                  <app-icon [name]="activeTab === 'pages' ? 'Globe' : 'Share2'" size="32" className="text-border"></app-icon>
-                  <p class="text-[10px] text-text-sub">No {{ activeTab === 'pages' ? 'page' : 'social media' }} sources found.</p>
+              <td colspan="3" class="px-ds-6 py-ds-24 text-center">
+                <div class="flex flex-col items-center gap-ds-4">
+                  <app-icon [name]="activeTab === 'pages' ? 'Globe' : 'Share2'" size="48" className="text-ds-text-muted opacity-10"></app-icon>
+                  <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Zero {{ activeTab === 'pages' ? 'Page' : 'Social' }} Nodes Detected</p>
                 </div>
               </td>
             </tr>
           </ng-container>
           <ng-template #loading>
             <tr>
-              <td colspan="3" class="px-6 py-12 text-center">
-                <app-icon name="Loader2" size="32" className="animate-spin text-primary mx-auto"></app-icon>
-                <p class="text-text-sub mt-2">Loading data...</p>
+              <td colspan="3" class="px-ds-6 py-ds-24 text-center">
+                <app-icon name="Loader2" size="32" className="animate-spin text-ds-text-muted mx-auto"></app-icon>
+                <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mt-ds-4 animate-pulse">Synchronizing Registry...</p>
               </td>
             </tr>
           </ng-template>
@@ -112,58 +115,57 @@
 </div>
 
 <!-- Modal -->
-<div *ngIf="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-  <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" (click)="closeModal()"></div>
-  <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl relative overflow-hidden">
-    <div class="px-4 py-3 border-b border-gray-50 flex items-center justify-between bg-gray-50">
-      <h2 class="text-sm font-black text-primary uppercase tracking-tight">
-        {{ isEditing ? 'Edit' : 'Add' }} Source
-      </h2>
-      <button (click)="closeModal()" class="size-7 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-all">
-        <app-icon name="X" size="14" className="text-gray-400"></app-icon>
+<div *ngIf="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ds-bg/80 backdrop-blur-md animate-in fade-in duration-300">
+  <div class="bg-ds-surface rounded-sm border border-ds-border w-full max-w-md shadow-2xl relative overflow-hidden animate-in zoom-in duration-base">
+    <div class="px-ds-8 py-ds-4 border-b border-ds-border flex items-center justify-between bg-ds-bg/50">
+      <div>
+        <h2 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">
+          {{ isEditing ? 'Modify Configuration' : 'Initialize Node' }}
+        </h2>
+        <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Provenance Logic Terminal</p>
+      </div>
+      <button (click)="closeModal()" class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm text-ds-text-muted hover:text-ds-text">
+        <app-icon name="X" size="18"></app-icon>
       </button>
     </div>
 
-    <form [formGroup]="sourceForm" (ngSubmit)="onSubmit()" class="p-4 space-y-4">
+    <form [formGroup]="sourceForm" (ngSubmit)="onSubmit()" class="p-ds-8 flex flex-col gap-ds-6">
       <!-- Name -->
-      <div class="space-y-1.5">
-        <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Source Name</label>
+      <div class="space-y-2">
+        <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-1.5">Source Nomenclature</label>
         <input
           type="text"
           formControlName="name"
-          placeholder="e.g. Facebook Page"
-          class="w-full h-9 px-3 rounded-xl border border-gray-100 bg-gray-50/50 text-xs font-bold text-primary focus:ring-1 focus:ring-primary outline-none"
+          placeholder="E.G. FACEBOOK CORPORATE"
+          class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase"
         />
       </div>
 
       <!-- Active Toggle -->
-      <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
-        <div>
-          <p class="text-[10px] font-black text-primary uppercase tracking-tight">Active</p>
-          <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Enable origin</p>
-        </div>
+      <div class="flex items-center gap-ds-3 pt-ds-2">
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" formControlName="isActive" class="sr-only peer" />
-          <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+          <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
         </label>
+        <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">Mark as Operational</span>
       </div>
 
       <!-- Submit -->
-      <div class="flex gap-2 pt-2">
+      <div class="flex gap-ds-4 mt-ds-4">
         <button
           type="button"
           (click)="closeModal()"
-          class="flex-1 h-9 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-gray-50 transition-all"
+          class="btn btn-secondary flex-1 !h-12 !text-[11px] font-bold uppercase tracking-[0.2em]"
         >
-          Cancel
+          Abort
         </button>
         <button
           type="submit"
           [disabled]="isSubmitting"
-          class="flex-1 h-9 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+          class="btn btn-primary flex-[2] !h-12 !text-[11px] font-bold uppercase tracking-[0.2em] !bg-ds-text !text-ds-surface flex items-center justify-center gap-ds-2"
         >
-          <app-icon *ngIf="isSubmitting" name="Loader2" size="14" className="animate-spin"></app-icon>
-          {{ isSubmitting ? 'Saving' : (isEditing ? 'Update' : 'Create') }}
+          <app-icon *ngIf="isSubmitting" name="Loader2" size="16" className="animate-spin"></app-icon>
+          <span>{{ isSubmitting ? 'Syncing' : (isEditing ? 'Establish Change' : 'Initialize Node') }}</span>
         </button>
       </div>
     </form>

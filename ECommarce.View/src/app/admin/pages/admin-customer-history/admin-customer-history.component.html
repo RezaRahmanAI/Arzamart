@@ -1,225 +1,211 @@
-﻿<div class="flex-1 space-y-3 bg-gray-50 dark:bg-[#111111] p-4 min-h-screen">
-  <!-- Page Header / Breadcrumbs -->
-  <div class="flex items-center justify-between gap-6 mb-2">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-10">
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">
-        <span>Dashboard</span>
-        <app-icon name="ChevronRight" size="8"></app-icon>
-        <span>All Orders Filter</span>
-        <app-icon name="ChevronRight" size="8"></app-icon>
-        <span class="text-primary">Customer Orders</span>
+      <div class="flex items-center gap-ds-2 text-[9px] font-bold uppercase tracking-[0.3em] text-ds-text-muted mb-2">
+        <span>Analytics</span>
+        <app-icon name="ChevronRight" size="10"></app-icon>
+        <span>Customer Ledger</span>
+        <app-icon name="ChevronRight" size="10"></app-icon>
+        <span class="text-ds-text">Historical Records</span>
       </div>
-      <h2 class="text-primary dark:text-white text-xl font-black uppercase tracking-tight">Customer History</h2>
+      <h2 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">Customer Archive</h2>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">Comprehensive Transactional & Behavioral Log</p>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2">
+    <div class="flex flex-wrap items-center gap-ds-3">
       <button
         (click)="refreshOrders()"
         [disabled]="isRefreshing"
-        class="flex items-center justify-center gap-1.5 rounded-xl h-8 px-3 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 text-primary dark:text-white text-[10px] font-black uppercase shadow-sm transition-all active:scale-95 disabled:opacity-50"
+        class="btn btn-secondary h-11 px-ds-6 !text-[10px] font-bold uppercase tracking-widest"
       >
-        <app-icon name="RotateCw" size="12" [className]="isRefreshing ? 'animate-spin' : ''"></app-icon>
-        <span>{{ isRefreshing ? 'Wait...' : 'Refresh' }}</span>
+        <app-icon name="RotateCw" size="14" [className]="isRefreshing ? 'animate-spin' : ''"></app-icon>
+        <span>{{ isRefreshing ? 'Syncing...' : 'Sync Registry' }}</span>
       </button>
 
-      <a routerLink="/admin/orders/create" class="arza-btn-primary h-8 px-3 flex items-center gap-1.5">
-        <app-icon name="ShoppingCart" size="12"></app-icon>
-        <span class="text-[10px]">New Order</span>
+      <a routerLink="/admin/orders/create" class="btn btn-primary h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest">
+        <app-icon name="Plus" size="14"></app-icon>
+        <span>Manual Entry</span>
       </a>
-      <a routerLink="/admin/orders/pre-order" class="flex items-center justify-center gap-2 rounded-xl h-8 px-3 bg-violet-500 hover:bg-violet-600 text-white text-[10px] font-black uppercase shadow-lg shadow-violet-500/20 transition-all active:scale-95">
-        <app-icon name="PackagePlus" size="12"></app-icon>
-        <span>New Pre-order</span>
+      <a routerLink="/admin/orders/pre-order" class="btn h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest bg-ds-text text-ds-surface hover:opacity-90">
+        <app-icon name="PackagePlus" size="14"></app-icon>
+        <span>Pre-Order Log</span>
       </a>
     </div>
   </div>
 
-  <!-- Customer History Panels -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
-    <!-- Left Column: Customer Information & Summary -->
-    <div class="bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden">
-      <div class="absolute top-0 right-0 p-2 opacity-10">
-        <app-icon name="User" size="64"></app-icon>
-      </div>
-      <h3 class="text-[11px] font-black text-primary dark:text-white uppercase tracking-wider mb-4 border-b dark:border-gray-800 pb-2">Customer Information</h3>
-      <div class="grid grid-cols-2 gap-4 mb-5">
-        <div>
-          <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Customer Name</p>
-          <p class="text-xs font-black text-primary dark:text-white truncate">{{ orders.length > 0 ? orders[0].customerName : 'N/A' }}</p>
-        </div>
-        <div>
-          <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Phone Number</p>
-          <p class="text-xs font-black text-primary dark:text-white">{{ selectedCustomerPhone }}</p>
-        </div>
-        <div class="col-span-2">
-          <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Internal Feedback</p>
-          <div class="flex items-center gap-3">
-             <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 font-black text-[10px] border border-emerald-100 dark:border-emerald-900/30">
-               <app-icon name="ThumbsUp" size="12"></app-icon> 0
-             </span>
-             <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-rose-50 dark:bg-rose-900/10 text-rose-600 font-black text-[10px] border border-rose-100 dark:border-rose-900/30">
-               <app-icon name="ThumbsDown" size="12"></app-icon> 0
-             </span>
-          </div>
-        </div>
+  <!-- Summary Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-ds-6">
+    <!-- Identity Card -->
+    <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm relative overflow-hidden group">
+      <div class="absolute -top-4 -right-4 opacity-5 grayscale transition-all group-hover:opacity-10">
+        <app-icon name="User" size="120"></app-icon>
       </div>
       
-      <p class="text-[10px] font-black text-primary dark:text-white uppercase tracking-widest mb-2 px-1">Summary by Status</p>
-      <div class="overflow-hidden border border-gray-100 dark:border-gray-800 rounded-xl">
-        <table class="w-full text-[10px] border-collapse">
-          <thead class="bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
-            <tr class="text-gray-400 uppercase font-black tracking-tighter">
-              <th class="px-2 py-1.5 text-left">Orders</th>
-              <th class="px-2 py-1.5 text-center">Count</th>
-              <th class="px-2 py-1.5 text-right">Amount</th>
-              <th class="px-2 py-1.5 text-right">Paid</th>
-              <th class="px-2 py-1.5 text-right">Due</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-            <tr *ngFor="let item of customerSummary" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50">
-              <td class="px-2 py-1.5 font-bold uppercase text-gray-500 dark:text-gray-400">{{ item.status }}</td>
-              <td class="px-2 py-1.5 text-center font-black">{{ item.count }}</td>
-              <td class="px-2 py-1.5 text-right font-mono text-[9px]">{{ item.amount }}৳</td>
-              <td class="px-2 py-1.5 text-right font-mono text-[9px] text-emerald-600">{{ item.paid }}৳</td>
-              <td class="px-2 py-1.5 text-right font-mono text-[9px]" [class.text-rose-500]="item.due > 0">{{ item.due }}৳</td>
-            </tr>
-            <tr class="bg-gray-50 dark:bg-gray-900/50 font-black text-primary dark:text-white">
-              <td class="px-2 py-1.5 uppercase">Total Lifetime</td>
-              <td class="px-2 py-1.5 text-center">{{ customerStats.total }}</td>
-              <td class="px-2 py-1.5 text-right font-mono text-[9px]">{{ customerStats.totalAmount }}৳</td>
-              <td class="px-2 py-1.5 text-right font-mono text-[9px] text-emerald-600">{{ customerStats.totalPaid }}৳</td>
-              <td class="px-2 py-1.5 text-right font-mono text-[9px] text-rose-600">{{ customerStats.totalDue }}৳</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="relative">
+        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em] mb-ds-6 pb-ds-3 border-b border-ds-border">Identity Profile</h3>
+        
+        <div class="grid grid-cols-2 gap-ds-8 mb-ds-10">
+          <div class="space-y-1">
+            <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Legal Name</p>
+            <p class="text-[13px] font-bold text-ds-text uppercase tracking-tight">{{ orders.length > 0 ? orders[0].customerName : 'ANONYMOUS ENTITY' }}</p>
+          </div>
+          <div class="space-y-1">
+            <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Phone Interface</p>
+            <p class="text-[13px] font-bold text-ds-text font-mono">{{ selectedCustomerPhone }}</p>
+          </div>
+          <div class="col-span-2 space-y-3">
+            <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Merchant Sentiment</p>
+            <div class="flex items-center gap-ds-4">
+               <span class="inline-flex items-center gap-ds-2 px-ds-4 py-1.5 rounded-sm bg-ds-success/10 text-ds-success font-bold text-[10px] border border-ds-success/20 uppercase tracking-widest">
+                 <app-icon name="ThumbsUp" size="14"></app-icon> Positive: 0
+               </span>
+               <span class="inline-flex items-center gap-ds-2 px-ds-4 py-1.5 rounded-sm bg-red-500/10 text-red-500 font-bold text-[10px] border border-red-500/20 uppercase tracking-widest">
+                 <app-icon name="ThumbsDown" size="14"></app-icon> Caution: 0
+               </span>
+            </div>
+          </div>
+        </div>
+        
+        <p class="text-[10px] font-bold text-ds-text uppercase tracking-[0.3em] mb-ds-4">Consolidated Ledger Status</p>
+        <div class="bg-ds-bg/30 border border-ds-border rounded-sm overflow-hidden">
+          <table class="w-full text-[10px] border-collapse">
+            <thead>
+              <tr class="bg-ds-bg border-b border-ds-border text-ds-text-muted uppercase font-bold tracking-widest">
+                <th class="px-ds-4 py-3 text-left">Segment</th>
+                <th class="px-ds-4 py-3 text-center">Volume</th>
+                <th class="px-ds-4 py-3 text-right">Value</th>
+                <th class="px-ds-4 py-3 text-right">Settled</th>
+                <th class="px-ds-4 py-3 text-right">Arrears</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-ds-border/50">
+              <tr *ngFor="let item of customerSummary" class="hover:bg-ds-bg/50 transition-colors">
+                <td class="px-ds-4 py-3 font-bold uppercase text-ds-text-sec">{{ item.status }}</td>
+                <td class="px-ds-4 py-3 text-center font-bold">{{ item.count }}</td>
+                <td class="px-ds-4 py-3 text-right font-mono tracking-tighter">৳{{ item.amount }}</td>
+                <td class="px-ds-4 py-3 text-right font-mono text-ds-success tracking-tighter">৳{{ item.paid }}</td>
+                <td class="px-ds-4 py-3 text-right font-mono tracking-tighter" [class.text-red-500]="item.due > 0">৳{{ item.due }}</td>
+              </tr>
+              <tr class="bg-ds-text text-ds-surface font-bold uppercase tracking-widest">
+                <td class="px-ds-4 py-3">Global Matrix</td>
+                <td class="px-ds-4 py-3 text-center">{{ customerStats.total }}</td>
+                <td class="px-ds-4 py-3 text-right font-mono">৳{{ customerStats.totalAmount }}</td>
+                <td class="px-ds-4 py-3 text-right font-mono">৳{{ customerStats.totalPaid }}</td>
+                <td class="px-ds-4 py-3 text-right font-mono">৳{{ customerStats.totalDue }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- Right Column: Delivery Success Ratio -->
-    <div class="bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col relative overflow-hidden">
-       <div class="flex items-center justify-between mb-4 border-b dark:border-gray-800 pb-2">
-         <h3 class="text-[11px] font-black text-primary dark:text-white uppercase tracking-wider flex items-center gap-2">
-           <app-icon name="TrendingUp" size="14" className="text-orange-500"></app-icon>
-           Delivery Success Ratio
+    <!-- Analytics Card -->
+    <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm relative overflow-hidden group">
+       <div class="flex items-center justify-between mb-ds-8 pb-ds-3 border-b border-ds-border">
+         <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em] flex items-center gap-ds-3">
+           <app-icon name="Activity" size="16" className="text-ds-text"></app-icon>
+           Fulfillment Performance
          </h3>
-         <span class="text-[9px] font-bold text-gray-400 font-mono">{{ selectedCustomerPhone }}</span>
+         <span class="text-[10px] font-bold text-ds-text-muted font-mono uppercase tracking-widest">{{ selectedCustomerPhone }}</span>
        </div>
 
-       <div class="grid grid-cols-3 gap-2 mb-4">
-         <div class="bg-cyan-50/50 dark:bg-cyan-900/10 p-2 rounded-xl border border-cyan-100 dark:border-cyan-900/30 text-center">
-           <p class="text-lg font-black text-cyan-600 dark:text-cyan-400">{{ customerStats.total }}</p>
-           <p class="text-[8px] font-black text-gray-500 uppercase tracking-tighter">মোট অর্ডার</p>
+       <div class="grid grid-cols-3 gap-ds-4 mb-ds-10">
+         <div class="bg-ds-bg border border-ds-border p-ds-4 rounded-sm text-center">
+           <p class="text-ds-xl font-bold text-ds-text">{{ customerStats.total }}</p>
+           <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-1">Total Requests</p>
          </div>
-         <div class="bg-emerald-50/50 dark:bg-emerald-900/10 p-2 rounded-xl border border-emerald-100 dark:border-emerald-900/30 text-center">
-           <p class="text-lg font-black text-emerald-600 dark:text-emerald-400">{{ customerStats.delivered }}</p>
-           <p class="text-[8px] font-black text-gray-500 uppercase tracking-tighter">মোট ডেলিভারি</p>
+         <div class="bg-ds-bg border border-ds-border p-ds-4 rounded-sm text-center">
+           <p class="text-ds-xl font-bold text-ds-success">{{ customerStats.delivered }}</p>
+           <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-1">Delivered</p>
          </div>
-         <div class="bg-rose-50/50 dark:bg-rose-900/10 p-2 rounded-xl border border-rose-100 dark:border-rose-900/30 text-center">
-           <p class="text-lg font-black text-rose-600 dark:text-rose-400">{{ customerStats.cancelled }}</p>
-           <p class="text-[8px] font-black text-gray-500 uppercase tracking-tighter">মোট বাতিল</p>
+         <div class="bg-ds-bg border border-ds-border p-ds-4 rounded-sm text-center">
+           <p class="text-ds-xl font-bold text-red-500">{{ customerStats.cancelled }}</p>
+           <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-1">Revoked</p>
          </div>
        </div>
 
-       <div class="flex-1 flex flex-col items-center justify-center relative min-h-[140px]">
-          <div class="relative size-28">
+       <div class="flex-1 flex flex-col items-center justify-center relative min-h-[160px]">
+          <div class="relative size-32">
             <svg class="size-full -rotate-90" viewBox="0 0 36 36">
-              <circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-100 dark:text-gray-800"></circle>
-              <circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" 
-                      class="text-emerald-500" 
+              <circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" stroke-width="1.5" class="text-ds-border"></circle>
+              <circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" 
+                      class="text-ds-text" 
                       [style.stroke-dasharray]="customerStats.successRate + ', 100'"></circle>
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <span class="text-2xl font-black text-primary dark:text-white leading-none">{{ customerStats.successRate }}%</span>
-              <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest mt-1">Success Rate</span>
+              <span class="text-ds-2xl font-bold text-ds-text leading-none tracking-tighter">{{ customerStats.successRate }}%</span>
+              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1.5">Efficiency</span>
             </div>
           </div>
        </div>
 
-       <div class="mt-auto p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 rounded-2xl text-center">
-          <p class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 mb-1 uppercase tracking-widest">এই কাস্টমারকে নিশ্চিন্তে পার্সেল দিতে পারেন।</p>
-          <div class="flex items-center justify-center gap-2">
-            <app-icon name="ShieldCheck" size="18" className="text-emerald-600"></app-icon>
-            <p class="text-xl font-black text-emerald-700 dark:text-emerald-300">ঝুঁকি মুক্ত</p>
+       <div class="mt-ds-8 p-ds-5 bg-ds-bg border border-ds-border rounded-sm text-center">
+          <p class="text-[9px] font-bold text-ds-text-muted mb-ds-3 uppercase tracking-[0.4em]">Operational Reliability Recommendation</p>
+          <div class="flex items-center justify-center gap-ds-3">
+            <app-icon name="ShieldCheck" size="20" className="text-ds-success"></app-icon>
+            <p class="text-ds-lg font-bold text-ds-text uppercase tracking-tight">Verified Secure Entity</p>
           </div>
        </div>
     </div>
   </div>
 
-  <!-- Orders Table -->
-  <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-2xl shadow-sm relative overflow-hidden">
-    <div *ngIf="isLoading" class="absolute inset-0 bg-white/60 dark:bg-surface-dark/60 backdrop-blur-[2px] z-[50] flex items-center justify-center">
-      <div class="flex flex-col items-center gap-4">
-        <app-icon name="Loader2" size="32" className="text-primary animate-spin"></app-icon>
-        <p class="text-xs font-bold text-primary uppercase tracking-widest animate-pulse">Fetching Records...</p>
+  <!-- Transactional Archive -->
+  <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm relative overflow-hidden">
+    <div *ngIf="isLoading" class="absolute inset-0 bg-ds-surface/60 backdrop-blur-md z-[50] flex items-center justify-center">
+      <div class="flex flex-col items-center gap-ds-4">
+        <app-icon name="Loader2" size="40" className="text-ds-text animate-spin"></app-icon>
+        <p class="text-[10px] font-bold text-ds-text uppercase tracking-[0.5em] animate-pulse">Accessing Encrypted Records...</p>
       </div>
     </div>
 
-    <div class="overflow-x-auto min-h-[450px]">
-      <table class="w-full text-left border-separate border-spacing-0">
+    <div class="overflow-x-auto min-h-[500px]">
+      <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter text-center w-8">#</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter">Date</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter">Order ID</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter">Source</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter">Seller</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter">Page</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter">C.Name</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter">C.Phone</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter">Status</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter">C.Status</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter">Autocall</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter text-center">Total</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter text-center">Paid</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter text-center">Due</th>
-            <th class="px-2 py-2 text-[9px] font-black text-gray-400 uppercase tracking-tighter text-right">Actions</th>
+          <tr class="bg-ds-bg/50 border-b border-ds-border">
+            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest text-center w-12">#</th>
+            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Timestamp</th>
+            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Serial #</th>
+            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Origin</th>
+            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Operator</th>
+            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Status</th>
+            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest text-center">Gross</th>
+            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest text-center">Settled</th>
+            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest text-center">Due</th>
+            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest text-right">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-          <tr *ngFor="let order of orders; let i = index" class="hover:bg-gray-50/80 dark:hover:bg-gray-800/30 transition-all border-b border-gray-50 dark:border-gray-800">
-            <td class="px-2 py-1 text-center text-[9px] font-bold text-gray-400">{{ i + 1 }}</td>
-            <td class="px-2 py-1">
-              <div class="text-[9px] font-bold text-gray-500 whitespace-nowrap">{{ order.createdAt | date: 'dd/MM/yyyy HH:mm:ss' }}</div>
+        <tbody class="divide-y divide-ds-border/50">
+          <tr *ngFor="let order of orders; let i = index" class="hover:bg-ds-bg/30 transition-colors group">
+            <td class="px-ds-4 py-ds-4 text-center text-[10px] font-bold text-ds-text-muted/40 group-hover:text-ds-text transition-colors">{{ i + 1 }}</td>
+            <td class="px-ds-4 py-ds-4">
+              <div class="text-[10px] font-bold text-ds-text-muted uppercase tracking-tight">{{ order.createdAt | date: 'dd/MM/yyyy • HH:mm' }}</div>
             </td>
-            <td class="px-2 py-1">
-              <div class="text-[10px] font-black text-emerald-600 font-mono">{{ order.orderNumber }}</div>
+            <td class="px-ds-4 py-ds-4">
+              <div class="text-[11px] font-bold text-ds-text font-mono group-hover:underline underline-offset-4 decoration-ds-text/20">{{ order.orderNumber }}</div>
             </td>
-            <td class="px-2 py-1">
+            <td class="px-ds-4 py-ds-4">
               <div class="flex flex-col gap-0.5">
-                <span class="text-[9px] font-black text-emerald-500 uppercase">direct</span>
-                <span class="text-[8px] font-bold text-gray-300 uppercase">N/A</span>
+                <span class="text-[9px] font-bold text-ds-text uppercase tracking-widest">{{ order.sourcePageName || 'ARCHIVE' }}</span>
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest opacity-60">DIRECT</span>
               </div>
             </td>
-            <td class="px-2 py-1 text-[9px] font-bold text-gray-400 uppercase">N/A</td>
-            <td class="px-2 py-1 text-[9px] font-black text-primary dark:text-white uppercase truncate max-w-[80px]">{{ order.sourcePageName || 'Wholesale' }}</td>
-            <td class="px-2 py-1">
-              <div class="bg-blue-500 text-white px-2 py-1 rounded text-[9px] font-black uppercase truncate max-w-[100px]">{{ order.customerName }}</div>
-              <div class="flex items-center gap-1 mt-0.5">
-                <app-icon name="ThumbsUp" size="8" className="text-emerald-500"></app-icon>
-                <app-icon name="ThumbsDown" size="8" className="text-rose-500"></app-icon>
-              </div>
-            </td>
-            <td class="px-2 py-1 text-[9px] font-bold text-primary font-mono whitespace-nowrap">{{ order.customerPhone }}</td>
-            <td class="px-2 py-1">
-              <div class="px-2 py-0.5 rounded text-[9px] font-black uppercase text-center text-white" [ngStyle]="{ backgroundColor: getStatusColor(order.status) }">
+            <td class="px-ds-4 py-ds-4 text-[10px] font-bold text-ds-text-muted uppercase tracking-tight">Personnel</td>
+            <td class="px-ds-4 py-ds-4">
+              <div class="px-ds-3 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest text-center border" [ngStyle]="{ backgroundColor: getStatusColor(order.status) + '15', color: getStatusColor(order.status), borderColor: getStatusColor(order.status) + '30' }">
                 {{ order.status }}
               </div>
             </td>
-            <td class="px-2 py-1 text-[9px] font-bold text-gray-400 uppercase text-center">N/A</td>
-            <td class="px-2 py-1 text-[9px] font-bold text-gray-400 uppercase text-center">N/A</td>
-            <td class="px-2 py-1 text-center font-black text-[10px] text-emerald-600 font-mono">{{ order.total }}</td>
-            <td class="px-2 py-1 text-center font-black text-[10px] text-primary dark:text-white font-mono">{{ getPaidAmount(order) }}</td>
-            <td class="px-2 py-1 text-center font-black text-[10px] font-mono" [class.text-rose-600]="getDueAmount(order) > 0">{{ getDueAmount(order) }}</td>
-            <td class="px-2 py-1">
-              <div class="grid grid-cols-4 gap-0.5 min-w-[200px]">
-                <button (click)="openTracking(order, $event)" class="bg-blue-600 text-[8px] font-black text-white px-1 py-0.5 rounded uppercase">Tracking</button>
-                <button (click)="openTracking(order, $event)" class="bg-slate-800 text-[8px] font-black text-white px-1 py-0.5 rounded uppercase">History</button>
-                <button (click)="sendReminder(order, $event)" class="bg-orange-600 text-[8px] font-black text-white px-1 py-0.5 rounded uppercase">Reminder</button>
-                <button (click)="sendWhatsApp(order, $event)" class="bg-emerald-600 text-[8px] font-black text-white px-1 py-0.5 rounded uppercase">WhatsApp</button>
-                <button (click)="printInvoice(order, $event)" class="bg-gray-100 text-[8px] font-black text-slate-700 px-1 py-0.5 rounded border uppercase">Invoice</button>
-                <button (click)="openNotes(order, $event)" class="bg-blue-600 text-[8px] font-black text-white px-1 py-0.5 rounded uppercase">Notes</button>
-                <button (click)="moveToPreOrder(order, $event)" class="bg-slate-800 text-[8px] font-black text-white px-1 py-0.5 rounded uppercase">RE Order</button>
-                <button (click)="editOrder(order, $event)" class="bg-amber-500 text-[8px] font-black text-white px-1 py-0.5 rounded uppercase">Quick Edit</button>
+            <td class="px-ds-4 py-ds-4 text-center font-bold text-[11px] text-ds-text font-mono tracking-tighter">৳{{ order.total }}</td>
+            <td class="px-ds-4 py-ds-4 text-center font-bold text-[11px] text-ds-success font-mono tracking-tighter">৳{{ getPaidAmount(order) }}</td>
+            <td class="px-ds-4 py-ds-4 text-center font-bold text-[11px] font-mono tracking-tighter" [class.text-red-500]="getDueAmount(order) > 0">৳{{ getDueAmount(order) }}</td>
+            <td class="px-ds-4 py-ds-4">
+              <div class="flex items-center justify-end flex-wrap gap-ds-1 max-w-[220px] ml-auto">
+                <button (click)="openTracking(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-[8px] font-bold uppercase tracking-widest text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">Logs</button>
+                <button (click)="openNotes(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-[8px] font-bold uppercase tracking-widest text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">Notes</button>
+                <button (click)="printInvoice(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-[8px] font-bold uppercase tracking-widest text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">PDF</button>
+                <button (click)="sendWhatsApp(order, $event)" class="px-2 py-1 bg-ds-success/10 border border-ds-success/20 text-[8px] font-bold uppercase tracking-widest text-ds-success hover:bg-ds-success/20 transition-colors">WA</button>
+                <button (click)="editOrder(order, $event)" class="px-2 py-1 bg-ds-text text-ds-surface text-[8px] font-bold uppercase tracking-widest hover:opacity-80 transition-colors">Modify</button>
               </div>
             </td>
           </tr>
@@ -228,41 +214,49 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!isLoading && orders.length === 0" class="py-20 text-center">
-      <app-icon name="PackageX" size="64" className="mx-auto mb-4 text-gray-200"></app-icon>
-      <h3 class="text-lg font-semibold text-gray-400 uppercase tracking-widest">No history records</h3>
+    <div *ngIf="!isLoading && orders.length === 0" class="py-ds-32 text-center">
+      <app-icon name="Inbox" size="64" className="mx-auto mb-ds-6 text-ds-text-muted opacity-10"></app-icon>
+      <h3 class="text-[12px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Zero Activity Records</h3>
+      <p class="text-[10px] font-bold text-ds-text-muted/60 uppercase tracking-widest italic mt-2">Historical ledger is currently devoid of transactional nodes.</p>
     </div>
   </div>
 
   <!-- Shared Modals -->
   <app-admin-order-invoice *ngIf="invoiceOrder" [order]="invoiceOrder" (close)="invoiceOrder = null"></app-admin-order-invoice>
   
-  <!-- Notes Modal -->
-  <div *ngIf="isNotesModalOpen && notesOrder" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in" (click)="isNotesModalOpen = false">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
-      <div class="flex flex-col h-[520px] max-h-[85vh]">
-        <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-          <h3 class="text-base font-bold text-primary dark:text-white">Internal Notes - #{{ notesOrder.orderNumber }}</h3>
-          <button (click)="isNotesModalOpen = false" class="size-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400">
-            <app-icon name="X" size="18"></app-icon>
+  <!-- Notes Terminal -->
+  <div *ngIf="isNotesModalOpen && notesOrder" class="fixed inset-0 z-[200] flex items-center justify-center p-ds-4 bg-ds-text/60 backdrop-blur-md animate-in fade-in duration-300" (click)="isNotesModalOpen = false">
+    <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in duration-base" (click)="$event.stopPropagation()">
+      <div class="flex flex-col h-[550px] max-h-[85vh]">
+        <div class="px-ds-8 py-ds-6 border-b border-ds-border bg-ds-bg/50 flex items-center justify-between">
+          <div>
+            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Internal Correspondence</h3>
+            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Order #{{ notesOrder.orderNumber }} Archive</p>
+          </div>
+          <button (click)="isNotesModalOpen = false" class="size-10 rounded-sm hover:bg-ds-text/10 flex items-center justify-center text-ds-text-muted hover:text-ds-text transition-colors">
+            <app-icon name="X" size="20"></app-icon>
           </button>
         </div>
-        <div class="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/30">
-          <div *ngFor="let note of notesOrder.notes" class="flex flex-col space-y-1.5">
-            <div class="flex items-center justify-between px-1 text-[9px] font-black text-primary uppercase tracking-widest">
-              <span>{{ note.adminName }}</span>
-              <span class="text-slate-400">{{ note.createdAt | date:'MMM d, h:mm a' }}</span>
+        <div class="flex-1 overflow-y-auto p-ds-8 space-y-ds-6 bg-ds-bg/20">
+          <div *ngFor="let note of notesOrder.notes" class="flex flex-col space-y-ds-2">
+            <div class="flex items-center justify-between px-1 text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">
+              <span class="text-ds-text">{{ note.adminName }}</span>
+              <span>{{ note.createdAt | date:'MMM d • h:mm a' }}</span>
             </div>
-            <div class="bg-white dark:bg-slate-800 px-4 py-3 rounded-2xl border border-slate-100 shadow-sm">
-              <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{{ note.content }}</p>
+            <div class="bg-ds-surface px-ds-5 py-ds-4 rounded-sm border border-ds-border shadow-sm">
+              <p class="text-[11px] font-bold text-ds-text-sec uppercase tracking-tight leading-relaxed">{{ note.content }}</p>
             </div>
           </div>
+          <div *ngIf="!notesOrder.notes?.length" class="h-full flex flex-col items-center justify-center opacity-20">
+            <app-icon name="MessageSquareOff" size="48"></app-icon>
+            <p class="text-[9px] font-bold uppercase tracking-widest mt-4">Zero Internal Notes</p>
+          </div>
         </div>
-        <div class="p-5 border-t border-slate-100">
-          <div class="flex items-center gap-3">
-            <textarea [(ngModel)]="newNoteText" placeholder="Write internal note..." class="flex-1 bg-slate-100 border-none rounded-2xl px-4 py-3 text-sm outline-none resize-none"></textarea>
-            <button (click)="addNote()" [disabled]="isSavingNote || !newNoteText.trim()" class="size-11 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg">
-              <app-icon name="Send" size="18"></app-icon>
+        <div class="p-ds-8 border-t border-ds-border bg-ds-surface">
+          <div class="flex items-start gap-ds-4">
+            <textarea [(ngModel)]="newNoteText" placeholder="ENCODE INTERNAL MEMO..." class="form-input !min-h-[80px] !py-3 !px-4 !text-[11px] font-bold uppercase tracking-tight flex-1"></textarea>
+            <button (click)="addNote()" [disabled]="isSavingNote || !newNoteText.trim()" class="size-12 rounded-sm bg-ds-text text-ds-surface flex items-center justify-center hover:opacity-90 disabled:opacity-20 transition-all shadow-xl">
+              <app-icon name="Send" size="20"></app-icon>
             </button>
           </div>
         </div>
@@ -270,21 +264,24 @@
     </div>
   </div>
 
-  <!-- Tracking Modal -->
-  <div *ngIf="isTrackingModalOpen && trackingOrder" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in" (click)="isTrackingModalOpen = false">
-    <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[2rem] w-full max-w-lg overflow-hidden shadow-2xl animate-scale-up" (click)="$event.stopPropagation()">
-      <div class="bg-gradient-to-r from-violet-600 to-pink-600 p-6 flex items-center justify-between text-white">
-        <h3 class="text-lg font-bold">Log History - #{{ trackingOrder.orderNumber }}</h3>
-        <button (click)="isTrackingModalOpen = false"><app-icon name="X" size="18"></app-icon></button>
+  <!-- History Log Terminal -->
+  <div *ngIf="isTrackingModalOpen && trackingOrder" class="fixed inset-0 z-[200] flex items-center justify-center p-ds-4 bg-ds-text/60 backdrop-blur-md animate-in fade-in duration-300" (click)="isTrackingModalOpen = false">
+    <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in duration-base" (click)="$event.stopPropagation()">
+      <div class="px-ds-8 py-ds-6 border-b border-ds-border bg-ds-text text-ds-surface flex items-center justify-between">
+        <div>
+          <h3 class="text-[12px] font-bold uppercase tracking-[0.1em]">Protocol Log Hierarchy</h3>
+          <p class="text-[9px] font-bold uppercase tracking-[0.4em] opacity-60 mt-1">Transaction #{{ trackingOrder.orderNumber }}</p>
+        </div>
+        <button (click)="isTrackingModalOpen = false" class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm"><app-icon name="X" size="20"></app-icon></button>
       </div>
-      <div class="p-6 max-h-[450px] overflow-y-auto">
-        <div *ngFor="let log of trackingOrder.logs; let i = index" class="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 mb-3">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-sm font-bold text-primary dark:text-white">{{ log.statusTo }}</span>
-            <span class="text-[10px] text-gray-400">{{ log.createdAt | date:'dd/MM/yyyy h:mm a' }}</span>
+      <div class="p-ds-8 max-h-[500px] overflow-y-auto space-y-ds-4 bg-ds-bg/20">
+        <div *ngFor="let log of trackingOrder.logs; let i = index" class="p-ds-5 bg-ds-surface rounded-sm border border-ds-border group hover:border-ds-text transition-colors">
+          <div class="flex justify-between items-start mb-ds-3">
+            <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">{{ log.statusTo }}</span>
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">{{ log.createdAt | date:'dd/MM/yyyy • h:mm a' }}</span>
           </div>
-          <p class="text-[11px] text-gray-500 italic" *ngIf="log.note">"{{ log.note }}"</p>
-          <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-2">By {{ log.changedBy }}</p>
+          <p class="text-[11px] font-bold text-ds-text-sec uppercase tracking-tight italic" *ngIf="log.note">"{{ log.note }}"</p>
+          <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-ds-4 border-t border-ds-border/50 pt-2">Operator Identity: {{ log.changedBy }}</p>
         </div>
       </div>
     </div>

@@ -11,10 +11,12 @@ import {
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 
+import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
+
 @Component({
   selector: "app-admin-analytics",
   standalone: true,
-  imports: [CommonModule, FormsModule, PriceDisplayComponent],
+  imports: [CommonModule, FormsModule, PriceDisplayComponent, AppIconComponent],
   templateUrl: "./admin-analytics.component.html",
 })
 export class AdminAnalyticsComponent implements OnInit {

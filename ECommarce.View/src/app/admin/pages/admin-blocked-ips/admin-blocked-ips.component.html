@@ -1,136 +1,107 @@
-<div class="flex-1 overflow-y-auto p-3 space-y-4 scroll-smooth">
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h2
-        class="text-primary dark:text-white text-xl font-black uppercase tracking-tight"
-      >
-        IP Blocking
-      </h2>
-      <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest opacity-70">
-        Malicious access prevention
+      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Network Security</h1>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+        Terminal Authorization & IP Filtering
       </p>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-ds-8">
     <!-- Block Form -->
     <div class="lg:col-span-1">
-      <div
-        class="bg-white dark:bg-surface-dark p-3 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm"
-      >
-        <h3
-          class="text-xs font-black text-primary dark:text-white mb-4 uppercase tracking-tight flex items-center gap-2"
-        >
-          <app-icon
-            name="Ban"
-            size="16"
-            className="text-red-500"
-          ></app-icon>
-          Block IP
-        </h3>
-        <form [formGroup]="blockForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
+        <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
+          <app-icon name="Ban" size="14" className="text-red-500"></app-icon>
           <div>
-            <label
-              class="block text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1.5"
-              >IP Address</label
-            >
-            <input
-              type="text"
-              formControlName="ipAddress"
-              placeholder="e.g. 192.168.1.1"
-              class="w-full h-9 px-3 rounded-xl bg-gray-50 dark:bg-background-dark border border-gray-100 text-xs font-black text-primary dark:text-white placeholder-gray-400 focus:ring-1 focus:ring-primary outline-none"
-            />
-            <p
-              *ngIf="
-                blockForm.get('ipAddress')?.touched &&
-                blockForm.get('ipAddress')?.errors?.['pattern']
-              "
-              class="text-red-500 text-[10px] mt-1 font-bold"
-            >
-              Please enter a valid IPv4 address.
-            </p>
+            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Add Restriction</h3>
+            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Blacklist New Terminal</p>
           </div>
-          <div>
-            <label
-              class="block text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1.5"
-              >Reason</label
+        </div>
+        <div class="p-ds-8">
+          <form [formGroup]="blockForm" (ngSubmit)="onSubmit()" class="space-y-ds-6">
+            <div class="space-y-2">
+              <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Terminal Address (IPv4)</label>
+              <input
+                type="text"
+                formControlName="ipAddress"
+                placeholder="E.G. 192.168.1.1"
+                class="form-input !h-11 !px-ds-4 !text-[11px] font-mono font-bold"
+              />
+              <p
+                *ngIf="blockForm.get('ipAddress')?.touched && blockForm.get('ipAddress')?.errors?.['pattern']"
+                class="text-red-500 text-[9px] font-bold uppercase tracking-widest ml-1"
+              >
+                Invalid IPv4 Syntax
+              </p>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Logic for Restriction</label>
+              <textarea
+                formControlName="reason"
+                placeholder="SPECIFY REASON..."
+                rows="2"
+                class="form-input !py-ds-3 !px-ds-4 !text-[11px] font-bold uppercase min-h-[80px]"
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              [disabled]="blockForm.invalid || isLoading"
+              class="btn btn-primary w-full !h-12 !text-[10px] font-bold uppercase tracking-[0.3em] bg-red-600 hover:bg-red-700 border-red-600"
             >
-            <textarea
-              formControlName="reason"
-              placeholder="Why block?"
-              rows="2"
-              class="w-full px-3 py-2 rounded-xl bg-gray-50 dark:bg-background-dark border border-gray-100 text-xs font-black text-primary dark:text-white placeholder-gray-400 focus:ring-1 focus:ring-primary outline-none resize-none"
-            ></textarea>
-          </div>
-          <button
-            type="submit"
-            [disabled]="blockForm.invalid || isLoading"
-            class="w-full py-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white rounded-xl font-black text-[10px] uppercase tracking-widest transition-all shadow-lg shadow-red-500/20"
-          >
-            Block IP
-          </button>
-        </form>
+              Restrict Terminal
+            </button>
+          </form>
+        </div>
       </div>
     </div>
 
     <!-- Blocked List -->
     <div class="lg:col-span-2">
-      <div
-        class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm flex flex-col min-h-[400px]"
-      >
+      <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden flex flex-col min-h-[400px]">
+        <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
+          <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Restriction Registry</h3>
+          <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Active Blacklisted Nodes</p>
+        </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr
-                class="border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 text-[9px] uppercase font-black tracking-widest text-gray-400"
-              >
-                <th class="px-3 py-2">IP Address</th>
-                <th class="px-3 py-2">Reason</th>
-                <th class="px-3 py-2">Blocked At</th>
-                <th class="px-3 py-2 text-right">Action</th>
+              <tr class="bg-ds-bg/30 border-b border-ds-border">
+                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Terminal IP</th>
+                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Rationalization</th>
+                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Timestamp</th>
+                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] text-right">Protocol</th>
               </tr>
             </thead>
-            <tbody
-              class="divide-y divide-gray-100 dark:divide-gray-800 text-sm text-primary dark:text-white"
-            >
+            <tbody class="divide-y divide-ds-border/50">
               <tr *ngIf="isLoading">
-                <td colspan="4" class="p-8 text-center text-gray-500">
-                  Loading blocklist...
+                <td colspan="4" class="px-ds-6 py-ds-16 text-center">
+                  <app-icon name="Loader2" size="24" className="animate-spin text-ds-text-muted mx-auto mb-ds-3"></app-icon>
+                  <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">Synchronizing Registry...</p>
                 </td>
               </tr>
               <tr *ngIf="!isLoading && blockedIps.length === 0">
-                <td colspan="4" class="p-8 text-center text-gray-500 italic">
-                  No IPs are currently blocked.
-                </td>
+                <td colspan="4" class="px-ds-6 py-ds-16 text-center text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em] italic">Registry clear. No terminal restrictions active.</td>
               </tr>
-              <tr
-                *ngFor="let ip of blockedIps"
-                class="hover:bg-red-50 transition-colors border-b border-gray-50"
-              >
-                <td
-                  class="px-3 py-2 font-black text-red-500 text-[11px]"
-                >
-                  {{ ip.ipAddress }}
+              <tr *ngFor="let ip of blockedIps" class="hover:bg-red-50/10 transition-colors group">
+                <td class="px-ds-6 py-ds-4">
+                  <span class="text-[11px] font-bold text-red-500 font-mono tracking-tight">{{ ip.ipAddress }}</span>
                 </td>
-                <td
-                  class="px-3 py-2 text-[10px] font-bold text-gray-400 max-w-[200px] truncate"
-                  [title]="ip.reason || 'No reason provided'"
-                >
-                  {{ ip.reason || "—" }}
+                <td class="px-ds-6 py-ds-4">
+                  <p class="text-[10px] font-bold text-ds-text uppercase tracking-tight truncate max-w-[200px]" [title]="ip.reason || 'No rationalization provided'">
+                    {{ ip.reason || "—" }}
+                  </p>
                 </td>
-                <td class="px-3 py-2 text-gray-400">
-                  <div class="flex flex-col">
-                    <span class="font-black text-[10px]">{{
-                      ip.blockedAt | date: "mediumDate"
-                    }}</span>
-                  </div>
+                <td class="px-ds-6 py-ds-4">
+                  <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">{{ ip.blockedAt | date: "MMM dd, yyyy" }}</span>
                 </td>
-                <td class="px-3 py-2 text-right">
+                <td class="px-ds-6 py-ds-4 text-right">
                   <button
                     (click)="unblockIp(ip.id)"
-                    class="text-[10px] font-black text-emerald-500 hover:underline uppercase tracking-widest"
+                    class="text-[9px] font-bold text-ds-success hover:text-ds-text uppercase tracking-[0.2em] transition-colors"
                   >
-                    Unblock
+                    Authorize Node
                   </button>
                 </td>
               </tr>

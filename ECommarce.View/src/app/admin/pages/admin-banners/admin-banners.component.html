@@ -1,84 +1,87 @@
-<div class="p-4">
-  <div class="flex justify-between items-center mb-4">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-xl font-black text-primary dark:text-white uppercase tracking-wider">Banners & Campaigns</h1>
-      <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-tight opacity-70">Manage sliders and offer banners</p>
+      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Campaign Assets</h1>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">Visual Engagement & Promotion Management</p>
     </div>
     <button
       (click)="openAddModal()"
-      class="arza-btn-primary py-2"
+      class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest"
     >
-      <app-icon name="Plus" size="16"></app-icon>
-      <span class="text-xs">New Banner</span>
+      <app-icon name="Plus" size="14"></app-icon>
+      <span>Initialize Asset</span>
     </button>
   </div>
 
   <!-- Tab Bar -->
-  <div class="flex border-b border-gray-200 mb-4 overflow-x-auto no-scrollbar">
+  <div class="flex border-b border-ds-border overflow-x-auto no-scrollbar gap-ds-8">
     <button (click)="setTab('Hero')" 
-            [class.border-primary]="currentTab === 'Hero'" 
-            [class.text-primary]="currentTab === 'Hero'"
-            class="px-4 py-2 border-b-2 border-transparent font-black text-[10px] uppercase tracking-wider transition-all whitespace-nowrap">
-      Main Hero Slider
+            [class.border-ds-text]="currentTab === 'Hero'" 
+            [class.text-ds-text]="currentTab === 'Hero'"
+            [class.text-ds-text-muted]="currentTab !== 'Hero'"
+            class="px-2 py-4 border-b-2 border-transparent font-bold text-[10px] uppercase tracking-[0.3em] transition-all whitespace-nowrap">
+      Main Architecture
     </button>
     <button (click)="setTab('Spotlight')" 
-            [class.border-primary]="currentTab === 'Spotlight'" 
-            [class.text-primary]="currentTab === 'Spotlight'"
-            class="px-4 py-2 border-b-2 border-transparent font-black text-[10px] uppercase tracking-wider transition-all whitespace-nowrap">
-      Hero Side
+            [class.border-ds-text]="currentTab === 'Spotlight'" 
+            [class.text-ds-text]="currentTab === 'Spotlight'"
+            [class.text-ds-text-muted]="currentTab !== 'Spotlight'"
+            class="px-2 py-4 border-b-2 border-transparent font-bold text-[10px] uppercase tracking-[0.3em] transition-all whitespace-nowrap">
+      Side Modules
     </button>
     <button (click)="setTab('Promo')" 
-            [class.border-primary]="currentTab === 'Promo'" 
-            [class.text-primary]="currentTab === 'Promo'"
-            class="px-4 py-2 border-b-2 border-transparent font-black text-[10px] uppercase tracking-wider transition-all whitespace-nowrap">
+            [class.border-ds-text]="currentTab === 'Promo'" 
+            [class.text-ds-text]="currentTab === 'Promo'"
+            [class.text-ds-text-muted]="currentTab !== 'Promo'"
+            class="px-2 py-4 border-b-2 border-transparent font-bold text-[10px] uppercase tracking-[0.3em] transition-all whitespace-nowrap">
       Secondary Banners
     </button>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-ds-6">
     <div
       *ngFor="let banner of filteredBanners"
-      class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group"
+      class="bg-ds-surface rounded-sm border border-ds-border overflow-hidden group shadow-sm"
     >
-      <div class="relative h-28 bg-gray-100">
+      <div class="relative h-32 bg-ds-bg overflow-hidden">
         <img
           [src]="getBannerImageUrl(banner.imageUrl)"
           [alt]="banner.title"
-          class="w-full h-full object-cover"
+          class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
         />
         <div
-          class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2"
+          class="absolute inset-0 bg-ds-text/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-ds-3 backdrop-blur-sm"
         >
           <button
             (click)="openEditModal(banner)"
-            class="bg-white p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+            class="size-10 bg-ds-surface rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center"
           >
-            <app-icon name="Edit" size="14" className="text-gray-700"></app-icon>
+            <app-icon name="Edit3" size="16"></app-icon>
           </button>
           <button
             *ngIf="authService.isSuperAdmin()"
             (click)="deleteBanner(banner.id)"
-            class="bg-white p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+            class="size-10 bg-ds-surface rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center"
           >
-            <app-icon name="Trash2" size="14" className="text-red-500"></app-icon>
+            <app-icon name="Trash2" size="16"></app-icon>
           </button>
         </div>
-        <div class="absolute top-1.5 right-1.5 flex gap-1">
-          <span class="bg-primary text-white text-[8px] px-1.5 py-0.5 rounded font-black">#{{ banner.displayOrder }}</span>
-          <span *ngIf="banner.isActive" class="bg-emerald-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black">Active</span>
-          <span [ngClass]="{'bg-blue-500 text-white': banner.type === 'Hero', 'bg-emerald-500 text-white': banner.type === 'Promo', 'bg-amber-500 text-white': banner.type === 'Spotlight'}" class="text-[8px] px-1.5 py-0.5 rounded font-black">{{ banner.type || 'Hero' }}</span>
+        <div class="absolute top-2 right-2 flex flex-col gap-1.5 items-end">
+          <span class="bg-ds-text text-ds-surface text-[8px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-widest">SEQ #{{ banner.displayOrder }}</span>
+          <span *ngIf="banner.isActive" class="bg-ds-success text-ds-surface text-[8px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-widest">Live</span>
+          <span class="bg-ds-surface text-ds-text text-[8px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-widest border border-ds-border">{{ banner.type || 'HERO' }}</span>
         </div>
       </div>
-      <div class="p-2.5">
-        <h3 class="font-black text-primary text-xs mb-0.5 line-clamp-1 uppercase tracking-tight">
-          {{ banner.title || "Untitled" }}
+      <div class="p-ds-4 bg-ds-surface">
+        <h3 class="font-bold text-ds-text text-[11px] mb-1 line-clamp-1 uppercase tracking-tight">
+          {{ banner.title || "UNTITLED ASSET" }}
         </h3>
-        <p class="text-slate-400 text-[10px] line-clamp-1 mb-1.5 font-bold uppercase tracking-tighter">
+        <p class="text-ds-text-muted text-[9px] line-clamp-1 mb-3 font-bold uppercase tracking-widest">
           {{ banner.subtitle }}
         </p>
-        <div class="flex items-center gap-1.5">
-          <app-icon name="Link" size="10" className="text-slate-300"></app-icon>
-          <span class="text-[9px] text-slate-300 truncate font-mono">{{ banner.linkUrl || "No Link" }}</span>
+        <div class="flex items-center gap-ds-2 pt-ds-3 border-t border-ds-border/50">
+          <app-icon name="Link" size="10" className="text-ds-text-muted/40"></app-icon>
+          <span class="text-[8px] text-ds-text-muted truncate font-mono uppercase tracking-tighter">{{ banner.linkUrl || "NO ASSIGNED DESTINATION" }}</span>
         </div>
       </div>
     </div>
@@ -87,22 +90,22 @@
   <!-- Empty State -->
   <div
     *ngIf="banners.length === 0"
-    class="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200"
+    class="flex flex-col items-center justify-center py-ds-24 bg-ds-bg/30 rounded-sm border border-ds-border border-dashed"
   >
     <app-icon
       name="Image"
       size="64"
-      className="text-gray-300 mb-4"
+      className="text-ds-text-muted opacity-10 mb-ds-6"
     ></app-icon>
-    <h3 class="text-lg font-medium text-gray-600">No banners found</h3>
-    <p class="text-gray-500 mb-6">
-      Create your first hero banner to engage customers.
+    <h3 class="text-[12px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mb-2">No Visual Assets Detected</h3>
+    <p class="text-[10px] font-bold text-ds-text-muted/60 uppercase tracking-widest mb-ds-8">
+      Initialize your first hero module to engage catalog traffic.
     </p>
     <button
       (click)="openAddModal()"
-      class="bg-primary text-white px-6 py-2 rounded-lg font-medium"
+      class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest"
     >
-      Add {{ currentTab === 'Hero' ? 'Slider' : 'Banner' }}
+      Initialize {{ currentTab === 'Hero' ? 'Module' : 'Banner' }}
     </button>
   </div>
 </div>
@@ -110,95 +113,100 @@
 <!-- Modal -->
 <div
   *ngIf="isModalOpen"
-  class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+  class="fixed inset-0 bg-ds-text/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
+  (click)="closeModal()"
 >
   <div
-    class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in duration-300"
+    class="bg-ds-surface rounded-sm border border-ds-border w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
+    (click)="$event.stopPropagation()"
   >
     <div
-      class="px-4 py-3 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl"
+      class="px-ds-8 py-ds-4 border-b border-ds-border flex justify-between items-center bg-ds-bg/50"
     >
-      <h2 class="text-sm font-black text-primary uppercase tracking-wider">
-        {{ isEditing ? "Edit Banner" : "New Banner" }}
-      </h2>
+      <div>
+        <h2 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">
+          {{ isEditing ? "Synchronize Asset" : "Initialize Asset" }}
+        </h2>
+        <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Campaign Visual Configuration</p>
+      </div>
       <button
         (click)="closeModal()"
-        class="p-1 hover:bg-gray-200 rounded-lg transition-colors text-slate-400"
+        class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm text-ds-text-muted hover:text-ds-text"
       >
-        <app-icon name="X" size="16"></app-icon>
+        <app-icon name="X" size="18"></app-icon>
       </button>
     </div>
 
-    <form [formGroup]="bannerForm" (ngSubmit)="onSubmit()" class="p-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+    <form [formGroup]="bannerForm" (ngSubmit)="onSubmit()" class="p-ds-8 flex flex-col gap-ds-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
         <div class="col-span-2">
-          <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Banner Type</label>
-          <div class="flex gap-2">
+          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Asset Classification</label>
+          <div class="flex gap-ds-3">
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Hero" class="peer hidden" />
-              <div class="py-2 px-1 border rounded-xl bg-gray-50 peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary transition-all text-center">
-                <p class="font-black text-[10px] uppercase">Hero Slide</p>
+              <div class="py-ds-3 px-ds-2 border border-ds-border bg-ds-bg rounded-sm peer-checked:bg-ds-text peer-checked:text-ds-surface peer-checked:border-ds-text transition-all text-center">
+                <p class="font-bold text-[9px] uppercase tracking-widest">Main Hero</p>
               </div>
             </label>
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Promo" class="peer hidden" />
-              <div class="py-2 px-1 border rounded-xl bg-gray-50 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 transition-all text-center">
-                <p class="font-black text-[10px] uppercase">Secondary</p>
+              <div class="py-ds-3 px-ds-2 border border-ds-border bg-ds-bg rounded-sm peer-checked:bg-ds-text peer-checked:text-ds-surface peer-checked:border-ds-text transition-all text-center">
+                <p class="font-bold text-[9px] uppercase tracking-widest">Secondary</p>
               </div>
             </label>
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Spotlight" class="peer hidden" />
-              <div class="py-2 px-1 border rounded-xl bg-gray-50 peer-checked:bg-amber-600 peer-checked:text-white peer-checked:border-amber-600 transition-all text-center">
-                <p class="font-black text-[10px] uppercase">Offer</p>
+              <div class="py-ds-3 px-ds-2 border border-ds-border bg-ds-bg rounded-sm peer-checked:bg-ds-text peer-checked:text-ds-surface peer-checked:border-ds-text transition-all text-center">
+                <p class="font-bold text-[9px] uppercase tracking-widest">Offer Spotlight</p>
               </div>
             </label>
           </div>
         </div>
 
         <div class="col-span-2">
-          <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Title</label>
-          <input type="text" formControlName="title" class="w-full px-4 py-1.5 rounded-xl border border-gray-200 text-xs font-black uppercase outline-none focus:ring-1 focus:ring-primary transition-all" placeholder="e.g. Summer Collection 2026" />
+          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Lead Nomenclature (Title)</label>
+          <input type="text" formControlName="title" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" placeholder="E.G. AUTUMN ARCHIVE 2026" />
         </div>
 
         <div class="col-span-2">
-          <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Subtitle</label>
-          <input type="text" formControlName="subtitle" class="w-full px-4 py-1.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:ring-1 focus:ring-primary transition-all" placeholder="e.g. Get up to 50% off" />
+          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Supporting Narrative (Subtitle)</label>
+          <input type="text" formControlName="subtitle" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" placeholder="E.G. CURATED MINIMALISM" />
         </div>
 
         <div>
-          <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Order</label>
-          <input type="number" formControlName="displayOrder" class="w-full px-4 py-1.5 rounded-xl border border-gray-200 text-xs font-black outline-none focus:ring-1 focus:ring-primary transition-all" />
+          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Display Sequence</label>
+          <input type="number" formControlName="displayOrder" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono" />
         </div>
 
         <div>
-          <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Button</label>
-          <input type="text" formControlName="buttonText" class="w-full px-4 py-1.5 rounded-xl border border-gray-200 text-xs font-black uppercase outline-none focus:ring-1 focus:ring-primary transition-all" placeholder="Shop Now" />
+          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Action Directive (Button)</label>
+          <input type="text" formControlName="buttonText" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" placeholder="E.G. EXPLORE" />
         </div>
 
         <div class="col-span-2">
-          <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Link URL</label>
-          <input type="text" formControlName="linkUrl" class="w-full px-4 py-1.5 rounded-xl border border-gray-200 text-xs font-mono outline-none focus:ring-1 focus:ring-primary transition-all" placeholder="/category/summer" />
+          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Destination Protocol (Link)</label>
+          <input type="text" formControlName="linkUrl" class="form-input !h-11 !px-ds-4 !text-[11px] font-mono font-bold" placeholder="/COLLECTIONS/ARCHIVE" />
         </div>
 
         <div class="col-span-2">
-          <label class="block text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Banner Images</label>
-          <div class="grid grid-cols-2 gap-3">
-            <div class="space-y-1">
-              <p class="text-[8px] text-slate-400 uppercase font-black tracking-widest text-center">Desktop View</p>
-              <div class="relative h-20 bg-gray-50 rounded-xl border border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
-                <img *ngIf="bannerForm.get('imageUrl')?.value" [src]="getBannerImageUrl(bannerForm.get('imageUrl')?.value!)" class="w-full h-full object-cover" />
-                <div *ngIf="!bannerForm.get('imageUrl')?.value" class="text-gray-300 flex flex-col items-center">
-                  <app-icon name="Image" size="16"></app-icon>
+          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Asset Source Configuration</label>
+          <div class="grid grid-cols-2 gap-ds-6">
+            <div class="space-y-3">
+              <p class="text-[8px] text-ds-text-muted uppercase font-bold tracking-[0.2em] text-center">Desktop Viewport</p>
+              <div class="relative h-24 bg-ds-bg rounded-sm border border-dashed border-ds-border flex items-center justify-center overflow-hidden group/upload">
+                <img *ngIf="bannerForm.get('imageUrl')?.value" [src]="getBannerImageUrl(bannerForm.get('imageUrl')?.value!)" class="w-full h-full object-cover grayscale group-hover/upload:grayscale-0 transition-all duration-500" />
+                <div *ngIf="!bannerForm.get('imageUrl')?.value" class="text-ds-text-muted/20 flex flex-col items-center">
+                  <app-icon name="Monitor" size="24"></app-icon>
                 </div>
                 <input type="file" (change)="onFileSelected($event, 'desktop')" class="absolute inset-0 opacity-0 cursor-pointer" />
               </div>
             </div>
-            <div class="space-y-1">
-              <p class="text-[8px] text-slate-400 uppercase font-black tracking-widest text-center">Mobile View</p>
-              <div class="relative h-20 bg-gray-50 rounded-xl border border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
-                <img *ngIf="bannerForm.get('mobileImageUrl')?.value" [src]="getBannerImageUrl(bannerForm.get('mobileImageUrl')?.value!)" class="w-full h-full object-cover" />
-                <div *ngIf="!bannerForm.get('mobileImageUrl')?.value" class="text-gray-300 flex flex-col items-center">
-                  <app-icon name="Smartphone" size="16"></app-icon>
+            <div class="space-y-3">
+              <p class="text-[8px] text-ds-text-muted uppercase font-bold tracking-[0.2em] text-center">Mobile Viewport</p>
+              <div class="relative h-24 bg-ds-bg rounded-sm border border-dashed border-ds-border flex items-center justify-center overflow-hidden group/upload">
+                <img *ngIf="bannerForm.get('mobileImageUrl')?.value" [src]="getBannerImageUrl(bannerForm.get('mobileImageUrl')?.value!)" class="w-full h-full object-cover grayscale group-hover/upload:grayscale-0 transition-all duration-500" />
+                <div *ngIf="!bannerForm.get('mobileImageUrl')?.value" class="text-ds-text-muted/20 flex flex-col items-center">
+                  <app-icon name="Smartphone" size="24"></app-icon>
                 </div>
                 <input type="file" (change)="onFileSelected($event, 'mobile')" class="absolute inset-0 opacity-0 cursor-pointer" />
               </div>
@@ -206,17 +214,20 @@
           </div>
         </div>
 
-        <div class="col-span-2 flex items-center gap-2">
-          <input type="checkbox" id="isActive" formControlName="isActive" class="size-4 rounded border-gray-300 text-primary focus:ring-primary" />
-          <label for="isActive" class="text-[10px] font-black uppercase text-slate-500 tracking-wider">Banner is Active</label>
+        <div class="col-span-2 flex items-center gap-ds-3 bg-ds-bg px-ds-4 py-ds-3 rounded-sm border border-ds-border">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input class="sr-only peer" type="checkbox" formControlName="isActive" />
+            <div class="w-9 h-5 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-4 after:w-4 after:transition-all peer-checked:bg-ds-text"></div>
+          </label>
+          <span class="text-[10px] font-bold uppercase text-ds-text-muted tracking-widest">Synchronize with Live Frontend</span>
         </div>
       </div>
 
-      <div class="flex justify-end gap-2 pt-4 border-t border-gray-100">
-        <button type="button" (click)="closeModal()" class="px-4 py-2 rounded-xl text-[10px] font-black uppercase text-slate-500 bg-slate-50 hover:bg-slate-100 transition-colors">Cancel</button>
-        <button type="submit" [disabled]="isSubmitting" class="arza-btn-primary py-2 px-6">
-          <app-icon *ngIf="isSubmitting" name="Loader2" size="14" className="animate-spin mr-1"></app-icon>
-          <span class="text-[10px] font-black uppercase tracking-wider">{{ isEditing ? "Update" : "Create" }}</span>
+      <div class="flex justify-end gap-ds-4 pt-ds-6 border-t border-ds-border">
+        <button type="button" (click)="closeModal()" class="btn btn-secondary !h-12 px-ds-10 !text-[10px] font-bold uppercase tracking-widest">Abort</button>
+        <button type="submit" [disabled]="isSubmitting" class="btn btn-primary !h-12 px-ds-12 !text-[10px] font-bold uppercase tracking-widest !bg-ds-text !text-ds-surface">
+          <app-icon *ngIf="isSubmitting" name="Loader2" size="14" className="animate-spin mr-ds-2"></app-icon>
+          <span>{{ isEditing ? "Synchronize" : "Establish Module" }}</span>
         </button>
       </div>
     </form>
