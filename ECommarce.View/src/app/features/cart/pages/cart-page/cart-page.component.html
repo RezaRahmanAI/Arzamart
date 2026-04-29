@@ -1,55 +1,36 @@
 @if (vm$ | async; as vm) {
-  <div class="flex flex-col min-h-screen">
-    <main class="flex-grow py-8 px-4 sm:px-6 lg:px-8 max-w-[1280px] mx-auto w-full">
+  <div class="bg-ds-bg min-h-screen text-ds-text">
+    <main class="site-container py-ds-10 flex flex-1 flex-col">
       @if (vm.cartItems.length > 0) {
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-          <div class="lg:col-span-8 flex flex-col gap-6">
-            <div
-              class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-border-color dark:border-gray-800"
-            >
-              <div>
-                <span class="text-[10px] uppercase tracking-[0.3em] text-text-sub font-black mb-1 block">Your Items ({{ vm.cartItems.length }})</span>
-                <h1
-                  class="text-4xl md:text-5xl font-black text-primary dark:text-white uppercase tracking-tighter leading-none"
-                >
-                  Shopping Bag
-                </h1>
-              </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-12">
+          <!-- Left: Items -->
+          <div class="lg:col-span-8 space-y-ds-8">
+            <div class="space-y-ds-2">
+              <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Bag — {{ vm.cartItems.length }} Items</span>
+              <h1 class="section-title">Shopping Bag</h1>
             </div>
-            <div
-              class="bg-supporting/40 rounded-xl p-6 border border-border-color shadow-sm"
-            >
-              <div class="flex justify-between items-end mb-2">
+
+            <!-- Free Shipping Progress -->
+            <div class="p-ds-6 bg-ds-surface border border-ds-border rounded-sm">
+              <div class="flex justify-between items-end mb-ds-3">
                 @if (vm.summary.freeShippingRemaining > 0) {
-                  <p class="text-sm font-medium text-primary dark:text-white">
-                    Spend
-                    <app-price-display
-                      class="font-bold text-primary dark:text-white"
-                      [amount]="vm.summary.freeShippingRemaining"
-                      size="sm"
-                    ></app-price-display>
-                    more for
-                    <span class="text-primary dark:text-accent font-bold">Free Shipping</span>
+                  <p class="text-[11px] font-bold uppercase tracking-widest text-ds-text-sec">
+                    Spend ৳{{ vm.summary.freeShippingRemaining }} more for <span class="text-ds-accent">Free Delivery</span>
                   </p>
                 } @else {
-                  <p class="text-sm font-medium text-primary dark:text-white">
-                    You have unlocked
-                    <span class="text-primary dark:text-accent font-bold">Free Shipping</span>
+                  <p class="text-[11px] font-bold uppercase tracking-widest text-ds-success">
+                    You have unlocked <span class="font-bold">Free Delivery</span>
                   </p>
                 }
-                <span class="text-xs font-semibold text-text-sub dark:text-slate-400">
+                <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">
                   {{ vm.summary.freeShippingProgress | number: "1.0-0" }}%
                 </span>
               </div>
-              <div
-                class="w-full bg-supporting dark:bg-gray-700 rounded-full h-2.5 overflow-hidden"
-              >
-                <div
-                  class="bg-primary dark:bg-accent h-2.5 rounded-full transition-all duration-500"
-                  [style.width.%]="vm.summary.freeShippingProgress"
-                ></div>
+              <div class="w-full bg-ds-bg border border-ds-border h-1.5 overflow-hidden">
+                <div class="bg-ds-accent h-full transition-all duration-1000" [style.width.%]="vm.summary.freeShippingProgress"></div>
               </div>
             </div>
+
             <div class="flex flex-col gap-4">
               @for (item of vm.cartItems; track item.id) {
                 <div
@@ -181,7 +162,7 @@
                   ></app-price-display>
                 </div>
                 <button
-                  class="w-full bg-primary hover:bg-[#084050] text-white font-bold py-3.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                  class="w-full bg-primary hover:bg-[#111111] text-white font-bold py-3.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
                   type="button"
                   routerLink="/checkout"
                 >

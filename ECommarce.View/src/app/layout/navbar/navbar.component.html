@@ -1,139 +1,131 @@
 <header
-  class="fixed z-50 w-full transition-all duration-300 bg-white/95 backdrop-blur-md border-b border-border-color"
-  [class.py-1]="isScrolled"
-  [class.py-2]="!isScrolled"
+  class="fixed z-50 w-full transition-all duration-base bg-ds-bg/90 backdrop-blur-glass border-b border-ds-border"
 >
   @if (vm$ | async; as vm) {
     <div class="site-container">
-      <!-- Row 1: Logo & Nav & Icons -->
-      <div class="flex items-center justify-between h-12 lg:h-12">
-        <!-- Logo -->
-        <a routerLink="/" class="flex-shrink-0 flex items-center group">
+      <!-- Main Row -->
+      <div class="flex items-center justify-between h-14 lg:h-16">
+        <!-- Left: Mobile Toggle -->
+        <button (click)="toggleMenu()" class="lg:hidden p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
+          @if (isMenuOpen) {
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          }
+        </button>
+
+        <!-- Left: Desktop Categories Trigger -->
+        <div class="hidden lg:flex items-center gap-ds-6">
+          <button
+            (click)="toggleCategoriesMenu()"
+            class="flex items-center gap-ds-2 text-[11px] font-bold uppercase tracking-widest text-ds-text-sec hover:text-ds-text transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-500" [class.rotate-90]="isCategoriesMenuOpen"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            <span>Explore</span>
+          </button>
+        </div>
+
+        <!-- Center: Logo -->
+        <a routerLink="/" class="absolute left-1/2 -translate-x-1/2 flex-shrink-0 flex items-center group">
           <img
-            [src]="
-              vm.settings.logoUrl
-                ? imageUrlService.getImageUrl(vm.settings.logoUrl!)
-                : 'assets/logo.svg'
-            "
+            [src]="vm.settings.logoUrl ? imageUrlService.getImageUrl(vm.settings.logoUrl!) : 'assets/logo.svg'"
             [alt]="vm.settings.websiteName || 'Arza Mart'"
-            class="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            class="h-6 lg:h-7 w-auto object-contain transition-transform duration-base group-hover:scale-105"
           />
         </a>
 
-        <!-- Center-Right: Navigation Links -->
-        <div class="hidden lg:flex items-center gap-6 ml-auto mr-12">
-          @for (item of vm.menu; track item.id) {
-            <a
-              [routerLink]="['/category', item.slug]"
-              class="text-[11px] font-bold uppercase tracking-wider text-primary hover:text-accent transition-colors cursor-pointer"
-            >
-              {{ item.name }}
-            </a>
-          }
-        </div>
-
-          <!-- Far Right: Actions -->
-        <div class="flex items-center gap-3 md:gap-6 flex-shrink-0">
-          <!-- Mobile Search Toggle -->
-          <button (click)="toggleMobileSearch()" class="lg:hidden p-1 text-text-sub hover:text-primary transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          </button>
-          
-
-          
-          <a routerLink="/cart" class="relative group p-1 text-primary hover:text-accent transition-all duration-300 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 stroke-[2]"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-            @if (vm.cartCount > 0) {
-              <span
-                class="absolute -top-1 -right-1 h-4 w-4 bg-accent text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform"
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-ds-2 md:gap-ds-6">
+          <!-- Desktop Nav Links -->
+          <nav class="hidden lg:flex items-center gap-ds-8 mr-ds-8">
+            @for (item of vm.menu.slice(0, 4); track item.id) {
+              <a
+                [routerLink]="['/category', item.slug]"
+                class="nav-link !py-0 !text-[11px] !tracking-widest"
               >
-                {{ vm.cartCount }}
-              </span>
+                {{ item.name }}
+              </a>
             }
-          </a>
+          </nav>
 
-          <a routerLink="/profile" class="text-primary hover:text-accent transition-all duration-300 cursor-pointer p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 stroke-[2]"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </a>
-
-          <!-- Mobile Toggle -->
-          <button (click)="toggleMenu()" class="lg:hidden p-1 text-text-sub hover:text-primary transition-colors">
-            @if (isMenuOpen) {
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            } @else {
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-            }
-          </button>
-        </div>
-      </div>
-
-      <!-- Row 2: Search & Categories (Desktop only) -->
-      <div class="hidden lg:flex items-center gap-4 py-2 border-t border-supporting bg-white">
-        <!-- Categories Dropdown Button -->
-        <div class="relative w-full lg:w-64">
-          <button
-            (click)="toggleCategoriesMenu()"
-            class="w-full flex items-center justify-between gap-3 px-4 py-2 bg-supporting/40 hover:bg-supporting/60 border border-border-color rounded-lg text-[10px] font-bold text-text-main transition-all duration-300 group"
-          >
-            <div class="flex items-center gap-2 md:gap-3">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-primary group-hover:rotate-180 transition-transform duration-500"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-              <span class="uppercase tracking-[0.1em]">All Categories</span>
-            </div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 opacity-40 transition-transform duration-300" [class.rotate-180]="isCategoriesMenuOpen"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-
-          <!-- Categories Dropdown -->
-          @if (isCategoriesMenuOpen) {
-            <div
-              class="absolute top-full left-0 w-full mt-2 bg-white border border-border-color shadow-2xl rounded-2xl p-4 grid grid-cols-1 gap-1 z-[60] animate-fade-in-up origin-top"
-            >
-               @for (item of vm.menu; track item.id) {
-                 <a
-                  [routerLink]="['/category', item.slug]"
-                  (click)="isCategoriesMenuOpen = false"
-                  class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold text-text-sub hover:text-primary hover:bg-primary/5 transition-all duration-200"
-                >
-                  {{ item.name }}
-                </a>
-               }
-            </div>
-          }
-        </div>
-
-        <!-- Search Bar -->
-        <div class="relative flex-1 w-full">
-          <div class="relative flex items-center">
-            <input
-              #searchInput
-              type="text"
-              [value]="searchQuery"
-              (input)="searchQuery = searchInput.value"
-              (keyup.enter)="onSearch()"
-              placeholder="Search for products..."
-              class="w-full h-10 pl-5 pr-12 bg-supporting/40 border border-border-color rounded-lg text-sm text-text-main placeholder:text-gray-400 focus:ring-2 focus:ring-primary/10 focus:border-primary/20 focus:bg-white transition-all duration-300"
-            />
-            <button
-              (click)="onSearch()"
-              class="absolute right-2 px-4 py-2 bg-white text-gray-400 hover:text-primary transition-all duration-300"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <!-- Icons -->
+          <div class="flex items-center gap-ds-3">
+            <button (click)="toggleMobileSearch()" class="p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </button>
+            
+            <a routerLink="/cart" class="relative group p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              @if (vm.cartCount > 0) {
+                <span class="absolute top-ds-1 right-ds-1 h-3.5 w-3.5 bg-ds-accent text-ds-hero-text text-[8px] font-bold rounded-full flex items-center justify-center">
+                  {{ vm.cartCount }}
+                </span>
+              }
+            </a>
+
+            <a routerLink="/profile" class="p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </a>
           </div>
         </div>
       </div>
+
+      <!-- Desktop Categories Dropdown -->
+      @if (isCategoriesMenuOpen) {
+        <div
+          class="absolute top-full left-0 w-full bg-ds-bg border-b border-ds-border animate-fade-in z-[60]"
+        >
+          <div class="site-container py-ds-10 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-ds-6">
+            @for (item of vm.menu; track item.id) {
+              <a
+                [routerLink]="['/category', item.slug]"
+                (click)="isCategoriesMenuOpen = false"
+                class="group flex flex-col gap-ds-2"
+              >
+                <span class="text-ds-sm font-bold text-ds-text group-hover:text-ds-text-sec transition-colors">{{ item.name }}</span>
+                <span class="text-[10px] text-ds-text-muted uppercase tracking-widest">Shop All</span>
+              </a>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Expanded Search Bar (Desktop) -->
+      @if (isSearchOpen) {
+        <div class="absolute top-full left-0 w-full bg-ds-bg border-b border-ds-border animate-fade-in z-[60] py-ds-4">
+          <div class="site-container">
+            <div class="relative flex items-center">
+              <input
+                #searchInput
+                type="text"
+                [value]="searchQuery"
+                (input)="searchQuery = searchInput.value"
+                (keyup.enter)="onSearch()"
+                placeholder="What are you looking for?"
+                class="w-full h-12 bg-transparent border-none text-ds-xl font-bold text-ds-text placeholder:text-ds-text-muted focus:ring-0"
+              />
+              <button (click)="onSearch()" class="p-ds-2 text-ds-text hover:text-ds-text-sec transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              </button>
+              <button (click)="isSearchOpen = false" class="ml-ds-4 p-ds-2 text-ds-text-muted hover:text-ds-text transition-colors">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   }
 </header>
 
-<div class="h-16 lg:h-28"></div>
+<div class="h-14 lg:h-16"></div>
+
 
 @if (isMenuOpen) {
-  <div
-    class="lg:hidden fixed inset-0 z-[100] bg-white pt-20 px-5 overflow-y-auto animate-fade-in"
-  >
+  <div class="lg:hidden fixed inset-0 z-[100] bg-ds-bg pt-20 px-ds-6 overflow-y-auto animate-fade-in">
     <!-- Mobile Search Bar -->
     @if (isSearchOpen) {
-      <div class="mb-6 animate-fade-in">
+      <div class="mb-ds-8 animate-fade-in">
         <div class="relative">
           <input
             #mobileSearchInput
@@ -143,47 +135,46 @@
             (input)="searchQuery = mobileSearchInput.value"
             (keyup.enter)="onSearch()"
             placeholder="Search for products..."
-            class="w-full h-12 pl-12 pr-12 bg-supporting/40 border border-border-color rounded-xl text-base text-text-main placeholder:text-gray-400"
+            class="w-full h-12 pl-12 pr-ds-6 bg-ds-surface border border-ds-border rounded-sm text-ds-base font-bold uppercase tracking-widest text-ds-text placeholder:text-ds-text-muted outline-none focus:border-ds-accent transition-colors"
           />
-          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="absolute left-ds-4 top-1/2 -translate-y-1/2 text-ds-text-muted">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           </span>
-          <button (click)="toggleMobileSearch()" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-          </button>
         </div>
       </div>
     }
 
-    <div class="flex justify-between items-center mb-6">
-       <img src="assets/logo.svg" class="h-7 w-auto" alt="Logo" />
-       <button (click)="closeMenu()" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">
-         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    <div class="flex justify-between items-center mb-ds-8">
+       <span class="text-ds-lg font-bold uppercase tracking-[0.4em]">Menu</span>
+       <button (click)="closeMenu()" class="p-ds-2 border border-ds-border text-ds-text-muted hover:text-ds-text transition-colors">
+         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
        </button>
     </div>
-    <nav class="flex flex-col gap-1">
+
+    <nav class="flex flex-col border-t border-ds-border">
       @if (vm$ | async; as vm) {
           @for (item of vm.menu; track item.id) {
             <a 
                 [routerLink]="['/category', item.slug]"
                 (click)="closeMenu()"
-                class="py-4 px-2 border-b border-gray-100 text-sm font-semibold uppercase tracking-wider text-text-main hover:text-primary hover:bg-gray-50 transition-colors rounded-lg"
+                class="py-ds-6 border-b border-ds-border text-[11px] font-bold uppercase tracking-[0.3em] text-ds-text hover:text-ds-accent transition-colors"
             >
                 {{ item.name }}
             </a>
           }
       }
     </nav>
-    <div class="mt-8 pb-8">
 
-      <a routerLink="/cart" (click)="closeMenu()" class="flex items-center gap-3 py-3 px-2 text-sm font-semibold uppercase tracking-wider text-text-main hover:text-primary hover:bg-gray-50 transition-colors rounded-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        Cart
+    <div class="mt-ds-10 space-y-ds-2">
+      <a routerLink="/cart" (click)="closeMenu()" class="flex items-center gap-ds-3 py-ds-4 text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec hover:text-ds-text transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Your Bag
       </a>
-      <a routerLink="/profile" (click)="closeMenu()" class="flex items-center gap-3 py-3 px-2 text-sm font-semibold uppercase tracking-wider text-text-main hover:text-primary hover:bg-gray-50 transition-colors rounded-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <a routerLink="/profile" (click)="closeMenu()" class="flex items-center gap-ds-3 py-ds-4 text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec hover:text-ds-text transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Account
       </a>
     </div>
   </div>
 }
+

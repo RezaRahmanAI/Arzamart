@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-[#f5f5f3] font-sans text-[#1a1a1a] pb-20">
+﻿<div class="min-h-screen bg-[#F5F5F5] font-sans text-[#1a1a1a] pb-20">
   <!-- Loading State -->
   @if (isLoading) {
     <div
@@ -9,7 +9,7 @@
         size="48"
         className="text-[#1a1a1a] animate-spin"
       ></app-icon>
-      <p class="text-[#555] font-medium tracking-widest text-xs uppercase">
+      <p class="text-[#1A1A1A] font-medium tracking-widest text-xs uppercase">
         Loading...
       </p>
     </div>
@@ -55,7 +55,7 @@
           <!-- Main Image Area -->
           <div class="relative flex-1">
             <div
-              class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[550px]"
+              class="relative bg-[#EFEFEF] overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[550px]"
             >
               <!-- Images -->
               @for (url of gallery; track url; let i = $index) {
@@ -72,7 +72,7 @@
               @if (product.tier) {
                 <div class="absolute top-6 right-6 z-10">
                   <span
-                    class="px-4 py-1.5 bg-white/95 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] border border-[#eee] backdrop-blur-sm shadow-sm"
+                    class="px-4 py-1.5 bg-white/95 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] border border-[#E0E0E0] backdrop-blur-sm shadow-sm"
                   >
                     {{ product.tier }}
                   </span>
@@ -137,12 +137,12 @@
               {{ product.name }}
             </h1>
             @if (product.shortDescription) {
-              <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#ff7a00] whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></div>
+              <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#111111] whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></div>
             }
           </div>
 
           <!-- Pricing Section -->
-          <div class="flex items-baseline gap-4 py-5 border-y border-[#eee]">
+          <div class="flex items-baseline gap-4 py-5 border-y border-[#E0E0E0]">
             <app-price-display
               class="text-3xl font-sans font-bold text-[#1a1a1a]"
               [amount]="currentPrice"
@@ -171,7 +171,7 @@
               <div class="space-y-5">
                 <div class="flex items-center justify-between">
                   <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">Select Size</p>
-                  <button (click)="openSizeGuide()" type="button" class="text-[9px] uppercase tracking-[0.2em] text-[#999] hover:text-[#1a1a1a] transition-colors border-b border-[#eee] pb-0.5">Size Guide</button>
+                  <button (click)="openSizeGuide()" type="button" class="text-[9px] uppercase tracking-[0.2em] text-[#BBBBBB] hover:text-[#1a1a1a] transition-colors border-b border-[#E0E0E0] pb-0.5">Size Guide</button>
                 </div>
                 <div class="flex flex-wrap gap-2">
                   @for (v of product.variants; track v.id) {
@@ -184,14 +184,14 @@
                       [class.border-[#1a1a1a]]="v.size === checkoutForm.controls.selectedSize.value"
                       [class.bg-white]="v.size !== checkoutForm.controls.selectedSize.value"
                       [class.text-[#1a1a1a]]="v.size !== checkoutForm.controls.selectedSize.value"
-                      [class.border-[#eee]]="v.size !== checkoutForm.controls.selectedSize.value"
+                      [class.border-[#E0E0E0]]="v.size !== checkoutForm.controls.selectedSize.value"
                     >
                       {{ v.size }}
                     </button>
                   }
                 </div>
                 @if (checkoutForm.controls.selectedSize.value) {
-                  <p class="text-[9px] uppercase tracking-[0.2em] text-[#bbb] font-medium">
+                  <p class="text-[9px] uppercase tracking-[0.2em] text-[#BBBBBB] font-medium">
                     Stock Status: <span class="text-[#1a1a1a]">In stock</span>
                   </p>
                 }
@@ -200,27 +200,27 @@
           </div>
 
           <!-- Description & Features -->
-          <div class="space-y-8 pt-8 border-t border-[#eee]">
+          <div class="space-y-8 pt-8 border-t border-[#E0E0E0]">
             @if (product.description) {
               <div class="space-y-4">
-                <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#ff7a00]">Description</h3>
-                <div class="text-[16px] text-[#444] leading-[1.7] font-light whitespace-pre-line prose prose-slate prose-sm max-w-none" [innerHTML]="product.description | safeHtml"></div>
+                <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#111111]">Description</h3>
+                <div class="text-[16px] text-[#1A1A1A] leading-[1.7] font-light whitespace-pre-line prose prose-slate prose-sm max-w-none" [innerHTML]="product.description | safeHtml"></div>
               </div>
             }
 
             <!-- Features Info -->
             <div class="grid grid-cols-2 gap-4 pt-6">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white border border-[#eee] flex items-center justify-center">
-                  <app-icon name="Truck" size="16" className="text-[#888]"></app-icon>
+                <div class="w-8 h-8 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center">
+                  <app-icon name="Truck" size="16" className="text-[#888888]"></app-icon>
                 </div>
-                <span class="text-[9px] uppercase tracking-[0.1em] text-[#888] font-bold">Priority Shipping</span>
+                <span class="text-[9px] uppercase tracking-[0.1em] text-[#888888] font-bold">Priority Shipping</span>
               </div>
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white border border-[#eee] flex items-center justify-center">
-                  <app-icon name="ShieldCheck" size="16" className="text-[#888]"></app-icon>
+                <div class="w-8 h-8 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center">
+                  <app-icon name="ShieldCheck" size="16" className="text-[#888888]"></app-icon>
                 </div>
-                <span class="text-[9px] uppercase tracking-[0.1em] text-[#888] font-bold">Secure Payment</span>
+                <span class="text-[9px] uppercase tracking-[0.1em] text-[#888888] font-bold">Secure Payment</span>
               </div>
             </div>
           </div>
@@ -229,7 +229,7 @@
 
       <!-- Tabs/Accordions -->
       <div class="pt-2">
-        <div class="divide-y divide-[#eee] border-t border-[#eee]">
+        <div class="divide-y divide-[#E0E0E0] border-t border-[#E0E0E0]">
           @if (product.fabricAndCare) {
             <details class="group">
               <summary
@@ -242,10 +242,10 @@
                 <app-icon
                   name="Plus"
                   size="16"
-                  className="text-[#888] transition-transform duration-300 group-open:rotate-45"
+                  className="text-[#888888] transition-transform duration-300 group-open:rotate-45"
                 ></app-icon>
               </summary>
-              <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium whitespace-pre-line" [innerHTML]="product.fabricAndCare | safeHtml">
+              <div class="pb-6 text-xs text-[#888888] leading-relaxed font-medium whitespace-pre-line" [innerHTML]="product.fabricAndCare | safeHtml">
               </div>
             </details>
           }
@@ -260,17 +260,17 @@
               <app-icon
                 name="Plus"
                 size="16"
-                className="text-[#888] transition-transform duration-300 group-open:rotate-45"
+                className="text-[#888888] transition-transform duration-300 group-open:rotate-45"
               ></app-icon>
             </summary>
-            <div class="pb-6 text-xs text-[#666] leading-relaxed font-medium whitespace-pre-line" [innerHTML]="(product.shippingAndReturns || 'Express delivery in 24-48 hours. Stress-free returns.') | safeHtml">
+            <div class="pb-6 text-xs text-[#888888] leading-relaxed font-medium whitespace-pre-line" [innerHTML]="(product.shippingAndReturns || 'Express delivery in 24-48 hours. Stress-free returns.') | safeHtml">
             </div>
           </details>
         </div>
       </div>
 
       <!-- ROW 2: Order Form Section -->
-      <div class="mt-20 xl:mt-24 pt-20 border-t-2 border-dashed border-[#ddd]">
+      <div class="mt-20 xl:mt-24 pt-20 border-t-2 border-dashed border-[#E0E0E0]">
         <div class="max-w-[1000px] mx-auto">
           <div class="text-center mb-16 space-y-4">
             <h2
@@ -279,11 +279,11 @@
               Complete Your Order
             </h2>
             <div class="flex items-center justify-center gap-4">
-              <span class="h-[1px] w-12 bg-[#ddd]"></span>
-              <p class="text-xs font-bold text-[#888] uppercase tracking-[0.2em]">
+              <span class="h-[1px] w-12 bg-[#E0E0E0]"></span>
+              <p class="text-xs font-bold text-[#888888] uppercase tracking-[0.2em]">
                 Cash on delivery nationwide
               </p>
-              <span class="h-[1px] w-12 bg-[#ddd]"></span>
+              <span class="h-[1px] w-12 bg-[#E0E0E0]"></span>
             </div>
           </div>
 
@@ -342,17 +342,17 @@
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="space-y-2">
                       <label
-                        class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                        class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1"
                         >Mobile Number</label
                       >
                       <div class="relative flex">
-                        <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-[#eee] bg-[#fcfcfc] text-xs font-black text-[#888]">+88</span>
+                        <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-[#E0E0E0] bg-[#FFFFFF] text-xs font-black text-[#888888]">+88</span>
                         <input
                           type="tel"
                           formControlName="phone"
                           placeholder="01xxxxxxxxx"
                           autocomplete="tel"
-                          class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-r-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc]"
+                          class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-r-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#E0E0E0]"
                         />
                       </div>
                       @if (checkoutForm.controls.phone.touched && checkoutForm.controls.phone.invalid) {
@@ -366,7 +366,7 @@
 
                     <div class="space-y-2">
                       <label
-                        class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                        class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1"
                         >Full Name</label
                       >
                       <input
@@ -374,7 +374,7 @@
                         formControlName="fullName"
                         placeholder="e.g. Abdullah"
                         autocomplete="name"
-                        class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc]"
+                        class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#E0E0E0]"
                       />
                       @if (checkoutForm.controls.fullName.touched && checkoutForm.controls.fullName.invalid) {
                         <p
@@ -390,17 +390,17 @@
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <!-- City -->
                     <div class="space-y-2">
-                      <label class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1">City</label>
+                      <label class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1">City</label>
                       <div class="relative">
                         <div class="relative items-center flex cursor-pointer" (click)="toggleCityDropdown()">
                           <input
-                            class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc] pointer-events-none"
+                            class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#E0E0E0] pointer-events-none"
                             type="text"
                             [value]="checkoutForm.controls.city.value"
                             placeholder="Select city"
                             readonly
                           />
-                          <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-[#888] pointer-events-none"></app-icon>
+                          <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-[#888888] pointer-events-none"></app-icon>
                         </div>
 
                         <!-- Dropdown -->
@@ -408,12 +408,12 @@
                           <div
                             class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
                             (click)="$event.stopPropagation()">
-                            <div class="p-3 border-b border-[#eee]">
+                            <div class="p-3 border-b border-[#E0E0E0]">
                               <div class="relative flex items-center">
-                                <app-icon name="Search" size="16" className="absolute left-3 text-[#ccc]"></app-icon>
+                                <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
                                 <input
                                   type="text"
-                                  class="w-full pl-10 pr-4 py-2 bg-[#fcfcfc] border-none rounded-xl text-sm font-bold focus:ring-0 outline-none"
+                                  class="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border-none rounded-xl text-sm font-bold focus:ring-0 outline-none"
                                   placeholder="Search cities..."
                                   (input)="filterCities($event)"
                                   [value]="citySearch"
@@ -423,12 +423,12 @@
                             </div>
                             <ul class="max-h-60 overflow-y-auto py-1">
                               @if (filteredCities.length === 0) {
-                                <li class="px-5 py-3 text-xs text-[#888] text-center font-bold">No cities found</li>
+                                <li class="px-5 py-3 text-xs text-[#888888] text-center font-bold">No cities found</li>
                               }
                               @for (city of filteredCities; track city) {
                                 <li
                                   (click)="selectCity(city)"
-                                  class="px-5 py-3 text-sm text-[#555] font-bold hover:bg-[#fcfcfc] hover:text-[#1a1a1a] cursor-pointer transition-colors"
+                                  class="px-5 py-3 text-sm text-[#1A1A1A] font-bold hover:bg-[#FFFFFF] hover:text-[#1a1a1a] cursor-pointer transition-colors"
                                   [ngClass]="{'bg-[#1a1a1a]/5 text-[#1a1a1a]': checkoutForm.controls.city.value === city}"
                                 >
                                   {{ city }}
@@ -445,18 +445,18 @@
 
                     <!-- Area -->
                     <div class="space-y-2">
-                      <label class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1">Area</label>
+                      <label class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1">Area</label>
                       <div class="relative">
                         <div class="relative items-center flex cursor-pointer" (click)="toggleAreaDropdown()">
                           <input
-                            class="w-full h-14 px-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc] pointer-events-none"
+                            class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#E0E0E0] pointer-events-none"
                             [class.opacity-50]="!checkoutForm.controls.city.value"
                             type="text"
                             [value]="checkoutForm.controls.area.value"
                             placeholder="Select area"
                             readonly
                           />
-                          <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-[#888] pointer-events-none"></app-icon>
+                          <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-[#888888] pointer-events-none"></app-icon>
                         </div>
 
                         <!-- Dropdown -->
@@ -464,12 +464,12 @@
                           <div
                             class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
                             (click)="$event.stopPropagation()">
-                            <div class="p-3 border-b border-[#eee]">
+                            <div class="p-3 border-b border-[#E0E0E0]">
                               <div class="relative flex items-center">
-                                <app-icon name="Search" size="16" className="absolute left-3 text-[#ccc]"></app-icon>
+                                <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
                                 <input
                                   type="text"
-                                  class="w-full pl-10 pr-4 py-2 bg-[#fcfcfc] border-none rounded-xl text-sm font-bold focus:ring-0 outline-none"
+                                  class="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border-none rounded-xl text-sm font-bold focus:ring-0 outline-none"
                                   placeholder="Search areas..."
                                   (input)="filterAreas($event)"
                                   [value]="areaSearch"
@@ -479,12 +479,12 @@
                             </div>
                             <ul class="max-h-60 overflow-y-auto py-1">
                               @if (filteredAreas.length === 0) {
-                                <li class="px-5 py-3 text-xs text-[#888] text-center font-bold">No areas found</li>
+                                <li class="px-5 py-3 text-xs text-[#888888] text-center font-bold">No areas found</li>
                               }
                               @for (area of filteredAreas; track area) {
                                 <li
                                   (click)="selectArea(area)"
-                                  class="px-5 py-3 text-sm text-[#555] font-bold hover:bg-[#fcfcfc] hover:text-[#1a1a1a] cursor-pointer transition-colors"
+                                  class="px-5 py-3 text-sm text-[#1A1A1A] font-bold hover:bg-[#FFFFFF] hover:text-[#1a1a1a] cursor-pointer transition-colors"
                                   [ngClass]="{'bg-[#1a1a1a]/5 text-[#1a1a1a]': checkoutForm.controls.area.value === area}"
                                 >
                                   {{ area }}
@@ -503,7 +503,7 @@
                   <!-- Address -->
                   <div class="space-y-2">
                     <label
-                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1"
                       >Delivery Address</label
                     >
                     <textarea
@@ -511,7 +511,7 @@
                       rows="3"
                       placeholder="House, Road..."
                       autocomplete="street-address"
-                      class="w-full p-6 bg-[#fcfcfc] border-2 border-[#eee] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#ccc] resize-none"
+                      class="w-full p-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#E0E0E0] resize-none"
                     ></textarea>
                     @if (checkoutForm.controls.address.touched && checkoutForm.controls.address.invalid) {
                       <p
@@ -545,7 +545,7 @@
                   <!-- Shipping -->
                   <div class="space-y-4">
                     <label
-                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888] ml-1"
+                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1"
                       >Delivery Method</label
                     >
                     <div class="space-y-3">
@@ -556,7 +556,7 @@
                             checkoutForm.controls.deliveryMethodId.value ===
                             method.id
                               ? 'border-[#1a1a1a] bg-[#1a1a1a]/5'
-                              : 'border-[#eee] hover:border-[#ddd]'
+                              : 'border-[#E0E0E0] hover:border-[#E0E0E0]'
                           "
                         >
                           <input
@@ -570,7 +570,7 @@
 
                           <div class="flex items-center gap-4">
                             <div
-                              class="w-5 h-5 rounded-full border-2 border-[#ddd] flex items-center justify-center shadow-inner"
+                              class="w-5 h-5 rounded-full border-2 border-[#E0E0E0] flex items-center justify-center shadow-inner"
                               [class.border-[#1a1a1a]]="
                                 checkoutForm.controls.deliveryMethodId.value ===
                                 method.id
@@ -586,7 +586,7 @@
                               <p class="text-xs font-black uppercase text-[#1a1a1a]">
                                 {{ method.name }}
                               </p>
-                              <p class="text-[9px] font-black text-[#888] uppercase tracking-widest">
+                              <p class="text-[9px] font-black text-[#888888] uppercase tracking-widest">
                                 {{ method.estimatedDays }} Estimated
                               </p>
                             </div>
@@ -603,15 +603,15 @@
 
                   <!-- Quantity & Total -->
                   <div
-                    class="bg-[#f9f9f9] rounded-3xl p-6 border-2 border-dashed border-[#eee] flex items-center justify-between"
+                    class="bg-[#F5F5F5] rounded-3xl p-6 border-2 border-dashed border-[#E0E0E0] flex items-center justify-between"
                   >
                     <div class="space-y-1">
                       <span
-                        class="text-[10px] font-black text-[#888] uppercase tracking-widest"
+                        class="text-[10px] font-black text-[#888888] uppercase tracking-widest"
                         >Quantity</span
                       >
                       <div
-                        class="flex items-center h-12 bg-white border-2 border-[#eee] rounded-xl overflow-hidden shadow-inner"
+                        class="flex items-center h-12 bg-white border-2 border-[#E0E0E0] rounded-xl overflow-hidden shadow-inner"
                       >
                         <button
                           (click)="decreaseQuantity()"
@@ -643,7 +643,7 @@
 
                     <div class="text-right space-y-1">
                       <span
-                        class="text-[10px] font-black text-[#888] uppercase tracking-widest"
+                        class="text-[10px] font-black text-[#888888] uppercase tracking-widest"
                         >Total Amount</span
                       >
                       <div>
@@ -659,12 +659,12 @@
               </div>
 
               <!-- Action Buttons -->
-              <div class="mt-12 pt-10 border-t border-[#eee]">
+              <div class="mt-12 pt-10 border-t border-[#E0E0E0]">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <button
                     type="submit"
                     [disabled]="isOrdering"
-                    class="h-16 bg-[#1a1a1a] text-white text-xs font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group"
+                    class="h-16 bg-[#1a1a1a] text-white text-xs font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#333333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group"
                   >
                     @if (isOrdering) {
                       <app-icon
@@ -688,7 +688,7 @@
                   <button
                     type="button"
                     (click)="addToCart()"
-                    class="h-16 bg-white border-2 border-[#ddd] hover:border-[#1a1a1a] text-[#1a1a1a] text-xs font-black uppercase tracking-[0.3em] rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
+                    class="h-16 bg-white border-2 border-[#E0E0E0] hover:border-[#1a1a1a] text-[#1a1a1a] text-xs font-black uppercase tracking-[0.3em] rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
                   >
                     <app-icon
                       name="ShoppingCart"
@@ -714,7 +714,7 @@
     <div class="fixed bottom-8 right-8 z-[100] group">
       <a 
         routerLink="/" 
-        class="glowing-btn flex items-center gap-3 px-8 py-5 rounded-2xl shadow-[0_20px_50px_-10px_rgba(200,146,42,0.4)] hover:-translate-y-2 transition-all duration-500 border border-[#ff7a00]/20"
+        class="glowing-btn flex items-center gap-3 px-8 py-5 rounded-2xl shadow-[0_20px_50px_-10px_rgba(200,146,42,0.4)] hover:-translate-y-2 transition-all duration-500 border border-[#111111]/20"
       >
         <div class="flex items-center gap-3">
           <app-icon name="ExternalLink" size="18" className="text-[#1a1a1a]"></app-icon>
@@ -722,7 +722,7 @@
         </div>
       </a>
       <!-- Subtle pulse ripple -->
-      <div class="absolute -inset-2 bg-[#ff7a00]/10 rounded-3xl blur-xl animate-pulse -z-10 group-hover:bg-[#ff7a00]/20"></div>
+      <div class="absolute -inset-2 bg-[#111111]/10 rounded-3xl blur-xl animate-pulse -z-10 group-hover:bg-[#111111]/20"></div>
     </div>
 
     <div class="mt-16 text-center pb-12">

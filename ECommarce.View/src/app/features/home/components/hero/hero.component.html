@@ -1,17 +1,31 @@
-<section class="site-container py-6">
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 h-[500px]">
-    <div class="lg:col-span-8 bg-supporting rounded-3xl relative overflow-hidden">
+<section class="site-container py-ds-6">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-5 min-h-[500px] lg:h-[600px]">
+    <!-- Main Feature -->
+    <div class="lg:col-span-8 bg-ds-surface rounded-lg relative overflow-hidden group">
       @if (mainSlides.length > 0) {
         @let slide = mainSlides[currentSlide];
-        <div class="absolute inset-0 bg-cover bg-center" [style.background-image]="'url(' + imageUrlService.getImageUrl(slide.image) + ')'"></div>
-        <div class="relative h-full flex flex-col justify-center p-12 text-white bg-black/20">
-          <h1 class="text-5xl font-black mb-4">{{ slide.title }}</h1>
-          <p class="mb-8 max-w-md">{{ slide.subtitle }}</p>
-          <a [routerLink]="slide.link" class="bg-primary px-8 py-3 rounded-full w-fit font-bold">Shop Now</a>
+        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[2000ms] group-hover:scale-105" 
+             [style.background-image]="'url(' + imageUrlService.getImageUrl(slide.image) + ')'"></div>
+        <div class="absolute inset-0 bg-black/10"></div>
+        
+        <div class="relative h-full flex flex-col justify-end p-ds-10 lg:p-ds-16 text-ds-hero-text">
+          <div class="max-w-xl space-y-ds-4 animate-fade-in-up">
+            <h1 class="text-ds-5xl font-bold leading-tight tracking-tight">
+              {{ slide.title }}
+            </h1>
+            <p class="text-ds-base opacity-90 font-medium max-w-md">
+              {{ slide.subtitle }}
+            </p>
+            <div class="pt-ds-4">
+              <a [routerLink]="slide.link" class="btn btn-primary !w-fit !px-12 !py-4 tracking-widest">
+                SHOP COLLECTION
+              </a>
+            </div>
+          </div>
         </div>
 
-        <!-- Progress Bar -->
-        <div class="absolute bottom-0 left-0 w-full h-1 bg-black/10 z-20">
+        <!-- Progress Bar Indicator -->
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-white/10 z-20">
           <div
             class="h-full bg-white transition-all duration-75"
             [style.width.%]="slideProgress"

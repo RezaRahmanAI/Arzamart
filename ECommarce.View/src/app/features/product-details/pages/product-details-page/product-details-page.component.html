@@ -1,441 +1,235 @@
 @if (vm$ | async; as vm) {
-  <div class="bg-[#fcfcfc] min-h-screen text-primary">
+  <div class="bg-ds-bg min-h-screen text-ds-text">
     <!-- Breadcrumb -->
-    <div class="site-container pt-16 pb-2">
-      <nav
-        class="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-[#999]"
-      >
-        <a routerLink="/" class="hover:text-[#1a1a1a] transition-colors"
-          >Home</a
-        >
-        <span class="text-[#ccc] text-xs">/</span>
-        <span class="text-[#1a1a1a] font-bold">{{ vm.product.name }}</span>
+    <div class="site-container pt-ds-16 pb-ds-2">
+      <nav class="flex items-center gap-ds-3 text-[10px] uppercase tracking-[0.2em] text-ds-text-muted">
+        <a routerLink="/" class="hover:text-ds-text transition-colors">Home</a>
+        <span class="text-ds-border text-xs">/</span>
+        <span class="text-ds-text font-bold">{{ vm.product.name }}</span>
       </nav>
     </div>
 
     <!-- Main Product Layout -->
-    <div class="site-container pb-8 md:pb-12">
-      <!-- Mobile-only header (shown above image) -->
-      <div class="lg:hidden mb-4 space-y-2 text-center">
-        <h1 class="text-xl sm:text-2xl font-bold text-[#1a1a1a] leading-tight">
+    <div class="site-container pb-ds-12 md:pb-ds-20">
+      <!-- Mobile header -->
+      <div class="lg:hidden mb-ds-6 space-y-ds-2 text-center">
+        <h1 class="text-ds-2xl font-bold text-ds-text leading-tight">
           {{ vm.product.name }}
         </h1>
-        <div class="flex items-center justify-center gap-3 text-[9px] uppercase tracking-[0.2em] font-bold text-[#bbb]">
+        <div class="flex items-center justify-center gap-3 text-[9px] uppercase tracking-[0.2em] font-bold text-[#BBBBBB]">
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 ">
-        <!-- ===== LEFT: Image Gallery & Description (Unified) ===== -->
-        <div class="lg:col-span-6 flex flex-col gap-10">
-            <div class="flex flex-row gap-4">
-              <!-- Thumbnails (Left on Desktop, Right on Mobile - fixed to Left/Vertical for desktop as requested) -->
-              @if (vm.gallery.length > 1) {
-                <div
-                  class="hidden lg:flex flex-col gap-2 overflow-y-auto scrollbar-hide w-24 flex-shrink-0"
-                  style="max-height: 550px;"
-                >
-                  @for (url of vm.gallery; track url; let i = $index) {
-                    <button
-                      (click)="goToImage(i)"
-                      class="flex-shrink-0 w-full h-28 border transition-all duration-300 overflow-hidden relative"
-                      [class.border-[#1a1a1a]]="i === currentImageIndex"
-                      [class.border-transparent]="i !== currentImageIndex"
-                    >
-                      <img
-                        [src]="imageUrlService.getImageUrl(url)"
-                        class="w-full h-full object-contain p-1"
-                        [class.opacity-60]="i !== currentImageIndex"
-                      />
-                      @if (i === currentImageIndex) {
-                        <div
-                          class="absolute bottom-0 left-0 w-full h-0.5 bg-[#1a1a1a]"
-                        ></div>
-                      }
-                    </button>
-                  }
-                </div>
-              }
-
-              <!-- Main Image Area -->
-              <div class="relative flex-1">
-                <div
-                  class="relative bg-[#ebebeb] overflow-hidden group aspect-[3/4] max-h-[50vh] md:max-h-[60vh] lg:max-h-[550px] cursor-zoom-in"
-                  (click)="openLightbox(currentImageIndex)"
-                  (mousemove)="handleMouseMove($event)"
-                  (mouseenter)="toggleZoom(true)"
-                  (mouseleave)="toggleZoom(false)"
-                >
-                  <!-- Images -->
-                  @for (url of vm.gallery; track url; let i = $index) {
-                    <img
-                      [src]="imageUrlService.getImageUrl(url)"
-                      [alt]="vm.product.name"
-                      class="absolute inset-0 w-full h-full object-contain p-4 transition-opacity duration-[1200ms] ease-in-out pointer-events-none"
-                      [style.transform-origin]="zoomX + '% ' + zoomY + '%'"
-                      [ngClass]="{
-                        'opacity-100': i === currentImageIndex,
-                        'opacity-0': i !== currentImageIndex,
-                        'scale-[2.5]': isZooming && i === currentImageIndex
-                      }"
-                      style="transition: opacity 1200ms ease-in-out, transform 0.3s ease-out;"
-                    />
-                  }
-
-                  <!-- Tier Badge -->
-                  @if (vm.product.tier) {
-                    <div
-                      class="absolute top-6 right-6 z-10"
-                    >
-                      <span
-                        class="px-4 py-1.5 bg-white/95 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] border border-[#eee] backdrop-blur-sm shadow-sm"
-                      >
-                        {{ vm.product.tier }}
-                      </span>
-                    </div>
-                  }
-
-                  <!-- Offer Badge -->
-                  @if (vm.currentCompareAtPrice && vm.currentCompareAtPrice > vm.currentPrice) {
-                    <div class="absolute top-2 left-2 z-10">
-                      <span class="px-6 py-2.5 bg-accent text-white text-xs uppercase tracking-[0.3em] font-black shadow-2xl shadow-accent/40 rounded-br-2xl">
-                        Offer -৳{{ getDiscountAmount({ price: vm.currentPrice, compareAtPrice: vm.currentCompareAtPrice }) }}
-                      </span>
-                    </div>
-                  }
-
-                  <!-- Nav Arrows -->
-                  @if (vm.gallery.length > 1) {
-                    <button
-                      (click)="prevImage(vm.gallery)"
-                      class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
-                    >
-                      <app-icon name="ChevronLeft" size="16"></app-icon>
-                    </button>
-                    <button
-                      (click)="nextImage(vm.gallery)"
-                      class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
-                    >
-                      <app-icon name="ChevronRight" size="16"></app-icon>
-                    </button>
-                  }
-                </div>
-
-                <!-- Progress Bar -->
-                @if (vm.gallery.length > 1) {
-                  <div class="mt-4 w-full h-0.5 bg-[#eee] relative overflow-hidden">
-                    <div
-                      class="absolute top-0 left-0 h-full bg-[#1a1a1a] transition-all duration-75"
-                      [style.width.%]="slideProgress"
-                    ></div>
-                  </div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-10 lg:gap-ds-16">
+        <!-- ===== LEFT: Image Gallery & Description ===== -->
+        <div class="lg:col-span-7 flex flex-col gap-ds-10">
+          <div class="flex flex-row gap-ds-4">
+            <!-- Thumbnails (Desktop) -->
+            @if (vm.gallery.length > 1) {
+              <div class="hidden lg:flex flex-col gap-ds-3 overflow-y-auto w-20 flex-shrink-0" style="max-height: 700px;">
+                @for (url of vm.gallery; track url; let i = $index) {
+                  <button
+                    (click)="goToImage(i)"
+                    class="flex-shrink-0 w-full aspect-[3/4] border transition-all duration-base overflow-hidden"
+                    [class.border-ds-text]="i === currentImageIndex"
+                    [class.border-ds-border]="i !== currentImageIndex"
+                  >
+                    <img [src]="imageUrlService.getImageUrl(url)" class="w-full h-full object-cover" [class.opacity-60]="i !== currentImageIndex" />
+                  </button>
                 }
               </div>
+            }
 
-              <!-- Mobile Thumbnails (Right side on mobile) -->
-              @if (vm.gallery.length > 1) {
-                <div
-                  class="flex flex-col lg:hidden gap-2 overflow-y-auto scrollbar-hide w-16 flex-shrink-0"
-                  style="max-height: 450px;"
-                >
-                  @for (url of vm.gallery; track url; let i = $index) {
-                    <button
-                      (click)="goToImage(i)"
-                      class="flex-shrink-0 w-14 h-16 border transition-all duration-300 overflow-hidden relative"
-                      [class.border-[#1a1a1a]]="i === currentImageIndex"
-                      [class.border-transparent]="i !== currentImageIndex"
-                    >
-                      <img
-                        [src]="imageUrlService.getImageUrl(url)"
-                        class="w-full h-full object-contain p-1"
-                        [class.opacity-60]="i !== currentImageIndex"
-                      />
-                    </button>
-                  }
-                </div>
-              }
+            <!-- Main Image Area -->
+            <div class="relative flex-1">
+              <div
+                class="relative bg-ds-surface overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[700px] cursor-zoom-in border border-ds-border"
+                (click)="openLightbox(currentImageIndex)"
+                (mousemove)="handleMouseMove($event)"
+                (mouseenter)="toggleZoom(true)"
+                (mouseleave)="toggleZoom(false)"
+              >
+                <!-- Images -->
+                @for (url of vm.gallery; track url; let i = $index) {
+                  <img
+                    [src]="imageUrlService.getImageUrl(url)"
+                    [alt]="vm.product.name"
+                    class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 pointer-events-none"
+                    [style.transform-origin]="zoomX + '% ' + zoomY + '%'"
+                    [ngClass]="{
+                      'opacity-100': i === currentImageIndex,
+                      'opacity-0': i !== currentImageIndex,
+                      'scale-[2]': isZooming && i === currentImageIndex
+                    }"
+                  />
+                }
+
+                <!-- Offer Badge -->
+                @if (vm.currentCompareAtPrice && vm.currentCompareAtPrice > vm.currentPrice) {
+                  <div class="absolute top-ds-4 left-ds-4 z-10">
+                    <span class="badge badge-active !text-[10px] !py-2 !px-4 tracking-widest uppercase">
+                      OFFER -৳{{ getDiscountAmount({ price: vm.currentPrice, compareAtPrice: vm.currentCompareAtPrice }) }}
+                    </span>
+                  </div>
+                }
+
+                <!-- Nav Arrows -->
+                @if (vm.gallery.length > 1) {
+                  <button (click)="prevImage(vm.gallery); $event.stopPropagation()" class="absolute left-ds-4 top-1/2 -translate-y-1/2 z-10 btn-icon bg-ds-bg/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                    <app-icon name="ChevronLeft" size="18"></app-icon>
+                  </button>
+                  <button (click)="nextImage(vm.gallery); $event.stopPropagation()" class="absolute right-ds-4 top-1/2 -translate-y-1/2 z-10 btn-icon bg-ds-bg/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                    <app-icon name="ChevronRight" size="18"></app-icon>
+                  </button>
+                }
+              </div>
             </div>
+          </div>
 
-            <!-- Description & Details (Desktop Only: In Left Column) -->
-            <div class="hidden lg:block space-y-8 py-8 border-t border-[#eee] mt-10">
-              <!-- Primary Description -->
-              <div class="space-y-4">
-                <h3
-                  class="text-[11px] uppercase tracking-[0.4em] font-bold text-accent"
-                >
-                  Description
-                </h3>
-                <p
-                  class="text-[17px] text-primary/80 leading-[1.8] font-light max-w-[90%]"
-                  [innerHTML]="vm.product.description | safeHtml"
-                ></p>
+
+            <!-- Description (Desktop) -->
+            <div class="hidden lg:block space-y-ds-10 pt-ds-10 border-t border-ds-border">
+              <div class="space-y-ds-4">
+                <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-ds-text-sec">Description</h3>
+                <div class="text-ds-lg text-ds-text leading-relaxed font-light prose prose-sm max-w-none" [innerHTML]="vm.product.description | safeHtml"></div>
               </div>
 
               <!-- Accordions -->
-              <div class="divide-y divide-[#eee] border-y border-[#eee]">
+              <div class="divide-y divide-ds-border border-y border-ds-border">
                 @if (vm.product.fabricAndCare) {
                   <details class="group">
-                    <summary
-                      class="flex items-center justify-between py-6 cursor-pointer list-none"
-                    >
-                      <span
-                        class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
-                        >Details & Composition</span
-                      >
-                      <app-icon name="Plus" size="16" className="text-[#bbb] group-open:rotate-45 transition-transform duration-300"></app-icon>
+                    <summary class="flex items-center justify-between py-ds-6 cursor-pointer list-none">
+                      <span class="text-[11px] uppercase tracking-[0.3em] font-bold">Details & Composition</span>
+                      <app-icon name="Plus" size="16" className="text-ds-text-muted group-open:rotate-45 transition-transform"></app-icon>
                     </summary>
-                    <div
-                      class="pb-8 text-[14px] text-[#666] leading-relaxed font-light whitespace-pre-line"
-                      [innerHTML]="vm.product.fabricAndCare | safeHtml"
-                    >
-                    </div>
+                    <div class="pb-ds-8 text-ds-base text-ds-text-sec leading-relaxed font-light" [innerHTML]="vm.product.fabricAndCare | safeHtml"></div>
                   </details>
                 }
-
                 <details class="group">
-                  <summary
-                    class="flex items-center justify-between py-4 cursor-pointer list-none"
-                  >
-                    <span
-                      class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
-                      >Materials & Care</span
-                    >
-                    <app-icon name="Plus" size="16" className="text-[#bbb] group-open:rotate-45 transition-transform duration-300"></app-icon>
+                  <summary class="flex items-center justify-between py-ds-6 cursor-pointer list-none">
+                    <span class="text-[11px] uppercase tracking-[0.3em] font-bold">Shipping & Care</span>
+                    <app-icon name="Plus" size="16" className="text-ds-text-muted group-open:rotate-45 transition-transform"></app-icon>
                   </summary>
-                  <div
-                    class="pb-8 text-[14px] text-[#666] leading-relaxed font-light space-y-4 whitespace-pre-line"
-                    [innerHTML]="(vm.product.shippingAndReturns || 'Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary.') | safeHtml"
-                  >
-                  </div>
+                  <div class="pb-ds-8 text-ds-base text-ds-text-sec leading-relaxed font-light" [innerHTML]="vm.product.shippingAndReturns || 'Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary.' | safeHtml"></div>
                 </details>
               </div>
             </div>
-
         </div>
 
-        <!-- ===== RIGHT: Product Info & Actions (Sticky) ===== -->
-        <div class="lg:col-span-6 lg:sticky lg:top-24 lg:self-start">
-          <div class="flex flex-col">
-            <!-- Product Identity (Desktop Only) -->
-            <div class="hidden lg:block space-y-4">
-              <h1 class="text-2xl lg:text-3xl font-bold text-[#1a1a1a] leading-[1.2]">
+        <!-- ===== RIGHT: Info & Actions ===== -->
+        <div class="lg:col-span-5 lg:sticky lg:top-24 lg:self-start">
+          <div class="flex flex-col space-y-ds-10">
+            <!-- Product Identity -->
+            <div class="space-y-ds-4">
+              @if (hasDiscount(vm.product)) {
+                <div class="inline-flex items-center px-ds-3 py-ds-1 bg-ds-accent text-ds-hero-text text-[9px] font-bold uppercase tracking-[0.2em]">
+                  {{ getDiscountPercentage(vm.product) }}% OFF
+                </div>
+              }
+              <h1 class="text-ds-3xl md:text-ds-4xl font-bold uppercase tracking-tight text-ds-text leading-tight">
                 {{ vm.product.name }}
               </h1>
+              <p class="text-[11px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+                SKU: {{ vm.product.sku || 'N/A' }}
+              </p>
             </div>
 
-            <!-- Pricing Section -->
-            <div class="flex items-baseline gap-4 py-5 border-y border-[#eee]">
-              <app-price-display
-                class="text-2xl font-bold text-[#1a1a1a]"
-                [amount]="vm.currentPrice"
-                size="md"
-              ></app-price-display>
-
+            <!-- Pricing -->
+            <div class="flex items-baseline gap-ds-4 py-ds-6 border-y border-ds-border">
+              <span class="text-ds-2xl font-bold text-ds-text">৳{{ vm.currentPrice }}</span>
               @if (vm.currentCompareAtPrice && vm.currentCompareAtPrice > vm.currentPrice) {
-                <app-price-display
-                  class="line-through text-gray-600 font-medium text-lg"
-                  [amount]="vm.currentCompareAtPrice"
-                  size="sm"
-                ></app-price-display>
-
+                <span class="text-ds-lg text-ds-text-muted line-through font-medium">৳{{ vm.currentCompareAtPrice }}</span>
               }
             </div>
 
-
-
-            <!-- Variants: Size -->
+            <!-- Variants -->
             @if (vm.uniqueSizes.length > 0) {
-              <div class="space-y-5">
+              <div class="space-y-ds-5">
                 <div class="flex items-center justify-between">
-                  <p
-                    class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
-                  >
-                    Select Size
-                  </p>
-                  <button
-                    (click)="openSizeGuide()"
-                    class="glowing-btn px-6 py-2 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] relative overflow-hidden bg-white border border-[#eee] hover:border-black transition-all"
-                  >
-                    <span class="relative z-10">Size Guide</span>
-                  </button>
+                  <span class="text-[11px] font-bold uppercase tracking-[0.2em]">Select Size</span>
+                  <button (click)="openSizeGuide()" class="text-[10px] font-bold uppercase tracking-widest border-b border-ds-text-muted hover:border-ds-text transition-colors pb-1">Size Guide</button>
                 </div>
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-ds-2">
                   @for (size of vm.uniqueSizes; track size) {
                     <button
                       (click)="selectSize(size || '')"
-                      class="min-w-[60px] h-14 border text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300"
-                      [class.bg-[#1a1a1a]]="size === vm.selectedSize"
-                      [class.text-white]="size === vm.selectedSize"
-                      [class.border-[#1a1a1a]]="size === vm.selectedSize"
-                      [class.bg-white]="size !== vm.selectedSize"
-                      [class.text-[#1a1a1a]]="size !== vm.selectedSize"
-                      [class.border-[#eee]]="size !== vm.selectedSize"
-                      [class.hover:border-[#1a1a1a]]="size !== vm.selectedSize"
+                      class="h-14 min-w-[70px] border transition-all duration-base text-[12px] font-bold uppercase tracking-widest"
+                      [ngClass]="{
+                        'bg-ds-accent border-ds-accent text-ds-hero-text': size === vm.selectedSize,
+                        'bg-ds-bg border-ds-border text-ds-text hover:border-ds-text': size !== vm.selectedSize
+                      }"
                     >
                       {{ size }}
                     </button>
                   }
                 </div>
-                @if (vm.selectedSize) {
-                  <p
-                    class="text-[9px] uppercase tracking-[0.2em] text-[#bbb] font-medium"
-                  >
-                    Stock Status:
-                    <span class="text-[#1a1a1a]"
-                      >{{ vm.currentStock }} available</span
-                    >
-                  </p>
-                }
               </div>
             }
 
             <!-- Actions -->
-            <div class="flex flex-col gap-4 pt-4">
+            <div class="space-y-ds-4">
               <!-- Quantity -->
-              <div
-                class="flex items-center h-12 border border-[#eee] bg-white group hover:border-[#aaa] transition-colors"
-              >
-                <button
-                  (click)="decreaseQuantity()"
-                  class="w-12 h-full flex items-center justify-center hover:bg-[#fafafa]"
-                >
-                  <app-icon name="Minus" size="12"></app-icon>
+              <div class="flex items-center h-14 border border-ds-border bg-ds-bg">
+                <button (click)="decreaseQuantity()" class="w-14 h-full flex items-center justify-center hover:bg-ds-surface transition-colors">
+                  <app-icon name="Minus" size="14"></app-icon>
                 </button>
-                <div
-                  class="flex-1 text-center font-bold text-sm tracking-[0.2em]"
-                >
-                  {{ quantity$ | async }}
-                </div>
-                <button
-                  (click)="increaseQuantity()"
-                  class="w-12 h-full flex items-center justify-center hover:bg-[#fafafa]"
-                >
-                  <app-icon name="Plus" size="12"></app-icon>
+                <div class="flex-1 text-center font-bold text-ds-base tracking-widest">{{ quantity$ | async }}</div>
+                <button (click)="increaseQuantity()" class="w-14 h-full flex items-center justify-center hover:bg-ds-surface transition-colors">
+                  <app-icon name="Plus" size="14"></app-icon>
                 </button>
               </div>
 
-              <!-- Errors -->
               @if (selectionError) {
-                <p
-                  class="text-[10px] text-red-600 bg-red-50 p-4 tracking-wider leading-relaxed"
-                >
+                <div class="p-ds-4 bg-ds-danger/5 text-ds-danger text-[11px] font-bold uppercase tracking-widest border border-ds-danger/20">
                   {{ selectionError }}
-                </p>
+                </div>
               }
 
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                <button
-                  (click)="addToCart(vm.product)"
-                  class="w-full h-14 bg-primary text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-4 rounded-xl shadow-lg shadow-primary/10"
-                >
-                  <app-icon name="ShoppingBag" size="16"></app-icon>
-                  {{ vm.currentStock > 0 ? "Add to Shopping Bag" : "Pre-order Now" }}
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-ds-3">
+                <button (click)="addToCart(vm.product)" class="btn btn-secondary h-16 !text-[11px] !tracking-[0.3em] uppercase">
+                  ADD TO BAG
                 </button>
-
-                <button
-                  (click)="buyNow(vm.product)"
-                  class="w-full h-14 bg-accent text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all duration-300 rounded-xl shadow-lg shadow-accent/20"
-                >
-                  {{ vm.currentStock > 0 ? "ORDER NOW" : "PRE-ORDER NOW" }}
+                <button (click)="buyNow(vm.product)" class="btn btn-primary h-16 !text-[11px] !tracking-[0.3em] uppercase">
+                  ORDER NOW
                 </button>
               </div>
 
-              <!-- WhatsApp -->
               @if ((settings$ | async)?.whatsAppNumber; as whatsApp) {
-                <a
-                  [href]="getWhatsAppUrl(vm.product, whatsApp)"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="w-full h-12 bg-[#25D366] text-white text-[11px] font-bold uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:shadow-lg transition-all"
-                >
-                  <app-icon name="MessageCircle" size="16"></app-icon>
-                  Consult on WhatsApp
+                <a [href]="getWhatsAppUrl(vm.product, whatsApp)" target="_blank" class="btn h-14 !bg-[#25D366] !text-white !border-none !text-[11px] !tracking-[0.3em] uppercase">
+                  WHATSAPP US
                 </a>
               }
             </div>
 
-            <!-- Description & Details (Mobile Only: Below Buttons) -->
-            <div class="lg:hidden space-y-6 pt-8 border-t border-[#eee]">
-              <!-- Primary Description -->
-              <div class="space-y-3">
-                <h3
-                  class="text-[10px] uppercase tracking-[0.3em] font-bold text-[#ff7a00]"
-                >
-                  Description
-                </h3>
-                <p
-                  class="text-[15px] text-[#444] leading-[1.6] font-light"
-                  [innerHTML]="vm.product.description | safeHtml"
-                ></p>
+            <!-- Features -->
+            <div class="grid grid-cols-2 gap-ds-4 pt-ds-8 border-t border-ds-border">
+              <div class="flex items-center gap-ds-3">
+                <app-icon name="Truck" size="18" className="text-ds-text-sec"></app-icon>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ds-text-sec">Free Shipping</span>
               </div>
-
-              <!-- Accordions -->
-              <div class="divide-y divide-[#eee] border-y border-[#eee]">
-                @if (vm.product.fabricAndCare) {
-                  <details class="group">
-                    <summary
-                      class="flex items-center justify-between py-4 cursor-pointer list-none"
-                    >
-                      <span
-                        class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
-                        >Details & Composition</span
-                      >
-                      <app-icon name="Plus" size="14" className="text-[#bbb] group-open:rotate-45 transition-transform duration-300"></app-icon>
-                    </summary>
-                    <div
-                      class="pb-6 text-[13px] text-[#666] leading-relaxed font-light"
-                    >
-                      {{ vm.product.fabricAndCare }}
-                    </div>
-                  </details>
-                }
-
-                <details class="group">
-                  <summary
-                    class="flex items-center justify-between py-4 cursor-pointer list-none"
-                  >
-                    <span
-                      class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]"
-                      >Materials & Care</span
-                    >
-                    <app-icon name="Plus" size="14" className="text-[#bbb] group-open:rotate-45 transition-transform duration-300"></app-icon>
-                  </summary>
-                  <div
-                    class="pb-6 text-[13px] text-[#666] leading-relaxed font-light space-y-3"
-                  >
-                    <p>
-                      {{
-                        vm.product.shippingAndReturns ||
-                          "Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary."
-                      }}
-                    </p>
-                  </div>
-                </details>
+              <div class="flex items-center gap-ds-3">
+                <app-icon name="ShieldCheck" size="18" className="text-ds-text-sec"></app-icon>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ds-text-sec">100% Genuine</span>
               </div>
             </div>
 
-            <!-- Features Info -->
-            <div class="grid grid-cols-2 gap-4 pt-6 border-t border-[#eee]">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-8 h-8 rounded-full bg-[#f9f9f9] flex items-center justify-center"
-                >
-                  <app-icon name="Truck" size="16" className="text-[#888]"></app-icon>
-                </div>
-                <span
-                  class="text-[9px] uppercase tracking-[0.1em] text-[#888] font-bold"
-                  >Priority Shipping</span
-                >
+            <!-- Mobile Description -->
+            <div class="lg:hidden pt-ds-10 space-y-ds-10 border-t border-ds-border">
+              <div class="space-y-ds-4">
+                <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-ds-text-sec">Description</h3>
+                <div class="text-ds-base text-ds-text leading-relaxed font-light prose prose-sm" [innerHTML]="vm.product.description | safeHtml"></div>
               </div>
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-8 h-8 rounded-full bg-[#f9f9f9] flex items-center justify-center"
-                >
-                  <app-icon name="ShieldCheck" size="16" className="text-[#888]"></app-icon>
-                </div>
-                <span
-                  class="text-[9px] uppercase tracking-[0.1em] text-[#888] font-bold"
-                  >Secure Payment</span
-                >
+              <!-- Mobile Accordions -->
+              <div class="divide-y divide-ds-border border-y border-ds-border">
+                @if (vm.product.fabricAndCare) {
+                  <details class="group">
+                    <summary class="flex items-center justify-between py-ds-5 cursor-pointer list-none">
+                      <span class="text-[11px] uppercase tracking-[0.3em] font-bold">Composition</span>
+                      <app-icon name="Plus" size="14" className="text-ds-text-muted group-open:rotate-45 transition-transform"></app-icon>
+                    </summary>
+                    <div class="pb-ds-6 text-ds-sm text-ds-text-sec leading-relaxed" [innerHTML]="vm.product.fabricAndCare | safeHtml"></div>
+                  </details>
+                }
               </div>
             </div>
           </div>
@@ -443,86 +237,56 @@
       </div>
     </div>
 
-    <!-- ===== FOOTER SECTIONS: Reviews & Related ===== -->
-    <div class="site-container space-y-32">
-
-      <!-- Related Items -->
-      @defer (on viewport) {
-        @if (vm.relatedProducts.length) {
-          <section
-            class="pb-40 pt-24 border-t border-[#eee]"
-          >
-            <div class="text-center mb-20 space-y-3">
-              <p
-                class="text-[11px] uppercase tracking-[0.4em] text-[#ff7a00] font-bold"
-              >
-                Curated Selection
-              </p>
-              <h3 class="text-4xl lg:text-5xl font-bold text-[#1a1a1a]">
-                Complete The Look
-              </h3>
-            </div>
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 xl:gap-12">
+    <!-- Related Products -->
+    @if (vm.relatedProducts.length) {
+      <section class="section-py border-t border-ds-border">
+        <div class="site-container">
+          <div class="text-center mb-ds-16 space-y-ds-2">
+            <p class="text-[10px] uppercase tracking-[0.4em] text-ds-text-muted font-bold">Curated Selection</p>
+            <h2 class="section-title">Complete The Look</h2>
+          </div>
+          
+          @defer (on viewport) {
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-ds-6 lg:gap-ds-8">
               @for (related of vm.relatedProducts; track related.id) {
-                <app-product-card
-                  [product]="related"
-                ></app-product-card>
+                <app-product-card [product]="related"></app-product-card>
               }
             </div>
-          </section>
-        }
-      } @placeholder {
-        <div class="h-40 animate-pulse bg-gray-50"></div>
-      }
-    </div>
+          } @placeholder {
+            <div class="h-80 animate-pulse bg-ds-surface border border-ds-border"></div>
+          }
+        </div>
+      </section>
+    }
   </div>
 
-  <!-- Lightbox Gallery Overlay -->
+  <!-- Lightbox Gallery -->
   @if (isLightboxOpen && (vm$ | async); as vm) {
-    <div
-      class="fixed inset-0 z-[1000] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center animate-in fade-in duration-300"
-      (click)="closeLightbox()"
-    >
+    <div class="fixed inset-0 z-[1000] bg-ds-accent/95 backdrop-blur-glass flex flex-col items-center justify-center animate-fade-in" (click)="closeLightbox()">
       <!-- Close Button -->
-      <button
-        (click)="closeLightbox()"
-        class="absolute top-6 right-6 z-[1010] p-3 text-white/60 hover:text-white transition-colors bg-white/5 hover:bg-white/10 rounded-full"
-      >
+      <button (click)="closeLightbox()" class="absolute top-ds-8 right-ds-8 z-[1010] btn-icon !bg-ds-bg/10 !text-ds-hero-text border-ds-border/20 hover:!bg-ds-bg/20">
         <app-icon name="X" size="24"></app-icon>
       </button>
 
       <!-- Main Image -->
-      <div
-        class="relative w-full max-w-5xl aspect-[3/4] md:aspect-auto md:h-[80vh] flex items-center justify-center p-4"
-        (click)="$event.stopPropagation()"
-      >
-        <img
-          [src]="imageUrlService.getImageUrl(vm.gallery[lightboxIndex])"
-          class="max-w-full max-h-full object-contain shadow-2xl animate-in zoom-in-95 duration-500"
-          [alt]="vm.product.name"
-        />
+      <div class="relative w-full max-w-6xl aspect-[3/4] md:h-[80vh] flex items-center justify-center p-ds-4" (click)="$event.stopPropagation()">
+        <img [src]="imageUrlService.getImageUrl(vm.gallery[lightboxIndex])" class="max-w-full max-h-full object-contain animate-fade-in" [alt]="vm.product.name" />
 
         <!-- Nav Arrows -->
         @if (vm.gallery.length > 1) {
-          <button
-            (click)="prevLightbox(vm.gallery)"
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all border border-white/10"
-          >
-            <app-icon name="ChevronLeft" size="24"></app-icon>
+          <button (click)="prevLightbox(vm.gallery)" class="absolute left-ds-4 top-1/2 -translate-y-1/2 btn-icon !w-16 !h-16 !bg-ds-bg/10 !text-ds-hero-text border-ds-border/20 hover:!bg-ds-bg/20">
+            <app-icon name="ChevronLeft" size="28"></app-icon>
           </button>
-          <button
-            (click)="nextLightbox(vm.gallery)"
-            class="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all border border-white/10"
-          >
-            <app-icon name="ChevronRight" size="24"></app-icon>
+          <button (click)="nextLightbox(vm.gallery)" class="absolute right-ds-4 top-1/2 -translate-y-1/2 btn-icon !w-16 !h-16 !bg-ds-bg/10 !text-ds-hero-text border-ds-border/20 hover:!bg-ds-bg/20">
+            <app-icon name="ChevronRight" size="28"></app-icon>
           </button>
         }
       </div>
 
       <!-- Counter -->
       @if (vm.gallery.length > 1) {
-        <div class="absolute bottom-10 px-6 py-2 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
-          <span class="text-white/80 text-xs font-bold uppercase tracking-[0.3em]">
+        <div class="absolute bottom-ds-10 px-ds-6 py-ds-2 bg-ds-bg/10 border border-ds-border/20 backdrop-blur-md rounded-full">
+          <span class="text-ds-hero-text text-[10px] font-bold uppercase tracking-[0.4em]">
             {{ lightboxIndex + 1 }} / {{ vm.gallery.length }}
           </span>
         </div>
@@ -531,9 +295,7 @@
   }
 
   @if (isSizeGuideOpen) {
-    <app-size-guide
-      [customImageUrl]="vm.product.sizeChartUrl || null"
-      (close)="closeSizeGuide()"
-    ></app-size-guide>
+    <app-size-guide [customImageUrl]="vm.product.sizeChartUrl || null" (close)="closeSizeGuide()"></app-size-guide>
   }
 }
+

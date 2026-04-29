@@ -1,19 +1,19 @@
-<div [ngClass]="isPreOrderMode ? 'bg-violet-50/30 dark:bg-violet-950/10' : 'bg-gray-50 dark:bg-[#0b1120]'" class="flex-1 space-y-3">
+<div class="flex-1 space-y-ds-6 bg-ds-bg">
   <!-- Page Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-ds-6">
     <div>
-      <h2 class="text-primary dark:text-white text-xl font-black uppercase tracking-tight">
+      <h2 class="text-ds-2xl font-bold uppercase tracking-tight text-ds-text">
         {{ isPreOrderMode ? 'Pre-orders' : 'Orders' }}
       </h2>
-      <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-tight opacity-70">
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">
         {{ isPreOrderMode ? 'Track pre-order fulfillment' : 'Fulfillment command center' }}
       </p>
     </div>
-    <div class="flex flex-wrap items-center gap-2">
+    <div class="flex flex-wrap items-center gap-ds-3">
       <button
         (click)="refreshOrders()"
         [disabled]="isRefreshing"
-        class="flex items-center justify-center gap-1.5 rounded-xl h-9 px-4 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 text-primary dark:text-white text-[10px] font-black uppercase shadow-sm transition-all active:scale-95 disabled:opacity-50"
+        class="btn btn-secondary !h-10 !px-ds-6 !text-[10px] tracking-widest uppercase"
       >
         <app-icon name="RotateCw" size="14" [className]="isRefreshing ? 'animate-spin' : ''"></app-icon>
         <span>{{ isRefreshing ? 'Wait...' : 'Refresh' }}</span>

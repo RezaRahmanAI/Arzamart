@@ -1,37 +1,29 @@
-<div
-  class="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
->
-  <div class="flex items-center gap-2">
-    <span class="text-sm font-medium text-gray-500 dark:text-gray-400"
-      >Active Filters:</span
-    >
-    <div class="flex gap-2">
-      <span
-        class="inline-flex items-center gap-1 rounded-full bg-[#e7f0f3] px-3 py-1 text-xs font-bold text-primary dark:bg-gray-700 dark:text-white"
-      >
-        Size: M
-        <button class="ml-1 hover:text-red-500">
-          <app-icon name="X" size="14"></app-icon>
+<div class="mb-ds-6 flex flex-wrap items-center justify-between gap-ds-4 bg-ds-bg py-ds-4 border-b border-ds-border">
+  <div class="flex items-center gap-ds-3">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-ds-text-muted">Active Filters:</span>
+    <div class="flex gap-ds-2">
+      <span class="badge badge-outline !text-[9px] !px-3 !py-1">
+        SIZE: M
+        <button class="ml-ds-2 hover:text-ds-accent transition-colors">
+          <app-icon name="X" size="12"></app-icon>
         </button>
       </span>
     </div>
   </div>
-  <div class="flex items-center gap-4">
-    <span class="text-sm text-gray-500 dark:text-gray-400">Sort by:</span>
-    <div class="relative min-w-[180px]">
-      <select
-        class="w-full appearance-none rounded-lg border-0 bg-[#f8fbfc] py-2.5 pl-4 pr-10 text-sm font-semibold text-primary ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:ring-gray-600"
-      >
+  
+  <div class="flex items-center gap-ds-4">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-ds-text-muted">Sort by:</span>
+    <div class="relative min-w-[160px]">
+      <select class="w-full appearance-none bg-ds-surface border border-ds-border px-ds-4 py-ds-2 text-[11px] font-bold uppercase tracking-widest text-ds-text focus:border-ds-accent transition-colors outline-none">
         <option>New Arrivals</option>
         <option>Price: Low to High</option>
         <option>Price: High to Low</option>
         <option>Popularity</option>
       </select>
-      <div
-        class="pointer-events-none absolute right-3 top-2.5 flex items-center text-primary dark:text-gray-300"
-      >
-        <app-icon name="ChevronDown" size="20"></app-icon>
+      <div class="pointer-events-none absolute right-ds-3 top-1/2 -translate-y-1/2 text-ds-text-muted">
+        <app-icon name="ChevronDown" size="16"></app-icon>
       </div>
     </div>
   </div>
 </div>
+

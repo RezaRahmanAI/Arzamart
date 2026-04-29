@@ -1,20 +1,21 @@
-<div class="group relative flex flex-col bg-white overflow-hidden transition-all duration-300">
+<div class="group relative flex flex-col bg-ds-bg overflow-hidden transition-all duration-fast">
   <!-- Image Container -->
-  <a [routerLink]="['/product', product.slug]" class="relative aspect-[3/4] block overflow-hidden bg-supporting border border-border-color rounded sm:rounded-lg">
+  <a [routerLink]="['/product', product.slug]" 
+     class="relative aspect-[3/4] block overflow-hidden bg-ds-surface border border-ds-border rounded-lg transition-colors hover:border-ds-text-muted">
     @if (mainImage) {
       <img
         [src]="imageUrlService.getImageUrl(mainImage)"
         [alt]="product.name"
         loading="lazy"
         decoding="async"
-        class="h-full w-full object-contain p-2 transition-transform duration-700 group-hover:scale-105"
+        class="h-full w-full object-cover p-2 transition-transform duration-700 group-hover:scale-105"
       />
     }
     
     <!-- Sophisticated Badge -->
-    <div class="absolute top-1 sm:top-1.5 left-1 sm:left-1.5">
+    <div class="absolute top-ds-2 left-ds-2">
       @if (hasDiscount) {
-        <span class="px-1.5 py-0.5 bg-accent text-white text-[10px] sm:text-[11px] font-bold uppercase rounded shadow-lg shadow-accent/20">
+        <span class="badge badge-active !text-[9px] tracking-widest uppercase">
           -৳{{ discountAmount }}
         </span>
       }
@@ -22,32 +23,31 @@
   </a>
 
   <!-- Content Area -->
-  <div class="pt-3 sm:pt-4 pb-2 px-2 sm:px-4 flex flex-col gap-2 md:gap-3 flex-1">
+  <div class="pt-ds-4 pb-ds-2 px-1 flex flex-col gap-ds-3 flex-1">
     <!-- Meta Info -->
-    <div>
-      <p class="text-[10px] sm:text-xs md:text-sm text-primary font-semibold uppercase tracking-tight truncate">{{ product.name }}</p>
-      <div class="flex items-center gap-2">
-        <h3 class="text-sm sm:text-base md:text-lg font-bold text-accent leading-none">৳{{ currentPrice }}</h3>
+    <div class="space-y-ds-1">
+      <p class="text-[11px] font-bold uppercase tracking-widest text-ds-text-sec truncate">
+        {{ product.name }}
+      </p>
+      <div class="flex items-center gap-ds-2">
+        <h3 class="text-ds-lg font-bold text-ds-text leading-none">৳{{ currentPrice }}</h3>
         @if (hasDiscount) {
-          <span class="text-[10px] sm:text-xs text-gray-500 line-through font-bold">৳{{ originalPrice }}</span>
+          <span class="text-ds-xs text-ds-text-muted line-through font-medium">৳{{ originalPrice }}</span>
         }
       </div>
     </div>
 
     <!-- Size Selector -->
     @if (availableSizes.length > 0) {
-      <div class="flex flex-wrap gap-1.5">
+      <div class="flex flex-wrap gap-ds-1">
         @for (size of availableSizes; track size) {
           <button
             (click)="selectSize(size); $event.preventDefault(); $event.stopPropagation()"
-            class="h-6 sm:h-8 min-w-[1.75rem] sm:min-w-[2rem] px-1 flex items-center justify-center text-[10px] sm:text-xs font-bold uppercase transition-all rounded-sm border"
-            [class.bg-primary]="selectedSize === size"
-            [class.text-white]="selectedSize === size"
-            [class.border-primary]="selectedSize === size"
-            [class.bg-white]="selectedSize !== size"
-            [class.text-gray-400]="selectedSize !== size"
-            [class.border-gray-100]="selectedSize !== size"
-            [class.hover:border-accent]="selectedSize !== size"
+            class="h-7 min-w-[2.5rem] px-1 flex items-center justify-center text-[10px] font-bold uppercase transition-all border rounded-sm"
+            [ngClass]="{
+              'bg-ds-accent border-ds-accent text-ds-hero-text': selectedSize === size,
+              'bg-ds-bg border-ds-border text-ds-text-sec hover:border-ds-accent': selectedSize !== size
+            }"
           >
             {{ size }}
           </button>
@@ -56,17 +56,17 @@
     }
 
     <!-- Actions -->
-    <div class="mt-auto">
-      <div class="flex flex-col gap-1.5 md:gap-2">
+    <div class="mt-auto pt-ds-1">
+      <div class="flex flex-col gap-ds-2">
         <button
           (click)="addToCart($event)"
-          class="w-full h-8 sm:h-10 md:h-12 bg-white text-primary border border-gray-300 rounded text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-wider hover:bg-primary hover:text-white hover:border-primary transition-all duration-300"
+          class="btn btn-secondary !min-h-[40px] !py-2 !text-[11px] tracking-widest uppercase"
         >
           {{ currentStock > 0 ? 'ADD TO CART' : 'PRE-ORDER' }}
         </button>
         <button
           (click)="orderNow($event)"
-          class="w-full h-8 sm:h-10 md:h-12 bg-accent text-white rounded text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm"
+          class="btn btn-primary !min-h-[40px] !py-2 !text-[11px] tracking-widest uppercase"
         >
           {{ currentStock > 0 ? 'ORDER NOW' : 'PRE-ORDER NOW' }}
         </button>
@@ -84,3 +84,4 @@
     ></app-quick-add-modal>
   }
 </div>
+

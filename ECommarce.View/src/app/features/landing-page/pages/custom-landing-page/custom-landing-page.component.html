@@ -1,4 +1,4 @@
-@if (data) {
+﻿@if (data) {
   <div class="bg-slate-50 text-slate-900 font-body antialiased">
     
       <!-- Top Promo Bar (Timer) - REDESIGNED for Premium Look -->
@@ -27,28 +27,28 @@
                 <div class="flex gap-2.5 sm:gap-4 items-center">
                   <div class="flex flex-col items-center gap-2">
                     <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.days }}</span>
+                      <span class="text-2xl md:text-3xl font-black text-[#111111] tabular-nums">{{ timeLeft.days }}</span>
                     </div>
                     <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Days</span>
                   </div>
                   <div class="text-white/40 text-2xl font-light mb-6">:</div>
                   <div class="flex flex-col items-center gap-2">
                     <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.hours }}</span>
+                      <span class="text-2xl md:text-3xl font-black text-[#111111] tabular-nums">{{ timeLeft.hours }}</span>
                     </div>
                     <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Hrs</span>
                   </div>
                   <div class="text-white/40 text-2xl font-light mb-6">:</div>
                   <div class="flex flex-col items-center gap-2">
                     <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.minutes }}</span>
+                      <span class="text-2xl md:text-3xl font-black text-[#111111] tabular-nums">{{ timeLeft.minutes }}</span>
                     </div>
                     <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Min</span>
                   </div>
                   <div class="text-white/40 text-2xl font-light mb-6">:</div>
                   <div class="flex flex-col items-center gap-2">
                     <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-2xl md:text-3xl font-black text-[#121212] tabular-nums">{{ timeLeft.seconds }}</span>
+                      <span class="text-2xl md:text-3xl font-black text-[#111111] tabular-nums">{{ timeLeft.seconds }}</span>
                     </div>
                     <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Sec</span>
                   </div>
@@ -74,7 +74,7 @@
                                 <span class="w-10 h-0.5 bg-primary-clp"></span>
                                 <span class="text-primary-clp font-label text-xs tracking-widest">Premium Collection</span>
                             </div>
-                            <h1 class="text-3xl sm:text-4xl md:text-6xl font-headline font-black text-[#121212] tracking-tighter leading-tight mb-2">{{ data.config?.productDetailsTitle }}</h1>
+                            <h1 class="text-3xl sm:text-4xl md:text-6xl font-headline font-black text-[#111111] tracking-tighter leading-tight mb-2">{{ data.config?.productDetailsTitle }}</h1>
                         </div>
     
                         <div class="space-y-8">
@@ -114,7 +114,7 @@
                         </div>
     
                         <div class="pt-6 space-y-6">
-                            <button (click)="scrollToOrder()" class="w-full bg-[#ff7a00] text-white font-label uppercase tracking-widest py-4 rounded-xl shadow-lg shadow-orange-200 hover:bg-[#e66e00] transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2">
+                            <button (click)="scrollToOrder()" class="w-full bg-[#111111] text-white font-label uppercase tracking-widest py-4 rounded-xl shadow-lg shadow-orange-200 hover:bg-[#111111] transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2">
                                 <app-icon name="ShoppingCart" size="20"></app-icon>
                                 ORDER NOW
                             </button>
@@ -138,7 +138,7 @@
                         @if (data.product.images.length > 1) {
                           <div class="mt-4 w-full h-1 bg-slate-200 relative overflow-hidden rounded-full">
                             <div
-                              class="absolute top-0 left-0 h-full bg-[#ff7a00] transition-all duration-75"
+                              class="absolute top-0 left-0 h-full bg-[#111111] transition-all duration-75"
                               [style.width.%]="slideProgress"
                             ></div>
                           </div>
@@ -182,20 +182,20 @@
                                   <!-- Discount Badge -->
                                   @if (rel.compareAtPrice && rel.compareAtPrice > rel.price) {
                                     <div class="absolute top-2 left-2">
-                                        <div class="bg-[#ff2d55] text-white px-2 py-1 rounded-lg shadow-lg">
+                                        <div class="bg-[#D94F4F] text-white px-2 py-1 rounded-lg shadow-lg">
                                             <p class="text-[8px] font-black uppercase leading-none opacity-80 mb-0.5">Save</p>
                                             <p class="text-[10px] font-black">৳ {{ rel.compareAtPrice - rel.price }}</p>
                                         </div>
-                                        <div class="bg-amber-400 text-[#121212] px-2 py-0.5 rounded-b-lg text-[9px] font-black uppercase tracking-tighter -mt-1 text-center">
+                                        <div class="bg-amber-400 text-[#111111] px-2 py-0.5 rounded-b-lg text-[9px] font-black uppercase tracking-tighter -mt-1 text-center">
                                             OFFER!!
                                         </div>
                                     </div>
                                   }
                               </div>
                               <div class="text-center px-2">
-                                  <h4 class="text-[11px] sm:text-xs font-bold text-slate-600 uppercase tracking-wide truncate mb-1 group-hover:text-[#ff7a00] transition-colors">{{ rel.name }}</h4>
+                                  <h4 class="text-[11px] sm:text-xs font-bold text-slate-600 uppercase tracking-wide truncate mb-1 group-hover:text-[#111111] transition-colors">{{ rel.name }}</h4>
                                   <div class="flex items-baseline justify-center gap-2">
-                                      <span class="text-sm sm:text-lg font-black text-[#121212]">৳ {{ rel.price }}</span>
+                                      <span class="text-sm sm:text-lg font-black text-[#111111]">৳ {{ rel.price }}</span>
                                       @if (rel.compareAtPrice) {
                                         <span class="text-[10px] text-slate-400 line-through">৳ {{ rel.compareAtPrice }}</span>
                                       }
@@ -252,12 +252,12 @@
                       <div class="mb-10">
                           <h2 class="font-headline text-4xl text-slate-900 mb-2 leading-tight">{{ data.config?.featuredProductName }}</h2>
                           <div class="flex items-baseline gap-3">
-                              <span class="text-3xl font-bold text-[#ff7a00]">৳ {{ selectedVariantPrice }}</span>
+                              <span class="text-3xl font-bold text-[#111111]">৳ {{ selectedVariantPrice }}</span>
                               @if (data.config?.originalPrice) {
                                 <span class="text-xl text-slate-400 line-through font-medium">৳ {{ data.config?.originalPrice }}</span>
                               }
                               @if (data.config && data.config.originalPrice && data.config.originalPrice > selectedVariantPrice) {
-                                <span class="px-2 py-0.5 rounded-lg bg-orange-100 text-[#ff7a00] text-[10px] font-black uppercase">
+                                <span class="px-2 py-0.5 rounded-lg bg-orange-100 text-[#111111] text-[10px] font-black uppercase">
                                     Save ৳{{ (data.config.originalPrice - selectedVariantPrice) }} OFF
                                 </span>
                               }
@@ -269,7 +269,7 @@
                         <div class="mb-8 p-4 bg-orange-50 border border-orange-100 rounded-2xl flex items-center justify-between gap-4 animate-in slide-in-from-top duration-300">
                           <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-                              <app-icon name="User" size="20" className="text-[#ff7a00]"></app-icon>
+                              <app-icon name="User" size="20" className="text-[#111111]"></app-icon>
                             </div>
                             <div>
                               <p class="text-[11px] font-black text-slate-900 uppercase tracking-wide">Save information available!</p>
@@ -278,7 +278,7 @@
                           </div>
                           <div class="flex gap-2">
                             <button type="button" (click)="dismissAutofill()" class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase hover:text-slate-600 transition-colors">No</button>
-                            <button type="button" (click)="applyAutofill()" class="px-4 py-1.5 bg-[#ff7a00] text-white text-[10px] font-black uppercase rounded-lg shadow-md shadow-orange-200 active:scale-95 transition-all">Yes, Use Info</button>
+                            <button type="button" (click)="applyAutofill()" class="px-4 py-1.5 bg-[#111111] text-white text-[10px] font-black uppercase rounded-lg shadow-md shadow-orange-200 active:scale-95 transition-all">Yes, Use Info</button>
                           </div>
                         </div>
                       }
@@ -293,7 +293,7 @@
                                   @for (variant of data.product.variants; track variant.id) {
                                     <button type="button" 
                                             (click)="selectSize(variant.size || '')"
-                                            [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'border-[#ff7a00] bg-orange-50 text-[#ff7a00]' : 'border-slate-100 text-slate-600 hover:border-orange-200'"
+                                            [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'border-[#111111] bg-orange-50 text-[#111111]' : 'border-slate-100 text-slate-600 hover:border-orange-200'"
                                             class="min-w-[80px] px-6 py-2.5 border-2 font-bold text-sm transition-all duration-200 rounded-xl flex flex-col items-center gap-0.5">
                                         <span class="text-xs uppercase tracking-tight">{{ variant.size }}</span>
                                         <span class="text-[11px] font-black opacity-80">৳ {{ variant.price || data.product.price }}</span>
@@ -311,8 +311,8 @@
                               <div class="flex gap-6 flex-wrap">
                                   @for (method of deliveryMethods; track method.id) {
                                     <label class="flex items-center cursor-pointer group">
-                                        <input type="radio" formControlName="deliveryMethodId" [value]="method.id" class="w-4 h-4 text-[#121212] border-slate-300 focus:ring-[#121212] focus:ring-offset-0 bg-transparent">
-                                        <span class="ml-2 text-sm text-slate-700 font-medium group-hover:text-[#121212] transition-colors">
+                                        <input type="radio" formControlName="deliveryMethodId" [value]="method.id" class="w-4 h-4 text-[#111111] border-slate-300 focus:ring-[#111111] focus:ring-offset-0 bg-transparent">
+                                        <span class="ml-2 text-sm text-slate-700 font-medium group-hover:text-[#111111] transition-colors">
                                             {{ method.name }} — ৳{{ method.cost }}
                                         </span>
                                     </label>
@@ -324,16 +324,16 @@
                           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <!-- Phone -->
                               <div class="relative group">
-                                  <app-icon name="Phone" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></app-icon>
+                                  <app-icon name="Phone" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#111111] transition-colors"></app-icon>
                                   <input type="tel" formControlName="phone" placeholder="Phone Number" autocomplete="tel"
-                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
+                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#111111] placeholder-slate-400 transition-colors" />
                               </div>
 
                               <!-- Full Name -->
                               <div class="relative group">
-                                  <app-icon name="User" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></app-icon>
+                                  <app-icon name="User" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#111111] transition-colors"></app-icon>
                                   <input type="text" formControlName="fullName" placeholder="Full Name" autocomplete="name"
-                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
+                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#111111] placeholder-slate-400 transition-colors" />
                               </div>
     
                               <!-- City Dropdown -->
@@ -354,7 +354,7 @@
                                         <div class="overflow-y-auto py-2">
                                             @for (city of filteredCities; track city) {
                                               <button type="button" (click)="selectCity(city)"
-                                                      class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#ff7a00] transition-colors">
+                                                      class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#111111] transition-colors">
                                                   {{ city }}
                                               </button>
                                             }
@@ -381,7 +381,7 @@
                                         <div class="overflow-y-auto py-2">
                                             @for (area of filteredAreas; track area) {
                                               <button type="button" (click)="selectArea(area)"
-                                                      class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#ff7a00] transition-colors">
+                                                      class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#111111] transition-colors">
                                                   {{ area }}
                                               </button>
                                             }
@@ -392,14 +392,14 @@
     
                               <!-- Full Address -->
                               <div class="md:col-span-2 relative group">
-                                  <app-icon name="MapPin" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#ff7a00] transition-colors"></app-icon>
+                                  <app-icon name="MapPin" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#111111] transition-colors"></app-icon>
                                   <input type="text" formControlName="address" placeholder="House/Road/Block (Detailed Address)" autocomplete="street-address"
-                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#ff7a00] placeholder-slate-400 transition-colors" />
+                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#111111] placeholder-slate-400 transition-colors" />
                               </div>
                           </div>
     
                           <!-- Submit -->
-                          <button type="submit" [disabled]="isOrdering" class="w-full bg-[#ff7a00] text-white font-label uppercase tracking-widest py-5 mt-4 hover:bg-[#e66e00] transition-colors rounded-xl flex items-center justify-center gap-2 disabled:opacity-70 disabled:pointer-events-none shadow-[0_15px_30px_-5px_rgba(255,122,0,0.4)]">
+                          <button type="submit" [disabled]="isOrdering" class="w-full bg-[#111111] text-white font-label uppercase tracking-widest py-5 mt-4 hover:bg-[#111111] transition-colors rounded-xl flex items-center justify-center gap-2 disabled:opacity-70 disabled:pointer-events-none shadow-[0_15px_30px_-5px_rgba(255,122,0,0.4)]">
                               @if (isOrdering) {
                                 <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
                               }

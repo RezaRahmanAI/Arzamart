@@ -1,21 +1,21 @@
-<div class="min-h-screen bg-gray-50 dark:bg-background-dark py-12">
+<div class="min-h-screen bg-ds-bg py-ds-12">
   <div class="site-container">
     @if (vm$ | async; as vm) {
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-12">
         <!-- Main Content -->
-        <div class="lg:col-span-7 xl:col-span-8 space-y-8">
-          <div class="flex items-center gap-4 mb-2">
-            <a routerLink="/cart" class="w-10 h-10 rounded-full bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 flex items-center justify-center text-gray-400 hover:text-primary transition-colors">
+        <div class="lg:col-span-7 xl:col-span-8 space-y-ds-10">
+          <div class="flex items-center gap-ds-4 mb-ds-4">
+            <a routerLink="/cart" class="btn-icon !bg-transparent border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">
               <app-icon name="ChevronLeft" size="20"></app-icon>
             </a>
-            <h1 class="text-3xl font-bold text-primary dark:text-white tracking-tight">Checkout</h1>
+            <h1 class="text-ds-3xl font-bold text-ds-text tracking-tight">Checkout</h1>
           </div>
 
-          <!-- Saved Info Prompt -->
+          <!-- Autofill Prompt -->
           @if (showAutofillPrompt) {
-            <div class="p-6 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
-              <div class="flex items-center gap-4 text-center sm:text-left">
-                <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <div class="p-ds-6 bg-ds-surface border border-ds-border rounded-lg flex flex-col sm:flex-row items-center justify-between gap-ds-6 animate-fade-in">
+              <div class="flex items-center gap-ds-4">
+                <div class="w-12 h-12 rounded-lg bg-ds-accent text-ds-hero-text flex items-center justify-center shrink-0">
                   <app-icon name="User" size="24"></app-icon>
                 </div>
                 <div>

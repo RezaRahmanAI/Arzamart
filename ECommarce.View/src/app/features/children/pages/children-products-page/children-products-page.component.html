@@ -1,380 +1,40 @@
-<main class="bg-white text-slate-800">
-  <div class="bg-primary text-white py-12 relative overflow-hidden">
-    <div
-      class="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1623938676644-88985c7d2421?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"
-    ></div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <nav class="flex items-center gap-2 text-xs text-white/60 mb-4">
-        <a class="hover:text-white transition-colors" href="#">Home</a>
-        <app-icon
-          name="ChevronRight"
-          size="10"
-        ></app-icon>
-        <span class="text-white">Children</span>
-      </nav>
-      <h1 class="text-4xl md:text-5xl font-serif font-bold mb-4">
-        Children's Collection
-      </h1>
-      <p class="max-w-xl text-accent/90 text-lg">
+<main class="site-container py-ds-10 flex flex-1 flex-col">
+  <!-- Breadcrumbs -->
+  <nav class="flex items-center gap-ds-3 text-[10px] uppercase tracking-[0.2em] text-ds-text-muted mb-ds-10">
+    <a routerLink="/" class="hover:text-ds-text transition-colors">Home</a>
+    <span class="text-ds-border text-xs">/</span>
+    <span class="text-ds-text font-bold">Children</span>
+  </nav>
+
+  <div class="mb-ds-12 flex flex-col justify-between gap-ds-6 md:flex-row md:items-end">
+    <div class="max-w-2xl space-y-ds-3">
+      <h2 class="section-title">Children's Collection</h2>
+      <p class="text-ds-lg text-ds-text-sec font-medium leading-relaxed">
         Modest, comfortable, and stylish outfits designed for your little ones.
         Explore our latest arrivals for boys and girls.
       </p>
     </div>
   </div>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="flex flex-col lg:flex-row gap-10">
-      <aside class="w-full lg:w-64 shrink-0 space-y-8">
-        <div>
-          <h3
-            class="font-serif font-semibold text-primary mb-4 pb-2 border-b border-border-color"
-          >
-            Categories
-          </h3>
-          <div class="space-y-3">
-            <div class="group">
-              <button
-                class="flex items-center justify-between w-full text-left text-sm font-medium text-slate-700 group-hover:text-primary"
-              >
-                <span>Girls</span>
-                <app-icon
-                  name="ChevronUp"
-                  size="16"
-                  className="text-slate-400"
-                ></app-icon>
-              </button>
-              <div class="pl-3 mt-2 space-y-2 border-l border-border-color">
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input
-                    class="rounded border-slate-300 text-primary focus:ring-primary size-4"
-                    type="checkbox"
-                  />
-                  <span class="text-sm text-text-sub"
-                    >Abayas &amp; Dresses</span
-                  >
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input
-                    class="rounded border-slate-300 text-primary focus:ring-primary size-4"
-                    type="checkbox"
-                  />
-                  <span class="text-sm text-text-sub">Hijabs</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input
-                    class="rounded border-slate-300 text-primary focus:ring-primary size-4"
-                    type="checkbox"
-                  />
-                  <span class="text-sm text-text-sub">Sets</span>
-                </label>
-              </div>
-            </div>
-            <div class="group pt-2">
-              <button
-                class="flex items-center justify-between w-full text-left text-sm font-medium text-slate-700 group-hover:text-primary"
-              >
-                <span>Boys</span>
-                <app-icon
-                  name="ChevronDown"
-                  size="16"
-                  className="text-slate-400"
-                ></app-icon>
-              </button>
-              <div
-                class="hidden pl-3 mt-2 space-y-2 border-l border-border-color"
-              ></div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <h3
-            class="font-serif font-semibold text-primary mb-4 pb-2 border-b border-border-color"
-          >
-            Size / Age
-          </h3>
-          <div class="grid grid-cols-3 gap-2">
-            <button
-              class="px-2 py-1.5 text-xs border border-border-color rounded hover:border-primary hover:text-primary transition-colors"
-            >
-              2-3Y
-            </button>
-            <button
-              class="px-2 py-1.5 text-xs border border-primary bg-primary text-white rounded transition-colors"
-            >
-              4-5Y
-            </button>
-            <button
-              class="px-2 py-1.5 text-xs border border-border-color rounded hover:border-primary hover:text-primary transition-colors"
-            >
-              6-7Y
-            </button>
-            <button
-              class="px-2 py-1.5 text-xs border border-border-color rounded hover:border-primary hover:text-primary transition-colors"
-            >
-              8-9Y
-            </button>
-            <button
-              class="px-2 py-1.5 text-xs border border-border-color rounded hover:border-primary hover:text-primary transition-colors"
-            >
-              10-12Y
-            </button>
-            <button
-              class="px-2 py-1.5 text-xs border border-border-color rounded hover:border-primary hover:text-primary transition-colors"
-            >
-              Teen
-            </button>
-          </div>
-        </div>
-        <div>
-          <h3
-            class="font-serif font-semibold text-primary mb-4 pb-2 border-b border-border-color"
-          >
-            Price
-          </h3>
-          <div class="space-y-4">
-            <div class="flex items-center gap-4">
-              <div class="relative flex-1">
-                <span
-                  class="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-slate-400"
-                  >$</span
-                >
-                <input
-                  class="w-full pl-5 pr-1 py-1 text-sm border-border-color rounded focus:ring-primary focus:border-primary"
-                  type="number"
-                  value="10"
-                />
-              </div>
-              <span class="text-slate-400 text-sm">to</span>
-              <div class="relative flex-1">
-                <span
-                  class="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-slate-400"
-                  >$</span
-                >
-                <input
-                  class="w-full pl-5 pr-1 py-1 text-sm border-border-color rounded focus:ring-primary focus:border-primary"
-                  type="number"
-                  value="150"
-                />
-              </div>
-            </div>
-            <input
-              class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
-              type="range"
-            />
-          </div>
-        </div>
-        <div class="bg-accent/20 rounded-lg p-6 text-center mt-6">
-          <h4 class="font-serif font-bold text-primary text-lg mb-2">
-            Ramadan Ready?
-          </h4>
-          <p class="text-sm text-text-sub mb-4">
-            Check out our exclusive prayer sets for kids.
-          </p>
-          <button
-            class="text-xs font-bold text-primary uppercase tracking-wider border-b border-primary pb-0.5 hover:text-opacity-80"
-          >
-            View Collection
-          </button>
-        </div>
-      </aside>
-      <div class="flex-1">
-        <div
-          class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"
-        >
-          <p class="text-sm text-text-sub">
-            Showing
-            <span class="font-semibold text-text-main">{{
-              products.length
-            }}</span>
-            products
-          </p>
-          <div class="flex items-center gap-3">
-            <span class="text-sm text-text-sub">Sort by:</span>
-            <div class="relative group">
-              <button
-                class="flex items-center gap-2 text-sm font-medium text-text-main hover:text-primary"
-              >
-                <span>Popularity</span>
-                <app-icon
-                  name="ChevronDown"
-                  size="18"
-                ></app-icon>
-              </button>
-              <div
-                class="absolute right-0 top-full mt-2 w-40 bg-white shadow-xl rounded-lg border border-border-color py-1 hidden group-hover:block z-20"
-              >
-                <a
-                  class="block px-4 py-2 text-sm text-primary bg-slate-50"
-                  href="#"
-                  >Popularity</a
-                >
-                <a
-                  class="block px-4 py-2 text-sm text-text-sub hover:bg-slate-50 hover:text-primary"
-                  href="#"
-                  >New Arrivals</a
-                >
-                <a
-                  class="block px-4 py-2 text-sm text-text-sub hover:bg-slate-50 hover:text-primary"
-                  href="#"
-                >
-                  Price: Low to High
-                </a>
-                <a
-                  class="block px-4 py-2 text-sm text-text-sub hover:bg-slate-50 hover:text-primary"
-                  href="#"
-                >
-                  Price: High to Low
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-10"
-        >
-          @for (product of products; track product.id) {
-            <div
-              [routerLink]="['/product', product.slug]"
-              class="group flex flex-col gap-3 cursor-pointer"
-            >
-              <div
-                class="aspect-[3/4] w-full overflow-hidden rounded-lg bg-supporting relative"
-              >
-                <img
-                  [alt]="product.name"
-                  class="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
-                  [src]="imageUrlService.getImageUrl(product.imageUrl || '')"
-                />
 
-                <button
-                  class="absolute top-3 right-3 p-2 bg-white/80 hover:bg-white rounded-full text-slate-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300"
-                >
-                  <app-icon
-                    name="Heart"
-                    size="18"
-                  ></app-icon>
-                </button>
-                <button
-                  class="absolute bottom-0 left-0 right-0 bg-primary/95 text-white py-3.5 font-medium text-sm tracking-wide translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center gap-2"
-                >
-                  <app-icon
-                    name="ShoppingCart"
-                    size="18"
-                  ></app-icon>
-                  Add to Cart
-                </button>
-              </div>
-              <div>
-                <div class="flex justify-between items-start mb-1">
-                  <h3
-                    class="text-base font-medium text-text-main group-hover:text-primary transition-colors cursor-pointer"
-                  >
-                    {{ product.name }}
-                  </h3>
-                  @if (product.compareAtPrice) {
-                    <div
-                      class="flex flex-col items-end"
-                    >
-                      <app-price-display
-                        class="text-red-600"
-                        [amount]="product.price"
-                        size="sm"
-                      ></app-price-display>
-                      <app-price-display
-                        class="text-slate-400 line-through"
-                        [amount]="product.compareAtPrice"
-                        size="sm"
-                      ></app-price-display>
-                    </div>
-                  } @else {
-                    <app-price-display
-                      class="text-primary"
-                      [amount]="product.price"
-                      size="sm"
-                    ></app-price-display>
-                  }
-                </div>
-
-                @if (product.variants && product.variants.length > 0) {
-                  <div
-                    class="flex items-center gap-1.5"
-                  >
-                    <!-- Simplified color display for flat variants -->
-                  </div>
-                }
-              </div>
-            </div>
-          } @empty {
-             <div class="col-span-full py-20 text-center text-gray-500">
-               No products found in this collection.
-             </div>
-          }
-        </div>
-        <div class="mt-12 flex justify-center">
-          <nav class="flex items-center gap-1 text-sm font-medium">
-            <a class="p-2 text-slate-400 hover:text-primary" href="#">
-              <app-icon
-                name="ChevronLeft"
-                size="40"
-              ></app-icon>
-            </a>
-            <a
-              class="px-4 py-2 bg-primary text-white rounded-md shadow-lg shadow-primary/20"
-              href="#"
-              >1</a
-            >
-            <a
-              class="px-4 py-2 text-text-sub hover:bg-slate-50 rounded-md transition-colors"
-              href="#"
-              >2</a
-            >
-            <a
-              class="px-4 py-2 text-text-sub hover:bg-slate-50 rounded-md transition-colors"
-              href="#"
-              >3</a
-            >
-            <span class="px-2 text-slate-400">...</span>
-            <a
-              class="px-4 py-2 text-text-sub hover:bg-slate-50 rounded-md transition-colors"
-              href="#"
-              >8</a
-            >
-            <a class="p-2 text-text-sub hover:text-primary" href="#">
-              <app-icon
-                name="ChevronRight"
-                size="40"
-              ></app-icon>
-            </a>
-          </nav>
-        </div>
+  <div class="flex flex-col gap-ds-10 lg:flex-row">
+    <div class="flex-1 space-y-ds-8">
+      <div class="flex items-center justify-between border-b border-ds-border pb-ds-4">
+        <p class="text-[11px] font-bold uppercase tracking-widest text-ds-text-sec">
+          Showing {{ products.length }} items
+        </p>
       </div>
-    </div>
-  </div>
-  <div class="bg-accent/20 border-y border-accent/30 py-16">
-    <div class="max-w-xl mx-auto px-4 text-center">
-      <app-icon
-        name="Mail"
-        size="40"
-        className="text-primary mb-3"
-      ></app-icon>
-      <h2 class="text-2xl font-serif font-bold text-primary mb-2">
-        Join the Family
-      </h2>
-      <p class="text-text-sub mb-6">
-        Subscribe to receive updates, access to exclusive deals, and more.
-      </p>
-      <div class="flex gap-2 max-w-sm mx-auto">
-        <input
-          class="flex-1 rounded-lg border-border-color focus:ring-primary focus:border-primary"
-          placeholder="Enter your email"
-          type="email"
-        />
-        <button
-          class="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-[#052630] transition-colors"
-        >
-          Subscribe
-        </button>
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-ds-6 lg:gap-ds-8">
+        @for (product of products; track product.id) {
+          <app-product-card [product]="product"></app-product-card>
+        } @empty {
+          <div class="col-span-full py-20 text-center">
+            <p class="text-ds-text-muted italic">No products found in this collection.</p>
+          </div>
+        }
       </div>
     </div>
   </div>
 </main>
+
 

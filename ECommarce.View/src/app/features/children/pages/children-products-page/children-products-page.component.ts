@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { NgClass } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
 import { HttpContext } from "@angular/common/http";
 
@@ -9,16 +9,20 @@ import { PriceDisplayComponent } from "../../../../shared/components/price-displ
 import { SHOW_LOADING } from "../../../../core/services/loading.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
+import { ProductCardComponent } from "../../../../shared/components/product-card/product-card.component";
 
 @Component({
   selector: "app-children-products-page",
   standalone: true,
   imports: [
-    NgClass,
+    CommonModule,
     RouterLink,
     PriceDisplayComponent,
     AppIconComponent,
+    ProductCardComponent,
   ],
+
+
   templateUrl: "./children-products-page.component.html",
   styleUrl: "./children-products-page.component.css",
 })

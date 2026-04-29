@@ -1,4 +1,4 @@
-<div
+﻿<div
   class="bg-background-light dark:bg-background-dark text-primary dark:text-white font-display antialiased flex flex-col min-h-screen"
 >
   <!-- Main Split Layout -->
@@ -40,7 +40,7 @@
             Admin Access
           </h1>
           <p
-            class="text-[#4d8799] dark:text-gray-400 text-sm font-normal leading-normal"
+            class="text-[#888888] dark:text-gray-400 text-sm font-normal leading-normal"
           >
             Sign in to manage the store dashboard.
           </p>
@@ -54,11 +54,11 @@
           <!-- Email/Username Input -->
           <label class="flex flex-col w-full">
             <span
-              class="text-[#0e181b] dark:text-gray-200 text-base font-medium leading-normal pb-2"
+              class="text-[#111111] dark:text-gray-200 text-base font-medium leading-normal pb-2"
               >Email or Username</span
             >
             <input
-              class="form-input w-full rounded-lg text-[#0e181b] dark:text-white bg-[#f8fbfc] dark:bg-gray-800 border border-[#d0e2e7] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 placeholder:text-[#4d8799] text-base"
+              class="form-input w-full rounded-lg text-[#111111] dark:text-white bg-[#F5F5F5] dark:bg-gray-800 border border-[#F5F5F5] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 placeholder:text-[#888888] text-base"
               placeholder="Enter your email or username"
               type="text"
               formControlName="emailOrUsername"
@@ -74,19 +74,19 @@
           <label class="flex flex-col w-full">
             <div class="flex justify-between items-center pb-2">
               <span
-                class="text-[#0e181b] dark:text-gray-200 text-base font-medium leading-normal"
+                class="text-[#111111] dark:text-gray-200 text-base font-medium leading-normal"
                 >Password</span
               >
             </div>
             <div class="flex w-full items-stretch rounded-lg relative">
               <input
-                class="form-input w-full rounded-lg text-[#0e181b] dark:text-white bg-[#f8fbfc] dark:bg-gray-800 border border-[#d0e2e7] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 pr-12 placeholder:text-[#4d8799] text-base"
+                class="form-input w-full rounded-lg text-[#111111] dark:text-white bg-[#F5F5F5] dark:bg-gray-800 border border-[#F5F5F5] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 pr-12 placeholder:text-[#888888] text-base"
                 placeholder="Enter your password"
                 [type]="isPasswordVisible ? 'text' : 'password'"
                 formControlName="password"
               />
               <div
-                class="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-[#4d8799] cursor-pointer hover:text-primary transition-colors"
+                class="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-[#888888] cursor-pointer hover:text-primary transition-colors"
                 (click)="togglePasswordVisibility()"
               >
                 <app-icon
@@ -106,12 +106,12 @@
           <div class="flex items-center justify-between mt-1">
             <label class="flex items-center gap-3 cursor-pointer">
               <input
-                class="h-5 w-5 rounded border-[#d0e2e7] dark:border-gray-600 bg-transparent text-primary checked:bg-primary focus:ring-offset-0 focus:ring-accent"
+                class="h-5 w-5 rounded border-[#F5F5F5] dark:border-gray-600 bg-transparent text-primary checked:bg-primary focus:ring-offset-0 focus:ring-accent"
                 type="checkbox"
                 formControlName="rememberMe"
               />
               <span
-                class="text-[#0e181b] dark:text-gray-300 text-base font-normal"
+                class="text-[#111111] dark:text-gray-300 text-base font-normal"
                 >Remember me</span
               >
             </label>

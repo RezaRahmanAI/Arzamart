@@ -1,9 +1,9 @@
-/* Modern Aesthetic Utilities */
+﻿/* Modern Aesthetic Utilities */
 :host {
-  --primary-clp: #ff7a00; /* New Vibrant Orange */
-  --primary-dark-clp: #e66e00;
-  --secondary-clp: #121212; /* New Near Black */
-  --accent-clp: #ffa64d;
+  --primary-clp: #111111; /* New Vibrant Orange */
+  --primary-dark-clp: #111111;
+  --secondary-clp: #111111; /* New Near Black */
+  --accent-clp: #888888;
   --surface-clp: #ffffff;
   --text-on-primary: #ffffff;
   --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -32,7 +32,7 @@
 }
 
 .btn-premium {
-  background: #ff7a00;
+  background: #111111;
   color: white;
   border-radius: 9999px;
   font-weight: 800;
@@ -127,7 +127,7 @@
   display: inline-block;
   padding: 0.5rem 1.25rem;
   background: rgba(233, 30, 99, 0.1);
-  color: #e91e63;
+  color: #D94F4F;
   border-radius: 100px;
   font-size: 0.75rem;
   font-weight: 800;

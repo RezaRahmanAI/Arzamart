@@ -1,148 +1,158 @@
-<div class="max-w-[1000px] mx-auto pb-20">
+<div class="site-container py-ds-10 space-y-ds-8">
   <!-- Header -->
-  <div class="flex items-center justify-between mb-8">
-    <div class="flex items-center gap-4">
-      <a routerLink="/admin/products" class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-secondary-light hover:text-primary transition-colors">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-ds-6">
+    <div class="flex items-center gap-ds-4">
+      <a routerLink="/admin/products" class="btn-icon !bg-transparent border border-ds-border text-ds-text-muted hover:text-ds-text transition-colors">
         <app-icon name="ArrowLeft" size="20"></app-icon>
       </a>
       <div>
-        <h2 class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">Custom Landing Page Settings</h2>
-        <p class="text-xs font-medium text-text-secondary-light uppercase tracking-wider" *ngIf="product">For: {{ product.name }}</p>
+        <h2 class="text-ds-2xl font-bold uppercase tracking-tight text-ds-text">Landing Page Design</h2>
+        <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest" *ngIf="product">Configure: {{ product.name }}</p>
       </div>
     </div>
-    <button (click)="onSubmit()" [disabled]="isSaving" class="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-bold text-white hover:bg-[#083a4a] shadow-lg shadow-primary/20 disabled:opacity-50">
-      <app-icon *ngIf="isSaving" name="Loader2" size="20" className="animate-spin"></app-icon>
-      <app-icon *ngIf="!isSaving" name="Save" size="20"></app-icon>
-      <span>Save Changes</span>
+    <button (click)="onSubmit()" [disabled]="isSaving" class="btn btn-primary !h-12 !px-ds-8 !text-[11px] tracking-[0.2em] uppercase">
+      <app-icon *ngIf="isSaving" name="Loader2" size="18" className="animate-spin"></app-icon>
+      <app-icon *ngIf="!isSaving" name="Save" size="18"></app-icon>
+      <span class="ml-2">{{ isSaving ? 'Saving...' : 'Save Changes' }}</span>
     </button>
   </div>
 
-  <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-20">
-    <app-icon name="Loader2" size="40" className="animate-spin text-primary/20"></app-icon>
-    <p class="text-xs font-bold text-text-secondary-light uppercase tracking-widest mt-4">Loading configuration...</p>
-  </div>
+  @if (isLoading) {
+    <div class="flex flex-col items-center justify-center py-ds-20 space-y-ds-4">
+      <app-icon name="Loader2" size="40" className="animate-spin text-ds-accent/20"></app-icon>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">Loading configuration...</p>
+    </div>
+  }
 
-  <form *ngIf="!isLoading" [formGroup]="configForm" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <form *ngIf="!isLoading" [formGroup]="configForm" class="grid grid-cols-1 md:grid-cols-2 gap-ds-8">
     
-    <!-- Section: Timer & Banner -->
-    <div class="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl p-6 shadow-sm space-y-6">
-      <div class="flex items-center gap-2 mb-4">
-        <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-            <app-icon name="Info" size="16"></app-icon>
-        </div>
-        <h3 class="text-sm font-bold text-text-main-light dark:text-text-main-dark uppercase tracking-wider">Timer & Hero Banner</h3>
+    <!-- Section: Timer & Hero -->
+    <div class="p-ds-8 bg-ds-surface border border-ds-border rounded-sm space-y-ds-8">
+      <div class="flex items-center gap-ds-3 border-b border-ds-border pb-ds-4">
+        <app-icon name="Clock" size="18" className="text-ds-accent"></app-icon>
+        <h3 class="text-ds-sm font-bold uppercase tracking-widest">Timer & Banner</h3>
       </div>
 
-      <div class="space-y-4">
-        <div class="flex items-center justify-between p-4 bg-background-light dark:bg-background-dark rounded-lg border border-border-light dark:border-border-dark">
-            <label class="text-xs font-bold text-text-main-light dark:text-text-main-dark">Show Countdown Timer</label>
-            <input type="checkbox" formControlName="isTimerVisible" class="w-10 h-5 rounded-full bg-gray-200 dark:bg-gray-700 checked:bg-primary appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
+      <div class="space-y-ds-6">
+        <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
+            <label class="text-[11px] font-bold uppercase tracking-widest">Show Countdown Timer</label>
+            <input type="checkbox" formControlName="isTimerVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
         </div>
 
-        <div class="grid grid-cols-1 gap-4" *ngIf="configForm.get('isTimerVisible')?.value">
-            <div>
-                <label class="block text-[10px] font-bold text-text-secondary-light uppercase tracking-widest mb-1.5 ml-1">Relative Timer (Minutes)</label>
-                <input type="number" formControlName="relativeTimerTotalMinutes" placeholder="e.g. 120" class="w-full h-11 px-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
-            </div>
-        </div>
+        @if (configForm.get('isTimerVisible')?.value) {
+          <div>
+            <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Relative Timer (Minutes)</label>
+            <input type="number" formControlName="relativeTimerTotalMinutes" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
+          </div>
+        }
 
         <div>
-            <label class="block text-[10px] font-bold text-text-secondary-light uppercase tracking-widest mb-1.5 ml-1">Header Title (Bengali)</label>
-            <input type="text" formControlName="headerTitle" class="w-full h-11 px-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+            <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Header Title (Bengali)</label>
+            <input type="text" formControlName="headerTitle" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
         </div>
-
       </div>
     </div>
 
-    <!-- Section: Product Details -->
-    <div class="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl p-6 shadow-sm space-y-6">
-        <div class="flex items-center gap-2 mb-4">
-          <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-              <app-icon name="Info" size="16"></app-icon>
-          </div>
-          <h3 class="text-sm font-bold text-text-main-light dark:text-main-dark uppercase tracking-wider">Product Features</h3>
+    <!-- Section: Features -->
+    <div class="p-ds-8 bg-ds-surface border border-ds-border rounded-sm space-y-ds-8">
+        <div class="flex items-center gap-ds-3 border-b border-ds-border pb-ds-4">
+          <app-icon name="Sparkles" size="18" className="text-ds-accent"></app-icon>
+          <h3 class="text-ds-sm font-bold uppercase tracking-widest">Product Experience</h3>
         </div>
   
-        <div class="space-y-4">
-          <div class="flex items-center justify-between p-4 bg-background-light dark:bg-background-dark rounded-lg border border-border-light dark:border-border-dark">
-              <label class="text-xs font-bold text-text-main-light dark:text-text-main-dark">Show Details Section</label>
-              <input type="checkbox" formControlName="isProductDetailsVisible" class="w-10 h-5 rounded-full bg-gray-200 dark:bg-gray-700 checked:bg-primary appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
+        <div class="space-y-ds-6">
+          <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
+              <label class="text-[11px] font-bold uppercase tracking-widest">Show Details Section</label>
+              <input type="checkbox" formControlName="isProductDetailsVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
           </div>
   
           <div>
-              <label class="block text-[10px] font-bold text-text-secondary-light uppercase tracking-widest mb-1.5 ml-1">Details Section Title</label>
-              <input type="text" formControlName="productDetailsTitle" class="w-full h-11 px-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+              <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Details Section Title</label>
+              <input type="text" formControlName="productDetailsTitle" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
           </div>
   
-          <div class="grid grid-cols-2 gap-4">
-            <div class="flex items-center justify-between p-4 bg-background-light dark:bg-background-dark rounded-lg border border-border-light dark:border-border-dark">
+          <div class="grid grid-cols-2 gap-ds-4">
+            <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
                 <div class="flex flex-col">
-                  <label class="text-[10px] font-bold text-text-main-light dark:text-text-main-dark uppercase tracking-widest">Fabric Section</label>
-                  <span class="text-[9px] font-bold text-text-secondary-light uppercase">Visible in page</span>
+                  <label class="text-[10px] font-bold uppercase tracking-widest">Fabric Info</label>
+                  <span class="text-[8px] font-bold text-ds-text-muted uppercase">Visible</span>
                 </div>
-                <input type="checkbox" formControlName="isFabricVisible" class="w-10 h-5 rounded-full bg-gray-200 dark:bg-gray-700 checked:bg-primary appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
+                <input type="checkbox" formControlName="isFabricVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
             </div>
 
-            <div class="flex items-center justify-between p-4 bg-background-light dark:bg-background-dark rounded-lg border border-border-light dark:border-border-dark">
+            <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
               <div class="flex flex-col">
-                <label class="text-[10px] font-bold text-text-main-light dark:text-text-main-dark uppercase tracking-widest">Design Section</label>
-                <span class="text-[9px] font-bold text-text-secondary-light uppercase">Visible in page</span>
+                <label class="text-[10px] font-bold uppercase tracking-widest">Design Info</label>
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase">Visible</span>
               </div>
-              <input type="checkbox" formControlName="isDesignVisible" class="w-10 h-5 rounded-full bg-gray-200 dark:bg-gray-700 checked:bg-primary appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
+              <input type="checkbox" formControlName="isDesignVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
             </div>
           </div>
         </div>
     </div>
 
     <!-- Section: Trust & Forms -->
-    <div class="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl p-6 shadow-sm space-y-6 md:col-span-2">
-        <div class="flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                <app-icon name="Info" size="16"></app-icon>
-            </div>
-            <h3 class="text-sm font-bold text-text-main-light dark:text-text-main-dark uppercase tracking-wider">Checkout & Trust</h3>
+    <div class="p-ds-8 bg-ds-surface border border-ds-border rounded-sm space-y-ds-8 md:col-span-2">
+        <div class="flex items-center gap-ds-3 border-b border-ds-border pb-ds-4">
+            <app-icon name="Shield" size="18" className="text-ds-accent"></app-icon>
+            <h3 class="text-ds-sm font-bold uppercase tracking-widest">Trust & Social Proof</h3>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="space-y-4">
-                <div class="flex items-center justify-between p-4 bg-background-light dark:bg-background-dark rounded-lg border border-border-light dark:border-border-dark">
-                    <label class="text-xs font-bold text-text-main-light dark:text-text-main-dark">Show Trust Banner</label>
-                    <input type="checkbox" formControlName="isTrustBannerVisible" class="w-10 h-5 rounded-full bg-gray-200 dark:bg-gray-700 checked:bg-primary appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-text-secondary-light uppercase tracking-widest mb-1.5 ml-1">Trust Text (Orange Banner)</label>
-                    <textarea formControlName="trustBannerText" rows="3" class="w-full p-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"></textarea>
-                </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-ds-6">
+            <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
+                <label class="text-[11px] font-bold uppercase tracking-widest">Customer Reviews</label>
+                <input type="checkbox" formControlName="isReviewsVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
             </div>
 
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-[10px] font-bold text-text-secondary-light uppercase tracking-widest mb-1.5 ml-1">Signature Name (In Form)</label>
-                    <input type="text" formControlName="featuredProductName" class="w-full h-11 px-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-bold text-text-secondary-light uppercase tracking-widest mb-1.5 ml-1">Promo Price (৳)</label>
-                        <input type="number" formControlName="promoPrice" class="w-full h-11 px-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-text-secondary-light uppercase tracking-widest mb-1.5 ml-1">Original Price (৳)</label>
-                        <input type="number" formControlName="originalPrice" class="w-full h-11 px-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
-                    </div>
-                </div>
+            <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
+                <label class="text-[11px] font-bold uppercase tracking-widest">Stock Urgency</label>
+                <input type="checkbox" formControlName="isStockUrgencyVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
             </div>
+
+            <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
+                <label class="text-[11px] font-bold uppercase tracking-widest">Order Progress</label>
+                <input type="checkbox" formControlName="isOrderProgressVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-8 pt-ds-4">
+          <div class="space-y-ds-4">
+            <div>
+              <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Featured Product Name</label>
+              <input type="text" formControlName="featuredProductName" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-ds-4">
+              <div>
+                <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Promo Price (৳)</label>
+                <input type="number" formControlName="promoPrice" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Original Price (৳)</label>
+                <input type="number" formControlName="originalPrice" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Promo Text (Bottom Banner)</label>
+            <textarea formControlName="promoText" rows="4" class="w-full p-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none resize-none" placeholder="e.g. 🔥 limited edition — order before it's gone"></textarea>
+          </div>
         </div>
     </div>
   </form>
 
   <!-- Notifications -->
-  <div *ngIf="successMessage" class="fixed bottom-8 right-8 bg-emerald-500 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-10 duration-500">
-    <app-icon name="Save" size="20"></app-icon>
-    <span class="text-sm font-bold uppercase tracking-wider">{{ successMessage }}</span>
-  </div>
+  @if (successMessage) {
+    <div class="fixed bottom-ds-8 right-ds-8 bg-ds-accent text-ds-hero-text px-ds-8 py-ds-4 rounded-sm shadow-2xl flex items-center gap-ds-3 animate-fade-in">
+      <app-icon name="Check" size="20"></app-icon>
+      <span class="text-[11px] font-bold uppercase tracking-widest">{{ successMessage }}</span>
+    </div>
+  }
 
-  <div *ngIf="errorMessage" class="fixed bottom-8 right-8 bg-red-500 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-10 duration-500">
-    <app-icon name="Info" size="20"></app-icon>
-    <span class="text-sm font-bold uppercase tracking-wider">{{ errorMessage }}</span>
-  </div>
+  @if (errorMessage) {
+    <div class="fixed bottom-ds-8 right-ds-8 bg-ds-danger text-ds-hero-text px-ds-8 py-ds-4 rounded-sm shadow-2xl flex items-center gap-ds-3 animate-fade-in">
+      <app-icon name="Info" size="20"></app-icon>
+      <span class="text-[11px] font-bold uppercase tracking-widest">{{ errorMessage }}</span>
+    </div>
+  }
 </div>
+

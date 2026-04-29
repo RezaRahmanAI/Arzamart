@@ -2,8 +2,8 @@
   type="button"
   class="flex items-center justify-center rounded-full shadow-lg transition-all duration-300"
   [ngClass]="{
-    'bg-white text-primary p-2 hover:bg-accent': variant === 'light',
-    'bg-primary text-white p-3 hover:bg-[#084255]': variant === 'dark',
+    'bg-ds-bg text-ds-text p-2 hover:bg-ds-surface': variant === 'light',
+    'bg-ds-accent text-ds-hero-text p-3 hover:bg-ds-accent-hover': variant === 'dark',
   }"
 >
   <app-icon [name]="icon" size="20"></app-icon>

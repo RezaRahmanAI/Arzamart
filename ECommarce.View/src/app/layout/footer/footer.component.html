@@ -1,28 +1,22 @@
 @if (settings$ | async; as settings) {
-  <footer
-    class="bg-primary text-white pt-32 pb-12 border-t border-white/5"
-  >
+  <footer class="bg-ds-accent text-ds-hero-text pt-ds-20 pb-ds-10 border-t border-white/5">
     <div class="site-container">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-16 mb-28">
-        <!-- Brand Info (Left) -->
-        <div class="md:col-span-4 flex flex-col items-start gap-12">
-          <div class="flex items-center gap-3">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-ds-12 mb-ds-20">
+        <!-- Brand Info -->
+        <div class="md:col-span-4 space-y-ds-8">
+          <a routerLink="/" class="inline-block">
             <img
-              [src]="
-                settings.logoUrl
-                  ? imageUrlService.getImageUrl(settings.logoUrl)
-                  : 'assets/logo.svg'
-              "
+              [src]="settings.logoUrl ? imageUrlService.getImageUrl(settings.logoUrl) : 'assets/logo.svg'"
               alt="Arza Mart Logo"
-              class="h-9 sm:h-10 md:h-11 lg:h-12 w-auto max-w-[140px] sm:max-w-[160px] md:max-w-[180px] lg:max-w-[200px] object-contain"
+              class="h-8 lg:h-9 w-auto brightness-0 invert opacity-90"
             />
-          </div>
-          <p class="text-gray-400 text-[11px] leading-loose tracking-wide max-w-sm">
-            {{ settings.description || "" }}
+          </a>
+          <p class="text-ds-hero-text/60 text-ds-sm leading-relaxed max-w-sm font-medium">
+            {{ settings.description || "Curated collection of premium fashion and lifestyle essentials." }}
           </p>
-  
+          
           <!-- Socials -->
-          <div class="flex gap-10 mt-2">
+          <div class="flex gap-ds-8 pt-ds-2">
             @if (settings.facebookUrl) {
               <a
                 [href]="settings.facebookUrl"

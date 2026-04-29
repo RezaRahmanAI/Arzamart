@@ -1,15 +1,22 @@
-<main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12">
+<main class="site-container py-ds-10 flex flex-1 flex-col">
   <app-men-breadcrumbs></app-men-breadcrumbs>
-  <div class="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-    <div class="flex flex-col gap-2">
-      <h1 class="text-3xl font-bold tracking-tight text-primary dark:text-white md:text-4xl">Men's Collection</h1>
-      <p class="text-text-sub dark:text-gray-400 max-w-xl">
-        Discover our range of modest and modern apparel designed for elegance and comfort.
+  
+  <div class="mb-ds-12 flex flex-col justify-between gap-ds-6 md:flex-row md:items-end">
+    <div class="max-w-2xl space-y-ds-3">
+      <h2 class="section-title">Men's Collection</h2>
+      <p class="text-ds-lg text-ds-text-sec font-medium leading-relaxed">
+        Modern elegance meets classic comfort. Explore our curated selection of contemporary essentials.
       </p>
     </div>
-    <app-men-category-chips></app-men-category-chips>
   </div>
-  <app-men-filters-sortbar [shownProducts]="products.length" [totalProducts]="products.length"></app-men-filters-sortbar>
-  <app-men-product-grid></app-men-product-grid>
-  <app-men-pagination></app-men-pagination>
+
+  <div class="flex flex-col gap-ds-10 lg:flex-row">
+    <!-- Filters & Sidebar could be added here if needed, following Women's pattern -->
+    <div class="flex-1 space-y-ds-8">
+      <app-men-filters-sortbar [shownProducts]="products.length" [totalProducts]="products.length"></app-men-filters-sortbar>
+      <app-men-product-grid></app-men-product-grid>
+      <app-men-pagination></app-men-pagination>
+    </div>
+  </div>
 </main>
+

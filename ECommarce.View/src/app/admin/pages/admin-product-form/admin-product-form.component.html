@@ -1,4 +1,4 @@
-<form
+﻿<form
   class="mx-auto flex w-full max-w-7xl flex-1 flex-col p-4"
   [formGroup]="form"
   (ngSubmit)="saveProduct()"
@@ -44,7 +44,7 @@
         Discard
       </button>
       <button
-        class="flex h-9 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-xs font-black text-white hover:bg-[#083a4a] shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed transition-all"
+        class="flex h-9 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-xs font-black text-white hover:bg-[#111111] shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed transition-all"
         type="submit"
         [disabled]="isSubmitting"
       >
@@ -193,7 +193,7 @@
                 </h3>
               </div>
               <button
-                class="flex items-center gap-1.5 text-xs font-bold text-primary hover:text-[#083a4a] transition-colors"
+                class="flex items-center gap-1.5 text-xs font-bold text-primary hover:text-[#111111] transition-colors"
                 type="button"
                 (click)="addSize()"
               >
@@ -243,7 +243,7 @@
 
                       <div
                         *ngIf="openSizeDropdownIndex === sizeIndex"
-                        class="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-border-light dark:border-border-dark bg-white dark:bg-[#1e1e1e] py-1 text-base shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                        class="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-border-light dark:border-border-dark bg-white dark:bg-[#1A1A1A] py-1 text-base shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                       >
                         <div
                           *ngFor="let sz of allAvailableSizes"
