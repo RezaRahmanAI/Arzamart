@@ -189,6 +189,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   statusMenuOpen = false;
   dateMenuOpen = false;
+  sourceMenuOpen = false;
   statusUpdateOrderId: number | null = null;
   actionMenuOpenId: number | null = null;
   isPreOrderMode = false;
@@ -287,6 +288,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   closeMenus(): void {
     this.statusMenuOpen = false;
     this.dateMenuOpen = false;
+    this.sourceMenuOpen = false;
     this.statusUpdateOrderId = null;
     this.actionMenuOpenId = null;
   }
@@ -370,6 +372,18 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
       return `${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}`;
     }
     return this.selectedDateRange;
+  }
+
+  getSelectedSourceLabel(): string {
+    if (this.selectedSourcePageId) {
+      const page = this.sourcePages.find(p => p.id === this.selectedSourcePageId);
+      return page ? page.name : 'Page';
+    }
+    if (this.selectedSocialMediaSourceId) {
+      const source = this.socialMediaSources.find(s => s.id === this.selectedSocialMediaSourceId);
+      return source ? source.name : 'Social';
+    }
+    return 'Sources';
   }
 
   showMoreFilters(event: Event): void {

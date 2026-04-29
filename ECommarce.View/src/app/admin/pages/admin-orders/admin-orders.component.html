@@ -162,16 +162,58 @@
         </div>
       </div>
 
-      <!-- Pages Filter -->
-      <div class="relative">
-        <select
-          (change)="setSourcePageFilter($any($event.target).value)"
-          class="form-input !h-10 !pl-ds-4 !pr-ds-8 text-[10px] font-bold uppercase tracking-widest appearance-none cursor-pointer"
+      <!-- Source Filter -->
+      <div class="relative" (click)="$event.stopPropagation()">
+        <button
+          (click)="sourceMenuOpen = !sourceMenuOpen; statusMenuOpen = false; dateMenuOpen = false"
+          class="form-input !h-10 flex items-center justify-between px-ds-4 text-[10px] font-bold uppercase tracking-widest"
         >
-          <option [value]="null">All Source Pages</option>
-          <option *ngFor="let page of sourcePages" [value]="page.id" [selected]="selectedSourcePageId === page.id">{{ page.name }}</option>
-        </select>
-        <app-icon name="ChevronDown" size="12" className="absolute right-ds-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
+          <div class="flex items-center gap-2">
+            <app-icon [name]="selectedSourcePageId ? 'Globe' : (selectedSocialMediaSourceId ? 'Share2' : 'Layers')" size="14" className="text-ds-text-muted"></app-icon>
+            <span class="truncate">
+              {{ getSelectedSourceLabel() }}
+            </span>
+          </div>
+          <app-icon name="ChevronDown" size="12" className="text-ds-text-muted" [className]="sourceMenuOpen ? 'rotate-180' : ''"></app-icon>
+        </button>
+        
+        <div *ngIf="sourceMenuOpen" class="absolute right-0 mt-2 w-64 bg-ds-surface border border-ds-border rounded-sm shadow-2xl z-[100] p-1 animate-in fade-in slide-in-from-top-1 duration-base">
+          <div class="max-h-64 overflow-y-auto">
+            <button (click)="setSourcePageFilter(null); sourceMenuOpen = false" 
+                    class="w-full px-ds-3 py-2 text-left text-[10px] font-bold rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest"
+                    [class.bg-ds-text]="!selectedSourcePageId && !selectedSocialMediaSourceId"
+                    [class.text-ds-surface]="!selectedSourcePageId && !selectedSocialMediaSourceId"
+                    [class.text-ds-text-muted]="selectedSourcePageId || selectedSocialMediaSourceId"
+                    [class.hover:bg-ds-bg]="selectedSourcePageId || selectedSocialMediaSourceId">
+              <app-icon name="Layers" size="12"></app-icon>
+              <span>All Sources</span>
+            </button>
+
+            <div class="px-ds-3 py-1.5 text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] bg-ds-bg/50 my-1">Pages</div>
+            <button *ngFor="let page of sourcePages" 
+                    (click)="setSourcePageFilter(page.id); sourceMenuOpen = false" 
+                    class="w-full px-ds-3 py-2 text-left text-[10px] font-bold rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest"
+                    [class.bg-ds-text]="selectedSourcePageId === page.id"
+                    [class.text-ds-surface]="selectedSourcePageId === page.id"
+                    [class.text-ds-text-muted]="selectedSourcePageId !== page.id"
+                    [class.hover:bg-ds-bg]="selectedSourcePageId !== page.id">
+              <app-icon name="Globe" size="12" className="text-ds-success"></app-icon>
+              <span>{{ page.name }}</span>
+            </button>
+
+            <div class="px-ds-3 py-1.5 text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] bg-ds-bg/50 my-1">Social Media</div>
+            <button *ngFor="let source of socialMediaSources" 
+                    (click)="setSocialMediaFilter(source.id); sourceMenuOpen = false" 
+                    class="w-full px-ds-3 py-2 text-left text-[10px] font-bold rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest"
+                    [class.bg-ds-text]="selectedSocialMediaSourceId === source.id"
+                    [class.text-ds-surface]="selectedSocialMediaSourceId === source.id"
+                    [class.text-ds-text-muted]="selectedSocialMediaSourceId !== source.id"
+                    [class.hover:bg-ds-bg]="selectedSocialMediaSourceId !== source.id">
+              <app-icon name="Share2" size="12" className="text-ds-accent"></app-icon>
+              <span>{{ source.name }}</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -294,7 +336,15 @@
             <td class="px-ds-4 py-ds-4">
               <div *ngIf="order.sourcePageName" class="flex items-center gap-1.5 text-[9px] font-bold text-ds-text-sec uppercase tracking-widest">
                 <app-icon name="Globe" size="12" className="text-ds-success opacity-70"></app-icon>
-                <span class="truncate max-w-[100px]">{{ order.sourcePageName }}</span>
+                <span class="truncate max-w-[100px] text-ds-text">{{ order.sourcePageName }}</span>
+              </div>
+              <div *ngIf="order.socialMediaSourceName" class="flex items-center gap-1.5 text-[9px] font-bold text-ds-text-sec uppercase tracking-widest">
+                <app-icon name="Share2" size="12" className="text-ds-accent opacity-70"></app-icon>
+                <span class="truncate max-w-[100px] text-ds-text">{{ order.socialMediaSourceName }}</span>
+              </div>
+              <div *ngIf="!order.sourcePageName && !order.socialMediaSourceName" class="flex items-center gap-1.5 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">
+                <app-icon name="Globe" size="12" className="opacity-30"></app-icon>
+                <span>Storefront</span>
               </div>
             </td>
             <td class="px-ds-4 py-ds-4 text-right">

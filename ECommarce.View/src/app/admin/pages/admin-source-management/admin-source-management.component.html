@@ -61,7 +61,10 @@
           <ng-container *ngIf="!isLoading; else loading">
             <tr *ngFor="let item of (activeTab === 'pages' ? sourcePages : socialMediaSources)" class="hover:bg-ds-bg transition-colors group">
               <td class="px-ds-6 py-ds-4">
-                <span class="text-[11px] font-bold text-ds-text uppercase tracking-tight">{{ item.name }}</span>
+                <div class="flex items-center gap-3">
+                  <app-icon [name]="activeTab === 'pages' ? 'Globe' : 'Share2'" size="14" className="text-ds-text-muted"></app-icon>
+                  <span class="text-[11px] font-bold text-ds-text uppercase tracking-tight">{{ item.name }}</span>
+                </div>
               </td>
               <td class="px-ds-6 py-ds-4">
                 <span
