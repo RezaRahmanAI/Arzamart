@@ -1,5 +1,5 @@
 <form
-  class="site-container-admin mx-auto flex w-full flex-1 flex-col gap-ds-8"
+  class="site-container-admin mx-auto flex w-full flex-1 flex-col gap-ds-4"
   [formGroup]="form"
   (ngSubmit)="saveProduct()"
 >
@@ -12,7 +12,7 @@
   </div>
 
   <!-- Page Heading & Global Actions -->
-  <div class="flex flex-col justify-between gap-ds-6 sm:flex-row sm:items-center border-b border-ds-border pb-ds-8">
+  <div class="flex flex-col justify-between gap-ds-4 sm:flex-row sm:items-center border-b border-ds-border pb-ds-4">
     <div>
       <div class="flex items-center gap-2 text-[9px] text-ds-text-muted mb-2 uppercase font-bold tracking-[0.3em]">
         <span>Catalog</span>
@@ -43,15 +43,15 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 gap-ds-8 lg:grid-cols-3">
+  <div class="grid grid-cols-1 gap-ds-4 lg:grid-cols-3">
     <!-- Left Column (Main Info) -->
-    <div class="flex flex-col gap-ds-8 lg:col-span-2">
+    <div class="flex flex-col gap-ds-4 lg:col-span-2">
       <!-- General Information Card -->
-      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm">
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
         <h2 class="mb-ds-6 text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
           General Identity
         </h2>
-        <div class="flex flex-col gap-ds-6">
+        <div class="flex flex-col gap-ds-4">
           <label class="flex flex-col gap-ds-2">
             <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Commercial Name</span>
             <input
@@ -125,7 +125,7 @@
       </div>
 
       <!-- Product Options (Colors & Sizes) -->
-      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm" formGroupName="variants">
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm" formGroupName="variants">
         <div class="flex items-center justify-between mb-ds-8">
           <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
             Variant Matrix
@@ -140,7 +140,7 @@
           </button>
         </div>
 
-        <div class="space-y-ds-4" formArrayName="sizes">
+        <div class="space-y-ds-3" formArrayName="sizes">
           <div
             class="bg-ds-bg/30 border border-ds-border p-ds-6 rounded-sm relative group"
             *ngFor="let size of sizesArray.controls; let sizeIndex = index"
@@ -246,7 +246,7 @@
       </div>
 
       <!-- Media Card -->
-      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm">
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
         <div class="mb-ds-8 flex items-center justify-between">
           <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
             Asset Repository
@@ -261,7 +261,7 @@
         </div>
 
         <div
-          class="border-2 border-dashed border-ds-border bg-ds-bg/30 p-ds-12 rounded-sm text-center cursor-pointer hover:border-ds-text hover:bg-ds-bg transition-all group"
+          class="border-2 border-dashed border-ds-border bg-ds-bg/30 p-ds-6 rounded-sm text-center cursor-pointer hover:border-ds-text hover:bg-ds-bg transition-all group"
           (dragover)="handleDragOver($event)"
           (drop)="handleDrop($event)"
           (click)="fileInput.click()"
@@ -340,7 +340,7 @@
       </div>
 
       <!-- Product Details Card -->
-      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm" formGroupName="meta">
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm" formGroupName="meta">
         <h2 class="mb-ds-8 text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
           Specifications
         </h2>
@@ -392,9 +392,9 @@
     </div>
 
     <!-- Right Column (Organization & Settings) -->
-    <div class="flex flex-col gap-ds-8 lg:col-span-1">
+    <div class="flex flex-col gap-ds-4 lg:col-span-1">
       <!-- Status Card -->
-      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm">
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
         <h2 class="mb-ds-6 text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
           Visibility Controls
         </h2>
@@ -434,11 +434,11 @@
       </div>
 
       <!-- Organization Card -->
-      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm">
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
         <h2 class="mb-ds-8 text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
           Categorization
         </h2>
-        <div class="flex flex-col gap-ds-6">
+        <div class="flex flex-col gap-ds-4">
           <label class="flex flex-col gap-ds-2">
             <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Primary Category</span>
             <select class="form-input !h-11 !text-[10px] uppercase tracking-widest appearance-none cursor-pointer" formControlName="category">

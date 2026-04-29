@@ -1,12 +1,12 @@
-<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-4">
  
 
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-6 items-start">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-4 items-start">
     <!-- Cart & Billing (Left) -->
     <div class="lg:col-span-5 flex flex-col gap-ds-4">
       <!-- Order Ledger -->
       <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm overflow-hidden">
-        <div class="bg-ds-bg/50 px-ds-4 py-ds-3 border-b border-ds-border flex items-center justify-between">
+        <div class="bg-ds-bg/50 px-ds-4 py-ds-2 border-b border-ds-border flex items-center justify-between">
           <div class="flex items-center gap-ds-3">
             <app-icon name="ShoppingCart" size="16" className="text-ds-text"></app-icon>
             <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-ds-text">Transaction Ledger</h2>
@@ -24,30 +24,30 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="bg-ds-bg border-b border-ds-border text-[9px] uppercase font-bold text-ds-text-muted tracking-[0.2em]">
-                <th class="px-ds-4 py-3">Product</th>
-                <th class="px-ds-2 py-3 text-center">Qty</th>
-                <th class="px-ds-2 py-3 text-center">Size</th>
-                <th class="px-ds-2 py-3 text-right">Price</th>
-                <th class="px-ds-2 py-3 text-right">Total</th>
-                <th class="px-ds-2 py-3"></th>
+                <th class="px-ds-4 py-2">Product</th>
+                <th class="px-ds-2 py-2 text-center">Qty</th>
+                <th class="px-ds-2 py-2 text-center">Size</th>
+                <th class="px-ds-2 py-2 text-right">Price</th>
+                <th class="px-ds-2 py-2 text-right">Total</th>
+                <th class="px-ds-2 py-2"></th>
               </tr>
             </thead>
             <tbody class="divide-y divide-ds-border/50">
               <tr *ngFor="let item of cart()" class="hover:bg-ds-bg transition-colors">
-                <td class="px-ds-4 py-3 min-w-[120px]">
+                <td class="px-ds-4 py-1.5 min-w-[120px]">
                   <p class="text-[10px] font-bold text-ds-text uppercase tracking-tight truncate">{{ item.product.name }}</p>
                 </td>
-                <td class="px-ds-2 py-3">
+                <td class="px-ds-2 py-1.5">
                   <div class="flex items-center justify-center gap-2">
                     <button (click)="updateQuantity(item, -1)" class="size-5 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-red-500">-</button>
                     <span class="text-[10px] font-bold w-4 text-center">{{ item.quantity }}</span>
                     <button (click)="updateQuantity(item, 1)" class="size-5 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-ds-accent">+</button>
                   </div>
                 </td>
-                <td class="px-ds-2 py-3 text-center">
+                <td class="px-ds-2 py-1.5 text-center">
                   <span *ngIf="item.selectedSize" class="px-1.5 py-0.5 bg-ds-bg border border-ds-border text-ds-text rounded-sm text-[8px] font-bold uppercase tracking-widest">{{ item.selectedSize }}</span>
                 </td>
-                <td class="px-ds-2 py-3 text-right">
+                <td class="px-ds-2 py-1.5 text-right">
                   <input 
                     type="number" 
                     [(ngModel)]="item.unitPrice" 
@@ -55,10 +55,10 @@
                     class="w-16 bg-transparent border-none p-0 text-[10px] font-bold text-ds-text text-right focus:ring-0 outline-none"
                   >
                 </td>
-                <td class="px-ds-2 py-3 text-right">
+                <td class="px-ds-2 py-1.5 text-right">
                   <span class="text-[10px] font-bold text-ds-text">৳{{ item.unitPrice * item.quantity }}</span>
                 </td>
-                <td class="px-ds-2 py-3 text-center">
+                <td class="px-ds-2 py-1.5 text-center">
                   <button (click)="removeFromCart(item)" class="size-6 flex items-center justify-center text-ds-text-muted hover:text-red-500 transition-colors">
                     <app-icon name="X" size="14"></app-icon>
                   </button>
@@ -67,29 +67,26 @@
             </tbody>
           </table>
           
-          <div *ngIf="cart().length === 0" class="py-ds-12 text-center flex flex-col items-center gap-ds-3">
-            <app-icon name="PackagePlus" size="32" className="text-ds-text-muted opacity-10"></app-icon>
-            <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Ledger Empty</p>
-          </div>
+          
         </div>
       </div>
 
       <!-- Financial Summary & Customer Data -->
-      <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm p-ds-6 flex flex-col gap-ds-6">
-        <div class="space-y-ds-2">
+      <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm p-ds-4 flex flex-col gap-ds-4">
+        <div class="space-y-ds-1.5">
           <!-- Summary Matrix -->
           <div class="grid grid-cols-2 gap-ds-3">
-            <div class="flex justify-between items-center px-ds-4 py-ds-2 bg-ds-bg border border-ds-border rounded-sm">
+            <div class="flex justify-between items-center px-ds-3 py-ds-1.5 bg-ds-bg border border-ds-border rounded-sm">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Total Qty</span>
               <span class="text-[11px] font-bold text-ds-text uppercase">{{ totalItemsCount }}</span>
             </div>
-            <div class="flex justify-between items-center px-ds-4 py-ds-2 bg-ds-bg border border-ds-border rounded-sm">
+            <div class="flex justify-between items-center px-ds-3 py-ds-1.5 bg-ds-bg border border-ds-border rounded-sm">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Sub Total</span>
               <span class="text-[11px] font-bold text-ds-text uppercase">৳{{ subtotal }}</span>
             </div>
           </div>
 
-          <div class="flex justify-between items-center px-ds-4 py-ds-2 bg-ds-bg border border-ds-border rounded-sm">
+          <div class="flex justify-between items-center px-ds-3 py-ds-1.5 bg-ds-bg border border-ds-border rounded-sm">
             <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Delivery Charge</span>
             <span class="text-[11px] font-bold text-ds-text uppercase">৳{{ shippingCost }}</span>
           </div>
@@ -111,38 +108,38 @@
           </div>
 
           <!-- Settlement -->
-          <div class="flex justify-between items-center px-ds-6 py-ds-3 bg-ds-text text-ds-surface rounded-sm shadow-xl">
+          <div class="flex justify-between items-center px-ds-5 py-ds-2.5 bg-ds-text text-ds-surface rounded-sm shadow-xl">
             <span class="text-[10px] font-bold uppercase tracking-[0.2em]">Gross Settlement</span>
             <span class="text-ds-lg font-bold tracking-tight">৳{{ total }}</span>
           </div>
         </div>
 
         <!-- Customer Identity Terminal -->
-        <div class="space-y-ds-4 pt-ds-4 border-t border-ds-border" [formGroup]="orderForm">
-          <div class="flex flex-col gap-ds-3">
-            <label class="flex flex-col gap-1.5">
+        <div class="space-y-ds-3 pt-ds-4 border-t border-ds-border" [formGroup]="orderForm">
+          <div class="flex flex-col gap-ds-2">
+            <label class="flex flex-col gap-1">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Terminal Phone *</span>
-              <input formControlName="phone" type="text" placeholder="IDENTITY DIGITS" class="form-input !h-10 !text-[11px] font-mono">
+              <input formControlName="phone" type="text" placeholder="IDENTITY DIGITS" class="form-input !h-9 !text-[11px] font-mono">
             </label>
-            <label class="flex flex-col gap-1.5">
+            <label class="flex flex-col gap-1">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Legal Name *</span>
-              <input formControlName="name" type="text" placeholder="FULL NOMENCLATURE" class="form-input !h-10 !text-[11px] uppercase tracking-tight">
+              <input formControlName="name" type="text" placeholder="FULL NOMENCLATURE" class="form-input !h-9 !text-[11px] uppercase tracking-tight">
             </label>
-            <label class="flex flex-col gap-1.5">
+            <label class="flex flex-col gap-1">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Archive Address *</span>
-              <textarea formControlName="address" rows="2" placeholder="PHYSICAL LOCATION" class="form-input !py-2.5 !px-4 !text-[11px] uppercase tracking-tight resize-none"></textarea>
+              <textarea formControlName="address" rows="2" placeholder="PHYSICAL LOCATION" class="form-input !py-2 !px-4 !text-[11px] uppercase tracking-tight resize-none"></textarea>
             </label>
 
-            <div class="grid grid-cols-2 gap-ds-3">
+            <div class="grid grid-cols-2 gap-ds-2">
                <div class="relative group">
-                  <select formControlName="sourcePageId" class="form-input !h-10 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+                  <select formControlName="sourcePageId" class="form-input !h-9 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
                     <option [value]="null">Origin Page</option>
                     <option *ngFor="let page of sourcePages" [value]="page.id">{{ page.name }}</option>
                   </select>
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                </div>
                <div class="relative group">
-                  <select formControlName="socialMediaSourceId" class="form-input !h-10 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+                  <select formControlName="socialMediaSourceId" class="form-input !h-9 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
                     <option [value]="null">Social Node</option>
                     <option *ngFor="let source of socialMediaSources" [value]="source.id">{{ source.name }}</option>
                   </select>
@@ -150,9 +147,9 @@
                </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-ds-3">
+            <div class="grid grid-cols-2 gap-ds-2">
                <div class="relative group" (click)="toggleCityDropdown()">
-                  <input class="form-input !h-10 !text-[9px] uppercase tracking-widest cursor-pointer" type="text" [value]="orderForm.get('city')?.value || 'Select City'" readonly />
+                  <input class="form-input !h-9 !text-[9px] uppercase tracking-widest cursor-pointer" type="text" [value]="orderForm.get('city')?.value || 'Select City'" readonly />
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                   <div *ngIf="isCityDropdownOpen" class="absolute bottom-full left-0 z-[100] w-full mb-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-base" (click)="$event.stopPropagation()">
                      <input type="text" class="w-full px-4 py-2 bg-ds-bg border-b border-ds-border text-[10px] font-bold uppercase tracking-widest outline-none" placeholder="Search Matrix..." (input)="filterCities($event)" [value]="citySearch" />
@@ -162,7 +159,7 @@
                   </div>
                </div>
                <div class="relative group" (click)="toggleAreaDropdown()">
-                  <input class="form-input !h-10 !text-[9px] uppercase tracking-widest cursor-pointer" type="text" [value]="orderForm.get('area')?.value || 'Select Area'" readonly />
+                  <input class="form-input !h-9 !text-[9px] uppercase tracking-widest cursor-pointer" type="text" [value]="orderForm.get('area')?.value || 'Select Area'" readonly />
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                   <div *ngIf="isAreaDropdownOpen" class="absolute bottom-full left-0 z-[100] w-full mb-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-base" (click)="$event.stopPropagation()">
                       <input type="text" class="w-full px-4 py-2 bg-ds-bg border-b border-ds-border text-[10px] font-bold uppercase tracking-widest outline-none" placeholder="Search Delta..." (input)="filterAreas($event)" [value]="areaSearch" />
@@ -174,22 +171,22 @@
             </div>
 
             <div class="relative group">
-              <select formControlName="deliveryMethodId" class="form-input !h-10 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+              <select formControlName="deliveryMethodId" class="form-input !h-9 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
                 <option [value]="null">Logistics Strategy</option>
                 <option *ngFor="let method of deliveryMethods" [value]="method.id">{{ method.name }} — ৳{{ method.cost }}</option>
               </select>
               <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
             </div>
 
-            <div class="flex flex-col gap-ds-3">
+            <div class="flex flex-col gap-ds-2">
                <div class="relative group">
-                  <select formControlName="noteType" class="form-input !h-10 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+                  <select formControlName="noteType" class="form-input !h-9 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
                     <option value="Official">Internal Memo (Restricted)</option>
                     <option value="Customer">Customer Addendum (Public)</option>
                   </select>
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                </div>
-               <textarea formControlName="noteText" rows="2" placeholder="ENCODE CORRESPONDENCE..." class="form-input !py-3 !px-4 !text-[11px] uppercase tracking-tight resize-none"></textarea>
+               <textarea formControlName="noteText" rows="2" placeholder="ENCODE CORRESPONDENCE..." class="form-input !py-2 !px-4 !text-[11px] uppercase tracking-tight resize-none"></textarea>
             </div>
           </div>
 
@@ -207,7 +204,7 @@
     </div>
 
     <!-- Product Archive & Selection (Right) -->
-    <div class="lg:col-span-7 flex flex-col gap-ds-6">
+    <div class="lg:col-span-7 flex flex-col gap-ds-4">
       <!-- Search Terminal -->
       <div class="flex gap-ds-3">
         <div class="relative flex-1 group">
