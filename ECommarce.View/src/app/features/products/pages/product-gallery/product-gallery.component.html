@@ -1,40 +1,38 @@
-<main class="min-h-screen bg-supporting pb-20">
-  <!-- Professional Alzeena Strip Header -->
-  <div class="bg-white border-y border-border-color/30 py-4 mb-8 shadow-sm">
-    <div class="site-container px-4">
-      <div class="flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-text-sub/50 mb-1">
-        <a routerLink="/" class="hover:text-primary transition-colors">Home</a>
-        <span>/</span>
-        <span class="text-primary font-black">{{ title }}</span>
+<main class="min-h-screen bg-ds-bg pb-ds-24">
+  <!-- Editorial Header -->
+  <div class="bg-ds-surface border-b border-ds-border py-ds-12 mb-ds-16">
+    <div class="site-container">
+      <div class="flex items-center gap-ds-3 text-[10px] uppercase tracking-[0.3em] text-ds-text-muted mb-ds-4 font-bold">
+        <a routerLink="/" class="hover:text-ds-text transition-colors">Home</a>
+        <span class="text-ds-border">/</span>
+        <span class="text-ds-text">{{ title }}</span>
       </div>
-      <h1 class="text-3xl font-black text-primary uppercase tracking-tighter leading-none">{{ title }}</h1>
+      <h1 class="text-ds-4xl font-bold text-ds-text uppercase tracking-tight">{{ title }}</h1>
     </div>
   </div>
 
-  <div class="site-container px-4">
-    <div class="flex flex-col lg:flex-row gap-8">
-      <!-- Sidebar (Hidden on Mobile, block on LG) -->
-      <aside class="hidden lg:block w-full lg:w-72 flex-shrink-0">
-        <div class="bg-white border border-border-color shadow-sm rounded-xl overflow-hidden">
-          <div class="p-4 border-b border-supporting flex items-center gap-3 bg-supporting/30">
-            <div class="w-1.5 h-6 bg-accent rounded-full"></div>
-            <h3 class="text-[12px] font-black text-primary uppercase tracking-widest">{{ isOffersPage ? 'Offers by Category' : 'Sub Categories' }}</h3>
+  <div class="site-container">
+    <div class="flex flex-col lg:flex-row gap-ds-12 lg:gap-ds-16">
+      <!-- Sidebar -->
+      <aside class="hidden lg:block w-full lg:w-72 shrink-0">
+        <div class="bg-ds-surface border border-ds-border sticky top-24">
+          <div class="p-ds-6 border-b border-ds-border bg-ds-bg/50">
+            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">
+              {{ isOffersPage ? 'Offers by Category' : 'Sub Categories' }}
+            </h3>
           </div>
           
-          <div class="p-2">
+          <div class="p-ds-4">
             <!-- Normal Sidebar -->
             @if (!isOffersPage) {
-              <nav class="flex flex-col gap-0.5">
+              <nav class="flex flex-col gap-ds-1">
                 @for (sub of subCategories; track sub.id) {
                   <button 
                     (click)="navigateToSub('/subcategory/' + sub.slug)"
-                    class="w-full flex items-center justify-between p-3 text-[11px] font-bold text-text-sub hover:bg-supporting/40 hover:text-accent rounded-lg transition-all group"
+                    class="w-full flex items-center justify-between p-ds-4 text-[11px] font-bold text-ds-text-sec hover:bg-ds-bg hover:text-ds-text transition-all group"
                   >
-                    <div class="flex items-center gap-3">
-                      <div class="w-1.5 h-1.5 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-all"></div>
-                      {{ sub.name }}
-                    </div>
-                    <app-icon name="ChevronRight" size="16" className="opacity-20"></app-icon>
+                    <span class="uppercase tracking-widest">{{ sub.name }}</span>
+                    <app-icon name="ArrowRight" size="14" className="opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0"></app-icon>
                   </button>
                 }
               </nav>
@@ -42,24 +40,21 @@
 
             <!-- Hierarchical Sidebar (Offers Page) -->
             @if (isOffersPage) {
-              <div class="flex flex-col gap-4 p-2">
+              <div class="flex flex-col gap-ds-8 p-ds-2">
                 @for (cat of offerCategories; track cat.id) {
-                  <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-2 px-2 py-1">
-                      <span class="text-[10px] font-black text-primary uppercase tracking-tighter opacity-70">{{ cat.name }}</span>
-                      <div class="h-[1px] flex-1 bg-border-color opacity-50"></div>
+                  <div class="space-y-ds-4">
+                    <div class="flex items-center gap-ds-3 px-ds-2">
+                      <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">{{ cat.name }}</span>
+                      <div class="h-[1px] flex-1 bg-ds-border opacity-50"></div>
                     </div>
-                    <nav class="flex flex-col gap-0.5">
+                    <nav class="flex flex-col gap-ds-1">
                       @for (sub of cat.subCategories; track sub.id) {
                         <button 
                           (click)="navigateToSub('/subcategory/' + sub.slug + '?isOffer=true')"
-                          class="w-full flex items-center justify-between p-2.5 text-[11px] font-bold text-text-sub hover:bg-supporting/40 hover:text-accent rounded-lg transition-all group"
+                          class="w-full flex items-center justify-between p-ds-3 text-[11px] font-bold text-ds-text-sec hover:bg-ds-bg hover:text-ds-text transition-all group"
                         >
-                          <div class="flex items-center gap-3 pl-2">
-                            <div class="w-1 h-1 bg-accent rounded-full opacity-30 group-hover:opacity-100 transition-all"></div>
-                            {{ sub.name }}
-                          </div>
-                          <app-icon name="ChevronRight" size="14" className="opacity-20"></app-icon>
+                          <span class="uppercase tracking-widest pl-ds-2">{{ sub.name }}</span>
+                          <app-icon name="ArrowRight" size="14" className="opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0"></app-icon>
                         </button>
                       }
                     </nav>
@@ -69,8 +64,8 @@
             }
             
             @if ((!isOffersPage && subCategories.length === 0) || (isOffersPage && offerCategories.length === 0)) {
-              <div class="py-6 text-center">
-                <p class="text-[10px] text-text-sub uppercase tracking-widest">No Categories Found</p>
+              <div class="py-ds-10 text-center">
+                <p class="text-[10px] text-ds-text-muted uppercase tracking-[0.3em] font-bold">No Categories Found</p>
               </div>
             }
           </div>
@@ -78,26 +73,26 @@
       </aside>
 
       <!-- Main Content Area -->
-      <div class="flex-1 flex flex-col gap-6">
-          <!-- Grid Configuration (Alzeena 5-Column) -->
+      <div class="flex-1 flex flex-col gap-ds-10">
+          <!-- Grid Configuration -->
           @if (!loading && filteredProducts.length > 0) {
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-ds-6 lg:gap-ds-8">
               @for (product of filteredProducts; track trackByProductId($index, product)) {
-                <app-product-card
-                  [product]="product"
-                ></app-product-card>
+                <app-product-card [product]="product"></app-product-card>
               }
             </div>
           }
 
           <!-- Loading State -->
           @if (loading) {
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-ds-6 lg:gap-ds-8">
               @for (item of skeletonItems; track $index) {
-                <div class="animate-pulse">
-                  <div class="aspect-[3/4] bg-gray-100 rounded sm:rounded-lg mb-2 sm:mb-3"></div>
-                  <div class="h-2 sm:h-3 bg-gray-100 w-3/4 rounded-full mb-1 sm:mb-2"></div>
-                  <div class="h-2 sm:h-3 bg-gray-100 w-1/2 rounded-full"></div>
+                <div class="space-y-ds-4 animate-pulse">
+                  <div class="aspect-[3/4] bg-ds-surface border border-ds-border"></div>
+                  <div class="space-y-ds-2">
+                    <div class="h-3 bg-ds-surface w-3/4"></div>
+                    <div class="h-3 bg-ds-surface w-1/2"></div>
+                  </div>
                 </div>
               }
             </div>
@@ -105,12 +100,14 @@
 
           <!-- No Products Found -->
           @if (!loading && filteredProducts.length === 0) {
-            <div class="flex flex-col items-center justify-center py-20 text-center bg-white border border-gray-100 rounded-xl">
-              <app-icon name="Package" size="48" className="text-gray-200 mb-4"></app-icon>
-              <h3 class="text-lg font-black text-primary mb-2">No products found</h3>
-              <p class="text-gray-400 text-xs max-w-xs mx-auto">Try a different size or clear filters.</p>
+            <div class="flex flex-col items-center justify-center py-ds-32 text-center bg-ds-surface border border-ds-border">
+              <div class="w-20 h-20 bg-ds-bg border border-ds-border flex items-center justify-center mb-ds-8">
+                <app-icon name="PackageSearch" size="32" className="text-ds-text-muted opacity-30"></app-icon>
+              </div>
+              <h3 class="text-ds-lg font-bold text-ds-text uppercase tracking-tight mb-ds-2">No products found</h3>
+              <p class="text-ds-text-muted text-ds-xs uppercase tracking-[0.2em] max-w-xs mx-auto">Try a different size or clear filters.</p>
               @if (selectedSize !== 'All Sizes') {
-                <button (click)="selectSizeFilter('All Sizes')" class="mt-4 px-6 py-2 bg-accent text-white text-xs font-black uppercase rounded-xl">Clear Size Filter</button>
+                <button (click)="selectSizeFilter('All Sizes')" class="btn btn-primary mt-ds-8 h-12 px-ds-10 !text-[10px] !tracking-[0.3em] uppercase">Clear Size Filter</button>
               }
             </div>
           }

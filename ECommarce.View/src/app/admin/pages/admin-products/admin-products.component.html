@@ -1,17 +1,17 @@
-<div class="max-w-full mx-auto flex flex-col gap-3">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
   <!-- Page Heading & Actions -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-ds-6">
     <div>
-      <h2 class="text-xl font-black text-primary uppercase tracking-tight">
+      <h2 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">
         Inventory
       </h2>
-      <p class="text-[9px] font-black uppercase tracking-widest text-text-sub opacity-50">
+      <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted mt-1.5">
         Management & global pricing
       </p>
     </div>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-ds-3">
       <button
-        class="arza-btn-secondary h-8 px-3 text-[10px]"
+        class="btn btn-secondary h-11 px-ds-6 !text-[10px] uppercase tracking-widest"
         type="button"
         (click)="exportProducts()"
       >
@@ -19,7 +19,7 @@
         <span>Export</span>
       </button>
       <a
-        class="arza-btn-primary h-8 px-3 text-[10px]"
+        class="btn btn-primary h-11 px-ds-6 !text-[10px] uppercase tracking-widest"
         routerLink="/admin/products/create"
       >
         <app-icon name="Plus" size="14"></app-icon>
@@ -27,22 +27,17 @@
       </a>
     </div>
   </div>
+
   <!-- Filters & Search -->
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-2">
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-ds-3">
     <!-- Search -->
     <div class="md:col-span-5">
-      <div class="relative h-9">
-        <div
-          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-        >
-          <app-icon
-            name="Search"
-            size="16"
-            className="text-slate-400"
-          ></app-icon>
-        </div>
+      <div class="relative group">
+        <span class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text">
+          <app-icon name="Search" size="16"></app-icon>
+        </span>
         <input
-          class="block w-full h-full pl-9 pr-3 rounded-xl border border-border-color bg-white text-xs font-bold text-primary placeholder:text-text-sub/40 outline-none"
+          class="form-input !pl-ds-10 !h-11 !text-[11px] uppercase tracking-tight"
           placeholder="Search products..."
           type="text"
           [formControl]="searchControl"
@@ -51,143 +46,119 @@
     </div>
     <!-- Category Filter -->
     <div class="md:col-span-3">
-      <div class="relative h-9">
-        <div
-          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-        >
-          <app-icon
-            name="Filter"
-            size="16"
-            className="text-slate-400"
-          ></app-icon>
-        </div>
+      <div class="relative group">
+        <span class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text">
+          <app-icon name="Filter" size="16"></app-icon>
+        </span>
         <select
-          class="block w-full h-full pl-9 pr-8 text-[10px] font-black uppercase border border-border-color rounded-xl bg-white text-primary appearance-none outline-none cursor-pointer"
+          class="form-input !pl-ds-10 !h-11 !text-[10px] uppercase tracking-widest appearance-none cursor-pointer"
           [formControl]="categoryControl"
         >
           <option *ngFor="let category of categories">{{ category }}</option>
         </select>
-        <div
-          class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-        >
-          <app-icon
-            name="ChevronDown"
-            size="12"
-            className="text-text-sub/30"
-          ></app-icon>
+        <div class="absolute inset-y-0 right-ds-4 flex items-center pointer-events-none text-ds-text-muted">
+          <app-icon name="ChevronDown" size="14"></app-icon>
         </div>
       </div>
     </div>
     <!-- Status Filter -->
     <div class="md:col-span-4">
-      <div class="relative h-9">
-        <div
-          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-        >
-          <app-icon
-            name="Filter"
-            size="16"
-            className="text-slate-400"
-          ></app-icon>
-        </div>
+      <div class="relative group">
+        <span class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text">
+          <app-icon name="Filter" size="16"></app-icon>
+        </span>
         <select
-          class="block w-full h-full pl-9 pr-8 text-[10px] font-black uppercase border border-border-color rounded-xl bg-white text-primary appearance-none outline-none cursor-pointer"
+          class="form-input !pl-ds-10 !h-11 !text-[10px] uppercase tracking-widest appearance-none cursor-pointer"
           [formControl]="statusControl"
         >
           <option *ngFor="let tab of statusTabs">{{ tab }}</option>
         </select>
-        <div
-          class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-        >
-          <app-icon
-            name="ChevronDown"
-            size="12"
-            className="text-text-sub/30"
-          ></app-icon>
+        <div class="absolute inset-y-0 right-ds-4 flex items-center pointer-events-none text-ds-text-muted">
+          <app-icon name="ChevronDown" size="14"></app-icon>
         </div>
       </div>
     </div>
   </div>
+
   <!-- Product Table -->
-  <!-- Product Table -->
-  <div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm" *ngIf="!isLoading; else loadingTable">
+  <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden" *ngIf="!isLoading; else loadingTable">
     <div class="overflow-x-auto min-h-[400px]">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800 text-[9px] uppercase font-black text-slate-400 tracking-widest">
-            <th class="px-3 py-2 w-10 text-center">
+          <tr class="bg-ds-bg/50 border-b border-ds-border text-[10px] uppercase font-bold text-ds-text-muted tracking-[0.2em]">
+            <th class="px-ds-4 py-ds-4 w-12 text-center">
               <input
-                class="size-3.5 text-primary border-slate-300 rounded cursor-pointer"
+                class="form-checkbox"
                 type="checkbox"
                 [checked]="isAllSelected"
                 (change)="toggleSelectAll($event)"
               />
             </th>
-            <th class="px-3 py-2">Product</th>
-            <th class="px-3 py-2">SKU / Category</th>
-            <th class="px-3 py-2">Pricing</th>
-            <th class="px-3 py-2">Status</th>
-            <th class="px-3 py-2 text-right">Actions</th>
+            <th class="px-ds-4 py-ds-4">Product</th>
+            <th class="px-ds-4 py-ds-4">SKU / Category</th>
+            <th class="px-ds-4 py-ds-4">Pricing</th>
+            <th class="px-ds-4 py-ds-4">Status</th>
+            <th class="px-ds-4 py-ds-4 text-right">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
+        <tbody class="divide-y divide-ds-border/50">
           <tr 
             *ngFor="let product of products" 
-            class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all group border-b border-slate-50 dark:border-slate-800"
-            [ngClass]="{ 'opacity-60': isOutOfStock(product) }"
+            class="hover:bg-ds-bg transition-colors group"
+            [ngClass]="{ 'opacity-50': isOutOfStock(product) }"
           >
-            <td class="px-3 py-2 text-center">
+            <td class="px-ds-4 py-ds-4 text-center">
               <input
-                class="size-3.5 text-primary border-slate-300 rounded cursor-pointer"
+                class="form-checkbox"
                 type="checkbox"
                 [checked]="isSelected(product.id)"
                 (change)="toggleSelectProduct(product.id, $event)"
               />
             </td>
-            <td class="px-3 py-2">
-              <div class="flex items-center gap-2">
-                <div class="size-8 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-100 flex-shrink-0">
+            <td class="px-ds-4 py-ds-4">
+              <div class="flex items-center gap-ds-4">
+                <div class="size-10 rounded-sm overflow-hidden bg-ds-bg border border-ds-border flex-shrink-0">
                   <img 
                     *ngIf="product.imageUrl"
                     [src]="imageUrlService.getImageUrl(product.imageUrl)" 
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-base"
                   >
                 </div>
                 <div class="flex flex-col min-w-0">
-                  <span class="text-[11px] font-black text-slate-900 dark:text-white truncate max-w-[180px]">
+                  <span class="text-[11px] font-bold text-ds-text uppercase tracking-tight truncate max-w-[200px]">
                     {{ product.name }}
                   </span>
-                  <div class="flex gap-1">
-                    <span *ngIf="product.isFeatured" class="text-[7px] font-black bg-amber-400 text-amber-950 px-1 rounded uppercase">Offer</span>
-                    <span *ngIf="product.isNew" class="text-[7px] font-black bg-blue-500 text-white px-1 rounded uppercase">New</span>
+                  <div class="flex gap-1.5 mt-1">
+                    <span *ngIf="product.isFeatured" class="text-[7px] font-bold bg-ds-accent text-white px-1.5 py-0.5 rounded-sm uppercase tracking-widest">Featured</span>
+                    <span *ngIf="product.isNew" class="text-[7px] font-bold border border-ds-border text-ds-text-muted px-1.5 py-0.5 rounded-sm uppercase tracking-widest">New</span>
                   </div>
                 </div>
               </div>
             </td>
-            <td class="px-3 py-2">
-              <div class="flex flex-col">
-                <span class="text-[9px] font-mono text-slate-400">{{ product.sku }}</span>
-                <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">{{ product.categoryName }}</span>
+            <td class="px-ds-4 py-ds-4">
+              <div class="flex flex-col gap-0.5">
+                <span class="text-[10px] font-mono text-ds-text-muted">{{ product.sku }}</span>
+                <span class="text-[9px] font-bold text-ds-text-sec uppercase tracking-[0.2em]">{{ product.categoryName }}</span>
               </div>
             </td>
-            <td class="px-3 py-2">
-              <div class="flex flex-col">
-                <app-price-display [amount]="product.price" className="text-xs font-black text-primary" size="sm"></app-price-display>
-                <div class="flex items-center gap-1" *ngIf="product.purchaseRate">
-                  <span class="text-[7px] font-black text-slate-400 uppercase">Buy:</span>
-                  <app-price-display [amount]="product.purchaseRate" className="text-[9px] font-bold text-slate-400" size="sm"></app-price-display>
+            <td class="px-ds-4 py-ds-4">
+              <div class="flex flex-col gap-1">
+                <app-price-display [amount]="product.price" className="text-[11px] font-bold text-ds-text" size="sm"></app-price-display>
+                <div class="flex items-center gap-1.5" *ngIf="product.purchaseRate">
+                  <span class="text-[8px] font-bold text-ds-text-muted uppercase">Cost:</span>
+                  <app-price-display [amount]="product.purchaseRate" className="text-[9px] font-bold text-ds-text-muted" size="sm"></app-price-display>
                 </div>
               </div>
             </td>
-            <td class="px-3 py-2">
-              <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-tighter" [ngClass]="statusClasses(product)">
+            <td class="px-ds-4 py-ds-4">
+              <span class="px-ds-3 py-1 rounded-sm text-[8px] font-bold uppercase tracking-widest border border-ds-border" [ngClass]="statusClasses(product)">
                 {{ product.status }}
               </span>
             </td>
-            <td class="px-3 py-2 text-right">
-              <div class="flex items-center justify-end gap-1">
+            <td class="px-ds-4 py-ds-4 text-right">
+              <div class="flex items-center justify-end gap-ds-2">
                 <a
-                  class="size-7 flex items-center justify-center text-slate-400 hover:text-primary transition-all rounded-lg border border-slate-100"
+                  class="size-8 flex items-center justify-center text-ds-text-muted hover:text-ds-text transition-colors rounded-sm border border-ds-border hover:border-ds-text"
                   [routerLink]="['/lp', product.slug]"
                   target="_blank"
                   title="LP"
@@ -195,22 +166,7 @@
                   <app-icon name="Rocket" size="14"></app-icon>
                 </a>
                 <a
-                  class="size-7 flex items-center justify-center text-slate-400 hover:text-primary transition-all rounded-lg border border-slate-100"
-                  [routerLink]="['/clp', product.slug]"
-                  target="_blank"
-                  title="View CLP"
-                >
-                  <app-icon name="Zap" size="14"></app-icon>
-                </a>
-                <a
-                  class="size-7 flex items-center justify-center text-slate-400 hover:text-primary transition-all rounded-lg border border-slate-100"
-                  [routerLink]="['/admin/products', product.id, 'custom-lp']"
-                  title="Config CLP"
-                >
-                  <app-icon name="Settings" size="14"></app-icon>
-                </a>
-                <a
-                  class="size-7 flex items-center justify-center text-slate-400 hover:text-primary transition-all rounded-lg border border-slate-100"
+                  class="size-8 flex items-center justify-center text-ds-text-muted hover:text-ds-text transition-colors rounded-sm border border-ds-border hover:border-ds-text"
                   [routerLink]="['/admin/products', product.id, 'edit']"
                   title="Edit"
                 >
@@ -218,7 +174,7 @@
                 </a>
                 <button
                   *ngIf="authService.isSuperAdmin()"
-                  class="size-7 flex items-center justify-center text-slate-400 hover:text-red-500 transition-all rounded-lg border border-slate-100"
+                  class="size-8 flex items-center justify-center text-ds-text-muted hover:text-red-500 transition-colors rounded-sm border border-ds-border hover:border-red-500"
                   type="button"
                   (click)="deleteProduct(product)"
                   title="Delete"
@@ -231,107 +187,92 @@
         </tbody>
       </table>
     </div>
-  </div>
 
-  <!-- Empty State -->
-  <div
-    *ngIf="!isLoading && products.length === 0"
-    class="bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-slate-800 p-20 text-center flex flex-col items-center gap-4 shadow-sm"
-  >
-    <div class="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-200">
-      <app-icon name="Package" size="40"></app-icon>
-    </div>
-    <div>
-      <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">No products found</h3>
-      <p class="text-slate-500 mt-1">Try adjusting your filters or search query.</p>
-    </div>
-  </div>
-
-  <!-- Skeleton Loading -->
-  <ng-template #loadingTable>
-    <div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm animate-pulse">
-      <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 h-14"></div>
-      <div class="divide-y divide-slate-50 dark:divide-slate-800">
-        <div *ngFor="let i of [1, 2, 3, 4, 5]" class="px-6 py-5 flex items-center gap-6">
-          <div class="w-4 h-4 bg-slate-100 dark:bg-slate-800 rounded"></div>
-          <div class="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
-          <div class="flex-1 space-y-2">
-            <div class="h-4 w-48 bg-slate-200 dark:bg-slate-700 rounded"></div>
-            <div class="h-3 w-24 bg-slate-100 dark:bg-slate-800 rounded"></div>
-          </div>
-          <div class="w-32 h-4 bg-slate-100 dark:bg-slate-800 rounded"></div>
-          <div class="w-24 h-6 bg-slate-100 dark:bg-slate-800 rounded-lg"></div>
-          <div class="w-24 h-9 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
-        </div>
-      </div>
-    </div>
-  </ng-template>
     <!-- Pagination -->
-    <div
-      class="bg-white dark:bg-surface-dark px-4 py-3 flex items-center justify-between border-t border-slate-200 dark:border-slate-700 sm:px-6"
-    >
+    <div class="bg-ds-bg/30 px-ds-6 py-ds-4 flex items-center justify-between border-t border-ds-border">
       <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
         <div>
-          <p class="text-sm text-slate-700 dark:text-slate-400">
-            Showing <span class="font-medium">{{ pageStart }}</span> to
-            <span class="font-medium">{{ pageEnd }}</span> of
-            <span class="font-medium">{{ totalResults }}</span> results
+          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">
+            Showing <span class="text-ds-text">{{ pageStart }}</span> to
+            <span class="text-ds-text">{{ pageEnd }}</span> of
+            <span class="text-ds-text">{{ totalResults }}</span>
           </p>
         </div>
-        <div>
-          <nav
-            aria-label="Pagination"
-            class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+        <nav class="flex items-center gap-ds-2">
+          <button
+            class="size-9 flex items-center justify-center border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text disabled:opacity-30 disabled:pointer-events-none transition-colors"
+            type="button"
+            (click)="previousPage()"
+            [disabled]="page === 1"
           >
-            <button
-              class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-surface-dark text-sm font-medium text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800"
-              type="button"
-              (click)="previousPage()"
-              [disabled]="page === 1"
-            >
-              <span class="sr-only">Previous</span>
-              <app-icon
-                name="ChevronLeft"
-                size="20"
-              ></app-icon>
-            </button>
+            <app-icon name="ChevronLeft" size="18"></app-icon>
+          </button>
+          
+          <div class="flex items-center gap-1">
             <ng-container *ngFor="let item of paginationItems">
               <button
                 *ngIf="item !== 'ellipsis'; else ellipsis"
-                class="relative inline-flex items-center px-4 py-2 text-sm font-medium"
+                class="h-9 px-ds-4 text-[10px] font-bold uppercase tracking-widest border transition-colors"
                 type="button"
-                [attr.aria-current]="page === item ? 'page' : null"
                 [ngClass]="
                   page === item
-                    ? 'z-10 bg-primary border-primary text-white'
-                    : 'bg-white dark:bg-surface-dark border-slate-300 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
+                    ? 'bg-ds-text border-ds-text text-ds-surface'
+                    : 'bg-transparent border-ds-border text-ds-text-muted hover:border-ds-text hover:text-ds-text'
                 "
                 (click)="setPage(item)"
               >
                 {{ item }}
               </button>
               <ng-template #ellipsis>
-                <span
-                  class="relative inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-surface-dark text-sm font-medium text-slate-700"
-                >
-                  ...
-                </span>
+                <span class="h-9 px-ds-2 flex items-center text-ds-text-muted">...</span>
               </ng-template>
             </ng-container>
-            <button
-              class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-surface-dark text-sm font-medium text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800"
-              type="button"
-              (click)="nextPage()"
-              [disabled]="page >= totalPages"
-            >
-              <span class="sr-only">Next</span>
-              <app-icon
-                name="ChevronRight"
-                size="20"
-              ></app-icon>
-            </button>
-          </nav>
-        </div>
+          </div>
+
+          <button
+            class="size-9 flex items-center justify-center border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text disabled:opacity-30 disabled:pointer-events-none transition-colors"
+            type="button"
+            (click)="nextPage()"
+            [disabled]="page >= totalPages"
+          >
+            <app-icon name="ChevronRight" size="18"></app-icon>
+          </button>
+        </nav>
+      </div>
     </div>
   </div>
+
+  <!-- Empty State -->
+  <div
+    *ngIf="!isLoading && products.length === 0"
+    class="bg-ds-surface rounded-sm border border-ds-border p-ds-20 text-center flex flex-col items-center gap-ds-6"
+  >
+    <div class="w-20 h-20 bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text-muted opacity-30">
+      <app-icon name="Package" size="40"></app-icon>
+    </div>
+    <div class="space-y-ds-2">
+      <h3 class="text-ds-xl font-bold text-ds-text uppercase tracking-tight">No products found</h3>
+      <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-widest">Adjust your search or filters to explore the catalog.</p>
+    </div>
+  </div>
+
+  <!-- Skeleton Loading -->
+  <ng-template #loadingTable>
+    <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden animate-pulse">
+      <div class="h-14 bg-ds-bg/50 border-b border-ds-border"></div>
+      <div class="divide-y divide-ds-border/50">
+        <div *ngFor="let i of [1, 2, 3, 4, 5]" class="px-ds-6 py-ds-6 flex items-center gap-ds-6">
+          <div class="w-4 h-4 bg-ds-bg rounded-sm"></div>
+          <div class="w-12 h-12 bg-ds-bg rounded-sm"></div>
+          <div class="flex-1 space-y-ds-3">
+            <div class="h-3 w-48 bg-ds-bg rounded-sm"></div>
+            <div class="h-2 w-24 bg-ds-bg rounded-sm"></div>
+          </div>
+          <div class="w-32 h-3 bg-ds-bg rounded-sm"></div>
+          <div class="w-24 h-6 bg-ds-bg rounded-sm"></div>
+          <div class="w-32 h-9 bg-ds-bg rounded-sm"></div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </div>

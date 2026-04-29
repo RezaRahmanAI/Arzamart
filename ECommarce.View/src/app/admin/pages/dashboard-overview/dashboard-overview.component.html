@@ -1,155 +1,155 @@
-<div class="space-y-6" *ngIf="stats$ | async as stats; else loadingStats">
+<div class="space-y-ds-10" *ngIf="stats$ | async as stats; else loadingStats">
   <!-- Quick Navigation -->
-  <div class="flex flex-wrap gap-3">
-    <div class="flex flex-wrap gap-2">
-      <a routerLink="/admin/orders/pre-order" class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all flex items-center gap-4 cursor-pointer overflow-hidden relative">
-        <div class="size-10 rounded-xl bg-violet-500/10 flex items-center justify-center shrink-0">
-          <app-icon name="PackagePlus" size="20" className="text-violet-600"></app-icon>
+  <div class="flex flex-wrap gap-ds-4">
+    <div class="flex flex-wrap gap-ds-3">
+      <a routerLink="/admin/orders/pre-order" class="group bg-ds-surface border border-ds-border p-ds-4 rounded-sm hover:border-ds-text transition-all flex items-center gap-ds-5 cursor-pointer overflow-hidden relative">
+        <div class="size-11 rounded-sm bg-ds-bg flex items-center justify-center shrink-0 border border-ds-border group-hover:border-ds-text transition-colors">
+          <app-icon name="PackagePlus" size="20" className="text-ds-text"></app-icon>
         </div>
         <div>
-          <h4 class="text-xs font-black text-primary dark:text-white uppercase tracking-tight">Pre-order</h4>
-          <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Advanced</p>
+          <h4 class="text-[10px] font-bold text-ds-text uppercase tracking-[0.2em]">Pre-order</h4>
+          <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">Manual Entry</p>
         </div>
       </a>
 
       <!-- Manage Catalog -->
-      <a routerLink="/admin/products" class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all flex items-center gap-4 cursor-pointer overflow-hidden relative">
-        <div class="size-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
-          <app-icon name="PlusCircle" size="20" className="text-emerald-600"></app-icon>
+      <a routerLink="/admin/products" class="group bg-ds-surface border border-ds-border p-ds-4 rounded-sm hover:border-ds-text transition-all flex items-center gap-ds-5 cursor-pointer overflow-hidden relative">
+        <div class="size-11 rounded-sm bg-ds-bg flex items-center justify-center shrink-0 border border-ds-border group-hover:border-ds-text transition-colors">
+          <app-icon name="PlusCircle" size="20" className="text-ds-text"></app-icon>
         </div>
         <div>
-          <h4 class="text-xs font-black text-primary dark:text-white uppercase tracking-tight">Inventory</h4>
-          <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Add Product</p>
+          <h4 class="text-[10px] font-bold text-ds-text uppercase tracking-[0.2em]">Inventory</h4>
+          <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">Add Product</p>
         </div>
       </a>
     </div>
   </div>
 
   <!-- Row 1: Primary Financial & Volume Stats -->
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-ds-4">
     <!-- Total Revenue Card -->
-    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all overflow-hidden relative">
-      <div class="relative flex flex-col gap-2">
+    <div class="group bg-ds-surface border border-ds-border p-ds-6 rounded-sm hover:border-ds-text transition-all overflow-hidden relative">
+      <div class="relative flex flex-col gap-ds-4">
         <div class="flex items-center justify-between">
-          <div class="size-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-            <app-icon name="CreditCard" size="20" className="text-emerald-600"></app-icon>
+          <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
+            <app-icon name="CreditCard" size="24"></app-icon>
           </div>
-          <span class="text-[9px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">Revenue</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-ds-text-muted border border-ds-border px-ds-2 py-1">Revenue</span>
         </div>
         <div>
           <app-price-display
-            class="text-2xl font-black text-primary dark:text-white tracking-tighter"
+            class="text-ds-3xl font-bold text-ds-text tracking-tighter"
             [amount]="stats.totalRevenue"
             size="lg"
           ></app-price-display>
-          <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Gross Earnings</p>
+          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">Gross Earnings</p>
         </div>
       </div>
     </div>
 
     <!-- Total Orders Card -->
-    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all overflow-hidden relative">
-      <div class="relative flex flex-col gap-2">
+    <div class="group bg-ds-surface border border-ds-border p-ds-6 rounded-sm hover:border-ds-text transition-all overflow-hidden relative">
+      <div class="relative flex flex-col gap-ds-4">
         <div class="flex items-center justify-between">
-          <div class="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
-            <app-icon name="Receipt" size="20" className="text-primary"></app-icon>
+          <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
+            <app-icon name="Receipt" size="24"></app-icon>
           </div>
-          <span class="text-[9px] font-black uppercase tracking-widest text-primary bg-primary/5 px-2 py-1 rounded-lg">Volumes</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-ds-text-muted border border-ds-border px-ds-2 py-1">Volumes</span>
         </div>
         <div>
-          <span class="text-3xl font-black text-primary dark:text-white tracking-tighter">{{ stats.totalOrders }}</span>
-          <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Lifetime Orders</p>
+          <span class="text-ds-4xl font-bold text-ds-text tracking-tighter leading-none">{{ stats.totalOrders }}</span>
+          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">Lifetime Orders</p>
         </div>
       </div>
     </div>
 
     <!-- Delivered Orders Card -->
-    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all overflow-hidden relative">
-      <div class="relative flex flex-col gap-2">
+    <div class="group bg-ds-surface border border-ds-border p-ds-6 rounded-sm hover:border-ds-text transition-all overflow-hidden relative">
+      <div class="relative flex flex-col gap-ds-4">
         <div class="flex items-center justify-between">
-          <div class="size-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
-            <app-icon name="Truck" size="20" className="text-blue-600"></app-icon>
+          <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
+            <app-icon name="Truck" size="24"></app-icon>
           </div>
-          <span class="text-[9px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">Success</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-ds-text-muted border border-ds-border px-ds-2 py-1">Success</span>
         </div>
         <div>
-          <span class="text-3xl font-black text-primary dark:text-white tracking-tighter">{{ stats.deliveredOrders }}</span>
-          <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Shipped</p>
+          <span class="text-ds-4xl font-bold text-ds-text tracking-tighter leading-none">{{ stats.deliveredOrders }}</span>
+          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">Shipped</p>
         </div>
       </div>
     </div>
 
     <!-- Daily Traffic Card -->
-    <div class="group bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all overflow-hidden relative" *ngIf="dailyTraffic$ | async as traffic">
-      <div class="relative flex flex-col gap-2">
+    <div class="group bg-ds-surface border border-ds-border p-ds-6 rounded-sm hover:border-ds-text transition-all overflow-hidden relative" *ngIf="dailyTraffic$ | async as traffic">
+      <div class="relative flex flex-col gap-ds-4">
         <div class="flex items-center justify-between">
-          <div class="size-10 rounded-xl bg-accent/10 flex items-center justify-center">
-            <app-icon name="Eye" size="20" className="text-accent"></app-icon>
+          <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
+            <app-icon name="Eye" size="24"></app-icon>
           </div>
-          <span class="text-[9px] font-black uppercase tracking-widest text-accent bg-accent/5 px-2 py-1 rounded-lg">Live</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-ds-text-muted border border-ds-border px-ds-2 py-1">Live</span>
         </div>
         <div>
-          <span class="text-3xl font-black text-primary dark:text-white tracking-tighter">{{ traffic.uniqueVisitors }}</span>
-          <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{{ traffic.pageViews }} Views Today</p>
+          <span class="text-ds-4xl font-bold text-ds-text tracking-tighter leading-none">{{ traffic.uniqueVisitors }}</span>
+          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">{{ traffic.pageViews }} Views Today</p>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Middle Row: Operational Status Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-ds-4">
     <!-- Pending Orders Card -->
-    <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all">
-      <div class="flex items-center gap-3">
-        <div class="size-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
-          <app-icon name="Clock" size="20" className="text-amber-600"></app-icon>
+    <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
+      <div class="flex items-center gap-ds-5">
+        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0">
+          <app-icon name="Clock" size="20" className="text-ds-text-muted"></app-icon>
         </div>
         <div>
-          <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Attention</h4>
-          <span class="text-xl font-black text-primary dark:text-white">{{ stats.pendingOrders }}</span>
-          <p class="text-[9px] font-black text-amber-600 uppercase tracking-widest">Pending</p>
+          <h4 class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Attention</h4>
+          <span class="text-ds-xl font-bold text-ds-text">{{ stats.pendingOrders }}</span>
+          <p class="text-[9px] font-bold text-ds-accent uppercase tracking-[0.2em] mt-0.5">Pending Action</p>
         </div>
       </div>
     </div>
 
     <!-- Catalog Size Card -->
-    <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all">
-      <div class="flex items-center gap-3">
-        <div class="size-10 rounded-xl bg-indigo-500/10 flex items-center justify-center shrink-0">
-          <app-icon name="Package" size="20" className="text-indigo-600"></app-icon>
+    <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
+      <div class="flex items-center gap-ds-5">
+        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0">
+          <app-icon name="Package" size="20" className="text-ds-text-muted"></app-icon>
         </div>
         <div>
-          <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Catalog</h4>
-          <span class="text-xl font-black text-primary dark:text-white">{{ stats.totalProducts }}</span>
-          <p class="text-[9px] font-black text-indigo-600 uppercase tracking-widest">Items</p>
+          <h4 class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Catalog</h4>
+          <span class="text-ds-xl font-bold text-ds-text">{{ stats.totalProducts }}</span>
+          <p class="text-[9px] font-bold text-ds-text-sec uppercase tracking-[0.2em] mt-0.5">Active Items</p>
         </div>
       </div>
     </div>
 
     <!-- Customer Base Card -->
-    <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all">
-      <div class="flex items-center gap-3">
-        <div class="size-10 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
-          <app-icon name="Users" size="20" className="text-purple-600"></app-icon>
+    <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
+      <div class="flex items-center gap-ds-5">
+        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0">
+          <app-icon name="Users" size="20" className="text-ds-text-muted"></app-icon>
         </div>
         <div>
-          <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Audience</h4>
-          <span class="text-xl font-black text-primary dark:text-white">{{ stats.totalCustomers }}</span>
-          <p class="text-[9px] font-black text-purple-600 uppercase tracking-widest">Users</p>
+          <h4 class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Audience</h4>
+          <span class="text-ds-xl font-bold text-ds-text">{{ stats.totalCustomers }}</span>
+          <p class="text-[9px] font-bold text-ds-text-sec uppercase tracking-[0.2em] mt-0.5">Users</p>
         </div>
       </div>
     </div>
 
     <!-- Returns Card -->
-    <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all">
-      <div class="flex items-center gap-3">
-        <div class="size-10 rounded-xl bg-rose-500/10 flex items-center justify-center shrink-0">
-          <app-icon name="RotateCcw" size="20" className="text-rose-600"></app-icon>
+    <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
+      <div class="flex items-center gap-ds-5">
+        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0">
+          <app-icon name="RotateCcw" size="20" className="text-ds-text-muted"></app-icon>
         </div>
         <div>
-          <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Returns</h4>
-          <span class="text-xl font-black text-primary dark:text-white">{{ stats.returnedOrders }}</span>
-          <p class="text-[9px] font-black text-rose-600 uppercase tracking-widest">{{ stats.returnRate }} Rate</p>
+          <h4 class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Returns</h4>
+          <span class="text-ds-xl font-bold text-ds-text">{{ stats.returnedOrders }}</span>
+          <p class="text-[9px] font-bold text-red-500 uppercase tracking-[0.2em] mt-0.5">{{ stats.returnRate }} Rate</p>
         </div>
       </div>
     </div>
@@ -158,23 +158,23 @@
 
 
 <ng-template #loadingStats>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <div *ngFor="let i of [1,2,3,4,5,6,7,8]" class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-8 rounded-[2.5rem] animate-pulse">
-      <div class="flex items-center gap-4 mb-6">
-        <div class="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-2xl"></div>
-        <div class="flex-1 space-y-2">
-          <div class="w-20 h-3 bg-gray-100 dark:bg-gray-800 rounded"></div>
-          <div class="w-12 h-2 bg-gray-100 dark:bg-gray-800 rounded"></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-ds-8">
+    <div *ngFor="let i of [1,2,3,4,5,6,7,8]" class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm animate-pulse">
+      <div class="flex items-center gap-ds-5 mb-ds-8">
+        <div class="w-14 h-14 bg-ds-bg border border-ds-border rounded-sm"></div>
+        <div class="flex-1 space-y-ds-3">
+          <div class="w-20 h-2 bg-ds-bg rounded-sm"></div>
+          <div class="w-12 h-1.5 bg-ds-bg rounded-sm"></div>
         </div>
       </div>
-      <div class="w-24 h-8 bg-gray-100 dark:bg-gray-800 rounded-xl mb-2"></div>
-      <div class="w-32 h-3 bg-gray-100 dark:bg-gray-800 rounded"></div>
+      <div class="w-24 h-8 bg-ds-bg rounded-sm mb-ds-3"></div>
+      <div class="w-32 h-2 bg-ds-bg rounded-sm"></div>
     </div>
   </div>
 </ng-template>
 
-<footer class="mt-20 mb-10 text-center" *ngIf="settings$ | async as settings">
-  <p class="text-[10px] font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-[0.3em]">
+<footer class="mt-ds-32 mb-ds-12 text-center" *ngIf="settings$ | async as settings">
+  <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.5em]">
     © {{ date.getFullYear() }} {{ settings.websiteName || "Arza" }} • Admin Navigation Console
   </p>
 </footer>

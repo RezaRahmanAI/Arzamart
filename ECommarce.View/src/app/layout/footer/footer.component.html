@@ -1,14 +1,14 @@
 @if (settings$ | async; as settings) {
-  <footer class="bg-ds-accent text-ds-hero-text pt-ds-20 pb-ds-10 border-t border-white/5">
+  <footer class="bg-ds-accent text-ds-hero-text pt-ds-24 pb-ds-12 border-t border-white/5">
     <div class="site-container">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-ds-12 mb-ds-20">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-ds-12 lg:gap-ds-16 mb-ds-24">
         <!-- Brand Info -->
-        <div class="md:col-span-4 space-y-ds-8">
+        <div class="md:col-span-4 space-y-ds-10">
           <a routerLink="/" class="inline-block">
             <img
               [src]="settings.logoUrl ? imageUrlService.getImageUrl(settings.logoUrl) : 'assets/logo.svg'"
               alt="Arza Mart Logo"
-              class="h-8 lg:h-9 w-auto brightness-0 invert opacity-90"
+              class="h-8 lg:h-9 w-auto brightness-0 invert opacity-90 transition-transform duration-base hover:scale-105"
             />
           </a>
           <p class="text-ds-hero-text/60 text-ds-sm leading-relaxed max-w-sm font-medium">
@@ -16,203 +16,85 @@
           </p>
           
           <!-- Socials -->
-          <div class="flex gap-ds-8 pt-ds-2">
+          <div class="flex gap-ds-10 pt-ds-4">
             @if (settings.facebookUrl) {
               <a
                 [href]="settings.facebookUrl"
                 target="_blank"
-                class="hover:text-accent text-white/50 hover:scale-105 transition-all duration-300"
+                class="hover:text-ds-hero-text text-ds-hero-text/40 transition-all duration-base hover:-translate-y-1"
               >
-                <span class="text-[10px] uppercase tracking-[0.25em] font-medium"
-                  >Facebook</span
-                >
+                <span class="text-[10px] uppercase tracking-[0.4em] font-bold">Facebook</span>
               </a>
             }
             @if (settings.instagramUrl) {
               <a
                 [href]="settings.instagramUrl"
                 target="_blank"
-                class="hover:text-accent text-white/50 hover:scale-105 transition-all duration-300"
+                class="hover:text-ds-hero-text text-ds-hero-text/40 transition-all duration-base hover:-translate-y-1"
               >
-                <span class="text-[10px] uppercase tracking-[0.25em] font-medium"
-                  >Instagram</span
-                >
+                <span class="text-[10px] uppercase tracking-[0.4em] font-bold">Instagram</span>
               </a>
             }
             @if (settings.twitterUrl) {
               <a
                 [href]="settings.twitterUrl"
                 target="_blank"
-                class="hover:text-accent text-white/50 hover:scale-105 transition-all duration-300"
+                class="hover:text-ds-hero-text text-ds-hero-text/40 transition-all duration-base hover:-translate-y-1"
               >
-                <span class="text-[10px] uppercase tracking-[0.25em] font-medium"
-                  >Twitter</span
-                >
+                <span class="text-[10px] uppercase tracking-[0.4em] font-bold">Twitter</span>
               </a>
             }
           </div>
         </div>
   
         <!-- Navigation Links (Right) - 4 Columns -->
-        <div class="md:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8 md:gap-12">
+        <div class="md:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-ds-10 md:gap-ds-12">
           <!-- Legal -->
-          <div class="flex flex-col gap-6 sm:gap-8">
-            <h4
-              class="text-[9px] uppercase tracking-[0.35em] font-bold text-accent"
-            >
-              Legal
-            </h4>
-            <ul
-              class="flex flex-col gap-4 text-[11px] uppercase tracking-[0.15em] text-gray-400"
-            >
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/shipping-policy"
-                  >Shipping Policy</a
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/terms"
-                  >Terms & Conditions</a
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/privacy"
-                  >Privacy Policy</a
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/payment-policy"
-                  >Payment Policy</a
-                >
-              </li>
+          <div class="space-y-ds-8">
+            <h4 class="text-[10px] uppercase tracking-[0.4em] font-bold text-ds-hero-text opacity-40">Legal</h4>
+            <ul class="flex flex-col gap-ds-4 text-[11px] uppercase tracking-[0.2em] font-bold text-ds-hero-text/60">
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/shipping-policy">Shipping Policy</a></li>
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/terms">Terms & Conditions</a></li>
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/privacy">Privacy Policy</a></li>
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/payment-policy">Payment Policy</a></li>
             </ul>
           </div>
   
           <!-- Information -->
-          <div class="flex flex-col gap-8">
-            <h4
-              class="text-[9px] uppercase tracking-[0.35em] font-bold text-accent"
-            >
-              Information
-            </h4>
-            <ul
-              class="flex flex-col gap-4 text-[11px] uppercase tracking-[0.15em] text-gray-400"
-            >
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/exchange-refund"
-                  >Exchange & Refund</a
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/size-guide"
-                  >Size Guide</a
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/loyalty"
-                  >Loyalty Program</a
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/stores"
-                  >Store Locations</a
-                >
-              </li>
+          <div class="space-y-ds-8">
+            <h4 class="text-[10px] uppercase tracking-[0.4em] font-bold text-ds-hero-text opacity-40">Information</h4>
+            <ul class="flex flex-col gap-ds-4 text-[11px] uppercase tracking-[0.2em] font-bold text-ds-hero-text/60">
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/exchange-refund">Exchange & Refund</a></li>
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/size-guide">Size Guide</a></li>
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/loyalty">Loyalty Program</a></li>
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/stores">Store Locations</a></li>
             </ul>
           </div>
   
           <!-- Company -->
-          <div class="flex flex-col gap-8">
-            <h4
-              class="text-[9px] uppercase tracking-[0.35em] font-bold text-accent"
-            >
-              Company
-            </h4>
-            <ul
-              class="flex flex-col gap-4 text-[11px] uppercase tracking-[0.15em] text-gray-400"
-            >
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/about"
-                  >About Us</a
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/contact"
-                  >Contact Us</a
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-white transition-colors duration-300"
-                  routerLink="/careers"
-                  >Careers</a
-                >
-              </li>
+          <div class="space-y-ds-8">
+            <h4 class="text-[10px] uppercase tracking-[0.4em] font-bold text-ds-hero-text opacity-40">Company</h4>
+            <ul class="flex flex-col gap-ds-4 text-[11px] uppercase tracking-[0.2em] font-bold text-ds-hero-text/60">
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/about">About Us</a></li>
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/contact">Contact Us</a></li>
+              <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/careers">Careers</a></li>
             </ul>
           </div>
   
           <!-- Service Center -->
-          <div class="flex flex-col gap-8">
-            <h4
-              class="text-[9px] uppercase tracking-[0.35em] font-bold text-accent"
-            >
-              Service Center
-            </h4>
-            <ul
-              class="flex flex-col gap-6 text-[11px] text-gray-400 tracking-wide font-light"
-            >
+          <div class="space-y-ds-8">
+            <h4 class="text-[10px] uppercase tracking-[0.4em] font-bold text-ds-hero-text opacity-40">Service Center</h4>
+            <ul class="flex flex-col gap-ds-8 text-[11px] font-bold uppercase tracking-widest text-ds-hero-text/60">
               @if (settings.contactPhone) {
-                <li class="flex flex-col gap-2">
-                  <span class="opacity-50 text-[9px] uppercase tracking-[0.25em]"
-                    >Phone</span
-                  >
-                  <a
-                    [href]="'tel:' + settings.contactPhone"
-                    class="hover:text-accent transition-colors"
-                    >{{ settings.contactPhone }}</a
-                  >
+                <li class="space-y-ds-2">
+                  <span class="opacity-30 text-[9px] uppercase tracking-[0.3em]">Phone</span>
+                  <a [href]="'tel:' + settings.contactPhone" class="block hover:text-ds-hero-text transition-colors">{{ settings.contactPhone }}</a>
                 </li>
               }
               @if (settings.contactEmail) {
-                <li class="flex flex-col gap-2">
-                  <span class="opacity-50 text-[9px] uppercase tracking-[0.25em]"
-                    >Email</span
-                  >
-                  <a
-                    [href]="'mailto:' + settings.contactEmail"
-                    class="hover:text-accent transition-colors"
-                    >{{ settings.contactEmail }}</a
-                  >
-                </li>
-              }
-              @if (settings.address) {
-                <li class="flex flex-col gap-2">
-                  <span class="opacity-50 text-[9px] uppercase tracking-[0.25em]"
-                    >Address</span
-                  >
-                  <span class="leading-relaxed text-[10px]">{{
-                    settings.address
-                  }}</span>
+                <li class="space-y-ds-2">
+                  <span class="opacity-30 text-[9px] uppercase tracking-[0.3em]">Email</span>
+                  <a [href]="'mailto:' + settings.contactEmail" class="block hover:text-ds-hero-text transition-colors truncate">{{ settings.contactEmail }}</a>
                 </li>
               }
             </ul>
@@ -221,61 +103,29 @@
       </div>
   
       <!-- Payment Methods -->
-      <div class="mb-20 pb-12 border-b border-white/5">
-        <h4
-          class="text-[9px] uppercase tracking-[0.35em] font-bold text-accent mb-8"
-        >
-          You Can Pay By
-        </h4>
-        <div class="flex flex-wrap items-center gap-6">
-          <div
-            class="px-6 py-3 bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-gray-400"
-          >
-            Visa
-          </div>
-          <div
-            class="px-6 py-3 bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-gray-400"
-          >
-            Mastercard
-          </div>
-          <div
-            class="px-6 py-3 bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-gray-400"
-          >
-            bKash
-          </div>
-          <div
-            class="px-6 py-3 bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-gray-400"
-          >
-            Nagad
-          </div>
-          <div
-            class="px-6 py-3 bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-gray-400"
-          >
-            Cash on Delivery
-          </div>
+      <div class="mb-ds-20 pb-ds-12 border-b border-white/5">
+        <h4 class="text-[10px] uppercase tracking-[0.4em] font-bold text-ds-hero-text opacity-40 mb-ds-10">Accepted Payments</h4>
+        <div class="flex flex-wrap items-center gap-ds-6">
+          @for (method of ['Visa', 'Mastercard', 'bKash', 'Nagad', 'COD']; track method) {
+            <div class="px-ds-8 py-ds-4 bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-[0.3em] text-ds-hero-text/40 hover:text-ds-hero-text hover:bg-white/10 transition-all duration-base">
+              {{ method }}
+            </div>
+          }
         </div>
       </div>
   
       <!-- Bottom Bar -->
-      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-        <p class="text-[9px] text-gray-500 uppercase tracking-[0.25em] font-medium">
-          © {{ currentYear }} {{ settings.websiteName || "Arza Mart" }}. All rights
-          reserved.
+      <div class="flex flex-col md:flex-row justify-between items-center gap-ds-8">
+        <p class="text-[10px] text-ds-hero-text/30 uppercase tracking-[0.4em] font-bold">
+          © {{ currentYear }} {{ settings.websiteName || "Arza Mart" }}.
         </p>
-        <div
-          class="flex gap-12 text-[9px] text-gray-500 uppercase tracking-[0.25em] font-medium"
-        >
-          <a class="hover:text-white transition-colors" routerLink="/privacy"
-            >Privacy</a
-          >
-          <a class="hover:text-white transition-colors" routerLink="/terms"
-            >Terms</a
-          >
-          <a class="hover:text-white transition-colors" routerLink="/cookies"
-            >Cookies</a
-          >
+        <div class="flex gap-ds-12 text-[10px] text-ds-hero-text/30 uppercase tracking-[0.4em] font-bold">
+          <a class="hover:text-ds-hero-text transition-colors" routerLink="/privacy">Privacy</a>
+          <a class="hover:text-ds-hero-text transition-colors" routerLink="/terms">Terms</a>
+          <a class="hover:text-ds-hero-text transition-colors" routerLink="/cookies">Cookies</a>
         </div>
       </div>
     </div>
   </footer>
 }
+

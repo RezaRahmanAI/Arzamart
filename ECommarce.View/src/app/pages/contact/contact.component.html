@@ -1,108 +1,91 @@
-<div
-  class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden"
->
+<div class="bg-ds-bg min-h-screen text-ds-text">
   <!-- Hero Section -->
-  <div class="relative w-full bg-primary py-16 lg:py-24">
+  <div class="relative w-full bg-ds-hero-bg py-ds-20 overflow-hidden">
     <div
-      class="absolute inset-0 opacity-20 bg-cover bg-center"
-      data-alt="Abstract geometric islamic pattern in teal and gold"
-      style="
-        background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCPF-DNnIgGr2PC6sPo8ie7AjTarAweTokcLmcirPISt2hZKlaY4RjJM-DYIAxB5tA3nhWDuk4F9VJg-eC2q9MljINFzs4tfsgL5Aou2W-uAB0g3wnK56RRKkjCkTIpNLzb1ZNGP99oe_GY5OP109sayp2A-rtSqH9DuPTM6IIEZ9ot7jkIyvVtse9uPw0Aw9sEVgMGZaatmytcrqehPQrdS8STrd7b6FECtCKtqyl8YigQXhQk-chPA4jxyX3UFIvjdz5hZGUmbBQ&quot;);
-      "
+      class="absolute inset-0 opacity-10 bg-cover bg-center"
+      style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCPF-DNnIgGr2PC6sPo8ie7AjTarAweTokcLmcirPISt2hZKlaY4RjJM-DYIAxB5tA3nhWDuk4F9VJg-eC2q9MljINFzs4tfsgL5Aou2W-uAB0g3wnK56RRKkjCkTIpNLzb1ZNGP99oe_GY5OP109sayp2A-rtSqH9DuPTM6IIEZ9ot7jkIyvVtse9uPw0Aw9sEVgMGZaatmytcrqehPQrdS8STrd7b6FECtCKtqyl8YigQXhQk-chPA4jxyX3UFIvjdz5hZGUmbBQ');"
     ></div>
-    <div
-      class="layout-container relative z-10 mx-auto max-w-[960px] px-6 text-center"
-    >
-      <h1
-        class="text-white text-4xl lg:text-5xl font-black leading-tight tracking-tight mb-4"
-      >
-        We'd Love to Hear From You
+    <div class="site-container relative z-10 text-center">
+      <h1 class="text-ds-hero-text text-ds-4xl md:text-ds-5xl font-bold leading-tight tracking-tight mb-ds-4 uppercase">
+        Contact Us
       </h1>
-      <h2
-        class="text-white/90 text-lg font-normal leading-relaxed max-w-2xl mx-auto"
-      >
+      <p class="text-ds-hero-text/80 text-ds-lg font-medium max-w-2xl mx-auto leading-relaxed">
         Whether you have a question about sizing, shipping, or just want to say
         salam, our team is here to help you.
-      </h2>
+      </p>
     </div>
   </div>
+
   <!-- Main Content Area -->
-  <main
-    class="layout-container mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 py-12 lg:px-10 lg:py-16"
-  >
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+  <main class="site-container py-ds-16 lg:py-ds-24">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-10 lg:gap-ds-16">
       <!-- Left Column: Contact Info -->
-      <div class="lg:col-span-5 flex flex-col gap-8 order-2 lg:order-1">
-        <div class="flex flex-col gap-2">
-          <h3
-            class="text-primary dark:text-white text-2xl font-bold tracking-tight"
-          >
-            Get in touch directly
+      <div class="lg:col-span-5 flex flex-col gap-ds-10 order-2 lg:order-1">
+        <div class="space-y-ds-2">
+          <h3 class="text-ds-3xl font-bold uppercase tracking-tight">
+            Get in touch
           </h3>
-          <p class="text-gray-600 dark:text-gray-400">
+          <p class="text-ds-text-sec font-medium">
             Our team is available {{ officeHours }}
           </p>
         </div>
-        <div class="flex flex-col gap-6">
+
+        <div class="flex flex-col gap-ds-8">
           <!-- Email -->
-          <div class="flex items-start gap-4">
-            <div
-              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/30 text-primary dark:text-accent"
-            >
+          <div class="flex items-start gap-ds-6">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-ds-surface border border-ds-border text-ds-text">
               <app-icon name="Mail" size="20"></app-icon>
             </div>
-            <div>
-              <h4 class="text-base font-bold text-primary dark:text-white">
-                Chat to support
+            <div class="space-y-ds-1">
+              <h4 class="text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec">
+                Email Support
               </h4>
-              <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">
+              <p class="text-ds-base text-ds-text-sec font-light mb-ds-2">
                 Speak to our friendly team.
               </p>
               <a
-                class="text-primary dark:text-white font-semibold underline decoration-accent decoration-2 hover:text-primary/80"
+                class="text-ds-text font-bold border-b border-ds-text hover:border-transparent transition-all pb-1"
                 [href]="'mailto:' + supportEmail"
               >
                 {{ supportEmail }}
               </a>
             </div>
           </div>
+
           <!-- Phone -->
-          <div class="flex items-start gap-4">
-            <div
-              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/30 text-primary dark:text-accent"
-            >
+          <div class="flex items-start gap-ds-6">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-ds-surface border border-ds-border text-ds-text">
               <app-icon name="Phone" size="20"></app-icon>
             </div>
-            <div>
-              <h4 class="text-base font-bold text-primary dark:text-white">
-                Call us
+            <div class="space-y-ds-1">
+              <h4 class="text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec">
+                Call Us
               </h4>
-              <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">
+              <p class="text-ds-base text-ds-text-sec font-light mb-ds-2">
                 Mon-Fri from 9am to 6pm.
               </p>
               <a
-                class="text-primary dark:text-white font-semibold hover:text-primary/80"
+                class="text-ds-text font-bold border-b border-ds-text hover:border-transparent transition-all pb-1"
                 [href]="'tel:' + phoneDial"
               >
                 {{ phone }}
               </a>
             </div>
           </div>
+
           <!-- Location -->
-          <div class="flex items-start gap-4">
-            <div
-              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/30 text-primary dark:text-accent"
-            >
+          <div class="flex items-start gap-ds-6">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-ds-surface border border-ds-border text-ds-text">
               <app-icon name="MapPin" size="20"></app-icon>
             </div>
-            <div>
-              <h4 class="text-base font-bold text-primary dark:text-white">
-                Visit us
+            <div class="space-y-ds-1">
+              <h4 class="text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec">
+                Visit Us
               </h4>
-              <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">
+              <p class="text-ds-base text-ds-text-sec font-light mb-ds-2">
                 Come say hi at our HQ.
               </p>
-              <p class="text-primary dark:text-white font-medium">
+              <p class="text-ds-text font-bold">
                 <span *ngFor="let line of addressLines; let isLast = last">
                   {{ line }}<br *ngIf="!isLast" />
                 </span>
@@ -110,197 +93,144 @@
             </div>
           </div>
         </div>
+
         <!-- Socials -->
-        <div class="pt-6 border-t border-border-light dark:border-border-dark">
-          <h4
-            class="text-sm font-bold text-primary dark:text-white uppercase tracking-wider mb-4"
-          >
+        <div class="pt-ds-10 border-t border-ds-border">
+          <h4 class="text-[10px] font-bold uppercase tracking-[0.3em] text-ds-text-muted mb-ds-6">
             Follow Us
           </h4>
-          <div class="flex gap-4">
+          <div class="flex gap-ds-4">
             <a
               *ngFor="let link of socialLinks"
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-primary dark:text-white hover:bg-accent hover:border-accent transition-all"
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-ds-surface border border-ds-border text-ds-text hover:bg-ds-accent hover:text-ds-hero-text hover:border-ds-accent transition-all duration-base"
               [href]="link.href"
               target="_blank"
               rel="noopener noreferrer"
               [attr.aria-label]="link.name"
             >
-              <svg
-                aria-hidden="true"
-                class="w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  [attr.clip-rule]="link.clipRule"
-                  [attr.fill-rule]="link.fillRule"
-                  [attr.d]="link.path"
-                ></path>
+              <svg aria-hidden="true" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path [attr.clip-rule]="link.clipRule" [attr.fill-rule]="link.fillRule" [attr.d]="link.path"></path>
               </svg>
             </a>
           </div>
         </div>
       </div>
+
       <!-- Right Column: Contact Form -->
       <div class="lg:col-span-7 order-1 lg:order-2">
-        <div
-          class="rounded-2xl bg-surface-light dark:bg-surface-dark p-6 shadow-sm border border-border-light dark:border-border-dark lg:p-10"
-        >
-          <h3
-            class="text-primary dark:text-white text-2xl font-bold tracking-tight mb-8"
-          >
-            Send us a message
+        <div class="bg-ds-surface border border-ds-border p-ds-6 lg:p-ds-12">
+          <h3 class="text-ds-3xl font-bold uppercase tracking-tight mb-ds-10">
+            Send Message
           </h3>
-          <form
-            class="flex flex-col gap-6"
-            [formGroup]="form"
-            (ngSubmit)="onSubmit()"
-          >
+          <form class="flex flex-col gap-ds-6" [formGroup]="form" (ngSubmit)="onSubmit()">
             <!-- Name & Email Row -->
-            <div class="flex flex-col gap-6 sm:flex-row">
-              <label class="flex flex-col flex-1 gap-2">
-                <span class="text-primary dark:text-white text-sm font-semibold"
-                  >Full Name</span
-                >
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-ds-6">
+              <div class="space-y-ds-2">
+                <label class="form-label">Full Name</label>
                 <input
-                  class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark px-4 py-3 text-primary dark:text-white placeholder-gray-400 focus:border-primary focus:ring-1 focus:ring-primary dark:focus:border-accent dark:focus:ring-accent transition-shadow outline-none"
+                  class="form-input"
                   placeholder="Enter your name"
                   type="text"
                   formControlName="fullName"
+                  [class.error]="shouldShowError('fullName')"
                 />
-                <span
-                  *ngIf="shouldShowError('fullName')"
-                  class="text-xs text-red-500"
-                  >Full name must be at least 3 characters.</span
-                >
-              </label>
-              <label class="flex flex-col flex-1 gap-2">
-                <span class="text-primary dark:text-white text-sm font-semibold"
-                  >Email Address</span
-                >
+                <p *ngIf="shouldShowError('fullName')" class="form-error">
+                  Required (min 3 chars)
+                </p>
+              </div>
+              <div class="space-y-ds-2">
+                <label class="form-label">Email Address</label>
                 <input
-                  class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark px-4 py-3 text-primary dark:text-white placeholder-gray-400 focus:border-primary focus:ring-1 focus:ring-primary dark:focus:border-accent dark:focus:ring-accent transition-shadow outline-none"
+                  class="form-input"
                   placeholder="Enter your email"
                   type="email"
                   formControlName="email"
+                  [class.error]="shouldShowError('email')"
                 />
-                <span
-                  *ngIf="shouldShowError('email')"
-                  class="text-xs text-red-500"
-                  >Please enter a valid email.</span
-                >
-              </label>
+                <p *ngIf="shouldShowError('email')" class="form-error">
+                  Please enter a valid email
+                </p>
+              </div>
             </div>
+
             <!-- Topic Select -->
-            <label class="flex flex-col gap-2">
-              <span class="text-primary dark:text-white text-sm font-semibold"
-                >Inquiry Type</span
-              >
+            <div class="space-y-ds-2">
+              <label class="form-label">Inquiry Type</label>
               <div class="relative">
-                <select
-                  class="w-full appearance-none rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark px-4 py-3 text-primary dark:text-white focus:border-primary focus:ring-1 focus:ring-primary dark:focus:border-accent dark:focus:ring-accent transition-shadow outline-none cursor-pointer"
-                  formControlName="inquiryType"
-                >
+                <select class="form-select appearance-none cursor-pointer" formControlName="inquiryType" [class.error]="shouldShowError('inquiryType')">
                   <option disabled value="">Select a topic</option>
-                  <option
-                    *ngFor="let topic of inquiryTopics"
-                    [value]="topic.value"
-                  >
+                  <option *ngFor="let topic of inquiryTopics" [value]="topic.value">
                     {{ topic.label }}
                   </option>
                 </select>
-                <div
-                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500"
-                >
-                  <app-icon
-                    name="ChevronDown"
-                    size="20"
-                  ></app-icon>
+                <div class="pointer-events-none absolute inset-y-0 right-ds-4 flex items-center text-ds-text-muted">
+                  <app-icon name="ChevronDown" size="18"></app-icon>
                 </div>
               </div>
-              <span
-                *ngIf="shouldShowError('inquiryType')"
-                class="text-xs text-red-500"
-                >Please select a topic.</span
-              >
-            </label>
+              <p *ngIf="shouldShowError('inquiryType')" class="form-error">
+                Please select a topic
+              </p>
+            </div>
+
             <!-- Message -->
-            <label class="flex flex-col gap-2">
-              <span class="text-primary dark:text-white text-sm font-semibold"
-                >Message</span
-              >
+            <div class="space-y-ds-2">
+              <label class="form-label">Message</label>
               <textarea
-                class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark px-4 py-3 text-primary dark:text-white placeholder-gray-400 focus:border-primary focus:ring-1 focus:ring-primary dark:focus:border-accent dark:focus:ring-accent transition-shadow outline-none resize-none"
+                class="form-textarea resize-none"
                 placeholder="How can we help you?"
                 rows="5"
                 formControlName="message"
+                [class.error]="shouldShowError('message')"
               ></textarea>
-              <span
-                *ngIf="shouldShowError('message')"
-                class="text-xs text-red-500"
-                >Message must be at least 10 characters.</span
-              >
-            </label>
+              <p *ngIf="shouldShowError('message')" class="form-error">
+                Message must be at least 10 characters
+              </p>
+            </div>
+
             <!-- Submit Button -->
             <button
-              class="mt-2 w-full sm:w-auto self-start rounded-lg bg-primary px-8 py-3.5 text-center text-sm font-bold text-white shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all dark:bg-white dark:text-primary dark:hover:bg-gray-100"
+              class="btn btn-primary h-14 !text-[11px] !tracking-[0.3em] uppercase w-full sm:w-auto"
               type="submit"
               [disabled]="form.invalid || isSubmitting"
-              [attr.aria-busy]="isSubmitting"
             >
               {{ isSubmitting ? "Sending..." : "Send Message" }}
             </button>
-            <p
-              *ngIf="successMessage"
-              class="text-sm font-semibold text-primary dark:text-accent"
-            >
+            <p *ngIf="successMessage" class="text-ds-success text-[11px] font-bold uppercase tracking-widest mt-ds-2">
               {{ successMessage }}
             </p>
           </form>
         </div>
       </div>
     </div>
+
     <!-- Map Section -->
-    <div class="mt-16 lg:mt-24">
-      <div class="flex items-center justify-between mb-6">
-        <h3
-          class="text-primary dark:text-white text-2xl font-bold tracking-tight"
-        >
+    <div class="mt-ds-20 lg:mt-ds-32">
+      <div class="mb-ds-10">
+        <h3 class="text-ds-3xl font-bold uppercase tracking-tight">
           Find our Flagship Store
         </h3>
       </div>
-      <div
-        class="relative h-96 w-full overflow-hidden rounded-2xl bg-gray-200 shadow-md"
-      >
+      <div class="relative h-[500px] w-full overflow-hidden border border-ds-border">
         <!-- Placeholder Map Image -->
         <div
           class="absolute inset-0 bg-cover bg-center"
-          data-alt="Map showing the location of the store in downtown area"
-          [attr.data-location]="mapDetails.locationLabel"
-          style="
-            background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDXqBu9UgIf2tfyeZZYOpMocZPAxdOeemMH4WwegVlpYPbsm_sjlbYGzvTV_jtuH-8Qvt_UNzchpfV0tJ9p1s7-Ax_a1ZiQF_-zWcWqDf-Hk1iiVXGUIH4g6Agq7dJF4REk3Zz36rnvyvKeo4PBtE_zZBlofS2yhYTJRP4fqdF9BvxaEd57Gd4HiITWUsWTdkvIsI3J78LHhyr_F-f6jr2-92Ja4VttFAVXA5pEm7XiQtjhgGuuU9bnUolYiBGbRjX6uQ5YeX-sQFM&quot;);
-          "
+          style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDXqBu9UgIf2tfyeZZYOpMocZPAxdOeemMH4WwegVlpYPbsm_sjlbYGzvTV_jtuH-8Qvt_UNzchpfV0tJ9p1s7-Ax_a1ZiQF_-zWcWqDf-Hk1iiVXGUIH4g6Agq7dJF4REk3Zz36rnvyvKeo4PBtE_zZBlofS2yhYTJRP4fqdF9BvxaEd57Gd4HiITWUsWTdkvIsI3J78LHhyr_F-f6jr2-92Ja4VttFAVXA5pEm7XiQtjhgGuuU9bnUolYiBGbRjX6uQ5YeX-sQFM');"
         ></div>
         <!-- Map Card Overlay -->
-        <div
-          class="absolute bottom-6 left-6 max-w-xs rounded-xl bg-white p-4 shadow-lg dark:bg-surface-dark"
-        >
-          <div class="flex items-start gap-3">
-            <div
-              class="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20 text-primary dark:text-accent"
-            >
+        <div class="absolute bottom-ds-8 left-ds-8 max-w-sm bg-ds-bg border border-ds-border p-ds-6 shadow-xl">
+          <div class="flex items-start gap-ds-4">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-ds-surface border border-ds-border text-ds-text">
               <app-icon name="Store" size="20"></app-icon>
             </div>
-            <div>
-              <h5 class="text-sm font-bold text-primary dark:text-white">
+            <div class="space-y-ds-1">
+              <h5 class="text-ds-base font-bold uppercase tracking-tight">
                 {{ mapDetails.storeName }}
               </h5>
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p class="text-ds-sm text-ds-text-sec font-medium">
                 {{ mapDetails.openHours }}
               </p>
               <button
-                class="mt-2 text-xs font-semibold text-primary dark:text-accent hover:underline"
+                class="text-[10px] font-bold uppercase tracking-[0.2em] text-ds-text border-b border-ds-text hover:border-transparent transition-all mt-ds-4 block"
                 type="button"
                 (click)="openDirections()"
               >
@@ -311,44 +241,25 @@
         </div>
       </div>
     </div>
+
     <!-- FAQ Teaser -->
-    <div class="mt-16 text-center bg-accent/20 rounded-xl p-8 lg:p-12">
-      <app-icon
-        name="HelpCircle"
-        size="48"
-        className="text-primary dark:text-white mb-3"
-      ></app-icon>
-      <h3 class="text-xl font-bold text-primary dark:text-white mb-2">
+    <div class="mt-ds-20 text-center bg-ds-surface border border-ds-border p-ds-10 lg:p-ds-20">
+      <app-icon name="HelpCircle" size="48" className="text-ds-text-muted mb-ds-6"></app-icon>
+      <h3 class="text-ds-2xl font-bold uppercase tracking-tight mb-ds-4">
         Need a quick answer?
       </h3>
-      <p class="text-primary/80 dark:text-white/80 mb-6 max-w-lg mx-auto">
+      <p class="text-ds-text-sec max-w-lg mx-auto mb-ds-10 leading-relaxed font-medium">
         Check out our frequently asked questions for information on shipping,
         returns, and product care.
       </p>
-      <ng-container *ngIf="helpCenterLink; else helpPlaceholder">
-        <a
-          class="inline-flex items-center gap-2 font-bold text-primary dark:text-white hover:opacity-70 transition-opacity"
-          [routerLink]="helpCenterLink"
-        >
-          Visit Help Center
-          <app-icon
-            name="ArrowRight"
-            size="14"
-          ></app-icon>
-        </a>
-      </ng-container>
-      <ng-template #helpPlaceholder>
-        <a
-          class="inline-flex items-center gap-2 font-bold text-primary dark:text-white hover:opacity-70 transition-opacity"
-          href="#"
-        >
-          Visit Help Center
-          <app-icon
-            name="ArrowRight"
-            size="14"
-          ></app-icon>
-        </a>
-      </ng-template>
+      <a
+        class="btn btn-secondary h-12 !text-[10px] !tracking-[0.2em] uppercase !w-auto mx-auto"
+        [routerLink]="helpCenterLink || '/faq'"
+      >
+        Visit Help Center
+        <app-icon name="ArrowRight" size="14"></app-icon>
+      </a>
     </div>
   </main>
 </div>
+

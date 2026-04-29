@@ -1,52 +1,62 @@
-<div class="group relative flex flex-col bg-ds-bg overflow-hidden transition-all duration-fast">
+<div class="group relative flex flex-col bg-ds-bg overflow-hidden transition-all duration-base">
   <!-- Image Container -->
   <a [routerLink]="['/product', product.slug]" 
-     class="relative aspect-[3/4] block overflow-hidden bg-ds-surface border border-ds-border rounded-lg transition-colors hover:border-ds-text-muted">
+     class="relative aspect-[3/4] block overflow-hidden bg-ds-surface border border-ds-border transition-colors group-hover:border-ds-text">
     @if (mainImage) {
       <img
         [src]="imageUrlService.getImageUrl(mainImage)"
         [alt]="product.name"
         loading="lazy"
         decoding="async"
-        class="h-full w-full object-cover p-2 transition-transform duration-700 group-hover:scale-105"
+        class="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
       />
     }
     
     <!-- Sophisticated Badge -->
-    <div class="absolute top-ds-2 left-ds-2">
+    <div class="absolute top-ds-4 left-ds-4">
       @if (hasDiscount) {
-        <span class="badge badge-active !text-[9px] tracking-widest uppercase">
+        <span class="bg-ds-text text-ds-bg px-ds-3 py-1 text-[10px] font-bold tracking-[0.2em] uppercase">
           -৳{{ discountAmount }}
         </span>
       }
     </div>
+
+    <!-- Quick Shop Trigger (Hidden on Mobile) -->
+    <div class="absolute bottom-0 left-0 right-0 p-ds-4 translate-y-full group-hover:translate-y-0 transition-transform duration-base hidden lg:block">
+      <button 
+        (click)="orderNow($event)"
+        class="w-full h-11 bg-ds-bg/90 backdrop-blur-sm text-ds-text text-[10px] font-bold uppercase tracking-[0.3em] border border-ds-border hover:bg-ds-text hover:text-ds-bg hover:border-ds-text transition-all"
+      >
+        Quick Order
+      </button>
+    </div>
   </a>
 
   <!-- Content Area -->
-  <div class="pt-ds-4 pb-ds-2 px-1 flex flex-col gap-ds-3 flex-1">
+  <div class="pt-ds-6 pb-ds-2 flex flex-col gap-ds-4 flex-1">
     <!-- Meta Info -->
-    <div class="space-y-ds-1">
-      <p class="text-[11px] font-bold uppercase tracking-widest text-ds-text-sec truncate">
+    <div class="space-y-ds-2">
+      <h3 class="text-[12px] font-bold uppercase tracking-[0.2em] text-ds-text truncate">
         {{ product.name }}
-      </p>
-      <div class="flex items-center gap-ds-2">
-        <h3 class="text-ds-lg font-bold text-ds-text leading-none">৳{{ currentPrice }}</h3>
+      </h3>
+      <div class="flex items-center gap-ds-3">
+        <p class="text-ds-base font-bold text-ds-text leading-none">৳{{ currentPrice }}</p>
         @if (hasDiscount) {
-          <span class="text-ds-xs text-ds-text-muted line-through font-medium">৳{{ originalPrice }}</span>
+          <span class="text-[11px] text-ds-text-muted line-through font-medium">৳{{ originalPrice }}</span>
         }
       </div>
     </div>
 
     <!-- Size Selector -->
     @if (availableSizes.length > 0) {
-      <div class="flex flex-wrap gap-ds-1">
+      <div class="flex flex-wrap gap-ds-2">
         @for (size of availableSizes; track size) {
           <button
             (click)="selectSize(size); $event.preventDefault(); $event.stopPropagation()"
-            class="h-7 min-w-[2.5rem] px-1 flex items-center justify-center text-[10px] font-bold uppercase transition-all border rounded-sm"
+            class="h-8 min-w-[2.5rem] px-2 flex items-center justify-center text-[10px] font-bold uppercase transition-all border"
             [ngClass]="{
-              'bg-ds-accent border-ds-accent text-ds-hero-text': selectedSize === size,
-              'bg-ds-bg border-ds-border text-ds-text-sec hover:border-ds-accent': selectedSize !== size
+              'bg-ds-text border-ds-text text-ds-bg': selectedSize === size,
+              'bg-ds-bg border-ds-border text-ds-text-sec hover:border-ds-text': selectedSize !== size
             }"
           >
             {{ size }}
@@ -55,22 +65,14 @@
       </div>
     }
 
-    <!-- Actions -->
-    <div class="mt-auto pt-ds-1">
-      <div class="flex flex-col gap-ds-2">
-        <button
-          (click)="addToCart($event)"
-          class="btn btn-secondary !min-h-[40px] !py-2 !text-[11px] tracking-widest uppercase"
-        >
-          {{ currentStock > 0 ? 'ADD TO CART' : 'PRE-ORDER' }}
-        </button>
-        <button
-          (click)="orderNow($event)"
-          class="btn btn-primary !min-h-[40px] !py-2 !text-[11px] tracking-widest uppercase"
-        >
-          {{ currentStock > 0 ? 'ORDER NOW' : 'PRE-ORDER NOW' }}
-        </button>
-      </div>
+    <!-- Mobile Actions (Always Visible) -->
+    <div class="mt-auto lg:hidden">
+      <button
+        (click)="orderNow($event)"
+        class="w-full h-12 bg-ds-text text-ds-bg text-[10px] font-bold uppercase tracking-[0.3em] transition-all"
+      >
+        Buy Now
+      </button>
     </div>
   </div>
 
@@ -84,4 +86,5 @@
     ></app-quick-add-modal>
   }
 </div>
+
 

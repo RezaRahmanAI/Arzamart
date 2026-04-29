@@ -1,291 +1,198 @@
 @if (order$ | async; as order) {
-  <main class="flex-grow w-full max-w-7xl mx-auto px-4 md:px-8 py-10">
-    <div class="flex flex-col items-center justify-center text-center mb-12">
-      <div
-        class="w-16 h-16 rounded-full bg-accent mb-6 flex items-center justify-center animate-pulse"
-      >
-        <app-icon
-          name="CheckCircle2"
-          size="32"
-          className="text-primary font-bold"
-        ></app-icon>
-      </div>
-      <h1 class="text-3xl md:text-4xl font-bold mb-3">
-        Thank you for your order!
-      </h1>
-      <h2 class="text-xl md:text-2xl font-semibold text-accent mb-4 Bengali-font">
-        আপনার অর্ডারটি সফলভাবে কনফার্ম হয়েছে
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 max-w-lg text-lg">
-        Your order
-        <span class="font-semibold text-primary dark:text-white"
-          >#{{ order.orderNumber }}</span
-        >
-        has been placed successfully. We will confirm delivery details at
-        <span class="font-medium">{{ order.customerPhone }}</span
-        >.
-      </p>
-      <div class="flex gap-4 mt-8">
-        <button
-          class="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
-          type="button"
-          routerLink="/profile"
-        >
-          <app-icon name="Truck" size="20"></app-icon>
-          Track Order
-        </button>
-        <button
-          class="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-primary dark:text-white font-medium rounded-lg transition-colors"
-          type="button"
-          routerLink="/women"
-        >
-          Continue Shopping
-        </button>
-      </div>
-    </div>
-    <div class="max-w-4xl mx-auto mb-12 overflow-x-auto pb-4">
-      <div class="min-w-[600px] flex items-center justify-between px-4">
-        <div class="flex flex-col items-center relative group">
-          <div [class]="stepIconClasses(order, OrderStatus.Confirmed)">
-            <app-icon
-              name="CheckCircle2"
-              size="20"
-            ></app-icon>
-          </div>
-          <p [ngClass]="stepLabelClasses(order, OrderStatus.Confirmed)">
-            Confirmed
+  <main class="min-h-screen bg-ds-bg py-ds-12 lg:py-ds-20">
+    <div class="site-container">
+      <div class="flex flex-col items-center justify-center text-center mb-ds-16">
+        <div class="w-20 h-20 bg-ds-accent text-ds-hero-text mb-ds-8 flex items-center justify-center animate-in zoom-in duration-700">
+          <app-icon name="Check" size="40"></app-icon>
+        </div>
+        
+        <div class="space-y-ds-4 mb-ds-10">
+          <h1 class="text-ds-4xl font-bold uppercase tracking-tight text-ds-text">
+            Thank you for your order
+          </h1>
+          <h2 class="text-ds-xl font-bold text-ds-accent uppercase tracking-widest Bengali-font">
+            আপনার অর্ডারটি সফলভাবে কনফার্ম হয়েছে
+          </h2>
+          <p class="text-ds-text-sec max-w-lg mx-auto text-ds-sm font-medium leading-relaxed">
+            Your order <span class="text-ds-text font-bold">#{{ order.orderNumber }}</span> has been placed successfully. 
+            We will confirm delivery details at <span class="text-ds-text font-bold">{{ order.customerPhone }}</span>.
           </p>
         </div>
-        <div [class]="connectorClasses(order, 0)"></div>
-        <div class="flex flex-col items-center relative group">
-          <div [class]="stepIconClasses(order, OrderStatus.Processing)">
-            <app-icon name="Package" size="20"></app-icon>
-          </div>
-          <p [ngClass]="stepLabelClasses(order, OrderStatus.Processing)">
-            Processing
-          </p>
-        </div>
-        <div [class]="connectorClasses(order, 1)"></div>
-        <div class="flex flex-col items-center relative group">
-          <div [class]="stepIconClasses(order, OrderStatus.Shipped)">
-            <app-icon name="Truck" size="20"></app-icon>
-          </div>
-          <p [ngClass]="stepLabelClasses(order, OrderStatus.Shipped)">
-            Shipped
-          </p>
-        </div>
-        <div [class]="connectorClasses(order, 2)"></div>
-        <div class="flex flex-col items-center relative group">
-          <div [class]="stepIconClasses(order, OrderStatus.Delivered)">
-            <app-icon name="Home" size="20"></app-icon>
-          </div>
-          <p [ngClass]="stepLabelClasses(order, OrderStatus.Delivered)">
-            Delivered
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div class="lg:col-span-2 space-y-6">
-        <div
-          class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"
-        >
-          <div
-            class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800"
-          >
-            <h2 class="font-bold text-lg">Order Summary</h2>
-            <span class="text-sm text-gray-500"
-              >{{ order.items.length }} Items</span
-            >
-          </div>
-          <div class="divide-y divide-gray-100 dark:divide-gray-700">
-            @for (item of order.items; track item.productId) {
-              <div
-                class="p-6 flex gap-4 hover:bg-gray-50/30 transition-colors"
-              >
-                <div
-                  class="w-24 h-32 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 relative"
-                >
-                  <img
-                    class="w-full h-full object-cover"
-                    [src]="imageUrlService.getImageUrl(item.imageUrl)"
-                    [alt]="item.productName"
-                  />
-                </div>
-                <div class="flex flex-col flex-grow justify-between py-1">
-                  <div>
-                    <div class="flex justify-between items-start">
-                      <h3 class="font-semibold text-lg">
-                        {{ item.productName }}
-                      </h3>
-                      <app-price-display
-                        class="font-bold"
-                        [amount]="item.unitPrice"
-                        size="sm"
-                      ></app-price-display>
-                    </div>
-                    <p class="text-sm text-gray-500 mt-1">
-                      {{ item.size }}
-                    </p>
-                  </div>
-                  <div class="flex items-center gap-2 mt-2">
-                    <span
-                      class="text-xs font-medium bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded"
-                      >Qty: {{ item.quantity }}</span
-                    >
-                  </div>
-                </div>
-              </div>
-            }
-          </div>
-        </div>
-        <div
-          class="bg-accent/20 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border border-accent/30"
-        >
-          <div class="flex items-center gap-4">
-            <div
-              class="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center shadow-sm"
-            >
-              <app-icon
-                name="Headphones"
-                size="20"
-              ></app-icon>
-            </div>
-            <div>
-              <p class="font-semibold text-primary">
-                Need help with your order?
-              </p>
-              <p class="text-sm text-primary/70">
-                Our support team is here to assist you.
-              </p>
-            </div>
-          </div>
+
+        <div class="flex flex-wrap justify-center gap-ds-4">
           <button
-            class="text-sm font-semibold text-primary bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow whitespace-nowrap"
+            class="btn btn-primary h-14 px-ds-10 !text-[11px] !tracking-[0.3em] uppercase flex items-center gap-ds-3"
             type="button"
+            routerLink="/profile"
           >
-            Contact Support
+            <app-icon name="Package" size="18"></app-icon>
+            Track Order
+          </button>
+          <button
+            class="btn btn-secondary h-14 px-ds-10 !text-[11px] !tracking-[0.3em] uppercase border-ds-border hover:border-ds-text"
+            type="button"
+            routerLink="/"
+          >
+            Continue Shopping
           </button>
         </div>
       </div>
-      <div class="lg:col-span-1 space-y-6">
-        <div
-          class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
-        >
-          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-            <app-icon
-              name="Truck"
-              size="20"
-              className="text-gray-400"
-            ></app-icon>
-            Delivery Details
-          </h3>
-          <div class="space-y-4">
-            <div>
-              <p
-                class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1"
-              >
-                Contact
-              </p>
-              <p class="font-medium">{{ order.customerName }}</p>
-              <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ order.customerPhone }}
-              </p>
-            </div>
-            <div class="pt-4 border-t border-gray-100 dark:border-gray-700">
-              <p
-                class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1"
-              >
-                Address
-              </p>
-              <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ order.shippingAddress }}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div
-          class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
-        >
-          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-            <app-icon
-              name="FileText"
-              size="20"
-              className="text-gray-400"
-            ></app-icon>
-            Order Totals
-          </h3>
-          <div class="space-y-2">
-            <div
-              class="flex justify-between text-sm text-gray-600 dark:text-gray-400"
-            >
-              <span>Subtotal</span>
-              <app-price-display
-                [amount]="order.subTotal"
-                size="sm"
-              ></app-price-display>
-            </div>
-            <div
-              class="flex justify-between text-sm text-gray-600 dark:text-gray-400"
-            >
-              <span>Shipping</span>
-              <span class="text-green-600 font-medium">
-                @if (order.shippingCost === 0) {
-                  Free
-                } @else {
-                  <app-price-display
-                    [amount]="order.shippingCost"
-                    size="sm"
-                  ></app-price-display>
-                }
-              </span>
-            </div>
 
-            <div
-              class="pt-2 mt-2 border-t border-dashed border-gray-200 dark:border-gray-600 flex justify-between items-center"
-            >
-              <span class="font-bold text-lg">Total</span>
-              <app-price-display
-                class="font-bold text-primary dark:text-white"
-                [amount]="order.total"
-                size="lg"
-              ></app-price-display>
+      <!-- Tracking Steps -->
+      <div class="max-w-4xl mx-auto mb-ds-20 overflow-x-auto pb-ds-8 custom-scrollbar-thin">
+        <div class="min-w-[700px] flex items-center justify-between px-ds-4">
+          @for (step of [
+            { id: OrderStatus.Confirmed, label: 'Confirmed', icon: 'CheckCircle2' },
+            { id: OrderStatus.Processing, label: 'Processing', icon: 'Package' },
+            { id: OrderStatus.Shipped, label: 'Shipped', icon: 'Truck' },
+            { id: OrderStatus.Delivered, label: 'Delivered', icon: 'Home' }
+          ]; track step.id; let i = $index) {
+            <div class="flex flex-col items-center relative group">
+              <div [class]="stepIconClasses(order, step.id)" class="w-12 h-12 flex items-center justify-center border-2 transition-all duration-base">
+                <app-icon [name]="step.icon" size="20"></app-icon>
+              </div>
+              <p [ngClass]="stepLabelClasses(order, step.id)" class="mt-ds-4 text-[10px] font-bold uppercase tracking-[0.2em]">
+                {{ step.label }}
+              </p>
+            </div>
+            @if (i < 3) {
+              <div [class]="connectorClasses(order, i)" class="flex-1 h-[2px] mx-ds-4 mt-[-24px]"></div>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-ds-12 lg:gap-ds-16">
+        <!-- Main Content -->
+        <div class="lg:col-span-8 space-y-ds-10">
+          <div class="bg-ds-surface border border-ds-border">
+            <div class="px-ds-8 py-ds-6 border-b border-ds-border flex justify-between items-center bg-ds-bg/50">
+              <h2 class="text-ds-lg font-bold uppercase tracking-tight">Order Summary</h2>
+              <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">{{ order.items.length }} Items</span>
+            </div>
+            <div class="divide-y divide-ds-border">
+              @for (item of order.items; track item.productId) {
+                <div class="p-ds-8 flex gap-ds-8 transition-colors hover:bg-ds-bg/20">
+                  <div class="w-24 h-32 bg-ds-bg border border-ds-border overflow-hidden shrink-0 relative">
+                    <img
+                      class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-base"
+                      [src]="imageUrlService.getImageUrl(item.imageUrl)"
+                      [alt]="item.productName"
+                    />
+                  </div>
+                  <div class="flex flex-1 flex-col justify-between py-ds-1">
+                    <div class="space-y-ds-2">
+                      <div class="flex justify-between items-start">
+                        <h3 class="text-ds-base font-bold uppercase tracking-tight">{{ item.productName }}</h3>
+                        <app-price-display class="font-bold" [amount]="item.unitPrice" size="sm"></app-price-display>
+                      </div>
+                      <p class="text-[10px] font-bold text-ds-text-sec uppercase tracking-widest">SIZE: {{ item.size }}</p>
+                    </div>
+                    <div class="flex items-center gap-ds-2">
+                      <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest px-ds-3 py-1 bg-ds-bg border border-ds-border">Qty: {{ item.quantity }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
             </div>
           </div>
+
+          <!-- Help Section -->
+          <div class="bg-ds-accent/10 border border-ds-accent/20 p-ds-8 flex flex-col sm:flex-row items-center justify-between gap-ds-6">
+            <div class="flex items-center gap-ds-6 text-center sm:text-left">
+              <div class="w-12 h-12 bg-ds-accent text-ds-hero-text flex items-center justify-center shrink-0">
+                <app-icon name="Headphones" size="24"></app-icon>
+              </div>
+              <div class="space-y-ds-1">
+                <p class="text-ds-base font-bold text-ds-text uppercase tracking-tight">Need help with your order?</p>
+                <p class="text-[11px] font-medium text-ds-text-sec uppercase tracking-widest">Our support team is here to assist you.</p>
+              </div>
+            </div>
+            <button class="btn btn-secondary !bg-ds-bg h-11 px-ds-6 !text-[10px] !tracking-[0.2em] uppercase border-ds-border hover:border-ds-text whitespace-nowrap">
+              Contact Support
+            </button>
+          </div>
         </div>
-        <button
-          class="w-full py-3 text-primary text-sm font-semibold hover:underline flex items-center justify-center gap-1"
-          type="button"
-        >
-          <app-icon name="Printer" size="18"></app-icon>
-          Print Invoice
-        </button>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-4 space-y-ds-8">
+          <!-- Delivery Info -->
+          <div class="bg-ds-surface border border-ds-border p-ds-8 lg:p-ds-10 space-y-ds-8">
+            <div class="flex items-center gap-ds-4 text-ds-text">
+              <app-icon name="Truck" size="20"></app-icon>
+              <h3 class="text-ds-base font-bold uppercase tracking-tight">Delivery Details</h3>
+            </div>
+            <div class="space-y-ds-6">
+              <div class="space-y-ds-2">
+                <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Customer</p>
+                <div class="space-y-ds-1">
+                  <p class="text-ds-sm font-bold text-ds-text uppercase tracking-wider">{{ order.customerName }}</p>
+                  <p class="text-ds-xs text-ds-text-sec font-medium">{{ order.customerPhone }}</p>
+                </div>
+              </div>
+              <div class="pt-ds-6 border-t border-ds-border space-y-ds-2">
+                <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Shipping Address</p>
+                <p class="text-ds-xs text-ds-text-sec font-medium leading-relaxed">{{ order.shippingAddress }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Totals -->
+          <div class="bg-ds-surface border border-ds-border p-ds-8 lg:p-ds-10 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-ds-text"></div>
+            <div class="flex items-center gap-ds-4 text-ds-text mb-ds-8">
+              <app-icon name="FileText" size="20"></app-icon>
+              <h3 class="text-ds-base font-bold uppercase tracking-tight">Order Totals</h3>
+            </div>
+            <div class="space-y-ds-4">
+              <div class="flex justify-between text-ds-xs font-bold uppercase tracking-widest text-ds-text-sec">
+                <span>Subtotal</span>
+                <app-price-display [amount]="order.subTotal" size="sm"></app-price-display>
+              </div>
+              <div class="flex justify-between text-ds-xs font-bold uppercase tracking-widest text-ds-text-sec">
+                <span>Shipping</span>
+                @if (order.shippingCost === 0) {
+                  <span class="text-emerald-600">FREE</span>
+                } @else {
+                  <app-price-display [amount]="order.shippingCost" size="sm"></app-price-display>
+                }
+              </div>
+
+              <div class="pt-ds-8 mt-ds-4 border-t border-ds-text/10 flex justify-between items-end">
+                <div class="space-y-ds-1">
+                  <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Total Paid</p>
+                  <app-price-display class="font-bold text-ds-text" [amount]="order.total" size="lg"></app-price-display>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <button
+            class="w-full flex items-center justify-center gap-ds-3 text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em] hover:text-ds-text transition-colors py-ds-4 group"
+            type="button"
+          >
+            <app-icon name="Printer" size="18" className="group-hover:scale-110 transition-transform"></app-icon>
+            Print Invoice
+          </button>
+        </div>
       </div>
     </div>
   </main>
 } @else {
-  <div
-    class="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center"
-  >
-    <div
-      class="luxury-loading-box max-w-sm w-full p-10 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700"
-    >
-      <div class="animate-pulse space-y-4">
-        <div
-          class="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6"
-        ></div>
-        <div
-          class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mx-auto"
-        ></div>
-        <div
-          class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mx-auto"
-        ></div>
+  <div class="flex flex-col items-center justify-center min-h-[60vh] p-ds-8 text-center">
+    <div class="max-w-sm w-full p-ds-12 bg-ds-surface border border-ds-border">
+      <div class="animate-pulse space-y-ds-8">
+        <div class="h-16 w-16 bg-ds-bg border border-ds-border mx-auto"></div>
+        <div class="space-y-ds-4">
+          <div class="h-4 bg-ds-bg w-3/4 mx-auto"></div>
+          <div class="h-4 bg-ds-bg w-1/2 mx-auto"></div>
+        </div>
       </div>
-      <p
-        class="mt-8 text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest text-xs"
-      >
+      <p class="mt-ds-12 text-ds-text-muted font-bold uppercase tracking-[0.3em] text-[10px]">
         Finding your order...
       </p>
     </div>
   </div>
 }
+

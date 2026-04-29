@@ -1,126 +1,128 @@
 <header
-  class="h-16 md:h-20 bg-surface-light dark:bg-surface-dark border-b border-border-color px-4 md:px-8 flex items-center justify-between flex-shrink-0 z-10"
+  class="h-16 md:h-20 bg-ds-surface border-b border-ds-border px-ds-4 md:px-ds-8 flex items-center justify-between flex-shrink-0 z-10"
 >
-  <div class="flex items-center gap-4">
+  <div class="flex items-center gap-ds-4">
     <!-- Mobile Menu Toggle -->
     <button
       (click)="sidebarService.toggle()"
-      class="p-2 -ml-2 text-text-sub hover:bg-supporting rounded-xl transition-colors lg:hidden"
+      class="p-ds-2 -ml-ds-2 text-ds-text-muted hover:bg-ds-bg rounded-sm transition-colors lg:hidden"
       type="button"
     >
       <app-icon name="Menu" size="24"></app-icon>
     </button>
-    <h2 class="text-primary dark:text-white text-xl font-bold tracking-tight uppercase">
+    <h2 class="text-ds-text text-lg font-bold tracking-tight uppercase">
       {{ pageTitle$ | async }}
     </h2>
   </div>
-  <div class="flex items-center gap-3 md:gap-6">
-    <div class="relative w-64 lg:w-80 hidden md:block">
+
+  <div class="flex items-center gap-ds-4 md:gap-ds-8">
+    <div class="relative w-64 lg:w-96 hidden md:block group">
       <span
-        class="absolute inset-y-0 left-0 flex items-center pl-3 text-text-sub/50"
+        class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text transition-colors"
       >
         <app-icon name="Search" size="16"></app-icon>
       </span>
       <input
-        class="w-full h-10 pl-10 pr-4 rounded-xl bg-supporting/50 border border-border-color text-sm text-primary placeholder:text-text-sub/40 focus:ring-2 focus:ring-primary/20 transition-all"
-        placeholder="Search orders, products, or customers..."
+        class="form-input !pl-ds-10 !h-11 !bg-ds-bg/50 !rounded-sm"
+        placeholder="Search everything..."
         type="text"
         [formControl]="searchControl"
       />
     </div>
-    <div class="flex items-center gap-3 pl-6 border-l border-border-color/50">
+
+    <div class="flex items-center gap-ds-4 pl-ds-6 border-l border-ds-border">
       <button
-        class="relative p-2 text-text-sub/50 hover:text-primary hover:bg-supporting rounded-xl transition-all duration-300"
+        class="relative p-ds-2.5 text-ds-text-muted hover:text-ds-text hover:bg-ds-bg rounded-sm transition-all duration-base"
         type="button"
       >
         <app-icon name="Bell" size="20"></app-icon>
         <span
-          class="absolute top-2.5 right-2.5 w-2 h-2 bg-accent rounded-full ring-2 ring-white"
+          class="absolute top-2.5 right-2.5 w-2 h-2 bg-ds-accent border-2 border-ds-surface rounded-full"
         ></span>
       </button>
 
       <!-- Profile Dropdown -->
-      <div class="relative ml-2" *ngIf="currentUser$ | async as user">
+      <div class="relative ml-ds-2" *ngIf="currentUser$ | async as user">
         <button
           (click)="toggleProfileDropdown()"
-          class="flex items-center gap-3 p-1.5 pr-3 rounded-2xl hover:bg-supporting border border-transparent hover:border-border-color transition-all duration-300 group"
+          class="flex items-center gap-ds-3 p-1.5 pr-ds-4 rounded-sm hover:bg-ds-bg border border-transparent hover:border-ds-border transition-all duration-base group"
           type="button"
         >
           <div class="relative flex-shrink-0">
             <div
-              class="size-9 rounded-xl bg-primary/5 border border-primary/10 flex items-center justify-center overflow-hidden transition-transform duration-500 group-hover:scale-105"
+              class="size-9 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center overflow-hidden transition-transform duration-base group-hover:scale-105"
             >
               <img
                 *ngIf="user.avatarUrl"
                 [src]="imageUrlService.getImageUrl(user.avatarUrl)"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-base"
                 [alt]="user.name"
               />
               <app-icon
                 *ngIf="!user.avatarUrl"
                 name="User"
                 size="20"
-                className="text-primary/40"
+                className="text-ds-text-muted opacity-40"
               ></app-icon>
             </div>
-            <div class="absolute -bottom-0.5 -right-0.5 size-3 bg-emerald-500 border-2 border-white rounded-full"></div>
+            <div class="absolute -bottom-0.5 -right-0.5 size-3 bg-ds-success border-2 border-ds-surface rounded-full"></div>
           </div>
           <div class="hidden sm:flex flex-col items-start gap-0.5">
-            <span class="text-xs font-display font-black text-primary leading-none group-hover:text-accent transition-colors">{{ user.name }}</span>
-            <span class="text-[10px] font-display font-black text-gray-400 uppercase tracking-wider leading-none">{{ user.role }}</span>
+            <span class="text-[11px] font-bold text-ds-text uppercase tracking-tight group-hover:text-ds-accent transition-colors leading-none">{{ user.name }}</span>
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] leading-none">{{ user.role }}</span>
           </div>
-          <app-icon name="ChevronDown" size="16" className="text-gray-300 group-hover:text-primary transition-all duration-300" [className]="isProfileDropdownOpen ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
+          <app-icon name="ChevronDown" size="14" className="text-ds-text-muted group-hover:text-ds-text transition-all duration-base" [className]="isProfileDropdownOpen ? 'rotate-180' : ''"></app-icon>
         </button>
 
         <!-- Dropdown Menu -->
         <div
           *ngIf="isProfileDropdownOpen"
-          class="absolute right-0 mt-3 w-64 bg-white/80 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-2xl p-2 z-50 animate-fade-in-up origin-top-right scale-100"
+          class="absolute right-0 mt-3 w-72 bg-ds-surface border border-ds-border rounded-sm shadow-2xl p-ds-2 z-50 animate-in fade-in slide-in-from-top-2 duration-base"
         >
-          <div class="px-4 py-3 mb-2 border-b border-gray-50">
-            <p class="text-[10px] font-display font-black text-gray-400 uppercase tracking-widest mb-1">Authenticated as</p>
-            <p class="text-xs font-display font-black text-primary truncate">{{ user.email }}</p>
+          <div class="px-ds-4 py-ds-4 mb-ds-2 border-b border-ds-border bg-ds-bg/30">
+            <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mb-1.5">Authenticated as</p>
+            <p class="text-[11px] font-bold text-ds-text truncate uppercase tracking-tight">{{ user.email }}</p>
           </div>
 
           <div class="space-y-1">
             <a
               href="/"
               target="_blank"
-              class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-display font-black text-gray-600 hover:text-accent hover:bg-accent/5 transition-all duration-300 group"
+              class="flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-[10px] font-bold text-ds-text-sec hover:text-ds-text hover:bg-ds-bg transition-all duration-base group uppercase tracking-widest"
             >
-              <app-icon name="Eye" size="16" className="text-gray-400 group-hover:text-accent"></app-icon>
+              <app-icon name="Eye" size="16" className="text-ds-text-muted group-hover:text-ds-text"></app-icon>
               <span>View Live Marketplace</span>
             </a>
             
 
             <!-- Admin-only Management -->
             <ng-container *ngIf="authService.isSuperAdmin()">
-              <div class="h-px bg-gray-50 my-1"></div>
+              <div class="h-px bg-ds-border mx-ds-2 my-1"></div>
               
               <a
                 routerLink="/admin/users"
                 (click)="isProfileDropdownOpen = false"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-display font-black text-gray-600 hover:text-primary hover:bg-primary/5 transition-all duration-300 group"
+                class="flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-[10px] font-bold text-ds-text-sec hover:text-ds-text hover:bg-ds-bg transition-all duration-base group uppercase tracking-widest"
               >
-                <app-icon name="Users" size="16" className="text-gray-400 group-hover:text-primary"></app-icon>
+                <app-icon name="Users" size="16" className="text-ds-text-muted group-hover:text-ds-text"></app-icon>
                 <span>Staff Management</span>
               </a>
 
               <a
                 routerLink="/admin/settings"
                 (click)="isProfileDropdownOpen = false"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-display font-black text-gray-600 hover:text-accent hover:bg-accent/5 transition-all duration-300 group"
+                class="flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-[10px] font-bold text-ds-text-sec hover:text-ds-text hover:bg-ds-bg transition-all duration-base group uppercase tracking-widest"
               >
-                <app-icon name="Settings" size="16" className="text-gray-400 group-hover:text-accent"></app-icon>
+                <app-icon name="Settings" size="16" className="text-ds-text-muted group-hover:text-ds-text"></app-icon>
                 <span>System Preferences</span>
               </a>
             </ng-container>
           </div>
 
-          <div class="mt-2 pt-2 border-t border-gray-50">
+          <div class="mt-ds-2 pt-ds-2 border-t border-ds-border">
             <button
               (click)="logout()"
-              class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-display font-black text-red-500 hover:bg-red-50 transition-all duration-300 group"
+              class="w-full flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-[10px] font-bold text-red-500 hover:bg-red-500/5 transition-all duration-base group uppercase tracking-widest"
             >
               <app-icon name="LogOut" size="16" className="group-hover:translate-x-1 transition-transform"></app-icon>
               <span>Secure Logout</span>

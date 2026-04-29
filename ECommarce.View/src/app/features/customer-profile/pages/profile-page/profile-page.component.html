@@ -1,48 +1,42 @@
-<div class="container mx-auto px-4 py-8 max-w-4xl">
+<div class="site-container py-ds-12 lg:py-ds-20">
   <!-- Loading State -->
-  <div *ngIf="isLoading" class="flex justify-center py-12">
-    <div
-      class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"
-    ></div>
+  <div *ngIf="isLoading" class="flex justify-center py-ds-20">
+    <div class="animate-pulse space-y-ds-4 text-center">
+      <div class="w-12 h-12 bg-ds-surface border border-ds-border mx-auto mb-ds-4"></div>
+      <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-ds-text-muted">Loading Profile...</p>
+    </div>
   </div>
 
   <ng-container *ngIf="!isLoading">
     <!-- Login / Phone Entry Step -->
     <div
       *ngIf="!(phone$ | async)"
-      class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8"
+      class="max-w-md mx-auto bg-ds-surface border border-ds-border p-ds-8 lg:p-ds-12"
     >
-      <div class="text-center mb-8">
-        <div
-          class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4"
-        >
+      <div class="text-center mb-ds-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-ds-bg border border-ds-border text-ds-text mb-ds-6">
           <app-icon name="User" size="32"></app-icon>
         </div>
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <h2 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">
           Customer Access
         </h2>
-        <p class="text-gray-500 mt-2">
-          Enter your phone number to access your orders and profile.
+        <p class="text-ds-text-sec mt-ds-2 text-ds-sm font-medium uppercase tracking-widest opacity-60">
+          Enter your phone to continue
         </p>
       </div>
 
-      <form [formGroup]="loginForm" (ngSubmit)="login()" class="space-y-6">
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >Phone Number</label
-          >
+      <form [formGroup]="loginForm" (ngSubmit)="login()" class="space-y-ds-8">
+        <div class="space-y-ds-2">
+          <label class="form-label">Phone Number</label>
           <input
             type="tel"
             formControlName="phone"
-            class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-            placeholder="e.g. 01700000000"
+            class="form-input"
+            placeholder="01700000000"
           />
           <p
-            *ngIf="
-              loginForm.get('phone')?.touched && loginForm.get('phone')?.invalid
-            "
-            class="text-red-500 text-sm mt-1"
+            *ngIf="loginForm.get('phone')?.touched && loginForm.get('phone')?.invalid"
+            class="form-error"
           >
             Please enter a valid phone number
           </p>
@@ -51,7 +45,7 @@
         <button
           type="submit"
           [disabled]="loginForm.invalid || isSubmitting"
-          class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          class="btn btn-primary h-14 !text-[11px] !tracking-[0.3em] uppercase w-full"
         >
           {{ isSubmitting ? "Checking..." : "Access Profile" }}
         </button>
@@ -59,89 +53,74 @@
     </div>
 
     <!-- Profile Dashboard -->
-    <div *ngIf="phone$ | async" class="space-y-8">
+    <div *ngIf="phone$ | async" class="space-y-ds-12">
       <!-- Header -->
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-ds-6">
+        <div class="space-y-ds-2">
+          <h1 class="text-ds-4xl font-bold text-ds-text uppercase tracking-tight">
             My Profile
           </h1>
-          <p class="text-gray-500 mt-1">
-            Manage your information and view orders
+          <p class="text-ds-text-sec font-medium uppercase tracking-[0.2em] text-[11px]">
+            Manage your information & orders
           </p>
         </div>
         <button
           (click)="logout()"
-          class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+          class="text-[10px] font-bold text-red-500 uppercase tracking-[0.3em] border-b border-red-500/20 hover:border-red-500 transition-all pb-1"
         >
           Sign Out
         </button>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-8">
+      <div class="grid lg:grid-cols-12 gap-ds-12 lg:gap-ds-16">
         <!-- Sidebar / Profile Info -->
-        <div class="md:col-span-1 space-y-6">
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-            <h3
-              class="text-lg font-semibold mb-4 text-gray-900 dark:text-white"
-            >
+        <div class="lg:col-span-4 space-y-ds-8">
+          <div class="bg-ds-surface border border-ds-border p-ds-8 lg:p-ds-10">
+            <h3 class="text-ds-lg font-bold text-ds-text uppercase tracking-tight mb-ds-8">
               Personal Info
             </h3>
 
             <form
               [formGroup]="profileForm"
               (ngSubmit)="updateProfile()"
-              class="space-y-4"
+              class="space-y-ds-6"
             >
-              <div>
-                <label
-                  class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1"
-                  >Phone</label
-                >
-                <div
-                  class="text-lg font-medium text-gray-900 dark:text-gray-200"
-                >
+              <div class="space-y-ds-2">
+                <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Phone Number</label>
+                <div class="text-ds-base font-bold text-ds-text">
                   {{ profileForm.get("phone")?.value }}
                 </div>
               </div>
 
-              <div>
-                <label
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                  >Full Name</label
-                >
+              <div class="space-y-ds-2">
+                <label class="form-label">Full Name</label>
                 <input
                   type="text"
                   formControlName="name"
-                  class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                  class="form-input"
                 />
               </div>
 
-              <div>
-                <label
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                  >Address</label
-                >
+              <div class="space-y-ds-2">
+                <label class="form-label">Address</label>
                 <textarea
                   formControlName="address"
-                  rows="3"
-                  class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent text-sm resize-none"
+                  rows="4"
+                  class="form-textarea resize-none"
                 ></textarea>
               </div>
 
               <button
                 type="submit"
-                [disabled]="
-                  profileForm.invalid || isSubmitting || profileForm.pristine
-                "
-                class="w-full mt-2 bg-primary text-white py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="profileForm.invalid || isSubmitting || profileForm.pristine"
+                class="btn btn-primary h-12 !text-[10px] !tracking-[0.2em] uppercase w-full"
               >
                 {{ isSubmitting ? "Saving..." : "Update Details" }}
               </button>
 
               <p
                 *ngIf="saveSuccess"
-                class="text-green-600 text-xs text-center font-medium mt-2"
+                class="text-ds-success text-[10px] text-center font-bold uppercase tracking-widest mt-ds-2"
               >
                 Profile updated successfully!
               </p>
@@ -150,90 +129,77 @@
         </div>
 
         <!-- Main Content / Stats & Orders -->
-        <div class="md:col-span-2 space-y-6">
+        <div class="lg:col-span-8 space-y-ds-10">
           <!-- Stats -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-              <div class="text-sm text-gray-500 mb-1">Total Orders</div>
-              <div class="text-3xl font-bold text-primary">
-                {{ orders.length }}
-              </div>
+          <div class="grid grid-cols-2 gap-ds-6 lg:gap-ds-8">
+            <div class="bg-ds-surface border border-ds-border p-ds-8 lg:p-ds-10 space-y-ds-4 relative overflow-hidden">
+              <div class="absolute top-0 left-0 w-1 h-full bg-ds-text"></div>
+              <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Total Orders</p>
+              <p class="text-ds-4xl font-bold text-ds-text leading-none">{{ orders.length }}</p>
             </div>
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-              <div class="text-sm text-gray-500 mb-1">Total Spent</div>
-              <div class="text-3xl font-bold text-accent">
-                ৳{{ totalSpent }}
-              </div>
+            <div class="bg-ds-surface border border-ds-border p-ds-8 lg:p-ds-10 space-y-ds-4 relative overflow-hidden">
+              <div class="absolute top-0 left-0 w-1 h-full bg-ds-accent"></div>
+              <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Total Spent</p>
+              <p class="text-ds-4xl font-bold text-ds-text leading-none">৳{{ totalSpent }}</p>
             </div>
           </div>
 
-          <!-- Recent Orders -->
-          <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden"
-          >
-            <div
-              class="px-6 py-4 border-b border-gray-100 dark:border-gray-700"
-            >
-              <h3 class="font-semibold text-gray-900 dark:text-white">
-                Order History
-              </h3>
+          <!-- Order History -->
+          <div class="bg-ds-surface border border-ds-border overflow-hidden">
+            <div class="px-ds-8 py-ds-6 border-b border-ds-border bg-ds-bg/50">
+              <h3 class="text-ds-lg font-bold text-ds-text uppercase tracking-tight">Order History</h3>
             </div>
 
             <div
               *ngIf="orders.length === 0"
-              class="p-8 text-center text-gray-500"
+              class="p-ds-12 text-center"
             >
-              No orders found. Start shopping!
+              <p class="text-ds-text-muted font-bold uppercase tracking-[0.2em] text-ds-sm">No orders found.</p>
             </div>
 
-            <div class="divide-y divide-gray-100 dark:divide-gray-700">
+            <div class="divide-y divide-ds-border">
               <div
                 *ngFor="let order of orders"
-                class="p-6 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                class="p-ds-8 hover:bg-ds-bg/20 transition-colors group"
               >
-                <div class="flex items-center justify-between mb-4">
-                  <div>
-                    <div
-                      class="text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Order #{{ order.id }}
-                    </div>
-                    <div class="text-xs text-gray-500">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-ds-4 mb-ds-8">
+                  <div class="space-y-ds-1">
+                    <p class="text-ds-base font-bold text-ds-text uppercase tracking-tight">Order #{{ order.id }}</p>
+                    <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">
                       {{ order.createdAt | date: "mediumDate" }}
-                    </div>
+                    </p>
                   </div>
-                  <div
-                    class="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                  >
+                  <div class="px-ds-4 py-1.5 border border-ds-border text-[10px] font-bold uppercase tracking-widest text-ds-accent">
                     {{ order.status }}
                   </div>
                 </div>
 
-                <div class="flex items-center gap-4 overflow-x-auto pb-2">
+                <div class="flex items-center gap-ds-4 overflow-x-auto pb-ds-4 custom-scrollbar-thin">
                   <div
                     *ngFor="let item of order.items"
-                    class="flex-shrink-0 relative group"
+                    class="shrink-0 relative"
                   >
-                    <img
-                      [src]="imageUrlService.getImageUrl(item.imageUrl)"
-                      [alt]="item.productName"
-                      class="w-16 h-16 object-cover rounded-md border border-gray-200 dark:border-gray-700"
-                    />
+                    <div class="w-16 h-20 bg-ds-bg border border-ds-border overflow-hidden">
+                      <img
+                        [src]="imageUrlService.getImageUrl(item.imageUrl)"
+                        [alt]="item.productName"
+                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-base"
+                      />
+                    </div>
                     <span
-                      class="absolute -top-2 -right-2 bg-gray-900 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full"
+                      class="absolute -top-2 -right-2 bg-ds-text text-ds-bg text-[8px] font-bold w-4 h-4 flex items-center justify-center border border-ds-border"
                     >
                       {{ item.quantity }}
                     </span>
                   </div>
                 </div>
 
-                <div class="flex items-center justify-between mt-4 text-sm">
-                  <span class="text-gray-500"
-                    >{{ order.items.length }} Items</span
-                  >
-                  <span class="font-bold text-gray-900 dark:text-white"
-                    >Total: ৳{{ order.total }}</span
-                  >
+                <div class="flex items-center justify-between mt-ds-6 pt-ds-6 border-t border-ds-border/50">
+                  <span class="text-[10px] font-bold text-ds-text-sec uppercase tracking-widest">{{ order.items.length }} Items</span>
+                  <div class="flex items-center gap-ds-6">
+                    <span class="text-ds-base font-bold text-ds-text">Total: ৳{{ order.total }}</span>
+                    <a [routerLink]="['/order-confirmation', order.id]" class="text-[10px] font-bold uppercase tracking-[0.3em] border-b border-ds-text hover:border-transparent transition-all">View Details</a>
+                  </div>
                 </div>
               </div>
             </div>

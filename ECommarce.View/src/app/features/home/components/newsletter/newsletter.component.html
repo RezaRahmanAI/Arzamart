@@ -1,19 +1,14 @@
-<section class="bg-transparent py-12 md:py-16 lg:py-20" *ngIf="settings$ | async as settings">
+<section class="py-ds-16 md:py-ds-20 lg:py-ds-24 bg-ds-surface border-y border-ds-border" *ngIf="settings$ | async as settings">
   <div class="site-container">
-    <div class="mx-auto text-center flex flex-col items-center gap-8 md:gap-12">
-      <div class="mx-auto flex flex-col items-center">
-        <span
-          class="text-[10px] uppercase tracking-[0.5em] text-accent font-bold mb-4 md:mb-6 block"
-          >The Insider</span
-        >
-        <h2
-          class="text-3xl md:text-4xl lg:text-5xl font-serif italic tracking-tighter text-primary mb-4 md:mb-8"
-        >
+    <div class="mx-auto text-center flex flex-col items-center gap-ds-12">
+      <div class="mx-auto flex flex-col items-center space-y-ds-6">
+        <span class="text-[10px] uppercase tracking-[0.5em] text-ds-accent font-bold block">
+          The Insider
+        </span>
+        <h2 class="text-ds-3xl md:text-ds-4xl lg:text-ds-5xl font-serif italic tracking-tighter text-ds-text leading-tight uppercase">
           Join the refined world<br />of {{ settings.websiteName || "Arza Mart" }}
         </h2>
-        <p
-          class="text-text-sub text-xs md:text-sm uppercase tracking-widest leading-loose opacity-60 max-w-lg"
-        >
+        <p class="text-ds-text-sec text-[11px] uppercase tracking-[0.2em] leading-loose opacity-80 max-w-lg font-medium">
           {{
             settings.description ||
               "Receive exclusive updates on new collections, limited releases, and refined products."
@@ -21,24 +16,24 @@
         </p>
       </div>
 
-      <form class="flex w-full flex-col sm:flex-row gap-4 md:gap-8 mt-2 md:mt-4 max-w-xl group">
+      <form class="flex w-full flex-col sm:flex-row gap-ds-8 mt-ds-4 max-w-xl group">
         <div class="flex-1 relative">
           <input
-            class="w-full h-14 bg-transparent border-0 border-b border-gray-100 px-0 focus:ring-0 focus:border-accent text-primary text-sm uppercase tracking-widest placeholder:text-gray-200 transition-all duration-300"
+            class="w-full h-14 bg-transparent border-0 border-b border-ds-border px-0 focus:ring-0 focus:border-ds-accent text-ds-text text-sm uppercase tracking-widest placeholder:text-ds-text-muted transition-all duration-300"
             placeholder="E-MAIL ADDRESS"
             required
             type="email"
           />
         </div>
         <button
-          class="h-14 bg-accent text-white text-[10px] uppercase tracking-[0.3em] font-bold px-12 hover:bg-primary transition-all duration-500"
+          class="btn btn-primary h-14 !text-[11px] !tracking-[0.3em] uppercase px-ds-12"
           type="submit"
         >
           Subscribe
         </button>
       </form>
 
-      <p class="text-[10px] text-gray-300 uppercase tracking-widest mt-4">
+      <p class="text-[9px] text-ds-text-muted uppercase tracking-[0.3em] font-medium">
         By joining, you agree to our refined policies.
       </p>
     </div>

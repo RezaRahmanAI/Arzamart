@@ -11,11 +11,12 @@ import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { Order } from "../../../../core/models/order";
 import { catchError, finalize, of, switchMap, tap } from "rxjs";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
+import { RouterModule } from "@angular/router";
 
 @Component({
   selector: "app-profile-page",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
+  imports: [CommonModule, ReactiveFormsModule, AppIconComponent, RouterModule],
   templateUrl: "./profile-page.component.html",
   styleUrl: "./profile-page.component.css",
 })

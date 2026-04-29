@@ -1,14 +1,14 @@
-<main class="site-container py-ds-10 flex flex-1 flex-col">
+<main class="site-container py-ds-12 lg:py-ds-20 flex flex-1 flex-col">
   <!-- Breadcrumbs -->
-  <nav class="flex items-center gap-ds-3 text-[10px] uppercase tracking-[0.2em] text-ds-text-muted mb-ds-10">
+  <nav class="flex items-center gap-ds-3 text-[10px] uppercase tracking-[0.3em] text-ds-text-muted mb-ds-12 font-bold">
     <a routerLink="/" class="hover:text-ds-text transition-colors">Home</a>
     <span class="text-ds-border text-xs">/</span>
-    <span class="text-ds-text font-bold">Children</span>
+    <span class="text-ds-text">Children</span>
   </nav>
 
-  <div class="mb-ds-12 flex flex-col justify-between gap-ds-6 md:flex-row md:items-end">
-    <div class="max-w-2xl space-y-ds-3">
-      <h2 class="section-title">Children's Collection</h2>
+  <div class="mb-ds-16 flex flex-col justify-between gap-ds-8 md:flex-row md:items-end">
+    <div class="max-w-2xl space-y-ds-4">
+      <h2 class="text-ds-4xl font-bold uppercase tracking-tight text-ds-text">Children's Collection</h2>
       <p class="text-ds-lg text-ds-text-sec font-medium leading-relaxed">
         Modest, comfortable, and stylish outfits designed for your little ones.
         Explore our latest arrivals for boys and girls.
@@ -16,20 +16,24 @@
     </div>
   </div>
 
-  <div class="flex flex-col gap-ds-10 lg:flex-row">
-    <div class="flex-1 space-y-ds-8">
-      <div class="flex items-center justify-between border-b border-ds-border pb-ds-4">
-        <p class="text-[11px] font-bold uppercase tracking-widest text-ds-text-sec">
+  <div class="flex flex-col gap-ds-12 lg:flex-row">
+    <div class="flex-1 space-y-ds-10">
+      <div class="flex items-center justify-between border-b border-ds-border pb-ds-6">
+        <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec">
           Showing {{ products.length }} items
         </p>
       </div>
 
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-ds-6 lg:gap-ds-8">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-ds-6 lg:gap-ds-10">
         @for (product of products; track product.id) {
           <app-product-card [product]="product"></app-product-card>
         } @empty {
-          <div class="col-span-full py-20 text-center">
-            <p class="text-ds-text-muted italic">No products found in this collection.</p>
+          <div class="col-span-full py-ds-32 text-center space-y-ds-4">
+            <div class="w-20 h-20 bg-ds-surface border border-ds-border flex items-center justify-center mx-auto mb-ds-6">
+              <app-icon name="PackageSearch" size="32" className="text-ds-text-muted opacity-30"></app-icon>
+            </div>
+            <p class="text-ds-text-sec font-bold uppercase tracking-widest text-ds-sm">No products found</p>
+            <p class="text-ds-text-muted text-ds-xs uppercase tracking-widest">In this collection</p>
           </div>
         }
       </div>

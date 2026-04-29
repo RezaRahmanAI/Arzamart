@@ -1,33 +1,33 @@
-<aside class="w-full shrink-0 lg:w-64">
-  <div class="sticky top-28 space-y-8">
+<aside class="w-full shrink-0">
+  <div class="sticky top-28 space-y-ds-12">
     <div>
-      <h3 class="mb-4 text-sm font-bold uppercase tracking-wider text-primary dark:text-white">Categories</h3>
-      <ul class="space-y-3 text-[15px] font-medium text-gray-600 dark:text-gray-400">
+      <h3 class="mb-ds-6 text-[10px] font-bold uppercase tracking-[0.3em] text-ds-text">Categories</h3>
+      <ul class="space-y-ds-4 text-[11px] font-bold uppercase tracking-widest text-ds-text-sec">
         <li *ngFor="let category of categoryCounts">
           <a
-            class="flex items-center justify-between"
-            [ngClass]="
-              category.highlight
-                ? 'text-primary font-bold dark:text-white'
-                : 'hover:text-primary transition-colors'
-            "
+            class="flex items-center justify-between group transition-colors"
+            [ngClass]="category.highlight ? 'text-ds-text' : 'hover:text-ds-text'"
             href="#"
           >
-            {{ category.label }} <span class="text-xs text-gray-400 font-normal">{{ category.count }}</span>
+            <span>{{ category.label }}</span>
+            <span class="text-[10px] text-ds-text-muted font-medium opacity-50 group-hover:opacity-100 transition-opacity">({{ category.count }})</span>
           </a>
         </li>
       </ul>
     </div>
-    <hr class="border-dashed border-gray-200 dark:border-gray-700" />
+    
+    <div class="h-[1px] bg-ds-border/50"></div>
+    
     <div>
-      <h3 class="mb-4 text-sm font-bold uppercase tracking-wider text-primary dark:text-white">Size</h3>
-      <div class="grid grid-cols-3 gap-2">
-        <button class="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400">XS</button>
-        <button class="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400">S</button>
-        <button class="flex h-10 items-center justify-center rounded-lg bg-primary text-sm font-medium text-white shadow-sm">M</button>
-        <button class="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400">L</button>
-        <button class="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400">XL</button>
-        <button class="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400">XXL</button>
+      <h3 class="mb-ds-6 text-[10px] font-bold uppercase tracking-[0.3em] text-ds-text">Size</h3>
+      <div class="grid grid-cols-3 gap-ds-2">
+        <button 
+          *ngFor="let s of ['XS', 'S', 'M', 'L', 'XL', 'XXL']"
+          [class]="s === 'M' ? 'bg-ds-text text-ds-bg border-ds-text' : 'bg-ds-bg text-ds-text-sec border-ds-border hover:border-ds-text'"
+          class="flex h-10 items-center justify-center border text-[10px] font-bold uppercase tracking-widest transition-all"
+        >
+          {{ s }}
+        </button>
       </div>
     </div>
   </div>

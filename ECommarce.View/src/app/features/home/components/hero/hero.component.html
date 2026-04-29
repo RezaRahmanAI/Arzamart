@@ -1,23 +1,23 @@
 <section class="site-container py-ds-6">
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-5 min-h-[500px] lg:h-[600px]">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-5 min-h-[500px] lg:h-[650px]">
     <!-- Main Feature -->
-    <div class="lg:col-span-8 bg-ds-surface rounded-lg relative overflow-hidden group">
+    <div class="lg:col-span-8 bg-ds-surface border border-ds-border relative overflow-hidden group">
       @if (mainSlides.length > 0) {
         @let slide = mainSlides[currentSlide];
         <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[2000ms] group-hover:scale-105" 
              [style.background-image]="'url(' + imageUrlService.getImageUrl(slide.image) + ')'"></div>
         <div class="absolute inset-0 bg-black/10"></div>
         
-        <div class="relative h-full flex flex-col justify-end p-ds-10 lg:p-ds-16 text-ds-hero-text">
-          <div class="max-w-xl space-y-ds-4 animate-fade-in-up">
-            <h1 class="text-ds-5xl font-bold leading-tight tracking-tight">
+        <div class="relative h-full flex flex-col justify-end p-ds-10 lg:p-ds-20 text-ds-hero-text">
+          <div class="max-w-xl space-y-ds-6 animate-fade-in-up">
+            <h1 class="text-ds-4xl md:text-ds-6xl font-bold leading-none tracking-tighter uppercase">
               {{ slide.title }}
             </h1>
-            <p class="text-ds-base opacity-90 font-medium max-w-md">
+            <p class="text-ds-base opacity-90 font-medium max-w-md leading-relaxed">
               {{ slide.subtitle }}
             </p>
             <div class="pt-ds-4">
-              <a [routerLink]="slide.link" class="btn btn-primary !w-fit !px-12 !py-4 tracking-widest">
+              <a [routerLink]="slide.link" class="btn btn-primary h-14 !w-fit !px-12 !text-[11px] !tracking-[0.3em] uppercase">
                 SHOP COLLECTION
               </a>
             </div>
@@ -33,15 +33,18 @@
         </div>
       }
     </div>
-    <div class="lg:col-span-4 bg-primary rounded-3xl relative overflow-hidden flex flex-col justify-center p-8 text-white">
+
+    <!-- Spotlight Section -->
+    <div class="lg:col-span-4 bg-ds-accent relative overflow-hidden flex flex-col justify-center p-ds-10 text-ds-hero-text border border-ds-border">
       @if (spotlightSlide) {
-        <div class="absolute inset-0 bg-cover bg-center opacity-60" [style.background-image]="'url(' + imageUrlService.getImageUrl(spotlightSlide.image) + ')'"></div>
-        <div class="relative z-10">
+        <div class="absolute inset-0 bg-cover bg-center opacity-40 transition-transform duration-[2000ms] hover:scale-110" 
+             [style.background-image]="'url(' + imageUrlService.getImageUrl(spotlightSlide.image) + ')'"></div>
+        <div class="relative z-10 space-y-ds-4">
           @if (spotlightSlide.subtitle) {
-            <span class="text-accent font-bold text-xs uppercase tracking-widest mb-2 block">{{ spotlightSlide.subtitle }}</span>
+            <span class="text-ds-hero-text/70 font-bold text-[10px] uppercase tracking-[0.3em] block">{{ spotlightSlide.subtitle }}</span>
           }
-          <h3 class="text-3xl font-black mb-4 leading-tight">{{ spotlightSlide.title }}</h3>
-          <a [routerLink]="spotlightSlide.link" class="bg-white text-primary px-6 py-2.5 rounded-lg w-fit font-bold mt-2 inline-block hover:bg-accent hover:text-white transition-colors">
+          <h3 class="text-ds-3xl font-bold uppercase leading-tight tracking-tight">{{ spotlightSlide.title }}</h3>
+          <a [routerLink]="spotlightSlide.link" class="btn btn-secondary h-12 !text-[10px] !tracking-[0.2em] uppercase !bg-white/10 !text-white !border-white/20 hover:!bg-white hover:!text-ds-accent transition-all duration-base">
             {{ spotlightSlide.linkText || 'Shop Now' }}
           </a>
         </div>

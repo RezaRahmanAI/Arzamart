@@ -1,19 +1,13 @@
 <aside
-  class="fixed lg:sticky top-0 left-0 w-72 h-screen bg-primary/95 backdrop-blur-glass flex flex-col flex-shrink-0 transition-all duration-500 z-50 border-r border-white/10 lg:translate-x-0 shadow-2xl overflow-hidden"
+  class="fixed lg:sticky top-0 left-0 w-72 h-screen bg-ds-accent flex flex-col flex-shrink-0 transition-all duration-500 z-50 border-r border-ds-border lg:translate-x-0 overflow-hidden"
   [class.-translate-x-full]="!sidebarService.isOpen()"
   [class.translate-x-0]="sidebarService.isOpen()"
 >
-  <!-- Background Decorative Elements -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-    <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-accent blur-[100px] rounded-full"></div>
-    <div class="absolute bottom-[5%] right-0 w-[30%] h-[30%] bg-primary-light blur-[80px] rounded-full"></div>
-  </div>
-
-  <!-- Mobile Close Header (only on mobile) -->
-  <div class="lg:hidden flex justify-end p-4 relative z-10">
+  <!-- Mobile Close Header -->
+  <div class="lg:hidden flex justify-end p-ds-4 relative z-10">
     <button
       (click)="sidebarService.close()"
-      class="p-2 text-white/40 hover:text-accent transition-colors bg-white/5 hover:bg-white/10 rounded-full"
+      class="p-ds-2 text-ds-hero-text/40 hover:text-white transition-colors bg-white/5 rounded-full"
       type="button"
     >
       <app-icon name="X" size="20"></app-icon>
@@ -23,59 +17,57 @@
   <!-- Main Scrollable Content -->
   <div class="flex-1 flex flex-col min-h-0 relative z-10">
     
-    <!-- Fixed-feel Header -->
-    <div class="px-8 pt-8 pb-6">
-      <div class="flex items-center gap-4 group cursor-default" *ngIf="settings$ | async as settings">
+    <!-- Header -->
+    <div class="px-ds-8 pt-ds-12 pb-ds-8">
+      <div class="flex items-center gap-ds-4 group cursor-default" *ngIf="settings$ | async as settings">
         <div class="relative">
-          <div class="absolute inset-0 bg-accent/20 blur-xl rounded-full scale-150 group-hover:scale-175 transition-transform duration-700"></div>
-          <div class="relative bg-white/5 border border-white/10 p-2.5 rounded-xl shadow-inner backdrop-blur-md">
+          <div class="relative bg-white/5 border border-white/10 p-ds-3 rounded-sm backdrop-blur-md">
             <img
               *ngIf="settings.logoUrl"
               [src]="imageUrlService.getImageUrl(settings.logoUrl)"
-              class="w-8 h-8 object-contain"
+              class="w-8 h-8 object-contain brightness-0 invert"
               alt="Logo"
             />
             <app-icon
               *ngIf="!settings.logoUrl"
               name="Store"
               size="24"
-              className="text-accent"
+              className="text-white"
             ></app-icon>
           </div>
         </div>
         <div class="flex flex-col">
-          <h1 class="text-white text-lg font-display font-bold tracking-tight leading-none">
+          <h1 class="text-white text-base font-bold uppercase tracking-tight leading-none">
             {{ settings.websiteName || "Admin Console" }}
           </h1>
-          <span class="text-accent/60 text-[10px] uppercase tracking-widest font-black mt-1">
+          <span class="text-white/40 text-[9px] uppercase tracking-[0.3em] font-bold mt-1.5">
             Enterprise Panel
           </span>
         </div>
       </div>
     </div>
 
+    <div class="h-px bg-ds-border/50 mx-ds-6 mb-ds-8"></div>
+
     <!-- Scrollable Nav Section -->
-    <div class="flex-1 overflow-y-auto custom-sidebar-scroll px-4 pb-8">
-      <div class="space-y-8">
+    <div class="flex-1 overflow-y-auto custom-sidebar-scroll px-ds-4 pb-ds-12">
+      <div class="space-y-ds-10">
         <!-- Main Section -->
         <div>
-          <p class="px-4 mb-4 text-[10px] font-display font-black text-white/20 uppercase tracking-[0.2em]">Core Navigation</p>
+          <p class="px-ds-4 mb-ds-6 text-[10px] font-bold text-white/30 uppercase tracking-[0.4em]">Core Navigation</p>
           <nav class="space-y-1">
             <a
               *ngFor="let item of topItems"
-              class="flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group relative"
+              class="flex items-center gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group relative"
               [routerLink]="item.route"
               routerLinkActive="nav-active"
               #rla="routerLinkActive"
-              [ngClass]="rla.isActive ? 'bg-accent/10 text-accent shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+              [ngClass]="rla.isActive ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
               [routerLinkActiveOptions]="{ exact: false }"
             >
-              <div class="relative">
-                <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-110 duration-300" [className]="rla.isActive ? 'text-accent' : ''"></app-icon>
-                <div *ngIf="rla.isActive" class="absolute inset-0 bg-accent blur-md opacity-20 scale-150"></div>
-              </div>
-              <span class="text-sm font-display font-semibold">{{ item.label }}</span>
-              <div *ngIf="rla.isActive" class="absolute left-0 w-1 h-5 bg-accent rounded-r-full shadow-[0_0_12px_rgba(var(--color-accent),0.5)]"></div>
+              <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-105" [className]="rla.isActive ? 'text-white' : ''"></app-icon>
+              <span class="text-xs font-bold uppercase tracking-widest">{{ item.label }}</span>
+              <div *ngIf="rla.isActive" class="absolute left-0 w-1 h-5 bg-white rounded-r-full"></div>
             </a>
 
 
@@ -83,35 +75,35 @@
             <div class="space-y-1">
               <button
                 type="button"
-                class="flex items-center justify-between gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group w-full text-left relative"
+                class="flex items-center justify-between gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group w-full text-left relative"
                 (click)="toggleOrdersMenu()"
-                [ngClass]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'text-accent bg-accent/10 shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+                [ngClass]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
               >
-                <div class="flex items-center gap-3.5">
-                  <app-icon name="PlusCircle" size="20" className="group-hover:scale-110 transition-transform duration-300" [className]="isOrdersMenuOpen ? 'text-accent' : ''"></app-icon>
-                  <span class="text-sm font-display font-semibold">Orders</span>
+                <div class="flex items-center gap-ds-4">
+                  <app-icon name="PlusCircle" size="20" className="group-hover:scale-105" [className]="isOrdersMenuOpen ? 'text-white' : ''"></app-icon>
+                  <span class="text-xs font-bold uppercase tracking-widest">Orders</span>
                 </div>
                 <app-icon
                   [name]="isOrdersMenuOpen ? 'ChevronUp' : 'ChevronDown'"
-                  size="16"
+                  size="14"
                   className="text-white/20 group-hover:text-white transition-colors"
                 ></app-icon>
               </button>
               
-              <div class="overflow-hidden transition-all duration-500" [style.max-height]="isOrdersMenuOpen ? '400px' : '0px'">
-                <div class="pl-12 pr-4 py-2 space-y-1 border-l-[1.5px] border-white/5 ml-6.5">
+              <div class="overflow-hidden transition-all duration-300" [style.max-height]="isOrdersMenuOpen ? '400px' : '0px'">
+                <div class="pl-ds-12 pr-ds-4 py-ds-2 space-y-1">
                   <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    class="block px-ds-4 py-ds-2.5 text-[10px] font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
                     routerLink="/admin/orders/pre-order"
-                    routerLinkActive="nav-sub-active text-accent"
+                    routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
                     Pre-Order Create
                   </a>
                   <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    class="block px-ds-4 py-ds-2.5 text-[10px] font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
                     routerLink="/admin/orders/create"
-                    routerLinkActive="nav-sub-active text-accent"
+                    routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
                     Manual Order Create
@@ -124,43 +116,43 @@
             <div class="space-y-1">
               <button
                 type="button"
-                class="flex items-center justify-between gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group w-full text-left relative"
+                class="flex items-center justify-between gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group w-full text-left relative"
                 (click)="toggleOrderViewMenu()"
-                [ngClass]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-accent bg-accent/10 shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+                [ngClass]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
               >
-                <div class="flex items-center gap-3.5">
-                  <app-icon name="Eye" size="20" className="group-hover:scale-110 transition-transform duration-300" [className]="isOrderViewMenuOpen ? 'text-accent' : ''"></app-icon>
-                  <span class="text-sm font-display font-semibold">Order View</span>
+                <div class="flex items-center gap-ds-4">
+                  <app-icon name="Eye" size="20" className="group-hover:scale-105" [className]="isOrderViewMenuOpen ? 'text-white' : ''"></app-icon>
+                  <span class="text-xs font-bold uppercase tracking-widest">Order View</span>
                 </div>
                 <app-icon
                   [name]="isOrderViewMenuOpen ? 'ChevronUp' : 'ChevronDown'"
-                  size="16"
+                  size="14"
                   className="text-white/20 group-hover:text-white transition-colors"
                 ></app-icon>
               </button>
               
-              <div class="overflow-hidden transition-all duration-500" [style.max-height]="isOrderViewMenuOpen ? '400px' : '0px'">
-                <div class="pl-12 pr-4 py-2 space-y-1 border-l-[1.5px] border-white/5 ml-6.5">
+              <div class="overflow-hidden transition-all duration-300" [style.max-height]="isOrderViewMenuOpen ? '400px' : '0px'">
+                <div class="pl-ds-12 pr-ds-4 py-ds-2 space-y-1">
                   <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    class="block px-ds-4 py-ds-2.5 text-[10px] font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
                     routerLink="/admin/orders"
-                    routerLinkActive="nav-sub-active text-accent"
+                    routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
                     All Orders
                   </a>
                   <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    class="block px-ds-4 py-ds-2.5 text-[10px] font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
                     routerLink="/admin/orders/pre-orders"
-                    routerLinkActive="nav-sub-active text-accent"
+                    routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
                     Pre Orders
                   </a>
                   <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    class="block px-ds-4 py-ds-2.5 text-[10px] font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
                     routerLink="/admin/orders/website"
-                    routerLinkActive="nav-sub-active text-accent"
+                    routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
                     Website Orders
@@ -173,51 +165,51 @@
             <div class="space-y-1">
               <button
                 type="button"
-                class="flex items-center justify-between gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group w-full text-left relative"
+                class="flex items-center justify-between gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group w-full text-left relative"
                 (click)="toggleProductsMenu()"
-                [ngClass]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'text-accent bg-accent/10 shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+                [ngClass]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
               >
-                <div class="flex items-center gap-3.5">
-                  <app-icon name="ShoppingBag" size="20" className="group-hover:scale-110 transition-transform duration-300" [className]="isProductsMenuOpen ? 'text-accent' : ''"></app-icon>
-                  <span class="text-sm font-display font-semibold">Inventory</span>
+                <div class="flex items-center gap-ds-4">
+                  <app-icon name="ShoppingBag" size="20" className="group-hover:scale-105" [className]="isProductsMenuOpen ? 'text-white' : ''"></app-icon>
+                  <span class="text-xs font-bold uppercase tracking-widest">Inventory</span>
                 </div>
                 <app-icon
                   [name]="isProductsMenuOpen ? 'ChevronUp' : 'ChevronDown'"
-                  size="16"
+                  size="14"
                   className="text-white/20 group-hover:text-white transition-colors"
                 ></app-icon>
               </button>
               
-              <div class="overflow-hidden transition-all duration-500" [style.max-height]="isProductsMenuOpen ? '400px' : '0px'">
-                <div class="pl-12 pr-4 py-2 space-y-1 border-l-[1.5px] border-white/5 ml-6.5">
+              <div class="overflow-hidden transition-all duration-300" [style.max-height]="isProductsMenuOpen ? '400px' : '0px'">
+                <div class="pl-ds-12 pr-ds-4 py-ds-2 space-y-1">
                   <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    class="block px-ds-4 py-ds-2.5 text-[10px] font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
                     routerLink="/admin/products"
-                    routerLinkActive="nav-sub-active text-accent"
+                    routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
                     Product Catalog
                   </a>
                   <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    class="block px-ds-4 py-ds-2.5 text-[10px] font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
                     routerLink="/admin/products/categories"
-                    routerLinkActive="nav-sub-active text-accent"
+                    routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
                     Main Collections
                   </a>
                   <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    class="block px-ds-4 py-ds-2.5 text-[10px] font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
                     routerLink="/admin/products/sub-categories"
-                    routerLinkActive="nav-sub-active text-accent"
+                    routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
                     Sub Collections
                   </a>
                   <a
-                    class="block px-4 py-2 text-xs font-display font-semibold text-white/40 hover:text-accent transition-all duration-300 rounded-lg hover:bg-white/5"
+                    class="block px-ds-4 py-ds-2.5 text-[10px] font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
                     routerLink="/admin/inventory"
-                    routerLinkActive="nav-sub-active text-accent"
+                    routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
                   >
                     Inventory Management
@@ -228,16 +220,16 @@
 
             <a
               *ngFor="let item of navItems"
-              class="flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group relative"
+              class="flex items-center gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group relative"
               [routerLink]="item.route"
               routerLinkActive="nav-active"
               #rlaSecondary="routerLinkActive"
-              [ngClass]="rlaSecondary.isActive ? 'bg-accent/10 text-accent shadow-sm ring-1 ring-white/5' : 'text-white/50 hover:text-white hover:bg-white/5'"
+              [ngClass]="rlaSecondary.isActive ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
               [routerLinkActiveOptions]="{ exact: false }"
             >
-              <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-110 duration-300" [className]="rlaSecondary.isActive ? 'text-accent' : ''"></app-icon>
-              <span class="text-sm font-display font-semibold">{{ item.label }}</span>
-              <div *ngIf="rlaSecondary.isActive" class="absolute left-0 w-1 h-5 bg-accent rounded-r-full shadow-[0_0_12px_rgba(var(--color-accent),0.5)]"></div>
+              <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-105" [className]="rlaSecondary.isActive ? 'text-white' : ''"></app-icon>
+              <span class="text-xs font-bold uppercase tracking-widest">{{ item.label }}</span>
+              <div *ngIf="rlaSecondary.isActive" class="absolute left-0 w-1 h-5 bg-white rounded-r-full"></div>
             </a>
           </nav>
         </div>

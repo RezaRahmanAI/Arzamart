@@ -1,99 +1,74 @@
-﻿<form
-  class="mx-auto flex w-full max-w-7xl flex-1 flex-col p-4"
+<form
+  class="site-container-admin mx-auto flex w-full flex-1 flex-col gap-ds-8"
   [formGroup]="form"
   (ngSubmit)="saveProduct()"
 >
   <!-- Loading Overlay -->
-  <div *ngIf="isLoading" class="fixed inset-0 z-[100] flex items-center justify-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
-    <div class="flex flex-col items-center gap-4">
-      <div class="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-      <p class="text-sm font-bold text-primary animate-pulse">LOADING PRODUCT DATA...</p>
+  <div *ngIf="isLoading" class="fixed inset-0 z-[100] flex items-center justify-center bg-ds-bg/80 backdrop-blur-sm">
+    <div class="flex flex-col items-center gap-ds-6">
+      <div class="h-12 w-12 animate-spin rounded-sm border-4 border-ds-accent border-t-transparent"></div>
+      <p class="text-[10px] font-bold text-ds-text animate-pulse uppercase tracking-[0.5em]">Synchronizing Product Data</p>
     </div>
   </div>
 
   <!-- Page Heading & Global Actions -->
-  <div
-    class="mb-4 flex flex-col justify-between gap-4 sm:flex-row sm:items-center border-b border-gray-100 dark:border-gray-800 pb-4"
-  >
+  <div class="flex flex-col justify-between gap-ds-6 sm:flex-row sm:items-center border-b border-ds-border pb-ds-8">
     <div>
-      <div
-        class="flex items-center gap-1.5 text-[10px] text-text-secondary-light dark:text-text-secondary-dark mb-0.5 uppercase font-bold tracking-wider"
-      >
-        <span>Products</span>
-        <app-icon
-          name="ChevronRight"
-          size="10"
-        ></app-icon>
-        <span
-          class="text-primary"
-          >{{ isEditMode ? "Edit" : "Add New" }}</span
-        >
+      <div class="flex items-center gap-2 text-[9px] text-ds-text-muted mb-2 uppercase font-bold tracking-[0.3em]">
+        <span>Catalog</span>
+        <app-icon name="ChevronRight" size="10"></app-icon>
+        <span class="text-ds-text">{{ isEditMode ? "Edit Record" : "New Entry" }}</span>
       </div>
-      <h1
-        class="text-xl font-black text-text-main-light dark:text-text-main-dark"
-      >
+      <h1 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">
         {{ pageTitle }}
       </h1>
     </div>
-    <div class="flex gap-2">
+    <div class="flex items-center gap-ds-3">
       <button
-        class="flex h-9 items-center justify-center rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-4 text-xs font-bold text-text-main-light dark:text-text-main-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+        class="btn btn-secondary h-11 px-ds-8 !text-[10px] uppercase tracking-widest"
         type="button"
         (click)="discard()"
       >
         Discard
       </button>
       <button
-        class="flex h-9 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-xs font-black text-white hover:bg-[#111111] shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed transition-all"
+        class="btn btn-primary h-11 px-ds-10 !text-[10px] uppercase tracking-widest"
         type="submit"
         [disabled]="isSubmitting"
       >
         <app-icon *ngIf="isSubmitting" name="Loader2" size="14" className="animate-spin"></app-icon>
         <app-icon *ngIf="!isSubmitting" name="Check" size="14"></app-icon>
-        <span>{{ isSubmitting ? 'Processing...' : (isEditMode ? "Update Product" : "Save Product") }}</span>
+        <span>{{ isSubmitting ? 'Syncing...' : (isEditMode ? "Update Repository" : "Commit Product") }}</span>
       </button>
     </div>
   </div>
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-    <!-- Left Column (Main Info) -->
-    <div class="flex flex-col gap-4 lg:col-span-2">
-      <!-- General Information Card -->
-      <div
-        class="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 shadow-sm"
-      >
-        <h2
-          class="mb-3 text-xs font-black uppercase tracking-wider text-primary"
-        >
-          General Information
-        </h2>
-        <div class="flex flex-col gap-3">
 
-          <label class="flex flex-col gap-1">
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-              >Product Name</span
-            >
+  <div class="grid grid-cols-1 gap-ds-8 lg:grid-cols-3">
+    <!-- Left Column (Main Info) -->
+    <div class="flex flex-col gap-ds-8 lg:col-span-2">
+      <!-- General Information Card -->
+      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm">
+        <h2 class="mb-ds-6 text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+          General Identity
+        </h2>
+        <div class="flex flex-col gap-ds-6">
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Commercial Name</span>
             <input
-              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-1.5 text-xs text-text-main-light dark:text-text-main-dark placeholder:text-text-secondary-light focus:border-primary focus:ring-1 focus:ring-primary"
-              placeholder="e.g. Premium Silk Hijab - Midnight Blue"
+              class="form-input !h-12 !text-[11px] uppercase tracking-tight"
+              placeholder="e.g. LUXE SILK ABAYA - NOIR"
               type="text"
               formControlName="name"
             />
           </label>
-          <label class="flex flex-col gap-1">
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-              >Description</span
-            >
-            <div
-              class="overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark"
-            >
+
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Editorial Description</span>
+            <div class="border border-ds-border rounded-sm overflow-hidden bg-ds-bg/30">
               <!-- Rich Text Toolbar -->
-              <div
-                class="flex items-center gap-1 border-b border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-2 py-1"
-              >
+              <div class="flex items-center gap-ds-1 border-b border-ds-border bg-ds-bg px-ds-2 py-ds-2">
                 <button
-                  class="p-1 text-text-secondary-light hover:text-primary transition-colors"
+                  class="p-ds-2 text-ds-text-muted hover:text-ds-text transition-colors"
                   type="button"
                   title="Bold"
                   (click)="applyFormatting('bold', descriptionArea)"
@@ -101,32 +76,16 @@
                   <app-icon name="Bold" size="16"></app-icon>
                 </button>
                 <button
-                  class="p-1 text-text-secondary-light hover:text-primary transition-colors"
+                  class="p-ds-2 text-ds-text-muted hover:text-ds-text transition-colors"
                   type="button"
                   title="Italic"
                   (click)="applyFormatting('italic', descriptionArea)"
                 >
-                  <app-icon
-                    name="Italic"
-                    size="16"
-                  ></app-icon>
+                  <app-icon name="Italic" size="16"></app-icon>
                 </button>
+                <div class="mx-ds-1 h-4 w-px bg-ds-border"></div>
                 <button
-                  class="p-1 text-text-secondary-light hover:text-primary transition-colors"
-                  type="button"
-                  title="Underline"
-                  (click)="applyFormatting('underline', descriptionArea)"
-                >
-                  <app-icon
-                    name="Underline"
-                    size="16"
-                  ></app-icon>
-                </button>
-                <div
-                  class="mx-1 h-3 w-px bg-border-light dark:bg-border-dark"
-                ></div>
-                <button
-                  class="p-1 text-text-secondary-light hover:text-primary transition-colors"
+                  class="p-ds-2 text-ds-text-muted hover:text-ds-text transition-colors"
                   type="button"
                   title="Bullet List"
                   (click)="applyFormatting('list', descriptionArea)"
@@ -134,7 +93,7 @@
                   <app-icon name="List" size="16"></app-icon>
                 </button>
                 <button
-                  class="p-1 text-text-secondary-light hover:text-primary transition-colors"
+                  class="p-ds-2 text-ds-text-muted hover:text-ds-text transition-colors"
                   type="button"
                   title="Insert Link"
                   (click)="applyFormatting('link', descriptionArea)"
@@ -144,238 +103,177 @@
               </div>
               <textarea
                 #descriptionArea
-                class="w-full resize-y border-none bg-transparent p-3 text-xs text-text-main-light dark:text-text-main-dark placeholder:text-text-secondary-light focus:ring-0"
-                placeholder="Describe your product here..."
-                rows="4"
+                class="form-textarea !border-none !bg-transparent !p-ds-4 !text-[11px] !leading-relaxed uppercase tracking-tight"
+                placeholder="Compose detailed product narrative..."
+                rows="6"
                 formControlName="description"
               ></textarea>
             </div>
-            <span class="text-xs text-text-secondary-light"
-              >Tell your customers about the material, fit, and care
-              instructions.</span
-            >
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest mt-1">Material composition, fit architecture, and preservation instructions.</span>
           </label>
-          <label class="flex flex-col gap-1">
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-              >Landing Page Custom Text (Optional)</span
-            >
+
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Marketing Short Text</span>
             <textarea
-              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-1.5 text-xs text-text-main-light dark:text-text-main-dark placeholder:text-text-secondary-light focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-              placeholder="Add custom text for the landing page here..."
+              class="form-textarea !h-24 !text-[11px] uppercase tracking-tight"
+              placeholder="Concise overview for quick-view panels..."
               rows="2"
               formControlName="shortDescription"
             ></textarea>
           </label>
         </div>
       </div>
+
       <!-- Product Options (Colors & Sizes) -->
-      <div
-        class="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 shadow-sm"
-        formGroupName="variants"
-      >
-        <h2
-          class="mb-3 text-sm font-black uppercase tracking-wider text-primary"
-        >
-          Product Options
-        </h2>
-        <div class="space-y-6">
+      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm" formGroupName="variants">
+        <div class="flex items-center justify-between mb-ds-8">
+          <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+            Variant Matrix
+          </h2>
+          <button
+            class="flex items-center gap-2 text-[10px] font-bold text-ds-accent hover:text-ds-text transition-colors uppercase tracking-[0.2em]"
+            type="button"
+            (click)="addSize()"
+          >
+            <app-icon name="PlusCircle" size="14"></app-icon>
+            Add Dimension
+          </button>
+        </div>
 
-
-          <!-- Sizes Section -->
-          <div class="space-y-3" formArrayName="sizes">
-            <div class="flex items-center justify-between">
-              <div>
-                <h3
-                  class="text-xs font-bold text-text-main-light dark:text-text-main-dark uppercase"
-                >
-                  Sizes
-                </h3>
-              </div>
-              <button
-                class="flex items-center gap-1.5 text-xs font-bold text-primary hover:text-[#111111] transition-colors"
-                type="button"
-                (click)="addSize()"
-              >
-                <app-icon
-                  name="PlusCircle"
-                  size="16"
-                ></app-icon>
-                Add size
-              </button>
-            </div>
-            <!-- ... -->
-            <div
-              class="flex flex-col gap-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-4"
-              *ngFor="let size of sizesArray.controls; let sizeIndex = index"
-              [formGroupName]="sizeIndex"
+        <div class="space-y-ds-4" formArrayName="sizes">
+          <div
+            class="bg-ds-bg/30 border border-ds-border p-ds-6 rounded-sm relative group"
+            *ngFor="let size of sizesArray.controls; let sizeIndex = index"
+            [formGroupName]="sizeIndex"
+          >
+            <button
+              class="absolute -top-3 -right-3 size-7 bg-ds-surface border border-ds-border text-red-500 rounded-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white z-10"
+              type="button"
+              (click)="removeSize(sizeIndex)"
+              title="Remove Variant"
             >
-              <div
-                class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-[1.5fr_1fr_1fr_1fr_1fr_auto] gap-3 items-end"
-              >
-                <label
-                  class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
-                >
-                  Size
-                  <div class="flex gap-2 relative">
-                    <div class="flex-1 min-w-0 relative">
-                      <div
-                        class="flex items-center gap-0 border border-border-light dark:border-border-dark rounded-lg bg-white dark:bg-black/20 focus-within:ring-1 focus-within:ring-primary focus-within:border-primary overflow-hidden"
-                      >
-                        <input
-                          class="flex-1 min-w-0 border-none bg-transparent px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark focus:ring-0"
-                          formControlName="label"
-                          placeholder="Size (e.g. M, 32, XL)"
-                          (click)="$event.stopPropagation()"
-                        />
-                        <button
-                          type="button"
-                          (click)="toggleSizeDropdown(sizeIndex, $event)"
-                          class="p-2 border-l border-border-light dark:border-border-dark hover:bg-black/5 transition-colors"
-                        >
-                          <app-icon
-                            name="ChevronDown"
-                            size="16"
-                            className="opacity-50"
-                          ></app-icon>
-                        </button>
-                      </div>
+              <app-icon name="X" size="14"></app-icon>
+            </button>
 
-                      <div
-                        *ngIf="openSizeDropdownIndex === sizeIndex"
-                        class="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-border-light dark:border-border-dark bg-white dark:bg-[#1A1A1A] py-1 text-base shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                      >
-                        <div
-                          *ngFor="let sz of allAvailableSizes"
-                          (click)="selectSize(sizeIndex, sz, $event)"
-                          class="relative cursor-pointer select-none py-2 px-3 hover:bg-primary/10 hover:text-primary text-text-main-light dark:text-text-main-dark text-sm transition-colors duration-150 flex justify-between items-center group"
-                        >
-                          <span>{{ sz }}</span>
-                          <app-icon
-                            *ngIf="size.get('label')?.value === sz"
-                            name="Check"
-                            size="16"
-                            className="text-primary"
-                          ></app-icon>
-                        </div>
-                      </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-ds-4 items-end">
+              <label class="flex flex-col gap-ds-2">
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Size Label</span>
+                <div class="relative group/select">
+                  <input
+                    class="form-input !h-10 !text-[10px] uppercase tracking-widest pr-ds-8"
+                    formControlName="label"
+                    placeholder="e.g. XL"
+                    (click)="$event.stopPropagation()"
+                  />
+                  <button
+                    type="button"
+                    (click)="toggleSizeDropdown(sizeIndex, $event)"
+                    class="absolute right-0 top-0 h-full px-ds-2 text-ds-text-muted hover:text-ds-text transition-colors"
+                  >
+                    <app-icon name="ChevronDown" size="14"></app-icon>
+                  </button>
+
+                  <div
+                    *ngIf="openSizeDropdownIndex === sizeIndex"
+                    class="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-ds-surface border border-ds-border rounded-sm shadow-2xl py-1 animate-in fade-in slide-in-from-top-1 duration-base"
+                  >
+                    <div
+                      *ngFor="let sz of allAvailableSizes"
+                      (click)="selectSize(sizeIndex, sz, $event)"
+                      class="px-ds-4 py-ds-2 text-[10px] font-bold uppercase tracking-widest text-ds-text-muted hover:text-ds-text hover:bg-ds-bg cursor-pointer flex justify-between items-center transition-colors"
+                    >
+                      <span>{{ sz }}</span>
+                      <app-icon *ngIf="size.get('label')?.value === sz" name="Check" size="12" className="text-ds-accent"></app-icon>
                     </div>
                   </div>
-                </label>
-                <label
-                  class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
-                >
-                Regular Price
+                </div>
+              </label>
+
+              <label class="flex flex-col gap-ds-2">
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Retail Price</span>
+                <input
+                  class="form-input !h-10 !text-[10px] font-mono"
+                  type="number"
+                  placeholder="0.00"
+                  formControlName="price"
+                />
+              </label>
+
+              <label class="flex flex-col gap-ds-2">
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Sale Price</span>
+                <input
+                  class="form-input !h-10 !text-[10px] font-mono border-ds-accent/30 focus:border-ds-accent"
+                  type="number"
+                  placeholder="0.00"
+                  formControlName="salePrice"
+                />
+              </label>
+
+              <label class="flex flex-col gap-ds-2">
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Acquisition Cost</span>
+                <input
+                  class="form-input !h-10 !text-[10px] font-mono opacity-60"
+                  type="number"
+                  placeholder="0.00"
+                  formControlName="purchaseRate"
+                />
+              </label>
+
+              <label class="flex flex-col gap-ds-2">
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Inventory Count</span>
+                <input
+                  class="form-input !h-10 !text-[10px] font-mono"
+                  type="number"
+                  formControlName="stock"
+                />
+              </label>
+
+              <div class="h-10 flex items-center justify-center">
+                <label class="flex items-center gap-2 cursor-pointer group/radio">
                   <input
-                    class="w-full min-w-0 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                    type="number"
-                    placeholder="0.00"
-                    formControlName="price"
-                  />
-                </label>
-                <label
-                  class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
-                >
-                  Sale Price
-                  <input
-                    class="w-full min-w-0 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                    type="number"
-                    placeholder="0.00"
-                    formControlName="salePrice"
-                  />
-                </label>
-                <label
-                  class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
-                >
-                  Buy Rate
-                  <input
-                    class="w-full min-w-0 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                    type="number"
-                    placeholder="0.00"
-                    formControlName="purchaseRate"
-                  />
-                </label>
-                <label
-                  class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
-                >
-                  Stock
-                  <input
-                    class="w-full min-w-0 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                    type="number"
-                    formControlName="stock"
-                  />
-                </label>
-                <label
-                  class="flex items-center gap-2 text-xs font-bold text-text-main-light dark:text-text-main-dark uppercase h-full pb-3"
-                >
-                  <input
-                    class="text-primary focus:ring-primary w-4 h-4 cursor-pointer"
+                    class="form-radio"
                     type="radio"
                     name="selectedSize"
                     [checked]="size.get('selected')?.value"
                     (change)="setSelectedSize(sizeIndex)"
                   />
-                  Default
+                  <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em] group-hover/radio:text-ds-text transition-colors">Default</span>
                 </label>
               </div>
-              <button
-                class="w-fit text-xs font-semibold text-red-500 hover:underline"
-                type="button"
-                (click)="removeSize(sizeIndex)"
-              >
-                Remove size
-              </button>
             </div>
           </div>
         </div>
       </div>
 
-
       <!-- Media Card -->
-      <div
-        class="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 shadow-sm"
-      >
-        <div class="mb-3 flex items-center justify-between">
-          <h2
-            class="text-sm font-black uppercase tracking-wider text-primary"
-          >
-            Media
+      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm">
+        <div class="mb-ds-8 flex items-center justify-between">
+          <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+            Asset Repository
           </h2>
           <button
-            class="text-xs font-bold text-primary hover:underline"
+            class="text-[10px] font-bold text-ds-accent hover:text-ds-text transition-colors uppercase tracking-[0.2em]"
             type="button"
             (click)="addFromUrl()"
           >
-            Add from URL
+            Import via URI
           </button>
         </div>
+
         <div
-          class="rounded-lg border-2 border-dashed border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-4 transition-colors hover:border-primary/50"
+          class="border-2 border-dashed border-ds-border bg-ds-bg/30 p-ds-12 rounded-sm text-center cursor-pointer hover:border-ds-text hover:bg-ds-bg transition-all group"
           (dragover)="handleDragOver($event)"
           (drop)="handleDrop($event)"
           (click)="fileInput.click()"
         >
-          <div class="flex flex-col items-center justify-center text-center">
-            <div
-              class="mb-2 rounded-full bg-surface-light dark:bg-surface-dark p-2 shadow-sm"
-            >
-              <app-icon
-                name="Upload"
-                size="24"
-                className="text-primary"
-              ></app-icon>
+          <div class="flex flex-col items-center gap-ds-4">
+            <div class="size-12 rounded-sm bg-ds-surface border border-ds-border flex items-center justify-center group-hover:scale-110 transition-transform">
+              <app-icon name="Upload" size="24" className="text-ds-text-muted opacity-40 group-hover:text-ds-text group-hover:opacity-100"></app-icon>
             </div>
-            <p
-              class="text-xs font-bold text-text-main-light dark:text-text-main-dark"
-            >
-              <span class="text-primary cursor-pointer hover:underline"
-                >Click to upload</span
-              >
-              or drag and drop
-            </p>
-            <p class="mt-1 text-[10px] text-text-secondary-light uppercase font-bold">
-               Recommended: <span class="text-primary">1200x1600px</span> (3:4)
-            </p>
+            <div>
+              <p class="text-[11px] font-bold text-ds-text uppercase tracking-widest">Release files to catalog</p>
+              <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1.5">Recommended scale: <span class="text-ds-text">1200 x 1600 px</span> (3:4 Ratio)</p>
+            </div>
           </div>
           <input
             #fileInput
@@ -385,354 +283,205 @@
             (change)="handleFilesSelected($event)"
           />
         </div>
-        <p *ngIf="mediaError" class="mt-3 text-xs text-red-500">
-          {{ mediaError }}
-        </p>
-        <div class="mt-6 space-y-4" formArrayName="mediaItems">
+
+        <p *ngIf="mediaError" class="mt-ds-4 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ mediaError }}</p>
+
+        <div class="mt-ds-10 space-y-ds-6" formArrayName="mediaItems">
           <div
-            *ngFor="
-              let media of mediaItemsArray.controls;
-              let mediaIndex = index;
-              trackBy: trackByIndex
-            "
-            class="flex flex-col gap-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-4"
+            *ngFor="let media of mediaItemsArray.controls; let mediaIndex = index; trackBy: trackByIndex"
+            class="bg-ds-bg/30 border border-ds-border p-ds-6 rounded-sm"
             [formGroupName]="mediaIndex"
           >
-            <div class="flex flex-col gap-4 sm:flex-row">
-              <div
-                class="relative h-36 w-full overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-white sm:w-40"
-              >
+            <div class="flex flex-col gap-ds-6 sm:flex-row">
+              <div class="relative h-44 w-full sm:w-44 bg-ds-bg border border-ds-border rounded-sm overflow-hidden flex-shrink-0 group/media">
                 <img
                   [alt]="media.get('alt')?.value || 'Product media'"
-                  class="h-full w-full object-cover"
+                  class="h-full w-full object-cover grayscale group-hover/media:grayscale-0 transition-all duration-base"
                   [src]="imageUrlService.getImageUrl(getMediaUrl(media))"
                 />
-                <div
-                  *ngIf="media.get('type')?.value === 'video'"
-                  class="absolute inset-0 flex items-center justify-center bg-black/40"
-                >
-                  <app-icon
-                    name="PlayCircle"
-                    size="40"
-                    className="text-white"
-                  ></app-icon>
+                <div *ngIf="media.get('type')?.value === 'video'" class="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
+                  <app-icon name="PlayCircle" size="32" className="text-white opacity-80"></app-icon>
                 </div>
               </div>
-              <div class="flex-1 grid gap-3 sm:grid-cols-2">
-                <label
-                  class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
-                >
-                  Label
-                  <input
-                    class="rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                    type="text"
-                    formControlName="label"
-                  />
+
+              <div class="flex-1 grid gap-ds-4 sm:grid-cols-2 items-start">
+                <label class="flex flex-col gap-ds-2">
+                  <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Label Description</span>
+                  <input class="form-input !h-10 !text-[10px] uppercase tracking-tight" type="text" formControlName="label" />
                 </label>
-                <label
-                  class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
-                >
-                  Alt text
-                  <input
-                    class="rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                    type="text"
-                    formControlName="alt"
-                  />
+                <label class="flex flex-col gap-ds-2">
+                  <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Accessibility Alt</span>
+                  <input class="form-input !h-10 !text-[10px] uppercase tracking-tight" type="text" formControlName="alt" />
                 </label>
-                <label
-                  class="flex flex-col gap-1 text-xs font-medium text-text-secondary-light uppercase"
-                >
-                  Media type
-                  <select
-                    class="rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-black/20 px-3 py-2 text-sm text-text-main-light dark:text-text-main-dark"
-                    formControlName="type"
-                  >
-                    <option value="image">Image</option>
-                    <option value="video">Video</option>
+                <label class="flex flex-col gap-ds-2">
+                  <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Media Categorization</span>
+                  <select class="form-input !h-10 !text-[10px] uppercase tracking-widest appearance-none cursor-pointer" formControlName="type">
+                    <option value="image">Still Image</option>
+                    <option value="video">Motion Video</option>
                   </select>
                 </label>
 
-                <div class="flex flex-col justify-between gap-3">
-                  <label
-                    class="flex items-center gap-2 text-xs font-medium text-text-secondary-light uppercase"
-                  >
-                    <input
-                      class="text-primary focus:ring-primary"
-                      type="radio"
-                      name="mainMedia"
-                      [checked]="media.get('isMain')?.value"
-                      (change)="setMainMedia(mediaIndex)"
-                    />
-                    Main media
+                <div class="flex flex-col gap-ds-4 pt-ds-2">
+                  <label class="flex items-center gap-2 cursor-pointer group/radio">
+                    <input class="form-radio" type="radio" name="mainMedia" [checked]="media.get('isMain')?.value" (change)="setMainMedia(mediaIndex)" />
+                    <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em] group-hover/radio:text-ds-text transition-colors">Primary Display</span>
                   </label>
-                  <button
-                    class="text-xs font-semibold text-red-500 hover:underline"
-                    type="button"
-                    (click)="removeMediaItem(mediaIndex)"
-                  >
-                    Remove media
+                  <button class="w-fit text-[9px] font-bold text-red-500 hover:text-red-700 uppercase tracking-widest transition-colors" type="button" (click)="removeMediaItem(mediaIndex)">
+                    Purge Asset
                   </button>
                 </div>
               </div>
             </div>
           </div>
-          <p
-            *ngIf="mediaItemsArray.length === 0"
-            class="text-xs text-text-secondary-light"
-          >
-            No media added yet. Add at least one image or video to preview on
-            the product pages.
+          <p *ngIf="mediaItemsArray.length === 0" class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em] text-center py-ds-4">
+            Zero assets linked. Mandatory: 1 image or video for catalog preview.
           </p>
         </div>
       </div>
+
       <!-- Product Details Card -->
-      <div
-        class="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 shadow-sm"
-        formGroupName="meta"
-      >
-        <h2
-          class="mb-3 text-sm font-black uppercase tracking-wider text-primary"
-        >
-          Product Details
+      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm" formGroupName="meta">
+        <h2 class="mb-ds-8 text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+          Specifications
         </h2>
-        <div class="grid gap-3">
-          <label class="flex flex-col gap-1">
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-              >Fabric &amp; Care</span
-            >
+        <div class="grid gap-ds-6">
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Material & Care</span>
             <textarea
-              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-2 text-xs text-text-main-light dark:text-text-main-dark focus:ring-1 focus:ring-primary"
+              class="form-textarea !h-24 !text-[11px] uppercase tracking-tight"
               rows="3"
-              placeholder="Share fabric details and care instructions."
+              placeholder="Detail fabric weave and preservation methods..."
               formControlName="fabricAndCare"
             ></textarea>
           </label>
-          <label class="flex flex-col gap-1">
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-              >Shipping &amp; Returns</span
-            >
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Logistics & Returns</span>
             <textarea
-              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-2 text-xs text-text-main-light dark:text-text-main-dark focus:ring-1 focus:ring-primary"
+              class="form-textarea !h-24 !text-[11px] uppercase tracking-tight"
               rows="3"
-              placeholder="Outline delivery timelines and return policy."
+              placeholder="Outline distribution timelines and archival return policies..."
               formControlName="shippingAndReturns"
             ></textarea>
           </label>
-          <label class="flex flex-col gap-1">
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-              >Size Chart Image URL</span
-            >
-            <div class="flex gap-2">
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Dimensional Chart URI</span>
+            <div class="flex gap-ds-2">
               <input
-                class="flex-1 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-1.5 text-xs text-text-main-light dark:text-text-main-dark placeholder:text-text-secondary-light focus:border-primary focus:ring-1 focus:ring-primary"
-                placeholder="e.g. https://images.com/size-chart.jpg"
+                class="form-input !h-11 !text-[10px] font-mono flex-1"
+                placeholder="e.g. https://cdn.arza.com/charts/hijab-size.jpg"
                 type="text"
                 formControlName="sizeChartUrl"
               />
               <button 
                 type="button"
                 (click)="openImageUploader('sizeChart')"
-                class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold hover:bg-gray-200 transition-colors"
+                class="btn btn-secondary h-11 px-ds-6 !text-[10px] uppercase tracking-widest"
               >
                 Upload
               </button>
             </div>
-            <div *ngIf="form.get('meta.sizeChartUrl')?.value" class="mt-2 relative group w-24 h-24">
-                <img [src]="imageUrlService.getImageUrl(form.get('meta.sizeChartUrl')?.value)" class="w-full h-full object-cover rounded-lg border">
-                <button (click)="form.get('meta.sizeChartUrl')?.setValue('')" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                    <app-icon name="X" size="10"></app-icon>
+            <div *ngIf="form.get('meta.sizeChartUrl')?.value" class="mt-ds-4 relative group w-32 h-32 bg-ds-bg border border-ds-border p-ds-2 rounded-sm">
+                <img [src]="imageUrlService.getImageUrl(form.get('meta.sizeChartUrl')?.value)" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-base">
+                <button (click)="form.get('meta.sizeChartUrl')?.setValue('')" class="absolute -top-2 -right-2 size-6 bg-red-500 text-white rounded-sm flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600">
+                    <app-icon name="X" size="12"></app-icon>
                 </button>
             </div>
           </label>
         </div>
       </div>
     </div>
+
     <!-- Right Column (Organization & Settings) -->
-    <div class="flex flex-col gap-4 lg:col-span-1">
+    <div class="flex flex-col gap-ds-8 lg:col-span-1">
       <!-- Status Card -->
-      <div
-        class="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 shadow-sm"
-      >
-        <h2
-          class="mb-3 text-sm font-black uppercase tracking-wider text-primary"
-        >
-          Product Status
+      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm">
+        <h2 class="mb-ds-6 text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+          Visibility Controls
         </h2>
-        <div class="flex items-center justify-between mb-3">
-          <span
-            class="text-xs font-bold text-text-main-light dark:text-text-main-dark uppercase"
-            >Draft / Active</span
-          >
-          <label class="relative inline-flex cursor-pointer items-center">
-            <input
-              class="peer sr-only"
-              type="checkbox"
-              formControlName="statusActive"
-            />
-            <div
-              class="peer h-5 w-9 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700"
-            ></div>
-          </label>
+        
+        <div class="space-y-ds-4">
+          <div class="flex items-center justify-between py-ds-2">
+            <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">Active Status</span>
+            <label class="form-toggle">
+              <input type="checkbox" formControlName="statusActive" />
+              <span></span>
+            </label>
+          </div>
+
+          <div class="flex items-center justify-between py-ds-2">
+            <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">New Arrival Badge</span>
+            <label class="form-toggle">
+              <input type="checkbox" formControlName="newArrival" />
+              <span></span>
+            </label>
+          </div>
+
+          <div class="flex items-center justify-between py-ds-2">
+            <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">Featured Spotlight</span>
+            <label class="form-toggle">
+              <input type="checkbox" formControlName="isFeatured" />
+              <span></span>
+            </label>
+          </div>
         </div>
 
-        <div class="flex items-center justify-between mb-3">
-          <span
-            class="text-xs font-bold text-text-main-light dark:text-text-main-dark uppercase"
-            >New Arrival</span
-          >
-          <label class="relative inline-flex cursor-pointer items-center">
-            <input
-              class="peer sr-only"
-              type="checkbox"
-              formControlName="newArrival"
-            />
-            <div
-              class="peer h-5 w-9 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700"
-            ></div>
-          </label>
-        </div>
-
-        <div class="flex items-center justify-between mb-3">
-          <span
-            class="text-xs font-bold text-text-main-light dark:text-text-main-dark uppercase"
-            >Is Featured</span
-          >
-          <label class="relative inline-flex cursor-pointer items-center">
-            <input
-              class="peer sr-only"
-              type="checkbox"
-              formControlName="isFeatured"
-            />
-            <div
-              class="peer h-5 w-9 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-gray-700"
-            ></div>
-          </label>
-        </div>
-
-        <div class="rounded-lg bg-accent/10 p-2 border border-accent/20">
-          <p
-            class="text-[10px] text-primary/80 font-bold flex items-center gap-1.5 uppercase"
-          >
-            <app-icon name="Eye" size="12"></app-icon>
-            Visible immediately
+        <div class="mt-ds-6 bg-ds-bg/30 border border-ds-border p-ds-4 rounded-sm">
+          <p class="text-[9px] text-ds-text-muted font-bold flex items-center gap-2 uppercase tracking-widest">
+            <app-icon name="Eye" size="14" className="text-ds-accent"></app-icon>
+            Immediate Deployment
           </p>
         </div>
       </div>
+
       <!-- Organization Card -->
-      <div
-        class="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 shadow-sm"
-      >
-        <h2
-          class="mb-3 text-sm font-black uppercase tracking-wider text-primary"
-        >
-          Organization
+      <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm">
+        <h2 class="mb-ds-8 text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+          Categorization
         </h2>
-        <div class="flex flex-col gap-3">
-          <label class="flex flex-col gap-1">
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-              >Category</span
-            >
-            <select
-              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-1.5 text-xs text-text-main-light dark:text-text-main-dark focus:ring-1 focus:ring-primary"
-              formControlName="category"
-            >
-              <option value="" disabled>Select category</option>
-              <option *ngFor="let cat of categories" [value]="cat.id">
-                {{ cat.name }}
-              </option>
+        <div class="flex flex-col gap-ds-6">
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Primary Category</span>
+            <select class="form-input !h-11 !text-[10px] uppercase tracking-widest appearance-none cursor-pointer" formControlName="category">
+              <option value="" disabled>Select Segment</option>
+              <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
             </select>
           </label>
 
-          <label
-            class="flex flex-col gap-1"
-            *ngIf="filteredSubCategories.length > 0"
-          >
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-              >Sub Category</span
-            >
-            <select
-              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-1.5 text-xs text-text-main-light dark:text-text-main-dark focus:ring-1 focus:ring-primary"
-              formControlName="subCategory"
-            >
-              <option value="">Select sub-category</option>
-              <option
-                *ngFor="let sub of filteredSubCategories"
-                [value]="sub.id"
-              >
-                {{ sub.name }}
-              </option>
+          <label class="flex flex-col gap-ds-2" *ngIf="filteredSubCategories.length > 0">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Sub-Segment</span>
+            <select class="form-input !h-11 !text-[10px] uppercase tracking-widest appearance-none cursor-pointer" formControlName="subCategory">
+              <option value="">None</option>
+              <option *ngFor="let sub of filteredSubCategories" [value]="sub.id">{{ sub.name }}</option>
             </select>
           </label>
 
-          <label
-            class="flex flex-col gap-1"
-            *ngIf="filteredCollections.length > 0"
-          >
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-              >Collection</span
-            >
-            <select
-              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-1.5 text-xs text-text-main-light dark:text-text-main-dark focus:ring-1 focus:ring-primary"
-              formControlName="collection"
-            >
-              <option value="">Select collection</option>
-              <option *ngFor="let col of filteredCollections" [value]="col.id">
-                {{ col.name }}
-              </option>
+          <label class="flex flex-col gap-ds-2" *ngIf="filteredCollections.length > 0">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Seasonal Collection</span>
+            <select class="form-input !h-11 !text-[10px] uppercase tracking-widest appearance-none cursor-pointer" formControlName="collection">
+              <option value="">Standalone</option>
+              <option *ngFor="let col of filteredCollections" [value]="col.id">{{ col.name }}</option>
             </select>
           </label>
 
-          <label class="flex flex-col gap-1">
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-            >
-              Tier
-            </span>
-            <select
-              class="w-full rounded-lg border border-accent/30 dark:border-accent/50 bg-background-light dark:bg-background-dark px-3 py-1.5 text-xs text-text-main-light dark:text-text-main-dark focus:ring-1 focus:ring-accent"
-              formControlName="tier"
-            >
-              <option value="">Select tier</option>
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Exclusivity Tier</span>
+            <select class="form-input !h-11 !text-[10px] uppercase tracking-widest appearance-none cursor-pointer !border-ds-accent/30" formControlName="tier">
+              <option value="">Standard</option>
               <option value="Premium">Premium</option>
-              <option value="Luxury">Luxury</option>
-              <option value="Platinum">Platinum</option>
-              <option value="Sahara">Sahara</option>
+              <option value="Luxury">Luxury Edition</option>
+              <option value="Platinum">Platinum Archive</option>
+              <option value="Sahara">Sahara Select</option>
             </select>
           </label>
 
-          <label class="flex flex-col gap-1">
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-            >
-              Tags
-            </span>
-            <input
-              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-1.5 text-xs text-text-main-light dark:text-text-main-dark focus:ring-1 focus:ring-primary"
-              type="text"
-              placeholder="seasonal, bestseller..."
-              formControlName="tags"
-            />
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Indexing Tags</span>
+            <input class="form-input !h-11 !text-[10px] uppercase tracking-tight" type="text" placeholder="seasonal, minimal, trending..." formControlName="tags" />
           </label>
 
-          <label class="flex flex-col gap-1">
-            <span
-              class="text-[10px] font-bold text-gray-500 uppercase tracking-wide"
-            >
-              Sort Order
-            </span>
-            <input
-              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-1.5 text-xs text-text-main-light dark:text-text-main-dark focus:ring-1 focus:ring-primary"
-              type="number"
-              placeholder="0"
-              formControlName="sortOrder"
-              min="0"
-            />
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Global Sort Priority</span>
+            <input class="form-input !h-11 !text-[10px] font-mono" type="number" placeholder="0" formControlName="sortOrder" min="0" />
           </label>
         </div>
       </div>

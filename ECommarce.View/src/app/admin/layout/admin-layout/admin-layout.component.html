@@ -1,19 +1,19 @@
 <div
-  class="bg-supporting dark:bg-background-dark text-text-main flex h-screen overflow-hidden relative"
+  class="bg-ds-bg text-ds-text flex h-screen overflow-hidden relative"
 >
   <!-- Mobile Backdrop -->
   <div
     *ngIf="sidebarService.isOpen()"
     (click)="sidebarService.close()"
-    class="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300"
+    class="fixed inset-0 bg-ds-accent/40 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
   ></div>
 
   <app-admin-sidebar></app-admin-sidebar>
 
   <main class="flex-1 flex flex-col h-full overflow-hidden relative">
     <app-admin-header></app-admin-header>
-    <div class="flex-1 overflow-y-auto p-4 md:p-5">
-      <div class="max-w-7xl mx-auto flex flex-col gap-6">
+    <div class="flex-1 overflow-y-auto p-ds-4 md:p-ds-8 lg:p-ds-10">
+      <div class="site-container-admin mx-auto flex flex-col gap-ds-8">
         <router-outlet></router-outlet>
       </div>
     </div>
