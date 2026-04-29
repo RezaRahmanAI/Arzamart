@@ -76,4 +76,16 @@ export class AdminAnalyticsComponent implements OnInit {
     const percentage = (amount / this.maxSalesAmount) * 100;
     return `${Math.max(percentage, 2)}%`;
   }
+
+  getStatusPercentage(count: number): string {
+    const total = this.statusDistribution.reduce((acc, curr) => acc + curr.count, 0);
+    if (total === 0) return "0%";
+    return `${(count / total) * 100}%`;
+  }
+
+  getCustomerGrowthHeight(count: number): string {
+    const max = Math.max(...this.customerGrowth.map((c) => c.count), 1);
+    const percentage = (count / max) * 100;
+    return `${Math.max(percentage, 5)}%`;
+  }
 }

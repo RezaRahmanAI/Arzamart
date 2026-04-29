@@ -104,7 +104,7 @@
                  'bg-red-500/60': item.status === 'Cancelled' || item.status === 'Refund',
                  'bg-ds-text/30': !['Processing','Shipped','Delivered','Cancelled','Refund'].includes(item.status)
                }"
-               style="width: 100%" 
+               [style.width]="getStatusPercentage(item.count)" 
              ></div>
            </div>
         </div>
@@ -133,7 +133,7 @@
             <div class="text-[10px] font-bold text-ds-text opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-1 group-hover:translate-y-0">{{ item.count }}</div>
             <div 
               class="w-full bg-ds-text/10 border-t border-ds-text group-hover:bg-ds-text/30 transition-all duration-700 rounded-t-sm"
-              style="height: 60px; min-height: 4px"
+               [style.height]="getCustomerGrowthHeight(item.count)"
             ></div>
             <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">{{ item.date }}</span>
           </div>
