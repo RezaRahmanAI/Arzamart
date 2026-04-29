@@ -1,96 +1,94 @@
-﻿<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 bg-gray-50 dark:bg-[#111111] min-h-screen">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-10">
   <!-- Page Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h2 class="text-primary dark:text-white text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
-        My Profile
-      </h2>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mt-1 font-medium italic">
-        Manage your personal information and security credentials.
+      <h2 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">Personnel Profile</h2>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+        Administrative Identity & Security Credentials Governance
       </p>
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="p-20 flex flex-col items-center justify-center space-y-4">
-    <div class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-    <p class="text-xs font-black text-gray-400 uppercase tracking-widest">Hydrating profile data...</p>
+  <div *ngIf="isLoading" class="py-ds-32 flex flex-col items-center justify-center gap-ds-6">
+    <div class="w-12 h-12 border-2 border-ds-border border-t-ds-text rounded-sm animate-spin"></div>
+    <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.5em] animate-pulse">Hydrating Profile Metadata...</p>
   </div>
 
-  <div *ngIf="!isLoading" class="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
+  <div *ngIf="!isLoading" class="grid grid-cols-1 lg:grid-cols-12 gap-ds-8 animate-in fade-in duration-500">
     <!-- Left Column: Personal Info -->
-    <div class="lg:col-span-7 space-y-8">
-      <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2.5rem] overflow-hidden shadow-sm shadow-gray-200/50">
-        <div class="p-8 border-b border-gray-50 dark:border-gray-800 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                <app-icon name="User" size="24"></app-icon>
+    <div class="lg:col-span-7 flex flex-col gap-ds-8">
+      <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm">
+        <div class="px-ds-8 py-ds-5 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-4">
+            <div class="size-10 rounded-sm bg-ds-text text-ds-surface flex items-center justify-center grayscale">
+                <app-icon name="User" size="18"></app-icon>
             </div>
             <div>
-                <h3 class="text-xl font-semibold text-primary dark:text-white">Personal Identity</h3>
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Your visible profile information</p>
+                <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Identity Parameters</h3>
+                <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Personnel Visible Registry Data</p>
             </div>
         </div>
 
-        <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" class="p-8 space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" class="p-ds-8 flex flex-col gap-ds-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
                 <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Full Name</label>
+                    <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Official Nomenclature</label>
                     <div class="relative group">
-                        <app-icon name="User" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                        <app-icon name="User" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                         <input type="text" formControlName="fullName" 
-                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                               class="form-input !h-12 !pl-12 !text-[11px] font-bold uppercase tracking-tight">
                     </div>
                 </div>
                 <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Username</label>
+                    <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">System Alias</label>
                     <div class="relative group">
-                        <app-icon name="Shield" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                        <app-icon name="Shield" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                         <input type="text" formControlName="userName" 
-                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                               class="form-input !h-12 !pl-12 !text-[11px] font-bold uppercase tracking-tight">
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
                 <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Email Address</label>
+                    <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Communication Terminal (Email)</label>
                     <div class="relative group">
-                        <app-icon name="Mail" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                        <app-icon name="Mail" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                         <input type="email" formControlName="email" 
-                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                               class="form-input !h-12 !pl-12 !text-[11px] font-bold tracking-tight">
                     </div>
                 </div>
                 <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Phone Number</label>
+                    <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Direct Interface (Phone)</label>
                     <div class="relative group">
-                        <app-icon name="Phone" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors"></app-icon>
+                        <app-icon name="Phone" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                         <input type="text" formControlName="phone" 
-                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                               class="form-input !h-12 !pl-12 !text-[11px] font-bold font-mono tracking-tight">
                     </div>
                 </div>
             </div>
 
-            <!-- Validation Check for SuperAdmin -->
-            <div *ngIf="profileForm.get('email')?.dirty && userProfile?.role === 'SuperAdmin'" class="p-6 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 rounded-2xl space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
-                <div class="flex items-center gap-2 text-amber-700 dark:text-amber-400">
-                    <app-icon name="Key" size="16"></app-icon>
-                    <span class="text-[10px] font-black uppercase tracking-widest">Authority Verification Required</span>
+            <!-- Authority Verification for SuperAdmin -->
+            <div *ngIf="profileForm.get('email')?.dirty && userProfile?.role === 'SuperAdmin'" class="p-ds-6 bg-ds-bg border border-ds-border rounded-sm space-y-ds-4 animate-in fade-in slide-in-from-top-4 duration-300">
+                <div class="flex items-center gap-ds-3 text-ds-text">
+                    <app-icon name="ShieldAlert" size="16"></app-icon>
+                    <span class="text-[9px] font-bold uppercase tracking-[0.3em]">Authority Verification Required</span>
                 </div>
-                <p class="text-[11px] font-medium text-amber-600 dark:text-amber-400/80 leading-relaxed italic">
-                    You are attempting to change your **Super Admin** email. This requires your current password for security.
+                <p class="text-[10px] font-bold text-ds-text-muted leading-relaxed uppercase tracking-widest italic">
+                    Administrative email modification detected. Identity confirmation required for Super Admin tier.
                 </p>
                 <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-amber-700 dark:text-amber-400/60 uppercase tracking-[0.2em] ml-1">Current Password</label>
-                    <input type="password" formControlName="currentPassword" placeholder="Confirm your identity"
-                           class="w-full px-4 py-3 bg-white dark:bg-gray-950 border border-amber-100 dark:border-amber-900/40 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all outline-none">
+                    <label class="text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Confirm Primary Access Key</label>
+                    <input type="password" formControlName="currentPassword" placeholder="ENCODE PASSWORD"
+                           class="form-input !h-11 !px-ds-4 !text-[11px] font-bold tracking-widest !bg-ds-surface">
                 </div>
             </div>
 
-            <div class="flex justify-end pt-4">
+            <div class="flex justify-end pt-ds-4">
                 <button type="submit" [disabled]="profileForm.invalid || isSubmitting"
-                        class="px-8 py-3.5 rounded-2xl bg-primary text-white font-semibold text-sm hover:scale-[1.02] active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3">
-                    <app-icon *ngIf="isSubmitting" name="Loader2" size="20" className="animate-spin"></app-icon>
-                    <app-icon *ngIf="!isSubmitting" name="Save" size="20"></app-icon>
-                    <span>{{ isSubmitting ? 'Saving Changes...' : 'Update Profile' }}</span>
+                        class="btn btn-primary h-12 px-ds-10 !text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-ds-3">
+                    <app-icon *ngIf="isSubmitting" name="Loader2" size="18" className="animate-spin"></app-icon>
+                    <app-icon *ngIf="!isSubmitting" name="Check" size="18"></app-icon>
+                    <span>{{ isSubmitting ? 'Syncing...' : 'Establish Profile' }}</span>
                 </button>
             </div>
         </form>
@@ -98,74 +96,73 @@
     </div>
 
     <!-- Right Column: Security -->
-    <div class="lg:col-span-5 space-y-8">
-        <div class="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-[2.5rem] overflow-hidden shadow-sm shadow-gray-200/50">
-            <div class="p-8 border-b border-gray-50 dark:border-gray-800 flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-600">
-                    <app-icon name="Key" size="24"></app-icon>
+    <div class="lg:col-span-5 flex flex-col gap-ds-8">
+        <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm">
+            <div class="px-ds-8 py-ds-5 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-4">
+                <div class="size-10 rounded-sm bg-ds-text text-ds-surface flex items-center justify-center grayscale">
+                    <app-icon name="Key" size="18"></app-icon>
                 </div>
                 <div>
-                    <h3 class="text-xl font-semibold text-primary dark:text-white">Security Access</h3>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Control your login credentials</p>
+                    <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Security Protocol</h3>
+                    <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Access Credential Rotation Terminal</p>
                 </div>
             </div>
     
-            <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="p-8 space-y-6">
-                <div class="space-y-4">
+            <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="p-ds-8 flex flex-col gap-ds-6">
+                <div class="space-y-ds-5">
                     <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Current Password</label>
+                        <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Operational Access Key</label>
                         <div class="relative group">
-                            <app-icon name="Lock" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-amber-500 transition-colors"></app-icon>
+                            <app-icon name="Lock" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                             <input type="password" formControlName="currentPassword" placeholder="••••••••"
-                                   class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all outline-none">
+                                   class="form-input !h-11 !pl-12 !text-[11px] font-bold tracking-widest">
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">New Password</label>
+                        <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">New Protocol Key</label>
                         <div class="relative group">
-                            <app-icon name="Key" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-amber-500 transition-colors"></app-icon>
+                            <app-icon name="Key" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                             <input type="password" formControlName="newPassword" placeholder="••••••••"
-                                   class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all outline-none">
+                                   class="form-input !h-11 !pl-12 !text-[11px] font-bold tracking-widest">
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1">Confirm New Password</label>
+                        <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Verify Protocol Key</label>
                         <div class="relative group">
-                            <app-icon name="Key" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-amber-500 transition-colors"></app-icon>
+                            <app-icon name="Key" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                             <input type="password" formControlName="confirmPassword" placeholder="••••••••"
-                                   class="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all outline-none">
+                                   class="form-input !h-11 !pl-12 !text-[11px] font-bold tracking-widest">
                         </div>
                     </div>
                 </div>
     
                 <button type="submit" [disabled]="passwordForm.invalid || isPasswordSubmitting"
-                        class="w-full py-4 rounded-2xl bg-amber-500 text-white font-semibold text-sm hover:scale-[1.02] active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all shadow-xl shadow-amber-500/20 flex items-center justify-center gap-3">
-                    <app-icon *ngIf="isPasswordSubmitting" name="Loader2" size="20" className="animate-spin"></app-icon>
-                    <span>{{ isPasswordSubmitting ? 'Updating Password...' : 'Change Access Key' }}</span>
+                        class="btn btn-secondary !h-12 !w-full !text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-ds-3">
+                    <app-icon *ngIf="isPasswordSubmitting" name="Loader2" size="18" className="animate-spin"></app-icon>
+                    <span>{{ isPasswordSubmitting ? 'Rotating Credentials...' : 'Establish New Access Key' }}</span>
                 </button>
             </form>
         </div>
 
-        <!-- Quick Summary Card -->
-        <div class="p-8 rounded-[2.5rem] bg-gradient-to-br from-primary to-primary-dark text-white relative overflow-hidden shadow-2xl shadow-primary/20">
-            <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-accent/20 blur-3xl rounded-full"></div>
-            <div class="relative z-10 space-y-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
-                        <app-icon name="Shield" size="20" className="text-accent"></app-icon>
+        <!-- Session Status Card -->
+        <div class="p-ds-8 rounded-sm bg-ds-text text-ds-surface relative overflow-hidden shadow-2xl">
+            <div class="relative z-10 flex flex-col gap-ds-6">
+                <div class="flex items-center gap-ds-3">
+                    <div class="size-10 rounded-sm bg-ds-surface text-ds-text flex items-center justify-center">
+                        <app-icon name="Shield" size="18"></app-icon>
                     </div>
-                    <span class="text-xs font-black uppercase tracking-[0.2em]">Active Session Info</span>
+                    <span class="text-[10px] font-bold uppercase tracking-[0.4em]">Active Session Matrix</span>
                 </div>
                 <div>
-                    <p class="text-xs text-white/60 font-medium">Logged in as</p>
-                    <h4 class="text-lg font-bold">{{ userProfile?.fullName }}</h4>
-                    <p class="text-xs font-mono text-accent/80 mt-1">&#64;{{ userProfile?.userName }}</p>
+                    <p class="text-[8px] text-ds-surface/60 font-bold uppercase tracking-widest mb-1">Identity Verified</p>
+                    <h4 class="text-ds-xl font-bold uppercase tracking-tight">{{ userProfile?.fullName }}</h4>
+                    <p class="text-[10px] font-bold font-mono text-ds-surface/80 mt-1 uppercase tracking-widest">LOGID: {{ userProfile?.userName }}</p>
                 </div>
-                <div class="pt-2 border-t border-white/10">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-white/80">Tier: {{ userProfile?.role }} Authority</span>
-                    </div>
+                <div class="pt-ds-4 border-t border-ds-surface/10">
+                  <div class="flex items-center gap-ds-3">
+                    <div class="size-2 bg-ds-surface animate-pulse"></div>
+                    <span class="text-[9px] font-bold uppercase tracking-[0.3em]">Authority: {{ userProfile?.role }} Clearance</span>
+                  </div>
                 </div>
             </div>
         </div>

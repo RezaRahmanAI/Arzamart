@@ -1,157 +1,194 @@
-<div class="site-container py-ds-10 space-y-ds-8">
-  <!-- Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-ds-6">
-    <div class="flex items-center gap-ds-4">
-      <a routerLink="/admin/products" class="btn-icon !bg-transparent border border-ds-border text-ds-text-muted hover:text-ds-text transition-colors">
-        <app-icon name="ArrowLeft" size="20"></app-icon>
+<div class="site-container-admin mx-auto flex flex-col gap-ds-10">
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
+    <div class="flex items-start gap-ds-4">
+      <a routerLink="/admin/products" class="size-11 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text transition-colors">
+        <app-icon name="ArrowLeft" size="18"></app-icon>
       </a>
       <div>
         <h2 class="text-ds-2xl font-bold uppercase tracking-tight text-ds-text">Landing Page Design</h2>
-        <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest" *ngIf="product">Configure: {{ product.name }}</p>
+        <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5" *ngIf="product">Configure Asset: {{ product.name }}</p>
       </div>
     </div>
-    <button (click)="onSubmit()" [disabled]="isSaving" class="btn btn-primary !h-12 !px-ds-8 !text-[11px] tracking-[0.2em] uppercase">
+    <button (click)="onSubmit()" [disabled]="isSaving" class="btn btn-primary h-12 px-ds-10 !text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-ds-3">
       <app-icon *ngIf="isSaving" name="Loader2" size="18" className="animate-spin"></app-icon>
       <app-icon *ngIf="!isSaving" name="Save" size="18"></app-icon>
-      <span class="ml-2">{{ isSaving ? 'Saving...' : 'Save Changes' }}</span>
+      <span>{{ isSaving ? 'Syncing...' : 'Establish Design' }}</span>
     </button>
   </div>
 
   @if (isLoading) {
-    <div class="flex flex-col items-center justify-center py-ds-20 space-y-ds-4">
-      <app-icon name="Loader2" size="40" className="animate-spin text-ds-accent/20"></app-icon>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">Loading configuration...</p>
+    <div class="flex flex-col items-center justify-center py-ds-32 gap-ds-6">
+      <div class="size-12 border-2 border-ds-border border-t-ds-text rounded-sm animate-spin"></div>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.5em] animate-pulse">Hydrating Design Schema...</p>
     </div>
   }
 
-  <form *ngIf="!isLoading" [formGroup]="configForm" class="grid grid-cols-1 md:grid-cols-2 gap-ds-8">
+  <form *ngIf="!isLoading" [formGroup]="configForm" class="grid grid-cols-1 md:grid-cols-2 gap-ds-8 animate-in fade-in duration-500">
     
     <!-- Section: Timer & Hero -->
-    <div class="p-ds-8 bg-ds-surface border border-ds-border rounded-sm space-y-ds-8">
-      <div class="flex items-center gap-ds-3 border-b border-ds-border pb-ds-4">
-        <app-icon name="Clock" size="18" className="text-ds-accent"></app-icon>
-        <h3 class="text-ds-sm font-bold uppercase tracking-widest">Timer & Banner</h3>
+    <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm flex flex-col">
+      <div class="px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
+        <app-icon name="Clock" size="16" className="text-ds-text"></app-icon>
+        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Temporal Dynamics</h3>
       </div>
 
-      <div class="space-y-ds-6">
-        <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
-            <label class="text-[11px] font-bold uppercase tracking-widest">Show Countdown Timer</label>
-            <input type="checkbox" formControlName="isTimerVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
+      <div class="p-ds-8 flex flex-col gap-ds-8">
+        <div class="flex items-center justify-between p-ds-4 bg-ds-bg/30 border border-ds-border rounded-sm">
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] font-bold uppercase tracking-widest">Countdown Matrix</label>
+              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Active Timer Node</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="isTimerVisible" class="sr-only peer" />
+              <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+            </label>
         </div>
 
         @if (configForm.get('isTimerVisible')?.value) {
-          <div>
-            <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Relative Timer (Minutes)</label>
-            <input type="number" formControlName="relativeTimerTotalMinutes" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
+          <div class="space-y-2 animate-in slide-in-from-top-2 duration-300">
+            <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Temporal Horizon (Minutes)</label>
+            <input type="number" formControlName="relativeTimerTotalMinutes" 
+                   class="form-input !h-12 !px-ds-4 !text-[11px] font-bold font-mono">
           </div>
         }
 
-        <div>
-            <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Header Title (Bengali)</label>
-            <input type="text" formControlName="headerTitle" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
+        <div class="space-y-2">
+            <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Header Nomenclature (Bengali)</label>
+            <input type="text" formControlName="headerTitle" 
+                   class="form-input !h-12 !px-ds-4 !text-[11px] font-bold uppercase tracking-tight">
         </div>
       </div>
     </div>
 
-    <!-- Section: Features -->
-    <div class="p-ds-8 bg-ds-surface border border-ds-border rounded-sm space-y-ds-8">
-        <div class="flex items-center gap-ds-3 border-b border-ds-border pb-ds-4">
-          <app-icon name="Sparkles" size="18" className="text-ds-accent"></app-icon>
-          <h3 class="text-ds-sm font-bold uppercase tracking-widest">Product Experience</h3>
+    <!-- Section: Experience -->
+    <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm flex flex-col">
+        <div class="px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
+          <app-icon name="Sparkles" size="16" className="text-ds-text"></app-icon>
+          <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">UX Parameters</h3>
         </div>
   
-        <div class="space-y-ds-6">
-          <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
-              <label class="text-[11px] font-bold uppercase tracking-widest">Show Details Section</label>
-              <input type="checkbox" formControlName="isProductDetailsVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
+        <div class="p-ds-8 flex flex-col gap-ds-8">
+          <div class="flex items-center justify-between p-ds-4 bg-ds-bg/30 border border-ds-border rounded-sm">
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold uppercase tracking-widest">Asset Details Section</label>
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Technical Specifications</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="isProductDetailsVisible" class="sr-only peer" />
+                <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+              </label>
           </div>
   
-          <div>
-              <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Details Section Title</label>
-              <input type="text" formControlName="productDetailsTitle" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
+          <div class="space-y-2">
+              <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Section Title Directive</label>
+              <input type="text" formControlName="productDetailsTitle" 
+                     class="form-input !h-12 !px-ds-4 !text-[11px] font-bold uppercase tracking-tight">
           </div>
   
-          <div class="grid grid-cols-2 gap-ds-4">
-            <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
-                <div class="flex flex-col">
-                  <label class="text-[10px] font-bold uppercase tracking-widest">Fabric Info</label>
+          <div class="grid grid-cols-2 gap-ds-6">
+            <div class="flex items-center justify-between p-ds-4 bg-ds-bg/30 border border-ds-border rounded-sm">
+                <div class="flex flex-col gap-1">
+                  <label class="text-[9px] font-bold uppercase tracking-widest">Fabric Spec</label>
                   <span class="text-[8px] font-bold text-ds-text-muted uppercase">Visible</span>
                 </div>
-                <input type="checkbox" formControlName="isFabricVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
+                <label class="relative inline-flex items-center cursor-pointer scale-90">
+                  <input type="checkbox" formControlName="isFabricVisible" class="sr-only peer" />
+                  <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+                </label>
             </div>
 
-            <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
-              <div class="flex flex-col">
-                <label class="text-[10px] font-bold uppercase tracking-widest">Design Info</label>
+            <div class="flex items-center justify-between p-ds-4 bg-ds-bg/30 border border-ds-border rounded-sm">
+              <div class="flex flex-col gap-1">
+                <label class="text-[9px] font-bold uppercase tracking-widest">Design Spec</label>
                 <span class="text-[8px] font-bold text-ds-text-muted uppercase">Visible</span>
               </div>
-              <input type="checkbox" formControlName="isDesignVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
+              <label class="relative inline-flex items-center cursor-pointer scale-90">
+                <input type="checkbox" formControlName="isDesignVisible" class="sr-only peer" />
+                <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+              </label>
             </div>
           </div>
         </div>
     </div>
 
-    <!-- Section: Trust & Forms -->
-    <div class="p-ds-8 bg-ds-surface border border-ds-border rounded-sm space-y-ds-8 md:col-span-2">
-        <div class="flex items-center gap-ds-3 border-b border-ds-border pb-ds-4">
-            <app-icon name="Shield" size="18" className="text-ds-accent"></app-icon>
-            <h3 class="text-ds-sm font-bold uppercase tracking-widest">Trust & Social Proof</h3>
+    <!-- Section: Social Signals -->
+    <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm md:col-span-2">
+        <div class="px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
+            <app-icon name="ShieldCheck" size="16" className="text-ds-text"></app-icon>
+            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Social Proof & Urgency Matrix</h3>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-ds-6">
-            <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
-                <label class="text-[11px] font-bold uppercase tracking-widest">Customer Reviews</label>
-                <input type="checkbox" formControlName="isReviewsVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
-            </div>
-
-            <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
-                <label class="text-[11px] font-bold uppercase tracking-widest">Stock Urgency</label>
-                <input type="checkbox" formControlName="isStockUrgencyVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
-            </div>
-
-            <div class="flex items-center justify-between p-ds-4 bg-ds-bg border border-ds-border rounded-sm">
-                <label class="text-[11px] font-bold uppercase tracking-widest">Order Progress</label>
-                <input type="checkbox" formControlName="isOrderProgressVisible" class="w-10 h-5 rounded-full bg-ds-border checked:bg-ds-accent appearance-none cursor-pointer transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-transform checked:after:translate-x-5">
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-8 pt-ds-4">
-          <div class="space-y-ds-4">
-            <div>
-              <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Featured Product Name</label>
-              <input type="text" formControlName="featuredProductName" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
-            </div>
-            <div class="grid grid-cols-2 gap-ds-4">
-              <div>
-                <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Promo Price (৳)</label>
-                <input type="number" formControlName="promoPrice" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
+        <div class="p-ds-8 flex flex-col gap-ds-10">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-ds-6">
+              <div class="flex items-center justify-between p-ds-5 bg-ds-bg/30 border border-ds-border rounded-sm">
+                  <label class="text-[10px] font-bold uppercase tracking-widest">Personnel Reviews</label>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" formControlName="isReviewsVisible" class="sr-only peer" />
+                    <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+                  </label>
               </div>
-              <div>
-                <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Original Price (৳)</label>
-                <input type="number" formControlName="originalPrice" class="w-full h-12 px-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none">
+
+              <div class="flex items-center justify-between p-ds-5 bg-ds-bg/30 border border-ds-border rounded-sm">
+                  <label class="text-[10px] font-bold uppercase tracking-widest">Stock Depletion</label>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" formControlName="isStockUrgencyVisible" class="sr-only peer" />
+                    <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+                  </label>
               </div>
-            </div>
+
+              <div class="flex items-center justify-between p-ds-5 bg-ds-bg/30 border border-ds-border rounded-sm">
+                  <label class="text-[10px] font-bold uppercase tracking-widest">Logistics Velocity</label>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" formControlName="isOrderProgressVisible" class="sr-only peer" />
+                    <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+                  </label>
+              </div>
           </div>
-          <div>
-            <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-widest mb-2 ml-1">Promo Text (Bottom Banner)</label>
-            <textarea formControlName="promoText" rows="4" class="w-full p-ds-4 bg-ds-bg border border-ds-border rounded-sm text-ds-sm font-bold focus:border-ds-accent outline-none resize-none" placeholder="e.g. 🔥 limited edition — order before it's gone"></textarea>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-10 pt-ds-4">
+            <div class="flex flex-col gap-ds-6">
+              <div class="space-y-2">
+                <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Featured Asset Nomenclature</label>
+                <input type="text" formControlName="featuredProductName" 
+                       class="form-input !h-12 !px-ds-4 !text-[11px] font-bold uppercase tracking-tight">
+              </div>
+              <div class="grid grid-cols-2 gap-ds-6">
+                <div class="space-y-2">
+                  <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Promotion Tariff (৳)</label>
+                  <input type="number" formControlName="promoPrice" 
+                         class="form-input !h-12 !px-ds-4 !text-[12px] font-bold font-mono">
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Standard Tariff (৳)</label>
+                  <input type="number" formControlName="originalPrice" 
+                         class="form-input !h-12 !px-ds-4 !text-[12px] font-bold font-mono text-ds-text-muted">
+                </div>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Marketing Directive (Footer)</label>
+              <textarea formControlName="promoText" rows="4" 
+                        class="form-input !p-ds-4 !text-[11px] font-bold uppercase tracking-tight min-h-[120px] resize-none" 
+                        placeholder="E.G. 🔥 LIMITED EDITION — ORDER BEFORE TERMINATION"></textarea>
+            </div>
           </div>
         </div>
     </div>
   </form>
 
-  <!-- Notifications -->
+  <!-- Status Terminals -->
   @if (successMessage) {
-    <div class="fixed bottom-ds-8 right-ds-8 bg-ds-accent text-ds-hero-text px-ds-8 py-ds-4 rounded-sm shadow-2xl flex items-center gap-ds-3 animate-fade-in">
-      <app-icon name="Check" size="20"></app-icon>
-      <span class="text-[11px] font-bold uppercase tracking-widest">{{ successMessage }}</span>
+    <div class="fixed bottom-ds-8 right-ds-8 bg-ds-text text-ds-surface px-ds-10 py-ds-5 rounded-sm shadow-2xl border border-ds-border flex items-center gap-ds-4 animate-in fade-in slide-in-from-right-10 duration-500 z-[200]">
+      <app-icon name="Check" size="18"></app-icon>
+      <span class="text-[10px] font-bold uppercase tracking-[0.3em]">{{ successMessage }}</span>
     </div>
   }
 
   @if (errorMessage) {
-    <div class="fixed bottom-ds-8 right-ds-8 bg-ds-danger text-ds-hero-text px-ds-8 py-ds-4 rounded-sm shadow-2xl flex items-center gap-ds-3 animate-fade-in">
-      <app-icon name="Info" size="20"></app-icon>
-      <span class="text-[11px] font-bold uppercase tracking-widest">{{ errorMessage }}</span>
+    <div class="fixed bottom-ds-8 right-ds-8 bg-ds-bg border border-ds-border text-ds-text px-ds-10 py-ds-5 rounded-sm shadow-2xl flex items-center gap-ds-4 animate-in fade-in slide-in-from-right-10 duration-500 z-[200]">
+      <app-icon name="AlertTriangle" size="18" className="text-red-500"></app-icon>
+      <span class="text-[10px] font-bold uppercase tracking-[0.3em]">{{ errorMessage }}</span>
     </div>
   }
 </div>

@@ -1,253 +1,189 @@
-<div class="p-8">
-  <div class="flex justify-between items-center mb-10">
+<div class="site-container-admin mx-auto flex flex-col gap-ds-10">
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-3xl font-black text-primary uppercase tracking-tighter mb-1">Content Manager</h1>
-      <p class="text-text-sub text-xs font-bold uppercase tracking-widest opacity-60">
-        System static pages & legal documentation
+      <h1 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">Legal Repository</h1>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+        Management of Static Documentation & Provenance Nodes
       </p>
     </div>
     <button
       (click)="openAddModal()"
-      class="arza-btn arza-btn-primary flex items-center gap-2"
+      class="btn btn-primary h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest"
     >
-      <app-icon name="Plus" size="16"></app-icon>
-      Create New Page
+      <app-icon name="Plus" size="14"></app-icon>
+      <span>Initialize New Page</span>
     </button>
   </div>
 
-  <div
-    class="bg-surface-light dark:bg-surface-dark rounded-3xl shadow-2xl shadow-primary/5 border border-border-color overflow-hidden"
-  >
-    <table class="w-full text-left border-collapse">
-      <thead>
-        <tr class="bg-supporting/40 border-b border-border-color">
-          <th
-            class="px-8 py-5 text-[10px] font-black text-primary uppercase tracking-wider"
+  <!-- Content Table -->
+  <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-ds-bg/50 border-b border-ds-border">
+            <th class="px-ds-8 py-ds-5 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Identity / Title</th>
+            <th class="px-ds-8 py-ds-5 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Provenance Slug</th>
+            <th class="px-ds-8 py-ds-5 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Publication State</th>
+            <th class="px-ds-8 py-ds-5 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] text-right">Protocol</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ds-border/50">
+          <tr
+            *ngFor="let page of pages"
+            class="hover:bg-ds-bg/50 transition-colors group"
           >
-            Title
-          </th>
-          <th
-            class="px-8 py-5 text-[10px] font-black text-primary uppercase tracking-wider"
-          >
-            Slug
-          </th>
-          <th
-            class="px-8 py-5 text-[10px] font-black text-primary uppercase tracking-wider"
-          >
-            Status
-          </th>
-          <th
-            class="px-8 py-5 text-[10px] font-black text-primary uppercase tracking-wider text-right"
-          >
-            Actions
-          </th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-border-color/50">
-        <tr
-          *ngFor="let page of pages"
-          class="hover:bg-supporting/30 transition-colors group"
-        >
-          <td class="px-8 py-5">
-            <span class="font-bold text-primary tracking-tight">{{ page.title }}</span>
-          </td>
-          <td class="px-8 py-5">
-            <span class="text-xs font-bold text-text-sub opacity-40">/{{ page.slug }}</span>
-          </td>
-          <td class="px-8 py-5">
-            <span
-              [ngClass]="
-                page.isActive
-                  ? 'bg-accent/10 text-accent'
-                  : 'bg-supporting text-text-sub/50'
-              "
-              class="px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest"
-            >
-              {{ page.isActive ? "Published" : "Draft" }}
-            </span>
-          </td>
-          <td class="px-6 py-4 text-right">
-            <div
-              class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <button
-                (click)="openEditModal(page)"
-                class="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                title="Edit Page"
+            <td class="px-ds-8 py-ds-5">
+              <span class="text-[11px] font-bold text-ds-text uppercase tracking-tight">{{ page.title }}</span>
+            </td>
+            <td class="px-ds-8 py-ds-5">
+              <span class="text-[10px] font-bold text-ds-text-muted font-mono tracking-tight">/{{ page.slug }}</span>
+            </td>
+            <td class="px-ds-8 py-ds-5">
+              <span
+                class="px-ds-3 py-1 rounded-sm text-[8px] font-bold uppercase tracking-widest border transition-all"
+                [ngClass]="page.isActive ? 'bg-ds-success/10 text-ds-success border-ds-success/20' : 'bg-ds-bg text-ds-text-muted border-ds-border'"
               >
-                <app-icon
-                  name="Edit"
-                  size="20"
-                  className="text-gray-500"
-                ></app-icon>
-              </button>
-              <button
-                *ngIf="authService.isSuperAdmin()"
-                (click)="deletePage(page.id)"
-                class="p-2 hover:bg-red-50 rounded-full transition-colors"
-                title="Delete Page"
-              >
-                <app-icon
-                  name="Trash2"
-                  size="20"
-                  className="text-red-400"
-                ></app-icon>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                {{ page.isActive ? "Published" : "Draft node" }}
+              </span>
+            </td>
+            <td class="px-ds-8 py-ds-5 text-right">
+              <div class="flex justify-end gap-ds-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <button
+                  (click)="openEditModal(page)"
+                  class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors"
+                  title="Modify Node"
+                >
+                  <app-icon name="Edit3" size="14"></app-icon>
+                </button>
+                <button
+                  *ngIf="authService.isSuperAdmin()"
+                  (click)="deletePage(page.id)"
+                  class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors"
+                  title="Terminate Node"
+                >
+                  <app-icon name="Trash2" size="14"></app-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Empty State -->
-    <div *ngIf="pages.length === 0" class="p-12 text-center">
-      <app-icon
-        name="FileText"
-        size="64"
-        className="text-gray-200 mb-4 mx-auto"
-      ></app-icon>
-      <h3 class="text-lg font-medium text-gray-600">No static pages yet</h3>
-      <p class="text-gray-500 mb-6">
-        Create your first content page to provide info to your users.
+    <div *ngIf="pages.length === 0" class="py-ds-32 text-center">
+      <app-icon name="FileText" size="64" className="mx-auto mb-ds-6 text-ds-text-muted opacity-10"></app-icon>
+      <h3 class="text-[12px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Zero Legal Nodes</h3>
+      <p class="text-[10px] font-bold text-ds-text-muted/60 uppercase tracking-widest italic mt-2">
+        Static documentation repository is currently devoid of published nodes.
       </p>
     </div>
   </div>
 </div>
 
 <!-- Modal -->
-<div
-  *ngIf="isModalOpen"
-  class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
->
-  <div
-    class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl"
-  >
-    <div
-      class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl"
-    >
-      <h2 class="text-xl font-bold text-gray-800">
-        {{ isEditing ? "Edit Page" : "Create New Page" }}
-      </h2>
-      <button
-        (click)="closeModal()"
-        class="p-2 hover:bg-gray-200 rounded-full transition-colors"
-      >
-        <app-icon
-          name="X"
-          size="20"
-          className="text-gray-500"
-        ></app-icon>
+<div *ngIf="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-ds-4 bg-ds-text/60 backdrop-blur-md animate-in fade-in duration-300">
+  <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-4xl max-h-[90vh] shadow-2xl relative overflow-hidden flex flex-col animate-in zoom-in duration-base">
+    <div class="px-ds-8 py-ds-6 border-b border-ds-border bg-ds-bg/50 flex items-center justify-between">
+      <div>
+        <h2 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">
+          {{ isEditing ? 'Modify Documentation' : 'Initialize Legal Node' }}
+        </h2>
+        <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Content Configuration Terminal</p>
+      </div>
+      <button (click)="closeModal()" class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm text-ds-text-muted hover:text-ds-text">
+        <app-icon name="X" size="20"></app-icon>
       </button>
     </div>
 
-    <form [formGroup]="pageForm" (ngSubmit)="onSubmit()" class="p-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <label
-            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
-            >Page Title</label
-          >
+    <form [formGroup]="pageForm" (ngSubmit)="onSubmit()" class="flex-1 overflow-y-auto p-ds-8 flex flex-col gap-ds-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-8">
+        <!-- Title -->
+        <div class="space-y-2">
+          <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Official Nomenclature</label>
           <input
             type="text"
             formControlName="title"
-            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-            placeholder="e.g. Privacy Policy"
+            placeholder="E.G. PRIVACY ARCHIVE"
+            class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase"
           />
         </div>
 
-        <div>
-          <label
-            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
-            >Slug (URL Path)</label
-          >
+        <!-- Slug -->
+        <div class="space-y-2">
+          <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Provenance Path (Slug)</label>
           <div class="flex items-center">
-            <span
-              class="bg-gray-100 px-3 py-3 border border-r-0 border-gray-200 rounded-l-xl text-gray-500 text-sm"
-              >/</span
-            >
+            <span class="h-11 px-ds-4 bg-ds-bg border border-r-0 border-ds-border rounded-l-sm text-ds-text-muted text-[11px] font-bold flex items-center">/</span>
             <input
               type="text"
               formControlName="slug"
-              class="w-full px-4 py-3 rounded-r-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
               placeholder="privacy-policy"
+              class="form-input !h-11 !rounded-l-none !text-[11px] font-bold font-mono tracking-tight"
             />
           </div>
         </div>
 
-        <div class="col-span-2">
-          <label
-            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
-            >Content (HTML allowed)</label
-          >
+        <!-- Content Editor -->
+        <div class="col-span-2 space-y-2">
+          <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Terminal Markup (HTML Supported)</label>
           <textarea
             formControlName="content"
             rows="12"
-            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-mono text-sm"
-            placeholder="Write your page content here..."
+            class="form-input !py-ds-4 !px-ds-5 !text-[11px] font-bold font-mono tracking-tight min-h-[300px]"
+            placeholder="ENCODE DOCUMENTATION MARKUP HERE..."
           ></textarea>
         </div>
 
-        <div class="col-span-2 border-t border-gray-100 pt-6">
-          <h3 class="text-sm font-bold text-gray-800 mb-4">SEO Metadata</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label
-                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1"
-                >Meta Title</label
-              >
+        <!-- SEO Matrix -->
+        <div class="col-span-2 bg-ds-bg/30 border border-ds-border p-ds-8 rounded-sm space-y-ds-6">
+          <h3 class="text-[9px] font-bold text-ds-text uppercase tracking-[0.3em] pb-ds-3 border-b border-ds-border">Search Indexing Metadata</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
+            <div class="space-y-2">
+              <label class="block text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Meta Identity</label>
               <input
                 type="text"
                 formControlName="metaTitle"
-                class="w-full px-4 py-2 text-sm rounded-lg border border-gray-200 outline-none"
+                class="form-input !h-10 !px-ds-4 !text-[10px] font-bold uppercase"
               />
             </div>
-            <div>
-              <label
-                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1"
-                >Meta Description</label
-              >
+            <div class="space-y-2">
+              <label class="block text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Meta Descriptive Logic</label>
               <input
                 type="text"
                 formControlName="metaDescription"
-                class="w-full px-4 py-2 text-sm rounded-lg border border-gray-200 outline-none"
+                class="form-input !h-10 !px-ds-4 !text-[10px] font-bold uppercase"
               />
             </div>
           </div>
         </div>
 
-        <div class="col-span-2 flex items-center gap-3">
-          <input
-            type="checkbox"
-            id="pageIsActive"
-            formControlName="isActive"
-            class="size-5 rounded border-gray-300 text-primary focus:ring-primary"
-          />
-          <label for="pageIsActive" class="text-sm font-medium text-gray-700"
-            >Publish this page (Make it active)</label
-          >
+        <!-- Publication Toggle -->
+        <div class="col-span-2 flex items-center gap-ds-4 py-ds-2">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" formControlName="isActive" class="sr-only peer" />
+            <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+          </label>
+          <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">Authorize Node Publication</span>
         </div>
       </div>
 
-      <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
+      <!-- Footer Actions -->
+      <div class="flex justify-end gap-ds-4 pt-ds-8 border-t border-ds-border bg-ds-surface sticky bottom-0 mt-auto">
         <button
           type="button"
           (click)="closeModal()"
-          class="px-6 py-2.5 rounded-xl text-gray-600 font-medium hover:bg-gray-100 transition-colors"
+          class="btn btn-secondary h-12 px-ds-10 !text-[11px] font-bold uppercase tracking-widest"
         >
-          Cancel
+          Abort
         </button>
         <button
           type="submit"
           [disabled]="isSubmitting"
-          class="px-8 py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+          class="btn btn-primary h-12 px-ds-12 !text-[11px] font-bold uppercase tracking-widest flex items-center gap-ds-3 !bg-ds-text !text-ds-surface"
         >
-          <app-icon
-            *ngIf="isSubmitting"
-            name="Loader2"
-            size="20"
-            className="animate-spin"
-          ></app-icon>
-          {{ isEditing ? "Save Changes" : "Create Page" }}
+          <app-icon *ngIf="isSubmitting" name="Loader2" size="18" className="animate-spin"></app-icon>
+          <span>{{ isSubmitting ? 'Syncing' : (isEditing ? 'Establish Changes' : 'Initialize Node') }}</span>
         </button>
       </div>
     </form>

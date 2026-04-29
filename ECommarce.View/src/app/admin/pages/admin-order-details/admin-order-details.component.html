@@ -1,240 +1,207 @@
 <div
   *ngIf="order$ | async as order; else loading"
-  class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 scroll-smooth"
+  class="site-container-admin mx-auto flex flex-col gap-ds-10"
 >
   <!-- Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-    <div>
-      <div class="flex items-center gap-2 mb-1">
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
+    <div class="space-y-4">
+      <div>
         <a
           routerLink="/admin/orders"
-          class="text-sm text-gray-500 hover:text-primary flex items-center gap-1"
+          class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em] hover:text-ds-text flex items-center gap-ds-2 transition-colors mb-4"
         >
-          <app-icon name="ChevronLeft" size="16"></app-icon>
-          Back to Orders
+          <app-icon name="ArrowLeft" size="12"></app-icon>
+          Return to Registry
         </a>
       </div>
-      <h2
-        class="text-primary dark:text-white text-3xl font-semibold leading-tight tracking-tight flex items-center gap-4"
-      >
-        Order {{ order.orderNumber }}
+      <div class="flex flex-col sm:flex-row sm:items-center gap-ds-4">
+        <h2 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">
+          ORDER {{ order.orderNumber }}
+        </h2>
         
-        <!-- Interactive Status Badge -->
-        <div class="relative inline-block h-fit" (click)="$event.stopPropagation()">
+        <!-- Interactive Status Terminal -->
+        <div class="relative inline-block" (click)="$event.stopPropagation()">
             <button 
               (click)="toggleStatusMenu($event)"
-              class="px-4 py-1.5 rounded-full text-xs font-semibold uppercase border-2 flex items-center gap-2 transition-all hover:scale-[1.03] active:scale-95 shadow-sm group"
+              class="px-ds-4 py-2 rounded-sm text-[9px] font-bold uppercase tracking-widest border flex items-center gap-ds-3 transition-all active:scale-95 shadow-sm group"
               [ngClass]="statusClass(order.status)"
+              [style.borderColor]="getStatusColor(order.status) + '40'"
+              [style.color]="getStatusColor(order.status)"
+              [style.backgroundColor]="getStatusColor(order.status) + '10'"
             >
-              <div class="w-2 h-2 rounded-full animate-pulse" [ngStyle]="{ backgroundColor: getStatusColor(order.status) }"></div>
+              <div class="size-2 rounded-sm animate-pulse" [ngStyle]="{ backgroundColor: getStatusColor(order.status) }"></div>
               <span>{{ order.status }}</span>
-              <app-icon name="ChevronDown" size="16" className="opacity-50 group-hover:opacity-100 transition-opacity" [className]="statusMenuOpen ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
+              <app-icon name="ChevronDown" size="14" className="opacity-50 group-hover:opacity-100 transition-opacity" [className]="statusMenuOpen ? 'rotate-180 transition-transform' : 'transition-transform'"></app-icon>
             </button>
 
             <!-- Status Selection Popover -->
             <div *ngIf="statusMenuOpen" 
-                 class="absolute left-0 mt-3 w-56 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-[1.5rem] shadow-2xl z-[150] p-3 animate-in fade-in zoom-in duration-200 max-h-[300px] overflow-y-auto custom-scrollbar-thin">
-              <p class="px-2 py-1.5 text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-50 dark:border-gray-800/50 mb-2">Change Status</p>
-              <div class="space-y-1">
+                 class="absolute left-0 mt-ds-3 w-64 bg-ds-surface/90 backdrop-blur-md border border-ds-border rounded-sm shadow-2xl z-[150] p-ds-3 animate-in fade-in zoom-in duration-200 max-h-[350px] overflow-y-auto">
+              <p class="px-ds-3 py-2 text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.4em] border-b border-ds-border mb-ds-2">Update Operational State</p>
+              <div class="flex flex-col gap-1">
                 <button *ngFor="let status of statusOptions" 
                         (click)="updateStatus(order.id, status)" 
-                        class="w-full px-3 py-2.5 text-left text-xs font-semibold rounded-xl transition-all flex items-center justify-between group"
-                        [class.bg-primary]="order.status === status"
-                        [class.text-white]="order.status === status"
-                        [class.hover:bg-gray-50]="order.status !== status"
-                        [class.dark:hover:bg-gray-800]="order.status !== status">
-                  <div class="flex items-center gap-3">
-                    <div class="w-2 h-2 rounded-full shadow-sm" [ngStyle]="{ backgroundColor: getStatusColor(status) }"></div>
+                        class="w-full px-ds-4 py-2.5 text-left text-[10px] font-bold uppercase tracking-widest rounded-sm transition-all flex items-center justify-between group"
+                        [class.bg-ds-text]="order.status === status"
+                        [class.text-ds-surface]="order.status === status"
+                        [class.hover:bg-ds-bg]="order.status !== status">
+                  <div class="flex items-center gap-ds-3">
+                    <div class="size-2 rounded-sm shadow-sm" [ngStyle]="{ backgroundColor: getStatusColor(status) }"></div>
                     <span>{{ status }}</span>
                   </div>
-                  <app-icon *ngIf="order.status === status" name="Check" size="12"></app-icon>
+                  <app-icon *ngIf="order.status === status" name="Check" size="14"></app-icon>
                 </button>
               </div>
             </div>
         </div>
-      </h2>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mt-1 font-medium">
-        Placed on {{ order.createdAt | date: "MMMM d, y • h:mm a" }}
+      </div>
+      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+        Registry Timestamp: {{ order.createdAt | date: "MMMM d, y • HH:mm" }}
       </p>
-    </div>
-    <!-- Clean Header Actions -->
-    <div class="flex gap-3 h-fit">
-      <!-- Buttons removed in favor of status dropdown -->
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Order Items -->
-    <div class="lg:col-span-2 space-y-6">
-      <div
-        class="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm"
-      >
-        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="font-semibold text-lg text-primary dark:text-white">
-            Order Items
-          </h3>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-ds-8">
+    <!-- Order Manifest -->
+    <div class="lg:col-span-2 flex flex-col gap-ds-8">
+      <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm">
+        <div class="px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50">
+          <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Transaction Manifest</h3>
         </div>
-        <div class="divide-y divide-gray-100 dark:divide-gray-800">
+        <div class="divide-y divide-ds-border/50">
           <div
             *ngFor="let item of order.items"
-            class="p-4 flex items-center gap-4"
+            class="p-ds-8 flex items-center gap-ds-6 group"
           >
             <div
-              class="w-16 h-16 rounded-lg bg-gray-100 bg-cover bg-center border border-gray-200 flex-shrink-0"
-              [style.background-image]="
-                'url(' + imageUrlService.getImageUrl(item.imageUrl) + ')'
-              "
+              class="size-20 rounded-sm bg-ds-bg bg-cover bg-center border border-ds-border flex-shrink-0 grayscale transition-all group-hover:grayscale-0 duration-700"
+              [style.background-image]="'url(' + imageUrlService.getImageUrl(item.imageUrl) + ')'"
             ></div>
-            <div class="flex-1">
-              <h4 class="font-medium text-primary dark:text-white">
+            <div class="flex-1 space-y-2">
+              <h4 class="text-[12px] font-bold text-ds-text uppercase tracking-tight">
                 {{ item.productName }}
               </h4>
-              <p
+              <div
                 *ngIf="item.size"
-                class="text-sm font-medium mt-1 inline-flex flex-wrap gap-2"
+                class="flex flex-wrap gap-ds-2"
               >
-                <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300">
-                  Size: {{ item.size }}
+                <span class="px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm text-[9px] font-bold text-ds-text uppercase tracking-widest">
+                  SIZE: {{ item.size }}
                 </span>
-              </p>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Qty: {{ item.quantity }} ×
-                <app-price-display
-                  [amount]="item.unitPrice"
-                  size="sm"
-                ></app-price-display>
+              </div>
+              <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">
+                QUANTITY: {{ item.quantity }} ×
+                <span class="text-ds-text font-mono">৳{{ item.unitPrice }}</span>
               </p>
             </div>
             <div class="text-right">
-              <app-price-display
-                [amount]="item.totalPrice"
-                class="font-semibold text-primary dark:text-white"
-              ></app-price-display>
+              <span class="text-[13px] font-bold text-ds-text font-mono tracking-tighter">৳{{ item.totalPrice }}</span>
             </div>
           </div>
         </div>
-        <div
-          class="p-4 bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 space-y-2"
-        >
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-500">Subtotal</span>
-            <app-price-display [amount]="order.subTotal"></app-price-display>
+        <div class="p-ds-8 bg-ds-bg/30 border-t border-ds-border flex flex-col gap-ds-3">
+          <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+            <span class="text-ds-text-muted">Net Subtotal</span>
+            <span class="text-ds-text font-mono">৳{{ order.subTotal }}</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-500">Shipping</span>
-            <app-price-display
-              [amount]="order.shippingCost"
-            ></app-price-display>
+          <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+            <span class="text-ds-text-muted">Logistics Tariff</span>
+            <span class="text-ds-text font-mono">৳{{ order.shippingCost }}</span>
           </div>
 
-          <div
-            class="flex justify-between font-semibold text-lg pt-2 border-t border-gray-200 dark:border-gray-700"
-          >
-            <span>Total</span>
-            <app-price-display [amount]="order.total"></app-price-display>
+          <div class="flex justify-between items-center pt-ds-4 border-t border-ds-border">
+            <span class="text-[12px] font-bold text-ds-text uppercase tracking-[0.2em]">Gross Total</span>
+            <span class="text-ds-xl font-bold text-ds-text font-mono tracking-tighter">৳{{ order.total }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Customer & Shipping -->
-    <div class="space-y-6">
-      <!-- Customer Info -->
-      <div
-        class="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm p-4"
-      >
-        <h3 class="font-semibold text-lg text-primary dark:text-white mb-4">
-          Customer
-        </h3>
-        <div class="flex flex-col gap-2">
-          <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold"
-            >
-              {{ order.customerName.charAt(0) || 'U' }}
-            </div>
-            <div>
-              <p class="font-medium text-primary dark:text-white">
-                {{ order.customerPhone }}
-              </p>
-              <p class="text-sm text-gray-500">{{ order.customerName }}</p>
-            </div>
+    <!-- Personnel & Logistics -->
+    <div class="flex flex-col gap-ds-8">
+      <!-- Entity Profile -->
+      <div class="bg-ds-surface border border-ds-border rounded-sm p-ds-6 shadow-sm space-y-ds-6">
+        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em] border-b border-ds-border pb-ds-3">Entity Profile</h3>
+        <div class="flex items-center gap-ds-4">
+          <div class="size-12 rounded-sm bg-ds-text text-ds-surface flex items-center justify-center font-bold text-[16px] grayscale">
+            {{ order.customerName.charAt(0) || 'U' }}
+          </div>
+          <div class="space-y-1">
+            <p class="text-[12px] font-bold text-ds-text uppercase tracking-tight">{{ order.customerName }}</p>
+            <p class="text-[10px] font-bold text-ds-text-muted font-mono tracking-widest">{{ order.customerPhone }}</p>
           </div>
         </div>
       </div>
 
-      <!-- Official & Customer Notes -->
-      <div *ngIf="order.adminNote || order.customerNote" class="space-y-4">
-        <div *ngIf="order.adminNote" class="bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 rounded-xl p-4">
-          <h4 class="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1">Official Note (Internal)</h4>
-          <p class="text-sm text-amber-900 dark:text-amber-200 font-medium">{{ order.adminNote }}</p>
+      <!-- Operational Directives -->
+      <div *ngIf="order.adminNote || order.customerNote" class="flex flex-col gap-ds-4">
+        <div *ngIf="order.adminNote" class="bg-ds-bg border border-ds-border rounded-sm p-ds-5 space-y-1">
+          <h4 class="text-[9px] font-bold text-ds-text uppercase tracking-widest opacity-60">INTERNAL DIRECTIVE (ADMIN)</h4>
+          <p class="text-[11px] font-bold text-ds-text uppercase tracking-tight leading-relaxed italic">{{ order.adminNote }}</p>
         </div>
         
-        <div *ngIf="order.customerNote" class="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-xl p-4">
-          <h4 class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1">Customer Note (Invoice)</h4>
-          <p class="text-sm text-emerald-900 dark:text-emerald-200 font-medium">{{ order.customerNote }}</p>
+        <div *ngIf="order.customerNote" class="bg-ds-surface border border-ds-border rounded-sm p-ds-5 space-y-1">
+          <h4 class="text-[9px] font-bold text-ds-text uppercase tracking-widest opacity-60">CLIENT MEMORANDUM (INVOICE)</h4>
+          <p class="text-[11px] font-bold text-ds-text uppercase tracking-tight leading-relaxed italic">{{ order.customerNote }}</p>
         </div>
       </div>
 
-      <!-- Shipping Info -->
-      <div
-        class="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm p-4"
-      >
-        <h3 class="font-semibold text-lg text-primary dark:text-white mb-2">
-          Shipping Address
-        </h3>
-        <p class="text-gray-600 dark:text-gray-300 whitespace-pre-line">
+      <!-- Provenance Logistics -->
+      <div class="bg-ds-surface border border-ds-border rounded-sm p-ds-6 shadow-sm space-y-ds-4">
+        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em] border-b border-ds-border pb-ds-3">Provenance Address</h3>
+        <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-tight leading-loose whitespace-pre-line">
           {{ order.shippingAddress }}
         </p>
-        <p *ngIf="order.area || order.city" class="text-sm text-gray-500 dark:text-gray-400 mt-2 font-medium">
-          {{ order.area }}{{ order.area && order.city ? ', ' : '' }}{{ order.city }}
-        </p>
+        <div *ngIf="order.area || order.city" class="pt-ds-2">
+          <span class="px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm text-[9px] font-bold text-ds-text uppercase tracking-widest">
+            {{ order.area }}{{ order.area && order.city ? ' • ' : '' }}{{ order.city }}
+          </span>
+        </div>
       </div>
 
-      <!-- Internal Discussion -->
-      <div class="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm flex flex-col h-[500px]">
-        <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-white dark:bg-surface-dark">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-500">
-                    <app-icon name="MessageSquare" size="16"></app-icon>
-                </div>
-                <h3 class="font-semibold text-primary dark:text-white">Staff Collaboration</h3>
+      <!-- Personnel Collaboration Terminal -->
+      <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm flex flex-col h-[500px]">
+        <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center justify-between">
+            <div class="flex items-center gap-ds-3">
+                <app-icon name="MessageSquare" size="14" className="text-ds-text"></app-icon>
+                <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Personnel Terminal</h3>
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30 dark:bg-gray-900/10 custom-scrollbar">
-            <div *ngIf="!currentOrder?.notes || currentOrder?.notes?.length === 0" class="py-10 text-center opacity-40">
-                <app-icon name="MessageCircle" size="40" className="mx-auto mb-3 text-gray-300"></app-icon>
-                <p class="text-xs font-bold text-gray-500 uppercase tracking-widest leading-loose">No staff notes yet</p>
+        <div class="flex-1 overflow-y-auto p-ds-6 space-y-ds-6 bg-ds-bg/20">
+            <div *ngIf="!currentOrder?.notes || currentOrder?.notes?.length === 0" class="h-full flex flex-col items-center justify-center opacity-10">
+                <app-icon name="Shield" size="48" className="mx-auto mb-ds-4"></app-icon>
+                <p class="text-[9px] font-bold text-ds-text uppercase tracking-[0.5em]">Zero Communications</p>
             </div>
 
-            <div *ngFor="let note of currentOrder?.notes" class="flex flex-col space-y-1 animate-in slide-in-from-bottom-1">
+            <div *ngFor="let note of currentOrder?.notes" class="flex flex-col gap-1.5 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div class="flex items-center justify-between px-1">
-                    <span class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">{{ note.adminName }}</span>
-                    <span class="text-[8px] font-semibold text-gray-400">{{ note.createdAt | date:'MMM d, h:mm a' }}</span>
+                    <span class="text-[9px] font-bold text-ds-text uppercase tracking-widest">{{ note.adminName }}</span>
+                    <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">{{ note.createdAt | date:'MMM d • HH:mm' }}</span>
                 </div>
-                <div class="bg-white dark:bg-gray-800 p-3 rounded-xl rounded-tl-none border border-gray-100 dark:border-gray-700 shadow-sm">
-                    <p class="text-xs text-gray-700 dark:text-gray-300">{{ note.content }}</p>
+                <div class="bg-ds-surface p-ds-4 rounded-sm border border-ds-border shadow-sm">
+                    <p class="text-[11px] font-bold text-ds-text-sec uppercase tracking-tight leading-relaxed">{{ note.content }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="p-4 bg-white dark:bg-surface-dark border-t border-gray-100 dark:border-gray-800">
-            <div class="relative">
+        <div class="p-ds-6 bg-ds-surface border-t border-ds-border">
+            <div class="relative flex flex-col gap-ds-3">
                 <textarea 
                     [(ngModel)]="newNoteText"
                     rows="2"
-                    placeholder="Add internal note..."
-                    class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-xs font-medium text-primary dark:text-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none resize-none"
+                    placeholder="ENCODE PERSONNEL MEMO..."
+                    class="form-input !min-h-[80px] !py-3 !px-4 !text-[11px] font-bold uppercase tracking-tight resize-none"
                     (keydown.enter)="$event.preventDefault(); addNote()"
                 ></textarea>
                 <button 
                     (click)="addNote()"
                     [disabled]="isSavingNote || !newNoteText.trim()"
-                    class="absolute bottom-2 right-2 w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20 hover:bg-indigo-600 disabled:opacity-30 transition-all"
+                    class="btn btn-primary !h-11 !w-full !text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-ds-3 !bg-ds-text !text-ds-surface"
                 >
-                    <app-icon *ngIf="isSavingNote" name="Loader2" size="16" className="animate-spin"></app-icon>
-                    <app-icon *ngIf="!isSavingNote" name="Send" size="16"></app-icon>
+                    <app-icon *ngIf="isSavingNote" name="Loader2" size="14" className="animate-spin"></app-icon>
+                    <app-icon *ngIf="!isSavingNote" name="Send" size="14"></app-icon>
+                    <span>Establish Memo</span>
                 </button>
             </div>
         </div>
@@ -244,9 +211,8 @@
 </div>
 
 <ng-template #loading>
-  <div class="flex items-center justify-center h-full">
-    <div
-      class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"
-    ></div>
+  <div class="site-container-admin h-[60vh] flex flex-col items-center justify-center gap-ds-6">
+    <div class="size-12 border-2 border-ds-border border-t-ds-text rounded-sm animate-spin"></div>
+    <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.5em] animate-pulse">Synchronizing Transactional Data...</p>
   </div>
 </ng-template>
