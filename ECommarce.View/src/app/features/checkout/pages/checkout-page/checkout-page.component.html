@@ -262,7 +262,7 @@
                 @for (item of vm.cartItems; track trackCartItem($index, item)) {
                   <div class="flex gap-ds-5">
                     <div class="w-20 h-24 bg-ds-bg border border-ds-border overflow-hidden shrink-0">
-                      <img [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-base">
+                      <img [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" class="w-full h-full object-cover transition-all duration-base">
                     </div>
                     <div class="flex-1 min-w-0 space-y-ds-1">
                       <p class="text-ds-xs font-bold text-ds-text uppercase tracking-wider truncate">{{ item.name }}</p>

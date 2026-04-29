@@ -1,11 +1,5 @@
 <div class="site-container-admin mx-auto flex flex-col gap-ds-8">
-  <!-- Page Heading -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-ds-6">
-    <div>
-      <h1 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">Manual POS</h1>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">Administrative Transactional Terminal</p>
-    </div>
-  </div>
+ 
 
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-6 items-start">
     <!-- Cart & Billing (Left) -->
@@ -263,13 +257,12 @@
                     <app-icon name="Plus" size="18"></app-icon>
                   </button>
 
-                  <!-- Visual Preview -->
-                  <div class="relative aspect-[3/4] rounded-sm overflow-hidden mb-ds-3 bg-ds-bg border border-ds-border">
-                    <img 
-                      [src]="imageUrlService.getImageUrl(product.imageUrl || '')" 
-                      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                    >
-                  </div>
+                    <div class="relative aspect-[3/4] rounded-sm overflow-hidden mb-ds-3 bg-ds-bg border border-ds-border">
+                      <img 
+                        [src]="imageUrlService.getImageUrl(product.imageUrl || '')" 
+                        class="w-full h-full object-cover transition-all duration-500"
+                      >
+                    </div>
 
                   <!-- Metadata -->
                   <div class="flex-1 min-w-0 mb-ds-3">
@@ -323,7 +316,7 @@
       <div class="p-ds-8">
         <div class="flex items-start justify-between mb-ds-10">
           <div class="flex gap-ds-6">
-            <div class="size-32 rounded-sm overflow-hidden bg-ds-bg border border-ds-border shadow-inner grayscale">
+            <div class="size-32 rounded-sm overflow-hidden bg-ds-bg border border-ds-border shadow-inner">
               <img [src]="imageUrlService.getImageUrl(selectedProduct()?.imageUrl || '')" class="w-full h-full object-cover">
             </div>
             <div class="flex-1">

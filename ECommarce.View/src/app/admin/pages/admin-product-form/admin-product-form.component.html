@@ -296,7 +296,7 @@
               <div class="relative h-44 w-full sm:w-44 bg-ds-bg border border-ds-border rounded-sm overflow-hidden flex-shrink-0 group/media">
                 <img
                   [alt]="media.get('alt')?.value || 'Product media'"
-                  class="h-full w-full object-cover grayscale group-hover/media:grayscale-0 transition-all duration-base"
+                  class="h-full w-full object-cover transition-all duration-base"
                   [src]="imageUrlService.getImageUrl(getMediaUrl(media))"
                 />
                 <div *ngIf="media.get('type')?.value === 'video'" class="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
@@ -381,7 +381,7 @@
               </button>
             </div>
             <div *ngIf="form.get('meta.sizeChartUrl')?.value" class="mt-ds-4 relative group w-32 h-32 bg-ds-bg border border-ds-border p-ds-2 rounded-sm">
-                <img [src]="imageUrlService.getImageUrl(form.get('meta.sizeChartUrl')?.value)" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-base">
+                <img [src]="imageUrlService.getImageUrl(form.get('meta.sizeChartUrl')?.value)" class="w-full h-full object-contain transition-all duration-base">
                 <button (click)="form.get('meta.sizeChartUrl')?.setValue('')" class="absolute -top-2 -right-2 size-6 bg-red-500 text-white rounded-sm flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600">
                     <app-icon name="X" size="12"></app-icon>
                 </button>

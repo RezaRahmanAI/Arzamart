@@ -46,7 +46,7 @@
             <tr class="hover:bg-ds-bg transition-colors group">
               <td class="px-ds-6 py-ds-4">
                 <div class="flex items-center gap-ds-4">
-                  <div class="size-10 rounded-sm overflow-hidden bg-ds-bg border border-ds-border flex-shrink-0 grayscale group-hover:grayscale-0 transition-all duration-500">
+                  <div class="size-10 rounded-sm overflow-hidden bg-ds-bg border border-ds-border flex-shrink-0 transition-all duration-500">
                     <img 
                       *ngIf="product.imageUrl"
                       [src]="imageUrlService.getImageUrl(product.imageUrl)" 
@@ -127,7 +127,7 @@
 
       <div class="p-ds-8" *ngIf="selectedProduct">
         <div class="flex items-center gap-ds-6 mb-ds-8 p-ds-4 bg-ds-bg/30 rounded-sm border border-ds-border">
-          <div class="size-16 rounded-sm bg-ds-surface border border-ds-border overflow-hidden shrink-0 grayscale">
+          <div class="size-16 rounded-sm bg-ds-surface border border-ds-border overflow-hidden shrink-0">
             <img [src]="imageUrlService.getImageUrl(selectedProduct.imageUrl || '')" class="w-full h-full object-cover">
           </div>
           <div class="min-w-0">

@@ -36,7 +36,7 @@
                 <div class="group relative flex flex-col sm:flex-row gap-ds-8 bg-ds-surface p-ds-6 border border-ds-border transition-all duration-base hover:border-ds-text">
                   <div class="shrink-0 relative w-full sm:w-[160px] aspect-[3/4] bg-ds-bg overflow-hidden border border-ds-border">
                     <div
-                      class="absolute inset-0 bg-cover bg-center grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                      class="absolute inset-0 bg-cover bg-center transition-all duration-700 group-hover:scale-105"
                       [style.backgroundImage]="'url(' + imageUrlService.getImageUrl(item.imageUrl) + ')'"
                     ></div>
                   </div>
@@ -135,7 +135,7 @@
                     <app-icon name="ShieldCheck" size="14" className="text-ds-success"></app-icon>
                     Secure SSL Encryption
                   </div>
-                  <div class="flex items-center justify-center gap-ds-6 opacity-30 grayscale contrast-125">
+                  <div class="flex items-center justify-center gap-ds-6 opacity-30 contrast-125">
                     <div class="text-[9px] font-bold tracking-widest uppercase">Visa</div>
                     <div class="text-[9px] font-bold tracking-widest uppercase">Mastercard</div>
                     <div class="text-[9px] font-bold tracking-widest uppercase">Bkash</div>

@@ -36,9 +36,8 @@
     </div>
   </div>
 
-  <!-- Filters Toolbar -->
   <div class="bg-ds-surface border border-ds-border p-ds-4 rounded-sm">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-ds-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-ds-3">
       <div class="relative group">
         <span class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text">
           <app-icon name="Hash" size="14"></app-icon>
@@ -300,10 +299,31 @@
             </td>
             <td class="px-ds-4 py-ds-4 text-right">
               <div class="flex items-center justify-end gap-ds-2">
+                <button *ngIf="nextStatusLabel(order)" (click)="markNextStatus(order, $event)" class="size-8 rounded-sm bg-ds-bg border border-ds-text text-ds-text hover:bg-ds-text hover:text-ds-surface transition-all flex items-center justify-center animate-pulse" [title]="nextStatusLabel(order)">
+                  <app-icon name="Check" size="14"></app-icon>
+                </button>
+                <button (click)="openNotes(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center relative" title="Notes">
+                  <app-icon name="FileText" size="14"></app-icon>
+                  <div *ngIf="order.notes && order.notes.length > 0" class="absolute -top-1 -right-1 size-2.5 bg-ds-accent rounded-full border-2 border-ds-surface"></div>
+                </button>
                 <button (click)="printInvoice(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center" title="Invoice"><app-icon name="Eye" size="14"></app-icon></button>
                 <button (click)="editOrder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center" title="Edit"><app-icon name="Edit" size="14"></app-icon></button>
                 <button (click)="openTracking(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center" title="History"><app-icon name="History" size="14"></app-icon></button>
                 <button (click)="sendWhatsApp(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-success hover:border-ds-success transition-colors flex items-center justify-center" title="WhatsApp"><app-icon name="MessageCircle" size="14"></app-icon></button>
+                
+                <button *ngIf="!order.isPreOrder" (click)="moveToPreOrder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-violet-500 hover:border-violet-500 transition-colors flex items-center justify-center" title="Move to Pre-Order">
+                  <app-icon name="ArrowRightCircle" size="14"></app-icon>
+                </button>
+                <button *ngIf="order.isPreOrder" (click)="moveToMainOrder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-emerald-500 hover:border-emerald-500 transition-colors flex items-center justify-center" title="Transfer to Main">
+                  <app-icon name="RefreshCw" size="14"></app-icon>
+                </button>
+
+                <button (click)="sendReminder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-amber-500 hover:border-amber-500 transition-colors flex items-center justify-center" title="SMS Reminder">
+                  <app-icon name="Bell" size="14"></app-icon>
+                </button>
+                <button *ngIf="order.status !== 'Cancelled'" (click)="cancelOrder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center" title="Cancel Order">
+                  <app-icon name="XCircle" size="14"></app-icon>
+                </button>
               </div>
             </td>
           </tr>
@@ -368,6 +388,64 @@
       </div>
       <div class="p-ds-6 bg-ds-bg border-t border-ds-border flex justify-end">
         <button (click)="isTrackingModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8 !text-[10px] uppercase tracking-widest">Close Log</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Modal -->
+  <div *ngIf="isNotesModalOpen && notesOrder" class="fixed inset-0 z-[200] flex items-center justify-center p-ds-4 bg-ds-bg/80 backdrop-blur-md animate-in fade-in duration-300" (click)="isNotesModalOpen = false">
+    <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in duration-base" (click)="$event.stopPropagation()">
+      <div class="bg-ds-text p-ds-6 flex items-center justify-between text-ds-surface">
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-60 mb-1">Internal Communications</p>
+          <h3 class="text-ds-lg font-bold uppercase tracking-tight">Order Notes — {{ notesOrder.orderNumber }}</h3>
+        </div>
+        <button (click)="isNotesModalOpen = false" class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm">
+          <app-icon name="X" size="20"></app-icon>
+        </button>
+      </div>
+      
+      <div class="p-ds-8 flex flex-col gap-ds-6">
+        <!-- Add New Note -->
+        <div class="space-y-3">
+          <label class="text-[10px] font-bold text-ds-text uppercase tracking-widest ml-1">Append New Observation</label>
+          <div class="relative">
+            <textarea 
+              [(ngModel)]="newNoteText"
+              rows="3"
+              class="form-textarea !p-ds-4 !text-[11px] font-medium leading-relaxed bg-ds-bg/30"
+              placeholder="Enter administrative notation..."></textarea>
+            <button 
+              (click)="addNote()"
+              [disabled]="isSavingNote || !newNoteText.trim()"
+              class="absolute bottom-3 right-3 btn btn-primary !h-8 px-ds-4 !text-[9px] uppercase tracking-widest">
+              <app-icon *ngIf="isSavingNote" name="Loader2" size="12" className="animate-spin mr-1.5"></app-icon>
+              <span>Add Note</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Note History -->
+        <div class="space-y-4">
+          <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em] border-b border-ds-border pb-2">Chronological Archive</p>
+          <div class="max-h-[300px] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+            <div *ngFor="let note of notesOrder.notes" class="p-ds-4 bg-ds-bg/50 border border-ds-border rounded-sm relative group">
+              <p class="text-[11px] text-ds-text leading-relaxed">{{ note.content }}</p>
+              <div class="mt-2 flex items-center justify-between">
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">{{ note.createdAt | date:'MMM d, h:mm a' }}</span>
+                <span class="text-[8px] font-bold text-ds-accent uppercase tracking-widest">{{ note.adminName }}</span>
+              </div>
+            </div>
+            
+            <div *ngIf="!notesOrder.notes || notesOrder.notes.length === 0" class="py-ds-8 text-center">
+              <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest italic opacity-40">No internal notes discovered.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-ds-6 bg-ds-bg border-t border-ds-border flex justify-end">
+        <button (click)="isNotesModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8 !text-[10px] uppercase tracking-widest">Close Registry</button>
       </div>
     </div>
   </div>

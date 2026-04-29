@@ -47,7 +47,7 @@
         <img
           [src]="getBannerImageUrl(banner.imageUrl)"
           [alt]="banner.title"
-          class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+          class="w-full h-full object-cover transition-all duration-700"
         />
         <div
           class="absolute inset-0 bg-ds-text/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-ds-3 backdrop-blur-sm"
@@ -194,7 +194,7 @@
             <div class="space-y-3">
               <p class="text-[8px] text-ds-text-muted uppercase font-bold tracking-[0.2em] text-center">Desktop Viewport</p>
               <div class="relative h-24 bg-ds-bg rounded-sm border border-dashed border-ds-border flex items-center justify-center overflow-hidden group/upload">
-                <img *ngIf="bannerForm.get('imageUrl')?.value" [src]="getBannerImageUrl(bannerForm.get('imageUrl')?.value!)" class="w-full h-full object-cover grayscale group-hover/upload:grayscale-0 transition-all duration-500" />
+                <img *ngIf="bannerForm.get('imageUrl')?.value" [src]="getBannerImageUrl(bannerForm.get('imageUrl')?.value!)" class="w-full h-full object-cover transition-all duration-500" />
                 <div *ngIf="!bannerForm.get('imageUrl')?.value" class="text-ds-text-muted/20 flex flex-col items-center">
                   <app-icon name="Monitor" size="24"></app-icon>
                 </div>
@@ -204,7 +204,7 @@
             <div class="space-y-3">
               <p class="text-[8px] text-ds-text-muted uppercase font-bold tracking-[0.2em] text-center">Mobile Viewport</p>
               <div class="relative h-24 bg-ds-bg rounded-sm border border-dashed border-ds-border flex items-center justify-center overflow-hidden group/upload">
-                <img *ngIf="bannerForm.get('mobileImageUrl')?.value" [src]="getBannerImageUrl(bannerForm.get('mobileImageUrl')?.value!)" class="w-full h-full object-cover grayscale group-hover/upload:grayscale-0 transition-all duration-500" />
+                <img *ngIf="bannerForm.get('mobileImageUrl')?.value" [src]="getBannerImageUrl(bannerForm.get('mobileImageUrl')?.value!)" class="w-full h-full object-cover transition-all duration-500" />
                 <div *ngIf="!bannerForm.get('mobileImageUrl')?.value" class="text-ds-text-muted/20 flex flex-col items-center">
                   <app-icon name="Smartphone" size="24"></app-icon>
                 </div>
