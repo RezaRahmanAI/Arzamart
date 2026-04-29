@@ -1,10 +1,6 @@
 <div class="site-container-admin mx-auto flex flex-col gap-ds-4">
- 
-
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-4 items-start">
-    <!-- Cart & Billing (Left) -->
     <div class="lg:col-span-5 flex flex-col gap-ds-4">
-      <!-- Order Ledger -->
       <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm overflow-hidden">
         <div class="bg-ds-bg/50 px-ds-4 py-ds-2 border-b border-ds-border flex items-center justify-between">
           <div class="flex items-center gap-ds-3">
@@ -66,80 +62,73 @@
               </tr>
             </tbody>
           </table>
-          
-          
         </div>
       </div>
 
-      <!-- Financial Summary & Customer Data -->
-      <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm p-ds-4 flex flex-col gap-ds-4">
+      <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm p-ds-3 flex flex-col gap-ds-3">
         <div class="space-y-ds-1.5">
-          <!-- Summary Matrix -->
-          <div class="grid grid-cols-2 gap-ds-3">
-            <div class="flex justify-between items-center px-ds-3 py-ds-2 bg-ds-bg border border-ds-border rounded-sm">
+          <div class="grid grid-cols-2 gap-ds-2">
+            <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm h-8">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Total Qty</span>
               <span class="text-[11px] font-bold text-ds-text uppercase">{{ totalItemsCount }}</span>
             </div>
-            <div class="flex justify-between items-center px-ds-3 py-ds-2 bg-ds-bg border border-ds-border rounded-sm">
+            <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm h-8">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Sub Total</span>
               <span class="text-[11px] font-bold text-ds-text uppercase">৳{{ subtotal }}</span>
             </div>
           </div>
 
-          <div class="flex justify-between items-center px-ds-3 py-ds-2 bg-ds-bg border border-ds-border rounded-sm">
+          <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm h-8">
             <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Delivery Charge</span>
             <span class="text-[11px] font-bold text-ds-text uppercase">৳{{ shippingCost }}</span>
           </div>
 
-          <!-- Adjustments -->
-          <div class="grid grid-cols-3 gap-ds-3" [formGroup]="orderForm">
-            <div class="flex justify-between items-center px-ds-3 h-9 bg-red-500/5 border border-red-500/10 rounded-sm">
-              <span class="text-[7px] font-bold text-red-500 uppercase tracking-widest">Discount</span>
-              <input type="number" formControlName="additionalDiscount" class="w-16 bg-transparent border-none p-0 text-[10px] font-bold text-red-500 text-right outline-none" placeholder="0">
+          <div class="grid grid-cols-3 gap-ds-2" [formGroup]="orderForm">
+            <div class="flex justify-between items-center px-ds-3 h-10 bg-red-500/5 border border-red-500/10 rounded-sm">
+              <span class="text-[8px] font-black text-red-500 uppercase tracking-widest">Discount</span>
+              <input type="number" formControlName="additionalDiscount" class="w-16 !h-8 bg-white border border-red-500 ring-2 ring-red-500/20 rounded-md px-1.5 text-[10px] font-black text-red-500 text-right outline-none">
             </div>
-            <div class="flex justify-between items-center px-ds-3 h-9 bg-ds-success/5 border border-ds-success/10 rounded-sm">
-              <span class="text-[7px] font-bold text-ds-success uppercase tracking-widest">Advance</span>
-              <input type="number" formControlName="advancePayment" class="w-16 bg-transparent border-none p-0 text-[10px] font-bold text-ds-success text-right outline-none" placeholder="0">
+            <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-success/5 border border-ds-success/10 rounded-sm">
+              <span class="text-[8px] font-black text-ds-success uppercase tracking-widest">Advance</span>
+              <input type="number" formControlName="advancePayment" class="w-16 !h-8 bg-white border border-ds-success ring-2 ring-ds-success/20 rounded-md px-1.5 text-[10px] font-black text-ds-success text-right outline-none">
             </div>
-            <div class="flex justify-between items-center px-ds-3 h-9 bg-ds-text/5 border border-ds-border rounded-sm">
+            <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-text/5 border border-ds-border rounded-sm">
               <span class="text-[7px] font-bold text-ds-text-muted uppercase tracking-widest">Arrears</span>
               <span class="text-[10px] font-bold text-ds-text">৳{{ dueAmount }}</span>
             </div>
           </div>
 
-          <!-- Settlement -->
-          <div class="flex justify-between items-center px-ds-5 py-ds-2.5 bg-ds-text text-ds-surface rounded-sm shadow-xl">
+          <div class="flex justify-between items-center px-ds-5 py-ds-2 bg-ds-text text-ds-surface rounded-sm shadow-xl mt-1">
             <span class="text-[10px] font-bold uppercase tracking-[0.2em]">Gross Settlement</span>
             <span class="text-ds-lg font-bold tracking-tight">৳{{ total }}</span>
           </div>
         </div>
 
-        <!-- Customer Identity Terminal -->
-        <div class="space-y-ds-3 pt-ds-4 border-t border-ds-border" [formGroup]="orderForm">
+        <div class="space-y-ds-2 pt-ds-3 border-t border-ds-border" [formGroup]="orderForm">
           <div class="flex flex-col gap-ds-2">
-            <label class="flex flex-col gap-1">
+            <label class="flex flex-col gap-0.5">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Terminal Phone *</span>
-              <input formControlName="phone" type="text" placeholder="IDENTITY DIGITS" class="form-input !h-9 !text-[11px] font-mono">
+              <input formControlName="phone" type="text" placeholder="IDENTITY DIGITS" class="form-input !h-8 !text-[11px] font-mono">
             </label>
-            <label class="flex flex-col gap-1">
+            <label class="flex flex-col gap-0.5">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Legal Name *</span>
-              <input formControlName="name" type="text" placeholder="FULL NOMENCLATURE" class="form-input !h-9 !text-[11px] uppercase tracking-tight">
+              <input formControlName="name" type="text" placeholder="FULL NOMENCLATURE" class="form-input !h-8 !text-[11px] uppercase tracking-tight">
             </label>
-            <label class="flex flex-col gap-1">
+            <label class="flex flex-col gap-0.5">
               <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Archive Address *</span>
-              <textarea formControlName="address" rows="2" placeholder="PHYSICAL LOCATION" class="form-input !py-2 !px-4 !text-[11px] uppercase tracking-tight resize-none"></textarea>
+              <textarea formControlName="address" rows="1" placeholder="PHYSICAL LOCATION" class="form-input !h-8 !py-1.5 !px-4 !text-[11px] uppercase tracking-tight resize-none"></textarea>
             </label>
 
             <div class="grid grid-cols-2 gap-ds-2">
                <div class="relative group">
-                  <select formControlName="sourcePageId" class="form-input !h-9 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+                  <select formControlName="sourcePageId" class="form-input !h-8 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
                     <option [value]="null">Origin Page</option>
                     <option *ngFor="let page of sourcePages" [value]="page.id">{{ page.name }}</option>
                   </select>
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                </div>
                <div class="relative group">
-                  <select formControlName="socialMediaSourceId" class="form-input !h-9 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+                  <select formControlName="socialMediaSourceId" class="form-input !h-8 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
                     <option [value]="null">Social Node</option>
                     <option *ngFor="let source of socialMediaSources" [value]="source.id">{{ source.name }}</option>
                   </select>
@@ -149,7 +138,7 @@
 
             <div class="grid grid-cols-2 gap-ds-2">
                <div class="relative group" (click)="toggleCityDropdown()">
-                  <input class="form-input !h-9 !text-[9px] uppercase tracking-widest cursor-pointer" type="text" [value]="orderForm.get('city')?.value || 'Select City'" readonly />
+                  <input class="form-input !h-8 !text-[9px] uppercase tracking-widest cursor-pointer" type="text" [value]="orderForm.get('city')?.value || 'Select City'" readonly />
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                   <div *ngIf="isCityDropdownOpen" class="absolute bottom-full left-0 z-[100] w-full mb-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-base" (click)="$event.stopPropagation()">
                      <input type="text" class="w-full px-4 py-2 bg-ds-bg border-b border-ds-border text-[10px] font-bold uppercase tracking-widest outline-none" placeholder="Search Matrix..." (input)="filterCities($event)" [value]="citySearch" />
@@ -159,7 +148,7 @@
                   </div>
                </div>
                <div class="relative group" (click)="toggleAreaDropdown()">
-                  <input class="form-input !h-9 !text-[9px] uppercase tracking-widest cursor-pointer" type="text" [value]="orderForm.get('area')?.value || 'Select Area'" readonly />
+                  <input class="form-input !h-8 !text-[9px] uppercase tracking-widest cursor-pointer" type="text" [value]="orderForm.get('area')?.value || 'Select Area'" readonly />
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                   <div *ngIf="isAreaDropdownOpen" class="absolute bottom-full left-0 z-[100] w-full mb-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-base" (click)="$event.stopPropagation()">
                       <input type="text" class="w-full px-4 py-2 bg-ds-bg border-b border-ds-border text-[10px] font-bold uppercase tracking-widest outline-none" placeholder="Search Delta..." (input)="filterAreas($event)" [value]="areaSearch" />
@@ -171,7 +160,7 @@
             </div>
 
             <div class="relative group">
-              <select formControlName="deliveryMethodId" class="form-input !h-9 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+              <select formControlName="deliveryMethodId" class="form-input !h-8 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
                 <option [value]="null">Logistics Strategy</option>
                 <option *ngFor="let method of deliveryMethods" [value]="method.id">{{ method.name }} — ৳{{ method.cost }}</option>
               </select>
@@ -180,21 +169,21 @@
 
             <div class="flex flex-col gap-ds-2">
                <div class="relative group">
-                  <select formControlName="noteType" class="form-input !h-9 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+                  <select formControlName="noteType" class="form-input !h-8 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
                     <option value="Official">Internal Memo (Restricted)</option>
                     <option value="Customer">Customer Addendum (Public)</option>
                   </select>
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                </div>
-               <textarea formControlName="noteText" rows="2" placeholder="ENCODE CORRESPONDENCE..." class="form-input !py-2 !px-4 !text-[11px] uppercase tracking-tight resize-none"></textarea>
+               <textarea formControlName="noteText" rows="1" placeholder="ENCODE CORRESPONDENCE..." class="form-input !h-8 !py-1.5 !px-4 !text-[11px] uppercase tracking-tight resize-none"></textarea>
             </div>
           </div>
 
-          <div class="pt-ds-2">
+          <div class="pt-1">
             <button 
               (click)="submitOrder()"
               [disabled]="isSubmitting || cart().length === 0"
-              class="btn btn-primary w-full !h-12 !text-[11px] font-bold uppercase tracking-[0.3em] shadow-xl hover:shadow-2xl transition-all disabled:opacity-30"
+              class="btn btn-primary w-full !h-10 !text-[11px] font-bold uppercase tracking-[0.3em] shadow-xl hover:shadow-2xl transition-all disabled:opacity-30"
             >
               {{ isSubmitting ? 'Synchronizing...' : (isEditMode ? 'Authorize Update' : 'Initialize Transaction') }}
             </button>
@@ -203,9 +192,7 @@
       </div>
     </div>
 
-    <!-- Product Archive & Selection (Right) -->
     <div class="lg:col-span-7 flex flex-col gap-ds-4">
-      <!-- Search Terminal -->
       <div class="flex gap-ds-3">
         <div class="relative flex-1 group">
           <span class="absolute left-ds-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text">
@@ -229,7 +216,6 @@
         </button>
       </div>
 
-      <!-- Catalog Registry -->
       <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm overflow-hidden h-[750px] flex flex-col">
         <div class="overflow-y-auto flex-1 p-ds-4 bg-ds-bg/20">
             <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-ds-4">
@@ -237,7 +223,6 @@
                   *ngFor="let product of products()" 
                   class="bg-ds-surface border border-ds-border rounded-sm p-ds-3 shadow-sm hover:shadow-md transition-all group relative flex flex-col hover:border-ds-text"
                 >
-                  <!-- Stock Indicator -->
                   <div class="absolute top-2 left-2 z-10">
                     <span class="px-1.5 py-0.5 rounded-sm text-[7px] font-bold uppercase tracking-widest shadow-sm" 
                           [ngClass]="product.stockQuantity > 0 ? 'bg-ds-success text-white' : 'bg-red-500 text-white'">
@@ -245,7 +230,6 @@
                     </span>
                   </div>
 
-                  <!-- Quick Initialization -->
                   <button 
                     (click)="handleProductClick(product)"
                     class="absolute top-2 right-2 z-20 size-8 rounded-sm bg-ds-text text-ds-surface shadow-xl flex items-center justify-center hover:scale-110 active:scale-90 transition-all opacity-0 group-hover:opacity-100"
@@ -261,7 +245,6 @@
                       >
                     </div>
 
-                  <!-- Metadata -->
                   <div class="flex-1 min-w-0 mb-ds-3">
                     <h4 class="text-[9px] font-bold text-ds-text uppercase tracking-tight truncate mb-1" [title]="product.name">{{ product.name }}</h4>
                     <div class="flex items-center gap-2">
@@ -270,7 +253,6 @@
                     </div>
                   </div>
 
-                  <!-- Allocation Matrix -->
                   <div class="flex flex-wrap gap-1 mt-auto pt-ds-3 border-t border-ds-border/50">
                     <ng-container *ngFor="let variant of product.variants">
                       <button 
@@ -290,7 +272,6 @@
                 </div>
             </div>
 
-            <!-- Empty Registry -->
             <div *ngIf="!isLoadingProducts && products().length === 0" class="h-full flex flex-col items-center justify-center opacity-10">
                 <app-icon name="PackageX" size="64" className="mb-4"></app-icon>
                 <p class="text-[11px] font-bold uppercase tracking-[0.5em]">Repository Search Awaited</p>
@@ -300,7 +281,6 @@
     </div>
   </div>
 
-  <!-- Product Initialization Terminal (Modal) -->
   <div 
     *ngIf="selectedProduct()" 
     class="fixed inset-0 z-[200] flex items-center justify-center p-ds-6 bg-ds-text/60 backdrop-blur-md animate-in fade-in duration-300"
@@ -358,7 +338,6 @@
     </div>
   </div>
 
-  <!-- Protocol Override Warning (Pre-Order) -->
   <div 
     *ngIf="showPreOrderWarningModal()" 
     class="fixed inset-0 z-[200] flex items-center justify-center p-ds-6 bg-ds-text/60 backdrop-blur-md animate-in fade-in duration-300"
