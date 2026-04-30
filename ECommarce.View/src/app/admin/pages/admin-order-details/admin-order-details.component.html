@@ -89,9 +89,15 @@
                   SIZE: {{ item.size }}
                 </span>
               </div>
-              <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">
-                QUANTITY: {{ item.quantity }} ×
+              <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest flex items-center gap-ds-3">
+                <span>QUANTITY: {{ item.quantity }} ×</span>
                 <span class="text-ds-text font-mono">৳{{ item.unitPrice }}</span>
+                
+                <!-- Stock Warning Badge -->
+                <span *ngIf="!item.isStockAvailable" class="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-red-500/10 text-red-500 border border-red-500/20 text-[8px] animate-pulse">
+                  <app-icon name="AlertTriangle" size="10"></app-icon>
+                  <span>INSUFFICIENT STOCK</span>
+                </span>
               </p>
             </div>
             <div class="text-right">
