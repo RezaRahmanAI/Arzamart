@@ -103,6 +103,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     area: ["", [Validators.required]],
     deliveryMethodId: [0, [Validators.required, Validators.min(1)]],
     selectedSize: ["", [Validators.required]],
+    quantity: [1, [Validators.required, Validators.min(1)]],
     paymentMethod: ["cod", [Validators.required]]
   });
 
@@ -387,16 +388,23 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   get shippingCost(): number {
+    const qty = this.orderForm.get("quantity")?.value || 1;
+    const threshold = this.data?.config?.freeShippingThresholdQuantity;
+    
+    if (threshold && qty >= threshold) {
+      return 0;
+    }
     return this.selectedDeliveryMethod?.cost ?? 0;
+  }
+
+  get total(): number {
+    const qty = this.orderForm.get("quantity")?.value || 1;
+    return (this.selectedVariantPrice * qty) + this.shippingCost;
   }
 
   get uniqueSizes(): string[] {
     if (!this.data?.product?.variants) return [];
     return Array.from(new Set(this.data.product.variants.map(v => v.size).filter(Boolean))) as string[];
-  }
-
-  get total(): number {
-    return this.selectedVariantPrice + this.shippingCost;
   }
 
   onSubmit(): void {
@@ -415,7 +423,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       productId: product.id,
       name: product.name,
       price: this.selectedVariantPrice,
-      quantity: 1,
+      quantity: form.quantity,
       size: form.selectedSize,
       imageUrl: product.imageUrl || "",
       imageAlt: product.name,
@@ -473,6 +481,12 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   selectSize(size: string): void {
     this.orderForm.patchValue({ selectedSize: size });
+  }
+
+  updateQuantity(delta: number): void {
+    const current = this.orderForm.get("quantity")?.value || 1;
+    const next = Math.max(1, current + delta);
+    this.orderForm.patchValue({ quantity: next });
   }
 
   selectDeliveryMethod(id: number): void {

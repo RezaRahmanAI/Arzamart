@@ -30,6 +30,7 @@ public class CustomLandingPageConfig : BaseEntity
     public decimal? PromoPrice { get; set; }
     public decimal? OriginalPrice { get; set; }
     public string? PromoText { get; set; }
+    public int? FreeShippingThresholdQuantity { get; set; }
     
     // Marquee Section
     public bool IsMarqueeVisible { get; set; } = false;

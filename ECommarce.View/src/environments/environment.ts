@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiBaseUrl: "https://api.arzamart.com/api",
+  apiBaseUrl: "https://localhost:7201/api",
   useMockData: false,
 };

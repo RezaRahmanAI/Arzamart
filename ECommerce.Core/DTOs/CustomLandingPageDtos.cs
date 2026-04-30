@@ -24,6 +24,7 @@ public class CustomLandingPageConfigDto
     public decimal? PromoPrice { get; set; }
     public decimal? OriginalPrice { get; set; }
     public string? PromoText { get; set; }
+    public int? FreeShippingThresholdQuantity { get; set; }
     public bool IsMarqueeVisible { get; set; }
     public string? MarqueeText { get; set; }
 }
@@ -50,6 +51,7 @@ public class CustomLandingPageConfigUpdateDto
     public decimal? PromoPrice { get; set; }
     public decimal? OriginalPrice { get; set; }
     public string? PromoText { get; set; }
+    public int? FreeShippingThresholdQuantity { get; set; }
     public bool IsMarqueeVisible { get; set; }
     public string? MarqueeText { get; set; }
 }

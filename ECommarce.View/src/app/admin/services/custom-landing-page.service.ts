@@ -21,6 +21,7 @@ export interface CustomLandingPageConfig {
   isMarqueeVisible: boolean;
   marqueeText?: string;
   promoText?: string;
+  freeShippingThresholdQuantity?: number | null;
 }
 
 @Injectable({
