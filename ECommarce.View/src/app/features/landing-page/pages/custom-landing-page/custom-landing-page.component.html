@@ -45,63 +45,79 @@
             <!-- HERO GRID -->
             <div class="grid lg:grid-cols-[1fr_1fr] min-h-[calc(100vh-98px)] border-x border-ds-border">
 
-            <!-- LEFT — IMAGE PANEL -->
-            <div class="relative bg-[#0A0A0A] flex flex-col order-1 lg:order-none">
-
-              <!-- Main Product Image -->
-              <div class="relative flex-1 overflow-hidden min-h-[55vw] lg:min-h-0">
-                <img
-                  [src]="imageUrlService.getImageUrl(selectedImage || data.product.imageUrl || '')"
-                  alt="Product"
-                  class="absolute inset-0 w-full h-full object-cover transition-all duration-700"
-                  style="filter: grayscale(10%);"
-                />
-
-                <!-- Image slide progress bar -->
-                @if (data.product.images.length > 1) {
-                  <div class="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10 z-10">
-                    <div class="h-full bg-white transition-all duration-75" [style.width.%]="slideProgress"></div>
-                  </div>
-                }
-
-                <!-- Discount badge -->
-                @if (discountPercentage > 0) {
-                  <div class="absolute top-6 left-6 z-10 flex flex-col items-center justify-center text-white font-black leading-tight text-center"
-                       style="width:80px;height:80px;background:#E63946;border-radius:50%;transform:rotate(-12deg);box-shadow:0 8px 24px rgba(230,57,70,0.5);">
-                    <span class="text-[8px] uppercase tracking-wide opacity-90 font-bengali">আজকের</span>
-                    <span class="text-lg">{{ discountPercentage }}%</span>
-                    <span class="text-[8px] uppercase tracking-wide opacity-90 font-bengali">ছাড়</span>
-                  </div>
-                }
-
-                <!-- Stock urgency overlay -->
-                <div class="absolute bottom-4 left-4 right-4 z-10 flex items-center gap-3 px-4 py-3 rounded-sm"
-                     style="background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);">
-                  <div class="flex-1">
-                    <div class="text-[9px] text-white/50 uppercase tracking-widest mb-1 font-bold">স্টক বাকি আছে</div>
-                    <div class="h-[3px] rounded-full bg-white/10">
-                      <div class="h-full rounded-full bg-[#E63946]" style="width:32%;transition:width 1.5s ease;"></div>
-                    </div>
-                  </div>
-                  <span class="text-[10px] font-black text-[#E63946] uppercase tracking-wider whitespace-nowrap">মাত্র ৩২টি বাকি</span>
-                </div>
-              </div>
-
-              <!-- Thumbnails Strip -->
+            <!-- LEFT — IMAGE PANEL (Redesigned to match Product Details) -->
+            <div class="relative flex flex-row gap-4 p-4 lg:p-8 order-1 lg:order-none overflow-hidden">
+              
+              <!-- Thumbnails (Vertical) -->
               @if (data.product.images.length > 1) {
-                <div class="flex gap-2 p-4 border-t border-ds-border bg-[#0C0C0C]">
-                  @for (img of data.product.images.slice(0, 5); track img.imageUrl) {
+                <div class="hidden lg:flex flex-col gap-3 w-20 shrink-0 overflow-y-auto no-scrollbar" style="max-height: 700px;">
+                  @for (img of data.product.images; track img.imageUrl; let i = $index) {
                     <button
                       type="button"
                       (click)="selectImage(img.imageUrl)"
-                      class="relative flex-1 aspect-square overflow-hidden transition-all duration-300"
-                      [style.border]="selectedImage === img.imageUrl ? '2px solid #D4A853' : '2px solid transparent'"
-                      [style.opacity]="selectedImage !== img.imageUrl ? '0.45' : '1'">
+                      class="w-full aspect-[3/4] border transition-all duration-300 overflow-hidden shrink-0"
+                      [style.border-color]="selectedImage === img.imageUrl ? '#D4A853' : '#2A2A2A'"
+                      [style.opacity]="selectedImage === img.imageUrl ? '1' : '0.5'">
                       <img [src]="imageUrlService.getImageUrl(img.imageUrl)" alt="Thumb" class="w-full h-full object-cover" />
                     </button>
                   }
                 </div>
               }
+
+              <!-- Main Image Area -->
+              <div class="relative flex-1 group">
+                <div class="relative w-full aspect-[3/4] lg:max-h-[700px] overflow-hidden bg-black/20 border border-white/5">
+                  <img
+                    [src]="imageUrlService.getImageUrl(selectedImage || data.product.imageUrl || '')"
+                    alt="Product"
+                    class="absolute inset-0 w-full h-full object-cover transition-all duration-700"
+                    style="filter: grayscale(10%);"
+                  />
+
+                  <!-- Discount badge -->
+                  @if (discountPercentage > 0) {
+                    <div class="absolute top-6 left-6 z-10 flex flex-col items-center justify-center text-white font-black leading-tight text-center"
+                         style="width:70px;height:70px;background:#E63946;border-radius:50%;transform:rotate(-12deg);box-shadow:0 8px 24px rgba(230,57,70,0.5);">
+                      <span class="text-[7px] uppercase tracking-wide opacity-90 font-bengali">আজকের</span>
+                      <span class="text-base">{{ discountPercentage }}%</span>
+                      <span class="text-[7px] uppercase tracking-wide opacity-90 font-bengali">ছাড়</span>
+                    </div>
+                  }
+
+                  <!-- Stock urgency overlay -->
+                  <div class="absolute bottom-4 left-4 right-4 z-10 flex items-center gap-3 px-4 py-3 rounded-sm"
+                       style="background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);">
+                    <div class="flex-1">
+                      <div class="text-[8px] text-white/50 uppercase tracking-widest mb-1 font-bold">স্টক বাকি আছে</div>
+                      <div class="h-[2px] rounded-full bg-white/10">
+                        <div class="h-full rounded-full bg-[#E63946]" style="width:32%;transition:width 1.5s ease;"></div>
+                      </div>
+                    </div>
+                    <span class="text-[9px] font-black text-[#E63946] uppercase tracking-wider whitespace-nowrap">মাত্র ৩২টি বাকি</span>
+                  </div>
+
+                  <!-- Image slide progress bar -->
+                  @if (data.product.images.length > 1) {
+                    <div class="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10 z-20">
+                      <div class="h-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-75" [style.width.%]="slideProgress"></div>
+                    </div>
+                  }
+                </div>
+
+                <!-- Mobile Thumbnails (Horizontal) -->
+                <div class="lg:hidden flex gap-2 mt-4 overflow-x-auto no-scrollbar">
+                   @for (img of data.product.images; track img.imageUrl) {
+                    <button
+                      type="button"
+                      (click)="selectImage(img.imageUrl)"
+                      class="w-16 aspect-[3/4] border transition-all duration-300 overflow-hidden shrink-0"
+                      [style.border-color]="selectedImage === img.imageUrl ? '#D4A853' : '#2A2A2A'"
+                      [style.opacity]="selectedImage === img.imageUrl ? '1' : '0.5'">
+                      <img [src]="imageUrlService.getImageUrl(img.imageUrl)" alt="Thumb" class="w-full h-full object-cover" />
+                    </button>
+                  }
+                </div>
+              </div>
             </div>
 
 
@@ -115,20 +131,23 @@
               </div>
 
               <!-- Product Title -->
-              <h1 class="font-display font-black leading-[1.0] tracking-tighter mb-6"
-                  style="font-size:clamp(2.2rem,5vw,3.75rem);color:#F0EBE1;">
-                {{ data.config?.productDetailsTitle }}
+              <h1 class="font-display font-black leading-[1.0] tracking-tighter mb-4"
+                  style="font-size:clamp(2rem,5vw,3.5rem);color:#111111;">
+                {{ data.product.name }}
               </h1>
 
-              <!-- Promo text -->
-              @if (data.config?.promoText) {
-                <div class="mb-8 border-l-4 border-[#E63946] pl-5 py-2"
-                     style="background:rgba(230,57,70,0.06);">
-                  <p class="text-[11px] font-black uppercase tracking-[0.15em] text-[#E63946] leading-relaxed font-bengali">
-                    {{ data.config?.promoText }}
-                  </p>
-                </div>
-              }
+              <!-- Price Block -->
+              <div class="flex items-baseline gap-4 mb-8 flex-wrap">
+                <span class="font-black" style="font-size:clamp(1.75rem,4vw,2.5rem);color:#D4A853;">৳ {{ selectedVariantPrice }}</span>
+                @if (data.config?.originalPrice) {
+                  <span class="text-xl line-through font-medium" style="color:#555555;">৳ {{ data.config?.originalPrice }}</span>
+                }
+                @if (data.config && data.config.originalPrice && data.config.originalPrice > selectedVariantPrice) {
+                  <span class="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm" style="background:#E63946;color:white;">
+                    SAVE ৳{{ data.config.originalPrice - selectedVariantPrice }}
+                  </span>
+                }
+              </div>
 
               <!-- Countdown Timer -->
               @if (data.config?.isTimerVisible) {
@@ -142,7 +161,7 @@
                     @for (unit of [{val: timeLeft.hours, label:'ঘন্টা'},{val: timeLeft.minutes, label:'মিনিট'},{val: timeLeft.seconds, label:'সেকেন্ড'}]; track unit.label; let last = $last) {
                       <div class="flex flex-col items-center">
                         <span class="font-mono font-black text-[#E63946] leading-none"
-                              style="font-size:clamp(2rem,4vw,3rem);">
+                              style="font-size:clamp(1.75rem,4vw,2.5rem);">
                           {{ unit.val | number:'2.0' }}
                         </span>
                         <span class="text-[8px] uppercase tracking-widest mt-2 font-bold font-bengali" style="color:rgba(255,255,255,0.35);">{{ unit.label }}</span>
@@ -155,18 +174,15 @@
                 </div>
               }
 
-              <!-- Price Block -->
-              <div class="flex items-baseline gap-4 mb-8 flex-wrap">
-                <span class="font-black" style="font-size:clamp(2rem,4vw,2.75rem);color:#D4A853;">৳ {{ selectedVariantPrice }}</span>
-                @if (data.config?.originalPrice) {
-                  <span class="text-xl line-through font-medium" style="color:#555555;">৳ {{ data.config?.originalPrice }}</span>
-                }
-                @if (data.config && data.config.originalPrice && data.config.originalPrice > selectedVariantPrice) {
-                  <span class="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm" style="background:#E63946;color:white;">
-                    SAVE ৳{{ data.config.originalPrice - selectedVariantPrice }}
-                  </span>
-                }
-              </div>
+              <!-- Promo text -->
+              @if (data.config?.promoText) {
+                <div class="mb-8 border-l-4 border-[#E63946] pl-5 py-2"
+                     style="background:rgba(230,57,70,0.06);">
+                  <p class="text-[11px] font-black uppercase tracking-[0.15em] text-[#E63946] leading-relaxed font-bengali">
+                    {{ data.config?.promoText }}
+                  </p>
+                </div>
+              }
 
               <!-- Product Details -->
               <div class="space-y-0 mb-8 border border-ds-border rounded-sm overflow-hidden">
