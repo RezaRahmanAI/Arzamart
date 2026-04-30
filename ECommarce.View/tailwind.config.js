@@ -5,20 +5,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        /* ── Legacy tokens (keep for backward compat) ── */
-        primary: "rgb(var(--color-primary-rgb) / <alpha-value>)",
-        "primary-light": "var(--color-primary-light)",
-        accent: "rgb(var(--color-accent-rgb) / <alpha-value>)",
-        "accent-light": "var(--color-accent-light)",
-        secondary: "var(--color-secondary)",
-        supporting: "rgb(var(--color-supporting-rgb) / <alpha-value>)",
-        "background-light": "var(--color-background-light)",
-        "background-dark": "var(--color-background-dark)",
-        "surface-light": "rgb(var(--color-surface-rgb) / <alpha-value>)",
-        "surface-dark": "#1e1e1e",
-        "text-main": "var(--color-text-main)",
-        "text-sub": "var(--color-text-sub)",
-        "border-color": "var(--color-border)",
+       
         /* ── Design system tokens (new) ── */
         "ds-bg":           "var(--color-bg)",
         "ds-surface":      "var(--color-surface)",

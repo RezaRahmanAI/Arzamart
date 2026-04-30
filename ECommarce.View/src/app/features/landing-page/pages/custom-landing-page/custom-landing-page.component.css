@@ -1,4 +1,4 @@
-﻿/* Modern Aesthetic Utilities */
+/* Modern Aesthetic Utilities */
 :host {
   --primary-clp: #111111; /* New Vibrant Orange */
   --primary-dark-clp: #111111;
@@ -27,6 +27,28 @@
   background: linear-gradient(135deg, var(--secondary-clp) 0%, var(--primary-clp) 100%);
 }
 
+.marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    width: 100%;
+}
+
+.marquee-content {
+    display: flex;
+    width: max-content;
+    animation: marquee 60s linear infinite;
+}
+
+.marquee-content:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
 .bg-timer-gradient {
   background: var(--primary-clp);
 }
@@ -34,7 +56,7 @@
 .btn-premium {
   background: #111111;
   color: white;
-  border-radius: 9999px;
+  border-radius: var(--radius-sm);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -44,12 +66,12 @@
 
 .btn-premium:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 20px 40px -10px rgba(255, 122, 0, 0.6);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
 }
 
 .timer-box {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   width: 3.5rem;
   height: 3.5rem;
   display: flex;
@@ -62,13 +84,13 @@
   .timer-box {
     width: 4.5rem;
     height: 4.5rem;
-    border-radius: 16px;
+    border-radius: var(--radius-sm);
   }
 }
 
 .floating-card {
   background: var(--surface-clp);
-  border-radius: 24px;
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-premium);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -89,7 +111,7 @@
 
 ::-webkit-scrollbar-thumb {
   background: var(--primary-clp);
-  border-radius: 10px;
+  border-radius: 0;
 }
 
 /* Animations */
@@ -110,13 +132,13 @@
 
 /* Typography Enhancements */
 .font-headline {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 800;
   letter-spacing: -0.03em;
 }
 
 .font-label {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -128,7 +150,7 @@
   padding: 0.5rem 1.25rem;
   background: rgba(233, 30, 99, 0.1);
   color: #D94F4F;
-  border-radius: 100px;
+  border-radius: var(--radius-sm);
   font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;

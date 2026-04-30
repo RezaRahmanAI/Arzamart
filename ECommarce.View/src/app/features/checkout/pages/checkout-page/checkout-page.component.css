@@ -1,16 +1,16 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
 
 .font-serif {
   font-family: 'Playfair Display', serif;
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: theme('colors.primary');
+  border-color: theme('colors.ds-accent');
   box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
 }
 
 .dark input:focus, .dark select:focus, .dark textarea:focus {
-  border-color: theme('colors.primary');
+  border-color: theme('colors.ds-accent');
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
 }
 
@@ -24,16 +24,16 @@ input:focus, select:focus, textarea:focus {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #E0E0E0;
+  background: theme('colors.ds-border');
   border-radius: 10px;
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #1A1A1A;
+  background: theme('colors.ds-text');
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #E0E0E0;
+  background: theme('colors.ds-text-sec');
 }
 
 /* Form Styles */
@@ -43,8 +43,8 @@ label .text-red-500 {
 
 /* Payment Method Overrides */
 input[type="radio"]:checked + div {
-  background-color: theme('colors.primary');
-  border-color: theme('colors.primary');
+  background-color: theme('colors.ds-accent');
+  border-color: theme('colors.ds-accent');
 }
 
 @keyframes fadeIn {

@@ -18,6 +18,8 @@ export interface CustomLandingPageConfig {
   featuredProductName?: string;
   promoPrice?: number;
   originalPrice?: number;
+  isMarqueeVisible: boolean;
+  marqueeText?: string;
 }
 
 @Injectable({

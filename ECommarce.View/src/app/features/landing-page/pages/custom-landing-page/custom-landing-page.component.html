@@ -1,17 +1,34 @@
-﻿@if (data) {
-  <div class="bg-slate-50 text-slate-900 font-body antialiased">
+@if (data) {
+  <!-- Dynamic Sticky Marquee -->
+  @if (data.config?.isMarqueeVisible) {
+    <div class="sticky top-0 z-[60] bg-[#D94F4F] text-white py-3 font-bold text-sm marquee-container border-b border-white/10">
+      <div class="marquee-content">
+        <span>{{ processedMarqueeText }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span>{{ processedMarqueeText }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span>{{ processedMarqueeText }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span>{{ processedMarqueeText }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <!-- Duplicated for seamless loop -->
+        <span>{{ processedMarqueeText }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span>{{ processedMarqueeText }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span>{{ processedMarqueeText }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span>{{ processedMarqueeText }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
+      </div>
+    </div>
+  }
+
+  <div class="bg-ds-bg text-ds-text font-body antialiased min-h-screen relative" [class.pt-0]="!data.config?.isMarqueeVisible">
     
       <!-- Top Promo Bar (Timer) - REDESIGNED for Premium Look -->
       @if (data.config?.isTimerVisible) {
         <div class="sticky top-0 z-50 py-0 sm:py-4 sm:px-6">
           <div class="site-container px-0 sm:px-4">
-            <div class="bg-timer-gradient sm:rounded-3xl p-4 md:p-6 shadow-[0_15px_40px_-10px_rgba(255,122,0,0.4)] flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden border-b sm:border border-white/20">
+            <div class="bg-timer-gradient sm:rounded-sm p-4 md:p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden border-b sm:border border-white/10">
               <!-- Ambient Light effects -->
-              <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-              <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-primary-clp/20 rounded-full blur-3xl animate-pulse"></div>
+              <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+              <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-primary-clp/10 rounded-full blur-3xl animate-pulse"></div>
               
               <div class="flex items-center gap-5 z-10">
-                <div class="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center backdrop-blur-md border border-white/20 shadow-inner group transition-all duration-500 hover:rotate-12">
+                <div class="w-14 h-14 rounded-sm bg-white/15 flex items-center justify-center backdrop-blur-md border border-white/20 shadow-inner group transition-all duration-500 hover:rotate-12">
                     <app-icon name="Clock" size="28" className="text-white drop-shadow-lg"></app-icon>
                 </div>
                 <div class="text-white text-center md:text-left">
@@ -80,7 +97,7 @@
                         <div class="space-y-8">
                             @if (data.config?.isFabricVisible && data.product.fabricAndCare) {
                               <div class="flex items-start gap-5">
-                                  <div class="w-12 h-12 rounded-2xl bg-primary-clp/5 flex items-center justify-center shrink-0">
+                                  <div class="w-12 h-12 rounded-sm bg-primary-clp/5 flex items-center justify-center shrink-0">
                                       <app-icon name="Verified" size="24" className="text-primary-clp"></app-icon>
                                   </div>
                                   <div>
@@ -92,7 +109,7 @@
     
                             @if (data.config?.isDesignVisible && data.product.description) {
                               <div class="flex items-start gap-5">
-                                  <div class="w-12 h-12 rounded-2xl bg-primary-clp/5 flex items-center justify-center shrink-0">
+                                  <div class="w-12 h-12 rounded-sm bg-primary-clp/5 flex items-center justify-center shrink-0">
                                       <app-icon name="Search" size="24" className="text-primary-clp"></app-icon>
                                   </div>
                                   <div class="flex-1">
@@ -103,7 +120,7 @@
                             }
     
                             <div class="flex items-start gap-5">
-                                <div class="w-12 h-12 rounded-2xl bg-primary-clp/5 flex items-center justify-center shrink-0">
+                                <div class="w-12 h-12 rounded-sm bg-primary-clp/5 flex items-center justify-center shrink-0">
                                 <app-icon name="ShoppingCart" size="20"></app-icon>
                                 </div>
                                 <div>
@@ -113,48 +130,55 @@
                             </div>
                         </div>
     
-                        <div class="pt-6 space-y-6">
-                            <button (click)="scrollToOrder()" class="w-full bg-[#111111] text-white font-label uppercase tracking-widest py-4 rounded-xl shadow-lg shadow-orange-200 hover:bg-[#111111] transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2">
+                        <div class="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- WhatsApp Button -->
+                            <button (click)="whatsappUs()" class="w-full bg-[#25D366] text-white font-label uppercase tracking-widest py-4 rounded-sm shadow-lg hover:bg-[#128C7E] transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
+                                <app-icon name="MessageCircle" size="22"></app-icon>
+                                WHATSAPP US
+                            </button>
+
+                            <!-- Order Now Button -->
+                            <button (click)="scrollToOrder()" class="w-full bg-[#111111] text-white font-label uppercase tracking-widest py-4 rounded-sm shadow-lg hover:bg-black transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
                                 <app-icon name="ShoppingCart" size="20"></app-icon>
                                 ORDER NOW
                             </button>
-    
-                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                <img src="assets/images/brand-logo.png" alt="Brand" class="w-10 h-10 object-contain" onerror="this.src='https://placehold.co/100x100?text=Brand'"/>
-                                <div>
-                                    <p class="text-[10px] font-label text-slate-400">Authentic Product By</p>
-                                    <p class="font-bold text-slate-900">{{ brandName$ | async }}</p>
-                                </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 p-4 rounded-sm bg-ds-surface border border-ds-border">
+                            <img src="assets/images/brand-logo.png" alt="Brand" class="w-10 h-10 object-contain grayscale" onerror="this.src='https://placehold.co/100x100?text=Brand'"/>
+                            <div>
+                                <p class="text-[10px] font-label text-ds-text-muted">Authentic Product By</p>
+                                <p class="font-bold text-ds-text">{{ brandName$ | async }}</p>
                             </div>
                         </div>
                     </div>
     
-                    <div class="w-full lg:w-1/2 bg-slate-100 relative lg:min-h-full">
-                        <div class="relative w-full aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-full overflow-hidden rounded-2xl sm:rounded-none lg:rounded-3xl">
+                    <div class="w-full lg:w-1/2 bg-ds-surface relative lg:min-h-full">
+                        <div class="relative w-full aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-full overflow-hidden rounded-sm lg:rounded-none">
                             <img [src]="imageUrlService.getImageUrl(selectedImage || data.product.imageUrl || '')" alt="Product Gallery" class="absolute inset-0 w-full h-full object-cover">
                         </div>
 
                         <!-- Progress Bar -->
                         @if (data.product.images.length > 1) {
-                          <div class="mt-4 w-full h-1 bg-slate-200 relative overflow-hidden rounded-full">
+                          <div class="mt-4 w-full h-1 bg-ds-border relative overflow-hidden rounded-none">
                             <div
-                              class="absolute top-0 left-0 h-full bg-[#111111] transition-all duration-75"
+                              class="absolute top-0 left-0 h-full bg-ds-text transition-all duration-75"
                               [style.width.%]="slideProgress"
                             ></div>
                           </div>
                         }
                         
-                        <!-- Thumbnails: Positioned below on mobile, glass-morphism overlay on desktop -->
+                        <!-- Thumbnails -->
                         <div class="relative z-10 p-4 sm:p-0 sm:absolute sm:bottom-8 sm:left-1/2 sm:-translate-x-1/2 w-full flex justify-center">
-                            <div class="flex flex-wrap justify-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 rounded-2xl sm:rounded-3xl bg-white sm:glass-morphism shadow-lg sm:shadow-2xl border border-slate-100 sm:border-white/30 w-fit">
+                            <div class="flex flex-wrap justify-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 rounded-sm bg-ds-bg shadow-xl border border-ds-border w-fit">
                                 @for (img of data.product.images.slice(0, 4); track img.imageUrl) {
                                   <img 
                                        [src]="imageUrlService.getImageUrl(img.imageUrl)" 
                                        (click)="selectImage(img.imageUrl)"
                                        alt="Thumb" 
-                                       class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-cover rounded-xl border-2 transition-all duration-300 cursor-pointer hover:scale-105"
-                                       [class.border-primary-clp]="selectedImage === img.imageUrl"
-                                       [class.border-slate-200]="selectedImage !== img.imageUrl">
+                                       class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-cover rounded-none border-2 transition-all duration-300 cursor-pointer hover:scale-105"
+                                       [class.border-ds-text]="selectedImage === img.imageUrl"
+                                       [class.border-ds-border]="selectedImage !== img.imageUrl">
                                 }
                             </div>
                         </div>
@@ -176,18 +200,15 @@
                           <div 
                                class="w-[160px] sm:w-[200px] flex flex-col group cursor-pointer"
                                [routerLink]="['/clp', rel.slug]">
-                              <div class="relative aspect-[3/4] rounded-2xl overflow-hidden bg-slate-100 mb-4 shadow-sm group-hover:shadow-xl transition-all duration-500">
+                              <div class="relative aspect-[3/4] rounded-sm overflow-hidden bg-ds-surface mb-4 shadow-sm group-hover:shadow-lg transition-all duration-500">
                                   <img [src]="imageUrlService.getImageUrl(rel.imageUrl)" alt="Related" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                   
                                   <!-- Discount Badge -->
                                   @if (rel.compareAtPrice && rel.compareAtPrice > rel.price) {
                                     <div class="absolute top-2 left-2">
-                                        <div class="bg-[#D94F4F] text-white px-2 py-1 rounded-lg shadow-lg">
+                                        <div class="bg-ds-danger text-white px-2 py-1 rounded-sm shadow-lg">
                                             <p class="text-[8px] font-black uppercase leading-none opacity-80 mb-0.5">Save</p>
                                             <p class="text-[10px] font-black">৳ {{ rel.compareAtPrice - rel.price }}</p>
-                                        </div>
-                                        <div class="bg-amber-400 text-[#111111] px-2 py-0.5 rounded-b-lg text-[9px] font-black uppercase tracking-tighter -mt-1 text-center">
-                                            OFFER!!
                                         </div>
                                     </div>
                                   }
@@ -214,7 +235,7 @@
         @if (data.config?.isTrustBannerVisible) {
           <section class="px-6">
             <div class="site-container">
-              <div class="bg-timer-gradient rounded-[32px] p-8 md:p-12 text-center shadow-[0_20px_50px_rgba(255,122,0,0.2)] relative overflow-hidden">
+              <div class="bg-timer-gradient rounded-sm p-8 md:p-12 text-center shadow-xl relative overflow-hidden">
                 <!-- Decorative circle -->
                 <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20"></div>
                 
@@ -241,24 +262,24 @@
             <div class="flex flex-col lg:flex-row gap-12 items-start">
               <!-- Image Area -->
               <div class="w-full lg:w-1/2 sticky top-32 self-start">
-                <div class="rounded-[32px] overflow-hidden shadow-2xl bg-white p-2 relative aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-[700px]">
-                  <img [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" alt="Featured Product" class="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] object-cover rounded-[26px]" />
+                <div class="rounded-sm overflow-hidden shadow-2xl bg-ds-bg p-2 relative aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-[700px]">
+                  <img [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" alt="Featured Product" class="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] object-cover rounded-none" />
                 </div>
               </div>
     
               <!-- Form Area -->
               <div class="w-full lg:w-1/2">
-                  <div class="floating-card p-8 md:p-12">
-                      <div class="mb-10">
-                          <h2 class="font-headline text-4xl text-slate-900 mb-2 leading-tight">{{ data.config?.featuredProductName }}</h2>
-                          <div class="flex items-baseline gap-3">
-                              <span class="text-3xl font-bold text-[#111111]">৳ {{ selectedVariantPrice }}</span>
+                  <div class="bg-ds-surface border border-ds-border p-8 md:p-12 shadow-sm">
+                      <div class="mb-10 border-b border-ds-border pb-6">
+                          <h2 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight mb-3">{{ data.config?.featuredProductName }}</h2>
+                          <div class="flex items-baseline gap-4">
+                              <span class="text-ds-3xl font-bold text-ds-text">৳ {{ selectedVariantPrice }}</span>
                               @if (data.config?.originalPrice) {
-                                <span class="text-xl text-slate-400 line-through font-medium">৳ {{ data.config?.originalPrice }}</span>
+                                <span class="text-ds-lg text-ds-text-muted line-through font-medium">৳ {{ data.config?.originalPrice }}</span>
                               }
                               @if (data.config && data.config.originalPrice && data.config.originalPrice > selectedVariantPrice) {
-                                <span class="px-2 py-0.5 rounded-lg bg-orange-100 text-[#111111] text-[10px] font-black uppercase">
-                                    Save ৳{{ (data.config.originalPrice - selectedVariantPrice) }} OFF
+                                <span class="px-2 py-1 bg-ds-accent text-ds-hero-text text-[10px] font-bold uppercase tracking-widest">
+                                    SAVE ৳{{ (data.config.originalPrice - selectedVariantPrice) }}
                                 </span>
                               }
                           </div>
@@ -266,145 +287,176 @@
 
                       <!-- Saved Info Prompt -->
                       @if (showAutofillPrompt) {
-                        <div class="mb-8 p-4 bg-orange-50 border border-orange-100 rounded-2xl flex items-center justify-between gap-4 animate-in slide-in-from-top duration-300">
-                          <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-                              <app-icon name="User" size="20" className="text-[#111111]"></app-icon>
+                        <div class="mb-8 p-6 bg-ds-bg border border-ds-border flex flex-col sm:flex-row items-center justify-between gap-6 animate-in slide-in-from-top duration-300">
+                          <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-ds-accent text-ds-hero-text flex items-center justify-center">
+                              <app-icon name="User" size="24"></app-icon>
                             </div>
                             <div>
-                              <p class="text-[11px] font-black text-slate-900 uppercase tracking-wide">Save information available!</p>
-                              <p class="text-[10px] text-slate-500">Would you like to use your last order details?</p>
+                              <p class="text-ds-xs font-bold text-ds-text uppercase tracking-widest">Welcome Back</p>
+                              <p class="text-[11px] text-ds-text-sec font-medium">Apply your previous order details?</p>
                             </div>
                           </div>
-                          <div class="flex gap-2">
-                            <button type="button" (click)="dismissAutofill()" class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase hover:text-slate-600 transition-colors">No</button>
-                            <button type="button" (click)="applyAutofill()" class="px-4 py-1.5 bg-[#111111] text-white text-[10px] font-black uppercase rounded-lg shadow-md shadow-orange-200 active:scale-95 transition-all">Yes, Use Info</button>
+                          <div class="flex gap-3 w-full sm:w-auto">
+                            <button type="button" (click)="dismissAutofill()" class="btn btn-secondary !h-10 !text-[9px] uppercase tracking-widest px-4">Skip</button>
+                            <button type="button" (click)="applyAutofill()" class="btn btn-primary !h-10 !text-[9px] uppercase tracking-widest px-6">Apply</button>
                           </div>
                         </div>
                       }
                       
-                      <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="space-y-8">
+                      <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="space-y-10">
                           <!-- Size Selection -->
-                          <div>
-                              <div class="flex justify-between items-end mb-4">
-                                  <h4 class="font-label text-xs uppercase tracking-widest text-slate-500">সাইজ সিলেক্ট করুন (SELECT SIZE)</h4>
-                              </div>
+                          <div class="space-y-4">
+                              <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em] ml-1">Select Your Size</label>
                               <div class="flex flex-wrap gap-3">
                                   @for (variant of data.product.variants; track variant.id) {
                                     <button type="button" 
                                             (click)="selectSize(variant.size || '')"
-                                            [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'border-[#111111] bg-orange-50 text-[#111111]' : 'border-slate-100 text-slate-600 hover:border-orange-200'"
-                                            class="min-w-[80px] px-6 py-2.5 border-2 font-bold text-sm transition-all duration-200 rounded-xl flex flex-col items-center gap-0.5">
-                                        <span class="text-xs uppercase tracking-tight">{{ variant.size }}</span>
-                                        <span class="text-[11px] font-black opacity-80">৳ {{ variant.price || data.product.price }}</span>
+                                            [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'bg-ds-text text-ds-bg border-ds-text' : 'bg-ds-bg text-ds-text-sec border-ds-border hover:border-ds-text'"
+                                            class="min-w-[80px] px-6 py-3 border text-center transition-all duration-200 rounded-sm">
+                                        <p class="text-xs font-bold uppercase tracking-widest mb-0.5">{{ variant.size }}</p>
+                                        <p class="text-[9px] font-bold opacity-60">৳ {{ variant.price || data.product.price }}</p>
                                     </button>
                                   }
                               </div>
                               @if (orderForm.get('selectedSize')?.touched && orderForm.get('selectedSize')?.invalid) {
-                                <p class="text-rose-500 text-[10px] font-bold uppercase tracking-widest mt-2">Please select a size to continue</p>
+                                <p class="text-ds-danger text-[9px] font-bold uppercase tracking-widest mt-2 flex items-center gap-2">
+                                    <app-icon name="AlertCircle" size="12"></app-icon>
+                                    Please select a size to continue
+                                </p>
                               }
                           </div>
     
                           <!-- Delivery Method -->
-                          <div>
-                              <p class="font-label text-xs uppercase tracking-widest text-slate-500 mb-3">ডেলিভারি এলাকা (Delivery Area)</p>
-                              <div class="flex gap-6 flex-wrap">
+                          <div class="space-y-4">
+                              <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em] ml-1">Delivery Area</p>
+                              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                   @for (method of deliveryMethods; track method.id) {
-                                    <label class="flex items-center cursor-pointer group">
-                                        <input type="radio" formControlName="deliveryMethodId" [value]="method.id" class="w-4 h-4 text-[#111111] border-slate-300 focus:ring-[#111111] focus:ring-offset-0 bg-transparent">
-                                        <span class="ml-2 text-sm text-slate-700 font-medium group-hover:text-[#111111] transition-colors">
-                                            {{ method.name }} — ৳{{ method.cost }}
-                                        </span>
+                                    <label class="relative flex items-center justify-between p-4 border rounded-sm transition-all cursor-pointer group"
+                                           [ngClass]="orderForm.get('deliveryMethodId')?.value === method.id ? 'border-ds-text bg-ds-bg shadow-sm' : 'border-ds-border hover:border-ds-text/50'">
+                                        <input type="radio" formControlName="deliveryMethodId" [value]="method.id" class="hidden">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-2 rounded-full border-2 border-ds-border group-hover:border-ds-text transition-colors" [class.bg-ds-text]="orderForm.get('deliveryMethodId')?.value === method.id" [class.border-ds-text]="orderForm.get('deliveryMethodId')?.value === method.id"></div>
+                                            <span class="text-xs text-ds-text font-bold uppercase tracking-wider">{{ method.name }}</span>
+                                        </div>
+                                        <span class="text-xs font-bold text-ds-text-sec">৳{{ method.cost }}</span>
                                     </label>
                                   }
                               </div>
                           </div>
     
                           <!-- Customer Info -->
-                          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                               <!-- Phone -->
-                              <div class="relative group">
-                                  <app-icon name="Phone" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#111111] transition-colors"></app-icon>
-                                  <input type="tel" formControlName="phone" placeholder="Phone Number" autocomplete="tel"
-                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#111111] placeholder-slate-400 transition-colors" />
+                              <div class="space-y-2.5">
+                                  <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">Phone Number</label>
+                                  <div class="relative group">
+                                      <app-icon name="Phone" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
+                                      <input type="tel" formControlName="phone" placeholder="017XXXXXXXX" autocomplete="tel"
+                                             class="form-input !h-14 !pl-12" />
+                                  </div>
                               </div>
 
                               <!-- Full Name -->
-                              <div class="relative group">
-                                  <app-icon name="User" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#111111] transition-colors"></app-icon>
-                                  <input type="text" formControlName="fullName" placeholder="Full Name" autocomplete="name"
-                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#111111] placeholder-slate-400 transition-colors" />
+                              <div class="space-y-2.5">
+                                  <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">Full Name</label>
+                                  <div class="relative group">
+                                      <app-icon name="User" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
+                                      <input type="text" formControlName="fullName" placeholder="e.g. Rizve Rahman" autocomplete="name"
+                                             class="form-input !h-14 !pl-12" />
+                                  </div>
                               </div>
     
                               <!-- City Dropdown -->
-                              <div class="relative">
-                                  <app-icon name="MapPin" size="16" className="absolute left-0 top-2 text-slate-400"></app-icon>
-                                  <button type="button" (click)="toggleCityDropdown()"
-                                          class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-left text-slate-900 flex items-center justify-between">
-                                      <span [class.text-slate-400]="!orderForm.get('city')?.value">{{ orderForm.get('city')?.value || 'Select District' }}</span>
-                                      <app-icon [name]="'ChevronDown'" size="16" className="text-slate-400 transition-transform" [class.rotate-180]="isCityDropdownOpen"></app-icon>
-                                  </button>
-    
-                                  @if (isCityDropdownOpen) {
-                                    <div class="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 max-h-64 overflow-hidden flex flex-col">
-                                        <div class="p-3 border-b border-slate-50">
-                                            <input type="text" [value]="citySearch" (input)="filterCities($event)" placeholder="Search District..."
-                                                   class="w-full bg-slate-50 border-none rounded-xl px-4 py-2 text-sm focus:ring-1 focus:ring-orange-200 outline-none" />
+                              <div class="space-y-2.5">
+                                  <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">City / District</label>
+                                  <div class="relative" (click)="$event.stopPropagation()">
+                                      <button type="button" (click)="toggleCityDropdown()"
+                                              class="form-select !h-14 flex items-center justify-between px-4">
+                                          <span [class.text-ds-text-muted]="!orderForm.get('city')?.value" class="text-xs font-bold uppercase tracking-widest">
+                                              {{ orderForm.get('city')?.value || 'Select District' }}
+                                          </span>
+                                          <app-icon name="ChevronDown" size="16" className="text-ds-text-muted transition-transform" [class.rotate-180]="isCityDropdownOpen"></app-icon>
+                                      </button>
+        
+                                      @if (isCityDropdownOpen) {
+                                        <div class="absolute z-50 left-0 right-0 mt-2 bg-ds-bg border border-ds-border shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                                            <div class="p-3 border-b border-ds-border">
+                                                <input type="text" [value]="citySearch" (input)="filterCities($event)" placeholder="Search District..."
+                                                       class="w-full bg-ds-surface border-none px-4 py-2 text-[11px] font-bold uppercase tracking-widest outline-none" />
+                                            </div>
+                                            <div class="max-h-60 overflow-y-auto py-2 custom-scrollbar-thin">
+                                                @for (city of filteredCities; track city) {
+                                                  <button type="button" (click)="selectCity(city)"
+                                                          class="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-ds-surface transition-colors"
+                                                          [class.text-ds-accent]="orderForm.get('city')?.value === city">
+                                                      {{ city }}
+                                                  </button>
+                                                }
+                                            </div>
                                         </div>
-                                        <div class="overflow-y-auto py-2">
-                                            @for (city of filteredCities; track city) {
-                                              <button type="button" (click)="selectCity(city)"
-                                                      class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#111111] transition-colors">
-                                                  {{ city }}
-                                              </button>
-                                            }
-                                        </div>
-                                    </div>
-                                  }
+                                      }
+                                  </div>
                               </div>
     
                               <!-- Area Dropdown -->
-                              <div class="relative">
-                                  <app-icon name="MapPin" size="16" className="absolute left-0 top-2 text-slate-400"></app-icon>
-                                  <button type="button" (click)="toggleAreaDropdown()" [disabled]="!orderForm.get('city')?.value"
-                                          class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-left text-slate-900 flex items-center justify-between disabled:opacity-50">
-                                      <span [class.text-slate-400]="!orderForm.get('area')?.value">{{ orderForm.get('area')?.value || 'Select Area' }}</span>
-                                      <app-icon name="ChevronDown" size="16" className="text-slate-400 transition-transform" [class.rotate-180]="isAreaDropdownOpen"></app-icon>
-                                  </button>
-    
-                                  @if (isAreaDropdownOpen) {
-                                    <div class="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 max-h-64 overflow-hidden flex flex-col">
-                                        <div class="p-3 border-b border-slate-50">
-                                            <input type="text" [value]="areaSearch" (input)="filterAreas($event)" placeholder="Search Area..."
-                                                   class="w-full bg-slate-50 border-none rounded-xl px-4 py-2 text-sm focus:ring-1 focus:ring-orange-200 outline-none" />
+                              <div class="space-y-2.5">
+                                  <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">Area / Thana</label>
+                                  <div class="relative" (click)="$event.stopPropagation()">
+                                      <button type="button" (click)="toggleAreaDropdown()" [disabled]="!orderForm.get('city')?.value"
+                                              class="form-select !h-14 flex items-center justify-between px-4 disabled:opacity-30">
+                                          <span [class.text-ds-text-muted]="!orderForm.get('area')?.value" class="text-xs font-bold uppercase tracking-widest">
+                                              {{ orderForm.get('area')?.value || 'Select Area' }}
+                                          </span>
+                                          <app-icon name="ChevronDown" size="16" className="text-ds-text-muted transition-transform" [class.rotate-180]="isAreaDropdownOpen"></app-icon>
+                                      </button>
+        
+                                      @if (isAreaDropdownOpen) {
+                                        <div class="absolute z-50 left-0 right-0 mt-2 bg-ds-bg border border-ds-border shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                                            <div class="p-3 border-b border-ds-border">
+                                                <input type="text" [value]="areaSearch" (input)="filterAreas($event)" placeholder="Search Area..."
+                                                       class="w-full bg-ds-surface border-none px-4 py-2 text-[11px] font-bold uppercase tracking-widest outline-none" />
+                                            </div>
+                                            <div class="max-h-60 overflow-y-auto py-2 custom-scrollbar-thin">
+                                                @for (area of filteredAreas; track area) {
+                                                  <button type="button" (click)="selectArea(area)"
+                                                          class="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-ds-surface transition-colors"
+                                                          [class.text-ds-accent]="orderForm.get('area')?.value === area">
+                                                      {{ area }}
+                                                  </button>
+                                                }
+                                            </div>
                                         </div>
-                                        <div class="overflow-y-auto py-2">
-                                            @for (area of filteredAreas; track area) {
-                                              <button type="button" (click)="selectArea(area)"
-                                                      class="w-full text-left px-5 py-2.5 text-sm hover:bg-orange-50 hover:text-[#111111] transition-colors">
-                                                  {{ area }}
-                                              </button>
-                                            }
-                                        </div>
-                                    </div>
-                                  }
+                                      }
+                                  </div>
                               </div>
     
                               <!-- Full Address -->
-                              <div class="md:col-span-2 relative group">
-                                  <app-icon name="MapPin" size="16" className="absolute left-0 top-2 text-slate-400 group-focus-within:text-[#111111] transition-colors"></app-icon>
-                                  <input type="text" formControlName="address" placeholder="House/Road/Block (Detailed Address)" autocomplete="street-address"
-                                         class="w-full bg-transparent border-b border-slate-200 py-2 pl-7 text-slate-900 focus:outline-none focus:border-[#111111] placeholder-slate-400 transition-colors" />
+                              <div class="md:col-span-2 space-y-2.5">
+                                  <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">House/Road/Block (Detailed Address)</label>
+                                  <div class="relative group">
+                                      <app-icon name="MapPin" size="16" className="absolute left-4 top-5 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
+                                      <textarea formControlName="address" rows="3" placeholder="Enter your full address..." autocomplete="street-address"
+                                             class="form-textarea !pl-12 !py-4"></textarea>
+                                  </div>
                               </div>
                           </div>
     
                           <!-- Submit -->
-                          <button type="submit" [disabled]="isOrdering" class="w-full bg-[#111111] text-white font-label uppercase tracking-widest py-5 mt-4 hover:bg-[#111111] transition-colors rounded-xl flex items-center justify-center gap-2 disabled:opacity-70 disabled:pointer-events-none shadow-[0_15px_30px_-5px_rgba(255,122,0,0.4)]">
-                              @if (isOrdering) {
-                                <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
-                              }
-                              <span>CONFIRM ORDER — ৳ {{ total }}</span>
-                          </button>
+                          <div class="pt-6">
+                            <button type="submit" [disabled]="isOrdering" class="btn btn-primary w-full h-16 !text-[11px] !tracking-[0.4em] uppercase disabled:opacity-30 flex items-center justify-center gap-4 group">
+                                @if (isOrdering) {
+                                  <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
+                                  <span>Processing...</span>
+                                } @else {
+                                  <app-icon name="ShoppingBag" size="20" className="group-hover:scale-110 transition-transform"></app-icon>
+                                  <span>CONFIRM ORDER — ৳ {{ total }}</span>
+                                }
+                            </button>
+                            <p class="mt-6 text-[9px] text-ds-text-muted text-center font-bold uppercase tracking-[0.2em] leading-loose">
+                                Free Delivery on orders over ৳5000 • Cash on Delivery Available
+                            </p>
+                          </div>
                       </form>
                   </div>
               </div>
@@ -417,28 +469,28 @@
         <section class="py-16">
           <div class="site-container">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div class="floating-card p-10 text-center flex flex-col items-center group">
-                <div class="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+              <div class="bg-ds-surface border border-ds-border p-10 text-center flex flex-col items-center group rounded-sm">
+                <div class="w-16 h-16 rounded-sm bg-emerald-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                   <app-icon name="Truck" size="32" className="text-emerald-500"></app-icon>
                 </div>
-                <h5 class="font-headline text-xl font-bold text-slate-900 mb-2">Fastest Delivery</h5>
-                <p class="text-sm text-slate-500 leading-relaxed">Swift and safe delivery to your doorstep within 2-3 business days.</p>
+                <h5 class="text-ds-xl font-bold text-ds-text mb-2 uppercase tracking-tight">Fastest Delivery</h5>
+                <p class="text-ds-xs text-ds-text-sec leading-relaxed font-medium">Swift and safe delivery to your doorstep within 2-3 business days.</p>
               </div>
               
-              <div class="floating-card p-10 text-center flex flex-col items-center group">
-                <div class="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+              <div class="bg-ds-surface border border-ds-border p-10 text-center flex flex-col items-center group rounded-sm">
+                <div class="w-16 h-16 rounded-sm bg-amber-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                   <app-icon name="Verified" size="32" className="text-amber-500"></app-icon>
                 </div>
-                <h5 class="font-headline text-xl font-bold text-slate-900 mb-2">Quality Check</h5>
-                <p class="text-sm text-slate-500 leading-relaxed">Check your product upon delivery to ensure maximum satisfaction.</p>
+                <h5 class="text-ds-xl font-bold text-ds-text mb-2 uppercase tracking-tight">Quality Check</h5>
+                <p class="text-ds-xs text-ds-text-sec leading-relaxed font-medium">Check your product upon delivery to ensure maximum satisfaction.</p>
               </div>
               
-              <div class="floating-card p-10 text-center flex flex-col items-center group">
-                <div class="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+              <div class="bg-ds-surface border border-ds-border p-10 text-center flex flex-col items-center group rounded-sm">
+                <div class="w-16 h-16 rounded-sm bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                   <app-icon name="RotateCcw" size="32" className="text-rose-500"></app-icon>
                 </div>
-                <h5 class="font-headline text-xl font-bold text-slate-900 mb-2">Easy Exchange</h5>
-                <p class="text-sm text-slate-500 leading-relaxed">Hassle-free exchange policy if there's any sizing or quality issue.</p>
+                <h5 class="text-ds-xl font-bold text-ds-text mb-2 uppercase tracking-tight">Easy Exchange</h5>
+                <p class="text-ds-xs text-ds-text-sec leading-relaxed font-medium">Hassle-free exchange policy if there's any sizing or quality issue.</p>
               </div>
             </div>
           </div>
@@ -449,15 +501,13 @@
       <div class="fixed bottom-8 right-8 z-[100] group">
         <a 
           routerLink="/" 
-          class="glowing-btn flex items-center gap-3 px-8 py-5 rounded-2xl shadow-[0_20px_50px_-10px_rgba(200,146,42,0.4)] hover:-translate-y-2 transition-all duration-500 border border-[#c8922a]/20"
+          class="bg-ds-accent text-ds-hero-text flex items-center gap-3 px-8 py-5 rounded-sm shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-white/10"
         >
           <div class="flex items-center gap-3">
-            <app-icon name="ExternalLink" size="18" className="text-slate-900"></app-icon>
-            <span class="text-slate-900 font-black text-[10px] uppercase tracking-[0.2em]">Visit Website</span>
+            <app-icon name="ExternalLink" size="18" className="text-ds-hero-text"></app-icon>
+            <span class="font-bold text-[10px] uppercase tracking-[0.2em]">Visit Website</span>
           </div>
         </a>
-        <!-- Subtle pulse ripple -->
-        <div class="absolute -inset-2 bg-primary-clp/10 rounded-3xl blur-xl animate-pulse -z-10 group-hover:bg-primary-clp/20"></div>
       </div>
 
       <div class="mt-12 text-center pb-12">
@@ -469,11 +519,11 @@
 }
 
 @if (isLoading) {
-  <div class="min-h-screen flex flex-col items-center justify-center gap-6 bg-white">
+  <div class="min-h-screen flex flex-col items-center justify-center gap-6 bg-ds-bg">
     <div class="relative w-20 h-20">
-        <div class="absolute inset-0 border-4 border-primary-clp/10 rounded-full"></div>
-        <div class="absolute inset-0 border-4 border-t-primary-clp rounded-full animate-spin"></div>
+        <div class="absolute inset-0 border-4 border-ds-border rounded-sm"></div>
+        <div class="absolute inset-0 border-4 border-t-ds-text rounded-sm animate-spin"></div>
     </div>
-    <p class="font-label text-[10px] text-slate-400 tracking-[0.2em] animate-pulse">Loading Premium Experience...</p>
+    <p class="text-[10px] text-ds-text-muted font-bold uppercase tracking-[0.2em] animate-pulse">Loading Premium Experience...</p>
   </div>
 }

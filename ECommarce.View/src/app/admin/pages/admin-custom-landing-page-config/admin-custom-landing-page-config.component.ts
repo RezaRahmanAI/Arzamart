@@ -40,6 +40,8 @@ export class AdminCustomLandingPageConfigComponent implements OnInit {
     featuredProductName: ["The Signature Suit"],
     promoPrice: [0],
     originalPrice: [0],
+    isMarqueeVisible: [false],
+    marqueeText: ["🔥 সীমিত স্টক — মাত্র ৩৪টি বাকি! 🚚 সারা বাংলাদেশে ফ্রি ডেলিভারি 💥 আজকের জন্য ৩০% ছাড় — মধ্যরাতে শেষ 💵 ক্যাশ অন ডেলিভারি আছে ⚡"],
   });
 
   ngOnInit(): void {

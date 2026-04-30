@@ -29,4 +29,8 @@ public class CustomLandingPageConfig : BaseEntity
     public string? FeaturedProductName { get; set; }
     public decimal? PromoPrice { get; set; }
     public decimal? OriginalPrice { get; set; }
+    
+    // Marquee Section
+    public bool IsMarqueeVisible { get; set; } = false;
+    public string? MarqueeText { get; set; }
 }

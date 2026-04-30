@@ -61,6 +61,33 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   deliveryMethods: DeliveryMethod[] = [];
   isLoading = true;
   isOrdering = false;
+
+  get processedMarqueeText(): string {
+    if (!this.data?.config?.marqueeText) return "";
+    
+    let text = this.data.config.marqueeText;
+    const discount = this.discountPercentage;
+    
+    if (discount > 0) {
+      text = text.replace('{discount}', `${discount}%`);
+    } else {
+      text = text.replace('{discount}', '');
+    }
+    
+    return text;
+  }
+
+  get discountPercentage(): number {
+    if (!this.data?.config) return 0;
+    const original = this.data.config.originalPrice || this.data.product.price;
+    const promo = this.data.config.promoPrice || this.data.product.price;
+    
+    if (original > promo) {
+      return Math.round(((original - promo) / original) * 100);
+    }
+    return 0;
+  }
+
   timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
   private timerInterval: any;
   selectedImage: string = "";
@@ -510,6 +537,17 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     }
+  }
+
+  whatsappUs(): void {
+    if (!this.data) return;
+    this.siteSettingsService.getSettings().subscribe(settings => {
+      const phone = (settings.whatsAppNumber || settings.contactPhone || "").replace(/\D/g, "");
+      const message = encodeURIComponent(`Hello, I'm interested in ${this.data?.product.name}. Can you help me?`);
+      if (phone) {
+        window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+      }
+    });
   }
 
   formatSizes(variants: any[] | undefined): string {

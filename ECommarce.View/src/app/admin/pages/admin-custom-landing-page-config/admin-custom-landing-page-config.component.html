@@ -61,6 +61,34 @@
       </div>
     </div>
 
+    <!-- Section: Marquee Dynamics -->
+    <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm flex flex-col">
+      <div class="px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
+        <app-icon name="Megaphone" size="16" className="text-ds-text"></app-icon>
+        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Marquee Dynamics</h3>
+      </div>
+
+      <div class="p-ds-8 flex flex-col gap-ds-8">
+        <div class="flex items-center justify-between p-ds-4 bg-ds-bg/30 border border-ds-border rounded-sm">
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] font-bold uppercase tracking-widest">Global Announcement Bar</label>
+              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Sticky Marquee State</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="isMarqueeVisible" class="sr-only peer" />
+              <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+            </label>
+        </div>
+
+        <div class="space-y-2">
+            <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Announcement Content</label>
+            <textarea formControlName="marqueeText" rows="3" 
+                   class="form-input !p-ds-4 !text-[11px] font-bold uppercase tracking-tight resize-none"></textarea>
+            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-1">Use {{ '{discount}' }} to display dynamic product discount percentage</p>
+        </div>
+      </div>
+    </div>
+
     <!-- Section: Experience -->
     <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm flex flex-col">
         <div class="px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
