@@ -371,6 +371,11 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     return this.selectedDeliveryMethod?.cost ?? 0;
   }
 
+  get uniqueSizes(): string[] {
+    if (!this.data?.product?.variants) return [];
+    return Array.from(new Set(this.data.product.variants.map(v => v.size).filter(Boolean))) as string[];
+  }
+
   get total(): number {
     return this.selectedVariantPrice + this.shippingCost;
   }
