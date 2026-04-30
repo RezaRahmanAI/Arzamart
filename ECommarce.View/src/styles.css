@@ -708,4 +708,15 @@ input[type='number'] {
   
   .bg-electric-red { background-color: #E63946; }
   .text-electric-red { color: #E63946; }
+  .border-electric-red { border-color: #E63946; }
+  
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .text-deep-gold { color: #C5A059; }
+  .border-deep-gold { border-color: #C5A059; }
 }

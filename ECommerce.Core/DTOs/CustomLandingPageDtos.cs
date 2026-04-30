@@ -23,6 +23,7 @@ public class CustomLandingPageConfigDto
     public string? FeaturedProductName { get; set; }
     public decimal? PromoPrice { get; set; }
     public decimal? OriginalPrice { get; set; }
+    public string? PromoText { get; set; }
     public bool IsMarqueeVisible { get; set; }
     public string? MarqueeText { get; set; }
 }
@@ -48,6 +49,7 @@ public class CustomLandingPageConfigUpdateDto
     public string? FeaturedProductName { get; set; }
     public decimal? PromoPrice { get; set; }
     public decimal? OriginalPrice { get; set; }
+    public string? PromoText { get; set; }
     public bool IsMarqueeVisible { get; set; }
     public string? MarqueeText { get; set; }
 }

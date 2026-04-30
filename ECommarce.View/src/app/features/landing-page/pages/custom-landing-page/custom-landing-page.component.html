@@ -18,63 +18,7 @@
 
   <div class="bg-ds-bg text-ds-text font-body antialiased min-h-screen relative" [class.pt-0]="!data.config?.isMarqueeVisible">
     
-      <!-- Top Promo Bar (Timer) - REDESIGNED for Premium Look -->
-      @if (data.config?.isTimerVisible) {
-        <div class="sticky top-0 z-50 py-0 sm:py-4 sm:px-6">
-          <div class="site-container px-0 sm:px-4">
-            <div class="bg-timer-gradient sm:rounded-sm p-4 md:p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden border-b sm:border border-white/10">
-              <!-- Ambient Light effects -->
-              <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
-              <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-primary-clp/10 rounded-full blur-3xl animate-pulse"></div>
-              
-              <div class="flex items-center gap-5 z-10">
-                <div class="w-14 h-14 rounded-sm bg-white/15 flex items-center justify-center backdrop-blur-md border border-white/20 shadow-inner group transition-all duration-500 hover:rotate-12">
-                    <app-icon name="Clock" size="28" className="text-white drop-shadow-lg"></app-icon>
-                </div>
-                <div class="text-white text-center md:text-left">
-                  <h2 class="text-xl md:text-2xl font-headline font-black tracking-tight drop-shadow-md leading-tight mb-1">{{ data.config?.headerTitle }}</h2>
-                  <div class="flex items-center justify-center md:justify-start gap-ds-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    <p class="text-ds-xs text-white/90 font-label tracking-[0.2em] uppercase">Limited time offer • Don't miss out!</p>
-                  </div>
-                </div>
-              </div>
-    
-              <div class="flex items-center gap-4 z-10">
-                <div class="flex gap-2.5 sm:gap-4 items-center">
-                  <div class="flex flex-col items-center gap-ds-2">
-                    <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-ds-2xl font-black text-[#111111] tabular-nums">{{ timeLeft.days }}</span>
-                    </div>
-                    <span class="text-ds-xs font-black text-white/70 uppercase tracking-[0.2em]">Days</span>
-                  </div>
-                  <div class="text-white/40 text-2xl font-light mb-6">:</div>
-                  <div class="flex flex-col items-center gap-ds-2">
-                    <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-ds-2xl font-black text-[#111111] tabular-nums">{{ timeLeft.hours }}</span>
-                    </div>
-                    <span class="text-ds-xs font-black text-white/70 uppercase tracking-[0.2em]">Hrs</span>
-                  </div>
-                  <div class="text-white/40 text-2xl font-light mb-6">:</div>
-                  <div class="flex flex-col items-center gap-ds-2">
-                    <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-ds-2xl font-black text-[#111111] tabular-nums">{{ timeLeft.minutes }}</span>
-                    </div>
-                    <span class="text-ds-xs font-black text-white/70 uppercase tracking-[0.2em]">Min</span>
-                  </div>
-                  <div class="text-white/40 text-2xl font-light mb-6">:</div>
-                  <div class="flex flex-col items-center gap-ds-2">
-                    <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-ds-2xl font-black text-[#111111] tabular-nums">{{ timeLeft.seconds }}</span>
-                    </div>
-                    <span class="text-ds-xs font-black text-white/70 uppercase tracking-[0.2em]">Sec</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
+      <!-- Old Timer Removed as per User Request for New Design -->
     
     
       <main class="space-y-32 pb-32">
@@ -87,11 +31,43 @@
                     <!-- Content Area -->
                     <div class="w-full lg:w-1/2 p-8 md:p-16 space-y-10">
                         <div>
+                            <!-- New Countdown Card (Moved to Hero) -->
+                            @if (data.config?.isTimerVisible) {
+                              <div class="glass-card p-6 rounded-none border-l-4 border-l-electric-red relative overflow-hidden mb-ds-8 bg-ds-hero-bg shadow-2xl">
+                                <div class="absolute -right-8 -top-8 w-24 h-24 bg-electric-red/10 blur-3xl"></div>
+                                <p class="text-ds-xs uppercase tracking-widest text-white/60 mb-4 font-bold font-bengali">অফার শেষ হতে আর বাকি মাত্র:</p>
+                                <div class="flex gap-4 font-mono text-ds-2xl font-black text-white items-center">
+                                  <div class="flex flex-col items-center">
+                                    <span class="text-electric-red">{{ timeLeft.hours | number:'2.0' }}</span>
+                                    <span class="text-[9px] text-white/40 uppercase mt-1 tracking-widest">Hours</span>
+                                  </div>
+                                  <span class="text-white/20 pb-4">:</span>
+                                  <div class="flex flex-col items-center">
+                                    <span class="text-electric-red">{{ timeLeft.minutes | number:'2.0' }}</span>
+                                    <span class="text-[9px] text-white/40 uppercase mt-1 tracking-widest">Mins</span>
+                                  </div>
+                                  <span class="text-white/20 pb-4">:</span>
+                                  <div class="flex flex-col items-center">
+                                    <span class="text-white animate-pulse">{{ timeLeft.seconds | number:'2.0' }}</span>
+                                    <span class="text-[9px] text-white/40 uppercase mt-1 tracking-widest">Secs</span>
+                                  </div>
+                                </div>
+                              </div>
+                            }
+
                             <div class="flex items-center gap-ds-3 mb-ds-4">
                                 <span class="w-10 h-0.5 bg-primary-clp"></span>
                                 <span class="text-primary-clp font-label text-ds-xs tracking-widest">Premium Collection</span>
                             </div>
                             <h1 class="text-ds-4xl font-headline font-black text-ds-text tracking-tighter leading-tight mb-ds-2">{{ data.config?.productDetailsTitle }}</h1>
+                            
+                            @if (data.config?.promoText) {
+                              <div class="mt-ds-6 p-ds-5 bg-electric-red/5 border-l-4 border-electric-red rounded-r-sm animate-in fade-in slide-in-from-left duration-700">
+                                <p class="text-ds-sm font-bold text-electric-red uppercase tracking-[0.1em] leading-relaxed">
+                                  {{ data.config?.promoText }}
+                                </p>
+                              </div>
+                            }
                         </div>
     
                         <div class="space-y-8">
@@ -315,17 +291,22 @@
                       }
                       
                       <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="space-y-ds-10">
+
                           <!-- Size Selection -->
-                          <div class="space-y-ds-4">
-                              <label class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] ml-1">Select Your Size</label>
+                          <div class="space-y-ds-6">
+                              <div class="flex justify-between items-end">
+                                <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] ml-1 font-bengali">সাইজ সিলেক্ট করুন</p>
+                                <a class="text-[10px] text-deep-gold border-b border-deep-gold hover:text-ds-text transition-colors uppercase tracking-widest font-bold" href="javascript:void(0)">Size Guide</a>
+                              </div>
                               <div class="flex flex-wrap gap-ds-3">
                                   @for (variant of data.product.variants; track variant.id) {
                                     <button type="button" 
                                             (click)="selectSize(variant.size || '')"
-                                            [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'bg-ds-text text-ds-bg border-ds-text' : 'bg-ds-bg text-ds-text-sec border-ds-border hover:border-ds-text'"
-                                            class="min-w-[80px] px-ds-6 py-ds-3 border text-center transition-all duration-200 rounded-sm">
-                                        <p class="text-ds-xs font-bold uppercase tracking-widest mb-0.5">{{ variant.size }}</p>
-                                        <p class="text-ds-xs font-bold opacity-60">৳ {{ variant.price || data.product.price }}</p>
+                                            [ngClass]="orderForm.get('selectedSize')?.value === variant.size 
+                                              ? 'border-2 border-electric-red bg-electric-red/5 text-electric-red shadow-lg scale-105' 
+                                              : 'border border-ds-border text-ds-text-sec hover:border-electric-red hover:text-electric-red'"
+                                            class="w-14 h-14 flex items-center justify-center font-bold transition-all duration-300 rounded-none text-ds-sm">
+                                        {{ variant.size }}
                                     </button>
                                   }
                               </div>
