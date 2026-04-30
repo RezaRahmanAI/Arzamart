@@ -33,41 +33,41 @@
                 </div>
                 <div class="text-white text-center md:text-left">
                   <h2 class="text-xl md:text-2xl font-headline font-black tracking-tight drop-shadow-md leading-tight mb-1">{{ data.config?.headerTitle }}</h2>
-                  <div class="flex items-center justify-center md:justify-start gap-2">
+                  <div class="flex items-center justify-center md:justify-start gap-ds-2">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    <p class="text-[10px] md:text-xs text-white/90 font-label tracking-[0.2em] uppercase">Limited time offer • Don't miss out!</p>
+                    <p class="text-ds-xs text-white/90 font-label tracking-[0.2em] uppercase">Limited time offer • Don't miss out!</p>
                   </div>
                 </div>
               </div>
     
               <div class="flex items-center gap-4 z-10">
                 <div class="flex gap-2.5 sm:gap-4 items-center">
-                  <div class="flex flex-col items-center gap-2">
+                  <div class="flex flex-col items-center gap-ds-2">
                     <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-2xl md:text-3xl font-black text-[#111111] tabular-nums">{{ timeLeft.days }}</span>
+                      <span class="text-ds-2xl font-black text-[#111111] tabular-nums">{{ timeLeft.days }}</span>
                     </div>
-                    <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Days</span>
+                    <span class="text-ds-xs font-black text-white/70 uppercase tracking-[0.2em]">Days</span>
                   </div>
                   <div class="text-white/40 text-2xl font-light mb-6">:</div>
-                  <div class="flex flex-col items-center gap-2">
+                  <div class="flex flex-col items-center gap-ds-2">
                     <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-2xl md:text-3xl font-black text-[#111111] tabular-nums">{{ timeLeft.hours }}</span>
+                      <span class="text-ds-2xl font-black text-[#111111] tabular-nums">{{ timeLeft.hours }}</span>
                     </div>
-                    <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Hrs</span>
+                    <span class="text-ds-xs font-black text-white/70 uppercase tracking-[0.2em]">Hrs</span>
                   </div>
                   <div class="text-white/40 text-2xl font-light mb-6">:</div>
-                  <div class="flex flex-col items-center gap-2">
+                  <div class="flex flex-col items-center gap-ds-2">
                     <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-2xl md:text-3xl font-black text-[#111111] tabular-nums">{{ timeLeft.minutes }}</span>
+                      <span class="text-ds-2xl font-black text-[#111111] tabular-nums">{{ timeLeft.minutes }}</span>
                     </div>
-                    <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Min</span>
+                    <span class="text-ds-xs font-black text-white/70 uppercase tracking-[0.2em]">Min</span>
                   </div>
                   <div class="text-white/40 text-2xl font-light mb-6">:</div>
-                  <div class="flex flex-col items-center gap-2">
+                  <div class="flex flex-col items-center gap-ds-2">
                     <div class="timer-box transform hover:scale-105 transition-all duration-300">
-                      <span class="text-2xl md:text-3xl font-black text-[#111111] tabular-nums">{{ timeLeft.seconds }}</span>
+                      <span class="text-ds-2xl font-black text-[#111111] tabular-nums">{{ timeLeft.seconds }}</span>
                     </div>
-                    <span class="text-[9px] font-black text-white/70 uppercase tracking-[0.2em]">Sec</span>
+                    <span class="text-ds-xs font-black text-white/70 uppercase tracking-[0.2em]">Sec</span>
                   </div>
                 </div>
               </div>
@@ -87,11 +87,11 @@
                     <!-- Content Area -->
                     <div class="w-full lg:w-1/2 p-8 md:p-16 space-y-10">
                         <div>
-                            <div class="flex items-center gap-3 mb-4">
+                            <div class="flex items-center gap-ds-3 mb-ds-4">
                                 <span class="w-10 h-0.5 bg-primary-clp"></span>
-                                <span class="text-primary-clp font-label text-xs tracking-widest">Premium Collection</span>
+                                <span class="text-primary-clp font-label text-ds-xs tracking-widest">Premium Collection</span>
                             </div>
-                            <h1 class="text-3xl sm:text-4xl md:text-6xl font-headline font-black text-[#111111] tracking-tighter leading-tight mb-2">{{ data.config?.productDetailsTitle }}</h1>
+                            <h1 class="text-ds-4xl font-headline font-black text-ds-text tracking-tighter leading-tight mb-ds-2">{{ data.config?.productDetailsTitle }}</h1>
                         </div>
     
                         <div class="space-y-8">
@@ -153,32 +153,42 @@
                         </div>
                     </div>
     
-                    <div class="w-full lg:w-1/2 bg-ds-surface relative lg:min-h-full">
-                        <div class="relative w-full aspect-[4/5] sm:aspect-auto sm:min-h-[600px] lg:h-full overflow-hidden rounded-sm lg:rounded-none">
-                            <img [src]="imageUrlService.getImageUrl(selectedImage || data.product.imageUrl || '')" alt="Product Gallery" class="absolute inset-0 w-full h-full object-cover">
-                        </div>
+                    <div class="w-full lg:w-1/2 p-ds-6">
+                        <!-- Hero Image Gallery -->
+                        <div class="relative space-y-ds-4">
+                            <!-- Main Image -->
+                            <div class="relative group overflow-hidden rounded-sm bg-ds-bg shadow-lg">
+                                <img [src]="imageUrlService.getImageUrl(selectedImage || data.product.imageUrl || '')" 
+                                     alt="Featured Artifact" 
+                                     class="w-full aspect-[4/5] object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700">
+                                
+                                <!-- Promo Overlay -->
+                                @if (discountPercentage > 0) {
+                                  <div class="absolute top-ds-6 left-ds-6 w-24 h-24 rounded-full bg-electric-red flex flex-col items-center justify-center text-white font-bold leading-tight rotate-12 shadow-xl border-4 border-white/20 z-10 animate-in zoom-in duration-500">
+                                      <span class="text-[10px] uppercase tracking-widest opacity-90 font-bengali">আজকের অফার</span>
+                                      <span class="text-ds-xl">{{ discountPercentage }}% ছাড়</span>
+                                  </div>
+                                }
 
-                        <!-- Progress Bar -->
-                        @if (data.product.images.length > 1) {
-                          <div class="mt-4 w-full h-1 bg-ds-border relative overflow-hidden rounded-none">
-                            <div
-                              class="absolute top-0 left-0 h-full bg-ds-text transition-all duration-75"
-                              [style.width.%]="slideProgress"
-                            ></div>
-                          </div>
-                        }
-                        
-                        <!-- Thumbnails -->
-                        <div class="relative z-10 p-4 sm:p-0 sm:absolute sm:bottom-8 sm:left-1/2 sm:-translate-x-1/2 w-full flex justify-center">
-                            <div class="flex flex-wrap justify-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 rounded-sm bg-ds-bg shadow-xl border border-ds-border w-fit">
+                                <!-- Progress Bar (Seamless) -->
+                                @if (data.product.images.length > 1) {
+                                  <div class="absolute bottom-0 left-0 w-full h-1 bg-white/10 z-20">
+                                      <div class="h-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-75" [style.width.%]="slideProgress"></div>
+                                  </div>
+                                }
+                            </div>
+
+                            <!-- Thumbnails Grid -->
+                            <div class="grid grid-cols-4 gap-ds-4">
                                 @for (img of data.product.images.slice(0, 4); track img.imageUrl) {
-                                  <img 
-                                       [src]="imageUrlService.getImageUrl(img.imageUrl)" 
+                                  <div class="relative aspect-square overflow-hidden rounded-sm cursor-pointer border-2 transition-all duration-300"
                                        (click)="selectImage(img.imageUrl)"
-                                       alt="Thumb" 
-                                       class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-cover rounded-none border-2 transition-all duration-300 cursor-pointer hover:scale-105"
                                        [class.border-ds-text]="selectedImage === img.imageUrl"
-                                       [class.border-ds-border]="selectedImage !== img.imageUrl">
+                                       [class.border-ds-border]="selectedImage !== img.imageUrl"
+                                       [class.opacity-60]="selectedImage !== img.imageUrl"
+                                       [class.hover:opacity-100]="selectedImage !== img.imageUrl">
+                                      <img [src]="imageUrlService.getImageUrl(img.imageUrl)" alt="Thumb" class="w-full h-full object-cover">
+                                  </div>
                                 }
                             </div>
                         </div>
@@ -188,11 +198,11 @@
     
               <!-- Related Products Section - NEW -->
               @if (relatedProducts.length > 0) {
-                <div class="mt-12">
-                    <div class="flex items-center gap-4 mb-8">
-                        <span class="h-px flex-1 bg-slate-200"></span>
-                        <h3 class="text-xl md:text-2xl font-headline font-black text-slate-800 uppercase tracking-widest">More From This Category</h3>
-                        <span class="h-px flex-1 bg-slate-200"></span>
+                <div class="mt-ds-12">
+                    <div class="flex items-center gap-ds-4 mb-ds-8">
+                        <span class="h-px flex-1 bg-ds-border"></span>
+                        <h3 class="text-ds-xl md:text-ds-2xl font-headline font-black text-ds-text uppercase tracking-widest">More From This Category</h3>
+                        <span class="h-px flex-1 bg-ds-border"></span>
                     </div>
                     
                     <div class="flex flex-wrap justify-center gap-4 sm:gap-6">
@@ -241,13 +251,13 @@
                 
                 <app-icon name="Verified" size="64" className="text-white/20 absolute left-8 top-1/2 -translate-y-1/2"></app-icon>
                 
-                <div class="relative z-10 space-y-6">
-                    <h3 class="text-2xl md:text-3xl font-headline font-bold text-white leading-snug max-w-2xl mx-auto">
+                <div class="relative z-10 space-y-ds-6">
+                    <h3 class="text-ds-2xl md:text-ds-3xl font-headline font-bold text-white leading-snug max-w-2xl mx-auto text-balance">
                         {{ data.config?.trustBannerText }}
                     </h3>
-                    <div class="flex items-center justify-center gap-4">
+                    <div class="flex items-center justify-center gap-ds-4">
                         <div class="h-px w-8 bg-white/30"></div>
-                        <p class="text-white/80 font-label text-[10px] tracking-[0.2em]">Satisfaction Guaranteed</p>
+                        <p class="text-white/80 font-label text-ds-xs tracking-[0.2em]">Satisfaction Guaranteed</p>
                         <div class="h-px w-8 bg-white/30"></div>
                     </div>
                 </div>
@@ -269,16 +279,16 @@
     
               <!-- Form Area -->
               <div class="w-full lg:w-1/2">
-                  <div class="bg-ds-surface border border-ds-border p-8 md:p-12 shadow-sm">
-                      <div class="mb-10 border-b border-ds-border pb-6">
-                          <h2 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight mb-3">{{ data.config?.featuredProductName }}</h2>
-                          <div class="flex items-baseline gap-4">
+                  <div class="bg-ds-surface border border-ds-border p-ds-8 md:p-ds-12 shadow-sm">
+                      <div class="mb-ds-10 border-b border-ds-border pb-ds-6">
+                          <h2 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight mb-ds-3">{{ data.config?.featuredProductName }}</h2>
+                          <div class="flex items-baseline gap-ds-4">
                               <span class="text-ds-3xl font-bold text-ds-text">৳ {{ selectedVariantPrice }}</span>
                               @if (data.config?.originalPrice) {
                                 <span class="text-ds-lg text-ds-text-muted line-through font-medium">৳ {{ data.config?.originalPrice }}</span>
                               }
                               @if (data.config && data.config.originalPrice && data.config.originalPrice > selectedVariantPrice) {
-                                <span class="px-2 py-1 bg-ds-accent text-ds-hero-text text-[10px] font-bold uppercase tracking-widest">
+                                <span class="px-2 py-1 bg-ds-accent text-ds-hero-text text-ds-xs font-bold uppercase tracking-widest">
                                     SAVE ৳{{ (data.config.originalPrice - selectedVariantPrice) }}
                                 </span>
                               }
@@ -287,35 +297,35 @@
 
                       <!-- Saved Info Prompt -->
                       @if (showAutofillPrompt) {
-                        <div class="mb-8 p-6 bg-ds-bg border border-ds-border flex flex-col sm:flex-row items-center justify-between gap-6 animate-in slide-in-from-top duration-300">
-                          <div class="flex items-center gap-4">
+                        <div class="mb-ds-8 p-ds-6 bg-ds-bg border border-ds-border flex flex-col sm:flex-row items-center justify-between gap-ds-6 animate-in slide-in-from-top duration-300">
+                          <div class="flex items-center gap-ds-4">
                             <div class="w-12 h-12 bg-ds-accent text-ds-hero-text flex items-center justify-center">
                               <app-icon name="User" size="24"></app-icon>
                             </div>
                             <div>
                               <p class="text-ds-xs font-bold text-ds-text uppercase tracking-widest">Welcome Back</p>
-                              <p class="text-[11px] text-ds-text-sec font-medium">Apply your previous order details?</p>
+                              <p class="text-ds-xs text-ds-text-sec font-medium">Apply your previous order details?</p>
                             </div>
                           </div>
-                          <div class="flex gap-3 w-full sm:w-auto">
-                            <button type="button" (click)="dismissAutofill()" class="btn btn-secondary !h-10 !text-[9px] uppercase tracking-widest px-4">Skip</button>
-                            <button type="button" (click)="applyAutofill()" class="btn btn-primary !h-10 !text-[9px] uppercase tracking-widest px-6">Apply</button>
+                          <div class="flex gap-ds-3 w-full sm:w-auto">
+                            <button type="button" (click)="dismissAutofill()" class="btn btn-secondary !h-10 text-ds-xs uppercase tracking-widest px-ds-4">Skip</button>
+                            <button type="button" (click)="applyAutofill()" class="btn btn-primary !h-10 text-ds-xs uppercase tracking-widest px-ds-6">Apply</button>
                           </div>
                         </div>
                       }
                       
-                      <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="space-y-10">
+                      <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="space-y-ds-10">
                           <!-- Size Selection -->
-                          <div class="space-y-4">
-                              <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em] ml-1">Select Your Size</label>
-                              <div class="flex flex-wrap gap-3">
+                          <div class="space-y-ds-4">
+                              <label class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] ml-1">Select Your Size</label>
+                              <div class="flex flex-wrap gap-ds-3">
                                   @for (variant of data.product.variants; track variant.id) {
                                     <button type="button" 
                                             (click)="selectSize(variant.size || '')"
                                             [ngClass]="orderForm.get('selectedSize')?.value === variant.size ? 'bg-ds-text text-ds-bg border-ds-text' : 'bg-ds-bg text-ds-text-sec border-ds-border hover:border-ds-text'"
-                                            class="min-w-[80px] px-6 py-3 border text-center transition-all duration-200 rounded-sm">
-                                        <p class="text-xs font-bold uppercase tracking-widest mb-0.5">{{ variant.size }}</p>
-                                        <p class="text-[9px] font-bold opacity-60">৳ {{ variant.price || data.product.price }}</p>
+                                            class="min-w-[80px] px-ds-6 py-ds-3 border text-center transition-all duration-200 rounded-sm">
+                                        <p class="text-ds-xs font-bold uppercase tracking-widest mb-0.5">{{ variant.size }}</p>
+                                        <p class="text-ds-xs font-bold opacity-60">৳ {{ variant.price || data.product.price }}</p>
                                     </button>
                                   }
                               </div>
@@ -328,28 +338,28 @@
                           </div>
     
                           <!-- Delivery Method -->
-                          <div class="space-y-4">
-                              <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em] ml-1">Delivery Area</p>
-                              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div class="space-y-ds-4">
+                              <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] ml-1">Delivery Area</p>
+                              <div class="grid grid-cols-1 sm:grid-cols-2 gap-ds-3">
                                   @for (method of deliveryMethods; track method.id) {
-                                    <label class="relative flex items-center justify-between p-4 border rounded-sm transition-all cursor-pointer group"
+                                    <label class="relative flex items-center justify-between p-ds-4 border rounded-sm transition-all cursor-pointer group"
                                            [ngClass]="orderForm.get('deliveryMethodId')?.value === method.id ? 'border-ds-text bg-ds-bg shadow-sm' : 'border-ds-border hover:border-ds-text/50'">
                                         <input type="radio" formControlName="deliveryMethodId" [value]="method.id" class="hidden">
-                                        <div class="flex items-center gap-3">
+                                        <div class="flex items-center gap-ds-3">
                                             <div class="size-2 rounded-full border-2 border-ds-border group-hover:border-ds-text transition-colors" [class.bg-ds-text]="orderForm.get('deliveryMethodId')?.value === method.id" [class.border-ds-text]="orderForm.get('deliveryMethodId')?.value === method.id"></div>
-                                            <span class="text-xs text-ds-text font-bold uppercase tracking-wider">{{ method.name }}</span>
+                                            <span class="text-ds-xs text-ds-text font-bold uppercase tracking-wider">{{ method.name }}</span>
                                         </div>
-                                        <span class="text-xs font-bold text-ds-text-sec">৳{{ method.cost }}</span>
+                                        <span class="text-ds-xs font-bold text-ds-text-sec">৳{{ method.cost }}</span>
                                     </label>
                                   }
                               </div>
                           </div>
     
                           <!-- Customer Info -->
-                          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-8">
                               <!-- Phone -->
-                              <div class="space-y-2.5">
-                                  <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">Phone Number</label>
+                              <div class="space-y-ds-2">
+                                  <label class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">Phone Number</label>
                                   <div class="relative group">
                                       <app-icon name="Phone" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                                       <input type="tel" formControlName="phone" placeholder="017XXXXXXXX" autocomplete="tel"
@@ -358,8 +368,8 @@
                               </div>
 
                               <!-- Full Name -->
-                              <div class="space-y-2.5">
-                                  <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">Full Name</label>
+                              <div class="space-y-ds-2">
+                                  <label class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">Full Name</label>
                                   <div class="relative group">
                                       <app-icon name="User" size="16" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                                       <input type="text" formControlName="fullName" placeholder="e.g. Rizve Rahman" autocomplete="name"
@@ -368,12 +378,12 @@
                               </div>
     
                               <!-- City Dropdown -->
-                              <div class="space-y-2.5">
-                                  <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">City / District</label>
+                              <div class="space-y-ds-2">
+                                  <label class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">City / District</label>
                                   <div class="relative" (click)="$event.stopPropagation()">
                                       <button type="button" (click)="toggleCityDropdown()"
-                                              class="form-select !h-14 flex items-center justify-between px-4">
-                                          <span [class.text-ds-text-muted]="!orderForm.get('city')?.value" class="text-xs font-bold uppercase tracking-widest">
+                                              class="form-select !h-14 flex items-center justify-between px-ds-4">
+                                          <span [class.text-ds-text-muted]="!orderForm.get('city')?.value" class="text-ds-xs font-bold uppercase tracking-widest">
                                               {{ orderForm.get('city')?.value || 'Select District' }}
                                           </span>
                                           <app-icon name="ChevronDown" size="16" className="text-ds-text-muted transition-transform" [class.rotate-180]="isCityDropdownOpen"></app-icon>
@@ -381,14 +391,14 @@
         
                                       @if (isCityDropdownOpen) {
                                         <div class="absolute z-50 left-0 right-0 mt-2 bg-ds-bg border border-ds-border shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-                                            <div class="p-3 border-b border-ds-border">
+                                            <div class="p-ds-3 border-b border-ds-border">
                                                 <input type="text" [value]="citySearch" (input)="filterCities($event)" placeholder="Search District..."
-                                                       class="w-full bg-ds-surface border-none px-4 py-2 text-[11px] font-bold uppercase tracking-widest outline-none" />
+                                                       class="w-full bg-ds-surface border-none px-ds-4 py-ds-2 text-ds-xs font-bold uppercase tracking-widest outline-none" />
                                             </div>
-                                            <div class="max-h-60 overflow-y-auto py-2 custom-scrollbar-thin">
+                                            <div class="max-h-60 overflow-y-auto py-ds-2 custom-scrollbar-thin">
                                                 @for (city of filteredCities; track city) {
                                                   <button type="button" (click)="selectCity(city)"
-                                                          class="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-ds-surface transition-colors"
+                                                          class="w-full text-left px-ds-5 py-ds-3 text-ds-xs font-bold uppercase tracking-widest hover:bg-ds-surface transition-colors"
                                                           [class.text-ds-accent]="orderForm.get('city')?.value === city">
                                                       {{ city }}
                                                   </button>
@@ -400,12 +410,12 @@
                               </div>
     
                               <!-- Area Dropdown -->
-                              <div class="space-y-2.5">
-                                  <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">Area / Thana</label>
+                              <div class="space-y-ds-2">
+                                  <label class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">Area / Thana</label>
                                   <div class="relative" (click)="$event.stopPropagation()">
                                       <button type="button" (click)="toggleAreaDropdown()" [disabled]="!orderForm.get('city')?.value"
-                                              class="form-select !h-14 flex items-center justify-between px-4 disabled:opacity-30">
-                                          <span [class.text-ds-text-muted]="!orderForm.get('area')?.value" class="text-xs font-bold uppercase tracking-widest">
+                                              class="form-select !h-14 flex items-center justify-between px-ds-4 disabled:opacity-30">
+                                          <span [class.text-ds-text-muted]="!orderForm.get('area')?.value" class="text-ds-xs font-bold uppercase tracking-widest">
                                               {{ orderForm.get('area')?.value || 'Select Area' }}
                                           </span>
                                           <app-icon name="ChevronDown" size="16" className="text-ds-text-muted transition-transform" [class.rotate-180]="isAreaDropdownOpen"></app-icon>
@@ -413,14 +423,14 @@
         
                                       @if (isAreaDropdownOpen) {
                                         <div class="absolute z-50 left-0 right-0 mt-2 bg-ds-bg border border-ds-border shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-                                            <div class="p-3 border-b border-ds-border">
+                                            <div class="p-ds-3 border-b border-ds-border">
                                                 <input type="text" [value]="areaSearch" (input)="filterAreas($event)" placeholder="Search Area..."
-                                                       class="w-full bg-ds-surface border-none px-4 py-2 text-[11px] font-bold uppercase tracking-widest outline-none" />
+                                                       class="w-full bg-ds-surface border-none px-ds-4 py-ds-2 text-ds-xs font-bold uppercase tracking-widest outline-none" />
                                             </div>
-                                            <div class="max-h-60 overflow-y-auto py-2 custom-scrollbar-thin">
+                                            <div class="max-h-60 overflow-y-auto py-ds-2 custom-scrollbar-thin">
                                                 @for (area of filteredAreas; track area) {
                                                   <button type="button" (click)="selectArea(area)"
-                                                          class="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-ds-surface transition-colors"
+                                                          class="w-full text-left px-ds-5 py-ds-3 text-ds-xs font-bold uppercase tracking-widest hover:bg-ds-surface transition-colors"
                                                           [class.text-ds-accent]="orderForm.get('area')?.value === area">
                                                       {{ area }}
                                                   </button>
@@ -432,12 +442,12 @@
                               </div>
     
                               <!-- Full Address -->
-                              <div class="md:col-span-2 space-y-2.5">
-                                  <label class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">House/Road/Block (Detailed Address)</label>
+                              <div class="md:col-span-2 space-y-ds-2">
+                                  <label class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em] ml-1">House/Road/Block (Detailed Address)</label>
                                   <div class="relative group">
                                       <app-icon name="MapPin" size="16" className="absolute left-4 top-5 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                                       <textarea formControlName="address" rows="3" placeholder="Enter your full address..." autocomplete="street-address"
-                                             class="form-textarea !pl-12 !py-4"></textarea>
+                                             class="form-textarea !pl-12 !py-ds-4"></textarea>
                                   </div>
                               </div>
                           </div>

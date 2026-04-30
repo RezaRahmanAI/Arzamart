@@ -50,15 +50,16 @@
   --radius-full: 9999px;
 
   /* ── Fluid Typography ── */
-  --text-xs:   clamp(0.6875rem, 1vw, 0.75rem);
-  --text-sm:   clamp(0.75rem, 1.2vw, 0.875rem);
-  --text-base: clamp(0.875rem, 1.4vw, 1rem);
-  --text-lg:   clamp(1rem, 1.6vw, 1.125rem);
-  --text-xl:   clamp(1.125rem, 2vw, 1.375rem);
-  --text-2xl:  clamp(1.375rem, 2.5vw, 1.75rem);
-  --text-3xl:  clamp(1.625rem, 3vw, 2.25rem);
-  --text-4xl:  clamp(2rem, 4vw, 3rem);
-  --text-5xl:  clamp(2.5rem, 5vw, 4rem);
+  --text-xs:   clamp(0.6875rem, 0.8vw, 0.75rem);
+  --text-sm:   clamp(0.75rem, 1vw, 0.875rem);
+  --text-base: clamp(0.875rem, 1.2vw, 1rem);
+  --text-lg:   clamp(1rem, 1.5vw, 1.125rem);
+  --text-xl:   clamp(1.125rem, 1.8vw, 1.25rem);
+  --text-2xl:  clamp(1.25rem, 2.2vw, 1.625rem);
+  --text-3xl:  clamp(1.5rem, 3vw, 2.25rem);
+  --text-4xl:  clamp(2rem, 4vw, 3.25rem);
+  --text-5xl:  clamp(2.5rem, 5.5vw, 4.5rem);
+  --text-6xl:  clamp(3.25rem, 7vw, 6.5rem);
 
   /* ── Fluid Spacing ── */
   --space-1:  clamp(0.25rem, 0.3vw, 0.25rem);
@@ -197,14 +198,14 @@
   }
   @media (min-width: 1440px) {
     .container, .site-container {
-      padding-left: 80px; padding-right: 80px;
-      max-width: 1440px;
+      padding-left: 64px; padding-right: 64px;
+      max-width: 1360px;
     }
   }
   @media (min-width: 1920px) {
     .container, .site-container {
-      padding-left: 120px; padding-right: 120px;
-      max-width: 1600px;
+      padding-left: 80px; padding-right: 80px;
+      max-width: 1440px;
     }
   }
 
@@ -221,8 +222,8 @@
   @media (min-width: 768px)  { .clp-container { padding-left: 32px; padding-right: 32px; } }
   @media (min-width: 1024px) { .clp-container { padding-left: 40px; padding-right: 40px; max-width: 1100px; } }
   @media (min-width: 1280px) { .clp-container { padding-left: 48px; padding-right: 48px; max-width: 1280px; } }
-  @media (min-width: 1440px) { .clp-container { padding-left: 64px; padding-right: 64px; max-width: 1440px; } }
-  @media (min-width: 1920px) { .clp-container { padding-left: 80px;  padding-right: 80px;  max-width: 1500px; } }
+  @media (min-width: 1440px) { .clp-container { padding-left: 64px; padding-right: 64px; max-width: 1360px; } }
+  @media (min-width: 1920px) { .clp-container { padding-left: 80px; padding-right: 80px; max-width: 1440px; } }
 
   /* ── SECTION SPACING ── */
   .section-py {
@@ -659,4 +660,52 @@ input[type='number']::-webkit-outer-spin-button {
 
 input[type='number'] {
   -moz-appearance: textfield;
+}
+
+@layer utilities {
+  /* Fluid Typography Utilities */
+  .text-ds-xs { font-size: var(--text-xs); line-height: 1.4; }
+  .text-ds-sm { font-size: var(--text-sm); line-height: 1.5; }
+  .text-ds-base { font-size: var(--text-base); line-height: 1.6; }
+  .text-ds-lg { font-size: var(--text-lg); line-height: 1.5; }
+  .text-ds-xl { font-size: var(--text-xl); line-height: 1.4; }
+  .text-ds-2xl { font-size: var(--text-2xl); line-height: 1.3; }
+  .text-ds-3xl { font-size: var(--text-3xl); line-height: 1.2; }
+  .text-ds-4xl { font-size: var(--text-4xl); line-height: 1.1; }
+  .text-ds-5xl { font-size: var(--text-5xl); line-height: 1.05; }
+  .text-ds-6xl { font-size: var(--text-6xl); line-height: 1; }
+  
+  /* Fluid Spacing Utilities */
+  .p-ds-1 { padding: var(--space-1); }
+  .p-ds-2 { padding: var(--space-2); }
+  .p-ds-3 { padding: var(--space-3); }
+  .p-ds-4 { padding: var(--space-4); }
+  .p-ds-5 { padding: var(--space-5); }
+  .p-ds-6 { padding: var(--space-6); }
+  .p-ds-8 { padding: var(--space-8); }
+  .p-ds-10 { padding: var(--space-10); }
+  .p-ds-12 { padding: var(--space-12); }
+  .p-ds-16 { padding: var(--space-16); }
+  .p-ds-20 { padding: var(--space-20); }
+  .p-ds-24 { padding: var(--space-24); }
+
+  .py-ds-4 { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+  .py-ds-8 { padding-top: var(--space-8); padding-bottom: var(--space-8); }
+  .py-ds-12 { padding-top: var(--space-12); padding-bottom: var(--space-12); }
+  .py-ds-16 { padding-top: var(--space-16); padding-bottom: var(--space-16); }
+  .py-ds-24 { padding-top: var(--space-24); padding-bottom: var(--space-24); }
+
+  /* Fluid Gap Utilities */
+  .gap-ds-1 { gap: var(--space-1); }
+  .gap-ds-2 { gap: var(--space-2); }
+  .gap-ds-3 { gap: var(--space-3); }
+  .gap-ds-4 { gap: var(--space-4); }
+  .gap-ds-5 { gap: var(--space-5); }
+  .gap-ds-6 { gap: var(--space-6); }
+  .gap-ds-8 { gap: var(--space-8); }
+  .gap-ds-10 { gap: var(--space-10); }
+  .gap-ds-12 { gap: var(--space-12); }
+  
+  .bg-electric-red { background-color: #E63946; }
+  .text-electric-red { color: #E63946; }
 }
