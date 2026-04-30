@@ -184,32 +184,31 @@
                 </div>
               }
 
-              <!-- Product Details -->
-              <div class="space-y-0 mb-8 border border-ds-border rounded-sm overflow-hidden">
+              <!-- Product Details (Accordions) -->
+              <div class="mb-8 border-y border-ds-border divide-y divide-ds-border">
                 @if (data.config?.isFabricVisible && data.product.fabricAndCare) {
-                  <div class="flex items-center gap-4 px-5 py-4 border-b border-ds-border hover:bg-ds-surface transition-colors">
-                    <app-icon name="Verified" size="16" className="text-[#D4A853] shrink-0"></app-icon>
-                    <div>
-                      <p class="text-[9px] uppercase tracking-widest font-bold mb-0.5" style="color:#555;">Premium Fabric</p>
-                      <p class="text-[13px] font-bold text-ds-text">{{ data.product.fabricAndCare }}</p>
-                    </div>
-                  </div>
+                  <details class="group">
+                    <summary class="flex items-center justify-between py-4 cursor-pointer list-none outline-none">
+                      <span class="text-[10px] uppercase tracking-[0.3em] font-black text-ds-text">Fabric & Composition</span>
+                      <app-icon name="Plus" size="14" className="text-ds-text-muted group-open:rotate-45 transition-transform duration-300"></app-icon>
+                    </summary>
+                    <div class="pb-6 text-[13px] font-medium text-ds-text-muted leading-relaxed whitespace-pre-line" [innerHTML]="data.product.fabricAndCare | safeHtml"></div>
+                  </details>
                 }
+                
                 @if (data.config?.isDesignVisible && data.product.description) {
-                  <div class="flex items-start gap-4 px-5 py-4 border-b border-ds-border hover:bg-ds-surface transition-colors">
-                    <app-icon name="Search" size="16" className="text-[#D4A853] shrink-0 mt-0.5"></app-icon>
-                    <div>
-                      <p class="text-[9px] uppercase tracking-widest font-bold mb-0.5" style="color:#555;">Design</p>
-                      <div class="text-[13px] font-medium leading-relaxed whitespace-pre-line" style="color:#AAAAAA;" [innerHTML]="data.product.description | safeHtml"></div>
-                    </div>
-                  </div>
+                  <details class="group">
+                    <summary class="flex items-center justify-between py-4 cursor-pointer list-none outline-none">
+                      <span class="text-[10px] uppercase tracking-[0.3em] font-black text-ds-text">Design Details</span>
+                      <app-icon name="Plus" size="14" className="text-ds-text-muted group-open:rotate-45 transition-transform duration-300"></app-icon>
+                    </summary>
+                    <div class="pb-6 text-[13px] font-medium text-ds-text-muted leading-relaxed whitespace-pre-line" [innerHTML]="data.product.description | safeHtml"></div>
+                  </details>
                 }
-                <div class="flex items-center gap-4 px-5 py-4 hover:bg-ds-surface transition-colors">
-                  <app-icon name="Layers" size="16" className="text-[#D4A853] shrink-0"></app-icon>
-                  <div>
-                    <p class="text-[9px] uppercase tracking-widest font-bold mb-0.5" style="color:#555;">Available Sizes</p>
-                    <p class="text-[13px] font-bold text-ds-text">{{ formatSizes(data.product.variants) }}</p>
-                  </div>
+
+                <div class="py-4 flex items-center justify-between">
+                  <span class="text-[10px] uppercase tracking-[0.3em] font-black text-ds-text">Available Sizes</span>
+                  <span class="text-[11px] font-bold text-ds-text-muted">{{ formatSizes(data.product.variants) }}</span>
                 </div>
               </div>
 
