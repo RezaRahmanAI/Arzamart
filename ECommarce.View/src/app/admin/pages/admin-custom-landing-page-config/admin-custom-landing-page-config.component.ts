@@ -1,4 +1,5 @@
 import { CommonModule } from "@angular/common";
+import { combineLatest } from "rxjs";
 import { Component, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -54,26 +55,27 @@ export class AdminCustomLandingPageConfigComponent implements OnInit {
 
   loadData(): void {
     this.isLoading = true;
-    this.productsService.getProductById(this.productId).subscribe((product: AdminProduct) => {
-      this.product = product;
-      if (product) {
-        this.configForm.patchValue({
+    
+    combineLatest([
+      this.productsService.getProductById(this.productId),
+      this.clpService.getConfig(this.productId)
+    ]).subscribe({
+      next: ([product, config]: [AdminProduct, CustomLandingPageConfig]) => {
+        this.product = product;
+        
+        // 1. Set default values from product if config is new/empty
+        const patchData: any = {
           featuredProductName: product.name,
           promoPrice: product.price,
           originalPrice: product.compareAtPrice || product.price
-        });
-      }
-    });
+        };
 
-    this.clpService.getConfig(this.productId).subscribe({
-      next: (config) => {
-        if (config.id) {
-          // Format date for input type="datetime-local" if needed, 
-          // though we might just use a text input or a proper date picker later
-          this.configForm.patchValue({
-            ...config
-          });
+        // 2. Override with actual config values if they exist
+        if (config && config.id) {
+          Object.assign(patchData, config);
         }
+
+        this.configForm.patchValue(patchData);
         this.isLoading = false;
       },
       error: () => {

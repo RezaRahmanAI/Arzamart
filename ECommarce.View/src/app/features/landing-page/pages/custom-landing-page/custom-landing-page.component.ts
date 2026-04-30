@@ -323,8 +323,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       let endTimeStr = localStorage.getItem(storageKey);
       let endTime: number;
 
-      if (!endTimeStr) {
-        endTime = new Date().getTime() + totalMinutes * 60 * 1000;
+      const now = new Date().getTime();
+      if (!endTimeStr || (parseInt(endTimeStr, 10) < now)) {
+        endTime = now + (totalMinutes || 180) * 60 * 1000;
         localStorage.setItem(storageKey, endTime.toString());
       } else {
         endTime = parseInt(endTimeStr, 10);
@@ -360,6 +361,24 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     const selectedSize = this.orderForm.get("selectedSize")?.value;
     const variant = this.data?.product?.variants?.find(v => v.size === selectedSize);
     return variant?.price || this.data?.config?.promoPrice || this.data?.product?.price || 0;
+  }
+
+  get selectedVariantStock(): number {
+    const selectedSize = this.orderForm.get("selectedSize")?.value;
+    if (selectedSize) {
+      const variant = this.data?.product?.variants?.find(v => v.size === selectedSize);
+      return variant?.stockQuantity || 0;
+    }
+    return this.data?.product?.variants?.reduce((sum, v) => sum + v.stockQuantity, 0) || this.data?.product?.stockQuantity || 0;
+  }
+
+  get selectedVariantDiscountAmount(): number {
+    const selectedSize = this.orderForm.get("selectedSize")?.value;
+    const variant = this.data?.product?.variants?.find(v => v.size === selectedSize);
+    const price = this.selectedVariantPrice;
+    const comparePrice = variant?.compareAtPrice || this.data?.config?.originalPrice || this.data?.product?.compareAtPrice || 0;
+    
+    return comparePrice > price ? (comparePrice - price) : 0;
   }
 
   get selectedDeliveryMethod(): DeliveryMethod | null {
