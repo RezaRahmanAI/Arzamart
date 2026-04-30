@@ -234,25 +234,6 @@
           </nav>
         </div>
 
-        <!-- Marketing Section -->
-        <div>
-          <p class="px-ds-4 mb-ds-6 text-[10px] font-bold text-white/30 uppercase tracking-[0.4em]">Marketing & Design</p>
-          <nav class="space-y-1">
-            <a
-              *ngFor="let item of marketingItems"
-              class="flex items-center gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group relative"
-              [routerLink]="item.route"
-              routerLinkActive="nav-active"
-              #rlaMarketing="routerLinkActive"
-              [ngClass]="rlaMarketing.isActive ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
-              [routerLinkActiveOptions]="{ exact: false }"
-            >
-              <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-105" [className]="rlaMarketing.isActive ? 'text-white' : ''"></app-icon>
-              <span class="text-xs font-bold uppercase tracking-widest">{{ item.label }}</span>
-              <div *ngIf="rlaMarketing.isActive" class="absolute left-0 w-1 h-5 bg-white rounded-r-full"></div>
-            </a>
-          </nav>
-        </div>
 
       </div>
     </div>

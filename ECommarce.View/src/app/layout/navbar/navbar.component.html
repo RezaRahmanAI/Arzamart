@@ -33,11 +33,11 @@
 
           <!-- Icons & Mobile/Desktop Toggles -->
           <div class="flex items-center gap-ds-1 md:gap-ds-3 flex-shrink-0">
-            <button (click)="toggleMobileSearch()" class="p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
+            <button (click)="toggleMobileSearch()" class="p-ds-2 text-ds-text transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </button>
             
-            <a routerLink="/cart" class="relative group p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
+            <a routerLink="/cart" class="relative group p-ds-2 text-ds-text transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
               @if (vm.cartCount > 0) {
                 <span class="absolute top-ds-1 right-ds-1 h-3.5 w-3.5 bg-ds-accent text-ds-hero-text text-[8px] font-bold rounded-full flex items-center justify-center">
@@ -46,7 +46,7 @@
               }
             </a>
 
-            <a routerLink="/profile" class="p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
+            <a routerLink="/profile" class="p-ds-2 text-ds-text transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </a>
 
@@ -54,7 +54,7 @@
             <div class="hidden lg:flex items-center ml-ds-4">
               <button
                 (click)="toggleCategoriesMenu()"
-                class="flex items-center gap-ds-2 text-[11px] font-bold uppercase tracking-widest text-ds-text-sec hover:text-ds-text transition-colors"
+                class="flex items-center gap-ds-2 text-[11px] font-bold uppercase tracking-widest text-ds-text transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-500" [class.rotate-90]="isCategoriesMenuOpen"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
                 <span>Explore</span>
@@ -62,7 +62,7 @@
             </div>
 
             <!-- Mobile Toggle -->
-            <button (click)="toggleMenu()" class="lg:hidden p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
+            <button (click)="toggleMenu()" class="lg:hidden p-ds-2 text-ds-text transition-colors">
               @if (isMenuOpen) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
               } @else {
@@ -171,11 +171,11 @@
     </nav>
 
     <div class="mt-ds-10 space-y-ds-2">
-      <a routerLink="/cart" (click)="closeMenu()" class="flex items-center gap-ds-3 py-ds-4 text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec hover:text-ds-text transition-colors">
+      <a routerLink="/cart" (click)="closeMenu()" class="flex items-center gap-ds-3 py-ds-4 text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         Your Bag
       </a>
-      <a routerLink="/profile" (click)="closeMenu()" class="flex items-center gap-ds-3 py-ds-4 text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec hover:text-ds-text transition-colors">
+      <a routerLink="/profile" (click)="closeMenu()" class="flex items-center gap-ds-3 py-ds-4 text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Account
       </a>

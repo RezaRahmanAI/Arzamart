@@ -448,7 +448,7 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
     padding: 4px 0;
     border-bottom: 2px solid transparent;
     transition: color var(--transition-fast), border-color var(--transition-fast);
