@@ -43,11 +43,10 @@
             <!-- Main Image Area -->
             <div class="relative flex-1">
               <div
-                class="relative bg-ds-surface overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[700px] cursor-zoom-in border border-ds-border"
+                class="relative bg-ds-surface overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[700px] cursor-pointer border border-ds-border"
                 (click)="openLightbox(currentImageIndex)"
-                (mousemove)="handleMouseMove($event)"
-                (mouseenter)="toggleZoom(true)"
-                (mouseleave)="toggleZoom(false)"
+                (mouseenter)="isPaused = true"
+                (mouseleave)="isPaused = false"
               >
                 <!-- Images -->
                 @for (url of vm.gallery; track url; let i = $index) {
@@ -55,11 +54,9 @@
                     [src]="imageUrlService.getImageUrl(url)"
                     [alt]="vm.product.name"
                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 pointer-events-none"
-                    [style.transform-origin]="zoomX + '% ' + zoomY + '%'"
                     [ngClass]="{
                       'opacity-100': i === currentImageIndex,
-                      'opacity-0': i !== currentImageIndex,
-                      'scale-[2]': isZooming && i === currentImageIndex
+                      'opacity-0': i !== currentImageIndex
                     }"
                   />
                 }
@@ -75,12 +72,22 @@
 
                 <!-- Nav Arrows -->
                 @if (vm.gallery.length > 1) {
-                  <button (click)="prevImage(vm.gallery); $event.stopPropagation()" class="absolute left-ds-4 top-1/2 -translate-y-1/2 z-10 btn-icon bg-ds-bg/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                    <app-icon name="ChevronLeft" size="18"></app-icon>
+                  <button (click)="prevImage(vm.gallery); $event.stopPropagation()" class="absolute left-ds-4 top-1/2 -translate-y-1/2 z-30 btn-icon !w-11 !h-11 !bg-black/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
+                    <app-icon name="ChevronLeft" size="20"></app-icon>
                   </button>
-                  <button (click)="nextImage(vm.gallery); $event.stopPropagation()" class="absolute right-ds-4 top-1/2 -translate-y-1/2 z-10 btn-icon bg-ds-bg/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                    <app-icon name="ChevronRight" size="18"></app-icon>
+                  <button (click)="nextImage(vm.gallery); $event.stopPropagation()" class="absolute right-ds-4 top-1/2 -translate-y-1/2 z-30 btn-icon !w-11 !h-11 !bg-black/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
+                    <app-icon name="ChevronRight" size="20"></app-icon>
                   </button>
+                }
+
+                <!-- Progress Bar -->
+                @if (vm.gallery.length > 1) {
+                  <div class="absolute bottom-0 left-0 w-full h-1 bg-ds-accent/10 z-20">
+                    <div
+                      class="h-full bg-ds-accent transition-[width] duration-[16ms] ease-linear"
+                      [style.width.%]="slideProgress"
+                    ></div>
+                  </div>
                 }
               </div>
             </div>
@@ -153,7 +160,7 @@
                   @for (size of vm.uniqueSizes; track size) {
                     <button
                       (click)="selectSize(size || '')"
-                      class="h-14 min-w-[70px] border transition-all duration-base text-[12px] font-bold uppercase tracking-widest"
+                      class="h-11 sm:h-14 min-w-[60px] sm:min-w-[70px] border transition-all duration-base text-[11px] sm:text-[12px] font-bold uppercase tracking-widest"
                       [ngClass]="{
                         'bg-ds-accent border-ds-accent text-ds-hero-text': size === vm.selectedSize,
                         'bg-ds-bg border-ds-border text-ds-text hover:border-ds-text': size !== vm.selectedSize
@@ -169,12 +176,12 @@
             <!-- Actions -->
             <div class="space-y-ds-4">
               <!-- Quantity -->
-              <div class="flex items-center h-14 border border-ds-border bg-ds-bg">
-                <button (click)="decreaseQuantity()" class="w-14 h-full flex items-center justify-center hover:bg-ds-surface transition-colors">
+              <div class="flex items-center h-11 sm:h-14 border border-ds-border bg-ds-bg">
+                <button (click)="decreaseQuantity()" class="w-11 sm:w-14 h-full flex items-center justify-center hover:bg-ds-surface transition-colors">
                   <app-icon name="Minus" size="14"></app-icon>
                 </button>
                 <div class="flex-1 text-center font-bold text-ds-base tracking-widest">{{ quantity$ | async }}</div>
-                <button (click)="increaseQuantity()" class="w-14 h-full flex items-center justify-center hover:bg-ds-surface transition-colors">
+                <button (click)="increaseQuantity()" class="w-11 sm:w-14 h-full flex items-center justify-center hover:bg-ds-surface transition-colors">
                   <app-icon name="Plus" size="14"></app-icon>
                 </button>
               </div>
@@ -186,16 +193,17 @@
               }
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-ds-3">
-                <button (click)="addToCart(vm.product)" class="btn btn-secondary h-16 !text-[11px] !tracking-[0.3em] uppercase">
+                <button (click)="addToCart(vm.product)" class="btn btn-secondary h-11 sm:h-14 !text-[10px] sm:!text-[11px] !tracking-[0.3em] uppercase">
                   ADD TO BAG
                 </button>
-                <button (click)="buyNow(vm.product)" class="btn btn-primary h-16 !text-[11px] !tracking-[0.3em] uppercase">
+                <button (click)="buyNow(vm.product)" class="btn btn-primary h-11 sm:h-14 !text-[10px] sm:!text-[11px] !tracking-[0.3em] uppercase">
                   ORDER NOW
                 </button>
               </div>
 
               @if ((settings$ | async)?.whatsAppNumber; as whatsApp) {
-                <a [href]="getWhatsAppUrl(vm.product, whatsApp)" target="_blank" class="btn h-14 !bg-[#25D366] !text-white !border-none !text-[11px] !tracking-[0.3em] uppercase">
+                <a [href]="getWhatsAppUrl(vm.product, whatsApp)" target="_blank" class="btn btn-whatsapp-glow w-full h-11 sm:h-14 !bg-[#25D366] !text-white !border-none !text-[10px] sm:!text-[11px] !tracking-[0.3em] uppercase flex items-center justify-center gap-2">
+                  <app-icon name="WhatsApp" size="18"></app-icon>
                   WHATSAPP US
                 </a>
               }
@@ -262,35 +270,52 @@
 
   <!-- Lightbox Gallery -->
   @if (isLightboxOpen && (vm$ | async); as vm) {
-    <div class="fixed inset-0 z-[1000] bg-ds-accent/95 backdrop-blur-glass flex flex-col items-center justify-center animate-fade-in" (click)="closeLightbox()">
+    <div class="fixed inset-0 z-[1000] bg-ds-accent/95 backdrop-blur-glass flex items-center justify-center animate-fade-in" (click)="closeLightbox()">
       <!-- Close Button -->
-      <button (click)="closeLightbox()" class="absolute top-ds-8 right-ds-8 z-[1010] btn-icon !bg-ds-bg/10 !text-ds-hero-text border-ds-border/20 hover:!bg-ds-bg/20">
+      <button (click)="closeLightbox()" class="absolute top-ds-8 right-ds-8 z-[1010] btn-icon !bg-black/40 !text-white border border-white/10 backdrop-blur-md hover:!bg-black/60 transition-all">
         <app-icon name="X" size="24"></app-icon>
       </button>
 
-      <!-- Main Image -->
-      <div class="relative w-full max-w-6xl aspect-[3/4] md:h-[80vh] flex items-center justify-center p-ds-4" (click)="$event.stopPropagation()">
-        <img [src]="imageUrlService.getImageUrl(vm.gallery[lightboxIndex])" class="max-w-full max-h-full object-contain animate-fade-in" [alt]="vm.product.name" />
-
-        <!-- Nav Arrows -->
+      <div class="site-container flex flex-col lg:flex-row gap-ds-8 h-full max-h-[90vh] py-ds-16" (click)="$event.stopPropagation()">
+        <!-- Lightbox Thumbnails (Desktop) -->
         @if (vm.gallery.length > 1) {
-          <button (click)="prevLightbox(vm.gallery)" class="absolute left-ds-4 top-1/2 -translate-y-1/2 btn-icon !w-16 !h-16 !bg-ds-bg/10 !text-ds-hero-text border-ds-border/20 hover:!bg-ds-bg/20">
-            <app-icon name="ChevronLeft" size="28"></app-icon>
-          </button>
-          <button (click)="nextLightbox(vm.gallery)" class="absolute right-ds-4 top-1/2 -translate-y-1/2 btn-icon !w-16 !h-16 !bg-ds-bg/10 !text-ds-hero-text border-ds-border/20 hover:!bg-ds-bg/20">
-            <app-icon name="ChevronRight" size="28"></app-icon>
-          </button>
+          <div class="hidden lg:flex flex-col gap-ds-3 overflow-y-auto w-24 flex-shrink-0 custom-scrollbar-thin pr-2">
+            @for (url of vm.gallery; track url; let i = $index) {
+            <button
+              (click)="lightboxIndex = i"
+              class="flex-shrink-0 w-full aspect-[3/4] border transition-all duration-base overflow-hidden"
+              [ngClass]="i === lightboxIndex ? 'border-ds-hero-text' : 'border-ds-hero-text/20'"
+            >
+              <img [src]="imageUrlService.getImageUrl(url)" class="w-full h-full object-cover" [class.opacity-60]="i !== lightboxIndex" />
+            </button>
+            }
+          </div>
         }
-      </div>
 
-      <!-- Counter -->
-      @if (vm.gallery.length > 1) {
-        <div class="absolute bottom-ds-10 px-ds-6 py-ds-2 bg-ds-bg/10 border border-ds-border/20 backdrop-blur-md rounded-full">
-          <span class="text-ds-hero-text text-[10px] font-bold uppercase tracking-[0.4em]">
-            {{ lightboxIndex + 1 }} / {{ vm.gallery.length }}
-          </span>
+        <!-- Main Lightbox Image Area -->
+        <div class="relative flex-1 flex items-center justify-center p-ds-4 bg-ds-bg/5 rounded-lg border border-ds-hero-text/5 overflow-hidden">
+          <img [src]="imageUrlService.getImageUrl(vm.gallery[lightboxIndex])" class="max-w-full max-h-full object-contain animate-fade-in" [alt]="vm.product.name" />
+
+          <!-- Nav Arrows -->
+          @if (vm.gallery.length > 1) {
+            <button (click)="prevLightbox(vm.gallery)" class="absolute left-ds-4 top-1/2 -translate-y-1/2 btn-icon !w-12 !h-12 !bg-black/40 !text-white border border-white/10 backdrop-blur-md hover:!bg-black/60 transition-all">
+              <app-icon name="ChevronLeft" size="28"></app-icon>
+            </button>
+            <button (click)="nextLightbox(vm.gallery)" class="absolute right-ds-4 top-1/2 -translate-y-1/2 btn-icon !w-12 !h-12 !bg-black/40 !text-white border border-white/10 backdrop-blur-md hover:!bg-black/60 transition-all">
+              <app-icon name="ChevronRight" size="28"></app-icon>
+            </button>
+          }
+
+          <!-- Counter -->
+          @if (vm.gallery.length > 1) {
+            <div class="absolute bottom-ds-6 left-1/2 -translate-x-1/2 px-ds-6 py-ds-2 bg-ds-bg/10 border border-ds-border/20 backdrop-blur-md rounded-full">
+              <span class="text-ds-hero-text text-[10px] font-bold uppercase tracking-[0.4em]">
+                {{ lightboxIndex + 1 }} / {{ vm.gallery.length }}
+              </span>
+            </div>
+          }
         </div>
-      }
+      </div>
     </div>
   }
 

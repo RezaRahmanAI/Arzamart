@@ -58,6 +58,10 @@ export class AdminSidebarComponent implements OnInit {
     { label: "Customer Reviews", icon: "MessageSquare", route: "/admin/reviews" },
     { label: "Customers", icon: "Users", route: "/admin/customers" },
   ];
+  
+  marketingItems: AdminNavItem[] = [
+    { label: "Custom Landing Pages", icon: "Layout", route: "/admin/products" }, // Linking to products as it's the entry point
+  ];
 
   bottomItems: AdminNavItem[] = [];
 

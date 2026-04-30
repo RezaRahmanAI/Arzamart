@@ -225,7 +225,9 @@ public class OrderService : IOrderService
         await _customerService.CreateOrUpdateCustomerAsync(
             orderDto.Phone,
             orderDto.Name,
-            orderDto.Address
+            orderDto.Address,
+            orderDto.City,
+            orderDto.Area
         );
         return _mapper.Map<Order, OrderDto>(order);
     }
@@ -321,6 +323,14 @@ public class OrderService : IOrderService
 
         _unitOfWork.Repository<Order>().Update(order);
         await _unitOfWork.Complete();
+
+        await _customerService.CreateOrUpdateCustomerAsync(
+            orderDto.Phone,
+            orderDto.Name,
+            orderDto.Address,
+            orderDto.City,
+            orderDto.Area
+        );
 
         return _mapper.Map<Order, OrderDto>(order);
     }

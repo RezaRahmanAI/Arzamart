@@ -72,11 +72,9 @@ export class ProductDetailsPageComponent {
 
   isSizeGuideOpen = false;
   currentImageIndex = 0;
-  isZooming = false;
-  zoomX = 0;
-  zoomY = 0;
   slideProgress = 0;
-  private autoSlideInterval: any;
+  isPaused = false;
+  private autoSlideSub: any;
 
 
   private readonly selectedSizeSubject = new BehaviorSubject<string | null>(
@@ -359,14 +357,17 @@ export class ProductDetailsPageComponent {
     const gallery = this.buildGallery(product);
     if (gallery.length <= 1) return;
 
-    // Use a smaller interval for smooth progress bar (e.g., 50ms)
-    // 4000ms / 50ms = 80 steps
-    const step = 100 / (4000 / 50);
+    if (this.autoSlideSub) {
+      this.autoSlideSub.unsubscribe();
+    }
 
-    interval(50)
+    // 4000ms / 16ms = 250 steps
+    const step = 100 / (4000 / 16);
+
+    this.autoSlideSub = interval(16)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        if (!this.isZooming) {
+        if (!this.isPaused) {
           this.slideProgress += step;
           if (this.slideProgress >= 100) {
             this.nextImage(gallery);
@@ -376,17 +377,6 @@ export class ProductDetailsPageComponent {
       });
   }
 
-  handleMouseMove(event: MouseEvent): void {
-    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
-    this.zoomX = x;
-    this.zoomY = y;
-  }
-
-  toggleZoom(state: boolean): void {
-    this.isZooming = state;
-  }
 
   private buildGallery(product: Product): string[] {
     const images = product.images?.map((i: ProductImage) => i.imageUrl) ?? [];

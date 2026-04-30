@@ -5,6 +5,7 @@ public class ProductInventoryDto
     public int ProductId { get; set; }
     public string ProductName { get; set; } = string.Empty;
     public string ProductSku { get; set; } = string.Empty;
+    public string ProductSlug { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
     public int TotalStock { get; set; }
     public int StockQuantity { get; set; }

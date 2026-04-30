@@ -1,7 +1,11 @@
 <section class="site-container py-ds-6">
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-5 min-h-[500px] lg:h-[650px]">
     <!-- Main Feature -->
-    <div class="lg:col-span-8 bg-ds-surface border border-ds-border relative overflow-hidden group">
+    <div 
+      class="lg:col-span-8 bg-ds-surface border border-ds-border relative overflow-hidden group"
+      (mouseenter)="isPaused = true"
+      (mouseleave)="isPaused = false"
+    >
       @if (mainSlides.length > 0) {
         @let slide = mainSlides[currentSlide];
         <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[2000ms] group-hover:scale-105" 
@@ -24,10 +28,20 @@
           </div>
         </div>
 
+        <!-- Hero Nav Arrows -->
+        @if (mainSlides.length > 1) {
+          <button (click)="prev(); $event.stopPropagation()" class="absolute left-ds-6 top-1/2 -translate-y-1/2 z-30 btn-icon !w-12 !h-12 !bg-black/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
+            <app-icon name="ChevronLeft" size="24"></app-icon>
+          </button>
+          <button (click)="next(); $event.stopPropagation()" class="absolute right-ds-6 top-1/2 -translate-y-1/2 z-30 btn-icon !w-12 !h-12 !bg-black/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
+            <app-icon name="ChevronRight" size="24"></app-icon>
+          </button>
+        }
+
         <!-- Progress Bar Indicator -->
-        <div class="absolute bottom-0 left-0 w-full h-1 bg-white/10 z-20">
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-ds-accent/10 z-20">
           <div
-            class="h-full bg-white transition-all duration-75"
+            class="h-full bg-ds-accent transition-[width] duration-[16ms] ease-linear"
             [style.width.%]="slideProgress"
           ></div>
         </div>

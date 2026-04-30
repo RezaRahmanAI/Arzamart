@@ -4,52 +4,35 @@
   @if (vm$ | async; as vm) {
     <div class="site-container">
       <!-- Main Row -->
-      <div class="flex items-center justify-between h-14 lg:h-16">
-        <!-- Left: Mobile Toggle -->
-        <button (click)="toggleMenu()" class="lg:hidden p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
-          @if (isMenuOpen) {
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-          } @else {
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-          }
-        </button>
-
-        <!-- Left: Desktop Categories Trigger -->
-        <div class="hidden lg:flex items-center gap-ds-6">
-          <button
-            (click)="toggleCategoriesMenu()"
-            class="flex items-center gap-ds-2 text-[11px] font-bold uppercase tracking-widest text-ds-text-sec hover:text-ds-text transition-colors"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-500" [class.rotate-90]="isCategoriesMenuOpen"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-            <span>Explore</span>
-          </button>
+      <div class="flex items-center h-14 lg:h-16 w-full">
+        
+        <!-- Left: Logo -->
+        <div class="flex-1 flex items-center justify-start">
+          <a routerLink="/" class="flex items-center group">
+            <img
+              [src]="vm.settings.logoUrl ? imageUrlService.getImageUrl(vm.settings.logoUrl!) : 'assets/logo.svg'"
+              [alt]="vm.settings.websiteName || 'Arza Mart'"
+              class="h-6 lg:h-7 w-auto object-contain transition-transform duration-base group-hover:scale-105"
+            />
+          </a>
         </div>
 
-        <!-- Center: Logo -->
-        <a routerLink="/" class="absolute left-1/2 -translate-x-1/2 flex-shrink-0 flex items-center group">
-          <img
-            [src]="vm.settings.logoUrl ? imageUrlService.getImageUrl(vm.settings.logoUrl!) : 'assets/logo.svg'"
-            [alt]="vm.settings.websiteName || 'Arza Mart'"
-            class="h-6 lg:h-7 w-auto object-contain transition-transform duration-base group-hover:scale-105"
-          />
-        </a>
-
         <!-- Right: Actions -->
-        <div class="flex items-center gap-ds-2 md:gap-ds-6">
+        <div class="flex-1 flex items-center justify-end gap-ds-2 md:gap-ds-6 overflow-hidden">
           <!-- Desktop Nav Links -->
-          <nav class="hidden lg:flex items-center gap-ds-8 mr-ds-8">
+          <nav class="hidden lg:flex items-center gap-ds-4 lg:gap-ds-8 mr-ds-2 lg:mr-ds-8 whitespace-nowrap">
             @for (item of vm.menu.slice(0, 4); track item.id) {
               <a
                 [routerLink]="['/category', item.slug]"
-                class="nav-link !py-0 !text-[11px] !tracking-widest"
+                class="nav-link !py-0 !text-[10px] lg:!text-[11px] !tracking-widest"
               >
                 {{ item.name }}
               </a>
             }
           </nav>
 
-          <!-- Icons -->
-          <div class="flex items-center gap-ds-3">
+          <!-- Icons & Mobile/Desktop Toggles -->
+          <div class="flex items-center gap-ds-1 md:gap-ds-3 flex-shrink-0">
             <button (click)="toggleMobileSearch()" class="p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </button>
@@ -66,8 +49,30 @@
             <a routerLink="/profile" class="p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </a>
+
+            <!-- Desktop Explore Trigger -->
+            <div class="hidden lg:flex items-center ml-ds-4">
+              <button
+                (click)="toggleCategoriesMenu()"
+                class="flex items-center gap-ds-2 text-[11px] font-bold uppercase tracking-widest text-ds-text-sec hover:text-ds-text transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-500" [class.rotate-90]="isCategoriesMenuOpen"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                <span>Explore</span>
+              </button>
+            </div>
+
+            <!-- Mobile Toggle -->
+            <button (click)="toggleMenu()" class="lg:hidden p-ds-2 text-ds-text-sec hover:text-ds-text transition-colors">
+              @if (isMenuOpen) {
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+              }
+            </button>
           </div>
         </div>
+
+
       </div>
 
       <!-- Desktop Categories Dropdown -->

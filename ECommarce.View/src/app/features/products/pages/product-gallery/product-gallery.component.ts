@@ -11,12 +11,12 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { CategoryService } from "../../../../core/services/category.service";
 import { Category } from "../../../../core/models/category";
-import { Router } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 
 @Component({
   selector: "app-product-gallery",
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, AppIconComponent],
+  imports: [CommonModule, ProductCardComponent, AppIconComponent, RouterModule],
   templateUrl: "./product-gallery.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -37,6 +37,10 @@ export class ProductGalleryComponent implements OnInit {
 
   selectedSize: string = 'All Sizes';
   allSizes = ['All Sizes', 'S', 'M', 'L', 'XL', 'XXL'];
+
+  activeSubSlug: string | null = null;
+  parentCategoryName: string | null = null;
+  parentCategorySlug: string | null = null;
 
   constructor() {
     combineLatest([this.route.params, this.route.queryParams])
@@ -131,16 +135,43 @@ export class ProductGalleryComponent implements OnInit {
     });
 
     // Load Category and Subcategories for Sidebar
-    if (categorySlug || (this.route.snapshot.url[0]?.path === "category" && slug)) {
-      const activeSlug = categorySlug || slug;
-      this.categoryService.getCategories().subscribe(categories => {
-        const currentCat = categories.find(c => c.slug === activeSlug);
-        if (currentCat) {
-          this.subCategories = currentCat.subCategories || [];
-          this.cdr.markForCheck();
+    const isCategoryRoute = categorySlug || (this.route.snapshot.url[0]?.path === "category" && slug);
+    const isSubCategoryRoute = subCategorySlug || (this.route.snapshot.url[0]?.path === "subcategory" && slug);
+    const currentSlug = categorySlug || subCategorySlug || slug;
+
+    this.activeSubSlug = isSubCategoryRoute ? currentSlug : null;
+
+    this.categoryService.getCategories().subscribe(categories => {
+      let currentCat: Category | undefined;
+
+      if (isCategoryRoute) {
+        currentCat = categories.find(c => c.slug === currentSlug);
+      } else if (isSubCategoryRoute) {
+        // Find parent category that contains this subcategory
+        currentCat = categories.find(c => 
+          c.subCategories?.some((sub: any) => sub.slug === currentSlug)
+        );
+      }
+
+      if (currentCat) {
+        this.subCategories = currentCat.subCategories || [];
+        this.parentCategoryName = currentCat.name;
+        this.parentCategorySlug = currentCat.slug;
+        
+        // If we are on a subcategory page, the title should be more specific
+        if (isSubCategoryRoute) {
+          const sub = currentCat.subCategories?.find((s: any) => s.slug === currentSlug);
+          if (sub) {
+            this.title = sub.name;
+          }
         }
-      });
-    }
+      } else {
+        this.subCategories = [];
+        this.parentCategoryName = null;
+        this.parentCategorySlug = null;
+      }
+      this.cdr.markForCheck();
+    });
   }
 
   selectSizeFilter(size: string): void {

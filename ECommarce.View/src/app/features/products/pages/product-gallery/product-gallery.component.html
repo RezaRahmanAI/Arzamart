@@ -4,6 +4,10 @@
     <div class="site-container">
       <div class="flex items-center gap-ds-3 text-[10px] uppercase tracking-[0.3em] text-ds-text-muted mb-ds-4 font-bold">
         <a routerLink="/" class="hover:text-ds-text transition-colors">Home</a>
+        @if (parentCategorySlug) {
+          <span class="text-ds-border">/</span>
+          <a [routerLink]="['/category', parentCategorySlug]" class="hover:text-ds-text transition-colors">{{ parentCategoryName }}</a>
+        }
         <span class="text-ds-border">/</span>
         <span class="text-ds-text">{{ title }}</span>
       </div>
@@ -18,7 +22,7 @@
         <div class="bg-ds-surface border border-ds-border sticky top-24">
           <div class="p-ds-6 border-b border-ds-border bg-ds-bg/50">
             <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">
-              {{ isOffersPage ? 'Offers by Category' : 'Sub Categories' }}
+              {{ isOffersPage ? 'Offers by Category' : (parentCategoryName || 'Categories') }}
             </h3>
           </div>
           
@@ -26,13 +30,31 @@
             <!-- Normal Sidebar -->
             @if (!isOffersPage) {
               <nav class="flex flex-col gap-ds-1">
+                @if (parentCategorySlug) {
+                  <button 
+                    (click)="navigateToSub('/category/' + parentCategorySlug)"
+                    class="w-full flex items-center justify-between p-ds-4 text-[11px] font-bold transition-all group"
+                    [ngClass]="{
+                      'bg-ds-accent text-ds-hero-text': !activeSubSlug,
+                      'text-ds-text-sec hover:bg-ds-bg hover:text-ds-text': activeSubSlug
+                    }"
+                  >
+                    <span class="uppercase tracking-widest">All {{ parentCategoryName }}</span>
+                    <app-icon name="ArrowRight" size="14" [className]="!activeSubSlug ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0'"></app-icon>
+                  </button>
+                }
+
                 @for (sub of subCategories; track sub.id) {
                   <button 
                     (click)="navigateToSub('/subcategory/' + sub.slug)"
-                    class="w-full flex items-center justify-between p-ds-4 text-[11px] font-bold text-ds-text-sec hover:bg-ds-bg hover:text-ds-text transition-all group"
+                    class="w-full flex items-center justify-between p-ds-4 text-[11px] font-bold transition-all group"
+                    [ngClass]="{
+                      'bg-ds-accent text-ds-hero-text': sub.slug === activeSubSlug,
+                      'text-ds-text-sec hover:bg-ds-bg hover:text-ds-text': sub.slug !== activeSubSlug
+                    }"
                   >
                     <span class="uppercase tracking-widest">{{ sub.name }}</span>
-                    <app-icon name="ArrowRight" size="14" className="opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0"></app-icon>
+                    <app-icon name="ArrowRight" size="14" [className]="sub.slug === activeSubSlug ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0'"></app-icon>
                   </button>
                 }
               </nav>

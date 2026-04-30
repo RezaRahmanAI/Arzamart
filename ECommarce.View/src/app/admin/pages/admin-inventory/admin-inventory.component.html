@@ -94,10 +94,41 @@
                 <span *ngIf="!product.variants || product.variants.length === 0" class="text-[9px] text-ds-text-muted italic font-bold uppercase tracking-widest">Single Entity</span>
               </td>
               <td class="px-ds-6 py-ds-4 text-right">
-                <button (click)="openStockModal(product)" 
-                        class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center ml-auto">
-                  <app-icon name="Edit3" size="14"></app-icon>
-                </button>
+                <div class="flex items-center justify-end gap-2 ml-auto">
+                  <!-- Landing Page Links -->
+                  <div class="flex items-center gap-1 bg-ds-bg/50 p-1 rounded-sm border border-ds-border">
+                    <a
+                      class="h-7 px-ds-2 flex items-center justify-center text-[8px] font-bold uppercase tracking-widest text-ds-text-muted hover:text-ds-text hover:bg-ds-surface transition-all rounded-sm border border-transparent hover:border-ds-border"
+                      [routerLink]="['/lp', product.productSlug]"
+                      target="_blank"
+                      title="Open Regular LP"
+                    >
+                      Open LP
+                    </a>
+                    <div class="w-px h-3 bg-ds-border"></div>
+                    <a
+                      class="h-7 px-ds-2 flex items-center justify-center text-[8px] font-bold uppercase tracking-widest text-ds-text-muted hover:text-ds-text hover:bg-ds-surface transition-all rounded-sm border border-transparent hover:border-ds-border"
+                      [routerLink]="['/clp', product.productSlug]"
+                      target="_blank"
+                      title="Open Custom LP"
+                    >
+                      Open CLP
+                    </a>
+                    <div class="w-px h-3 bg-ds-border"></div>
+                    <a
+                      class="size-7 flex items-center justify-center text-ds-text-muted hover:text-ds-text transition-colors rounded-sm hover:bg-ds-surface"
+                      [routerLink]="['/admin/products', product.productId, 'custom-lp']"
+                      title="Edit CLP Settings"
+                    >
+                      <app-icon name="Settings2" size="12"></app-icon>
+                    </a>
+                  </div>
+
+                  <button (click)="openStockModal(product)" 
+                          class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center">
+                    <app-icon name="Edit3" size="14"></app-icon>
+                  </button>
+                </div>
               </td>
             </tr>
           </ng-container>

@@ -12,6 +12,8 @@ public class Customer : BaseEntity
 
     [Required]
     public string Address { get; set; } = string.Empty;
+    public string? City { get; set; }
+    public string? Area { get; set; }
 
     public bool IsSuspicious { get; set; } = false;
 }

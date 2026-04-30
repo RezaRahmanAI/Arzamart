@@ -16,6 +16,7 @@ export interface ProductInventoryDto {
   productId: number;
   productName: string;
   productSku: string;
+  productSlug: string;
   imageUrl: string;
   totalStock: number;
   stockQuantity: number;

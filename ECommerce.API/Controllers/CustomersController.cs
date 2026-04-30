@@ -39,6 +39,8 @@ public class CustomersController : ControllerBase
             Phone = customer.Phone,
             Name = customer.Name,
             Address = customer.Address,
+            City = customer.City,
+            Area = customer.Area,
             CreatedAt = customer.CreatedAt
         });
     }
@@ -54,7 +56,9 @@ public class CustomersController : ControllerBase
         var customer = await _customerService.CreateOrUpdateCustomerAsync(
             request.Phone, 
             request.Name, 
-            request.Address
+            request.Address,
+            request.City,
+            request.Area
         );
 
         return Ok(new CustomerDto
@@ -63,6 +67,8 @@ public class CustomersController : ControllerBase
             Phone = customer.Phone,
             Name = customer.Name,
             Address = customer.Address,
+            City = customer.City,
+            Area = customer.Area,
             CreatedAt = customer.CreatedAt
         });
     }

@@ -56,6 +56,7 @@ export class HeroComponent implements OnInit, OnDestroy {
   currentSlide = 0;
   direction: "next" | "prev" = "next";
   slideProgress = 0;
+  isPaused = false;
   timer: any;
   currentYear = new Date().getFullYear();
 
@@ -79,17 +80,20 @@ export class HeroComponent implements OnInit, OnDestroy {
 
   startTimer() {
     if (this.mainSlides.length <= 1) return;
+    this.stopTimer();
     
-    // 5000ms / 50ms = 100 steps
-    const step = 100 / (5000 / 50);
+    // 5000ms / 16ms ≈ 312 steps
+    const step = 100 / (5000 / 16);
     
     this.timer = setInterval(() => {
-      this.slideProgress += step;
-      if (this.slideProgress >= 100) {
-        this.next();
-        this.slideProgress = 0;
+      if (!this.isPaused) {
+        this.slideProgress += step;
+        if (this.slideProgress >= 100) {
+          this.next();
+          this.slideProgress = 0;
+        }
       }
-    }, 50);
+    }, 16);
   }
 
   stopTimer() {

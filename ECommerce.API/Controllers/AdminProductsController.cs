@@ -385,6 +385,7 @@ public class AdminProductsController : ControllerBase
             ProductId = p.Id,
             ProductName = p.Name,
             ProductSku = p.Sku ?? string.Empty,
+            ProductSlug = p.Slug ?? string.Empty,
             ImageUrl = p.ImageUrl ?? string.Empty,
             TotalStock = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
             StockQuantity = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
