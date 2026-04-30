@@ -42,6 +42,7 @@ export class AdminCustomLandingPageConfigComponent implements OnInit {
     originalPrice: [0],
     isMarqueeVisible: [false],
     marqueeText: ["🔥 সীমিত স্টক — মাত্র ৩৪টি বাকি! 🚚 সারা বাংলাদেশে ফ্রি ডেলিভারি 💥 আজকের জন্য ৩০% ছাড় — মধ্যরাতে শেষ 💵 ক্যাশ অন ডেলিভারি আছে ⚡"],
+    promoText: ["যেকোনো কালার যেকোনো সাইজ দুই পিস অর্ডার করলেই পাচ্ছেন মাত্র ১৪৫০ টাকা"],
   });
 
   ngOnInit(): void {
