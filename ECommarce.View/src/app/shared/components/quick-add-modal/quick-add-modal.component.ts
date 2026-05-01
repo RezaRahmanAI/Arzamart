@@ -23,7 +23,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
 
       <!-- Modal Content -->
       <div
-        class="relative w-full max-w-lg bg-white shadow-2xl overflow-hidden transform transition-all duration-500 ease-out max-h-[85vh] sm:max-h-[90vh] flex flex-col sm:flex-row rounded-2xl sm:rounded-3xl"
+        class="relative w-full max-w-lg bg-white shadow-2xl overflow-hidden transform transition-all duration-500 ease-out max-h-[90vh] sm:max-h-[90vh] flex flex-col sm:flex-row rounded-2xl sm:rounded-3xl"
       >
         <!-- Close Button -->
         <button
@@ -34,7 +34,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
         </button>
 
         <!-- Product Image Preview -->
-        <div class="w-full sm:w-1/2 h-[30vh] min-h-[180px] sm:min-h-0 sm:h-auto sm:aspect-[3/4] bg-gray-50 flex-shrink-0 relative p-2 sm:p-0">
+        <div class="w-full sm:w-1/2 h-[25vh] min-h-[160px] sm:min-h-0 sm:h-auto sm:aspect-[3/4] bg-gray-50 flex-shrink-0 relative p-2 sm:p-0">
           <!-- Ekhane object-cover er bodole object-contain deya hoyeche -->
           <img
             [src]="imageUrlService.getImageUrl(selectedImage || product.imageUrl || '')"
@@ -44,7 +44,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
         </div>
 
         <!-- Selection Details (Scrollable independent of image) -->
-        <div class="flex-1 p-4 sm:p-6 flex flex-col justify-center overflow-y-auto">
+        <div class="flex-1 p-4 sm:p-6 flex flex-col justify-start sm:justify-center overflow-y-auto pb-6 sm:pb-8">
           <h2 class="text-[10px] sm:text-sm uppercase tracking-[0.2em] font-bold text-gray-400 mb-0.5 sm:mb-1">
             Quick Add
           </h2>
@@ -75,13 +75,13 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
                   <button
                     (click)="selectSize(size)"
                     class="min-w-[2.25rem] h-8 sm:min-w-10 sm:h-10 px-2 flex items-center justify-center border text-[10px] sm:text-[11px] font-bold transition-all duration-300 rounded-md sm:rounded-lg"
-                    [class.bg-primary]="selectedSize === size"
-                    [class.text-white]="selectedSize === size"
-                    [class.border-primary]="selectedSize === size"
-                    [class.bg-white]="selectedSize !== size"
-                    [class.text-primary]="selectedSize !== size"
-                    [class.border-gray-200]="selectedSize !== size"
-                    [class.hover:border-primary]="selectedSize !== size"
+                    [class.bg-ds-accent]="selectedSize === size"
+                    [class.text-ds-hero-text]="selectedSize === size"
+                    [class.border-ds-accent]="selectedSize === size"
+                    [class.bg-ds-bg]="selectedSize !== size"
+                    [class.text-ds-text]="selectedSize !== size"
+                    [class.border-ds-border]="selectedSize !== size"
+                    [class.hover:border-ds-accent]="selectedSize !== size"
                   >
                     {{ size }}
                   </button>
@@ -91,21 +91,21 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
           }
 
           <!-- Quantity Selection -->
-          <div class="mb-4 sm:mb-6 mt-auto sm:mt-0">
+          <div class="mb-4 sm:mb-6 mt-4 sm:mt-0">
             <label class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-gray-500 block mb-2 sm:mb-3">
               Quantity
             </label>
             <div class="flex items-center gap-3 sm:gap-4">
               <button 
                 (click)="decreaseQuantity()"
-                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-gray-200 rounded-md sm:rounded-lg text-gray-500 hover:text-black transition-colors"
+                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-ds-border rounded-md sm:rounded-lg text-ds-text-sec hover:text-ds-text transition-colors"
               >
                 <app-icon name="Minus" size="14"></app-icon>
               </button>
               <span class="text-sm sm:text-lg font-bold w-6 sm:w-8 text-center">{{ quantity }}</span>
               <button 
                 (click)="increaseQuantity()"
-                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-gray-200 rounded-md sm:rounded-lg text-gray-500 hover:text-black transition-colors"
+                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-ds-border rounded-md sm:rounded-lg text-ds-text-sec hover:text-ds-text transition-colors"
               >
                 <app-icon name="Plus" size="14"></app-icon>
               </button>
@@ -115,7 +115,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
           <button
             (click)="confirm()"
             [disabled]="availableSizes.length > 0 && !selectedSize"
-            class="w-full py-2.5 sm:py-4 bg-accent text-white text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-bold transition-all duration-300 hover:opacity-90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-lg sm:rounded-xl shadow-lg shadow-accent/20"
+            class="w-full py-2.5 sm:py-4 bg-ds-accent text-white text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-bold transition-all duration-300 hover:opacity-90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-lg sm:rounded-xl shadow-lg shadow-ds-accent/20"
           >
             <app-icon name="ShoppingBag" size="14" class="sm:w-4 sm:h-4"></app-icon>
             {{ (selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity) > 0 ? 'Confirm Selection' : 'Confirm Pre-order' }}
