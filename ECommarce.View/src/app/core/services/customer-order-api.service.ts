@@ -1,4 +1,4 @@
-import { HttpErrorResponse, HttpParams } from "@angular/common/http";
+import { HttpErrorResponse, HttpParams, HttpHeaders } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable, catchError, of, throwError } from "rxjs";
 
@@ -71,6 +71,10 @@ export class CustomerOrderApiService {
   }
 
   placeOrder(payload: CustomerOrderRequest): Observable<CustomerOrderResponse> {
-    return this.api.post<CustomerOrderResponse>("/orders", payload);
+    const sessionId = localStorage.getItem("cart_session_id");
+    const options = sessionId ? {
+      headers: new HttpHeaders().set("X-Session-Id", sessionId)
+    } : {};
+    return this.api.post<CustomerOrderResponse>("/orders", payload, options);
   }
 }

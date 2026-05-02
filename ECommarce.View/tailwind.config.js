@@ -28,9 +28,9 @@ module.exports = {
         "border-dark":          "#333333",
       },
       fontFamily: {
-        sans:    ["DM Sans", "Inter", "Helvetica Neue", "Arial", "sans-serif"],
-        display: ["DM Sans", "Inter", "Helvetica Neue", "Arial", "sans-serif"],
-        serif:   ["DM Sans", "Inter", "serif"],
+        sans:    ["Inter", "system-ui", "sans-serif"],
+        display: ["Poppins", "sans-serif"],
+        cta:     ["Outfit", "sans-serif"],
         bengali: ["Hind Siliguri", "sans-serif"],
       },
       fontSize: {

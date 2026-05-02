@@ -1,4 +1,4 @@
-import { Component, inject, DestroyRef, OnInit } from "@angular/core";
+import { Component, inject, DestroyRef, OnInit, OnDestroy } from "@angular/core";
 import { AsyncPipe, NgClass, DecimalPipe, DatePipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
@@ -56,7 +56,7 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
   templateUrl: "./product-details-page.component.html",
   styleUrl: "./product-details-page.component.css",
 })
-export class ProductDetailsPageComponent {
+export class ProductDetailsPageComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);
@@ -69,6 +69,23 @@ export class ProductDetailsPageComponent {
   readonly settings$ = this.siteSettingsService.getSettings();
   private readonly destroyRef = inject(DestroyRef);
   private readonly destroy$ = new Subject<void>();
+  watchingCount: number = Math.floor(Math.random() * (45 - 15 + 1) + 15);
+  private watchingInterval: any;
+
+  ngOnInit(): void {
+    this.startWatchingFluctuation();
+  }
+
+  ngOnDestroy(): void {
+    if (this.watchingInterval) clearInterval(this.watchingInterval);
+  }
+
+  private startWatchingFluctuation(): void {
+    this.watchingInterval = setInterval(() => {
+      const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+      this.watchingCount = Math.max(12, Math.min(65, this.watchingCount + change));
+    }, 7000);
+  }
 
   isSizeGuideOpen = false;
   currentImageIndex = 0;

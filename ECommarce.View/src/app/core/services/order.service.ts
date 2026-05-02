@@ -9,6 +9,7 @@ import {
   CustomerOrderApiService,
   CustomerOrderResponse,
 } from "./customer-order-api.service";
+import { CartService } from "./cart.service";
 
 interface PlaceOrderPayload {
   state: CheckoutState;
@@ -22,6 +23,7 @@ interface PlaceOrderPayload {
 })
 export class OrderService {
   private readonly customerOrderApi = inject(CustomerOrderApiService);
+  private readonly cartService = inject(CartService);
   private readonly storageKey = "orders";
   private readonly ordersSubject = new BehaviorSubject<Order[]>(
     this.loadOrders(),
@@ -67,7 +69,12 @@ export class OrderService {
       })
       .pipe(
         map((response) => this.buildOrder(response, items, payload.summary)),
-        tap((order) => this.addOrderToHistory(order)),
+        tap((order) => {
+          this.addOrderToHistory(order);
+          this.cartService.clearCart().subscribe({
+            error: (err) => console.error("Failed to clear cart after order", err)
+          });
+        }),
       );
   }
 

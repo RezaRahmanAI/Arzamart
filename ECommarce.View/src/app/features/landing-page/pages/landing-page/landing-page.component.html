@@ -1,4 +1,4 @@
-﻿<div class="min-h-screen bg-[#F5F5F5] font-sans text-[#1a1a1a] pb-20">
+<div class="min-h-screen bg-[#F5F5F5] font-sans text-[#1a1a1a] pb-20">
   <!-- Loading State -->
   @if (isLoading) {
     <div
@@ -133,7 +133,7 @@
         <!-- ===== RIGHT: Product Info ===== -->
         <div class="lg:col-span-5 space-y-8 lg:pl-4">
           <div class="space-y-4">
-            <h1 class="text-3xl lg:text-4xl font-sans font-bold text-[#1a1a1a] leading-tight">
+            <h1 class="text-3xl lg:text-4xl font-bold text-[#1a1a1a] leading-tight">
               {{ product.name }}
             </h1>
             @if (product.shortDescription) {
@@ -144,7 +144,7 @@
           <!-- Pricing Section -->
           <div class="flex items-baseline gap-4 py-5 border-y border-[#E0E0E0]">
             <app-price-display
-              class="text-3xl font-sans font-bold text-[#1a1a1a]"
+              class="text-3xl font-bold text-[#1a1a1a]"
               [amount]="currentPrice"
               size="md"
             ></app-price-display>

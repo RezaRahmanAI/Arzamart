@@ -1,5 +1,5 @@
-﻿<div
-  class="bg-background-light dark:bg-background-dark text-primary dark:text-white font-display antialiased flex flex-col min-h-screen"
+<div
+  class="bg-background-light dark:bg-background-dark text-ds-text dark:text-white font-display antialiased flex flex-col min-h-screen"
 >
   <!-- Main Split Layout -->
   <main class="flex flex-1 flex-col lg:flex-row">
@@ -14,7 +14,7 @@
       ></div>
       <!-- Gradient Overlay -->
       <div
-        class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent"
+        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
       ></div>
       <!-- Overlay Content -->
       <div class="absolute bottom-0 left-0 p-12 text-white">
@@ -35,7 +35,7 @@
         <!-- Page Heading -->
         <div class="mb-10">
           <h1
-            class="text-primary dark:text-white tracking-tight text-[32px] font-bold leading-tight mb-3"
+            class="text-ds-text dark:text-white tracking-tight text-[32px] font-bold leading-tight mb-3"
           >
             Admin Access
           </h1>
@@ -86,7 +86,7 @@
                 formControlName="password"
               />
               <div
-                class="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-[#888888] cursor-pointer hover:text-primary transition-colors"
+                class="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-[#888888] cursor-pointer hover:text-ds-accent transition-colors"
                 (click)="togglePasswordVisibility()"
               >
                 <app-icon
@@ -106,7 +106,7 @@
           <div class="flex items-center justify-between mt-1">
             <label class="flex items-center gap-3 cursor-pointer">
               <input
-                class="h-5 w-5 rounded border-[#F5F5F5] dark:border-gray-600 bg-transparent text-primary checked:bg-primary focus:ring-offset-0 focus:ring-accent"
+                class="h-5 w-5 rounded border-[#F5F5F5] dark:border-gray-600 bg-transparent text-ds-accent checked:bg-ds-accent focus:ring-offset-0 focus:ring-accent"
                 type="checkbox"
                 formControlName="rememberMe"
               />
@@ -118,7 +118,7 @@
           </div>
           <!-- Submit Button -->
           <button
-            class="mt-4 w-full h-14 bg-primary hover:bg-primary/90 text-white text-base font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
+            class="mt-4 w-full h-14 bg-ds-accent hover:bg-ds-accent-hover text-white text-base font-bold rounded-lg shadow-lg shadow-black/10 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
             type="submit"
             [disabled]="loginForm.invalid || isLoading"
           >

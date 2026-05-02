@@ -239,10 +239,18 @@
                 </button>
               </div>
 
+              <!-- Watching Section -->
+              <div class="mb-6 p-4 rounded-sm flex items-center gap-3 border border-[#E63946]/30 animate-pulse"
+                   style="background: rgba(230,57,70,0.05);">
+                <app-icon name="Eye" size="16" className="text-[#E63946]"></app-icon>
+                <p class="text-[12px] font-bold text-ds-text-muted">
+                  <span class="text-[#E63946] font-black">{{ watchingCount }}</span> People watching this product now!
+                </p>
+              </div>
+
               <!-- Trust badges row -->
               <div class="flex flex-wrap gap-4 pt-5 border-t border-ds-border">
                 @for (badge of [
-                  {icon:'Truck', text:'ফ্রি ডেলিভারি'},
                   {icon:'Banknote', text:'ক্যাশ অন ডেলিভারি'},
                   {icon:'RotateCcw', text:'সহজ রিটার্ন'},
                   {icon:'Zap', text:'২৪ঘন্টায় শিপ'}
@@ -257,11 +265,11 @@
               <!-- Brand Auth -->
               <div class="mt-6 flex items-center gap-3 px-4 py-3 rounded-sm border border-ds-border" style="background:#111;">
                 <img src="assets/images/brand-logo.png" alt="Brand"
-                     class="w-8 h-8 object-contain grayscale"
+                     class="w-8 h-8 object-contain grayscale opacity-80"
                      onerror="this.src='https://placehold.co/80x80?text=B'"/>
                 <div>
-                  <p class="text-[8px] uppercase tracking-widest font-bold" style="color:#555;">Authentic Product By</p>
-                  <p class="text-[12px] font-black text-ds-text">{{ brandName$ | async }}</p>
+                  <p class="text-[8px] uppercase tracking-widest font-bold" style="color:#888;">Authentic Product By</p>
+                  <p class="text-[12px] font-black text-white">{{ brandName$ | async }}</p>
                 </div>
               </div>
 
@@ -279,34 +287,60 @@
                   <h3 class="text-[10px] font-black uppercase tracking-[0.4em] text-ds-text-muted">More From This Category</h3>
                   <span class="h-px flex-1 bg-ds-border"></span>
                 </div>
-                <div class="flex flex-wrap justify-center gap-4">
+                <div class="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-4">
                   @for (rel of relatedProducts; track rel.id) {
-                    <a [routerLink]="['/clp', rel.slug]"
-                       class="group w-[148px] sm:w-[180px] flex flex-col">
+                    <div (click)="openQuickAdd(rel, $event)"
+                       class="group w-full sm:w-[190px] flex flex-col bg-[#0C0C0C] p-2 border border-ds-border hover:border-[#D4A853] transition-all cursor-pointer">
                       <div class="relative aspect-[3/4] overflow-hidden mb-3 border border-ds-border group-hover:border-[#D4A853] transition-all duration-500">
                         <img [src]="imageUrlService.getImageUrl(rel.imageUrl)" alt="Related"
                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                         @if (rel.compareAtPrice && rel.compareAtPrice > rel.price) {
-                          <div class="absolute top-2 left-2 bg-[#E63946] text-white px-2 py-1">
+                          <div class="absolute top-2 left-2 bg-[#E63946] text-white px-2 py-1 z-10">
                             <p class="text-[8px] font-black uppercase leading-none mb-0.5">Save</p>
                             <p class="text-[10px] font-black">৳ {{ rel.compareAtPrice - rel.price }}</p>
                           </div>
                         }
+                        <!-- Buy Now Button overlay (Desktop) -->
+                        <div class="absolute bottom-0 left-0 right-0 p-2 translate-y-full group-hover:translate-y-0 transition-transform duration-300 hidden md:block">
+                          <button class="w-full h-10 bg-white/90 backdrop-blur-sm text-black text-[9px] font-black uppercase tracking-[0.2em] border border-white hover:bg-black hover:text-white transition-all">
+                            Buy Now
+                          </button>
+                        </div>
                       </div>
-                      <h4 class="text-[10px] font-bold uppercase tracking-wider truncate mb-1 text-ds-text-muted group-hover:text-ds-text transition-colors">{{ rel.name }}</h4>
-                      <div class="flex items-baseline gap-2">
-                        <span class="text-sm font-black text-ds-text">৳ {{ rel.price }}</span>
-                        @if (rel.compareAtPrice) {
-                          <span class="text-[10px] line-through text-ds-text-muted">৳ {{ rel.compareAtPrice }}</span>
-                        }
+                      
+                      <h4 class="text-[11px] font-black tracking-wider truncate mb-1 text-ds-text group-hover:text-[#D4A853] transition-colors">
+                        {{ rel.name }}
+                      </h4>
+                      
+                      <div class="flex items-center justify-between mt-auto">
+                        <div class="flex items-baseline gap-2">
+                          <span class="text-[13px] font-black text-ds-text">৳ {{ rel.price }}</span>
+                          @if (rel.compareAtPrice && rel.compareAtPrice > rel.price) {
+                            <span class="text-[10px] line-through text-ds-text-muted">৳ {{ rel.compareAtPrice }}</span>
+                          }
+                        </div>
                       </div>
-                    </a>
+
+                      <!-- Buy Now Button (Mobile) -->
+                      <button class="mt-3 w-full h-9 bg-ds-text text-ds-bg text-[9px] font-black uppercase tracking-[0.2em] md:hidden">
+                        Buy Now
+                      </button>
+                    </div>
                   }
                 </div>
               </div>
             </div>
           }
         </section>
+      }
+
+      <!-- Quick Add Modal -->
+      @if (showQuickAdd && selectedQuickProduct) {
+        <app-quick-add-modal
+          [product]="selectedQuickProduct"
+          (close)="showQuickAdd = false"
+          (added)="onQuickAddConfirm($event)"
+        ></app-quick-add-modal>
       }
 
 
@@ -691,13 +725,13 @@
       ═══════════════════════════════════════════ -->
       <section class="px-6 py-16 border-t border-ds-border">
         <div class="clp-container">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-px border border-ds-border overflow-hidden" style="background:#2A2A2A;">
+          <div class="grid grid-cols-3 gap-px border border-ds-border overflow-hidden" style="background:#2A2A2A;">
             @for (feat of [
               {icon:'Truck', bg:'rgba(34,197,94,0.06)', color:'#22C55E', title:'Fastest Delivery', desc:'সারা বাংলাদেশে ২-৩ দিনে পৌঁছে দিই। ঢাকায় মাত্র ১ দিন।'},
               {icon:'ShieldCheck', bg:'rgba(212,168,83,0.06)', color:'#D4A853', title:'Quality Assurance', desc:'পণ্য হাতে পেয়ে দেখুন। সন্তুষ্ট না হলে ফেরত দিন।'},
               {icon:'RotateCcw', bg:'rgba(230,57,70,0.06)', color:'#E63946', title:'Easy Exchange', desc:'৩ দিনের মধ্যে সাইজ বা কোয়ালিটি সমস্যায় বিনামূল্যে exchange।'}
             ]; track feat.title) {
-              <div class="flex flex-col items-center text-center p-10 group transition-all duration-500"
+              <div class="flex flex-col items-center text-center p-4 sm:p-10 group transition-all duration-500"
                    [style.background]="'#0C0C0C'"
                    [style.background]="feat.bg">
                 <div class="w-14 h-14 flex items-center justify-center mb-5 transition-transform duration-500 group-hover:scale-110" style="border:1px solid #2A2A2A;">

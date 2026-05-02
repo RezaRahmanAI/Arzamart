@@ -25,6 +25,7 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
 import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
+import { QuickAddModalComponent } from "../../../../shared/components/quick-add-modal/quick-add-modal.component";
 
 interface LandingPageData {
   product: Product;
@@ -34,7 +35,7 @@ interface LandingPageData {
 @Component({
   selector: "app-custom-landing-page",
   standalone: true,
-  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe],
+  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe, QuickAddModalComponent, NgIf],
   templateUrl: "./custom-landing-page.component.html",
   styleUrl: "./custom-landing-page.component.css"
 })
@@ -61,6 +62,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   deliveryMethods: DeliveryMethod[] = [];
   isLoading = true;
   isOrdering = false;
+  watchingCount: number = Math.floor(Math.random() * (45 - 15 + 1) + 15);
 
   get processedMarqueeText(): string {
     if (!this.data?.config?.marqueeText) return "";
@@ -93,7 +95,10 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   selectedImage: string = "";
   slideProgress = 0;
   private autoSlideInterval: any;
+  private watchingInterval: any;
   showAutofillPrompt = false;
+  selectedQuickProduct: Product | null = null;
+  showQuickAdd = false;
 
   readonly orderForm = this.fb.nonNullable.group({
     fullName: ["", [Validators.required, Validators.minLength(2)]],
@@ -124,6 +129,19 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       const slug = params.get("slug");
       if (slug) {
         this.loadData(slug);
+        
+        // Handle pre-filled data from quick add (if any)
+        const queryParams = this.route.snapshot.queryParamMap;
+        const qSize = queryParams.get('qSize');
+        const qQty = queryParams.get('qQty');
+        
+        if (qSize) {
+          this.orderForm.patchValue({ selectedSize: qSize });
+        }
+        if (qQty) {
+          this.orderForm.patchValue({ quantity: parseInt(qQty, 10) || 1 });
+        }
+
         if (isPlatformBrowser(this.platformId)) {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
@@ -194,6 +212,17 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     // Check for local saved details
     if (this.userPersistence.hasSavedDetails()) {
       this.showAutofillPrompt = true;
+    }
+
+    this.startWatchingFluctuation();
+  }
+
+  private startWatchingFluctuation(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.watchingInterval = setInterval(() => {
+        const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+        this.watchingCount = Math.max(12, Math.min(65, this.watchingCount + change));
+      }, 7000);
     }
   }
 
@@ -273,6 +302,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     }
     if (this.autoSlideInterval) {
       clearInterval(this.autoSlideInterval);
+    }
+    if (this.watchingInterval) {
+      clearInterval(this.watchingInterval);
     }
   }
 
@@ -591,5 +623,30 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   formatSizes(variants: any[] | undefined): string {
     if (!variants) return "";
     return Array.from(new Set(variants.map(v => v.size).filter(Boolean))).join(", ");
+  }
+
+  openQuickAdd(product: Product, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.selectedQuickProduct = product;
+    this.showQuickAdd = true;
+  }
+
+  onQuickAddConfirm(selection: { size?: string; quantity: number }): void {
+    if (this.selectedQuickProduct) {
+      const queryParams: any = {};
+      if (selection.size) queryParams.qSize = selection.size;
+      if (selection.quantity > 1) queryParams.qQty = selection.quantity;
+
+      this.showQuickAdd = false;
+      void this.router.navigate(['/clp', this.selectedQuickProduct.slug], { 
+        queryParams,
+        queryParamsHandling: 'merge'
+      }).then(() => {
+        this.scrollToOrder();
+      });
+    } else {
+      this.showQuickAdd = false;
+    }
   }
 }

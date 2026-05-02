@@ -66,6 +66,29 @@ public class OrdersController : ControllerBase
         try
         {
             var order = await _orderService.CreateOrderAsync(orderDto);
+
+            // Clear cart after successful order
+            var sessionId = Request.Headers["X-Session-Id"].ToString();
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            Cart? cart = null;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                cart = await _context.Carts.Include(c => c.Items)
+                    .FirstOrDefaultAsync(c => c.UserId == userId);
+            }
+            else if (!string.IsNullOrEmpty(sessionId))
+            {
+                cart = await _context.Carts.Include(c => c.Items)
+                    .FirstOrDefaultAsync(c => c.SessionId == sessionId && c.UserId == null);
+            }
+
+            if (cart != null && cart.Items.Any())
+            {
+                _context.CartItems.RemoveRange(cart.Items);
+                await _context.SaveChangesAsync();
+            }
+
             return Ok(order);
         }
         catch (Exception ex)

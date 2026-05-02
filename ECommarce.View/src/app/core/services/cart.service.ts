@@ -10,7 +10,7 @@ import {
   switchMap,
   filter,
 } from "rxjs";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { CartItem, CartSummary } from "../models/cart";
@@ -122,8 +122,11 @@ export class CartService {
   }
 
   refreshCartFromServer(): void {
+    const sessionId = this.getSessionId();
+    const params = new HttpParams().set("sid", sessionId); // Add sid to URL to bypass potential CDN/Proxy shared caching
+    
     this.api
-      .get<CartDto>(this.apiUrl, this.options)
+      .get<CartDto>(this.apiUrl, { ...this.options, params })
       .pipe(catchError(() => of(null)))
       .subscribe((dto) => {
         if (dto) this.updateLocalState(dto);

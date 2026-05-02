@@ -31,7 +31,7 @@
             <tbody class="divide-y divide-ds-border/50">
               <tr *ngFor="let item of cart()" class="hover:bg-ds-bg transition-colors">
                 <td class="px-ds-4 py-1.5 min-w-[120px]">
-                  <p class="text-[10px] font-bold text-ds-text uppercase tracking-tight truncate">{{ item.product.name }}</p>
+                  <p class="text-[10px] font-bold text-ds-text tracking-tight truncate">{{ item.product.name }}</p>
                 </td>
                 <td class="px-ds-2 py-1.5">
                   <div class="flex items-center justify-center gap-2">
@@ -246,7 +246,7 @@
                     </div>
 
                   <div class="flex-1 min-w-0 mb-ds-3">
-                    <h4 class="text-[9px] font-bold text-ds-text uppercase tracking-tight truncate mb-1" [title]="product.name">{{ product.name }}</h4>
+                    <h4 class="text-[9px] font-bold text-ds-text tracking-tight truncate mb-1" [title]="product.name">{{ product.name }}</h4>
                     <div class="flex items-center gap-2">
                        <app-price-display [amount]="product.price" className="text-[10px] font-bold text-ds-text"></app-price-display>
                        <span *ngIf="product.compareAtPrice" class="text-[8px] text-ds-text-muted line-through opacity-50 italic">৳{{ product.compareAtPrice }}</span>
@@ -297,7 +297,7 @@
               <img [src]="imageUrlService.getImageUrl(selectedProduct()?.imageUrl || '')" class="w-full h-full object-cover">
             </div>
             <div class="flex-1">
-              <h3 class="text-ds-xl font-bold text-ds-text uppercase tracking-tight mb-2 leading-tight">{{ selectedProduct()?.name }}</h3>
+              <h3 class="text-ds-xl font-bold text-ds-text tracking-tight mb-2 leading-tight">{{ selectedProduct()?.name }}</h3>
               <app-price-display [amount]="currentSelectedPrice" className="text-ds-2xl font-bold text-ds-text tracking-tighter"></app-price-display>
             </div>
           </div>
@@ -358,7 +358,7 @@
           <ul class="space-y-ds-3">
             <li *ngFor="let item of outOfStockItems()" class="flex justify-between items-start gap-ds-4 p-ds-4 bg-ds-surface rounded-sm border border-red-500/20 shadow-sm">
               <div class="flex-1 min-w-0 text-left">
-                <p class="text-[10px] font-bold text-ds-text uppercase tracking-tight truncate" [title]="item.name">{{ item.name }}</p>
+                <p class="text-[10px] font-bold text-ds-text tracking-tight truncate" [title]="item.name">{{ item.name }}</p>
                 <p *ngIf="item.size" class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Matrix: {{ item.size }}</p>
               </div>
               <div class="text-right whitespace-nowrap">
