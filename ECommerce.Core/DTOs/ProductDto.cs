@@ -48,6 +48,8 @@ public class ProductDto
     public int SortOrder { get; set; }
 
     public ProductType ProductType { get; set; }
+    public IEnumerable<ComboItemDto> ComboItems { get; set; } = new List<ComboItemDto>();
+    public int? ProductGroupId { get; set; }
 }
 
 public class ProductImageDto
@@ -98,4 +100,5 @@ public class ProductListDto
 
     public List<ProductVariantDto> Variants { get; set; } = new();
     public IEnumerable<ProductImageDto> Images { get; set; } = new List<ProductImageDto>();
+    public int? ProductGroupId { get; set; }
 }

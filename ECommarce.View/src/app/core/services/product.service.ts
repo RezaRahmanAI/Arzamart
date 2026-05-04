@@ -110,11 +110,14 @@ export class ProductService {
   getRelatedProducts(
     collectionId?: number,
     categoryId?: number,
+    productGroupId?: number,
     limit = 4,
     context?: HttpContext,
   ): Observable<Pagination<Product>> {
     const params: any = { pageSize: limit };
-    if (collectionId) {
+    if (productGroupId) {
+      params.productGroupId = productGroupId;
+    } else if (collectionId) {
       params.collectionId = collectionId;
     } else if (categoryId) {
       params.categoryId = categoryId;

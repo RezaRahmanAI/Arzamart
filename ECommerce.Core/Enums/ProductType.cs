@@ -2,5 +2,6 @@ namespace ECommerce.Core.Enums;
 
 public enum ProductType
 {
-    Simple = 0
+    Simple = 0,
+    Combo = 1
 }

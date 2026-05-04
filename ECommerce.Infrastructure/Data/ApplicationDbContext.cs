@@ -40,6 +40,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<SourcePage> SourcePages { get; set; }
     public DbSet<SocialMediaSource> SocialMediaSources { get; set; }
     public DbSet<CustomLandingPageConfig> CustomLandingPageConfigs { get; set; }
+    public DbSet<ComboItem> ComboItems { get; set; }
+    public DbSet<ProductGroup> ProductGroups { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -107,6 +109,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .WithMany(c => c.Products)
                   .HasForeignKey(p => p.CategoryId)
                   .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(p => p.ProductGroup)
+                  .WithMany(g => g.Products)
+                  .HasForeignKey(p => p.ProductGroupId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
 
@@ -302,6 +309,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .WithMany()
                 .HasForeignKey(r => r.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ComboItem Configuration
+        builder.Entity<ComboItem>(entity =>
+        {
+            entity.HasOne(ci => ci.ComboProduct)
+                  .WithMany(p => p.ComboItems)
+                  .HasForeignKey(ci => ci.ComboProductId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ci => ci.Product)
+                  .WithMany()
+                  .HasForeignKey(ci => ci.ProductId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(ci => ci.ProductVariant)
+                  .WithMany()
+                  .HasForeignKey(ci => ci.ProductVariantId)
+                  .OnDelete(DeleteBehavior.Restrict);
         });
 
     }

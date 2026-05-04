@@ -45,6 +45,14 @@ export const ADMIN_ROUTES: Routes = [
         data: { title: "Sub Category Management" },
       },
       {
+        path: "products/groups",
+        loadComponent: () =>
+          import("./pages/admin-product-group-management/admin-product-group-management.component").then(
+            (m) => m.AdminProductGroupManagementComponent,
+          ),
+        data: { title: "Product Group Management" },
+      },
+      {
         path: "inventory",
         loadComponent: () =>
           import("./pages/admin-inventory/admin-inventory.component").then(

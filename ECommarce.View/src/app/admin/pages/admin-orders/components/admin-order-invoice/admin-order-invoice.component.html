@@ -1,160 +1,162 @@
-<div class="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm print:p-0 print:bg-white print:backdrop-blur-none" (click)="close.emit()">
-  <div class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-[1.5rem] w-full max-w-4xl max-h-[95vh] overflow-hidden shadow-2xl flex flex-col print:border-none print:shadow-none print:rounded-none print:max-h-none print:w-auto" (click)="$event.stopPropagation()">
-    <!-- Modal Header (Hidden on Print) -->
-    <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-white dark:bg-surface-dark shrink-0 print:hidden">
-      <div class="flex items-center gap-3">
-        <app-icon name="FileText" size="20" className="text-primary"></app-icon>
-        <h3 class="text-base font-bold text-primary dark:text-white uppercase tracking-wider">Order Details</h3>
-      </div>
+<!-- Backdrop -->
+<div
+  class="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm print:hidden-backdrop"
+  (click)="close.emit()"
+>
+  <!-- Modal Shell -->
+  <div
+    class="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl w-full max-w-3xl max-h-[95vh] overflow-hidden shadow-2xl flex flex-col print:contents"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Toolbar — hidden on print -->
+    <div class="shrink-0 flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 print:hidden">
+      <span class="text-xs font-semibold tracking-widest uppercase text-gray-400">Invoice Preview</span>
       <div class="flex items-center gap-2">
-        <button (click)="printInvoice()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all shadow-sm">
-          <app-icon name="Printer" size="14"></app-icon>
-          <span>Print</span>
+        <button
+          (click)="printInvoice()"
+          class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-900 hover:bg-gray-700 text-white text-xs font-semibold transition-all"
+        >
+          <app-icon name="Printer" size="13"></app-icon> Print
         </button>
-        <button (click)="close.emit()" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
-          <app-icon name="X" size="20"></app-icon>
+        <button
+          (click)="close.emit()"
+          class="w-9 h-9 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+        >
+          <app-icon name="X" size="16"></app-icon>
         </button>
       </div>
     </div>
 
-    <!-- Invoice Content -->
-    <div class="flex-1 overflow-y-auto p-8 print:p-0 bg-gray-50 dark:bg-gray-900 print:bg-white custom-scrollbar">
-      <div id="invoice-paper" class="bg-white p-10 shadow-lg mx-auto print:shadow-none print:p-0 max-w-[800px] text-gray-900 border border-gray-100 print:border-none">
-        
-        <!-- Header Section -->
-        <div class="flex justify-between items-start mb-6">
-          <!-- Company Info & Barcode -->
-          <div class="w-1/2">
-            <div class="flex flex-col gap-1 mb-4">
-              <img *ngIf="logoUrl" [src]="logoUrl" class="h-10 w-auto object-contain self-start" alt="Company Logo">
-              <div class="text-[10px] font-bold text-gray-800 tracking-tight">
-                <p>Phone: {{ settings?.contactPhone }}</p>
-                <p>Web: {{ settings?.websiteName }}</p>
+    <!-- Scrollable preview area -->
+    <div class="flex-1 overflow-y-auto bg-gray-100 dark:bg-gray-900 p-6 print:p-0 print:bg-white custom-scrollbar">
+
+      <!-- ═══════════════════════════════════════
+           INVOICE PAPER — constrained to half A4
+           A4 width = 210mm | half height = 148.5mm
+      ════════════════════════════════════════ -->
+      <div id="invoice-paper" class="bg-white mx-auto shadow-xl print:shadow-none" style="width:680px; font-family:'DM Sans',system-ui,sans-serif;">
+
+        <!-- Gold rule top -->
+        <div style="height:3px;background:linear-gradient(90deg,#111 0%,#111 60%,#c8a140 100%);"></div>
+
+        <!-- ── Main body ── -->
+        <div style="padding:16px 22px 14px;">
+
+          <!-- ROW 1: Brand + Order Meta -->
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #e5e5e5;">
+
+            <!-- Left: Logo / Brand -->
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <img *ngIf="logoUrl" [src]="logoUrl" style="height:28px;width:auto;object-fit:contain;" alt="Logo">
+              <span *ngIf="!logoUrl" style="font-size:17px;font-weight:800;letter-spacing:-0.5px;color:#0f0e0d;">{{ settings?.websiteName || 'Store' }}</span>
+              <span style="font-size:8.5px;color:#888;letter-spacing:0.3px;">{{ settings?.contactPhone }} &nbsp;·&nbsp; {{ settings?.websiteName }}</span>
+              <!-- Barcode -->
+              <div style="margin-top:6px;">
+                <img [src]="getBarcodeUrl(order.orderNumber)" style="height:28px;width:120px;" alt="Barcode">
+                <div style="font-size:8px;font-weight:800;letter-spacing:0.18em;color:#333;margin-top:2px;">{{ order.orderNumber }}</div>
               </div>
             </div>
-            
-            <div class="flex flex-col">
-              <img [src]="getBarcodeUrl(order.orderNumber)" class="h-10 w-40 mb-1" alt="Barcode">
-              <span class="text-[11px] font-black tracking-[0.2em]">{{ order.orderNumber }}</span>
-            </div>
-          </div>
-          
-          <!-- Customer Info Box -->
-          <div class="w-[45%] border border-gray-900 rounded-sm overflow-hidden">
-            <div class="p-1 bg-gray-50 border-b border-gray-900 text-center font-black text-[10px] uppercase">Customer info</div>
-            <div class="p-3 space-y-1 text-[11px] font-bold">
-              <div class="grid grid-cols-12 gap-1">
-                <span class="col-span-4 text-gray-600">Order ID:</span>
-                <span class="col-span-8 text-gray-900">{{ order.orderNumber }}</span>
-              </div>
-              <div class="grid grid-cols-12 gap-1">
-                <span class="col-span-4 text-gray-600">Order Date:</span>
-                <span class="col-span-8 text-gray-900">{{ order.createdAt | date:'dd/MM/yyyy' }}</span>
-              </div>
-              <div class="grid grid-cols-12 gap-1">
-                <span class="col-span-4 text-gray-600">Phone:</span>
-                <span class="col-span-8 text-gray-900">{{ order.customerPhone }}</span>
-              </div>
-              <div class="grid grid-cols-12 gap-1">
-                <span class="col-span-4 text-gray-600">Name:</span>
-                <span class="col-span-8 text-gray-900">{{ order.customerName }}</span>
-              </div>
-              <div class="grid grid-cols-12 gap-1">
-                <span class="col-span-4 text-gray-600">Address:</span>
-                <span class="col-span-8 text-gray-900 leading-tight">{{ order.shippingAddress }} {{ order.area ? ', ' + order.area : '' }} {{ order.city ? ', ' + order.city : '' }}</span>
+
+            <!-- Right: Customer info box -->
+            <div style="border:1.5px solid #111;min-width:220px;font-size:9.5px;font-weight:600;">
+              <div style="background:#111;color:#fff;text-align:center;padding:3px 6px;font-size:8px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;">Customer Info</div>
+              <div style="padding:7px 9px;display:grid;grid-template-columns:72px 1fr;row-gap:3px;line-height:1.4;">
+                <span style="color:#888;">Order ID</span>      <span style="color:#111;">{{ order.orderNumber }}</span>
+                <span style="color:#888;">Date</span>          <span style="color:#111;">{{ order.createdAt | date:'dd MMM yyyy' }}</span>
+                <span style="color:#888;">Phone</span>         <span style="color:#111;">{{ order.customerPhone }}</span>
+                <span style="color:#888;">Name</span>          <span style="color:#111;">{{ order.customerName }}</span>
+                <span style="color:#888;">Address</span>
+                <span style="color:#111;line-height:1.3;">
+                  {{ order.shippingAddress }}<ng-container *ngIf="order.area">, {{ order.area }}</ng-container><ng-container *ngIf="order.city">, {{ order.city }}</ng-container>
+                </span>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Products Table -->
-        <table class="w-full text-left border border-gray-900 border-collapse mb-6 text-[11px]">
-          <thead class="bg-gray-50">
-            <tr class="divide-x divide-gray-900 border-b border-gray-900">
-              <th class="p-1 w-10 text-center uppercase font-black">Product</th>
-              <th class="p-1 uppercase font-black">Item Name</th>
-              <th class="p-1 w-12 text-center uppercase font-black">Size</th>
-              <th class="p-1 w-16 text-center uppercase font-black">Unit Cost</th>
-              <th class="p-1 w-16 text-center uppercase font-black">Discount</th>
-              <th class="p-1 w-10 text-center uppercase font-black">Qty</th>
-              <th class="p-1 w-20 text-right uppercase font-black">Total</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-900">
-            <tr *ngFor="let item of order.items" class="divide-x divide-gray-900 font-bold">
-              <td class="p-1 text-center">
-                <img *ngIf="item.imageUrl" [src]="imageUrlService.getImageUrl(item.imageUrl)" class="h-8 w-8 object-cover mx-auto rounded border" alt="">
-              </td>
-              <td class="p-1">{{ item.productName }}</td>
-              <td class="p-1 text-center uppercase">{{ item.size || '-' }}</td>
-              <td class="p-1 text-center">{{ item.unitPrice }}</td>
-              <td class="p-1 text-center">0</td>
-              <td class="p-1 text-center">{{ item.quantity }}</td>
-              <td class="p-1 text-right">{{ item.totalPrice }}</td>
-            </tr>
-          </tbody>
-        </table>
+          <!-- ROW 2: Products Table -->
+          <table style="width:100%;border-collapse:collapse;font-size:9.5px;margin-bottom:11px;">
+            <thead>
+              <tr style="background:#111;color:#fff;">
+                <th style="padding:5px 7px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;text-align:center;width:36px;">Img</th>
+                <th style="padding:5px 7px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;text-align:left;">Item</th>
+                <th style="padding:5px 7px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;text-align:center;width:44px;">Size</th>
+                <th style="padding:5px 7px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;text-align:right;width:58px;">Unit</th>
+                <th style="padding:5px 7px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;text-align:center;width:36px;">Qty</th>
+                <th style="padding:5px 7px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;text-align:right;width:62px;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of order.items; let even = even"
+                  [style.background]="even ? '#fafafa' : '#ffffff'"
+                  style="border-bottom:1px solid #e8e8e8;">
+                <td style="padding:5px 7px;text-align:center;">
+                  <img *ngIf="item.imageUrl" [src]="imageUrlService.getImageUrl(item.imageUrl)" style="width:30px;height:30px;object-fit:cover;border-radius:3px;border:1px solid #e5e5e5;" alt="">
+                  <span *ngIf="!item.imageUrl" style="display:block;width:30px;height:30px;background:#f0f0f0;border-radius:3px;margin:auto;"></span>
+                </td>
+                <td style="padding:5px 7px;font-weight:600;color:#111;">{{ item.productName }}</td>
+                <td style="padding:5px 7px;text-align:center;color:#555;text-transform:uppercase;">{{ item.size || '—' }}</td>
+                <td style="padding:5px 7px;text-align:right;color:#333;">{{ item.unitPrice }}</td>
+                <td style="padding:5px 7px;text-align:center;font-weight:700;color:#111;">{{ item.quantity }}</td>
+                <td style="padding:5px 7px;text-align:right;font-weight:700;color:#111;">{{ item.totalPrice }}</td>
+              </tr>
+            </tbody>
+          </table>
 
-        <!-- Totals & Summary -->
-        <div class="flex justify-between items-start mb-6 gap-8">
-            <div class="flex flex-col items-start w-1/2">
-                <img [src]="getBarcodeUrl(order.orderNumber)" class="h-10 w-40 mb-1" alt="Barcode">
-                <span class="text-[11px] font-black tracking-[0.2em] mb-2">{{ order.orderNumber }}</span>
-                <div class="text-[10px] font-bold text-gray-700 space-y-0.5">
-                    <p>Delivery Partner: NA</p>
-                    <p>Page Name: {{ order.sourcePageName || 'Arza Menz' }}</p>
-                    <p class="text-gray-500 pt-1">Print: {{ currentDate | date:'dd/MM/yyyy, h:mm:ss a' }}</p>
-                </div>
+          <!-- ROW 3: Left metadata + Right totals -->
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:11px;">
+
+            <!-- Left: delivery meta -->
+            <div style="font-size:8.5px;color:#666;font-weight:500;line-height:1.7;">
+              <div><span style="color:#aaa;font-size:8px;text-transform:uppercase;letter-spacing:.8px;">Page</span>&nbsp; {{ order.sourcePageName || '—' }}</div>
+              <div><span style="color:#aaa;font-size:8px;text-transform:uppercase;letter-spacing:.8px;">Courier</span>&nbsp; —</div>
+              <div style="color:#bbb;font-size:8px;margin-top:3px;">Printed: {{ currentDate | date:'dd/MM/yyyy, h:mm a' }}</div>
             </div>
 
-            <div class="w-64">
-                <table class="w-full text-left border border-gray-900 border-collapse text-[10px] font-bold">
-                    <tr class="border-b border-gray-900">
-                        <td class="p-1.5 bg-gray-50 uppercase w-32">Total Qty:</td>
-                        <td class="p-1.5 text-right text-red-500">{{ order.itemsCount }}</td>
-                    </tr>
-                    <tr class="border-b border-gray-900">
-                        <td class="p-1.5 bg-gray-50 uppercase">Sub Total:</td>
-                        <td class="p-1.5 text-right">{{ order.subTotal }}</td>
-                    </tr>
-                    <tr class="border-b border-gray-900">
-                        <td class="p-1.5 bg-gray-50 uppercase">Delivery Charge:</td>
-                        <td class="p-1.5 text-right text-pink-500">{{ order.shippingCost }}</td>
-                    </tr>
-                    <tr class="border-b border-gray-900">
-                        <td class="p-1.5 bg-gray-50 uppercase">Discount:</td>
-                        <td class="p-1.5 text-right text-blue-500">0</td>
-                    </tr>
-                    <tr class="border-b border-gray-900">
-                        <td class="p-1.5 bg-gray-50 uppercase">Total:</td>
-                        <td class="p-1.5 text-right">{{ order.total }}</td>
-                    </tr>
-                    <tr class="border-b border-gray-900">
-                        <td class="p-1.5 bg-gray-50 uppercase">Paid:</td>
-                        <td class="p-1.5 text-right">0</td>
-                    </tr>
-                    <tr>
-                        <td class="p-1.5 bg-gray-50 uppercase">Due:</td>
-                        <td class="p-1.5 text-right">{{ order.total }}</td>
-                    </tr>
-                </table>
-            </div>
+            <!-- Right: Totals box -->
+            <table style="border-collapse:collapse;font-size:9.5px;font-weight:600;min-width:190px;">
+              <tr style="border-bottom:1px solid #e0e0e0;">
+                <td style="padding:3px 8px;background:#f7f7f7;color:#777;text-transform:uppercase;font-size:8.5px;letter-spacing:.5px;">Items</td>
+                <td style="padding:3px 8px;text-align:right;color:#e05252;font-weight:700;">{{ order.itemsCount }}</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e0e0e0;">
+                <td style="padding:3px 8px;background:#f7f7f7;color:#777;text-transform:uppercase;font-size:8.5px;letter-spacing:.5px;">Subtotal</td>
+                <td style="padding:3px 8px;text-align:right;color:#111;">{{ order.subTotal }}</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e0e0e0;">
+                <td style="padding:3px 8px;background:#f7f7f7;color:#777;text-transform:uppercase;font-size:8.5px;letter-spacing:.5px;">Delivery</td>
+                <td style="padding:3px 8px;text-align:right;color:#be5bab;">{{ order.shippingCost }}</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e0e0e0;">
+                <td style="padding:3px 8px;background:#f7f7f7;color:#777;text-transform:uppercase;font-size:8.5px;letter-spacing:.5px;">Discount</td>
+                <td style="padding:3px 8px;text-align:right;color:#4f7ef7;">— 0</td>
+              </tr>
+              <tr style="border-bottom:2px solid #111;">
+                <td style="padding:4px 8px;background:#f7f7f7;color:#111;text-transform:uppercase;font-size:9px;font-weight:800;letter-spacing:.6px;">Total</td>
+                <td style="padding:4px 8px;text-align:right;font-size:12px;font-weight:800;color:#111;">{{ order.total }}</td>
+              </tr>
+              <tr>
+                <td style="padding:3px 8px;background:#f7f7f7;color:#777;text-transform:uppercase;font-size:8.5px;letter-spacing:.5px;">Due</td>
+                <td style="padding:3px 8px;text-align:right;font-weight:700;color:#c0392b;">{{ order.total }}</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Customer note (conditional) -->
+          <div *ngIf="order.customerNote" style="border-left:2.5px solid #111;background:#fafafa;padding:5px 10px;margin-bottom:10px;font-size:8.5px;font-weight:600;color:#444;display:flex;gap:6px;align-items:flex-start;">
+            <span style="color:#aaa;font-size:7.5px;text-transform:uppercase;letter-spacing:.8px;margin-top:1px;white-space:nowrap;">Note:</span>
+            <span>"{{ order.customerNote }}"</span>
+          </div>
+
+        </div><!-- /main body -->
+
+        <!-- Footer bar -->
+        <div style="background:#111;color:rgba(255,255,255,.55);font-size:8px;font-weight:500;letter-spacing:.3px;padding:6px 22px;display:flex;justify-content:space-between;align-items:center;">
+          <span>প্রোডাক্টটি ভালো লাগলে ফেসবুক পেজে লাইক ও রিভিউ দিবেন।</span>
+          <span style="color:#c8a140;font-size:9.5px;font-weight:700;letter-spacing:.5px;">Thank you ✦</span>
         </div>
 
-        <!-- Customer Note Section (Compact Design) -->
-        <div *ngIf="order.customerNote" class="mb-4 border-l-2 border-gray-900 bg-gray-50 px-3 py-1.5 flex items-start gap-2">
-            <span class="text-[9px] uppercase font-black text-gray-400 shrink-0 mt-0.5">Note:</span>
-            <p class="text-[10px] font-bold text-gray-800 leading-relaxed">"{{ order.customerNote }}"</p>
-        </div>
+      </div><!-- /#invoice-paper -->
 
-        <!-- Footer Message -->
-        <div class="border border-gray-900 p-2 text-center bg-white mt-auto">
-            <p class="text-[11px] font-bold text-gray-900 leading-snug">
-                প্রোডাক্টটি ভালো লাগলে অবশ্যই আমাদের ফেসবুক পেজে লাইক এবং রিভিউ দিবেন। আপনাদের রিভিউ আমাদের কাজ করতে আরো উৎসাহিত করে।
-            </p>
-        </div>
-
-      </div>
-    </div>
-  </div>
+    </div><!-- /scroll area -->
+  </div><!-- /modal shell -->
 </div>

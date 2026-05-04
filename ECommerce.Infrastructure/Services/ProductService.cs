@@ -86,7 +86,8 @@ public class ProductService : IProductService
             SortOrder = dto.SortOrder,
             SubCategoryId = await ValidateSubCategoryId(dto.SubCategoryId, category.Id),
             CollectionId = await ValidateCollectionId(dto.CollectionId, dto.SubCategoryId),
-            ProductType = dto.ProductType
+            ProductType = dto.ProductType,
+            ProductGroupId = dto.ProductGroupId
         };
 
         _unitOfWork.Repository<Product>().Add(product);
@@ -112,7 +113,6 @@ public class ProductService : IProductService
                 IsMain = false
             });
         }
-
         if (dto.InventoryVariants != null)
         {
             foreach (var v in dto.InventoryVariants)
@@ -124,6 +124,19 @@ public class ProductService : IProductService
                     PurchaseRate = v.PurchaseRate,
                     StockQuantity = v.Inventory,
                     Size = v.Label
+                });
+            }
+        }
+
+        if (dto.ProductType == ProductType.Combo && dto.ComboItems != null)
+        {
+            foreach (var ci in dto.ComboItems)
+            {
+                product.ComboItems.Add(new ComboItem
+                {
+                    ProductId = ci.ProductId,
+                    ProductVariantId = ci.ProductVariantId,
+                    Quantity = ci.Quantity
                 });
             }
         }
@@ -171,6 +184,7 @@ public class ProductService : IProductService
         product.SubCategoryId = await ValidateSubCategoryId(dto.SubCategoryId, category.Id);
         product.CollectionId = await ValidateCollectionId(dto.CollectionId, dto.SubCategoryId);
         product.ProductType = dto.ProductType;
+        product.ProductGroupId = dto.ProductGroupId;
 
         // Sync images
         foreach (var img in product.Images.ToList()) _unitOfWork.Repository<ProductImage>().Delete(img);
@@ -207,6 +221,21 @@ public class ProductService : IProductService
                 StockQuantity = v.Inventory,
                 Size = v.Label
             });
+        }
+
+        // Sync combo items
+        foreach (var ci in product.ComboItems.ToList()) _unitOfWork.Repository<ComboItem>().Delete(ci);
+        if (dto.ProductType == ProductType.Combo && dto.ComboItems != null)
+        {
+            foreach (var ci in dto.ComboItems)
+            {
+                product.ComboItems.Add(new ComboItem
+                {
+                    ProductId = ci.ProductId,
+                    ProductVariantId = ci.ProductVariantId,
+                    Quantity = ci.Quantity
+                });
+            }
         }
 
         product.StockQuantity = dto.InventoryVariants.Sum(v => v.Inventory);

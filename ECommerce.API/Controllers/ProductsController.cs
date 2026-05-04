@@ -51,11 +51,12 @@ public class ProductsController : ControllerBase
         [FromQuery] string? tags, 
         [FromQuery] bool? isNew, 
         [FromQuery] bool? isFeatured,
+        [FromQuery] int? productGroupId,
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 12)
     {
         // Build a deterministic cache key from all query parameters
-        var cacheKey = $"products_{sort}_{categoryId}_{subCategoryId}_{collectionId}_{categorySlug}_{subCategorySlug}_{collectionSlug}_{searchTerm}_{tier}_{tags}_{isNew}_{isFeatured}_{pageIndex}_{pageSize}";
+        var cacheKey = $"products_{sort}_{categoryId}_{subCategoryId}_{collectionId}_{categorySlug}_{subCategorySlug}_{collectionSlug}_{searchTerm}_{tier}_{tags}_{isNew}_{isFeatured}_{pageIndex}_{pageSize}_{productGroupId}";
 
         if (_cache.TryGetValue(cacheKey, out PaginationDto<ProductListDto>? cached) && cached != null)
         {
@@ -79,8 +80,8 @@ public class ProductsController : ControllerBase
         var skip = (pageIndex - 1) * pageSize;
         var take = pageSize;
 
-        var spec = new ProductsWithCategoriesSpecification(sort, categoryId, subCategoryId, collectionId, categorySlug, subCategorySlug, collectionSlug, searchTerm, tier, tags, isNew, isFeatured, skip, take);
-        var countSpec = new ProductsWithCategoriesSpecification(sort, categoryId, subCategoryId, collectionId, categorySlug, subCategorySlug, collectionSlug, searchTerm, tier, tags, isNew, isFeatured);
+        var spec = new ProductsWithCategoriesSpecification(sort, categoryId, subCategoryId, collectionId, categorySlug, subCategorySlug, collectionSlug, searchTerm, tier, tags, isNew, isFeatured, skip, take, productGroupId);
+        var countSpec = new ProductsWithCategoriesSpecification(sort, categoryId, subCategoryId, collectionId, categorySlug, subCategorySlug, collectionSlug, searchTerm, tier, tags, isNew, isFeatured, null, null, productGroupId);
 
         var totalItems = await _productsRepo.CountAsync(countSpec);
         var products = await _productsRepo.ListAsync(spec);

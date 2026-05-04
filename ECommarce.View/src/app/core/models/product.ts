@@ -18,6 +18,15 @@ export interface ProductVariant {
 
 export enum ProductType {
   Simple = 0,
+  Combo = 1,
+}
+
+export interface ComboItem {
+  productId: number;
+  productVariantId?: number;
+  quantity: number;
+  productName?: string;
+  variantName?: string;
 }
 
 export interface Product {
@@ -58,6 +67,8 @@ export interface Product {
   sortOrder?: number;
 
   productType: ProductType;
+  comboItems?: ComboItem[];
+  productGroupId?: number;
 }
 
 export interface RelatedProduct {

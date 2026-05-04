@@ -42,9 +42,13 @@ public class Product : BaseEntity
     public int? CollectionId { get; set; }
     public Collection? Collection { get; set; }
 
+    public int? ProductGroupId { get; set; }
+    public ProductGroup? ProductGroup { get; set; }
+
     public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
     public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
+    public ICollection<ComboItem> ComboItems { get; set; } = new List<ComboItem>();
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }

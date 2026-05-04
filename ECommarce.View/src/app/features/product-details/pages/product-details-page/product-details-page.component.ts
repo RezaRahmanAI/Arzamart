@@ -137,13 +137,19 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
 
   relatedProducts$ = this.product$.pipe(
     switchMap((product) => {
-      if (product.collectionId) {
+      if (product.productGroupId) {
         return this.productService
-          .getRelatedProducts(product.collectionId, undefined, 4)
+          .getRelatedProducts(undefined, undefined, product.productGroupId, 12)
+          .pipe(
+            map((res) => res.data.filter((p) => p.id !== product.id))
+          );
+      } else if (product.collectionId) {
+        return this.productService
+          .getRelatedProducts(product.collectionId, undefined, undefined, 4)
           .pipe(map((res) => res.data));
       } else if (product.categoryId) {
         return this.productService
-          .getRelatedProducts(undefined, product.categoryId, 4)
+          .getRelatedProducts(undefined, product.categoryId, undefined, 4)
           .pipe(map((res) => res.data));
       }
       return of([]);

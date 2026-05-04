@@ -59,7 +59,8 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Tags, o => o.MapFrom(s => s.Tags))
             .ForMember(d => d.SortOrder, o => o.MapFrom(s => s.SortOrder))
             .ForMember(d => d.MetaTitle, o => o.MapFrom(s => s.MetaTitle))
-            .ForMember(d => d.MetaDescription, o => o.MapFrom(s => s.MetaDescription));
+            .ForMember(d => d.MetaDescription, o => o.MapFrom(s => s.MetaDescription))
+            .ForMember(d => d.ComboItems, o => o.MapFrom(s => s.ComboItems));
 
         CreateMap<Product, ProductListDto>()
             .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : ""))
@@ -133,5 +134,9 @@ public class MappingProfiles : Profile
         CreateMap<SocialMediaSource, SocialMediaSourceDto>();
         CreateMap<CustomLandingPageConfig, CustomLandingPageConfigDto>();
         CreateMap<CustomLandingPageConfigUpdateDto, CustomLandingPageConfig>();
+
+        CreateMap<ComboItem, ComboItemDto>()
+            .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product != null ? s.Product.Name : ""))
+            .ForMember(d => d.VariantName, o => o.MapFrom(s => s.ProductVariant != null ? s.ProductVariant.Size : ""));
     }
 }

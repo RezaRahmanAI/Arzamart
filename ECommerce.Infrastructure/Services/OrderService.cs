@@ -9,6 +9,7 @@ using ECommerce.Core.Interfaces;
 using ECommerce.Core.Specifications;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using ECommerce.Core.Enums;
 
 namespace ECommerce.Infrastructure.Services;
 
@@ -46,25 +47,10 @@ public class OrderService : IOrderService
             {
                 if (productDict.TryGetValue(itemDto.ProductId, out var product))
                 {
-                    int needed = itemDto.Quantity;
-
-                    if (product.StockQuantity < needed)
+                    if (!await CheckIsProductStockAvailableAsync(product, itemDto.Quantity, itemDto.Size))
                     {
                         autoPreOrder = true;
                         break;
-                    }
-
-                    if (!string.IsNullOrEmpty(itemDto.Size))
-                    {
-                        var normalizedSize = itemDto.Size.Trim().ToLower();
-                        var variant = product.Variants.FirstOrDefault(v => 
-                            v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                        
-                        if (variant != null && variant.StockQuantity < needed)
-                        {
-                            autoPreOrder = true;
-                            break;
-                        }
                     }
                 }
             }
@@ -79,37 +65,12 @@ public class OrderService : IOrderService
                 throw new KeyNotFoundException($"Product {itemDto.ProductId} not found");
             }
 
-            int totalDeduction = itemDto.Quantity;
 
             // 1 & 2. Deduct from stock ONLY if NOT a pre-order AND status is a "Deducted" status
             // Note: Since CreateOrderAsync usually defaults to Pending or PreOrder, stock will NOT be deducted here by default.
             if (!finalIsPreOrder && ShouldDeductStock(finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending))
             {
-                // 1. Deduct from specific variant if size/variant is selected
-                if (!string.IsNullOrEmpty(itemDto.Size))
-                {
-                    var normalizedSize = itemDto.Size.Trim().ToLower();
-                    var variant = product.Variants.FirstOrDefault(v => 
-                        v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                    
-                    if (variant != null)
-                    {
-                        // We already pre-scanned, so this shouldn't fail if logic is correct, 
-                        // but keeping a safety check that won't throw because we auto-pre-ordered
-                        if (variant.StockQuantity >= totalDeduction)
-                        {
-                            variant.StockQuantity -= totalDeduction;
-                            _unitOfWork.Repository<ProductVariant>().Update(variant);
-                        }
-                    }
-                }
-
-                // 2. Deduct from main product stock
-                if (product.StockQuantity >= totalDeduction)
-                {
-                    product.StockQuantity -= totalDeduction;
-                    _unitOfWork.Repository<Product>().Update(product);
-                }
+                await ProcessProductStockAdjustmentAsync(product, itemDto.Quantity, itemDto.Size, returnToStock: false);
             }
 
             // Price Fallback logic (Keep as is)
@@ -217,8 +178,8 @@ public class OrderService : IOrderService
         _unitOfWork.Repository<Order>().Add(order);
         await _unitOfWork.Complete();
 
-        // 5. Update OrderNumber to be a 4-digit string (e.g., 0001, 0002)
-        order.OrderNumber = order.Id.ToString("D4"); 
+        // 5. Update OrderNumber to start from 16001 (e.g., 16001, 16002)
+        order.OrderNumber = (order.Id + 16000).ToString(); 
         _unitOfWork.Repository<Order>().Update(order);
         await _unitOfWork.Complete();
 
@@ -265,14 +226,7 @@ public class OrderService : IOrderService
 
             if (!orderDto.IsPreOrder && ShouldDeductStock(order.Status))
             {
-                int deduction = itemDto.Quantity;
-
-                product.StockQuantity -= deduction;
-                if (!string.IsNullOrEmpty(itemDto.Size))
-                {
-                    var variant = product.Variants.FirstOrDefault(v => v.Size?.Trim().ToLower() == itemDto.Size.Trim().ToLower());
-                    if (variant != null) variant.StockQuantity -= deduction;
-                }
+                await ProcessProductStockAdjustmentAsync(product, itemDto.Quantity, itemDto.Size, returnToStock: false);
             }
 
             newItems.Add(new OrderItem {
@@ -446,35 +400,61 @@ public class OrderService : IOrderService
         {
             if (productDict.TryGetValue(item.ProductId, out var product))
             {
-                int totalChange = item.Quantity;
-
-                if (returnToStock)
-                {
-                    product.StockQuantity += totalChange;
-                }
-                else
-                {
-                    product.StockQuantity -= totalChange;
-                }
-
-                if (!string.IsNullOrEmpty(item.Size))
-                {
-                    var normalizedSize = item.Size.Trim().ToLower();
-                    var variant = product.Variants.FirstOrDefault(v => 
-                        v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                    
-                    if (variant != null)
-                    {
-                        if (returnToStock)
-                            variant.StockQuantity += totalChange;
-                        else
-                            variant.StockQuantity -= totalChange;
-                        
-                        _unitOfWork.Repository<ProductVariant>().Update(variant);
-                    }
-                }
-                _unitOfWork.Repository<Product>().Update(product);
+                await ProcessProductStockAdjustmentAsync(product, item.Quantity, item.Size, returnToStock);
             }
+        }
+    }
+
+    private async Task ProcessProductStockAdjustmentAsync(Product product, int quantity, string? size, bool returnToStock)
+    {
+        if (product.ProductType == ProductType.Combo)
+        {
+            foreach (var comboItem in product.ComboItems)
+            {
+                var childProduct = comboItem.Product;
+                if (childProduct == null)
+                {
+                    // If not included in dict, fetch it (though spec should have included it)
+                    var spec = new ProductsWithCategoriesSpecification(comboItem.ProductId);
+                    childProduct = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec, track: true);
+                }
+
+                if (childProduct != null)
+                {
+                    // Size for child product comes from comboItem.ProductVariant if specified, 
+                    // or we might need a way to specify child sizes in the combo.
+                    // For now, use comboItem.ProductVariant.Size if available.
+                    string? childSize = comboItem.ProductVariant?.Size;
+                    await ProcessProductStockAdjustmentAsync(childProduct, quantity * comboItem.Quantity, childSize, returnToStock);
+                }
+            }
+        }
+        else
+        {
+            int totalChange = quantity;
+
+            if (returnToStock)
+                product.StockQuantity += totalChange;
+            else
+                product.StockQuantity -= totalChange;
+
+            if (!string.IsNullOrEmpty(size))
+            {
+                var normalizedSize = size.Trim().ToLower();
+                var variant = product.Variants.FirstOrDefault(v => 
+                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                
+                if (variant != null)
+                {
+                    if (returnToStock)
+                        variant.StockQuantity += totalChange;
+                    else
+                        variant.StockQuantity -= totalChange;
+                    
+                    _unitOfWork.Repository<ProductVariant>().Update(variant);
+                }
+            }
+            _unitOfWork.Repository<Product>().Update(product);
         }
     }
 
@@ -617,22 +597,51 @@ public class OrderService : IOrderService
         {
             if (productDict.TryGetValue(itemDto.ProductId, out var product))
             {
-                int needed = itemDto.Quantity;
-                if (!string.IsNullOrEmpty(itemDto.Size))
-                {
-                    var normalizedSize = itemDto.Size.Trim().ToLower();
-                    var variant = product.Variants.FirstOrDefault(v => 
-                        v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                    itemDto.IsStockAvailable = variant != null && variant.StockQuantity >= needed;
-                }
-                else
-                {
-                    itemDto.IsStockAvailable = product.StockQuantity >= needed;
-                }
+                itemDto.IsStockAvailable = await CheckIsProductStockAvailableAsync(product, itemDto.Quantity, itemDto.Size);
             }
         }
         
         dto.IsStockAvailable = dto.Items.All(i => i.IsStockAvailable);
+    }
+
+    private async Task<bool> CheckIsProductStockAvailableAsync(Product product, int quantity, string? size)
+    {
+        if (product.ProductType == ProductType.Combo)
+        {
+            foreach (var comboItem in product.ComboItems)
+            {
+                var childProduct = comboItem.Product;
+                if (childProduct == null)
+                {
+                    var spec = new ProductsWithCategoriesSpecification(comboItem.ProductId);
+                    childProduct = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
+                }
+
+                if (childProduct == null) return false;
+
+                string? childSize = comboItem.ProductVariant?.Size;
+                if (!await CheckIsProductStockAvailableAsync(childProduct, quantity * comboItem.Quantity, childSize))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else
+        {
+            int needed = quantity;
+            if (!string.IsNullOrEmpty(size))
+            {
+                var normalizedSize = size.Trim().ToLower();
+                var variant = product.Variants.FirstOrDefault(v => 
+                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                return variant != null && variant.StockQuantity >= needed;
+            }
+            else
+            {
+                return product.StockQuantity >= needed;
+            }
+        }
     }
 
     private async Task<bool> CalculateIsStockAvailableAsync(Order order)
@@ -648,19 +657,9 @@ public class OrderService : IOrderService
         {
             if (!productDict.TryGetValue(item.ProductId, out var product)) return false;
 
-            int needed = item.Quantity;
-
-            if (!string.IsNullOrEmpty(item.Size))
+            if (!await CheckIsProductStockAvailableAsync(product, item.Quantity, item.Size))
             {
-                var normalizedSize = item.Size.Trim().ToLower();
-                var variant = product.Variants.FirstOrDefault(v => 
-                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                
-                if (variant == null || variant.StockQuantity < needed) return false;
-            }
-            else
-            {
-                if (product.StockQuantity < needed) return false;
+                return false;
             }
         }
 

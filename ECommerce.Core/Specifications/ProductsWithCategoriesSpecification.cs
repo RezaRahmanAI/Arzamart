@@ -4,7 +4,7 @@ namespace ECommerce.Core.Specifications;
 
 public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
 {
-    public ProductsWithCategoriesSpecification(string? sort, int? categoryId, int? subCategoryId, int? collectionId, string? categorySlug, string? subCategorySlug, string? collectionSlug, string? search, string? tier, string? tags, bool? isNew = null, bool? isFeatured = null, int? skip = null, int? take = null)
+    public ProductsWithCategoriesSpecification(string? sort, int? categoryId, int? subCategoryId, int? collectionId, string? categorySlug, string? subCategorySlug, string? collectionSlug, string? search, string? tier, string? tags, bool? isNew = null, bool? isFeatured = null, int? skip = null, int? take = null, int? productGroupId = null)
         : base(x => 
             (string.IsNullOrEmpty(search) || x.Name.ToLower().Contains(search.ToLower()) || (x.Description != null && x.Description.ToLower().Contains(search.ToLower()))) &&
             (!categoryId.HasValue || x.CategoryId == categoryId.Value) &&
@@ -15,7 +15,8 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
             (string.IsNullOrEmpty(tier) || x.Tier == tier) &&
             (string.IsNullOrEmpty(tags) || (x.Tags != null && x.Tags.ToLower().Contains(tags.ToLower()))) &&
             (!isNew.HasValue || x.IsNew == isNew.Value) &&
-            (!isFeatured.HasValue || x.IsFeatured == isFeatured.Value)
+            (!isFeatured.HasValue || x.IsFeatured == isFeatured.Value) &&
+            (!productGroupId.HasValue || x.ProductGroupId == productGroupId.Value)
         )
 
     {
@@ -93,5 +94,8 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
         AddInclude(x => x.Collection!);
         AddInclude(x => x.Images);
         AddInclude(x => x.Variants);
+        AddInclude(x => x.ProductGroup!);
+        AddInclude("ComboItems.Product");
+        AddInclude("ComboItems.ProductVariant");
     }
 }

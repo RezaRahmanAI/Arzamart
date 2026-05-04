@@ -15,6 +15,7 @@ import { switchMap } from "rxjs/operators";
 import {
   ProductCreatePayload,
   AdminProduct,
+  ComboItem,
 } from "../../models/products.models";
 import { ProductImage, ProductType } from "../../../core/models/product";
 import { ProductsService } from "../../services/products.service";
@@ -31,6 +32,7 @@ import { NotificationService } from "../../../core/services/notification.service
 import { ProductService } from "../../../core/services/product.service";
 import { BannerService } from "../../../core/services/banner.service";
 import { SubCategoriesService } from "../../services/sub-categories.service";
+import { ProductGroupsService } from "../../services/product-groups.service";
 
 interface MediaFormValue {
   id: string;
@@ -69,6 +71,7 @@ export class AdminProductFormComponent implements OnDestroy {
   private notification = inject(NotificationService);
   private publicProductService = inject(ProductService);
   private publicBannerService = inject(BannerService);
+  private productGroupsService = inject(ProductGroupsService);
 
   // Mode detection
   isEditMode = false;
@@ -78,10 +81,15 @@ export class AdminProductFormComponent implements OnDestroy {
   categories: Category[] = [];
   subCategories: SubCategory[] = [];
   collections: Collection[] = [];
+  productGroups: any[] = [];
 
   // Flattened for easy access if needed, but we used filtered lists
   filteredSubCategories: SubCategory[] = [];
   filteredCollections: Collection[] = [];
+
+  searchResults: any[] = [];
+  isSearching = false;
+  comboItemVariantsMap = new Map<number, any[]>();
 
   // Predefined standard sizes
   readonly standardSizes = [
@@ -148,6 +156,8 @@ export class AdminProductFormComponent implements OnDestroy {
         sizeChartUrl: [""],
       }),
       productType: [ProductType.Simple],
+      comboItems: this.formBuilder.array([]),
+      productGroupId: [null as number | null],
     },
     {},
   );
@@ -171,11 +181,13 @@ export class AdminProductFormComponent implements OnDestroy {
     // Load categories and subcategories
     combineLatest([
       this.categoriesService.getAll(),
-      this.subCategoriesService.getAll()
+      this.subCategoriesService.getAll(),
+      this.productGroupsService.getAll()
     ]).pipe(
-      switchMap(([categories, subCategories]) => {
+      switchMap(([categories, subCategories, groups]) => {
         this.categories = categories;
         this.subCategories = subCategories;
+        this.productGroups = groups;
         this.loadAvailableSizes();
         
         // Return paramMap to handle route changes (component reuse)
@@ -317,6 +329,10 @@ export class AdminProductFormComponent implements OnDestroy {
     return this.form.get("variants.sizes") as FormArray;
   }
 
+  get comboItemsArray(): FormArray {
+    return this.form.get("comboItems") as FormArray;
+  }
+
 
 
   loadProduct(productId: number): void {
@@ -366,7 +382,23 @@ export class AdminProductFormComponent implements OnDestroy {
           tags: product.tags || (product as any).Tags || "",
           sortOrder: product.sortOrder ?? (product as any).SortOrder ?? 0,
           productType: product.productType ?? (product as any).ProductType,
+          productGroupId: product.productGroupId ?? (product as any).ProductGroupId ?? null,
         });
+
+        // 1.5 Combo Items
+        this.comboItemsArray.clear();
+        const comboItems = product.comboItems || (product as any).ComboItems || [];
+        if (comboItems && comboItems.length > 0) {
+          comboItems.forEach((ci: any) => {
+            this.comboItemsArray.push(this.formBuilder.group({
+              productId: [ci.productId],
+              productVariantId: [ci.productVariantId],
+              quantity: [ci.quantity, [Validators.required, Validators.min(1)]],
+              productName: [ci.productName],
+              variantName: [ci.variantName]
+            }));
+          });
+        }
 
         // 2. Sizes from Variants
         this.sizesArray.clear();
@@ -476,6 +508,53 @@ export class AdminProductFormComponent implements OnDestroy {
 
   addSize(): void {
     this.sizesArray.push(this.createSizeGroup(false));
+  }
+
+  addComboItem(product?: any, variant?: any): void {
+    this.comboItemsArray.push(this.formBuilder.group({
+      productId: [product?.id || null, Validators.required],
+      productVariantId: [variant?.id || null],
+      quantity: [1, [Validators.required, Validators.min(1)]],
+      productName: [product?.name || ""],
+      variantName: [variant?.size || ""]
+    }));
+  }
+
+  removeComboItem(index: number): void {
+    this.comboItemsArray.removeAt(index);
+  }
+
+  searchProducts(event: Event): void {
+    const term = (event.target as HTMLInputElement).value;
+    if (term.length < 2) {
+      this.searchResults = [];
+      return;
+    }
+
+    this.isSearching = true;
+    this.productsService.getProducts({ searchTerm: term, page: 1, pageSize: 20, category: '', statusTab: 'All Items' }).subscribe({
+      next: (res) => {
+        this.searchResults = res.items;
+        this.isSearching = false;
+      },
+      error: () => {
+        this.isSearching = false;
+      }
+    });
+  }
+
+  selectComboProduct(product: any): void {
+    if (product.variants && product.variants.length > 0) {
+      this.comboItemVariantsMap.set(product.id, product.variants);
+      this.addComboItem(product, product.variants[0]);
+    } else {
+      this.addComboItem(product);
+    }
+    this.searchResults = [];
+  }
+
+  getVariantsForItem(productId: number): any[] {
+    return this.comboItemVariantsMap.get(productId) || [];
   }
 
   removeSize(index: number): void {
@@ -939,6 +1018,8 @@ export class AdminProductFormComponent implements OnDestroy {
       subCategoryId: (raw.subCategory && raw.subCategory !== "null" && raw.subCategory !== "0") ? Number(raw.subCategory) : null,
       collectionId: (raw.collection && raw.collection !== "null" && raw.collection !== "0") ? Number(raw.collection) : null,
       productType: raw.productType as ProductType,
+      comboItems: raw.productType === ProductType.Combo ? (raw.comboItems as ComboItem[]) : [],
+      productGroupId: raw.productGroupId ? Number(raw.productGroupId) : null,
     };
     // but we want to match backend DTO structure primarily.
     // Actually the interface is updated, so it should be fine.

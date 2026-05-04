@@ -63,6 +63,19 @@ public class ProductCreateDto
     public int? CollectionId { get; set; }
 
     public ProductType ProductType { get; set; } = ProductType.Simple;
+    public List<ComboItemDto> ComboItems { get; set; } = new();
+    public int? ProductGroupId { get; set; }
+}
+
+public class ComboItemDto
+{
+    public int ProductId { get; set; }
+    public int? ProductVariantId { get; set; }
+    public int Quantity { get; set; } = 1;
+    
+    // UI helpers
+    public string? ProductName { get; set; }
+    public string? VariantName { get; set; }
 }
 
 // Product update DTO
@@ -123,6 +136,8 @@ public class ProductUpdateDto
     public int? CollectionId { get; set; }
 
     public ProductType ProductType { get; set; } = ProductType.Simple;
+    public List<ComboItemDto> ComboItems { get; set; } = new();
+    public int? ProductGroupId { get; set; }
 }
 
 public class ProductVariantEditDto

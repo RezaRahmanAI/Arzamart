@@ -38,6 +38,8 @@ export interface Order {
   subTotal: number;
   tax: number;
   shippingCost: number;
+  discount: number;
+  advancePayment: number;
   total: number;
   itemsCount: number;
   status: OrderStatus;

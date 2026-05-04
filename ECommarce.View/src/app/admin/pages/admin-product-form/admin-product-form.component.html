@@ -52,15 +52,25 @@
           General Identity
         </h2>
         <div class="flex flex-col gap-ds-4">
-          <label class="flex flex-col gap-ds-2">
-            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Commercial Name</span>
-            <input
-              class="form-input !h-12 !text-[11px] uppercase tracking-tight"
-              placeholder="e.g. LUXE SILK ABAYA - NOIR"
-              type="text"
-              formControlName="name"
-            />
-          </label>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-4">
+            <label class="flex flex-col gap-ds-2">
+              <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Commercial Name</span>
+              <input
+                class="form-input !h-12 !text-[11px] uppercase tracking-tight"
+                placeholder="e.g. LUXE SILK ABAYA - NOIR"
+                type="text"
+                formControlName="name"
+              />
+            </label>
+
+            <label class="flex flex-col gap-ds-2">
+              <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Product Classification</span>
+              <select class="form-input !h-12 !text-[11px] uppercase tracking-widest appearance-none cursor-pointer" formControlName="productType">
+                <option [value]="ProductType.Simple">Standard Product</option>
+                <option [value]="ProductType.Combo">Combo Bundle</option>
+              </select>
+            </label>
+          </div>
 
           <label class="flex flex-col gap-ds-2">
             <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Editorial Description</span>
@@ -138,6 +148,13 @@
             <app-icon name="PlusCircle" size="14"></app-icon>
             Add Dimension
           </button>
+        </div>
+
+        <div *ngIf="form.get('productType')?.value === ProductType.Combo" class="mb-ds-6 bg-ds-accent/5 border border-ds-accent/20 p-ds-4 rounded-sm">
+          <p class="text-[9px] font-bold text-ds-accent uppercase tracking-widest leading-relaxed">
+            <app-icon name="Info" size="12" className="inline mr-1"></app-icon>
+            As a Combo Bundle, you can still define variants (like size) if the bundle itself comes in different sizes.
+          </p>
         </div>
 
         <div class="space-y-ds-3" formArrayName="sizes">
@@ -241,6 +258,93 @@
                 </label>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Combo Bundle Composition -->
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm" *ngIf="form.get('productType')?.value === ProductType.Combo">
+        <div class="mb-ds-8 flex items-center justify-between">
+          <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+            Bundle Composition
+          </h2>
+          <div class="relative w-64 group/search">
+            <input 
+              type="text" 
+              class="form-input !h-9 !text-[10px] uppercase tracking-tight pr-ds-8" 
+              placeholder="Search components..." 
+              (input)="searchProducts($event)"
+            />
+            <div class="absolute right-2 top-1/2 -translate-y-1/2 text-ds-text-muted">
+              <app-icon *ngIf="!isSearching" name="Search" size="14"></app-icon>
+              <app-icon *ngIf="isSearching" name="Loader2" size="14" className="animate-spin"></app-icon>
+            </div>
+
+            <!-- Search Results Dropdown -->
+            <div *ngIf="searchResults.length > 0" class="absolute z-[60] left-0 right-0 mt-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl py-2 max-h-64 overflow-y-auto animate-in fade-in slide-in-from-top-1">
+              <div 
+                *ngFor="let p of searchResults" 
+                (click)="selectComboProduct(p)"
+                class="px-ds-4 py-ds-3 hover:bg-ds-bg cursor-pointer border-b border-ds-border last:border-0 group/result"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="size-10 bg-ds-bg rounded-sm overflow-hidden flex-shrink-0">
+                    <img [src]="imageUrlService.getImageUrl(p.imageUrl)" class="w-full h-full object-cover">
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-ds-text uppercase tracking-tight group-hover/result:text-ds-accent transition-colors">{{ p.name }}</span>
+                    <span class="text-[8px] text-ds-text-muted uppercase tracking-widest mt-0.5">{{ p.sku || p.id }} | {{ p.price | currency:'BDT ':'symbol':'1.0-0' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-ds-3" formArrayName="comboItems">
+          <div 
+            class="bg-ds-bg/30 border border-ds-border p-ds-4 rounded-sm flex items-center gap-ds-4 group"
+            *ngFor="let item of comboItemsArray.controls; let i = index"
+            [formGroupName]="i"
+          >
+            <div class="flex-1">
+              <div class="flex items-center gap-ds-3">
+                <div class="size-8 bg-ds-surface border border-ds-border rounded-sm flex items-center justify-center text-[10px] font-bold text-ds-text-muted">
+                  {{ i + 1 }}
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[10px] font-bold text-ds-text uppercase tracking-tight">{{ item.get('productName')?.value }}</span>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Variant:</span>
+                    <select class="bg-transparent border-0 p-0 text-[8px] font-bold text-ds-accent uppercase tracking-widest focus:ring-0 cursor-pointer" formControlName="productVariantId">
+                      <option [value]="null">Default / No Variant</option>
+                      <option *ngFor="let v of getVariantsForItem(item.get('productId')?.value)" [value]="v.id">
+                        {{ v.size || v.sku || 'Variant ' + v.id }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-ds-4">
+              <label class="flex items-center gap-2">
+                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Qty</span>
+                <input type="number" class="form-input !h-8 !w-16 !text-[10px] font-mono text-center" formControlName="quantity" min="1" />
+              </label>
+              <button 
+                type="button" 
+                (click)="removeComboItem(i)"
+                class="text-red-500 hover:text-red-700 p-2 transition-colors opacity-0 group-hover:opacity-100"
+              >
+                <app-icon name="Trash2" size="16"></app-icon>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="comboItemsArray.length === 0" class="py-ds-8 text-center border border-dashed border-ds-border rounded-sm">
+            <app-icon name="Package" size="32" className="mx-auto text-ds-text-muted opacity-20 mb-3"></app-icon>
+            <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">Search and select components above to build your bundle.</p>
           </div>
         </div>
       </div>
@@ -460,6 +564,14 @@
             <select class="form-input !h-11 !text-[10px] uppercase tracking-widest appearance-none cursor-pointer" formControlName="collection">
               <option value="">Standalone</option>
               <option *ngFor="let col of filteredCollections" [value]="col.id">{{ col.name }}</option>
+            </select>
+          </label>
+
+          <label class="flex flex-col gap-ds-2">
+            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Product Group (Related)</span>
+            <select class="form-input !h-11 !text-[10px] uppercase tracking-widest appearance-none cursor-pointer" formControlName="productGroupId">
+              <option [value]="null">No Group</option>
+              <option *ngFor="let grp of productGroups" [value]="grp.id">{{ grp.name }}</option>
             </select>
           </label>
 

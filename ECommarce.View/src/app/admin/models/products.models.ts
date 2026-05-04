@@ -4,7 +4,10 @@ import {
   ProductVariant,
   RelatedProduct,
   ProductType,
+  ComboItem,
 } from "../../core/models/product";
+
+export { ComboItem };
 
 export type ProductStatus = "Active" | "Draft" | "Archived" | "Out of Stock";
 
@@ -105,6 +108,8 @@ export interface ProductCreatePayload {
   subCategoryId?: number | null;
   collectionId?: number | null;
   productType: ProductType;
+  comboItems?: ComboItem[];
+  productGroupId?: number | null;
 }
 
 export interface ProductUpdatePayload {
@@ -170,6 +175,8 @@ export interface ProductUpdatePayload {
   subCategoryId?: number | null;
   collectionId?: number | null;
   productType: ProductType;
+  comboItems?: ComboItem[];
+  productGroupId?: number | null;
 }
 
 export type ProductsStatusTab = "All Items" | "Active" | "Drafts" | "Archived";
