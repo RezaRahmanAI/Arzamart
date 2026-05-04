@@ -232,7 +232,7 @@
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="bg-ds-bg/50 border-b border-ds-border text-[10px] uppercase font-bold text-ds-text-muted tracking-[0.2em]">
-            <th class="px-ds-4 py-ds-4 w-16 text-center">ID</th>
+
             <th class="px-ds-4 py-ds-4">Order No.</th>
             <th class="px-ds-4 py-ds-4">Products</th>
             <th class="px-ds-4 py-ds-4">Fulfillment</th>
@@ -245,14 +245,7 @@
         </thead>
         <tbody class="divide-y divide-ds-border/50">
           <tr *ngFor="let order of orders; trackBy: trackByOrderId" class="hover:bg-ds-bg transition-colors group">
-            <td class="px-ds-4 py-ds-4 text-center">
-              <span 
-                (click)="copyToClipboard(order.id.toString(), $event)"
-                class="text-[10px] font-bold text-ds-text-muted font-mono cursor-pointer hover:text-ds-text transition-colors" 
-                title="Copy ID">
-                {{ order.id }}
-              </span>
-            </td>
+
             <td class="px-ds-4 py-ds-4">
               <div class="flex flex-col gap-0.5">
                 <span 

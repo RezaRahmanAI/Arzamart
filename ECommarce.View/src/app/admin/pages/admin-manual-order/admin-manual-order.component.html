@@ -48,7 +48,9 @@
                     type="number" 
                     [(ngModel)]="item.unitPrice" 
                     (ngModelChange)="onPriceChange()"
+                    (focus)="$any($event.target).select()"
                     class="w-16 bg-transparent border-none p-0 text-[10px] font-bold text-ds-text text-right focus:ring-0 outline-none"
+
                   >
                 </td>
                 <td class="px-ds-2 py-1.5 text-right">
@@ -86,11 +88,11 @@
           <div class="grid grid-cols-3 gap-ds-2" [formGroup]="orderForm">
             <div class="flex justify-between items-center px-ds-3 h-10 bg-red-500/5 border border-red-500/10 rounded-sm">
               <span class="text-[8px] font-black text-red-500 uppercase tracking-widest">Discount</span>
-              <input type="number" formControlName="additionalDiscount" class="w-16 !h-8 bg-white border border-red-500 ring-2 ring-red-500/20 rounded-md px-1.5 text-[10px] font-black text-red-500 text-right outline-none">
+              <input type="number" formControlName="additionalDiscount" (focus)="$any($event.target).select()" class="w-16 !h-8 bg-white border border-red-500 ring-2 ring-red-500/20 rounded-md px-1.5 text-[10px] font-black text-red-500 text-right outline-none">
             </div>
             <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-success/5 border border-ds-success/10 rounded-sm">
               <span class="text-[8px] font-black text-ds-success uppercase tracking-widest">Advance</span>
-              <input type="number" formControlName="advancePayment" class="w-16 !h-8 bg-white border border-ds-success ring-2 ring-ds-success/20 rounded-md px-1.5 text-[10px] font-black text-ds-success text-right outline-none">
+              <input type="number" formControlName="advancePayment" (focus)="$any($event.target).select()" class="w-16 !h-8 bg-white border border-ds-success ring-2 ring-ds-success/20 rounded-md px-1.5 text-[10px] font-black text-ds-success text-right outline-none">
             </div>
             <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-text/5 border border-ds-border rounded-sm">
               <span class="text-[7px] font-bold text-ds-text-muted uppercase tracking-widest">Arrears</span>

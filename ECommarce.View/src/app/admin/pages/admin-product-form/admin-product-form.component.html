@@ -213,6 +213,7 @@
                   type="number"
                   placeholder="0.00"
                   formControlName="price"
+                  (focus)="$any($event.target).select()"
                 />
               </label>
 
@@ -223,6 +224,7 @@
                   type="number"
                   placeholder="0.00"
                   formControlName="salePrice"
+                  (focus)="$any($event.target).select()"
                 />
               </label>
 
@@ -233,6 +235,7 @@
                   type="number"
                   placeholder="0.00"
                   formControlName="purchaseRate"
+                  (focus)="$any($event.target).select()"
                 />
               </label>
 
@@ -242,6 +245,7 @@
                   class="form-input !h-10 !text-[10px] font-mono"
                   type="number"
                   formControlName="stock"
+                  (focus)="$any($event.target).select()"
                 />
               </label>
 
@@ -330,7 +334,7 @@
             <div class="flex items-center gap-ds-4">
               <label class="flex items-center gap-2">
                 <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Qty</span>
-                <input type="number" class="form-input !h-8 !w-16 !text-[10px] font-mono text-center" formControlName="quantity" min="1" />
+                <input type="number" class="form-input !h-8 !w-16 !text-[10px] font-mono text-center" formControlName="quantity" (focus)="$any($event.target).select()" min="1" />
               </label>
               <button 
                 type="button" 
@@ -593,7 +597,7 @@
 
           <label class="flex flex-col gap-ds-2">
             <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Global Sort Priority</span>
-            <input class="form-input !h-11 !text-[10px] font-mono" type="number" placeholder="0" formControlName="sortOrder" min="0" />
+            <input class="form-input !h-11 !text-[10px] font-mono" type="number" placeholder="0" formControlName="sortOrder" (focus)="$any($event.target).select()" min="0" />
           </label>
         </div>
       </div>
