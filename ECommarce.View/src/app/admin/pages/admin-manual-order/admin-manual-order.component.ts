@@ -33,6 +33,8 @@ import { PriceDisplayComponent } from "../../../shared/components/price-display/
 import { BANGLADESH_LOCATIONS } from "../../../core/utils/bangladesh-locations";
 import { SourceManagementService } from "../../../core/services/source-management.service";
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
+import { matchLocationFromAddress } from "../../../core/utils/location-matcher";
+
 
 interface CartItem {
   product: AdminProduct;
@@ -228,47 +230,21 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
   }
 
   intelligentLocationMatch(address: string) {
-    const addr = address.toLowerCase();
+    const { city, area } = matchLocationFromAddress(address, this.cities);
     
-    // Check for cities first
-    for (const city of this.cities) {
-      if (addr.includes(city.toLowerCase())) {
-        if (this.orderForm.get("city")?.value !== city) {
-          this.selectCity(city);
-          this.notification.info(`City automatically set to ${city} based on address.`);
-        }
-        break; 
+    if (city) {
+      if (this.orderForm.get("city")?.value !== city) {
+        this.selectCity(city);
+        this.notification.info(`City automatically set to ${city} based on address.`);
       }
-    }
-
-    // Check for areas
-    const currentCity = this.orderForm.get("city")?.value;
-    if (currentCity) {
-      const cityAreas = BANGLADESH_LOCATIONS[currentCity] || [];
-      for (const area of cityAreas) {
-        if (addr.includes(area.toLowerCase())) {
-          if (this.orderForm.get("area")?.value !== area) {
-            this.selectArea(area);
-            this.notification.info(`Area automatically set to ${area} based on address.`);
-          }
-          break;
-        }
-      }
-    } else {
-      // If no city selected yet, check all areas across all cities
-      for (const city of this.cities) {
-        const cityAreas = BANGLADESH_LOCATIONS[city] || [];
-        for (const area of cityAreas) {
-          if (addr.includes(area.toLowerCase())) {
-            this.selectCity(city);
-            this.selectArea(area);
-            this.notification.info(`City/Area set to ${city}/${area} based on address.`);
-            return;
-          }
-        }
+      
+      if (area && this.orderForm.get("area")?.value !== area) {
+        this.selectArea(area);
+        this.notification.info(`Area automatically set to ${area} based on address.`);
       }
     }
   }
+
 
   onSearchClick() {
     const term = this.searchControl.value;

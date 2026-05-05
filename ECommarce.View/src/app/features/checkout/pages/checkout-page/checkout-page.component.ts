@@ -34,6 +34,8 @@ import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-location
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
+import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
+
 
 @Component({
   selector: "app-checkout-page",
@@ -254,44 +256,19 @@ export class CheckoutPageComponent {
   }
 
   intelligentLocationMatch(address: string): void {
-    const addr = address.toLowerCase();
+    const { city, area } = matchLocationFromAddress(address, this.cities);
     
-    // Check for cities first
-    for (const city of this.cities) {
-      if (addr.includes(city.toLowerCase())) {
-        if (this.checkoutForm.get("city")?.value !== city) {
-          this.selectCity(city);
-        }
-        break; 
+    if (city) {
+      if (this.checkoutForm.get("city")?.value !== city) {
+        this.selectCity(city);
       }
-    }
-
-    // Check for areas
-    const currentCity = this.checkoutForm.get("city")?.value;
-    if (currentCity) {
-      const cityAreas = BANGLADESH_LOCATIONS[currentCity] || [];
-      for (const area of cityAreas) {
-        if (addr.includes(area.toLowerCase())) {
-          if (this.checkoutForm.get("area")?.value !== area) {
-            this.selectArea(area);
-          }
-          break;
-        }
-      }
-    } else {
-      // If no city selected yet, check all areas across all cities
-      for (const city of this.cities) {
-        const cityAreas = BANGLADESH_LOCATIONS[city] || [];
-        for (const area of cityAreas) {
-          if (addr.includes(area.toLowerCase())) {
-            this.selectCity(city);
-            this.selectArea(area);
-            return;
-          }
-        }
+      
+      if (area && this.checkoutForm.get("area")?.value !== area) {
+        this.selectArea(area);
       }
     }
   }
+
 
   applyAutofill(): void {
     const details = this.userPersistence.getUserDetails();

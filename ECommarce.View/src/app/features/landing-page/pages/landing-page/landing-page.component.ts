@@ -32,6 +32,8 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
 import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
+import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
+
 
 @Component({
   selector: "app-landing-page",
@@ -266,44 +268,19 @@ export class LandingPageComponent implements OnInit {
   }
 
   intelligentLocationMatch(address: string): void {
-    const addr = address.toLowerCase();
+    const { city, area } = matchLocationFromAddress(address, this.cities);
     
-    // Check for cities first
-    for (const city of this.cities) {
-      if (addr.includes(city.toLowerCase())) {
-        if (this.checkoutForm.controls.city.value !== city) {
-          this.selectCity(city);
-        }
-        break; 
+    if (city) {
+      if (this.checkoutForm.controls.city.value !== city) {
+        this.selectCity(city);
       }
-    }
-
-    // Check for areas
-    const currentCity = this.checkoutForm.controls.city.value;
-    if (currentCity) {
-      const cityAreas = BANGLADESH_LOCATIONS[currentCity] || [];
-      for (const area of cityAreas) {
-        if (addr.includes(area.toLowerCase())) {
-          if (this.checkoutForm.controls.area.value !== area) {
-            this.selectArea(area);
-          }
-          break;
-        }
-      }
-    } else {
-      // If no city selected yet, check all areas across all cities
-      for (const city of this.cities) {
-        const cityAreas = BANGLADESH_LOCATIONS[city] || [];
-        for (const area of cityAreas) {
-          if (addr.includes(area.toLowerCase())) {
-            this.selectCity(city);
-            this.selectArea(area);
-            return;
-          }
-        }
+      
+      if (area && this.checkoutForm.controls.area.value !== area) {
+        this.selectArea(area);
       }
     }
   }
+
 
   private updateDeliveryMethodByCity(city: string): void {
     const isDhaka = city.toLowerCase() === "dhaka";

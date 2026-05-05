@@ -26,6 +26,8 @@ import { UserPersistenceService } from "../../../../core/services/user-persisten
 import { NotificationService } from "../../../../core/services/notification.service";
 import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
 import { QuickAddModalComponent } from "../../../../shared/components/quick-add-modal/quick-add-modal.component";
+import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
+
 
 interface LandingPageData {
   product: Product;
@@ -227,44 +229,19 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   intelligentLocationMatch(address: string): void {
-    const addr = address.toLowerCase();
+    const { city, area } = matchLocationFromAddress(address, this.cities);
     
-    // Check for cities first
-    for (const city of this.cities) {
-      if (addr.includes(city.toLowerCase())) {
-        if (this.orderForm.get("city")?.value !== city) {
-          this.selectCity(city);
-        }
-        break; 
+    if (city) {
+      if (this.orderForm.get("city")?.value !== city) {
+        this.selectCity(city);
       }
-    }
-
-    // Check for areas
-    const currentCity = this.orderForm.get("city")?.value;
-    if (currentCity) {
-      const cityAreas = BANGLADESH_LOCATIONS[currentCity] || [];
-      for (const area of cityAreas) {
-        if (addr.includes(area.toLowerCase())) {
-          if (this.orderForm.get("area")?.value !== area) {
-            this.selectArea(area);
-          }
-          break;
-        }
-      }
-    } else {
-      // If no city selected yet, check all areas across all cities
-      for (const city of this.cities) {
-        const cityAreas = BANGLADESH_LOCATIONS[city] || [];
-        for (const area of cityAreas) {
-          if (addr.includes(area.toLowerCase())) {
-            this.selectCity(city);
-            this.selectArea(area);
-            return;
-          }
-        }
+      
+      if (area && this.orderForm.get("area")?.value !== area) {
+        this.selectArea(area);
       }
     }
   }
+
 
   applyAutofill(): void {
     const details = this.userPersistence.getUserDetails();

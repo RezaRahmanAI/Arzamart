@@ -13,7 +13,6 @@ import {
   withFetch,
 } from "@angular/common/http";
 import { provideZoneChangeDetection } from "@angular/core";
-import { provideClientHydration } from "@angular/platform-browser";
 import { DATE_PIPE_DEFAULT_OPTIONS } from "@angular/common";
 import { AppComponent } from "./app/app.component";
 import { appRoutes } from "./app/app.routes";
@@ -28,7 +27,6 @@ import { adminCacheInterceptor } from "./app/interceptors/admin-cache.intercepto
 bootstrapApplication(AppComponent, {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideClientHydration(),
     provideRouter(
       appRoutes,
       withInMemoryScrolling({

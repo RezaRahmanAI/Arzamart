@@ -15,6 +15,8 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
 import { map, debounceTime, distinctUntilChanged, filter, switchMap, catchError, of } from 'rxjs';
+import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
+
 
 interface OfferDetails {
   slug: string;
@@ -161,7 +163,32 @@ export class OfferDetailsPageComponent {
     if (this.userPersistence.hasSavedDetails()) {
       this.showAutofillPrompt = true;
     }
+    this.orderForm.controls.address.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((address) => {
+        if (!address || address.length < 3) return;
+        this.intelligentLocationMatch(address);
+      });
   }
+
+  intelligentLocationMatch(address: string): void {
+    const { city, area } = matchLocationFromAddress(address, this.cities);
+    
+    if (city) {
+      if (this.orderForm.get("city")?.value !== city) {
+        this.selectCity(city);
+      }
+      
+      if (area && this.orderForm.get("area")?.value !== area) {
+        this.selectArea(area);
+      }
+    }
+  }
+
 
   applyAutofill(): void {
     const details = this.userPersistence.getUserDetails();
