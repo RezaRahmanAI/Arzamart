@@ -70,7 +70,7 @@ public class HomeController : ControllerBase
             var items = await _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
                 sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
                 categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
-                tier: null, tags: null, isNew: true, isFeatured: null, skip: 0, take: 10));
+                tier: null, tags: null, isNew: true, isFeatured: null, skip: 0, take: 50));
             return _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(items);
         });
 

@@ -31,6 +31,7 @@ public class Product : BaseEntity
     public string? Tier { get; set; }
     public string? Tags { get; set; }
     public int SortOrder { get; set; }
+    public int BundleSize { get; set; }
 
     // Relations
     public int CategoryId { get; set; }

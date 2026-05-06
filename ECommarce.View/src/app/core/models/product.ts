@@ -65,7 +65,7 @@ export interface Product {
   tier?: string;
   tags?: string;
   sortOrder?: number;
-
+  bundleSize?: number;
   productType: ProductType;
   comboItems?: ComboItem[];
   productGroupId?: number;

@@ -156,6 +156,7 @@ export class AdminProductFormComponent implements OnDestroy {
         sizeChartUrl: [""],
       }),
       productType: [ProductType.Simple],
+      bundleSize: [2],
       comboItems: this.formBuilder.array([]),
       productGroupId: [null as number | null],
     },
@@ -176,9 +177,9 @@ export class AdminProductFormComponent implements OnDestroy {
     this.form.get("productType")?.valueChanges.subscribe((type) => {
       const typeNum = Number(type);
       if (typeNum === ProductType.Combo && this.comboItemsArray.length === 0) {
-        // Automatically add two slots if it's a new combo
-        this.addComboItem();
-        this.addComboItem();
+        // In the new UI, we don't necessarily want to add items automatically, 
+        // as the user will search and add. But we can leave it empty or add one.
+        // The user specifically wants to search and select.
       }
     });
   }
@@ -400,6 +401,12 @@ export class AdminProductFormComponent implements OnDestroy {
         // 1.5 Combo Items
         this.comboItemsArray.clear();
         const comboItems = product.comboItems || (product as any).ComboItems || [];
+        const totalBundleSize = product.bundleSize || comboItems.reduce((acc: number, item: any) => acc + (item.quantity || 0), 0);
+        
+        this.form.patchValue({
+          bundleSize: totalBundleSize > 0 ? totalBundleSize : 2
+        });
+
         if (comboItems && comboItems.length > 0) {
           comboItems.forEach((ci: any) => {
             this.comboItemsArray.push(this.formBuilder.group({
@@ -509,14 +516,16 @@ export class AdminProductFormComponent implements OnDestroy {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error("Error loading product:", err);
+        console.error("Error loading product:", err);  
         this.isLoading = false;
         this.notification.error("Failed to load product details.");
       }
     });
   }
 
-
+  getTotalComboQuantity(): number {
+    return this.comboItemsArray.controls.reduce((acc, control) => acc + (control.get('quantity')?.value || 0), 0);
+  }
 
   addSize(): void {
     this.sizesArray.push(this.createSizeGroup(false));
@@ -567,6 +576,17 @@ export class AdminProductFormComponent implements OnDestroy {
 
   getVariantsForItem(productId: number): any[] {
     return this.comboItemVariantsMap.get(productId) || [];
+  }
+
+  onComboVariantChange(index: number): void {
+    const item = this.comboItemsArray.at(index);
+    const variantId = item.get('productVariantId')?.value;
+    const productId = item.get('productId')?.value;
+    const variants = this.getVariantsForItem(productId);
+    const variant = variants.find((v: any) => v.id == variantId);
+    if (variant) {
+      item.patchValue({ variantName: variant.size || variant.sku || "" });
+    }
   }
 
   removeSize(index: number): void {
@@ -1031,6 +1051,7 @@ export class AdminProductFormComponent implements OnDestroy {
       collectionId: (raw.collection && raw.collection !== "null" && raw.collection !== "0") ? Number(raw.collection) : null,
       productType: Number(raw.productType),
       comboItems: Number(raw.productType) === ProductType.Combo ? (raw.comboItems as ComboItem[]) : [],
+      bundleSize: Number(raw.bundleSize || 0),
       productGroupId: raw.productGroupId ? Number(raw.productGroupId) : null,
     };
     // but we want to match backend DTO structure primarily.
@@ -1090,6 +1111,7 @@ export class AdminProductFormComponent implements OnDestroy {
         shippingAndReturns: "",
       },
       productType: ProductType.Simple,
+      bundleSize: 2,
     });
     this.mediaError = "";
 

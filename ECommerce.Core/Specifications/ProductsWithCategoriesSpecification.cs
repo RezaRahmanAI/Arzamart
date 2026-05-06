@@ -6,6 +6,7 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
 {
     public ProductsWithCategoriesSpecification(string? sort, int? categoryId, int? subCategoryId, int? collectionId, string? categorySlug, string? subCategorySlug, string? collectionSlug, string? search, string? tier, string? tags, bool? isNew = null, bool? isFeatured = null, int? skip = null, int? take = null, int? productGroupId = null)
         : base(x => 
+            (x.IsActive) &&
             (string.IsNullOrEmpty(search) || x.Name.ToLower().Contains(search.ToLower()) || (x.Description != null && x.Description.ToLower().Contains(search.ToLower()))) &&
             (!categoryId.HasValue || x.CategoryId == categoryId.Value) &&
             (!subCategoryId.HasValue || x.SubCategoryId == subCategoryId) &&

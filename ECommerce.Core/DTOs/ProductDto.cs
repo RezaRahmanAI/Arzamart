@@ -46,6 +46,7 @@ public class ProductDto
     public string? Tier { get; set; }
     public string? Tags { get; set; }
     public int SortOrder { get; set; }
+    public int BundleSize { get; set; }
 
     public ProductType ProductType { get; set; }
     public IEnumerable<ComboItemDto> ComboItems { get; set; } = new List<ComboItemDto>();
@@ -101,6 +102,7 @@ public class ProductListDto
     public string? Tier { get; set; }
     public string? Tags { get; set; }
     public int SortOrder { get; set; }
+    public int BundleSize { get; set; }
     public string? CollectionName { get; set; }
     public string? SubCategoryName { get; set; }
 

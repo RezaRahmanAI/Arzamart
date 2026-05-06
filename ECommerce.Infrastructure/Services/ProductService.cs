@@ -84,6 +84,7 @@ public class ProductService : IProductService
             Tier = dto.Tier,
             Tags = dto.Tags,
             SortOrder = dto.SortOrder,
+            BundleSize = dto.BundleSize,
             SubCategoryId = await ValidateSubCategoryId(dto.SubCategoryId, category.Id),
             CollectionId = await ValidateCollectionId(dto.CollectionId, dto.SubCategoryId),
             ProductType = dto.ProductType,
@@ -181,6 +182,7 @@ public class ProductService : IProductService
         product.Tier = dto.Tier;
         product.Tags = dto.Tags;
         product.SortOrder = dto.SortOrder;
+        product.BundleSize = dto.BundleSize;
         product.SubCategoryId = await ValidateSubCategoryId(dto.SubCategoryId, category.Id);
         product.CollectionId = await ValidateCollectionId(dto.CollectionId, dto.SubCategoryId);
         product.ProductType = dto.ProductType;

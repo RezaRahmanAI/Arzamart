@@ -108,6 +108,7 @@ export interface ProductCreatePayload {
   subCategoryId?: number | null;
   collectionId?: number | null;
   productType: ProductType;
+  bundleSize: number;
   comboItems?: ComboItem[];
   productGroupId?: number | null;
 }
@@ -175,6 +176,7 @@ export interface ProductUpdatePayload {
   subCategoryId?: number | null;
   collectionId?: number | null;
   productType: ProductType;
+  bundleSize: number;
   comboItems?: ComboItem[];
   productGroupId?: number | null;
 }
