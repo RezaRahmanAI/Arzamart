@@ -13,12 +13,28 @@ using ECommerce.Core.Enums;
 
 namespace ECommerce.Infrastructure.Services;
 
+public class InsufficientStockException : Exception
+{
+    public string ProductName { get; }
+    public string? VariantSize { get; }
+    public int Requested { get; }
+    public int Available { get; }
+
+    public InsufficientStockException(string productName, string? variantSize, int requested, int available)
+        : base($"Insufficient stock for '{productName}'{(variantSize != null ? $" (Size: {variantSize})" : "")}: requested {requested}, available {available}")
+    {
+        ProductName = productName;
+        VariantSize = variantSize;
+        Requested = requested;
+        Available = available;
+    }
+}
+
 public class OrderService : IOrderService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly CustomerService _customerService;
-    // Removed SteadfastService
 
     public OrderService(IUnitOfWork unitOfWork, IMapper mapper, CustomerService customerService)
     {
@@ -58,6 +74,11 @@ public class OrderService : IOrderService
 
         bool finalIsPreOrder = orderDto.IsPreOrder || autoPreOrder;
 
+        // Wrap stock operations in a DB transaction for atomicity
+        Order order = null!;
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
         foreach (var itemDto in orderDto.Items)
         {
             if (!productDict.TryGetValue(itemDto.ProductId, out var product))
@@ -149,7 +170,7 @@ public class OrderService : IOrderService
              shippingCost = 0; 
         }
 
-        var order = new Order
+        order = new Order
         {
             OrderNumber = "PENDING", // Will be set after first save if using ID, or generated simply
             CustomerName = orderDto.Name,
@@ -182,6 +203,14 @@ public class OrderService : IOrderService
         order.OrderNumber = (order.Id + 16000).ToString(); 
         _unitOfWork.Repository<Order>().Update(order);
         await _unitOfWork.Complete();
+
+        await _unitOfWork.CommitTransactionAsync();
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw;
+        }
 
         await _customerService.CreateOrUpdateCustomerAsync(
             orderDto.Phone,
@@ -434,9 +463,15 @@ public class OrderService : IOrderService
             int totalChange = quantity;
 
             if (returnToStock)
+            {
                 product.StockQuantity += totalChange;
+            }
             else
+            {
+                if (product.StockQuantity < totalChange)
+                    throw new InsufficientStockException(product.Name, null, totalChange, product.StockQuantity);
                 product.StockQuantity -= totalChange;
+            }
 
             if (!string.IsNullOrEmpty(size))
             {
@@ -447,9 +482,15 @@ public class OrderService : IOrderService
                 if (variant != null)
                 {
                     if (returnToStock)
+                    {
                         variant.StockQuantity += totalChange;
+                    }
                     else
+                    {
+                        if (variant.StockQuantity < totalChange)
+                            throw new InsufficientStockException(product.Name, variant.Size, totalChange, variant.StockQuantity);
                         variant.StockQuantity -= totalChange;
+                    }
                     
                     _unitOfWork.Repository<ProductVariant>().Update(variant);
                 }

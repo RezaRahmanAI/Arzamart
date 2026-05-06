@@ -169,6 +169,18 @@ export class AdminProductFormComponent implements OnDestroy {
   constructor() {
     // Setup cascading listeners
     this.setupCascadingSelects();
+    this.setupProductTypeListener();
+  }
+
+  private setupProductTypeListener(): void {
+    this.form.get("productType")?.valueChanges.subscribe((type) => {
+      const typeNum = Number(type);
+      if (typeNum === ProductType.Combo && this.comboItemsArray.length === 0) {
+        // Automatically add two slots if it's a new combo
+        this.addComboItem();
+        this.addComboItem();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -381,7 +393,7 @@ export class AdminProductFormComponent implements OnDestroy {
           tier: product.tier || (product as any).Tier || "",
           tags: product.tags || (product as any).Tags || "",
           sortOrder: product.sortOrder ?? (product as any).SortOrder ?? 0,
-          productType: product.productType ?? (product as any).ProductType,
+          productType: Number(product.productType ?? (product as any).ProductType ?? 0),
           productGroupId: product.productGroupId ?? (product as any).ProductGroupId ?? null,
         });
 
@@ -532,9 +544,9 @@ export class AdminProductFormComponent implements OnDestroy {
     }
 
     this.isSearching = true;
-    this.productsService.getProducts({ searchTerm: term, page: 1, pageSize: 20, category: '', statusTab: 'All Items' }).subscribe({
-      next: (res) => {
-        this.searchResults = res.items;
+    this.productsService.searchProductsForCombo(term).subscribe({
+      next: (results) => {
+        this.searchResults = results;
         this.isSearching = false;
       },
       error: () => {
@@ -1017,8 +1029,8 @@ export class AdminProductFormComponent implements OnDestroy {
       sortOrder: Number(raw.sortOrder ?? 0),
       subCategoryId: (raw.subCategory && raw.subCategory !== "null" && raw.subCategory !== "0") ? Number(raw.subCategory) : null,
       collectionId: (raw.collection && raw.collection !== "null" && raw.collection !== "0") ? Number(raw.collection) : null,
-      productType: raw.productType as ProductType,
-      comboItems: raw.productType === ProductType.Combo ? (raw.comboItems as ComboItem[]) : [],
+      productType: Number(raw.productType),
+      comboItems: Number(raw.productType) === ProductType.Combo ? (raw.comboItems as ComboItem[]) : [],
       productGroupId: raw.productGroupId ? Number(raw.productGroupId) : null,
     };
     // but we want to match backend DTO structure primarily.

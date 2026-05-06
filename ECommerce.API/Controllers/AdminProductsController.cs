@@ -80,6 +80,49 @@ public class AdminProductsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Lightweight product search for combo bundle selection.
+    /// Returns minimal product data with variant info.
+    /// GET /api/admin/products/search?q=term
+    /// </summary>
+    [HttpGet("search")]
+    public async Task<ActionResult<object>> SearchProductsForCombo([FromQuery] string? q)
+    {
+        if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
+            return Ok(Array.Empty<object>());
+
+        var searchTerm = q.Trim().ToLower();
+
+        var products = await _context.Products
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(p => p.Name.ToLower().Contains(searchTerm) 
+                     || (p.Sku != null && p.Sku.ToLower().Contains(searchTerm)))
+            .Include(p => p.Variants)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(15)
+            .Select(p => new
+            {
+                p.Id,
+                p.Name,
+                p.ImageUrl,
+                p.Sku,
+                Price = p.Variants.Any(v => v.Price > 0) 
+                    ? p.Variants.Where(v => v.Price > 0).Min(v => v.Price) 
+                    : 0,
+                Variants = p.Variants.Select(v => new
+                {
+                    v.Id,
+                    v.Size,
+                    v.StockQuantity,
+                    v.Price
+                }).ToList()
+            })
+            .ToListAsync();
+
+        return Ok(products);
+    }
+
     [HttpGet("available-sizes")]
     public async Task<ActionResult<List<string>>> GetAvailableSizes()
     {

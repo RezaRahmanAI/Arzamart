@@ -66,8 +66,8 @@
             <label class="flex flex-col gap-ds-2">
               <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Product Classification</span>
               <select class="form-input !h-12 !text-[11px] uppercase tracking-widest appearance-none cursor-pointer" formControlName="productType">
-                <option [value]="ProductType.Simple">Standard Product</option>
-                <option [value]="ProductType.Combo">Combo Bundle</option>
+                <option [ngValue]="ProductType.Simple">Standard Product</option>
+                <option [ngValue]="ProductType.Combo">Combo Bundle</option>
               </select>
             </label>
           </div>
@@ -150,7 +150,7 @@
           </button>
         </div>
 
-        <div *ngIf="form.get('productType')?.value === ProductType.Combo" class="mb-ds-6 bg-ds-accent/5 border border-ds-accent/20 p-ds-4 rounded-sm">
+        <div *ngIf="form.get('productType')?.value == ProductType.Combo" class="mb-ds-6 bg-ds-accent/5 border border-ds-accent/20 p-ds-4 rounded-sm">
           <p class="text-[9px] font-bold text-ds-accent uppercase tracking-widest leading-relaxed">
             <app-icon name="Info" size="12" className="inline mr-1"></app-icon>
             As a Combo Bundle, you can still define variants (like size) if the bundle itself comes in different sizes.
@@ -267,7 +267,7 @@
       </div>
 
       <!-- Combo Bundle Composition -->
-      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm" *ngIf="form.get('productType')?.value === ProductType.Combo">
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm" *ngIf="form.get('productType')?.value == ProductType.Combo">
         <div class="mb-ds-8 flex items-center justify-between">
           <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
             Bundle Composition
@@ -317,7 +317,7 @@
                   {{ i + 1 }}
                 </div>
                 <div class="flex flex-col">
-                  <span class="text-[10px] font-bold text-ds-text uppercase tracking-tight">{{ item.get('productName')?.value }}</span>
+                  <span class="text-[10px] font-bold text-ds-text uppercase tracking-tight">{{ item.get('productName')?.value || 'Pending Selection' }}</span>
                   <div class="flex items-center gap-2 mt-1">
                     <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Variant:</span>
                     <select class="bg-transparent border-0 p-0 text-[8px] font-bold text-ds-accent uppercase tracking-widest focus:ring-0 cursor-pointer" formControlName="productVariantId">

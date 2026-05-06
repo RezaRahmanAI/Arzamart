@@ -60,7 +60,14 @@ public class MappingProfiles : Profile
             .ForMember(d => d.SortOrder, o => o.MapFrom(s => s.SortOrder))
             .ForMember(d => d.MetaTitle, o => o.MapFrom(s => s.MetaTitle))
             .ForMember(d => d.MetaDescription, o => o.MapFrom(s => s.MetaDescription))
-            .ForMember(d => d.ComboItems, o => o.MapFrom(s => s.ComboItems));
+            .ForMember(d => d.ComboItems, o => o.MapFrom(s => s.ComboItems))
+            .ForMember(d => d.IsComboAvailable, o => o.MapFrom(s =>
+                s.ProductType != ProductType.Combo || 
+                s.ComboItems.All(ci => 
+                    ci.ProductVariantId.HasValue
+                        ? (ci.ProductVariant != null && ci.ProductVariant.StockQuantity >= ci.Quantity)
+                        : (ci.Product != null && ci.Product.StockQuantity >= ci.Quantity)
+                )));
 
         CreateMap<Product, ProductListDto>()
             .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : ""))

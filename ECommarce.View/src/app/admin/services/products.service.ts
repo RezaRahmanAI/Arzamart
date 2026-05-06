@@ -138,6 +138,18 @@ export class ProductsService {
     return this.api.get<string[]>("/admin/products/available-sizes");
   }
 
+  /**
+   * Lightweight product search for combo bundle selection.
+   * Returns minimal product data with variant info.
+   */
+  searchProductsForCombo(term: string): Observable<any[]> {
+    if (!term || term.length < 2) {
+      return of([]);
+    }
+    const params = new HttpParams().set('q', term);
+    return this.api.get<any[]>('/admin/products/search', { params });
+  }
+
   removeProductMedia(productId: number, mediaUrl: string): Observable<boolean> {
     return this.api
       .post<boolean>(`/admin/products/${productId}/media/remove`, { mediaUrl })

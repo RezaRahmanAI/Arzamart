@@ -50,6 +50,12 @@ public class ProductDto
     public ProductType ProductType { get; set; }
     public IEnumerable<ComboItemDto> ComboItems { get; set; } = new List<ComboItemDto>();
     public int? ProductGroupId { get; set; }
+    
+    /// <summary>
+    /// For combo products: true if all component products have sufficient stock.
+    /// For simple products: always true.
+    /// </summary>
+    public bool IsComboAvailable { get; set; } = true;
 }
 
 public class ProductImageDto
