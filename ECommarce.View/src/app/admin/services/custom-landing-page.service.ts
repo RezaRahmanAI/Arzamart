@@ -20,6 +20,8 @@ export interface CustomLandingPageConfig {
   originalPrice?: number;
   promoText?: string;
   freeShippingThresholdQuantity?: number | null;
+  isMarqueeVisible?: boolean;
+  marqueeText?: string;
   sectionsJson?: string;
 }
 

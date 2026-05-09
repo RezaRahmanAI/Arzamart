@@ -279,9 +279,9 @@
                               @for (size of uniqueSizes; track size) {
                                 <button (click)="selectSize(size)"
                                         class="w-10 h-10 flex items-center justify-center font-bold text-sm transition-all border"
-                                        [style.background]="orderForm.get('selectedSize')?.value === size ? '#1E6FD9' : 'transparent'"
-                                        [style.color]="orderForm.get('selectedSize')?.value === size ? 'white' : '#1A1A1A'"
-                                        [style.borderColor]="orderForm.get('selectedSize')?.value === size ? '#1E6FD9' : '#E0E0E0'">
+                                        [style.background]="(orderForm.get('selectedSize')?.value === size) ? '#1E6FD9' : 'transparent'"
+                                        [style.color]="(orderForm.get('selectedSize')?.value === size) ? 'white' : '#1A1A1A'"
+                                        [style.borderColor]="(orderForm.get('selectedSize')?.value === size) ? '#1E6FD9' : '#E0E0E0'">
                                   {{ size }}
                                 </button>
                               }
@@ -293,7 +293,7 @@
                             <p class="text-[11px] font-bold uppercase tracking-widest text-[#888]">পরিমাণ</p>
                             <div class="flex items-center border border-[#E0E0E0]">
                               <button (click)="updateQuantity(-1)" class="w-10 h-10 flex items-center justify-center hover:bg-gray-50">-</button>
-                              <div class="w-10 h-10 flex items-center justify-center font-bold">{{ orderForm.get('quantity')?.value }}</div>
+                              <div class="w-10 h-10 flex items-center justify-center font-bold">{{ orderForm.get('quantity')?.value ?? 1 }}</div>
                               <button (click)="updateQuantity(1)" class="w-10 h-10 flex items-center justify-center hover:bg-gray-50">+</button>
                             </div>
                           </div>
@@ -383,15 +383,15 @@
                                  class="w-20 h-20 object-cover rounded-md">
                             <div>
                               <p class="font-bold text-sm mb-1">{{ data.product.name }}</p>
-                              <p class="text-xs text-[#888]">সাইজ: {{ orderForm.get('selectedSize')?.value }}</p>
-                              <p class="text-xs text-[#888]">পরিমাণ: {{ orderForm.get('quantity')?.value }}</p>
+                              <p class="text-xs text-[#888]">সাইজ: {{ orderForm.get('selectedSize')?.value ?? '' }}</p>
+                              <p class="text-xs text-[#888]">পরিমাণ: {{ orderForm.get('quantity')?.value ?? 1 }}</p>
                             </div>
                           </div>
 
                           <div class="space-y-3 mb-8 text-sm">
                             <div class="flex justify-between">
                               <span class="text-[#888]">সাবটোটাল</span>
-                              <span class="font-bold">৳ {{ selectedVariantPrice * orderForm.get('quantity')?.value }}</span>
+                              <span class="font-bold">৳ {{ selectedVariantPrice * (orderForm.get('quantity')?.value ?? 1) }}</span>
                             </div>
                             <div class="flex justify-between">
                               <span class="text-[#888]">ডেলিভারি চার্জ</span>

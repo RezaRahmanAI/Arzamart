@@ -1,3 +1,6 @@
+@import url('https://fonts.cdnfonts.com/css/albra-sans');
+@import url('https://fonts.cdnfonts.com/css/mondia');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -80,8 +83,6 @@
   --transition-base: 0.2s ease;
 }
 
-@import url('https://fonts.cdnfonts.com/css/albra-sans');
-@import url('https://fonts.cdnfonts.com/css/mondia');
 
 /* ═══════════════════════════════════════════════════════
    BASE LAYER
