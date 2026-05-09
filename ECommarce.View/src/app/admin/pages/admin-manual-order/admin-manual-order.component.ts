@@ -506,9 +506,13 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     const outOfStockList: {name: string, size?: string, needed: number, stock: number}[] = [];
     
     this.cart().forEach(item => {
-      let stock = item.product.stockQuantity;
-      if (item.selectedSize) {
-         const variant = item.product.variants?.find(v => v.size === item.selectedSize);
+      let stock = item.product.stockQuantity || 0;
+      
+      // Check variants if applicable
+      if (item.selectedSize && item.product.variants && item.product.variants.length > 0) {
+         const variant = item.product.variants.find(v => 
+            v.size?.toString().trim().toLowerCase() === item.selectedSize?.toString().trim().toLowerCase()
+         );
          stock = variant ? variant.stockQuantity : 0;
       }
       
@@ -591,19 +595,35 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
             }
         }
 
-        // Map items to cart
+        // Map items to cart and fetch full product data to ensure stock levels are accurate
         const cartItems: CartItem[] = (order.items || []).map((item: any) => ({
           product: { 
             id: item.productId, 
             name: item.productName, 
             price: item.unitPrice, 
-            imageUrl: item.imageUrl 
+            imageUrl: item.imageUrl,
+            variants: [], // Will be populated below
+            stockQuantity: 0
           } as any,
           quantity: item.quantity,
           selectedSize: item.size,
           unitPrice: item.unitPrice
         }));
         this.cart.set(cartItems);
+
+        // Fetch full product details for each item to get correct stock/variants
+        cartItems.forEach(item => {
+          this.productsService.getProductById(item.product.id).subscribe({
+            next: (fullProduct) => {
+              this.cart.update(currentCart => currentCart.map(c => {
+                if (c.product.id === fullProduct.id) {
+                  return { ...c, product: fullProduct };
+                }
+                return c;
+              }));
+            }
+          });
+        });
 
         // Selection of delivery method
         if (order.deliveryMethodId) {

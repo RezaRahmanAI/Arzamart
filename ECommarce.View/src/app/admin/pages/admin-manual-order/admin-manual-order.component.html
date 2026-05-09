@@ -4,8 +4,10 @@
       <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm overflow-hidden">
         <div class="bg-ds-bg/50 px-ds-4 py-ds-2 border-b border-ds-border flex items-center justify-between">
           <div class="flex items-center gap-ds-3">
-            <app-icon name="ShoppingCart" size="16" className="text-ds-text"></app-icon>
-            <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-ds-text">Transaction Ledger</h2>
+            <app-icon [name]="isPreOrderMode ? 'Clock' : 'ShoppingCart'" size="16" [className]="isPreOrderMode ? 'text-orange-500' : 'text-ds-text'"></app-icon>
+            <h2 class="text-[10px] font-bold uppercase tracking-[0.2em]" [ngClass]="isPreOrderMode ? 'text-orange-500' : 'text-ds-text'">
+              {{ isPreOrderMode ? 'Pre-Order Registry' : 'Transaction Ledger' }}
+            </h2>
           </div>
           <button 
             *ngIf="cart().length > 0"
@@ -185,9 +187,10 @@
             <button 
               (click)="submitOrder()"
               [disabled]="isSubmitting || cart().length === 0"
-              class="btn btn-primary w-full !h-10 !text-[11px] font-bold uppercase tracking-[0.3em] shadow-xl hover:shadow-2xl transition-all disabled:opacity-30"
+              class="btn w-full !h-10 !text-[11px] font-bold uppercase tracking-[0.3em] shadow-xl hover:shadow-2xl transition-all disabled:opacity-30"
+              [ngClass]="isPreOrderMode ? 'bg-orange-600 border-orange-600 text-white' : 'btn-primary'"
             >
-              {{ isSubmitting ? 'Synchronizing...' : (isEditMode ? 'Authorize Update' : 'Initialize Transaction') }}
+              {{ isSubmitting ? 'Synchronizing...' : (isEditMode ? 'Authorize Update' : (isPreOrderMode ? 'Initialize Pre-Order' : 'Initialize Transaction')) }}
             </button>
           </div>
         </div>
@@ -361,11 +364,11 @@
             <li *ngFor="let item of outOfStockItems()" class="flex justify-between items-start gap-ds-4 p-ds-4 bg-ds-surface rounded-sm border border-red-500/20 shadow-sm">
               <div class="flex-1 min-w-0 text-left">
                 <p class="text-[10px] font-bold text-ds-text tracking-tight truncate" [title]="item.name">{{ item.name }}</p>
-                <p *ngIf="item.size" class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Matrix: {{ item.size }}</p>
+                <p *ngIf="item.size" class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Size: {{ item.size }}</p>
               </div>
               <div class="text-right whitespace-nowrap">
-                <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest">Deficit: {{ item.needed }}</p>
-                <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em] mt-1">Archive: {{ item.stock }}</p>
+                <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest">Requested: {{ item.needed }}</p>
+                <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em] mt-1">Stock: {{ item.stock }}</p>
               </div>
             </li>
           </ul>
