@@ -27,6 +27,7 @@ public class CustomLandingPageConfigDto
     public int? FreeShippingThresholdQuantity { get; set; }
     public bool IsMarqueeVisible { get; set; }
     public string? MarqueeText { get; set; }
+    public string? SectionsJson { get; set; }
 }
 
 public class CustomLandingPageConfigUpdateDto
@@ -54,6 +55,7 @@ public class CustomLandingPageConfigUpdateDto
     public int? FreeShippingThresholdQuantity { get; set; }
     public bool IsMarqueeVisible { get; set; }
     public string? MarqueeText { get; set; }
+    public string? SectionsJson { get; set; }
 }
 
 public class CustomLandingPageDataDto

@@ -18,10 +18,9 @@ export interface CustomLandingPageConfig {
   featuredProductName?: string;
   promoPrice?: number;
   originalPrice?: number;
-  isMarqueeVisible: boolean;
-  marqueeText?: string;
   promoText?: string;
   freeShippingThresholdQuantity?: number | null;
+  sectionsJson?: string;
 }
 
 @Injectable({

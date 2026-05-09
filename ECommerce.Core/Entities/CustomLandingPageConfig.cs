@@ -32,7 +32,6 @@ public class CustomLandingPageConfig : BaseEntity
     public string? PromoText { get; set; }
     public int? FreeShippingThresholdQuantity { get; set; }
     
-    // Marquee Section
-    public bool IsMarqueeVisible { get; set; } = false;
-    public string? MarqueeText { get; set; }
+    // Modular Sections
+    public string? SectionsJson { get; set; }
 }

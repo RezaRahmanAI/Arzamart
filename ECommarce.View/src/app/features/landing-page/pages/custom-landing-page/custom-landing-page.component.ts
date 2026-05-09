@@ -27,7 +27,14 @@ import { NotificationService } from "../../../../core/services/notification.serv
 import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
 import { QuickAddModalComponent } from "../../../../shared/components/quick-add-modal/quick-add-modal.component";
 import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
+import { AuthService } from "../../../../core/services/auth.service";
 
+interface LandingSection {
+  id: string;
+  type: string;
+  label: string;
+  visible: boolean;
+}
 
 interface LandingPageData {
   product: Product;
@@ -56,8 +63,24 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
   private readonly userPersistence = inject(UserPersistenceService);
   private readonly notification = inject(NotificationService);
+  private readonly authService = inject(AuthService);
 
   brandName$ = this.siteSettingsService.getSettings().pipe(map(s => s.websiteName));
+  isAdmin$ = this.authService.currentUser.pipe(map(user => user?.role === 'Admin' || user?.role === 'SuperAdmin'));
+
+  isEditorOpen = false;
+  isSaving = false;
+  
+  sections: LandingSection[] = [
+    { id: 'countdown',      type: 'countdown',      label: '⏱ Countdown Bar',       visible: true },
+    { id: 'hero',           type: 'hero',           label: '🎯 Hero / Offer',         visible: true },
+    { id: 'product-hero',   type: 'product-hero',   label: '🛍 Product Hero',         visible: true },
+    { id: 'ad-banners',     type: 'ad-banners',     label: '🖼 Ad Banners',           visible: true },
+    { id: 'discount-cta',   type: 'discount-cta',   label: '💚 Discount CTA',         visible: true },
+    { id: 'info-banner',    type: 'info-banner',    label: '🟡 Info Banner',          visible: true },
+    { id: 'product-select', type: 'product-select', label: '📦 Product Selection',    visible: true },
+    { id: 'order-form',     type: 'order-form',     label: '📝 Order Form',           visible: true },
+  ];
 
   data: LandingPageData | null = null;
   relatedProducts: Product[] = [];
@@ -68,16 +91,13 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   get processedMarqueeText(): string {
     if (!this.data?.config?.marqueeText) return "";
-    
     let text = this.data.config.marqueeText;
     const discount = this.discountPercentage;
-    
     if (discount > 0) {
       text = text.replace('{discount}', `${discount}%`);
     } else {
       text = text.replace('{discount}', '');
     }
-    
     return text;
   }
 
@@ -85,7 +105,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     if (!this.data?.config) return 0;
     const original = this.data.config.originalPrice || this.data.product.price;
     const promo = this.data.config.promoPrice || this.data.product.price;
-    
     if (original > promo) {
       return Math.round(((original - promo) / original) * 100);
     }
@@ -131,22 +150,12 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       const slug = params.get("slug");
       if (slug) {
         this.loadData(slug);
-        
-        // Handle pre-filled data from quick add (if any)
         const queryParams = this.route.snapshot.queryParamMap;
         const qSize = queryParams.get('qSize');
         const qQty = queryParams.get('qQty');
-        
-        if (qSize) {
-          this.orderForm.patchValue({ selectedSize: qSize });
-        }
-        if (qQty) {
-          this.orderForm.patchValue({ quantity: parseInt(qQty, 10) || 1 });
-        }
-
-        if (isPlatformBrowser(this.platformId)) {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
+        if (qSize) this.orderForm.patchValue({ selectedSize: qSize });
+        if (qQty) this.orderForm.patchValue({ quantity: parseInt(qQty, 10) || 1 });
+        if (isPlatformBrowser(this.platformId)) window.scrollTo({ top: 0, behavior: "smooth" });
       }
     });
 
@@ -167,62 +176,44 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         filter((value) => value.length >= 7),
         switchMap((phone) =>
-          this.customerOrderApi
-            .lookupCustomer(phone)
-            .pipe(catchError(() => of(null))),
+          this.customerOrderApi.lookupCustomer(phone).pipe(catchError(() => of(null))),
         ),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((customer: any) => {
         if (customer) {
           this.didAutofill = true;
-          
           if (customer.city) {
             this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
             this.filteredAreas = [...this.areas];
             this.citySearch = customer.city;
             this.updateDeliveryMethodByCity(customer.city);
           }
-
-          this.orderForm.patchValue(
-            {
-              fullName: customer.name,
-              address: customer.address,
-              city: customer.city || "Dhaka",
-              area: customer.area || ""
-            },
-            { emitEvent: false },
-          );
-
-          if (customer.area) {
-            this.areaSearch = customer.area;
-          }
+          this.orderForm.patchValue({
+            fullName: customer.name,
+            address: customer.address,
+            city: customer.city || "Dhaka",
+            area: customer.area || ""
+          }, { emitEvent: false });
+          if (customer.area) this.areaSearch = customer.area;
         }
       });
 
     this.orderForm.controls.address.valueChanges
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef)
-      )
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((address) => {
         if (!address || address.length < 3) return;
         this.intelligentLocationMatch(address);
       });
 
-    // Check for local saved details
-    if (this.userPersistence.hasSavedDetails()) {
-      this.showAutofillPrompt = true;
-    }
-
+    if (this.userPersistence.hasSavedDetails()) this.showAutofillPrompt = true;
     this.startWatchingFluctuation();
   }
 
   private startWatchingFluctuation(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.watchingInterval = setInterval(() => {
-        const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+        const change = Math.floor(Math.random() * 5) - 2;
         this.watchingCount = Math.max(12, Math.min(65, this.watchingCount + change));
       }, 7000);
     }
@@ -230,18 +221,11 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   intelligentLocationMatch(address: string): void {
     const { city, area } = matchLocationFromAddress(address, this.cities);
-    
     if (city) {
-      if (this.orderForm.get("city")?.value !== city) {
-        this.selectCity(city);
-      }
-      
-      if (area && this.orderForm.get("area")?.value !== area) {
-        this.selectArea(area);
-      }
+      if (this.orderForm.get("city")?.value !== city) this.selectCity(city);
+      if (area && this.orderForm.get("area")?.value !== area) this.selectArea(area);
     }
   }
-
 
   applyAutofill(): void {
     const details = this.userPersistence.getUserDetails();
@@ -252,7 +236,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.citySearch = details.city;
         this.updateDeliveryMethodByCity(details.city);
       }
-
       this.orderForm.patchValue({
         fullName: details.fullName,
         phone: details.phone,
@@ -260,10 +243,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         city: details.city,
         area: details.area
       });
-
-      if (details.area) {
-        this.areaSearch = details.area;
-      }
+      if (details.area) this.areaSearch = details.area;
       this.showAutofillPrompt = false;
       this.notification.success("Information filled successfully!");
     }
@@ -274,15 +254,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-    }
-    if (this.autoSlideInterval) {
-      clearInterval(this.autoSlideInterval);
-    }
-    if (this.watchingInterval) {
-      clearInterval(this.watchingInterval);
-    }
+    if (this.timerInterval) clearInterval(this.timerInterval);
+    if (this.autoSlideInterval) clearInterval(this.autoSlideInterval);
+    if (this.watchingInterval) clearInterval(this.watchingInterval);
   }
 
   loadData(slug: string): void {
@@ -295,21 +269,22 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.data = res;
         this.deliveryMethods = methods;
         this.isLoading = false;
-
+        if (res.config?.sectionsJson) {
+          try {
+            this.sections = JSON.parse(res.config.sectionsJson);
+          } catch (e) { console.error('Failed to parse sectionsJson', e); }
+        }
         if (res.product?.variants?.length > 0) {
           const defaultVariant = res.product.variants.find(v => v.isDefault) || res.product.variants[0];
           this.orderForm.patchValue({ selectedSize: defaultVariant.size || "" });
         }
-
         if (methods.length > 0) {
           const firstActive = methods.find(m => m.isActive) || methods[0];
           this.orderForm.patchValue({ deliveryMethodId: firstActive.id });
         }
-
         if (res.config?.relativeTimerTotalMinutes) {
           this.startRelativeTimer(res.config.productId, res.config.relativeTimerTotalMinutes);
         }
-
         if (res.product?.categoryId) {
           this.productService.getRelatedProducts(undefined, res.product.categoryId, 6)
             .subscribe({
@@ -321,9 +296,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
             });
         }
       },
-      error: () => {
-        this.isLoading = false;
-      }
+      error: () => this.isLoading = false
     });
   }
 
@@ -332,7 +305,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       const storageKey = `clp_timer_${productId}`;
       let endTimeStr = localStorage.getItem(storageKey);
       let endTime: number;
-
       const now = new Date().getTime();
       if (!endTimeStr || (parseInt(endTimeStr, 10) < now)) {
         endTime = now + (totalMinutes || 180) * 60 * 1000;
@@ -340,24 +312,20 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       } else {
         endTime = parseInt(endTimeStr, 10);
       }
-
       this.runTimer(endTime);
     }
   }
 
   private runTimer(endTime: number): void {
     if (this.timerInterval) clearInterval(this.timerInterval);
-
     this.timerInterval = setInterval(() => {
       const now = new Date().getTime();
       const distance = endTime - now;
-
       if (distance < 0) {
         clearInterval(this.timerInterval);
         this.timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
         return;
       }
-
       this.timeLeft = {
         days: Math.floor(distance / (1000 * 60 * 60 * 24)),
         hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
@@ -387,7 +355,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     const variant = this.data?.product?.variants?.find(v => v.size === selectedSize);
     const price = this.selectedVariantPrice;
     const comparePrice = variant?.compareAtPrice || this.data?.config?.originalPrice || this.data?.product?.compareAtPrice || 0;
-    
     return comparePrice > price ? (comparePrice - price) : 0;
   }
 
@@ -399,10 +366,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   get shippingCost(): number {
     const qty = this.orderForm.get("quantity")?.value || 1;
     const threshold = this.data?.config?.freeShippingThresholdQuantity;
-    
-    if (threshold && qty >= threshold) {
-      return 0;
-    }
+    if (threshold && qty >= threshold) return 0;
     return this.selectedDeliveryMethod?.cost ?? 0;
   }
 
@@ -421,12 +385,10 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       this.orderForm.markAllAsTouched();
       return;
     }
-
     this.isOrdering = true;
     const form = this.orderForm.getRawValue();
     const product = this.data.product;
     const method = this.selectedDeliveryMethod;
-
     const cartItem: CartItem = {
       id: "clp-" + Date.now(),
       productId: product.id,
@@ -439,31 +401,21 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       discountPercentage: 0,
       compareAtPrice: this.data.config?.originalPrice || product.compareAtPrice
     };
-
-    const subtotal = cartItem.price;
-    const shipping = method?.cost ?? 0;
-
+    const subtotal = cartItem.price * form.quantity;
+    const shipping = this.shippingCost;
     const summary: CartSummary = {
-      itemsCount: 1,
+      itemsCount: form.quantity,
       subtotal,
       tax: 0,
       shipping,
-      discount: cartItem.compareAtPrice ? cartItem.compareAtPrice - cartItem.price : 0,
+      discount: cartItem.compareAtPrice ? (cartItem.compareAtPrice - cartItem.price) * form.quantity : 0,
       total: subtotal + shipping,
       freeShippingThreshold: 0,
       freeShippingRemaining: 0,
       freeShippingProgress: 100
     };
-
     this.orderService.placeOrder({
-      state: {
-        fullName: form.fullName,
-        phone: form.phone,
-        address: form.address,
-        city: method?.name || "",
-        area: "",
-        deliveryMethodId: form.deliveryMethodId
-      },
+      state: { fullName: form.fullName, phone: form.phone, address: form.address, city: method?.name || "", area: "", deliveryMethodId: form.deliveryMethodId },
       cartItems: [cartItem],
       summary,
       deliveryMethodId: form.deliveryMethodId
@@ -471,36 +423,20 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       next: (order: any) => {
         this.isOrdering = false;
         if (order?.id) {
-          // Save user details for next time
-          this.userPersistence.saveUserDetails({
-            fullName: form.fullName,
-            phone: form.phone,
-            address: form.address,
-            city: form.city,
-            area: form.area
-          });
+          this.userPersistence.saveUserDetails({ fullName: form.fullName, phone: form.phone, address: form.address, city: form.city, area: form.area });
           void this.router.navigate(["/order-confirmation", order.id]);
         }
       },
-      error: () => {
-        this.isOrdering = false;
-      }
+      error: () => this.isOrdering = false
     });
   }
 
-  selectSize(size: string): void {
-    this.orderForm.patchValue({ selectedSize: size });
-  }
-
+  selectSize(size: string): void { this.orderForm.patchValue({ selectedSize: size }); }
   updateQuantity(delta: number): void {
     const current = this.orderForm.get("quantity")?.value || 1;
-    const next = Math.max(1, current + delta);
-    this.orderForm.patchValue({ quantity: next });
+    this.orderForm.patchValue({ quantity: Math.max(1, current + delta) });
   }
-
-  selectDeliveryMethod(id: number): void {
-    this.orderForm.patchValue({ deliveryMethodId: id });
-  }
+  selectDeliveryMethod(id: number): void { this.orderForm.patchValue({ deliveryMethodId: id }); }
 
   toggleCityDropdown(): void {
     this.isCityDropdownOpen = !this.isCityDropdownOpen;
@@ -548,19 +484,14 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private updateDeliveryMethodByCity(city: string): void {
     const isDhaka = city.toLowerCase() === "dhaka";
     const method = this.deliveryMethods.find((m) =>
-      isDhaka
-        ? m.name.toLowerCase().includes("inside")
-        : m.name.toLowerCase().includes("outside"),
+      isDhaka ? m.name.toLowerCase().includes("inside") : m.name.toLowerCase().includes("outside"),
     );
-    if (method) {
-      this.orderForm.patchValue({ deliveryMethodId: method.id });
-    }
+    if (method) this.orderForm.patchValue({ deliveryMethodId: method.id });
   }
 
   startAutoSlide(): void {
     if (this.autoSlideInterval) clearInterval(this.autoSlideInterval);
     if (!this.data?.product?.images || this.data.product.images.length <= 1) return;
-
     const step = 100 / (4000 / 50);
     this.autoSlideInterval = setInterval(() => {
       this.slideProgress += step;
@@ -574,16 +505,10 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     }, 50);
   }
 
-  selectImage(url: string): void {
-    this.selectedImage = url;
-    this.slideProgress = 0;
-  }
-
+  selectImage(url: string): void { this.selectedImage = url; this.slideProgress = 0; }
   scrollToOrder(): void {
-    const el = document.getElementById("order-section");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
+    const el = document.getElementById("order-form-section");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   }
 
   whatsappUs(): void {
@@ -591,9 +516,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     this.siteSettingsService.getSettings().subscribe(settings => {
       const phone = (settings.whatsAppNumber || settings.contactPhone || "").replace(/\D/g, "");
       const message = encodeURIComponent(`Hello, I'm interested in ${this.data?.product.name}. Can you help me?`);
-      if (phone) {
-        window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-      }
+      if (phone) window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
     });
   }
 
@@ -603,10 +526,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   openQuickAdd(product: Product, event: Event): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.selectedQuickProduct = product;
-    this.showQuickAdd = true;
+    event.preventDefault(); event.stopPropagation();
+    this.selectedQuickProduct = product; this.showQuickAdd = true;
   }
 
   onQuickAddConfirm(selection: { size?: string; quantity: number }): void {
@@ -614,16 +535,44 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       const queryParams: any = {};
       if (selection.size) queryParams.qSize = selection.size;
       if (selection.quantity > 1) queryParams.qQty = selection.quantity;
+      this.showQuickAdd = false;
+      void this.router.navigate(['/clp', this.selectedQuickProduct.slug], { queryParams, queryParamsHandling: 'merge' }).then(() => this.scrollToOrder());
+    } else this.showQuickAdd = false;
+  }
 
-      this.showQuickAdd = false;
-      void this.router.navigate(['/clp', this.selectedQuickProduct.slug], { 
-        queryParams,
-        queryParamsHandling: 'merge'
-      }).then(() => {
-        this.scrollToOrder();
-      });
-    } else {
-      this.showQuickAdd = false;
+  // --- MODULAR SECTION MANAGEMENT ---
+  moveSection(index: number, direction: 'up' | 'down'): void {
+    if (direction === 'up' && index > 0) {
+      [this.sections[index], this.sections[index-1]] = [this.sections[index-1], this.sections[index]];
+    } else if (direction === 'down' && index < this.sections.length - 1) {
+      [this.sections[index], this.sections[index+1]] = [this.sections[index+1], this.sections[index]];
     }
+  }
+
+  toggleVisibility(index: number): void { this.sections[index].visible = !this.sections[index].visible; }
+  deleteSection(index: number): void { if (confirm('Delete this section?')) this.sections.splice(index, 1); }
+  
+  addSection(type: string): void {
+    const labels: Record<string, string> = {
+      'countdown': '⏱ Countdown Bar',
+      'hero': '🎯 Hero / Offer',
+      'product-hero': '🛍 Product Hero',
+      'ad-banners': '🖼 Ad Banners',
+      'discount-cta': '💚 Discount CTA',
+      'info-banner': '🟡 Info Banner',
+      'product-select': '📦 Product Selection',
+      'order-form': '📝 Order Form'
+    };
+    this.sections.push({ id: `${type}_${Date.now()}`, type, label: labels[type] || 'New Section', visible: true });
+  }
+
+  saveLayout(): void {
+    if (!this.data?.config) return;
+    this.isSaving = true;
+    const config = { ...this.data.config, sectionsJson: JSON.stringify(this.sections) };
+    this.http.post(`${environment.apiBaseUrl}/admin/custom-landing-page`, config).subscribe({
+      next: () => { this.isSaving = false; this.notification.success('Layout saved!'); },
+      error: () => { this.isSaving = false; this.notification.error('Save failed.'); }
+    });
   }
 }
