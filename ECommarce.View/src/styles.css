@@ -1,5 +1,4 @@
-@import url('https://fonts.cdnfonts.com/css/albra-sans');
-@import url('https://fonts.cdnfonts.com/css/mondia');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -85,146 +84,101 @@
 
 
 /* ═══════════════════════════════════════════════════════
-   BASE LAYER
+   BASE LAYER — UNIVERSAL MODERN TYPOGRAPHY
    ═══════════════════════════════════════════════════════ */
 @layer base {
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     box-sizing: border-box;
+    font-size: 16px;
   }
 
-  *, *::before, *::after {
+  /* Universal Enforcement: Target EVERY element in EVERY corner */
+  *, *::before, *::after, 
+  input, button, textarea, select, label, 
+  .ql-editor, .mat-typography, .admin-panel * {
     box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+    font-family: "Outfit", sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em !important;
+    word-spacing: 0 !important;
+    text-transform: none;
   }
 
   body {
-    font-family: "Albra Sans", sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 18.4px;
-    font-style: normal;
-    text-transform: none;
-    color: var(--color-text-primary);
     background-color: var(--color-bg);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    color: var(--color-text-primary);
+    line-height: 1.5;
     overflow-x: hidden;
   }
 
-  /* Global resets for the new typography rules */
-  h1, h2, h3, h4, h5, h6, p, a, button, li, span, div, input, label {
-    font-style: normal !important;
-    text-transform: none !important;
-  }
-
+  /* ── Typography Scale ── */
+  
   h1 {
-    font-family: "Albra Sans", sans-serif;
-    font-size: 24px;
+    font-size: clamp(24px, 5vw, 32px);
     font-weight: 700;
-    line-height: 32px;
-    letter-spacing: normal;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
   }
 
   h2 {
-    font-family: "Mondia", "Mondia Regular", sans-serif;
-    font-size: 36px;
-    font-weight: 500;
-    line-height: 36px;
-    letter-spacing: -0.72px;
+    font-family: "Playfair Display", serif !important;
+    font-size: clamp(28px, 5vw, 36px); 
+    font-weight: 600; 
+    line-height: 1.2;
+    margin-bottom: 1em;
   }
 
   h3 {
-    font-family: "Albra Sans", sans-serif;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 31.4px;
-    letter-spacing: normal;
+    font-size: clamp(18px, 3vw, 22px);
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 0.5em;
   }
 
   h4, h5, h6 {
-    font-family: "Albra Sans", sans-serif;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 28px;
-    letter-spacing: normal;
+    font-size: clamp(16px, 2vw, 18px);
+    font-weight: 600;
+    line-height: 1.4;
   }
 
   p {
-    font-family: "Albra Sans", sans-serif;
-    font-size: 16px;
+    font-size: clamp(14px, 2vw, 16px);
     font-weight: 400;
-    line-height: 18.4px;
-    letter-spacing: normal;
-    color: var(--color-text-primary);
+    line-height: 1.6;
+    margin-bottom: 1em;
+    color: var(--color-text-secondary);
   }
 
   a {
-    font-family: "Albra Sans", sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 18.4px;
-    letter-spacing: normal;
     color: inherit;
     text-decoration: none;
-    transition: color var(--transition-fast);
+    transition: all var(--transition-base);
   }
 
-  li {
-    font-family: "Albra Sans", sans-serif;
-    font-size: 16px;
+  /* Global Button Aesthetics */
+  button, .btn {
+    font-family: "Outfit", sans-serif !important;
+    font-size: 15px;
     font-weight: 600;
-    line-height: normal;
-    letter-spacing: normal;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
   }
 
-  span {
-    font-family: "Albra Sans", sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: normal;
-    letter-spacing: normal;
-  }
+  /* Layout Resets */
+  ul, ol { list-style: none; }
+  img, video { display: block; max-width: 100%; height: auto; }
 
-  img, video {
-    display: block;
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* Focus accessibility */
-  :focus-visible {
-    outline: 2px solid var(--color-accent-ds);
-    outline-offset: 2px;
-    border-radius: var(--radius-sm);
-  }
-
-  button, 
-  .btn, 
-  .cta,
-  [type='button'], 
-  [type='reset'], 
-  [type='submit'] {
-    font-family: "Albra Sans", sans-serif;
-    font-size: 17.6px;
-    font-weight: 600;
-    line-height: 20.24px;
-    letter-spacing: normal;
-  }
-
-  /* Text selection */
-  ::selection {
-    background-color: var(--color-accent-ds);
-    color: var(--color-hero-text);
-  }
-
-  /* Scrollbar — minimal */
+  /* Minimal Scrollbar for all modules */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--color-surface); }
-  ::-webkit-scrollbar-thumb { background: var(--color-border-ds); border-radius: var(--radius-full); }
-  @media (hover: hover) {
-    ::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
-  }
+  ::-webkit-scrollbar-thumb { background: var(--color-border-ds); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -344,7 +298,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-family: "Albra Sans", sans-serif;
+    font-family: "Outfit", sans-serif;
     font-weight: 600;
     border-radius: var(--radius-md);
     transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
@@ -422,7 +376,7 @@
     border: 1.5px solid var(--color-border-ds);
     border-radius: var(--radius-md);
     color: var(--color-text-primary);
-    font-family: "Albra Sans", sans-serif;
+    font-family: "Outfit", sans-serif;
     font-size: 14px;
     font-weight: 400;
     padding: 12px 14px;
@@ -682,7 +636,7 @@
   .text-balance { text-wrap: balance; }
 
   .font-bengali {
-    font-family: "Albra Sans", sans-serif;
+    font-family: "Outfit", sans-serif;
   }
 
   /* Uppercase nav/tag tracking */

@@ -43,6 +43,11 @@ public static class DataSeeder
             await roleManager.CreateAsync(new IdentityRole("Customer"));
         }
 
+        if (!await roleManager.RoleExistsAsync("Staff"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Staff"));
+        }
+
         // 2. Ensure Super Admin User exists
         var adminEmail = "admin@arzamart.com";
         var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
