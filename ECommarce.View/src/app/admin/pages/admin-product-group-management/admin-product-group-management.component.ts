@@ -1,3 +1,4 @@
+import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit, inject, ViewChild, ElementRef } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from "@angular/forms";
@@ -22,7 +23,8 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
   ],
   templateUrl: "./admin-product-group-management.component.html",
 })
-export class AdminProductGroupManagementComponent implements OnInit, OnDestroy {
+export class AdminProductGroupManagementComponent {
+  protected authService = inject(AuthService);
   private groupsService = inject(ProductGroupsService);
   private productService = inject(ProductService);
   private formBuilder = inject(FormBuilder);
@@ -222,3 +224,4 @@ export class AdminProductGroupManagementComponent implements OnInit, OnDestroy {
     return this.imageUrlService.getImageUrl(url);
   }
 }
+

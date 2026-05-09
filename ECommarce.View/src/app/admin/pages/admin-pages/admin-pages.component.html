@@ -10,7 +10,7 @@
     <button
       (click)="openAddModal()"
       class="btn btn-primary h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest"
-    >
+     *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
       <app-icon name="Plus" size="14"></app-icon>
       <span>Initialize New Page</span>
     </button>
@@ -189,3 +189,4 @@
     </form>
   </div>
 </div>
+

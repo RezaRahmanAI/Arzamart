@@ -8,7 +8,8 @@ using System.Security.Claims;
 
 namespace ECommerce.API.Controllers;
 
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("users")]
 [Route("api/admin/users")]
 [ApiController]
 public class AdminUsersController : ControllerBase
@@ -26,7 +27,7 @@ public class AdminUsersController : ControllerBase
     public async Task<ActionResult<IEnumerable<object>>> GetAdminUsers()
     {
         var users = await _userManager.Users
-            .Where(u => u.Role == "Admin" || u.Role == "SuperAdmin")
+            .Where(u => u.Role == "Admin" || u.Role == "SuperAdmin" || u.Role == "Staff")
             .Select(u => new
             {
                 u.Id,
@@ -35,7 +36,8 @@ public class AdminUsersController : ControllerBase
                 u.Phone,
                 u.Role,
                 u.IsActive,
-                u.CreatedAt
+                u.CreatedAt,
+                AllowedMenus = u.AllowedMenusJson != null ? System.Text.Json.JsonSerializer.Deserialize<List<string>>(u.AllowedMenusJson, (System.Text.Json.JsonSerializerOptions)null) : new List<string>()
             })
             .OrderByDescending(u => u.CreatedAt)
             .ToListAsync();
@@ -68,7 +70,7 @@ public class AdminUsersController : ControllerBase
         }
 
         var role = string.IsNullOrWhiteSpace(dto.Role) ? "Admin" : dto.Role;
-        if (role != "Admin" && role != "SuperAdmin")
+        if (role != "Admin" && role != "SuperAdmin" && role != "Staff")
         {
             return BadRequest(new { message = "Invalid role assigned" });
         }
@@ -82,7 +84,8 @@ public class AdminUsersController : ControllerBase
             Role = role,
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
-            EmailConfirmed = !string.IsNullOrWhiteSpace(dto.Email)
+            EmailConfirmed = !string.IsNullOrWhiteSpace(dto.Email),
+            AllowedMenus = dto.AllowedMenus ?? new List<string>()
         };
 
         var result = await _userManager.CreateAsync(user, dto.Password);
@@ -93,7 +96,7 @@ public class AdminUsersController : ControllerBase
 
         await _userManager.AddToRoleAsync(user, role);
 
-        return Ok(new { message = "Admin user created successfully", user = new { user.Id, user.UserName, user.FullName, user.Role, user.IsActive } });
+        return Ok(new { message = "Admin user created successfully", user = new { user.Id, user.UserName, user.FullName, user.Role, user.IsActive, user.AllowedMenus } });
     }
 
     [HttpPost("{id}")]
@@ -119,7 +122,7 @@ public class AdminUsersController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(dto.Role) && dto.Role != user.Role)
         {
-            if (dto.Role != "Admin" && dto.Role != "SuperAdmin")
+            if (dto.Role != "Admin" && dto.Role != "SuperAdmin" && dto.Role != "Staff")
             {
                 return BadRequest(new { message = "Invalid role assigned" });
             }
@@ -132,6 +135,11 @@ public class AdminUsersController : ControllerBase
 
         user.FullName = dto.FullName ?? user.FullName;
         user.Phone = dto.Phone ?? user.Phone;
+
+        if (dto.Role == "Staff" || user.Role == "Staff")
+        {
+            user.AllowedMenus = dto.AllowedMenus ?? user.AllowedMenus;
+        }
 
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
@@ -204,6 +212,7 @@ public class CreateAdminUserDto
     public string Password { get; set; } = string.Empty;
     public string? Phone { get; set; }
     public string? Role { get; set; }
+    public List<string>? AllowedMenus { get; set; }
 }
 
 public class UpdateAdminUserDto
@@ -214,9 +223,11 @@ public class UpdateAdminUserDto
     public string? Role { get; set; }
     public string? Phone { get; set; }
     public string? Password { get; set; }
+    public List<string>? AllowedMenus { get; set; }
 }
 
 public class ResetPasswordDto
 {
     public string NewPassword { get; set; } = string.Empty;
 }
+

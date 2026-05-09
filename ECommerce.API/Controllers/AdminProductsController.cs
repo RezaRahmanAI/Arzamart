@@ -16,7 +16,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/products")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("products")]
 public class AdminProductsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -570,3 +571,4 @@ public class AdminProductsController : ControllerBase
         return Ok(new { message = "All products are already synchronized." });
     }
 }
+

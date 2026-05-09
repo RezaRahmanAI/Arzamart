@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
 
 .font-serif {
-  font-family: 'Playfair Display', serif;
+  
 }
 
 input:focus, select:focus, textarea:focus {
@@ -64,3 +64,4 @@ input[type="radio"]:checked + div {
 main {
   animation: fadeIn 0.6s ease-out;
 }
+

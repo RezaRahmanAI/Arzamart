@@ -10,7 +10,8 @@ using Microsoft.AspNetCore.OutputCaching;
 namespace ECommerce.API.Controllers;
 
 [ApiController]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("settings")]
 [Route("api/admin/settings")]
 public class AdminSettingsController : ControllerBase
 {
@@ -188,3 +189,4 @@ public class AdminSettingsController : ControllerBase
         return NoContent();
     }
 }
+

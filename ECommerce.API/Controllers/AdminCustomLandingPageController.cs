@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.API.Controllers;
 
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("products")]
 [ApiController]
 [Route("api/admin/custom-landing-page")]
 public class AdminCustomLandingPageController : ControllerBase
@@ -58,3 +59,4 @@ public class AdminCustomLandingPageController : ControllerBase
         return Ok(_mapper.Map<CustomLandingPageConfigDto>(config));
     }
 }
+

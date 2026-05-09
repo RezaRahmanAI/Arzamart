@@ -12,7 +12,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/subcategories")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("products")]
 public class AdminSubCategoryController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -233,3 +234,4 @@ public class AdminSubCategoryController : ControllerBase
             .Replace("\"", "");
     }
 }
+

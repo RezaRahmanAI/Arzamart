@@ -15,4 +15,5 @@ public record UserSummary(
     string FullName,
     string Email,
     string Role,
-    string? PhoneNumber);
+    string? PhoneNumber,
+    List<string>? AllowedMenus = null);

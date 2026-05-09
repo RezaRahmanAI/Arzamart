@@ -425,7 +425,10 @@
           <div class="size-2 mt-1.5 rounded-full shrink-0" [ngStyle]="{ backgroundColor: getStatusColor(log.statusTo) }"></div>
           <div>
             <p class="font-bold text-[11px] uppercase tracking-widest text-ds-text">{{ log.statusTo }}</p>
-            <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] mt-1">{{ log.createdAt | date:'MMM d, y — h:mm a' }}</p>
+            <div class="flex items-center justify-between gap-4 mt-1">
+              <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">{{ log.createdAt | date:'MMM d, y — h:mm a' }}</p>
+              <span class="text-[8px] font-bold text-ds-accent uppercase tracking-widest">{{ log.changedBy }}</span>
+            </div>
             <p class="text-[10px] mt-ds-2 text-ds-text-sec leading-relaxed" *ngIf="log.note">"{{ log.note }}"</p>
           </div>
         </div>

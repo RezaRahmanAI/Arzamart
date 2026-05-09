@@ -28,7 +28,7 @@
         class="btn btn-secondary h-11 px-ds-8 !text-[10px] uppercase tracking-widest"
         type="button"
         (click)="discard()"
-      >
+       *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
         Discard
       </button>
       <button
@@ -640,3 +640,4 @@
     </div>
   </div>
 </form>
+

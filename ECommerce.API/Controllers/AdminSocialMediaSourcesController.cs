@@ -9,7 +9,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/social-media-sources")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("order-sources")]
 public class AdminSocialMediaSourcesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -118,3 +119,4 @@ public class AdminSocialMediaSourcesController : ControllerBase
         return NoContent();
     }
 }
+

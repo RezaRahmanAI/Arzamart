@@ -5,7 +5,7 @@
       <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Sub-Taxonomy</h1>
       <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">Specialized Catalog Node Management</p>
     </div>
-    <button class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest" type="button" (click)="startCreate()" *ngIf="mode === 'edit'">
+    <button class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest" type="button" (click)="startCreate()" *ngIf="mode === 'edit' && authService.currentUserSnapshot()?.role !== 'Staff'">
       <app-icon name="Plus" size="14"></app-icon>
       <span>New Sub-Node</span>
     </button>
@@ -201,3 +201,4 @@
     </div>
   </div>
 </div>
+

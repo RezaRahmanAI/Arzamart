@@ -16,7 +16,7 @@ import { NotificationService } from "../../../core/services/notification.service
 export class AdminUserManagementComponent implements OnInit {
   private usersService = inject(AdminUsersService);
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  protected authService = inject(AuthService);
   private notification = inject(NotificationService);
 
   admins: AdminUser[] = [];
@@ -31,8 +31,26 @@ export class AdminUserManagementComponent implements OnInit {
     email: ["", [Validators.email]], // Optional
     userName: ["", [Validators.required]],
     password: ["", [Validators.required, Validators.minLength(6)]],
-    role: ["Admin" as "Admin" | "SuperAdmin", [Validators.required]]
+    role: ["Admin" as "Admin" | "SuperAdmin" | "Staff", [Validators.required]]
   });
+
+  availableMenus = [
+    { key: "dashboard", label: "Dashboard" },
+    { key: "products", label: "Products & Inventory" },
+    { key: "orders", label: "Orders Management" },
+    { key: "customers", label: "Customers" },
+    { key: "analytics", label: "Analytics" },
+    { key: "settings", label: "Settings" },
+    { key: "banners", label: "Banners" },
+    { key: "navigation", label: "Navigation" },
+    { key: "pages", label: "Content Pages" },
+    { key: "reviews", label: "Reviews" },
+    { key: "order-sources", label: "Order Sources" },
+    { key: "security", label: "Security" },
+    { key: "users", label: "Users" }
+  ];
+
+  selectedMenus: string[] = [];
 
   isEditModalOpen = false;
   editingAdmin: AdminUser | null = null;
@@ -41,7 +59,7 @@ export class AdminUserManagementComponent implements OnInit {
     email: ["", [Validators.email]],
     userName: ["", [Validators.required]],
     password: ["", [Validators.minLength(6)]],
-    role: ["Admin" as "Admin" | "SuperAdmin", [Validators.required]]
+    role: ["Admin" as "Admin" | "SuperAdmin" | "Staff", [Validators.required]]
   });
 
   currentUserRole = "";
@@ -85,13 +103,18 @@ export class AdminUserManagementComponent implements OnInit {
     
     this.isSubmitting = true;
     const request = this.createForm.getRawValue();
+    const finalRequest: any = { ...request };
+    if (finalRequest.role === "Staff") {
+        finalRequest.allowedMenus = this.selectedMenus;
+    }
     
-    this.usersService.createAdmin(request as CreateAdminRequest).subscribe({
+    this.usersService.createAdmin(finalRequest as CreateAdminRequest).subscribe({
       next: (response: any) => {
         const newAdmin = response.user;
         this.admins.unshift(newAdmin);
         this.isSubmitting = false;
         this.isCreateModalOpen = false;
+        this.selectedMenus = [];
         this.createForm.reset({ role: 'Admin' });
         this.notification.success("Admin user created successfully!");
       },
@@ -127,6 +150,7 @@ export class AdminUserManagementComponent implements OnInit {
         role: admin.role as any
     });
     this.isEditPasswordVisible = false;
+    this.selectedMenus = admin.allowedMenus || [];
     this.isEditModalOpen = true;
   }
 
@@ -135,14 +159,21 @@ export class AdminUserManagementComponent implements OnInit {
     
     this.isSubmitting = true;
     const data = this.editForm.getRawValue();
+    const finalData: any = { ...data };
+    if (finalData.role === "Staff") {
+        finalData.allowedMenus = this.selectedMenus;
+    }
     
-    this.usersService.updateAdmin(this.editingAdmin.id, data).subscribe({
+    this.usersService.updateAdmin(this.editingAdmin.id, finalData).subscribe({
         next: () => {
             if (this.editingAdmin) {
                 this.editingAdmin.fullName = data.fullName;
                 this.editingAdmin.userName = data.userName;
                 this.editingAdmin.email = data.email || "";
                 this.editingAdmin.role = data.role;
+                if (data.role === "Staff") {
+                    this.editingAdmin.allowedMenus = [...this.selectedMenus];
+                }
             }
             this.isSubmitting = false;
             this.isEditModalOpen = false;
@@ -174,4 +205,14 @@ export class AdminUserManagementComponent implements OnInit {
       .join("")
       .toUpperCase();
   }
+
+  toggleMenuSelection(menuKey: string): void {
+    const idx = this.selectedMenus.indexOf(menuKey);
+    if (idx > -1) {
+        this.selectedMenus.splice(idx, 1);
+    } else {
+        this.selectedMenus.push(menuKey);
+    }
+  }
 }
+

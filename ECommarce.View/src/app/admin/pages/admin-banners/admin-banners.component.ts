@@ -183,3 +183,4 @@ export class AdminBannersComponent implements OnInit, OnDestroy {
     this.currentTab = tab;
   }
 }
+

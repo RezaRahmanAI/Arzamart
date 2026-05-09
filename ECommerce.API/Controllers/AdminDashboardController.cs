@@ -7,7 +7,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/dashboard")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("dashboard")]
 public class AdminDashboardController : ControllerBase
 {
     private readonly IDashboardService _dashboardService;
@@ -59,4 +60,5 @@ public class AdminDashboardController : ControllerBase
         return Ok(data);
     }
 }
+
 

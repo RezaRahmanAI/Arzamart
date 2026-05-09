@@ -12,7 +12,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/banners")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("banners")]
 public class AdminBannersController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -183,3 +184,4 @@ public class AdminBannersController : ControllerBase
         return Ok(new { url = $"/uploads/banners/{fileName}" });
     }
 }
+

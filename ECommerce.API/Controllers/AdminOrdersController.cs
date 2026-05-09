@@ -11,7 +11,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/orders")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("orders")]
 public class AdminOrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
@@ -173,3 +174,4 @@ public class AddNoteDto
 {
     public string Note { get; set; } = string.Empty;
 }
+

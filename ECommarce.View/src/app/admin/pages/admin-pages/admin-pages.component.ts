@@ -146,3 +146,4 @@ export class AdminPagesComponent implements OnInit, OnDestroy {
       .replace(/ +/g, "-");
   }
 }
+

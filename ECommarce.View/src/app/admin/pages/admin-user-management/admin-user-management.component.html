@@ -9,7 +9,7 @@
     </div>
     <div class="flex items-center gap-ds-4">
       <button
-        *ngIf="currentUserRole === 'SuperAdmin'"
+        *ngIf="currentUserRole === 'SuperAdmin' && authService.currentUserSnapshot()?.role !== 'Staff'"
         (click)="isCreateModalOpen = true"
         class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest"
       >
@@ -65,7 +65,7 @@
                 <div class="flex items-center">
                     <div class="px-ds-3 py-1 rounded-sm border flex items-center gap-ds-2 transition-colors" 
                          [ngClass]="admin.role === 'SuperAdmin' ? 'bg-ds-text text-ds-surface border-ds-text' : 'bg-ds-bg text-ds-text border-ds-border'">
-                        <app-icon [name]="admin.role === 'SuperAdmin' ? 'ShieldCheck' : 'Shield'" size="12"></app-icon>
+                        <app-icon [name]="admin.role === 'SuperAdmin' ? 'ShieldCheck' : (admin.role === 'Staff' ? 'User' : 'Shield')" size="12"></app-icon>
                         <span class="text-[9px] font-bold uppercase tracking-widest">{{ admin.role }}</span>
                     </div>
                 </div>
@@ -181,11 +181,26 @@
                     <div class="relative">
                         <select formControlName="role" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase appearance-none cursor-pointer">
                             <option value="Admin">Personnel (Restricted)</option>
+                            <option value="Staff">Staff (Granular Access)</option>
                             <option value="SuperAdmin">Executive (Full Clearance)</option>
                         </select>
                         <app-icon name="ChevronDown" size="14" className="absolute right-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                     </div>
                 </div>
+              </div>
+
+              <!-- Menu Access Checklist for Staff -->
+              <div *ngIf="createForm.get('role')?.value === 'Staff'" class="space-y-4 pt-4 border-t border-ds-border">
+                  <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Staff Access Privileges</label>
+                  <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      <label *ngFor="let menu of availableMenus" class="flex items-center gap-2 cursor-pointer group p-2 border border-ds-border/50 rounded-sm hover:border-ds-border bg-ds-bg/30">
+                          <input type="checkbox" 
+                                 [checked]="selectedMenus.includes(menu.key)"
+                                 (change)="toggleMenuSelection(menu.key)"
+                                 class="form-checkbox text-ds-text border-ds-border rounded-sm focus:ring-0 cursor-pointer">
+                          <span class="text-[10px] font-bold uppercase tracking-widest text-ds-text-muted group-hover:text-ds-text transition-colors">{{ menu.label }}</span>
+                      </label>
+                  </div>
               </div>
 
               <div class="p-ds-6 bg-ds-bg border border-ds-border rounded-sm space-y-ds-3">
@@ -270,11 +285,28 @@
                     <div class="relative">
                         <select formControlName="role" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase appearance-none cursor-pointer">
                             <option value="Admin">Personnel (Restricted)</option>
+                            <option value="Staff">Staff (Granular Access)</option>
                             <option value="SuperAdmin">Executive (Full Clearance)</option>
                         </select>
                         <app-icon name="ChevronDown" size="14" className="absolute right-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                     </div>
                 </div>
+              </div>
+
+
+
+              <!-- Menu Access Checklist for Staff (Edit) -->
+              <div *ngIf="editForm.get('role')?.value === 'Staff'" class="space-y-4 pt-4 border-t border-ds-border">
+                  <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Staff Access Privileges</label>
+                  <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      <label *ngFor="let menu of availableMenus" class="flex items-center gap-2 cursor-pointer group p-2 border border-ds-border/50 rounded-sm hover:border-ds-border bg-ds-bg/30">
+                          <input type="checkbox" 
+                                 [checked]="selectedMenus.includes(menu.key)"
+                                 (change)="toggleMenuSelection(menu.key)"
+                                 class="form-checkbox text-ds-text border-ds-border rounded-sm focus:ring-0 cursor-pointer">
+                          <span class="text-[10px] font-bold uppercase tracking-widest text-ds-text-muted group-hover:text-ds-text transition-colors">{{ menu.label }}</span>
+                      </label>
+                  </div>
               </div>
 
               <div class="flex gap-ds-4 pt-ds-4">
@@ -290,3 +322,4 @@
     </div>
   </div>
 </div>
+

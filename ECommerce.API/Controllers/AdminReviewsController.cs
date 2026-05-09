@@ -8,7 +8,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/reviews")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("reviews")]
 public class AdminReviewsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -85,3 +86,4 @@ public class AdminReviewsController : ControllerBase
         });
     }
 }
+

@@ -24,7 +24,7 @@
         class="btn btn-secondary h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest"
         type="button"
         (click)="resetForm()"
-      >
+       *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
         Revert
       </button>
       <button
@@ -441,3 +441,4 @@
     </p>
   </div>
 </div>
+

@@ -9,7 +9,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/source-pages")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("order-sources")]
 public class AdminSourcePagesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -118,3 +119,4 @@ public class AdminSourcePagesController : ControllerBase
         return NoContent();
     }
 }
+

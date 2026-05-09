@@ -10,7 +10,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/navigation")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("navigation")]
 public class AdminNavigationController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -122,3 +123,4 @@ public class AdminNavigationController : ControllerBase
         };
     }
 }
+

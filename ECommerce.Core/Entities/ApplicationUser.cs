@@ -20,4 +20,13 @@ public class ApplicationUser : IdentityUser
     public DateTime? RefreshTokenExpiry { get; set; }
 
     public virtual ICollection<AppRefreshToken> RefreshTokens { get; set; } = new List<AppRefreshToken>();
+
+    public string? AllowedMenusJson { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public List<string> AllowedMenus
+    {
+        get => string.IsNullOrEmpty(AllowedMenusJson) ? new List<string>() : System.Text.Json.JsonSerializer.Deserialize<List<string>>(AllowedMenusJson) ?? new List<string>();
+        set => AllowedMenusJson = System.Text.Json.JsonSerializer.Serialize(value);
+    }
 }

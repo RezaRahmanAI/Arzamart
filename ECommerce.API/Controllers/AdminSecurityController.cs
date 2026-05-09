@@ -7,7 +7,8 @@ using System.Security.Claims;
 
 namespace ECommerce.API.Controllers;
 
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("security")]
 [Route("api/admin/security")]
 [ApiController]
 public class AdminSecurityController : ControllerBase
@@ -65,3 +66,4 @@ public class AdminSecurityController : ControllerBase
         return NoContent();
     }
 }
+

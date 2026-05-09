@@ -527,3 +527,4 @@ export class AdminSettingsComponent implements OnInit {
     return "px-2 py-1 bg-gray-100 text-text-secondary text-xs rounded-md font-medium";
   }
 }
+

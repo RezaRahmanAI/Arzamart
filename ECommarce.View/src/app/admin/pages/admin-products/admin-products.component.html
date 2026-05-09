@@ -14,7 +14,7 @@
         class="btn btn-secondary h-11 px-ds-6 !text-[10px] uppercase tracking-widest"
         type="button"
         (click)="exportProducts()"
-      >
+       *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
         <app-icon name="FileUp" size="14"></app-icon>
         <span>Export</span>
       </button>
@@ -298,3 +298,4 @@
     </div>
   </ng-template>
 </div>
+

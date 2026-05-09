@@ -256,3 +256,4 @@ export class AdminCategoryManagementComponent implements OnInit, OnDestroy {
     return this.getImageUrl(imageUrl);
   }
 }
+

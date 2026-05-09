@@ -8,6 +8,7 @@ interface AdminNavItem {
   label: string;
   icon: string;
   route: string;
+  menuKey?: string;
 }
 
 import { SiteSettingsService } from "../../../core/services/site-settings.service";
@@ -32,7 +33,7 @@ export class AdminSidebarComponent implements OnInit {
 
 
   topItems: AdminNavItem[] = [
-    { label: "Overview", icon: "LayoutDashboard", route: "/admin/dashboard" },
+    { label: "Overview", icon: "LayoutDashboard", route: "/admin/dashboard", menuKey: "dashboard" },
   ];
 
 
@@ -52,11 +53,11 @@ export class AdminSidebarComponent implements OnInit {
   }
 
   navItems: AdminNavItem[] = [
-    { label: "Banners & Campaigns", icon: "GalleryVertical", route: "/admin/banners" },
-    { label: "Site Content", icon: "FileText", route: "/admin/pages" },
-    { label: "Order Sources", icon: "Globe", route: "/admin/order-sources" },
-    { label: "Customer Reviews", icon: "MessageSquare", route: "/admin/reviews" },
-    { label: "Customers", icon: "Users", route: "/admin/customers" },
+    { label: "Banners & Campaigns", icon: "GalleryVertical", route: "/admin/banners", menuKey: "banners" },
+    { label: "Site Content", icon: "FileText", route: "/admin/pages", menuKey: "pages" },
+    { label: "Order Sources", icon: "Globe", route: "/admin/order-sources", menuKey: "order-sources" },
+    { label: "Customer Reviews", icon: "MessageSquare", route: "/admin/reviews", menuKey: "reviews" },
+    { label: "Customers", icon: "Users", route: "/admin/customers", menuKey: "customers" },
   ];
 
   bottomItems: AdminNavItem[] = [];
@@ -65,7 +66,22 @@ export class AdminSidebarComponent implements OnInit {
   isOrdersMenuOpen = false;
   isOrderViewMenuOpen = false;
 
+  currentUserRole = "";
+  currentUserMenus: string[] = [];
+
   constructor() {
+    this.authService.currentUser.subscribe(user => {
+      this.currentUserRole = user?.role || "";
+      this.currentUserMenus = user?.allowedMenus || [];
+    });
+  }
+
+  hasAccess(menuKey: string): boolean {
+    if (this.currentUserRole === 'SuperAdmin' || this.currentUserRole === 'Admin') return true;
+    if (this.currentUserRole === 'Staff') {
+      return this.currentUserMenus.includes(menuKey);
+    }
+    return false;
   }
 
   toggleProductsMenu() {

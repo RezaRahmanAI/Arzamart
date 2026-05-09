@@ -7,6 +7,7 @@ export interface User {
   role: string;
   phoneNumber?: string;
   avatarUrl?: string;
+  allowedMenus?: string[];
 }
 
 export interface AuthResponse {

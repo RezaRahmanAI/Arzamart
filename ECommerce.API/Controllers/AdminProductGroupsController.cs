@@ -14,7 +14,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/product-groups")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("products")]
 public class AdminProductGroupsController : ControllerBase
 {
     private readonly IGenericRepository<ProductGroup> _groupsRepo;
@@ -114,3 +115,4 @@ public class AdminProductGroupsController : ControllerBase
         return NoContent();
     }
 }
+

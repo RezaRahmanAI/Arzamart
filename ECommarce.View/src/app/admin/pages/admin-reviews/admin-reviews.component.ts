@@ -101,3 +101,4 @@ export class AdminReviewsComponent implements OnInit, OnDestroy {
     return Array(rating).fill(0);
   }
 }
+

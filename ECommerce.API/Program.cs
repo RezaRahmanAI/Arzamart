@@ -89,6 +89,7 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
+    app.UseMiddleware<StaffDeleteRestrictionMiddleware>();
 
     // Block suspicious users
     app.UseSuspiciousUserBlocking();

@@ -10,6 +10,7 @@ export interface AdminUser {
   role: string;
   isActive: boolean;
   createdAt: string;
+  allowedMenus?: string[];
 }
 
 export interface CreateAdminRequest {
@@ -17,7 +18,8 @@ export interface CreateAdminRequest {
   email: string;
   userName: string;
   password: string;
-  role: 'Admin' | 'SuperAdmin';
+  role: 'Admin' | 'SuperAdmin' | 'Staff';
+  allowedMenus?: string[];
 }
 
 @Injectable({

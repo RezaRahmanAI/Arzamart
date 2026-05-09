@@ -1,3 +1,4 @@
+import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, inject } from "@angular/core";
 import {
@@ -59,7 +60,8 @@ interface MediaFormValue {
   },
   templateUrl: "./admin-product-form.component.html",
 })
-export class AdminProductFormComponent implements OnDestroy {
+export class AdminProductFormComponent {
+  protected authService = inject(AuthService);
 
   private formBuilder = inject(FormBuilder);
   private productsService = inject(ProductsService);
@@ -1151,3 +1153,4 @@ export class AdminProductFormComponent implements OnDestroy {
     this.publicBannerService.refresh();
   }
 }
+

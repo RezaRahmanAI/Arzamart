@@ -9,7 +9,8 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/admin/pages")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin,SuperAdmin,Staff")]
+[ECommerce.API.Helpers.StaffMenuAccess("pages")]
 public class AdminPagesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -134,3 +135,4 @@ public class AdminPagesController : ControllerBase
         return NoContent();
     }
 }
+

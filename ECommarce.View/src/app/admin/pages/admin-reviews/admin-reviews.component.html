@@ -84,7 +84,7 @@
           (click)="openEditModal(review)"
           class="size-9 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors"
           title="Edit Entry"
-        >
+         *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
           <app-icon name="Edit3" size="16"></app-icon>
         </button>
         <button
@@ -184,3 +184,4 @@
     </form>
   </div>
 </div>
+

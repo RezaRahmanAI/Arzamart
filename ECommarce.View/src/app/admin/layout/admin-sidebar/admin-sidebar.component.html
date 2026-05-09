@@ -72,7 +72,7 @@
 
 
             <!-- Orders Dropdown -->
-            <div class="space-y-1">
+            <div class="space-y-1" *ngIf="hasAccess('orders')">
               <button
                 type="button"
                 class="flex items-center justify-between gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group w-full text-left relative"
@@ -113,7 +113,7 @@
             </div>
 
             <!-- Order View Dropdown -->
-            <div class="space-y-1">
+            <div class="space-y-1" *ngIf="hasAccess('orders')">
               <button
                 type="button"
                 class="flex items-center justify-between gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group w-full text-left relative"
@@ -162,7 +162,7 @@
             </div>
 
             <!-- Inventory Dropdown -->
-            <div class="space-y-1">
+            <div class="space-y-1" *ngIf="hasAccess('products')">
               <button
                 type="button"
                 class="flex items-center justify-between gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group w-full text-left relative"
@@ -247,3 +247,4 @@
     </div>
   </div>
 </aside>
+

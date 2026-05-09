@@ -28,10 +28,8 @@ module.exports = {
         "border-dark":          "#333333",
       },
       fontFamily: {
-        sans:    ["Inter", "system-ui", "sans-serif"],
-        display: ["Poppins", "sans-serif"],
-        cta:     ["Outfit", "sans-serif"],
-        bengali: ["Hind Siliguri", "sans-serif"],
+        sans:    ["Albra Sans", "system-ui", "sans-serif"],
+        display: ["Mondia", "Mondia Regular", "sans-serif"],
       },
       fontSize: {
         "ds-xs":   ["clamp(0.6875rem, 1vw, 0.75rem)",   { lineHeight: "1.5" }],

@@ -1,3 +1,4 @@
+import { staffGuard } from './guards/staff.guard';
 import { Routes } from "@angular/router";
 import { provideCharts, withDefaultRegisterables } from "ng2-charts";
 
@@ -25,7 +26,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-products/admin-products.component").then(
             (m) => m.AdminProductsComponent,
           ),
-        data: { title: "Products" },
+        data: { title: "Products", menuKey: "products" }, canActivate: [staffGuard],
       },
 
       {
@@ -34,7 +35,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-category-management/admin-category-management.component").then(
             (m) => m.AdminCategoryManagementComponent,
           ),
-        data: { title: "Main Collections Management" },
+        data: { title: "Main Collections Management", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "products/sub-categories",
@@ -42,7 +43,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-sub-category-management/admin-sub-category-management.component").then(
             (m) => m.AdminSubCategoryManagementComponent,
           ),
-        data: { title: "Sub Category Management" },
+        data: { title: "Sub Category Management", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "products/groups",
@@ -50,7 +51,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-product-group-management/admin-product-group-management.component").then(
             (m) => m.AdminProductGroupManagementComponent,
           ),
-        data: { title: "Product Group Management" },
+        data: { title: "Product Group Management", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "inventory",
@@ -58,7 +59,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-inventory/admin-inventory.component").then(
             (m) => m.AdminInventoryComponent,
           ),
-        data: { title: "Inventory Management" },
+        data: { title: "Inventory Management", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "products/create",
@@ -66,7 +67,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-product-form/admin-product-form.component").then(
             (m) => m.AdminProductFormComponent,
           ),
-        data: { title: "Add Product" },
+        data: { title: "Add Product", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "products/:id/edit",
@@ -74,7 +75,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-product-form/admin-product-form.component").then(
             (m) => m.AdminProductFormComponent,
           ),
-        data: { title: "Edit Product" },
+        data: { title: "Edit Product", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "products/:id/custom-lp",
@@ -82,7 +83,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-custom-landing-page-config/admin-custom-landing-page-config.component").then(
             (m) => m.AdminCustomLandingPageConfigComponent,
           ),
-        data: { title: "Custom LP Settings" },
+        data: { title: "Custom LP Settings", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "orders",
@@ -90,7 +91,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-orders/admin-orders.component").then(
             (m) => m.AdminOrdersComponent,
           ),
-        data: { title: "Order Management" },
+        data: { title: "Order Management", menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/create",
@@ -98,7 +99,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-manual-order/admin-manual-order.component").then(
             (m) => m.AdminManualOrderComponent,
           ),
-        data: { title: "Manual Order" },
+        data: { title: "Manual Order", menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/pre-order",
@@ -106,7 +107,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-manual-order/admin-manual-order.component").then(
             (m) => m.AdminManualOrderComponent,
           ),
-        data: { title: "Create Pre-order" },
+        data: { title: "Create Pre-order", menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/pre-orders",
@@ -114,7 +115,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-orders/admin-orders.component").then(
             (m) => m.AdminOrdersComponent,
           ),
-        data: { title: "Pre-order Management", preOrderOnly: true },
+        data: { title: "Pre-order Management", preOrderOnly: true, menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/website",
@@ -122,7 +123,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-orders/admin-orders.component").then(
             (m) => m.AdminOrdersComponent,
           ),
-        data: { title: "Website Orders", websiteOnly: true },
+        data: { title: "Website Orders", websiteOnly: true, menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/:id",
@@ -130,7 +131,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-order-details/admin-order-details.component").then(
             (m) => m.AdminOrderDetailsComponent,
           ),
-        data: { title: "Order Details" },
+        data: { title: "Order Details", menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/:id/edit",
@@ -138,7 +139,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-manual-order/admin-manual-order.component").then(
             (m) => m.AdminManualOrderComponent,
           ),
-        data: { title: "Edit Order" },
+        data: { title: "Edit Order", menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "customers",
@@ -146,7 +147,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-customers/admin-customers.component").then(
             (m) => m.AdminCustomersComponent,
           ),
-        data: { title: "Customers", description: "Customer management" },
+        data: { title: "Customers", description: "Customer management", menuKey: "customers" }, canActivate: [staffGuard],
       },
       {
         path: "customers/:phone/history",
@@ -154,7 +155,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-customer-history/admin-customer-history.component").then(
             (m) => m.AdminCustomerHistoryComponent,
           ),
-        data: { title: "Customer History" },
+        data: { title: "Customer History", menuKey: "customers" }, canActivate: [staffGuard],
       },
       {
         path: "analytics",
@@ -162,7 +163,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-analytics/admin-analytics.component").then(
             (m) => m.AdminAnalyticsComponent,
           ),
-        data: { title: "Analytics", description: "Performance reports" },
+        data: { title: "Analytics", description: "Performance reports", menuKey: "analytics" }, canActivate: [staffGuard],
       },
       {
         path: "settings",
@@ -170,7 +171,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-settings/admin-settings.component").then(
             (m) => m.AdminSettingsComponent,
           ),
-        data: { title: "Settings" },
+        data: { title: "Settings", menuKey: "settings" }, canActivate: [staffGuard],
       },
       {
         path: "banners",
@@ -178,7 +179,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-banners/admin-banners.component").then(
             (m) => m.AdminBannersComponent,
           ),
-        data: { title: "Banners" },
+        data: { title: "Banners", menuKey: "banners" }, canActivate: [staffGuard],
       },
       {
         path: "navigation",
@@ -186,7 +187,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-navigation-management/admin-navigation-management.component").then(
             (m) => m.AdminNavigationManagementComponent,
           ),
-        data: { title: "Navigation Management" },
+        data: { title: "Navigation Management", menuKey: "navigation" }, canActivate: [staffGuard],
       },
       {
         path: "pages",
@@ -194,7 +195,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-pages/admin-pages.component").then(
             (m) => m.AdminPagesComponent,
           ),
-        data: { title: "Content Pages" },
+        data: { title: "Content Pages", menuKey: "pages" }, canActivate: [staffGuard],
       },
       {
         path: "reviews",
@@ -202,7 +203,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-reviews/admin-reviews.component").then(
             (m) => m.AdminReviewsComponent,
           ),
-        data: { title: "Reviews Management" },
+        data: { title: "Reviews Management", menuKey: "reviews" }, canActivate: [staffGuard],
       },
       {
         path: "order-sources",
@@ -210,7 +211,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-source-management/admin-source-management.component").then(
             (m) => m.AdminSourceManagementComponent,
           ),
-        data: { title: "Order Source Management" },
+        data: { title: "Order Source Management", menuKey: "order-sources" }, canActivate: [staffGuard],
       },
       {
         path: "security",
@@ -218,7 +219,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-blocked-ips/admin-blocked-ips.component").then(
             (m) => m.AdminBlockedIpsComponent,
           ),
-        data: { title: "Security & IP Blocking" },
+        data: { title: "Security & IP Blocking", menuKey: "security" }, canActivate: [staffGuard],
       },
       {
         path: "users",
@@ -226,7 +227,7 @@ export const ADMIN_ROUTES: Routes = [
           import("./pages/admin-user-management/admin-user-management.component").then(
             (m) => m.AdminUserManagementComponent,
           ),
-        data: { title: "User Management" },
+        data: { title: "User Management", menuKey: "users" }, canActivate: [staffGuard],
       },
       {
         path: "profile",
@@ -247,3 +248,4 @@ export const ADMIN_ROUTES: Routes = [
     ],
   },
 ];
+
