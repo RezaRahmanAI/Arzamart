@@ -5,7 +5,7 @@
       <h2 class="text-ds-2xl font-bold uppercase tracking-tight text-ds-text">
         {{ isPreOrderMode ? 'Pre-orders' : 'Orders' }}
       </h2>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+      <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
         {{ isPreOrderMode ? 'Track pre-order fulfillment' : 'Fulfillment command center' }}
       </p>
     </div>
@@ -13,7 +13,7 @@
       <button
         (click)="refreshOrders()"
         [disabled]="isRefreshing"
-        class="btn btn-secondary h-11 px-ds-6 !text-[10px] tracking-widest uppercase"
+        class="btn btn-secondary h-11 px-ds-6 !text-ds-xs tracking-widest uppercase"
       >
         <app-icon name="RotateCw" size="14" [className]="isRefreshing ? 'animate-spin' : ''"></app-icon>
         <span>{{ isRefreshing ? 'Wait...' : 'Refresh' }}</span>
@@ -21,14 +21,14 @@
 
       <a
         routerLink="/admin/orders/create"
-        class="btn btn-secondary h-11 px-ds-6 !text-[10px] tracking-widest uppercase"
+        class="btn btn-secondary h-11 px-ds-6 !text-ds-xs tracking-widest uppercase"
       >
         <app-icon name="ShoppingCart" size="14"></app-icon>
         <span>New Order</span>
       </a>
       <a
         routerLink="/admin/orders/pre-order"
-        class="btn btn-primary h-11 px-ds-8 !text-[10px] tracking-widest uppercase"
+        class="btn btn-primary h-11 px-ds-8 !text-ds-xs tracking-widest uppercase"
       >
         <app-icon name="PackagePlus" size="14"></app-icon>
         <span>New Pre-order</span>
@@ -43,7 +43,7 @@
           <app-icon name="Hash" size="14"></app-icon>
         </span>
         <input
-          class="form-input !h-10 !pl-ds-10 !text-[10px] font-bold"
+          class="form-input !h-10 !pl-ds-10 !text-ds-xs font-bold"
           placeholder="ORDER ID..."
           type="text"
           [formControl]="orderIdSearchControl"
@@ -56,7 +56,7 @@
           <app-icon name="Phone" size="14"></app-icon>
         </span>
         <input
-          class="form-input !h-10 !pl-ds-10 !text-[10px] font-bold"
+          class="form-input !h-10 !pl-ds-10 !text-ds-xs font-bold"
           placeholder="PHONE..."
           type="text"
           [formControl]="phoneSearchControl"
@@ -67,7 +67,7 @@
       <div class="relative" (click)="$event.stopPropagation()">
         <button
           (click)="toggleStatusMenu($event)"
-          class="form-input !h-10 flex items-center justify-between px-ds-4 text-[10px] font-bold uppercase tracking-widest"
+          class="form-input !h-10 flex items-center justify-between px-ds-4 text-ds-xs font-bold uppercase tracking-widest"
         >
           <div class="flex items-center gap-2">
             <app-icon name="Filter" size="14" className="text-ds-text-muted"></app-icon>
@@ -77,11 +77,11 @@
         </button>
         
         <div *ngIf="statusMenuOpen" class="absolute left-0 right-0 mt-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl z-[100] p-1 animate-in fade-in slide-in-from-top-1 duration-base">
-          <p class="px-ds-3 py-2 text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] border-b border-ds-border mb-1">Filter by status</p>
+          <p class="px-ds-3 py-2 text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] border-b border-ds-border mb-1">Filter by status</p>
           <div class="max-h-64 overflow-y-auto">
             <button *ngFor="let status of statusOptions" 
                     (click)="setStatusFilter(status, $event)" 
-                    class="w-full px-ds-3 py-2.5 text-left text-[10px] font-bold rounded-sm transition-colors flex items-center justify-between uppercase tracking-widest"
+                    class="w-full px-ds-3 py-2.5 text-left text-ds-xs font-bold rounded-sm transition-colors flex items-center justify-between uppercase tracking-widest"
                     [class.bg-ds-text]="selectedStatus === status"
                     [class.text-ds-surface]="selectedStatus === status"
                     [class.text-ds-text-muted]="selectedStatus !== status"
@@ -100,7 +100,7 @@
       <div class="relative">
         <select
           (change)="setOrderTypeFilter($any($event.target).value)"
-          class="form-input !h-10 !pl-ds-4 !pr-ds-8 text-[10px] font-bold uppercase tracking-widest appearance-none cursor-pointer"
+          class="form-input !h-10 !pl-ds-4 !pr-ds-8 text-ds-xs font-bold uppercase tracking-widest appearance-none cursor-pointer"
         >
           <option value="All" [selected]="selectedOrderType === 'All'">Types</option>
           <option value="PreOrder" [selected]="selectedOrderType === 'PreOrder'">Pre-Order</option>
@@ -114,7 +114,7 @@
       <div class="relative" (click)="$event.stopPropagation()">
         <button
           (click)="toggleDateMenu($event)"
-          class="form-input !h-10 flex items-center justify-between px-ds-4 text-[10px] font-bold uppercase tracking-widest"
+          class="form-input !h-10 flex items-center justify-between px-ds-4 text-ds-xs font-bold uppercase tracking-widest"
         >
           <div class="flex items-center gap-2">
             <app-icon name="Calendar" size="14" className="text-ds-text-muted"></app-icon>
@@ -126,10 +126,10 @@
         <div *ngIf="dateMenuOpen" class="absolute right-0 lg:right-auto lg:left-0 mt-3 w-[420px] bg-ds-surface border border-ds-border rounded-sm shadow-2xl z-[100] overflow-hidden flex flex-col md:flex-row animate-in fade-in slide-in-from-top-2 duration-base">
           <!-- Shortcuts -->
           <div class="w-full md:w-1/3 bg-ds-bg/50 p-ds-4 border-b md:border-b-0 md:border-r border-ds-border space-y-1">
-            <p class="px-ds-3 py-2 text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mb-2">Shortcuts</p>
+            <p class="px-ds-3 py-2 text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] mb-2">Shortcuts</p>
             <button *ngFor="let range of dateRanges" 
                     (click)="setDateRange(range, $event)" 
-                    class="w-full px-ds-3 py-2 text-left text-[10px] font-bold rounded-sm transition-colors flex items-center justify-between uppercase tracking-widest"
+                    class="w-full px-ds-3 py-2 text-left text-ds-xs font-bold rounded-sm transition-colors flex items-center justify-between uppercase tracking-widest"
                     [class.bg-ds-text]="selectedDateRange === range"
                     [class.text-ds-surface]="selectedDateRange === range"
                     [class.text-ds-text-muted]="selectedDateRange !== range"
@@ -142,21 +142,21 @@
           <!-- Custom Range -->
           <div class="w-full md:w-2/3 p-ds-6 flex flex-col justify-between bg-ds-surface">
             <div class="space-y-ds-6">
-              <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em] border-b border-ds-border pb-ds-4">Custom Range</p>
+              <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.4em] border-b border-ds-border pb-ds-4">Custom Range</p>
               <div class="grid grid-cols-2 gap-ds-4">
                 <div class="space-y-2">
-                  <label class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">From</label>
-                  <input type="date" [(ngModel)]="tempStartDate" class="form-input !h-10 !px-ds-3 !text-[10px] font-mono">
+                  <label class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest ml-1">From</label>
+                  <input type="date" [(ngModel)]="tempStartDate" class="form-input !h-10 !px-ds-3 !text-ds-xs font-mono">
                 </div>
                 <div class="space-y-2">
-                  <label class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">To</label>
-                  <input type="date" [(ngModel)]="tempEndDate" class="form-input !h-10 !px-ds-3 !text-[10px] font-mono">
+                  <label class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest ml-1">To</label>
+                  <input type="date" [(ngModel)]="tempEndDate" class="form-input !h-10 !px-ds-3 !text-ds-xs font-mono">
                 </div>
               </div>
             </div>
             <div class="mt-ds-8 flex gap-ds-3">
-              <button (click)="dateMenuOpen = false" class="btn btn-secondary flex-1 !h-10 !text-[10px] uppercase tracking-widest">Cancel</button>
-              <button (click)="applyCustomRange($event)" [disabled]="!tempStartDate || !tempEndDate" class="btn btn-primary flex-1 !h-10 !text-[10px] uppercase tracking-widest">Apply</button>
+              <button (click)="dateMenuOpen = false" class="btn btn-secondary flex-1 !h-10 !text-ds-xs uppercase tracking-widest">Cancel</button>
+              <button (click)="applyCustomRange($event)" [disabled]="!tempStartDate || !tempEndDate" class="btn btn-primary flex-1 !h-10 !text-ds-xs uppercase tracking-widest">Apply</button>
             </div>
           </div>
         </div>
@@ -166,7 +166,7 @@
       <div class="relative" (click)="$event.stopPropagation()">
         <button
           (click)="sourceMenuOpen = !sourceMenuOpen; statusMenuOpen = false; dateMenuOpen = false"
-          class="form-input !h-10 flex items-center justify-between px-ds-4 text-[10px] font-bold uppercase tracking-widest"
+          class="form-input !h-10 flex items-center justify-between px-ds-4 text-ds-xs font-bold uppercase tracking-widest"
         >
           <div class="flex items-center gap-2">
             <app-icon [name]="selectedSourcePageId ? 'Globe' : (selectedSocialMediaSourceId ? 'Share2' : 'Layers')" size="14" className="text-ds-text-muted"></app-icon>
@@ -180,7 +180,7 @@
         <div *ngIf="sourceMenuOpen" class="absolute right-0 mt-2 w-64 bg-ds-surface border border-ds-border rounded-sm shadow-2xl z-[100] p-1 animate-in fade-in slide-in-from-top-1 duration-base">
           <div class="max-h-64 overflow-y-auto">
             <button (click)="setSourcePageFilter(null); sourceMenuOpen = false" 
-                    class="w-full px-ds-3 py-2 text-left text-[10px] font-bold rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest"
+                    class="w-full px-ds-3 py-2 text-left text-ds-xs font-bold rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest"
                     [class.bg-ds-text]="!selectedSourcePageId && !selectedSocialMediaSourceId"
                     [class.text-ds-surface]="!selectedSourcePageId && !selectedSocialMediaSourceId"
                     [class.text-ds-text-muted]="selectedSourcePageId || selectedSocialMediaSourceId"
@@ -189,10 +189,10 @@
               <span>All Sources</span>
             </button>
 
-            <div class="px-ds-3 py-1.5 text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] bg-ds-bg/50 my-1">Pages</div>
+            <div class="px-ds-3 py-1.5 text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] bg-ds-bg/50 my-1">Pages</div>
             <button *ngFor="let page of sourcePages" 
                     (click)="setSourcePageFilter(page.id); sourceMenuOpen = false" 
-                    class="w-full px-ds-3 py-2 text-left text-[10px] font-bold rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest"
+                    class="w-full px-ds-3 py-2 text-left text-ds-xs font-bold rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest"
                     [class.bg-ds-text]="selectedSourcePageId === page.id"
                     [class.text-ds-surface]="selectedSourcePageId === page.id"
                     [class.text-ds-text-muted]="selectedSourcePageId !== page.id"
@@ -201,10 +201,10 @@
               <span>{{ page.name }}</span>
             </button>
 
-            <div class="px-ds-3 py-1.5 text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] bg-ds-bg/50 my-1">Social Media</div>
+            <div class="px-ds-3 py-1.5 text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] bg-ds-bg/50 my-1">Social Media</div>
             <button *ngFor="let source of socialMediaSources" 
                     (click)="setSocialMediaFilter(source.id); sourceMenuOpen = false" 
-                    class="w-full px-ds-3 py-2 text-left text-[10px] font-bold rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest"
+                    class="w-full px-ds-3 py-2 text-left text-ds-xs font-bold rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest"
                     [class.bg-ds-text]="selectedSocialMediaSourceId === source.id"
                     [class.text-ds-surface]="selectedSocialMediaSourceId === source.id"
                     [class.text-ds-text-muted]="selectedSocialMediaSourceId !== source.id"
@@ -224,14 +224,14 @@
     <div *ngIf="isLoading" class="absolute inset-0 bg-ds-bg/60 backdrop-blur-[2px] z-[50] flex items-center justify-center animate-in fade-in duration-300">
       <div class="flex flex-col items-center gap-ds-4">
         <div class="h-10 w-10 animate-spin rounded-sm border-2 border-ds-accent border-t-transparent"></div>
-        <p class="text-[9px] font-bold text-ds-text uppercase tracking-[0.5em] animate-pulse">Syncing Order Archive</p>
+        <p class="text-ds-xs font-bold text-ds-text uppercase tracking-[0.5em] animate-pulse">Syncing Order Archive</p>
       </div>
     </div>
 
     <div class="overflow-x-auto min-h-[450px]">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-ds-bg/50 border-b border-ds-border text-[10px] uppercase font-bold text-ds-text-muted tracking-[0.2em]">
+          <tr class="bg-ds-bg/50 border-b border-ds-border text-ds-xs uppercase font-bold text-ds-text-muted tracking-[0.2em]">
 
             <th class="px-ds-4 py-ds-4">Order No.</th>
             <th class="px-ds-4 py-ds-4">Products</th>
@@ -250,13 +250,13 @@
               <div class="flex flex-col gap-0.5">
                 <span 
                   (click)="copyToClipboard(order.orderNumber, $event)"
-                  class="text-[11px] font-bold tracking-tight transition-colors cursor-pointer uppercase flex items-center gap-2" 
+                  class="text-ds-sm font-bold tracking-tight transition-colors cursor-pointer uppercase flex items-center gap-2" 
                   [ngClass]="order.isPreOrder ? 'text-ds-accent' : 'text-ds-text'"
                   title="Copy Order Number">
                   #{{ order.orderNumber }}
                   <app-icon *ngIf="!order.isStockAvailable" name="AlertTriangle" size="14" className="text-red-500 animate-pulse" title="Stock Issue Detected"></app-icon>
                 </span>
-                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">{{ order.createdAt | date: 'MMM d, h:mm a' }}</span>
+                <span class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest">{{ order.createdAt | date: 'MMM d, h:mm a' }}</span>
               </div>
             </td>
             <td class="px-ds-4 py-ds-4 min-w-[200px]">
@@ -264,40 +264,40 @@
                 <div *ngFor="let item of order.items" class="flex items-center gap-2 group/item">
                   <div class="size-1 rounded-full bg-ds-border"></div>
                   <div class="flex items-center gap-2 min-w-0">
-                    <span class="text-[10px] font-bold text-ds-text uppercase tracking-tight truncate max-w-[160px]">
+                    <span class="text-ds-xs font-bold text-ds-text uppercase tracking-tight truncate max-w-[160px]">
                       {{ item.productName }}
                     </span>
-                    <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest border border-ds-border px-1 rounded-sm">{{ item.size || '-' }}</span>
+                    <span class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest border border-ds-border px-1 rounded-sm">{{ item.size || '-' }}</span>
                   </div>
                 </div>
               </div>
             </td>
             <td class="px-ds-4 py-ds-4">
               <div class="flex flex-col gap-1">
-                <span *ngIf="order.isPreOrder" class="inline-flex items-center px-2 py-0.5 rounded-sm text-[8px] font-bold uppercase tracking-widest bg-ds-accent text-white w-fit">
+                <span *ngIf="order.isPreOrder" class="inline-flex items-center px-2 py-0.5 rounded-sm text-ds-xs font-bold uppercase tracking-widest bg-ds-accent text-white w-fit">
                   Pre-Order
                 </span>
-                <span *ngIf="!order.isPreOrder && (order.sourcePageId || order.socialMediaSourceId)" class="inline-flex items-center px-2 py-0.5 rounded-sm text-[8px] font-bold uppercase tracking-widest border border-ds-border text-ds-text-muted w-fit">
+                <span *ngIf="!order.isPreOrder && (order.sourcePageId || order.socialMediaSourceId)" class="inline-flex items-center px-2 py-0.5 rounded-sm text-ds-xs font-bold uppercase tracking-widest border border-ds-border text-ds-text-muted w-fit">
                   Manual
                 </span>
-                <span *ngIf="!order.isPreOrder && !order.sourcePageId && !order.socialMediaSourceId" class="inline-flex items-center px-2 py-0.5 rounded-sm text-[8px] font-bold uppercase tracking-widest bg-ds-bg text-ds-text-muted border border-ds-border w-fit">
+                <span *ngIf="!order.isPreOrder && !order.sourcePageId && !order.socialMediaSourceId" class="inline-flex items-center px-2 py-0.5 rounded-sm text-ds-xs font-bold uppercase tracking-widest bg-ds-bg text-ds-text-muted border border-ds-border w-fit">
                   Web-App
                 </span>
               </div>
             </td>
             <td class="px-ds-4 py-ds-4">
               <div class="flex flex-col gap-0.5">
-                <span class="text-[11px] font-bold tracking-tight text-ds-text">
+                <span class="text-ds-sm font-bold tracking-tight text-ds-text">
                   {{ order.customerPhone }}
                 </span>
-                <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest truncate max-w-[120px]">{{ order.customerName }}</span>
+                <span class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest truncate max-w-[120px]">{{ order.customerName }}</span>
               </div>
             </td>
             <td class="px-ds-4 py-ds-4">
                 <div class="relative inline-block" (click)="$event.stopPropagation()" [style.z-index]="statusUpdateOrderId === order.id ? 100 : 1">
                     <button 
                       (click)="toggleStatusUpdateMenu(order.id, $event)"
-                      class="px-2.5 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest border flex items-center gap-2 transition-colors hover:bg-ds-bg"
+                      class="px-2.5 py-1 rounded-sm text-ds-xs font-bold uppercase tracking-widest border flex items-center gap-2 transition-colors hover:bg-ds-bg"
                       [ngClass]="statusClass(order.status)"
                     >
                       <span class="size-1.5 rounded-full" [ngStyle]="{ backgroundColor: getStatusColor(order.status) }"></span>
@@ -310,7 +310,7 @@
                       <div class="grid grid-cols-3 gap-1">
                         <ng-container *ngFor="let status of updateStatusOptions">
                             <div (click)="updateOrderStatus(order.id, status, $event)" 
-                                    class="px-3 py-2 text-left text-[9px] font-bold rounded-sm transition-colors flex items-center gap-2 group cursor-pointer uppercase tracking-widest"
+                                    class="px-3 py-2 text-left text-ds-xs font-bold rounded-sm transition-colors flex items-center gap-2 group cursor-pointer uppercase tracking-widest"
                                     [ngClass]="{
                                     'bg-ds-text text-ds-surface': order.status === status,
                                     'text-ds-text-muted hover:bg-ds-bg hover:text-ds-text': order.status !== status
@@ -324,19 +324,19 @@
                 </div>
             </td>
             <td class="px-ds-4 py-ds-4 text-center">
-                <app-price-display [amount]="order.total" [className]="'text-[11px] font-bold text-ds-text tracking-tight'" size="sm"></app-price-display>
-                <div class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-0.5">{{ order.itemsCount }} UNIT(S)</div>
+                <app-price-display [amount]="order.total" [className]="'text-ds-sm font-bold text-ds-text tracking-tight'" size="sm"></app-price-display>
+                <div class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest mt-0.5">{{ order.itemsCount }} UNIT(S)</div>
             </td>
             <td class="px-ds-4 py-ds-4">
-              <div *ngIf="order.sourcePageName" class="flex items-center gap-1.5 text-[9px] font-bold text-ds-text-sec uppercase tracking-widest">
+              <div *ngIf="order.sourcePageName" class="flex items-center gap-1.5 text-ds-xs font-bold text-ds-text-sec uppercase tracking-widest">
                 <app-icon name="Globe" size="12" className="text-ds-success opacity-70"></app-icon>
                 <span class="truncate max-w-[100px] text-ds-text">{{ order.sourcePageName }}</span>
               </div>
-              <div *ngIf="order.socialMediaSourceName" class="flex items-center gap-1.5 text-[9px] font-bold text-ds-text-sec uppercase tracking-widest">
+              <div *ngIf="order.socialMediaSourceName" class="flex items-center gap-1.5 text-ds-xs font-bold text-ds-text-sec uppercase tracking-widest">
                 <app-icon name="Share2" size="12" className="text-ds-accent opacity-70"></app-icon>
                 <span class="truncate max-w-[100px] text-ds-text">{{ order.socialMediaSourceName }}</span>
               </div>
-              <div *ngIf="!order.sourcePageName && !order.socialMediaSourceName" class="flex items-center gap-1.5 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">
+              <div *ngIf="!order.sourcePageName && !order.socialMediaSourceName" class="flex items-center gap-1.5 text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest">
                 <app-icon name="Globe" size="12" className="opacity-30"></app-icon>
                 <span>Storefront</span>
               </div>
@@ -382,21 +382,21 @@
       </div>
       <div class="space-y-ds-2">
         <h3 class="text-ds-xl font-bold text-ds-text uppercase tracking-tight">Zero Orders Registered</h3>
-        <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-widest">The archive is currently empty for this selection.</p>
+        <p class="text-ds-sm font-bold text-ds-text-muted uppercase tracking-widest">The archive is currently empty for this selection.</p>
       </div>
     </div>
   </div>
 
   <!-- Pagination -->
   <div class="flex flex-col sm:flex-row items-center justify-between gap-ds-6 bg-ds-surface border border-ds-border p-ds-6 rounded-sm">
-    <div class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">
+    <div class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest">
       Archive Range: <span class="text-ds-text">{{ paginationStart }}</span> — <span class="text-ds-text">{{ paginationEnd }}</span> of {{ totalResults }} results
     </div>
     <div class="flex items-center gap-ds-3">
       <button (click)="goToPreviousPage()" [disabled]="page === 1" class="size-10 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text-muted hover:text-ds-text hover:border-ds-text disabled:opacity-20 disabled:pointer-events-none transition-colors">
         <app-icon name="ChevronLeft" size="18"></app-icon>
       </button>
-      <div class="px-ds-4 py-ds-2 bg-ds-bg border border-ds-border rounded-sm text-[10px] font-bold uppercase tracking-widest">
+      <div class="px-ds-4 py-ds-2 bg-ds-bg border border-ds-border rounded-sm text-ds-xs font-bold uppercase tracking-widest">
         Node {{ page }} <span class="mx-1 text-ds-text-muted">/</span> {{ totalPages }}
       </div>
       <button (click)="goToNextPage()" [disabled]="page === totalPages" class="size-10 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text-muted hover:text-ds-text hover:border-ds-text disabled:opacity-20 disabled:pointer-events-none transition-colors">
@@ -413,7 +413,7 @@
     <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-xl overflow-hidden shadow-2xl animate-in zoom-in duration-base" (click)="$event.stopPropagation()">
       <div class="bg-ds-text p-ds-6 flex items-center justify-between text-ds-surface">
         <div>
-          <p class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-60 mb-1">Audit Log</p>
+          <p class="text-ds-xs font-bold uppercase tracking-[0.3em] opacity-60 mb-1">Audit Log</p>
           <h3 class="text-ds-lg font-bold uppercase tracking-tight">History — {{ trackingOrder.orderNumber }}</h3>
         </div>
         <button (click)="isTrackingModalOpen = false" class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm">
@@ -424,17 +424,17 @@
         <div *ngFor="let log of trackingOrder.logs" class="p-ds-4 bg-ds-bg border border-ds-border rounded-sm flex items-start gap-ds-4">
           <div class="size-2 mt-1.5 rounded-full shrink-0" [ngStyle]="{ backgroundColor: getStatusColor(log.statusTo) }"></div>
           <div>
-            <p class="font-bold text-[11px] uppercase tracking-widest text-ds-text">{{ log.statusTo }}</p>
+            <p class="font-bold text-ds-sm uppercase tracking-widest text-ds-text">{{ log.statusTo }}</p>
             <div class="flex items-center justify-between gap-4 mt-1">
-              <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">{{ log.createdAt | date:'MMM d, y — h:mm a' }}</p>
-              <span class="text-[8px] font-bold text-ds-accent uppercase tracking-widest">{{ log.changedBy }}</span>
+              <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em]">{{ log.createdAt | date:'MMM d, y — h:mm a' }}</p>
+              <span class="text-ds-xs font-bold text-ds-accent uppercase tracking-widest">{{ log.changedBy }}</span>
             </div>
-            <p class="text-[10px] mt-ds-2 text-ds-text-sec leading-relaxed" *ngIf="log.note">"{{ log.note }}"</p>
+            <p class="text-ds-xs mt-ds-2 text-ds-text-sec leading-relaxed" *ngIf="log.note">"{{ log.note }}"</p>
           </div>
         </div>
       </div>
       <div class="p-ds-6 bg-ds-bg border-t border-ds-border flex justify-end">
-        <button (click)="isTrackingModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8 !text-[10px] uppercase tracking-widest">Close Log</button>
+        <button (click)="isTrackingModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8 !text-ds-xs uppercase tracking-widest">Close Log</button>
       </div>
     </div>
   </div>
@@ -444,7 +444,7 @@
     <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in duration-base" (click)="$event.stopPropagation()">
       <div class="bg-ds-text p-ds-6 flex items-center justify-between text-ds-surface">
         <div>
-          <p class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-60 mb-1">Internal Communications</p>
+          <p class="text-ds-xs font-bold uppercase tracking-[0.3em] opacity-60 mb-1">Internal Communications</p>
           <h3 class="text-ds-lg font-bold uppercase tracking-tight">Order Notes — {{ notesOrder.orderNumber }}</h3>
         </div>
         <button (click)="isNotesModalOpen = false" class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm">
@@ -455,17 +455,17 @@
       <div class="p-ds-8 flex flex-col gap-ds-6">
         <!-- Add New Note -->
         <div class="space-y-3">
-          <label class="text-[10px] font-bold text-ds-text uppercase tracking-widest ml-1">Append New Observation</label>
+          <label class="text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Append New Observation</label>
           <div class="relative">
             <textarea 
               [(ngModel)]="newNoteText"
               rows="3"
-              class="form-textarea !p-ds-4 !text-[11px] font-medium leading-relaxed bg-ds-bg/30"
+              class="form-textarea !p-ds-4 !text-ds-sm font-medium leading-relaxed bg-ds-bg/30"
               placeholder="Enter administrative notation..."></textarea>
             <button 
               (click)="addNote()"
               [disabled]="isSavingNote || !newNoteText.trim()"
-              class="absolute bottom-3 right-3 btn btn-primary !h-8 px-ds-4 !text-[9px] uppercase tracking-widest">
+              class="absolute bottom-3 right-3 btn btn-primary !h-8 px-ds-4 !text-ds-xs uppercase tracking-widest">
               <app-icon *ngIf="isSavingNote" name="Loader2" size="12" className="animate-spin mr-1.5"></app-icon>
               <span>Add Note</span>
             </button>
@@ -474,25 +474,25 @@
 
         <!-- Note History -->
         <div class="space-y-4">
-          <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em] border-b border-ds-border pb-2">Chronological Archive</p>
+          <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.4em] border-b border-ds-border pb-2">Chronological Archive</p>
           <div class="max-h-[300px] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
             <div *ngFor="let note of notesOrder.notes" class="p-ds-4 bg-ds-bg/50 border border-ds-border rounded-sm relative group">
-              <p class="text-[11px] text-ds-text leading-relaxed">{{ note.content }}</p>
+              <p class="text-ds-sm text-ds-text leading-relaxed">{{ note.content }}</p>
               <div class="mt-2 flex items-center justify-between">
-                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">{{ note.createdAt | date:'MMM d, h:mm a' }}</span>
-                <span class="text-[8px] font-bold text-ds-accent uppercase tracking-widest">{{ note.adminName }}</span>
+                <span class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest">{{ note.createdAt | date:'MMM d, h:mm a' }}</span>
+                <span class="text-ds-xs font-bold text-ds-accent uppercase tracking-widest">{{ note.adminName }}</span>
               </div>
             </div>
             
             <div *ngIf="!notesOrder.notes || notesOrder.notes.length === 0" class="py-ds-8 text-center">
-              <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest italic opacity-40">No internal notes discovered.</p>
+              <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest italic opacity-40">No internal notes discovered.</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="p-ds-6 bg-ds-bg border-t border-ds-border flex justify-end">
-        <button (click)="isNotesModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8 !text-[10px] uppercase tracking-widest">Close Registry</button>
+        <button (click)="isNotesModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8 !text-ds-xs uppercase tracking-widest">Close Registry</button>
       </div>
     </div>
   </div>

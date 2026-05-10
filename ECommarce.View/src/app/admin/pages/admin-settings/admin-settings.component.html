@@ -1,13 +1,13 @@
 <div class="site-container-admin mx-auto flex flex-col gap-ds-8">
   <div
     *ngIf="saveMessage"
-    class="rounded-sm border border-ds-success/30 bg-ds-success/10 px-ds-6 py-ds-4 text-[10px] font-bold uppercase tracking-[0.2em] text-ds-success animate-pulse"
+    class="rounded-sm border border-ds-success/30 bg-ds-success/10 px-ds-6 py-ds-4 text-ds-xs font-bold uppercase tracking-[0.2em] text-ds-success animate-pulse"
   >
     {{ saveMessage }}
   </div>
   <div
     *ngIf="saveError"
-    class="rounded-sm border border-red-500/30 bg-red-500/10 px-ds-6 py-ds-4 text-[10px] font-bold uppercase tracking-[0.2em] text-red-500"
+    class="rounded-sm border border-red-500/30 bg-red-500/10 px-ds-6 py-ds-4 text-ds-xs font-bold uppercase tracking-[0.2em] text-red-500"
   >
     {{ saveError }}
   </div>
@@ -15,20 +15,20 @@
   <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-ds-6">
     <div>
       <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">System Parameters</h1>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+      <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
         Store Configuration & Global Logistics
       </p>
     </div>
     <div class="flex gap-ds-3">
       <button
-        class="btn btn-secondary h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest"
+        class="btn btn-secondary h-11 px-ds-8 !text-ds-xs font-bold uppercase tracking-widest"
         type="button"
         (click)="resetForm()"
        *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
         Revert
       </button>
       <button
-        class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest"
+        class="btn btn-primary h-11 px-ds-10 !text-ds-xs font-bold uppercase tracking-widest"
         type="button"
         (click)="saveChanges()"
         [disabled]="isSaving"
@@ -53,7 +53,7 @@
     <nav aria-label="Tabs" class="-mb-px flex space-x-ds-8 overflow-x-auto">
       <button
         *ngFor="let tab of tabs"
-        class="whitespace-nowrap py-ds-4 px-ds-1 border-b-2 text-[10px] font-bold uppercase tracking-[0.3em] transition-colors"
+        class="whitespace-nowrap py-ds-4 px-ds-1 border-b-2 text-ds-xs font-bold uppercase tracking-[0.3em] transition-colors"
         type="button"
         [ngClass]="
           activeTab === tab
@@ -73,16 +73,16 @@
         <!-- Brand Information -->
         <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
           <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
-            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Visual Architecture</h3>
-            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">
+            <h3 class="text-ds-sm font-bold text-ds-text uppercase tracking-[0.2em]">Visual Architecture</h3>
+            <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">
               Identity Assets & Global Parameters
             </p>
           </div>
           <div class="p-ds-8 space-y-ds-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-ds-8">
               <div class="col-span-1">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest mb-1.5">Primary Insignia</label>
-                <p class="text-[8px] text-ds-text-muted font-bold uppercase tracking-wider">Used in headers and generated documents</p>
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest mb-1.5">Primary Insignia</label>
+                <p class="text-[11px] text-ds-text-muted font-bold uppercase tracking-wider">Used in headers and generated documents</p>
               </div>
               <div class="col-span-2">
                 <div class="flex items-center gap-ds-6">
@@ -116,7 +116,7 @@
                       (click)="triggerLogoUpload()"
                     >
                       <div class="text-center">
-                        <div class="flex text-[9px] text-ds-text-muted font-bold uppercase tracking-widest">
+                        <div class="flex text-ds-xs text-ds-text-muted font-bold uppercase tracking-widest">
                           <label class="relative cursor-pointer" for="file-upload">
                             <span>Upload New Insignia</span>
                             <input
@@ -132,7 +132,7 @@
                         </div>
                       </div>
                     </div>
-                    <p *ngIf="logoError" class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ logoError }}</p>
+                    <p *ngIf="logoError" class="mt-2 text-ds-xs font-bold text-red-500 uppercase tracking-widest">{{ logoError }}</p>
                   </div>
                 </div>
               </div>
@@ -140,8 +140,8 @@
             <hr class="border-ds-border" />
             <div class="grid grid-cols-1 md:grid-cols-3 gap-ds-8">
               <div class="col-span-1">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest mb-1.5">Sizing Reference</label>
-                <p class="text-[8px] text-ds-text-muted font-bold uppercase tracking-wider">Product specification guide</p>
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest mb-1.5">Sizing Reference</label>
+                <p class="text-[11px] text-ds-text-muted font-bold uppercase tracking-wider">Product specification guide</p>
               </div>
               <div class="col-span-2">
                 <div class="flex items-center gap-ds-6">
@@ -180,12 +180,12 @@
                     <button
                       type="button"
                       (click)="sizeGuideUpload.click()"
-                      class="btn btn-secondary !h-10 !px-ds-6 !text-[9px] font-bold uppercase tracking-widest"
+                      class="btn btn-secondary !h-10 !px-ds-6 !text-ds-xs font-bold uppercase tracking-widest"
                     >
                       <app-icon name="Upload" size="14"></app-icon>
                       <span>Replace Guide</span>
                     </button>
-                    <p *ngIf="sizeGuideError" class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ sizeGuideError }}</p>
+                    <p *ngIf="sizeGuideError" class="mt-2 text-ds-xs font-bold text-red-500 uppercase tracking-widest">{{ sizeGuideError }}</p>
                   </div>
                 </div>
               </div>
@@ -193,36 +193,36 @@
             <hr class="border-ds-border" />
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-ds-6">
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Store Nomenclature</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" type="text" formControlName="websiteName" />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Store Nomenclature</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-bold uppercase" type="text" formControlName="websiteName" />
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Contact Terminal (Email)</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold" type="email" formControlName="contactEmail" />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Contact Terminal (Email)</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-bold" type="email" formControlName="contactEmail" />
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Support Line (Phone)</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono" type="text" formControlName="contactPhone" />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Support Line (Phone)</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-bold font-mono" type="text" formControlName="contactPhone" />
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">WhatsApp Interface</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono" type="text" formControlName="whatsAppNumber" />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">WhatsApp Interface</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-bold font-mono" type="text" formControlName="whatsAppNumber" />
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Operational Currency</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" type="text" formControlName="currency" />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Operational Currency</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-bold uppercase" type="text" formControlName="currency" />
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Complimentary Ship Threshold (৳)</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono" type="number" formControlName="freeShippingThreshold" min="0" />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Complimentary Ship Threshold (৳)</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-bold font-mono" type="number" formControlName="freeShippingThreshold" min="0" />
               </div>
               <div class="col-span-full space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Physical HQ Address</label>
-                <textarea class="form-input !py-ds-3 !px-ds-4 !text-[11px] font-bold uppercase min-h-[80px]" rows="2" formControlName="address"></textarea>
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Physical HQ Address</label>
+                <textarea class="form-input !py-ds-3 !px-ds-4 !text-ds-sm font-bold uppercase min-h-[80px]" rows="2" formControlName="address"></textarea>
               </div>
               <div class="col-span-full space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Global SEO Description</label>
-                <textarea class="form-input !py-ds-3 !px-ds-4 !text-[11px] font-bold leading-relaxed min-h-[80px]" rows="2" formControlName="description"></textarea>
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Global SEO Description</label>
+                <textarea class="form-input !py-ds-3 !px-ds-4 !text-ds-sm font-bold leading-relaxed min-h-[80px]" rows="2" formControlName="description"></textarea>
               </div>
             </div>
           </div>
@@ -231,26 +231,26 @@
         <!-- Social Links -->
         <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
           <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
-            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Network Nodes</h3>
-            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Social Media Integration</p>
+            <h3 class="text-ds-sm font-bold text-ds-text uppercase tracking-[0.2em]">Network Nodes</h3>
+            <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Social Media Integration</p>
           </div>
           <div class="p-ds-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-ds-6">
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Facebook Archive</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[10px] font-bold" type="url" formControlName="facebookUrl" placeholder="facebook.com/..." />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Facebook Archive</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-xs font-bold" type="url" formControlName="facebookUrl" placeholder="facebook.com/..." />
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Instagram Feed</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[10px] font-bold" type="url" formControlName="instagramUrl" placeholder="instagram.com/..." />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Instagram Feed</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-xs font-bold" type="url" formControlName="instagramUrl" placeholder="instagram.com/..." />
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Twitter / X Stream</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[10px] font-bold" type="url" formControlName="twitterUrl" placeholder="twitter.com/..." />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Twitter / X Stream</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-xs font-bold" type="url" formControlName="twitterUrl" placeholder="twitter.com/..." />
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">YouTube Channel</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[10px] font-bold" type="url" formControlName="youtubeUrl" placeholder="youtube.com/..." />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">YouTube Channel</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-xs font-bold" type="url" formControlName="youtubeUrl" placeholder="youtube.com/..." />
               </div>
             </div>
           </div>
@@ -261,18 +261,18 @@
       <section *ngIf="activeTab === 'General'" class="flex flex-col gap-ds-8">
         <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
           <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
-            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Tracking Logic</h3>
-            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Analytics & Pixel Configuration</p>
+            <h3 class="text-ds-sm font-bold text-ds-text uppercase tracking-[0.2em]">Tracking Logic</h3>
+            <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Analytics & Pixel Configuration</p>
           </div>
           <div class="p-ds-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-8">
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Facebook Pixel ID</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-mono font-bold" type="text" formControlName="facebookPixelId" placeholder="E.G. 1234567890" />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Facebook Pixel ID</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-mono font-bold" type="text" formControlName="facebookPixelId" placeholder="E.G. 1234567890" />
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Google Tag Manager ID</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-mono font-bold" type="text" formControlName="googleTagId" placeholder="E.G. G-XXXXXXXX" />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Google Tag Manager ID</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-mono font-bold" type="text" formControlName="googleTagId" placeholder="E.G. G-XXXXXXXX" />
               </div>
             </div>
           </div>
@@ -282,8 +282,8 @@
       <!-- Payments Section -->
       <section *ngIf="activeTab === 'Payments'" class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
         <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
-          <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Transaction Protocol</h3>
-          <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Payment Gateway Authorization</p>
+          <h3 class="text-ds-sm font-bold text-ds-text uppercase tracking-[0.2em]">Transaction Protocol</h3>
+          <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Payment Gateway Authorization</p>
         </div>
         <div class="p-ds-8 grid grid-cols-1 lg:grid-cols-2 gap-ds-8" formGroupName="payments">
           <!-- Stripe Card -->
@@ -292,8 +292,8 @@
               <div class="flex items-center gap-ds-4">
                 <div class="size-10 bg-ds-text text-ds-surface rounded-sm flex items-center justify-center font-bold text-xl">S</div>
                 <div>
-                  <h4 class="font-bold text-[11px] text-ds-text uppercase tracking-[0.1em]">Stripe Global</h4>
-                  <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Cards & Apple Pay Interface</p>
+                  <h4 class="font-bold text-ds-sm text-ds-text uppercase tracking-[0.1em]">Stripe Global</h4>
+                  <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-widest">Cards & Apple Pay Interface</p>
                 </div>
               </div>
               <div class="flex items-center">
@@ -305,14 +305,14 @@
             </div>
             <div class="space-y-ds-4">
               <div>
-                <label class="text-[8px] uppercase font-bold text-ds-text-muted tracking-[0.3em]">Operational Public Key</label>
+                <label class="text-[11px] uppercase font-bold text-ds-text-muted tracking-[0.3em]">Operational Public Key</label>
                 <div class="flex items-center bg-ds-surface rounded-sm border border-ds-border px-ds-3 py-2 mt-1">
-                  <code class="text-[10px] font-mono text-ds-text truncate flex-1 tracking-tight">{{ stripePublishableKey }}</code>
+                  <code class="text-ds-xs font-mono text-ds-text truncate flex-1 tracking-tight">{{ stripePublishableKey }}</code>
                   <button class="text-ds-text-muted hover:text-ds-text ml-2" type="button" (click)="copyStripeKey()">
                     <app-icon name="Copy" size="14"></app-icon>
                   </button>
                 </div>
-                <p *ngIf="copiedKey" class="mt-1 text-[8px] font-bold text-ds-success uppercase tracking-widest">Copied to System Clipboard</p>
+                <p *ngIf="copiedKey" class="mt-1 text-[11px] font-bold text-ds-success uppercase tracking-widest">Copied to System Clipboard</p>
               </div>
             </div>
           </div>
@@ -323,8 +323,8 @@
               <div class="flex items-center gap-ds-4">
                 <div class="size-10 bg-ds-text text-ds-surface rounded-sm flex items-center justify-center font-bold text-xl italic">P</div>
                 <div>
-                  <h4 class="font-bold text-[11px] text-ds-text uppercase tracking-[0.1em]">PayPal Direct</h4>
-                  <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Wallet & Global Credit</p>
+                  <h4 class="font-bold text-ds-sm text-ds-text uppercase tracking-[0.1em]">PayPal Direct</h4>
+                  <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-widest">Wallet & Global Credit</p>
                 </div>
               </div>
               <div class="flex items-center">
@@ -344,10 +344,10 @@
         <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
           <div class="px-ds-6 py-ds-4 border-b border-ds-border flex justify-between items-center bg-ds-bg/50">
             <div>
-              <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Logistics Grid</h3>
-              <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Fulfillment & Delivery Methods</p>
+              <h3 class="text-ds-sm font-bold text-ds-text uppercase tracking-[0.2em]">Logistics Grid</h3>
+              <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Fulfillment & Delivery Methods</p>
             </div>
-            <button class="btn btn-secondary !h-10 !px-ds-6 !text-[9px] font-bold uppercase tracking-widest" type="button" (click)="startAddDelivery()">
+            <button class="btn btn-secondary !h-10 !px-ds-6 !text-ds-xs font-bold uppercase tracking-widest" type="button" (click)="startAddDelivery()">
               <app-icon name="Plus" size="14"></app-icon>
               <span>Initialize Method</span>
             </button>
@@ -356,20 +356,20 @@
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-ds-bg/30 border-b border-ds-border">
-                  <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Nomenclature</th>
-                  <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Tariff</th>
-                  <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Estimated Window</th>
-                  <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Availability</th>
-                  <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] text-right">Actions</th>
+                  <th class="px-ds-6 py-ds-4 text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em]">Nomenclature</th>
+                  <th class="px-ds-6 py-ds-4 text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em]">Tariff</th>
+                  <th class="px-ds-6 py-ds-4 text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em]">Estimated Window</th>
+                  <th class="px-ds-6 py-ds-4 text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em]">Availability</th>
+                  <th class="px-ds-6 py-ds-4 text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em] text-right">Actions</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-ds-border/50">
                 <tr *ngFor="let method of deliveryMethods" class="hover:bg-ds-bg transition-colors group">
-                  <td class="px-ds-6 py-ds-4 text-[11px] font-bold text-ds-text uppercase tracking-tight">{{ method.name }}</td>
-                  <td class="px-ds-6 py-ds-4 text-[10px] text-ds-text font-bold font-mono tracking-widest">৳{{ method.cost }}</td>
-                  <td class="px-ds-6 py-ds-4 text-[10px] text-ds-text-muted font-bold uppercase tracking-widest">{{ method.estimatedDays || "N/A" }}</td>
+                  <td class="px-ds-6 py-ds-4 text-ds-sm font-bold text-ds-text uppercase tracking-tight">{{ method.name }}</td>
+                  <td class="px-ds-6 py-ds-4 text-ds-xs text-ds-text font-bold font-mono tracking-widest">৳{{ method.cost }}</td>
+                  <td class="px-ds-6 py-ds-4 text-ds-xs text-ds-text-muted font-bold uppercase tracking-widest">{{ method.estimatedDays || "N/A" }}</td>
                   <td class="px-ds-6 py-ds-4">
-                    <span class="px-2 py-0.5 rounded-sm text-[8px] font-bold uppercase tracking-widest border" [ngClass]="method.isActive ? 'bg-ds-success/10 text-ds-success border-ds-success/20' : 'bg-ds-bg text-ds-text-muted border-ds-border'">
+                    <span class="px-2 py-0.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border" [ngClass]="method.isActive ? 'bg-ds-success/10 text-ds-success border-ds-success/20' : 'bg-ds-bg text-ds-text-muted border-ds-border'">
                       {{ method.isActive ? "Operational" : "Offline" }}
                     </span>
                   </td>
@@ -381,7 +381,7 @@
                   </td>
                 </tr>
                 <tr *ngIf="deliveryMethods.length === 0">
-                  <td colspan="5" class="px-ds-6 py-ds-16 text-center text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em] italic">No Logistics parameters defined. Initialize via primary action.</td>
+                  <td colspan="5" class="px-ds-6 py-ds-16 text-center text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] italic">No Logistics parameters defined. Initialize via primary action.</td>
                 </tr>
               </tbody>
             </table>
@@ -394,24 +394,24 @@
         <div class="bg-ds-surface w-full max-w-lg rounded-sm border border-ds-border overflow-hidden shadow-2xl animate-in zoom-in duration-base" [formGroup]="deliveryForm">
           <div class="px-ds-8 py-ds-6 border-b border-ds-border bg-ds-text text-ds-surface flex justify-between items-center">
             <div>
-              <p class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-60 mb-1">Configuration Utility</p>
+              <p class="text-ds-xs font-bold uppercase tracking-[0.3em] opacity-60 mb-1">Configuration Utility</p>
               <h3 class="text-ds-lg font-bold uppercase tracking-tight">{{ editingDeliveryId ? "Edit Logistics Parameter" : "Initialize New Parameter" }}</h3>
             </div>
             <button class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm" (click)="closeDeliveryForm()"><app-icon name="X" size="20"></app-icon></button>
           </div>
           <div class="p-ds-8 space-y-ds-6">
             <div class="space-y-2">
-              <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Method Nomenclature</label>
-              <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" type="text" formControlName="name" placeholder="E.G. DOMESTIC EXPRESS" />
+              <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Method Nomenclature</label>
+              <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-bold uppercase" type="text" formControlName="name" placeholder="E.G. DOMESTIC EXPRESS" />
             </div>
             <div class="grid grid-cols-2 gap-ds-6">
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Operational Cost (৳)</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono" type="number" formControlName="cost" min="0" />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Operational Cost (৳)</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-bold font-mono" type="number" formControlName="cost" min="0" />
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Time Horizon</label>
-                <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" type="text" formControlName="estimatedDays" placeholder="E.G. 24-48 HOURS" />
+                <label class="block text-ds-xs font-bold text-ds-text uppercase tracking-widest ml-1">Time Horizon</label>
+                <input class="form-input !h-11 !px-ds-4 !text-ds-sm font-bold uppercase" type="text" formControlName="estimatedDays" placeholder="E.G. 24-48 HOURS" />
               </div>
             </div>
             <div class="flex items-center gap-ds-3 pt-ds-2">
@@ -419,12 +419,12 @@
                 <input type="checkbox" formControlName="isActive" class="sr-only peer">
                 <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
               </label>
-              <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">Mark as Operational</span>
+              <span class="text-ds-xs font-bold text-ds-text uppercase tracking-widest">Mark as Operational</span>
             </div>
           </div>
           <div class="p-ds-8 bg-ds-bg/30 border-t border-ds-border flex justify-end gap-ds-4">
-            <button class="btn btn-secondary !h-11 !px-ds-8 !text-[10px] font-bold uppercase tracking-widest" type="button" (click)="closeDeliveryForm()">Abort</button>
-            <button class="btn btn-primary !h-11 !px-ds-10 !text-[10px] font-bold uppercase tracking-widest" type="button" (click)="saveDelivery()" [disabled]="isSaving">
+            <button class="btn btn-secondary !h-11 !px-ds-8 !text-ds-xs font-bold uppercase tracking-widest" type="button" (click)="closeDeliveryForm()">Abort</button>
+            <button class="btn btn-primary !h-11 !px-ds-10 !text-ds-xs font-bold uppercase tracking-widest" type="button" (click)="saveDelivery()" [disabled]="isSaving">
               <app-icon *ngIf="isSaving" name="Loader2" size="14" className="animate-spin"></app-icon>
               <span>{{ isSaving ? "Syncing..." : "Sync Parameter" }}</span>
             </button>
@@ -434,7 +434,7 @@
     </form>
   </div>
   
-  <div class="mt-ds-24 mb-ds-12 text-center text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">
+  <div class="mt-ds-24 mb-ds-12 text-center text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em]">
     <p>
       © {{ Math.max(2026, date.getFullYear()) }}
       {{ settingsForm.controls.websiteName.value || "ARZAMART ARCHIVE" }}. ALL RIGHTS RESERVED.

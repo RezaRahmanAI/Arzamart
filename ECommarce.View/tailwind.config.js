@@ -32,15 +32,15 @@ module.exports = {
         display: ["Outfit", "system-ui", "sans-serif"],
       },
       fontSize: {
-        "ds-xs":   ["0.75rem",  { lineHeight: "1.5" }],
-        "ds-sm":   ["0.875rem", { lineHeight: "1.5" }],
-        "ds-base": ["1rem",     { lineHeight: "1.6" }],
-        "ds-lg":   ["1.125rem", { lineHeight: "1.6" }],
-        "ds-xl":   ["1.25rem",  { lineHeight: "1.4" }],
-        "ds-2xl":  ["1.5rem",   { lineHeight: "1.3" }],
-        "ds-3xl":  ["1.875rem", { lineHeight: "1.2" }],
-        "ds-4xl":  ["2.25rem",  { lineHeight: "1.1" }],
-        "ds-5xl":  ["3rem",     { lineHeight: "1.1" }],
+        "ds-xs":   ["0.8125rem",  { lineHeight: "1.5" }], // 13px
+        "ds-sm":   ["0.9375rem",  { lineHeight: "1.5" }], // 15px
+        "ds-base": ["1.0625rem",  { lineHeight: "1.6" }], // 17px
+        "ds-lg":   ["1.25rem",    { lineHeight: "1.6" }], // 20px
+        "ds-xl":   ["1.375rem",   { lineHeight: "1.4" }], // 22px
+        "ds-2xl":  ["1.625rem",   { lineHeight: "1.3" }], // 26px
+        "ds-3xl":  ["2rem",       { lineHeight: "1.2" }], // 32px
+        "ds-4xl":  ["2.5rem",      { lineHeight: "1.1" }], // 40px
+        "ds-5xl":  ["3.5rem",      { lineHeight: "1.1" }], // 56px
       },
       spacing: {
         "ds-1":  "0.25rem",

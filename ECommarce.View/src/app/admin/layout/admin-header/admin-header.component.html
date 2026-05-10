@@ -10,7 +10,7 @@
     >
       <app-icon name="Menu" size="24"></app-icon>
     </button>
-    <h2 class="text-ds-text text-lg font-bold tracking-tight uppercase">
+    <h2 class="text-ds-text text-xl md:text-2xl font-bold tracking-tight uppercase">
       {{ pageTitle$ | async }}
     </h2>
   </div>
@@ -67,9 +67,9 @@
             </div>
             <div class="absolute -bottom-0.5 -right-0.5 size-3 bg-ds-success border-2 border-ds-surface rounded-full"></div>
           </div>
-          <div class="hidden sm:flex flex-col items-start gap-0.5">
-            <span class="text-[11px] font-bold text-ds-text uppercase tracking-tight group-hover:text-ds-accent transition-colors leading-none">{{ user.name }}</span>
-            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] leading-none">{{ user.role }}</span>
+          <div class="hidden sm:flex flex-col items-start gap-1">
+            <span class="text-ds-sm font-bold text-ds-text uppercase tracking-tight group-hover:text-ds-accent transition-colors leading-none">{{ user.name }}</span>
+            <span class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em] leading-none">{{ user.role }}</span>
           </div>
           <app-icon name="ChevronDown" size="14" className="text-ds-text-muted group-hover:text-ds-text transition-all duration-base" [className]="isProfileDropdownOpen ? 'rotate-180' : ''"></app-icon>
         </button>
@@ -80,15 +80,15 @@
           class="absolute right-0 mt-3 w-72 bg-ds-surface border border-ds-border rounded-sm shadow-2xl p-ds-2 z-50 animate-in fade-in slide-in-from-top-2 duration-base"
         >
           <div class="px-ds-4 py-ds-4 mb-ds-2 border-b border-ds-border bg-ds-bg/30">
-            <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mb-1.5">Authenticated as</p>
-            <p class="text-[11px] font-bold text-ds-text truncate uppercase tracking-tight">{{ user.email }}</p>
+            <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em] mb-1.5">Authenticated as</p>
+            <p class="text-ds-sm font-bold text-ds-text truncate uppercase tracking-tight">{{ user.email }}</p>
           </div>
 
           <div class="space-y-1">
             <a
               href="/"
               target="_blank"
-              class="flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-[10px] font-bold text-ds-text-sec hover:text-ds-text hover:bg-ds-bg transition-all duration-base group uppercase tracking-widest"
+              class="flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-ds-xs font-bold text-ds-text-sec hover:text-ds-text hover:bg-ds-bg transition-all duration-base group uppercase tracking-widest"
             >
               <app-icon name="Eye" size="16" className="text-ds-text-muted group-hover:text-ds-text"></app-icon>
               <span>View Live Marketplace</span>
@@ -102,7 +102,7 @@
               <a
                 routerLink="/admin/users"
                 (click)="isProfileDropdownOpen = false"
-                class="flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-[10px] font-bold text-ds-text-sec hover:text-ds-text hover:bg-ds-bg transition-all duration-base group uppercase tracking-widest"
+                class="flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-ds-xs font-bold text-ds-text-sec hover:text-ds-text hover:bg-ds-bg transition-all duration-base group uppercase tracking-widest"
               >
                 <app-icon name="Users" size="16" className="text-ds-text-muted group-hover:text-ds-text"></app-icon>
                 <span>Staff Management</span>
@@ -111,7 +111,7 @@
               <a
                 routerLink="/admin/settings"
                 (click)="isProfileDropdownOpen = false"
-                class="flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-[10px] font-bold text-ds-text-sec hover:text-ds-text hover:bg-ds-bg transition-all duration-base group uppercase tracking-widest"
+                class="flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-ds-xs font-bold text-ds-text-sec hover:text-ds-text hover:bg-ds-bg transition-all duration-base group uppercase tracking-widest"
               >
                 <app-icon name="Settings" size="16" className="text-ds-text-muted group-hover:text-ds-text"></app-icon>
                 <span>System Preferences</span>
