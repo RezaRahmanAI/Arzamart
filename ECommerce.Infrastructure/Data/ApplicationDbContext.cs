@@ -64,6 +64,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<ProductImage>().HasQueryFilter(pi => pi.Product!.IsActive);
         builder.Entity<ProductVariant>().HasQueryFilter(pv => pv.Product!.IsActive);
         builder.Entity<Review>().HasQueryFilter(r => r.Product!.IsActive);
+        builder.Entity<ComboItem>().HasQueryFilter(ci => ci.Product!.IsActive);
+        builder.Entity<CustomLandingPageConfig>().HasQueryFilter(clp => clp.Product!.IsActive);
 
         // Delivery Method Configuration
         builder.Entity<DeliveryMethod>(entity =>
