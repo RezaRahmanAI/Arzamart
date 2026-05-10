@@ -5,6 +5,7 @@ using AutoMapper;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Data;
 
@@ -55,6 +56,25 @@ public class UnitOfWork : IUnitOfWork
     {
         _currentTransaction?.Dispose();
         _context.Dispose();
+    }
+
+    public async Task ExecuteInTransactionAsync(Func<Task> action)
+    {
+        var strategy = _context.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await action();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        });
     }
 
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity

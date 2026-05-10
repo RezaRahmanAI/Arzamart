@@ -254,7 +254,7 @@
                   [ngClass]="order.isPreOrder ? 'text-ds-accent' : 'text-ds-text'"
                   title="Copy Order Number">
                   #{{ order.orderNumber }}
-                  <app-icon *ngIf="!order.isStockAvailable" name="AlertTriangle" size="14" className="text-red-500 animate-pulse" title="Stock Issue Detected"></app-icon>
+                  <app-icon *ngIf="order.isPreOrder && !order.isStockAvailable" name="AlertTriangle" size="14" className="text-red-500 animate-pulse" title="Pre-Order Stock Issue Detected"></app-icon>
                 </span>
                 <span class="text-ds-text-muted">{{ order.createdAt | date: 'MMM d, h:mm a' }}</span>
               </div>

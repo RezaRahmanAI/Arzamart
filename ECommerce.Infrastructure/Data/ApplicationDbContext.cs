@@ -308,7 +308,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Review>(entity =>
         {
             entity.HasOne(r => r.Product)
-                .WithMany()
+                .WithMany(p => p.Reviews)
                 .HasForeignKey(r => r.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
         });

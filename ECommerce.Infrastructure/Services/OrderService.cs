@@ -76,141 +76,133 @@ public class OrderService : IOrderService
 
         // Wrap stock operations in a DB transaction for atomicity
         Order order = null!;
-        await _unitOfWork.BeginTransactionAsync();
-        try
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-        foreach (var itemDto in orderDto.Items)
-        {
-            if (!productDict.TryGetValue(itemDto.ProductId, out var product))
+            foreach (var itemDto in orderDto.Items)
             {
-                throw new KeyNotFoundException($"Product {itemDto.ProductId} not found");
-            }
-
-
-            // 1 & 2. Deduct from stock ONLY if NOT a pre-order AND status is a "Deducted" status
-            // Note: Since CreateOrderAsync usually defaults to Pending or PreOrder, stock will NOT be deducted here by default.
-            if (!finalIsPreOrder && ShouldDeductStock(finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending))
-            {
-                await ProcessProductStockAdjustmentAsync(product, itemDto.Quantity, itemDto.Size, returnToStock: false);
-            }
-
-            // Price Fallback logic (Keep as is)
-            decimal unitPrice = 0;
-            // Lookup variant for price even for combo if combo has its own variants
-            ProductVariant? priceVariant = null;
-            if (!string.IsNullOrEmpty(itemDto.Size))
-            {
-                 var normalizedSize = itemDto.Size.Trim().ToLower();
-                 priceVariant = product.Variants.FirstOrDefault(v => 
-                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-            }
-
-            if (priceVariant != null && (priceVariant.Price ?? 0) > 0)
-            {
-                unitPrice = priceVariant.Price ?? 0;
-            }
-            else
-            {
-                // Fallback: Get the minimum positive active price from any variant
-                var validVariants = product.Variants.Where(v => (v.Price ?? 0) > 0).ToList();
-                if (validVariants.Any())
+                if (!productDict.TryGetValue(itemDto.ProductId, out var product))
                 {
-                    unitPrice = validVariants.Min(v => {
-                        var p = v.Price ?? 0;
-                        var cp = v.CompareAtPrice ?? 0;
-                        return (cp > 0 && cp < p) ? cp : p;
-                    });
+                    throw new KeyNotFoundException($"Product {itemDto.ProductId} not found");
                 }
-            }
-            
-            // Image fallback
-            var itemImageUrl = product.ImageUrl;
 
-            var orderItem = new OrderItem
-            {
-                ProductId = product.Id,
-                ProductName = product.Name,
-                UnitPrice = unitPrice,
-                Quantity = itemDto.Quantity,
-                Size = itemDto.Size,
-                ImageUrl = itemImageUrl
-            };
-            
-            items.Add(orderItem);
-        }
 
-        var subtotal = items.Sum(i => i.TotalPrice);
-        decimal shippingCost = 0;
-        
-        // Fetch Site Settings for Free Shipping Threshold
-        var siteSettings = await _unitOfWork.Repository<SiteSetting>().ListAllAsync();
-        var settings = siteSettings.FirstOrDefault();
-        var freeShippingThreshold = settings?.FreeShippingThreshold ?? 0;
-
-        // Lookup delivery method if provided
-        if (orderDto.DeliveryMethodId.HasValue)
-        {
-            var method = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(orderDto.DeliveryMethodId.Value);
-            if (method != null)
-            {
-                if (freeShippingThreshold > 0 && subtotal >= freeShippingThreshold)
+                // 1 & 2. Deduct from stock ONLY if NOT a pre-order AND status is a "Deducted" status
+                // Note: Since CreateOrderAsync usually defaults to Pending or PreOrder, stock will NOT be deducted here by default.
+                if (!finalIsPreOrder && ShouldDeductStock(finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending))
                 {
-                    shippingCost = 0;
+                    await ProcessProductStockAdjustmentAsync(product, itemDto.Quantity, itemDto.Size, returnToStock: false);
+                }
+
+                // Price Fallback logic (Keep as is)
+                decimal unitPrice = 0;
+                // Lookup variant for price even for combo if combo has its own variants
+                ProductVariant? priceVariant = null;
+                if (!string.IsNullOrEmpty(itemDto.Size))
+                {
+                     var normalizedSize = itemDto.Size.Trim().ToLower();
+                     priceVariant = product.Variants.FirstOrDefault(v => 
+                        v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
+                }
+
+                if (priceVariant != null && (priceVariant.Price ?? 0) > 0)
+                {
+                    unitPrice = priceVariant.Price ?? 0;
                 }
                 else
                 {
-                    shippingCost = method.Cost;
+                    // Fallback: Get the minimum positive active price from any variant
+                    var validVariants = product.Variants.Where(v => (v.Price ?? 0) > 0).ToList();
+                    if (validVariants.Any())
+                    {
+                        unitPrice = validVariants.Min(v => {
+                            var p = v.Price ?? 0;
+                            var cp = v.CompareAtPrice ?? 0;
+                            return (cp > 0 && cp < p) ? cp : p;
+                        });
+                    }
+                }
+                
+                // Image fallback
+                var itemImageUrl = product.ImageUrl;
+
+                var orderItem = new OrderItem
+                {
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    UnitPrice = unitPrice,
+                    Quantity = itemDto.Quantity,
+                    Size = itemDto.Size,
+                    ImageUrl = itemImageUrl
+                };
+                
+                items.Add(orderItem);
+            }
+
+            var subtotal = items.Sum(i => i.TotalPrice);
+            decimal shippingCost = 0;
+            
+            // Fetch Site Settings for Free Shipping Threshold
+            var siteSettings = await _unitOfWork.Repository<SiteSetting>().ListAllAsync();
+            var settings = siteSettings.FirstOrDefault();
+            var freeShippingThreshold = settings?.FreeShippingThreshold ?? 0;
+
+            // Lookup delivery method if provided
+            if (orderDto.DeliveryMethodId.HasValue)
+            {
+                var method = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(orderDto.DeliveryMethodId.Value);
+                if (method != null)
+                {
+                    if (freeShippingThreshold > 0 && subtotal >= freeShippingThreshold)
+                    {
+                        shippingCost = 0;
+                    }
+                    else
+                    {
+                        shippingCost = method.Cost;
+                    }
                 }
             }
-        }
-        else
-        {
-             // If no delivery method is selected, we should strictly require it or default to 0/handling
-             // ideally the frontend forces a selection.
-             shippingCost = 0; 
-        }
+            else
+            {
+                 // If no delivery method is selected, we should strictly require it or default to 0/handling
+                 // ideally the frontend forces a selection.
+                 shippingCost = 0; 
+            }
 
-        order = new Order
-        {
-            OrderNumber = "PENDING", // Will be set after first save if using ID, or generated simply
-            CustomerName = orderDto.Name,
-            CustomerPhone = orderDto.Phone,
-            ShippingAddress = orderDto.Address,
-            City = orderDto.City,
-            Area = orderDto.Area,
-            Items = items,
-            SubTotal = subtotal,
-            Tax = 0,
-            ShippingCost = shippingCost,
-            DeliveryMethodId = orderDto.DeliveryMethodId,
-            Status = finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending,
-            IsPreOrder = finalIsPreOrder,
-            SourcePageId = orderDto.SourcePageId,
-            SocialMediaSourceId = orderDto.SocialMediaSourceId,
-            AdminNote = orderDto.AdminNote,
-            CustomerNote = orderDto.CustomerNote,
-            Discount = orderDto.Discount,
-            AdvancePayment = orderDto.AdvancePayment,
-            CreatedAt = DateTime.UtcNow
-        };
-        
-        order.Total = order.SubTotal + order.Tax + order.ShippingCost - order.Discount;
+            order = new Order
+            {
+                OrderNumber = "PENDING", // Will be set after first save if using ID, or generated simply
+                CustomerName = orderDto.Name,
+                CustomerPhone = orderDto.Phone,
+                ShippingAddress = orderDto.Address,
+                City = orderDto.City,
+                Area = orderDto.Area,
+                Items = items,
+                SubTotal = subtotal,
+                Tax = 0,
+                ShippingCost = shippingCost,
+                DeliveryMethodId = orderDto.DeliveryMethodId,
+                Status = finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending,
+                IsPreOrder = finalIsPreOrder,
+                SourcePageId = orderDto.SourcePageId,
+                SocialMediaSourceId = orderDto.SocialMediaSourceId,
+                AdminNote = orderDto.AdminNote,
+                CustomerNote = orderDto.CustomerNote,
+                Discount = orderDto.Discount,
+                AdvancePayment = orderDto.AdvancePayment,
+                CreatedAt = DateTime.UtcNow
+            };
+            
+            order.Total = order.SubTotal + order.Tax + order.ShippingCost - order.Discount;
 
-        _unitOfWork.Repository<Order>().Add(order);
-        await _unitOfWork.Complete();
+            _unitOfWork.Repository<Order>().Add(order);
+            await _unitOfWork.Complete();
 
-        // 5. Update OrderNumber to start from 16001 (e.g., 16001, 16002)
-        order.OrderNumber = (order.Id + 16000).ToString(); 
-        _unitOfWork.Repository<Order>().Update(order);
-        await _unitOfWork.Complete();
-
-        await _unitOfWork.CommitTransactionAsync();
-        }
-        catch
-        {
-            await _unitOfWork.RollbackTransactionAsync();
-            throw;
-        }
+            // 5. Update OrderNumber to start from 16001 (e.g., 16001, 16002)
+            order.OrderNumber = (order.Id + 16000).ToString(); 
+            _unitOfWork.Repository<Order>().Update(order);
+            await _unitOfWork.Complete();
+        });
 
         await _customerService.CreateOrUpdateCustomerAsync(
             orderDto.Phone,
