@@ -1,4 +1,5 @@
-import { CommonModule } from "@angular/common";
+import { NgFor } from '@angular/common';
+
 import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { AppIconComponent } from "../../shared/components/app-icon/app-icon.component";
@@ -19,7 +20,7 @@ type ProcessStep = {
 @Component({
   selector: "app-about",
   standalone: true,
-  imports: [CommonModule, RouterModule, AppIconComponent],
+  imports: [RouterModule, AppIconComponent, NgFor],
   templateUrl: "./about.component.html",
 })
 export class AboutComponent {

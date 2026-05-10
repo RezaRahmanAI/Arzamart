@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, UpperCasePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -21,7 +21,7 @@ interface FlatSubCategory extends SubCategory {
   selector: "app-admin-sub-category-management",
   standalone: true,
   imports: [
-    CommonModule,
+    NgIf, UpperCasePipe,
     ReactiveFormsModule,
     RouterModule,
     AppIconComponent,

@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, NgFor } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormControl, ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -15,7 +15,7 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
 @Component({
   selector: "app-admin-inventory",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, AppIconComponent, RouterModule],
+  imports: [NgIf, NgClass, ReactiveFormsModule, FormsModule, AppIconComponent, RouterModule, NgFor],
   templateUrl: "./admin-inventory.component.html",
 })
 export class AdminInventoryComponent implements OnInit, OnDestroy {

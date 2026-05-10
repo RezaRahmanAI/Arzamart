@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, NgFor } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -18,13 +18,7 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
 @Component({
   selector: "app-admin-products",
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    PriceDisplayComponent,
-    AppIconComponent,
-  ],
+  imports: [NgIf, NgClass, ReactiveFormsModule, RouterModule, PriceDisplayComponent, AppIconComponent, NgFor],
   templateUrl: "./admin-products.component.html",
 })
 export class AdminProductsComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgFor } from '@angular/common';
 import { Component } from "@angular/core";
 import {
   FormBuilder,
@@ -28,12 +28,7 @@ type InquiryTopic = {
 @Component({
   selector: "app-contact",
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    AppIconComponent,
-  ],
+  imports: [NgIf, ReactiveFormsModule, RouterModule, AppIconComponent, NgFor],
   templateUrl: "./contact.component.html",
 })
 export class ContactComponent {

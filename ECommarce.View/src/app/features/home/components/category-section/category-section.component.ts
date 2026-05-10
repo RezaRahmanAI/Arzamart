@@ -1,12 +1,12 @@
 import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgIf, NgFor } from '@angular/common';
 import { RouterModule } from "@angular/router";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 
 @Component({
   selector: "app-category-section",
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [NgIf, RouterModule, NgFor],
   templateUrl: "./category-section.component.html",
 })
 export class CategorySectionComponent {

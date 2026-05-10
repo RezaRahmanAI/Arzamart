@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -16,7 +16,7 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
   selector: "app-admin-category-management",
   standalone: true,
   imports: [
-    CommonModule,
+    NgIf,
     ReactiveFormsModule,
     RouterModule,
     AppIconComponent,

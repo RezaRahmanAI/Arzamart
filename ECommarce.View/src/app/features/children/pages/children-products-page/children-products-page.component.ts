@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { RouterLink } from "@angular/router";
 import { HttpContext } from "@angular/common/http";
 
@@ -15,7 +15,7 @@ import { ProductCardComponent } from "../../../../shared/components/product-card
   selector: "app-children-products-page",
   standalone: true,
   imports: [
-    CommonModule,
+    
     RouterLink,
     PriceDisplayComponent,
     AppIconComponent,

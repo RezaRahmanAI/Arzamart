@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, NgFor } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
@@ -10,7 +10,7 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
 @Component({
   selector: "app-admin-source-management",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
+  imports: [NgIf, NgClass, ReactiveFormsModule, AppIconComponent, NgFor],
   templateUrl: "./admin-source-management.component.html",
 })
 export class AdminSourceManagementComponent implements OnInit, OnDestroy {

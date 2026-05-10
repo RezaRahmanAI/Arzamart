@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, AsyncPipe, NgFor } from '@angular/common';
 import { Component, OnInit, inject } from "@angular/core";
 import { RouterModule, Router } from "@angular/router";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
@@ -18,7 +18,7 @@ import { AuthService } from "../../../core/services/auth.service";
 @Component({
   selector: "app-admin-sidebar",
   standalone: true,
-  imports: [CommonModule, RouterModule, AppIconComponent],
+  imports: [NgIf, NgClass, AsyncPipe, RouterModule, AppIconComponent, NgFor],
   templateUrl: "./admin-sidebar.component.html",
 })
 export class AdminSidebarComponent implements OnInit {

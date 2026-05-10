@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, NgStyle, DatePipe, NgFor } from '@angular/common';
 import {
   Component,
   HostListener,
@@ -29,15 +29,7 @@ import { NotificationService } from "../../../core/services/notification.service
 @Component({
   selector: "app-admin-orders",
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    RouterModule,
-    PriceDisplayComponent,
-    AppIconComponent,
-    AdminOrderInvoiceComponent,
-  ],
+  imports: [NgIf, NgClass, NgStyle, DatePipe, ReactiveFormsModule, FormsModule, RouterModule, PriceDisplayComponent, AppIconComponent, AdminOrderInvoiceComponent, NgFor],
   templateUrl: "./admin-orders.component.html",
 })
 export class AdminOrdersComponent implements OnInit, OnDestroy {

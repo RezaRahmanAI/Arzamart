@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-placeholder',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './placeholder.component.html',
   styleUrl: './placeholder.component.css',
 })

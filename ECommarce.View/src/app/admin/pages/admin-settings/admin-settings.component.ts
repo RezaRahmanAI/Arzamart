@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, NgFor } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -27,12 +27,7 @@ import { NotificationService } from "../../../core/services/notification.service
 @Component({
   selector: "app-admin-settings",
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    AppIconComponent,
-  ],
+  imports: [NgIf, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, NgFor],
   templateUrl: "./admin-settings.component.html",
   styleUrl: "./admin-settings.component.css",
 })

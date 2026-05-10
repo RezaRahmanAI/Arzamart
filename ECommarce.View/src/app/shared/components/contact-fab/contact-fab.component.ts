@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgIf } from '@angular/common';
 import {
   animate,
   style,
@@ -13,7 +13,7 @@ import { AppIconComponent } from "../app-icon/app-icon.component";
 @Component({
   selector: "app-contact-fab",
   standalone: true,
-  imports: [CommonModule, AppIconComponent],
+  imports: [NgIf, AppIconComponent],
   animations: [
     trigger("famTrigger", [
       state("void", style({ transform: "scale(0)", opacity: 0 })),

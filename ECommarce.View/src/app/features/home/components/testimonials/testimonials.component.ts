@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, NgFor } from '@angular/common';
 import { ReviewService } from "../../../../core/services/review.service";
 import { Review } from "../../../../core/models/review";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
@@ -8,7 +8,7 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
 @Component({
   selector: "app-testimonials",
   standalone: true,
-  imports: [CommonModule, AppIconComponent],
+  imports: [NgIf, NgClass, AppIconComponent, NgFor],
   templateUrl: "./testimonials.component.html",
   styleUrl: "./testimonials.component.css",
 })

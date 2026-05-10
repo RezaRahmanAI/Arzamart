@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, DatePipe, NgFor } from '@angular/common';
 import { Component, OnInit, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import {
@@ -16,7 +16,7 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
 @Component({
   selector: "app-admin-analytics",
   standalone: true,
-  imports: [CommonModule, FormsModule, PriceDisplayComponent, AppIconComponent],
+  imports: [NgIf, NgClass, DatePipe, FormsModule, PriceDisplayComponent, AppIconComponent, NgFor],
   templateUrl: "./admin-analytics.component.html",
 })
 export class AdminAnalyticsComponent implements OnInit {

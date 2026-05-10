@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, NgFor } from '@angular/common';
 import { RouterModule } from "@angular/router";
 
 import { Category } from "../../../../core/models/category";
@@ -9,7 +9,7 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
 @Component({
   selector: "app-category-grid",
   standalone: true,
-  imports: [CommonModule, RouterModule, AppIconComponent],
+  imports: [NgIf, NgClass, RouterModule, AppIconComponent, NgFor],
   templateUrl: "./category-grid.component.html",
   styleUrl: "./category-grid.component.css",
 })

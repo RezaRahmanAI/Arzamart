@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, DatePipe, NgFor } from '@angular/common';
 import { Component, OnInit, inject } from "@angular/core";
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
 import { AdminUsersService, AdminUser, CreateAdminRequest } from "../../services/admin-users.service";
@@ -10,7 +10,7 @@ import { NotificationService } from "../../../core/services/notification.service
 @Component({
   selector: "app-admin-user-management",
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, AppIconComponent],
+  imports: [NgIf, NgClass, DatePipe, FormsModule, ReactiveFormsModule, AppIconComponent, NgFor],
   templateUrl: "./admin-user-management.component.html",
 })
 export class AdminUserManagementComponent implements OnInit {

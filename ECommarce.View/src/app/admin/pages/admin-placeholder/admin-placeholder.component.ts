@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-admin-placeholder',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './admin-placeholder.component.html',
 })
 export class AdminPlaceholderComponent {

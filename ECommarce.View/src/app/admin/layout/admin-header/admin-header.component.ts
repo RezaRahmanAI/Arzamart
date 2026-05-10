@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, AsyncPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from "@angular/router";
@@ -12,7 +12,7 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
 @Component({
   selector: "app-admin-header",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppIconComponent, RouterModule],
+  imports: [NgIf, AsyncPipe, ReactiveFormsModule, AppIconComponent, RouterModule],
   templateUrl: "./admin-header.component.html",
 })
 export class AdminHeaderComponent implements OnInit, OnDestroy {

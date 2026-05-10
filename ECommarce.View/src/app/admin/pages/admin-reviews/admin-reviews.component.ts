@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, DatePipe, NgFor } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
@@ -10,7 +10,7 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
 @Component({
   selector: "app-admin-reviews",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
+  imports: [NgIf, NgClass, DatePipe, ReactiveFormsModule, AppIconComponent, NgFor],
   templateUrl: "./admin-reviews.component.html",
 })
 export class AdminReviewsComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { BannerService, HeroBanner } from "../../../../core/services/banner.service";
@@ -8,7 +8,7 @@ import { map } from "rxjs";
 @Component({
   selector: "app-promo-banner",
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [NgIf, AsyncPipe, RouterModule],
   templateUrl: "./promo-banner.component.html",
 })
 export class PromoBannerComponent implements OnInit {

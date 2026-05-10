@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf } from '@angular/common';
 import { combineLatest } from "rxjs";
 import { Component, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
@@ -11,7 +11,7 @@ import { AdminProduct } from "../../models/products.models";
 @Component({
   selector: "app-admin-custom-landing-page-config",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppIconComponent],
+  imports: [NgIf, ReactiveFormsModule, RouterModule, AppIconComponent],
   templateUrl: "./admin-custom-landing-page-config.component.html",
 })
 export class AdminCustomLandingPageConfigComponent implements OnInit {

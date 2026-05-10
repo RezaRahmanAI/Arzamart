@@ -1,5 +1,5 @@
 import { AuthService } from '../../../core/services/auth.service';
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, CurrencyPipe, NgFor } from '@angular/common';
 import { Component, OnDestroy, inject } from "@angular/core";
 import {
   AbstractControl,
@@ -48,13 +48,7 @@ interface MediaFormValue {
 @Component({
   selector: "app-admin-product-form",
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    PriceDisplayComponent,
-    AppIconComponent,
-  ],
+  imports: [NgIf, NgClass, CurrencyPipe, ReactiveFormsModule, RouterModule, PriceDisplayComponent, AppIconComponent, NgFor],
   host: {
     '(document:click)': 'onDocumentClick($event)'
   },

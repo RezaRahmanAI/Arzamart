@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf } from '@angular/common';
 import { Component, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
@@ -9,7 +9,7 @@ import { NotificationService } from "../../../core/services/notification.service
 @Component({
   selector: "app-admin-profile",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
+  imports: [NgIf, ReactiveFormsModule, AppIconComponent],
   templateUrl: "./admin-profile.component.html",
 })
 export class AdminProfileComponent implements OnInit {

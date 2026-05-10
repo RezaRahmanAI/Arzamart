@@ -1,11 +1,11 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, AsyncPipe } from '@angular/common';
 import { Component, inject } from "@angular/core";
 import { SiteSettingsService } from "../../../../core/services/site-settings.service";
 
 @Component({
   selector: "app-newsletter",
   standalone: true,
-  imports: [CommonModule],
+  imports: [NgIf, AsyncPipe],
   templateUrl: "./newsletter.component.html",
   styleUrl: "./newsletter.component.css",
 })

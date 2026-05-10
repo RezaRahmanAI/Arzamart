@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, NgFor } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, signal } from "@angular/core";
 import {
   FormControl,
@@ -46,14 +46,7 @@ interface CartItem {
 @Component({
   selector: "app-admin-manual-order",
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    RouterModule,
-    AppIconComponent,
-    PriceDisplayComponent,
-  ],
+  imports: [NgIf, NgClass, FormsModule, ReactiveFormsModule, RouterModule, AppIconComponent, PriceDisplayComponent, NgFor],
   templateUrl: "./admin-manual-order.component.html",
 })
 export class AdminManualOrderComponent implements OnInit, OnDestroy {

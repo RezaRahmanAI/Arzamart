@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgClass } from '@angular/common';
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest } from "rxjs";
 import { ProductService } from "../../../../core/services/product.service";
@@ -16,7 +16,7 @@ import { Router, RouterModule } from "@angular/router";
 @Component({
   selector: "app-product-gallery",
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, AppIconComponent, RouterModule],
+  imports: [NgClass, ProductCardComponent, AppIconComponent, RouterModule],
   templateUrl: "./product-gallery.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush
 })

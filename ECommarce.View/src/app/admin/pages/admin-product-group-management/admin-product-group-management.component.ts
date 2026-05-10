@@ -1,5 +1,5 @@
 import { AuthService } from '../../../core/services/auth.service';
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, NgFor } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject, ViewChild, ElementRef } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -15,12 +15,7 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
 @Component({
   selector: "app-admin-product-group-management",
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    AppIconComponent,
-  ],
+  imports: [NgIf, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, NgFor],
   templateUrl: "./admin-product-group-management.component.html",
 })
 export class AdminProductGroupManagementComponent {

@@ -1,5 +1,6 @@
+import { NgFor } from '@angular/common';
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { HttpContext } from "@angular/common/http";
 
 import { ProductService } from "../../../../core/services/product.service";
@@ -10,7 +11,7 @@ import { SHOW_LOADING } from "../../../../core/services/loading.service";
 @Component({
   selector: "app-new-arrivals",
   standalone: true,
-  imports: [CommonModule, ProductCardComponent],
+  imports: [ProductCardComponent, NgFor],
   templateUrl: "./new-arrivals.component.html",
   styleUrl: "./new-arrivals.component.css",
   changeDetection: ChangeDetectionStrategy.OnPush

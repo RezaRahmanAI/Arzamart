@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 
 import { MenBreadcrumbsComponent } from "../../components/breadcrumbs/breadcrumbs.component";
 import { MenCategoryChipsComponent } from "../../components/category-chips/category-chips.component";
@@ -13,7 +13,7 @@ import { Product } from "../../../../core/models/product";
   selector: "app-men-products-page",
   standalone: true,
   imports: [
-    CommonModule,
+    
     MenBreadcrumbsComponent,
     MenCategoryChipsComponent,
     MenFiltersSortbarComponent,

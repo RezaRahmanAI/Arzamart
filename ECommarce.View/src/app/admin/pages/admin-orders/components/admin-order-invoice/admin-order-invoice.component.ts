@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, DatePipe, NgFor } from '@angular/common';
 import { Component, Input, Output, EventEmitter, OnInit, inject } from "@angular/core";
 import { OrderDetail } from "../../../../models/orders.models";
 import { AdminSettings } from "../../../../models/settings.models";
@@ -10,7 +10,7 @@ import { AppIconComponent } from "../../../../../shared/components/app-icon/app-
 @Component({
   selector: "app-admin-order-invoice",
   standalone: true,
-  imports: [CommonModule, PriceDisplayComponent, AppIconComponent],
+  imports: [NgIf, DatePipe, PriceDisplayComponent, AppIconComponent, NgFor],
   templateUrl: "./admin-order-invoice.component.html",
   styleUrl: "./admin-order-invoice.component.css",
 })

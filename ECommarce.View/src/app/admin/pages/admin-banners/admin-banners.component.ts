@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgFor } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
@@ -13,7 +13,7 @@ import { BannerService } from "../../../core/services/banner.service";
 @Component({
   selector: "app-admin-banners",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppIconComponent],
+  imports: [NgIf, ReactiveFormsModule, AppIconComponent, NgFor],
   templateUrl: "./admin-banners.component.html",
 })
 export class AdminBannersComponent implements OnInit, OnDestroy {

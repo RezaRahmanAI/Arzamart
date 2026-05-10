@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgClass, NgFor } from '@angular/common';
 
 import { ProductService } from "../../../../core/services/product.service";
 import { Product } from "../../../../core/models/product";
@@ -13,7 +13,7 @@ interface CategoryCount {
 @Component({
   selector: "app-women-sidebar-filters",
   standalone: true,
-  imports: [CommonModule],
+  imports: [NgClass, NgFor],
   templateUrl: "./sidebar-filters.component.html",
   styleUrl: "./sidebar-filters.component.css",
 })

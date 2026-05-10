@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, DatePipe, NgFor } from '@angular/common';
 import { Component, OnInit, inject } from "@angular/core";
 import {
   FormsModule,
@@ -15,12 +15,7 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
 @Component({
   selector: "app-admin-blocked-ips",
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    AppIconComponent,
-  ],
+  imports: [NgIf, DatePipe, ReactiveFormsModule, FormsModule, AppIconComponent, NgFor],
   templateUrl: "./admin-blocked-ips.component.html",
 })
 export class AdminBlockedIpsComponent implements OnInit {

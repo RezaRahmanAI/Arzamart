@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgIf, AsyncPipe, DatePipe, NgFor } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
@@ -16,7 +16,7 @@ import { RouterModule } from "@angular/router";
 @Component({
   selector: "app-profile-page",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppIconComponent, RouterModule],
+  imports: [NgIf, AsyncPipe, DatePipe, ReactiveFormsModule, AppIconComponent, RouterModule, NgFor],
   templateUrl: "./profile-page.component.html",
   styleUrl: "./profile-page.component.css",
 })

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgClass, NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-men-category-chips',
   standalone: true,
-  imports: [CommonModule],
+  imports: [NgClass, NgFor],
   templateUrl: './category-chips.component.html',
   styleUrl: './category-chips.component.css',
 })

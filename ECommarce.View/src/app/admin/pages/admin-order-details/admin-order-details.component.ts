@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgClass, NgStyle, AsyncPipe, DatePipe, NgFor } from '@angular/common';
 import { Component, OnInit, inject, HostListener } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { Observable, switchMap, Subject, takeUntil, of } from "rxjs";
@@ -13,14 +13,7 @@ import { FormsModule } from "@angular/forms";
 @Component({
   selector: "app-admin-order-details",
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    PriceDisplayComponent,
-    PriceDisplayComponent,
-    AppIconComponent,
-    FormsModule,
-  ],
+  imports: [NgIf, NgClass, NgStyle, AsyncPipe, DatePipe, RouterModule, PriceDisplayComponent, AppIconComponent, FormsModule, NgFor],
   templateUrl: "./admin-order-details.component.html",
 })
 export class AdminOrderDetailsComponent implements OnInit {

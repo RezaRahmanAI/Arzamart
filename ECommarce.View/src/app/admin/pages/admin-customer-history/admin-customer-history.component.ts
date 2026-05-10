@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { NgIf, NgStyle, DatePipe, NgFor } from '@angular/common';
 import {
   Component,
   HostListener,
@@ -25,15 +25,7 @@ import { NotificationService } from "../../../core/services/notification.service
 @Component({
   selector: "app-admin-customer-history",
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    RouterModule,
-    PriceDisplayComponent,
-    AppIconComponent,
-    AdminOrderInvoiceComponent,
-  ],
+  imports: [NgIf, NgStyle, DatePipe, ReactiveFormsModule, FormsModule, RouterModule, PriceDisplayComponent, AppIconComponent, AdminOrderInvoiceComponent, NgFor],
   templateUrl: "./admin-customer-history.component.html",
 })
 export class AdminCustomerHistoryComponent implements OnInit, OnDestroy {

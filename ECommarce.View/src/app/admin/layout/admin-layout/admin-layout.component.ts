@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
-import { CommonModule } from "@angular/common";
+import { NgIf } from '@angular/common';
 import { filter } from "rxjs";
 
 import { AdminHeaderComponent } from "../admin-header/admin-header.component";
@@ -11,7 +11,7 @@ import { SidebarService } from "../../services/sidebar.service";
   selector: "app-admin-layout",
   standalone: true,
   imports: [
-    CommonModule,
+    NgIf,
     RouterModule,
     AdminHeaderComponent,
     AdminSidebarComponent,
