@@ -59,7 +59,7 @@ import { LoadingService } from "../../../core/services/loading.service";
       }
 
       .loading-text {
-        font-family: "Inter", sans-serif;
+        font-family: "Outfit", sans-serif;
         font-size: 11px;
         font-weight: 600;
         letter-spacing: 0.3em;

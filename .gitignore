@@ -32,3 +32,4 @@ ECommerce.API/wwwroot/uploads/
 api_errors.txt
 build_errors.txt
 *.tmp
+logs/

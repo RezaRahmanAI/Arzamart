@@ -1,4 +1,0 @@
-
-> ecommarce@1.0.0 build
-> ng build
-
