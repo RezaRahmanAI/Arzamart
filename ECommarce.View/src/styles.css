@@ -44,24 +44,12 @@
   --color-danger:         #D94F4F;
   --color-success:        #3D9970;
 
-  /* ── Border Radius ── */
+  /* ── Spacing ── */
   --radius-sm:   6px;
   --radius-md:   10px;
   --radius-lg:   16px;
   --radius-xl:   24px;
   --radius-full: 9999px;
-
-  /* ── Fluid Typography ── */
-  --text-xs:   clamp(0.6875rem, 0.8vw, 0.75rem);
-  --text-sm:   clamp(0.75rem, 1vw, 0.875rem);
-  --text-base: clamp(0.875rem, 1.2vw, 1rem);
-  --text-lg:   clamp(1rem, 1.5vw, 1.125rem);
-  --text-xl:   clamp(1.125rem, 1.8vw, 1.25rem);
-  --text-2xl:  clamp(1.25rem, 2.2vw, 1.625rem);
-  --text-3xl:  clamp(1.5rem, 3vw, 2.25rem);
-  --text-4xl:  clamp(2rem, 4vw, 3.25rem);
-  --text-5xl:  clamp(2.5rem, 5.5vw, 4.5rem);
-  --text-6xl:  clamp(3.25rem, 7vw, 6.5rem);
 
   /* ── Fluid Spacing ── */
   --space-1:  clamp(0.25rem, 0.3vw, 0.25rem);
@@ -120,46 +108,36 @@
   /* ── Typography Scale ── */
   
   h1 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 24px;
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 48px;
     font-weight: 700;
-    line-height: 32px;
-    letter-spacing: normal;
-    font-style: normal;
-    text-transform: none;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
     margin-bottom: 0.5em;
   }
 
   h2 {
-    font-family: 'Playfair Display', serif !important;
+    font-family: 'Outfit', sans-serif !important;
     font-size: 36px;
-    font-weight: 500;
-    line-height: 36px;
-    letter-spacing: -0.72px;
-    font-style: normal;
-    text-transform: none;
-    margin-bottom: 1em;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5em;
   }
 
   h3 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 31.4px;
-    letter-spacing: normal;
-    font-style: normal;
-    text-transform: none;
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.3;
     margin-bottom: 0.5em;
   }
 
   h4 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Outfit', sans-serif !important;
     font-size: 20px;
-    font-weight: 400;
-    line-height: 28px;
-    letter-spacing: normal;
-    font-style: normal;
-    text-transform: none;
+    font-weight: 600;
+    line-height: 1.4;
   }
 
   p {
@@ -762,17 +740,7 @@ input[type='number'] {
 }
 
 @layer utilities {
-  /* Fluid Typography Utilities */
-  .text-ds-xs { font-size: var(--text-xs); line-height: 1.4; }
-  .text-ds-sm { font-size: var(--text-sm); line-height: 1.5; }
-  .text-ds-base { font-size: var(--text-base); line-height: 1.6; }
-  .text-ds-lg { font-size: var(--text-lg); line-height: 1.5; }
-  .text-ds-xl { font-size: var(--text-xl); line-height: 1.4; }
-  .text-ds-2xl { font-size: var(--text-2xl); line-height: 1.3; }
-  .text-ds-3xl { font-size: var(--text-3xl); line-height: 1.2; }
-  .text-ds-4xl { font-size: var(--text-4xl); line-height: 1.1; }
-  .text-ds-5xl { font-size: var(--text-5xl); line-height: 1.05; }
-  .text-ds-6xl { font-size: var(--text-6xl); line-height: 1; }
+  /* Typography and Spacing Helpers */
   
   /* Fluid Spacing Utilities */
   .p-ds-1 { padding: var(--space-1); }
