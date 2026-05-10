@@ -6,11 +6,11 @@
         <app-icon name="ArrowLeft" size="18"></app-icon>
       </a>
       <div>
-        <h2 class="text-ds-2xl font-bold uppercase tracking-tight text-ds-text">Landing Page Design</h2>
-        <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5" *ngIf="product">Configure Asset: {{ product.name }}</p>
+        <h2 class="text-ds-text">Landing Page Design</h2>
+        <p class="text-ds-text-muted mt-1.5" *ngIf="product">Configure Asset: {{ product.name }}</p>
       </div>
     </div>
-    <button (click)="onSubmit()" [disabled]="isSaving" class="btn btn-primary h-12 px-ds-10 !text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-ds-3">
+    <button (click)="onSubmit()" [disabled]="isSaving" class="btn btn-primary h-12 px-ds-10 flex items-center justify-center gap-ds-3">
       <app-icon *ngIf="isSaving" name="Loader2" size="18" className="animate-spin"></app-icon>
       <app-icon *ngIf="!isSaving" name="Save" size="18"></app-icon>
       <span>{{ isSaving ? 'Syncing...' : 'Establish Design' }}</span>
@@ -20,7 +20,7 @@
   @if (isLoading) {
     <div class="flex flex-col items-center justify-center py-ds-32 gap-ds-6">
       <div class="size-12 border-2 border-ds-border border-t-ds-text rounded-sm animate-spin"></div>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.5em] animate-pulse">Hydrating Design Schema...</p>
+      <p class="text-ds-text-muted animate-pulse">Hydrating Design Schema...</p>
     </div>
   }
 
@@ -30,14 +30,14 @@
     <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm flex flex-col">
       <div class="px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
         <app-icon name="Clock" size="16" className="text-ds-text"></app-icon>
-        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Temporal Dynamics</h3>
+        <h3 class="text-ds-text">Temporal Dynamics</h3>
       </div>
 
       <div class="p-ds-8 flex flex-col gap-ds-8">
         <div class="flex items-center justify-between p-ds-4 bg-ds-bg/30 border border-ds-border rounded-sm">
             <div class="flex flex-col gap-1">
-              <label class="text-[10px] font-bold uppercase tracking-widest">Countdown Matrix</label>
-              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Active Timer Node</span>
+              <label >Countdown Matrix</label>
+              <span class="text-ds-text-muted">Active Timer Node</span>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" formControlName="isTimerVisible" class="sr-only peer" />
@@ -47,16 +47,16 @@
 
         @if (configForm.get('isTimerVisible')?.value) {
           <div class="space-y-2 animate-in slide-in-from-top-2 duration-300">
-            <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Temporal Horizon (Minutes)</label>
+            <label class="block text-ds-text-muted ml-1 mb-1.5">Temporal Horizon (Minutes)</label>
             <input type="number" formControlName="relativeTimerTotalMinutes" 
-                   class="form-input !h-12 !px-ds-4 !text-[11px] font-bold font-mono">
+                   class="form-input !h-12 !px-ds-4">
           </div>
         }
 
         <div class="space-y-2">
-            <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Header Nomenclature (Bengali)</label>
+            <label class="block text-ds-text-muted ml-1 mb-1.5">Header Nomenclature (Bengali)</label>
             <input type="text" formControlName="headerTitle" 
-                   class="form-input !h-12 !px-ds-4 !text-[11px] font-bold uppercase tracking-tight">
+                   class="form-input !h-12 !px-ds-4">
         </div>
       </div>
     </div>
@@ -65,14 +65,14 @@
     <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm flex flex-col">
       <div class="px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
         <app-icon name="Megaphone" size="16" className="text-ds-text"></app-icon>
-        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Marquee Dynamics</h3>
+        <h3 class="text-ds-text">Marquee Dynamics</h3>
       </div>
 
       <div class="p-ds-8 flex flex-col gap-ds-8">
         <div class="flex items-center justify-between p-ds-4 bg-ds-bg/30 border border-ds-border rounded-sm">
             <div class="flex flex-col gap-1">
-              <label class="text-[10px] font-bold uppercase tracking-widest">Global Announcement Bar</label>
-              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Sticky Marquee State</span>
+              <label >Global Announcement Bar</label>
+              <span class="text-ds-text-muted">Sticky Marquee State</span>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" formControlName="isMarqueeVisible" class="sr-only peer" />
@@ -81,10 +81,10 @@
         </div>
 
         <div class="space-y-2">
-            <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Announcement Content</label>
+            <label class="block text-ds-text-muted ml-1 mb-1.5">Announcement Content</label>
             <textarea formControlName="marqueeText" rows="3" 
-                   class="form-input !p-ds-4 !text-[11px] font-bold uppercase tracking-tight resize-none"></textarea>
-            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-1">Use {{ '{discount}' }} to display dynamic product discount percentage</p>
+                   class="form-input !p-ds-4 resize-none"></textarea>
+            <p class="text-ds-text-muted mt-1">Use {{ '{discount}' }} to display dynamic product discount percentage</p>
         </div>
       </div>
     </div>
@@ -93,14 +93,14 @@
     <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm flex flex-col">
         <div class="px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
           <app-icon name="Sparkles" size="16" className="text-ds-text"></app-icon>
-          <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">UX Parameters</h3>
+          <h3 class="text-ds-text">UX Parameters</h3>
         </div>
   
         <div class="p-ds-8 flex flex-col gap-ds-8">
           <div class="flex items-center justify-between p-ds-4 bg-ds-bg/30 border border-ds-border rounded-sm">
               <div class="flex flex-col gap-1">
-                <label class="text-[10px] font-bold uppercase tracking-widest">Asset Details Section</label>
-                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Technical Specifications</span>
+                <label >Asset Details Section</label>
+                <span class="text-ds-text-muted">Technical Specifications</span>
               </div>
               <label class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" formControlName="isProductDetailsVisible" class="sr-only peer" />
@@ -109,16 +109,16 @@
           </div>
   
           <div class="space-y-2">
-              <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Section Title Directive</label>
+              <label class="block text-ds-text-muted ml-1 mb-1.5">Section Title Directive</label>
               <input type="text" formControlName="productDetailsTitle" 
-                     class="form-input !h-12 !px-ds-4 !text-[11px] font-bold uppercase tracking-tight">
+                     class="form-input !h-12 !px-ds-4">
           </div>
   
           <div class="grid grid-cols-2 gap-ds-6">
             <div class="flex items-center justify-between p-ds-4 bg-ds-bg/30 border border-ds-border rounded-sm">
                 <div class="flex flex-col gap-1">
-                  <label class="text-[9px] font-bold uppercase tracking-widest">Fabric Spec</label>
-                  <span class="text-[8px] font-bold text-ds-text-muted uppercase">Visible</span>
+                  <label >Fabric Spec</label>
+                  <span class="text-ds-text-muted">Visible</span>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer scale-90">
                   <input type="checkbox" formControlName="isFabricVisible" class="sr-only peer" />
@@ -128,8 +128,8 @@
 
             <div class="flex items-center justify-between p-ds-4 bg-ds-bg/30 border border-ds-border rounded-sm">
               <div class="flex flex-col gap-1">
-                <label class="text-[9px] font-bold uppercase tracking-widest">Design Spec</label>
-                <span class="text-[8px] font-bold text-ds-text-muted uppercase">Visible</span>
+                <label >Design Spec</label>
+                <span class="text-ds-text-muted">Visible</span>
               </div>
               <label class="relative inline-flex items-center cursor-pointer scale-90">
                 <input type="checkbox" formControlName="isDesignVisible" class="sr-only peer" />
@@ -144,13 +144,13 @@
     <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm md:col-span-2">
         <div class="px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
             <app-icon name="ShieldCheck" size="16" className="text-ds-text"></app-icon>
-            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Social Proof & Urgency Matrix</h3>
+            <h3 class="text-ds-text">Social Proof & Urgency Matrix</h3>
         </div>
 
         <div class="p-ds-8 flex flex-col gap-ds-10">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-ds-6">
               <div class="flex items-center justify-between p-ds-5 bg-ds-bg/30 border border-ds-border rounded-sm">
-                  <label class="text-[10px] font-bold uppercase tracking-widest">Personnel Reviews</label>
+                  <label >Personnel Reviews</label>
                   <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" formControlName="isReviewsVisible" class="sr-only peer" />
                     <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
@@ -158,7 +158,7 @@
               </div>
 
               <div class="flex items-center justify-between p-ds-5 bg-ds-bg/30 border border-ds-border rounded-sm">
-                  <label class="text-[10px] font-bold uppercase tracking-widest">Stock Depletion</label>
+                  <label >Stock Depletion</label>
                   <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" formControlName="isStockUrgencyVisible" class="sr-only peer" />
                     <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
@@ -166,7 +166,7 @@
               </div>
 
               <div class="flex items-center justify-between p-ds-5 bg-ds-bg/30 border border-ds-border rounded-sm">
-                  <label class="text-[10px] font-bold uppercase tracking-widest">Logistics Velocity</label>
+                  <label >Logistics Velocity</label>
                   <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" formControlName="isOrderProgressVisible" class="sr-only peer" />
                     <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
@@ -177,21 +177,21 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-10 pt-ds-4">
             <div class="flex flex-col gap-ds-6">
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Featured Asset Nomenclature</label>
+                <label class="block text-ds-text-muted ml-1 mb-1.5">Featured Asset Nomenclature</label>
                 <input type="text" formControlName="featuredProductName" 
-                       class="form-input !h-12 !px-ds-4 !text-[11px] font-bold uppercase tracking-tight">
+                       class="form-input !h-12 !px-ds-4">
               </div>
               <div class="space-y-2">
-                <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Free Shipping Quantity Threshold</label>
+                <label class="block text-ds-text-muted ml-1 mb-1.5">Free Shipping Quantity Threshold</label>
                 <input type="number" formControlName="freeShippingThresholdQuantity" 
-                       class="form-input !h-12 !px-ds-4 !text-[12px] font-bold font-mono"
+                       class="form-input !h-12 !px-ds-4"
                        placeholder="E.G. 2 (ORDER 2+ FOR FREE SHIPPING)">
               </div>
             </div>
             <div class="space-y-2">
-              <label class="block text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1 mb-1.5">Marketing Directive (Footer)</label>
+              <label class="block text-ds-text-muted ml-1 mb-1.5">Marketing Directive (Footer)</label>
               <textarea formControlName="promoText" rows="4" 
-                        class="form-input !p-ds-4 !text-[11px] font-bold uppercase tracking-tight min-h-[120px] resize-none" 
+                        class="form-input !p-ds-4 min-h-[120px] resize-none" 
                         placeholder="E.G. 🔥 LIMITED EDITION — ORDER BEFORE TERMINATION"></textarea>
             </div>
           </div>
@@ -203,14 +203,14 @@
   @if (successMessage) {
     <div class="fixed bottom-ds-8 right-ds-8 bg-ds-text text-ds-surface px-ds-10 py-ds-5 rounded-sm shadow-2xl border border-ds-border flex items-center gap-ds-4 animate-in fade-in slide-in-from-right-10 duration-500 z-[200]">
       <app-icon name="Check" size="18"></app-icon>
-      <span class="text-[10px] font-bold uppercase tracking-[0.3em]">{{ successMessage }}</span>
+      <span >{{ successMessage }}</span>
     </div>
   }
 
   @if (errorMessage) {
     <div class="fixed bottom-ds-8 right-ds-8 bg-ds-bg border border-ds-border text-ds-text px-ds-10 py-ds-5 rounded-sm shadow-2xl flex items-center gap-ds-4 animate-in fade-in slide-in-from-right-10 duration-500 z-[200]">
       <app-icon name="AlertTriangle" size="18" className="text-red-500"></app-icon>
-      <span class="text-[10px] font-bold uppercase tracking-[0.3em]">{{ errorMessage }}</span>
+      <span >{{ errorMessage }}</span>
     </div>
   }
 </div>

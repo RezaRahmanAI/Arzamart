@@ -7,8 +7,8 @@
           <app-icon name="PackagePlus" size="20" className="text-ds-text"></app-icon>
         </div>
         <div>
-          <h4 class="text-[10px] font-bold text-ds-text uppercase tracking-[0.2em]">Pre-order</h4>
-          <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">Manual Entry</p>
+          <h4 class="text-ds-text">Pre-order</h4>
+          <p class="text-ds-text-muted mt-1">Manual Entry</p>
         </div>
       </a>
 
@@ -18,8 +18,8 @@
           <app-icon name="PlusCircle" size="20" className="text-ds-text"></app-icon>
         </div>
         <div>
-          <h4 class="text-[10px] font-bold text-ds-text uppercase tracking-[0.2em]">Inventory</h4>
-          <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">Add Product</p>
+          <h4 class="text-ds-text">Inventory</h4>
+          <p class="text-ds-text-muted mt-1">Add Product</p>
         </div>
       </a>
     </div>
@@ -34,15 +34,15 @@
           <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
             <app-icon name="CreditCard" size="24"></app-icon>
           </div>
-          <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-ds-text-muted border border-ds-border px-ds-2 py-1">Revenue</span>
+          <span class="text-ds-text-muted border border-ds-border px-ds-2 py-1">Revenue</span>
         </div>
         <div>
           <app-price-display
-            class="text-ds-3xl font-bold text-ds-text tracking-tighter"
+            class="text-ds-text"
             [amount]="stats.totalRevenue"
             size="lg"
           ></app-price-display>
-          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">Gross Earnings</p>
+          <p class="text-ds-text-muted mt-1">Gross Earnings</p>
         </div>
       </div>
     </div>
@@ -54,11 +54,11 @@
           <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
             <app-icon name="Receipt" size="24"></app-icon>
           </div>
-          <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-ds-text-muted border border-ds-border px-ds-2 py-1">Volumes</span>
+          <span class="text-ds-text-muted border border-ds-border px-ds-2 py-1">Volumes</span>
         </div>
         <div>
-          <span class="text-ds-4xl font-bold text-ds-text tracking-tighter leading-none">{{ stats.totalOrders }}</span>
-          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">Lifetime Orders</p>
+          <span class="text-ds-text">{{ stats.totalOrders }}</span>
+          <p class="text-ds-text-muted mt-1">Lifetime Orders</p>
         </div>
       </div>
     </div>
@@ -70,11 +70,11 @@
           <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
             <app-icon name="Truck" size="24"></app-icon>
           </div>
-          <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-ds-text-muted border border-ds-border px-ds-2 py-1">Success</span>
+          <span class="text-ds-text-muted border border-ds-border px-ds-2 py-1">Success</span>
         </div>
         <div>
-          <span class="text-ds-4xl font-bold text-ds-text tracking-tighter leading-none">{{ stats.deliveredOrders }}</span>
-          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">Shipped</p>
+          <span class="text-ds-text">{{ stats.deliveredOrders }}</span>
+          <p class="text-ds-text-muted mt-1">Shipped</p>
         </div>
       </div>
     </div>
@@ -86,11 +86,11 @@
           <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
             <app-icon name="Eye" size="24"></app-icon>
           </div>
-          <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-ds-text-muted border border-ds-border px-ds-2 py-1">Live</span>
+          <span class="text-ds-text-muted border border-ds-border px-ds-2 py-1">Live</span>
         </div>
         <div>
-          <span class="text-ds-4xl font-bold text-ds-text tracking-tighter leading-none">{{ traffic.uniqueVisitors }}</span>
-          <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1">{{ traffic.pageViews }} Views Today</p>
+          <span class="text-ds-text">{{ traffic.uniqueVisitors }}</span>
+          <p class="text-ds-text-muted mt-1">{{ traffic.pageViews }} Views Today</p>
         </div>
       </div>
     </div>
@@ -105,9 +105,9 @@
           <app-icon name="Clock" size="20" className="text-ds-text-muted"></app-icon>
         </div>
         <div>
-          <h4 class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Attention</h4>
-          <span class="text-ds-xl font-bold text-ds-text">{{ stats.pendingOrders }}</span>
-          <p class="text-[9px] font-bold text-ds-accent uppercase tracking-[0.2em] mt-0.5">Pending Action</p>
+          <h4 class="text-ds-text-muted">Attention</h4>
+          <span class="text-ds-text">{{ stats.pendingOrders }}</span>
+          <p class="text-ds-accent mt-0.5">Pending Action</p>
         </div>
       </div>
     </div>
@@ -119,9 +119,9 @@
           <app-icon name="Package" size="20" className="text-ds-text-muted"></app-icon>
         </div>
         <div>
-          <h4 class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Catalog</h4>
-          <span class="text-ds-xl font-bold text-ds-text">{{ stats.totalProducts }}</span>
-          <p class="text-[9px] font-bold text-ds-text-sec uppercase tracking-[0.2em] mt-0.5">Active Items</p>
+          <h4 class="text-ds-text-muted">Catalog</h4>
+          <span class="text-ds-text">{{ stats.totalProducts }}</span>
+          <p class="text-ds-text-sec mt-0.5">Active Items</p>
         </div>
       </div>
     </div>
@@ -133,9 +133,9 @@
           <app-icon name="Users" size="20" className="text-ds-text-muted"></app-icon>
         </div>
         <div>
-          <h4 class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Audience</h4>
-          <span class="text-ds-xl font-bold text-ds-text">{{ stats.totalCustomers }}</span>
-          <p class="text-[9px] font-bold text-ds-text-sec uppercase tracking-[0.2em] mt-0.5">Users</p>
+          <h4 class="text-ds-text-muted">Audience</h4>
+          <span class="text-ds-text">{{ stats.totalCustomers }}</span>
+          <p class="text-ds-text-sec mt-0.5">Users</p>
         </div>
       </div>
     </div>
@@ -147,9 +147,9 @@
           <app-icon name="RotateCcw" size="20" className="text-ds-text-muted"></app-icon>
         </div>
         <div>
-          <h4 class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Returns</h4>
-          <span class="text-ds-xl font-bold text-ds-text">{{ stats.returnedOrders }}</span>
-          <p class="text-[9px] font-bold text-red-500 uppercase tracking-[0.2em] mt-0.5">{{ stats.returnRate }} Rate</p>
+          <h4 class="text-ds-text-muted">Returns</h4>
+          <span class="text-ds-text">{{ stats.returnedOrders }}</span>
+          <p class="text-red-500 mt-0.5">{{ stats.returnRate }} Rate</p>
         </div>
       </div>
     </div>
@@ -174,7 +174,7 @@
 </ng-template>
 
 <footer class="mt-ds-32 mb-ds-12 text-center" *ngIf="settings$ | async as settings">
-  <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.5em]">
+  <p class="text-ds-text-muted">
     © {{ date.getFullYear() }} {{ settings.websiteName || "Arza" }} • Admin Navigation Console
   </p>
 </footer>

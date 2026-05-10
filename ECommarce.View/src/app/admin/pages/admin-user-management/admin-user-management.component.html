@@ -2,8 +2,8 @@
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Staff Directory</h1>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+      <h1 class="text-ds-text">Staff Directory</h1>
+      <p class="text-ds-text-muted mt-1.5">
         Administrative Authorization & Governance
       </p>
     </div>
@@ -11,7 +11,7 @@
       <button
         *ngIf="currentUserRole === 'SuperAdmin' && authService.currentUserSnapshot()?.role !== 'Staff'"
         (click)="isCreateModalOpen = true"
-        class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest"
+        class="btn btn-primary h-11 px-ds-10"
       >
         <app-icon name="UserPlus" size="14"></app-icon>
         <span>Initialize Staff</span>
@@ -27,13 +27,13 @@
                 <app-icon name="Shield" size="16"></app-icon>
             </div>
             <div>
-                <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Operational Command</h3>
-                <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Authorized Personnel Registry</p>
+                <h3 class="text-ds-text">Operational Command</h3>
+                <p class="text-ds-text-muted mt-0.5">Authorized Personnel Registry</p>
             </div>
         </div>
         <div class="flex items-center gap-ds-3 px-ds-4 py-1.5 bg-ds-bg border border-ds-border rounded-sm">
             <div class="size-1.5 rounded-full bg-ds-success animate-pulse"></div>
-            <span class="text-[9px] font-bold text-ds-text uppercase tracking-widest">{{ admins.length }} Active Nodes</span>
+            <span class="text-ds-text">{{ admins.length }} Active Nodes</span>
         </div>
     </div>
 
@@ -41,23 +41,23 @@
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="bg-ds-bg/30 border-b border-ds-border">
-            <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Identity & Protocol</th>
-            <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Access Clearance</th>
-            <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Enlistment Date</th>
-            <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] text-center">Protocol State</th>
-            <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] text-right" *ngIf="currentUserRole === 'SuperAdmin'">Directives</th>
+            <th class="px-ds-6 py-ds-4 text-ds-text-muted">Identity & Protocol</th>
+            <th class="px-ds-6 py-ds-4 text-ds-text-muted">Access Clearance</th>
+            <th class="px-ds-6 py-ds-4 text-ds-text-muted">Enlistment Date</th>
+            <th class="px-ds-6 py-ds-4 text-ds-text-muted text-center">Protocol State</th>
+            <th class="px-ds-6 py-ds-4 text-ds-text-muted text-right" *ngIf="currentUserRole === 'SuperAdmin'">Directives</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-ds-border/50">
           <tr *ngFor="let admin of admins" class="hover:bg-ds-bg transition-colors group">
             <td class="px-ds-6 py-ds-4">
               <div class="flex items-center gap-ds-4">
-                <div class="size-9 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text font-bold text-[10px] uppercase tracking-widest shadow-inner group-hover:bg-ds-text group-hover:text-ds-surface transition-all duration-500">
+                <div class="size-9 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text shadow-inner group-hover:bg-ds-text group-hover:text-ds-surface transition-all duration-500">
                   {{ getInitials(admin.fullName) }}
                 </div>
                   <div class="flex flex-col min-w-0">
-                    <span class="text-[11px] font-bold text-ds-text uppercase tracking-tight truncate">{{ admin.fullName }}</span>
-                    <span class="text-[8px] text-ds-text-muted font-bold uppercase tracking-widest mt-0.5">&#64;{{ admin.userName }}</span>
+                    <span class="text-ds-text truncate">{{ admin.fullName }}</span>
+                    <span class="text-ds-text-muted mt-0.5">&#64;{{ admin.userName }}</span>
                   </div>
               </div>
             </td>
@@ -66,12 +66,12 @@
                     <div class="px-ds-3 py-1 rounded-sm border flex items-center gap-ds-2 transition-colors" 
                          [ngClass]="admin.role === 'SuperAdmin' ? 'bg-ds-text text-ds-surface border-ds-text' : 'bg-ds-bg text-ds-text border-ds-border'">
                         <app-icon [name]="admin.role === 'SuperAdmin' ? 'ShieldCheck' : (admin.role === 'Staff' ? 'User' : 'Shield')" size="12"></app-icon>
-                        <span class="text-[9px] font-bold uppercase tracking-widest">{{ admin.role }}</span>
+                        <span >{{ admin.role }}</span>
                     </div>
                 </div>
             </td>
             <td class="px-ds-6 py-ds-4">
-              <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">{{ admin.createdAt | date: 'MMM dd, yyyy' }}</span>
+              <span class="text-ds-text-muted">{{ admin.createdAt | date: 'MMM dd, yyyy' }}</span>
             </td>
             <td class="px-ds-6 py-ds-4">
               <div class="flex items-center justify-center">
@@ -81,7 +81,7 @@
                       <app-icon [name]="admin.isActive ? 'ToggleRight' : 'ToggleLeft'" 
                                 size="24"
                                 [className]="admin.isActive ? 'text-ds-success' : 'text-ds-text-muted/30'"></app-icon>
-                      <span class="text-[9px] font-bold uppercase tracking-widest w-12 text-left"
+                      <span class="w-12 text-left"
                             [ngClass]="admin.isActive ? 'text-ds-success' : 'text-ds-text-muted'">
                           {{ admin.isActive ? 'Active' : 'Locked' }}
                       </span>
@@ -112,13 +112,13 @@
     <!-- Empty State -->
     <div *ngIf="!isLoading && admins.length === 0" class="py-ds-24 text-center">
       <app-icon name="Users" size="64" className="mx-auto mb-ds-4 text-ds-text-muted opacity-10"></app-icon>
-      <h3 class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em] italic">No Authorized Personnel Detected.</h3>
+      <h3 class="text-ds-text-muted">No Authorized Personnel Detected.</h3>
     </div>
 
     <!-- Loading State -->
     <div *ngIf="isLoading" class="p-ds-24 flex flex-col items-center justify-center space-y-ds-4">
       <app-icon name="Loader2" size="40" className="text-ds-text-muted/30 animate-spin"></app-icon>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">Synchronizing Registry...</p>
+      <p class="text-ds-text-muted">Synchronizing Registry...</p>
     </div>
   </div>
 
@@ -132,8 +132,8 @@
                       <app-icon name="UserPlus" size="20"></app-icon>
                   </div>
                   <div>
-                      <h3 class="text-[13px] font-bold text-ds-text uppercase tracking-[0.2em]">Initialize Personnel</h3>
-                      <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Personnel Authorization Terminal</p>
+                      <h3 class="text-ds-text">Initialize Personnel</h3>
+                      <p class="text-ds-text-muted mt-1">Personnel Authorization Terminal</p>
                   </div>
               </div>
               <button (click)="isCreateModalOpen = false" class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm text-ds-text-muted hover:text-ds-text">
@@ -146,29 +146,29 @@
           <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="space-y-ds-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
                   <div class="space-y-2">
-                      <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Full Identity</label>
+                      <label class="block text-ds-text ml-1">Full Identity</label>
                       <input type="text" formControlName="fullName" placeholder="E.G. ALEXANDER VANCE" 
-                             class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase">
+                             class="form-input !h-11 !px-ds-4">
                   </div>
                   <div class="space-y-2">
-                    <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">System Alias</label>
+                    <label class="block text-ds-text ml-1">System Alias</label>
                     <input type="text" formControlName="userName" placeholder="E.G. AVANCE" 
-                           class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase">
+                           class="form-input !h-11 !px-ds-4">
                   </div>
               </div>
 
               <div class="space-y-2">
-                  <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Communication Channel (Email)</label>
+                  <label class="block text-ds-text ml-1">Communication Channel (Email)</label>
                   <input type="email" formControlName="email" placeholder="E.G. VANCE@ARZAMART.COM" 
-                         class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase">
+                         class="form-input !h-11 !px-ds-4">
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
                 <div class="space-y-2">
-                    <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Authorization Secret</label>
+                    <label class="block text-ds-text ml-1">Authorization Secret</label>
                     <div class="relative">
                         <input [type]="isCreatePasswordVisible ? 'text' : 'password'" formControlName="password" placeholder="••••••••" 
-                               class="form-input !h-11 !pl-4 !pr-11 !text-[11px] font-bold">
+                               class="form-input !h-11 !pl-4 !pr-11">
                         <button type="button" (click)="isCreatePasswordVisible = !isCreatePasswordVisible" 
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted hover:text-ds-text transition-colors">
                             <app-icon [name]="isCreatePasswordVisible ? 'Eye' : 'EyeOff'" size="16"></app-icon>
@@ -177,9 +177,9 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Clearance Tier</label>
+                    <label class="block text-ds-text ml-1">Clearance Tier</label>
                     <div class="relative">
-                        <select formControlName="role" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase appearance-none cursor-pointer">
+                        <select formControlName="role" class="form-input !h-11 !px-ds-4 appearance-none cursor-pointer">
                             <option value="Admin">Personnel (Restricted)</option>
                             <option value="Staff">Staff (Granular Access)</option>
                             <option value="SuperAdmin">Executive (Full Clearance)</option>
@@ -191,14 +191,14 @@
 
               <!-- Menu Access Checklist for Staff -->
               <div *ngIf="createForm.get('role')?.value === 'Staff'" class="space-y-4 pt-4 border-t border-ds-border">
-                  <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Staff Access Privileges</label>
+                  <label class="block text-ds-text ml-1">Staff Access Privileges</label>
                   <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                       <label *ngFor="let menu of availableMenus" class="flex items-center gap-2 cursor-pointer group p-2 border border-ds-border/50 rounded-sm hover:border-ds-border bg-ds-bg/30">
                           <input type="checkbox" 
                                  [checked]="selectedMenus.includes(menu.key)"
                                  (change)="toggleMenuSelection(menu.key)"
                                  class="form-checkbox text-ds-text border-ds-border rounded-sm focus:ring-0 cursor-pointer">
-                          <span class="text-[10px] font-bold uppercase tracking-widest text-ds-text-muted group-hover:text-ds-text transition-colors">{{ menu.label }}</span>
+                          <span class="text-ds-text-muted group-hover:text-ds-text transition-colors">{{ menu.label }}</span>
                       </label>
                   </div>
               </div>
@@ -206,17 +206,17 @@
               <div class="p-ds-6 bg-ds-bg border border-ds-border rounded-sm space-y-ds-3">
                   <div class="flex items-center gap-ds-3 text-orange-500">
                       <app-icon name="ShieldAlert" size="16"></app-icon>
-                      <span class="text-[10px] font-bold uppercase tracking-[0.2em]">Security Advisory</span>
+                      <span >Security Advisory</span>
                   </div>
-                  <p class="text-[11px] font-bold text-ds-text-muted leading-relaxed italic uppercase tracking-tight">
+                  <p class="text-ds-text-muted">
                     GRANTING EXECUTIVE CLEARANCE PROVIDES ABSOLUTE CONTROL OVER PERSONNEL, CONFIGURATIONS, AND CORE DATA. USE WITH EXTREME VIGILANCE.
                   </p>
               </div>
 
               <div class="flex gap-ds-4 pt-ds-4">
-                  <button type="button" (click)="isCreateModalOpen = false" class="btn btn-secondary flex-1 !h-12 !text-[11px] font-bold uppercase tracking-[0.2em]">Abort</button>
+                  <button type="button" (click)="isCreateModalOpen = false" class="btn btn-secondary flex-1 !h-12">Abort</button>
                   <button type="submit" [disabled]="createForm.invalid || isSubmitting"
-                          class="btn btn-primary flex-[2] !h-12 !text-[11px] font-bold uppercase tracking-[0.2em] !bg-ds-text !text-ds-surface">
+                          class="btn btn-primary flex-[2] !h-12 !bg-ds-text !text-ds-surface">
                       <app-icon *ngIf="isSubmitting" name="Loader2" size="16" className="animate-spin"></app-icon>
                       <span>{{ isSubmitting ? 'SYNCING...' : 'ESTABLISH ENLISTMENT' }}</span>
                   </button>
@@ -236,8 +236,8 @@
                       <app-icon name="Edit" size="20"></app-icon>
                   </div>
                   <div>
-                      <h3 class="text-[13px] font-bold text-ds-text uppercase tracking-[0.2em]">Modify Registry</h3>
-                      <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Update Personnel Authorization Profile</p>
+                      <h3 class="text-ds-text">Modify Registry</h3>
+                      <p class="text-ds-text-muted mt-1">Update Personnel Authorization Profile</p>
                   </div>
               </div>
               <button (click)="isEditModalOpen = false" class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm text-ds-text-muted hover:text-ds-text">
@@ -250,29 +250,29 @@
           <form [formGroup]="editForm" (ngSubmit)="onUpdate()" class="space-y-ds-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
                   <div class="space-y-2">
-                      <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Full Identity</label>
+                      <label class="block text-ds-text ml-1">Full Identity</label>
                       <input type="text" formControlName="fullName" placeholder="Full Identity" 
-                             class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase">
+                             class="form-input !h-11 !px-ds-4">
                   </div>
                   <div class="space-y-2">
-                    <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">System Alias</label>
+                    <label class="block text-ds-text ml-1">System Alias</label>
                     <input type="text" formControlName="userName" placeholder="Username" 
-                           class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase">
+                           class="form-input !h-11 !px-ds-4">
                   </div>
               </div>
 
               <div class="space-y-2">
-                  <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Communication Channel (Email)</label>
+                  <label class="block text-ds-text ml-1">Communication Channel (Email)</label>
                   <input type="email" formControlName="email" placeholder="Email" 
-                         class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase">
+                         class="form-input !h-11 !px-ds-4">
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
                 <div class="space-y-2">
-                    <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">New Authorization Secret</label>
+                    <label class="block text-ds-text ml-1">New Authorization Secret</label>
                     <div class="relative">
                         <input [type]="isEditPasswordVisible ? 'text' : 'password'" formControlName="password" placeholder="••••••••" 
-                               class="form-input !h-11 !pl-4 !pr-11 !text-[11px] font-bold">
+                               class="form-input !h-11 !pl-4 !pr-11">
                         <button type="button" (click)="isEditPasswordVisible = !isEditPasswordVisible" 
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted hover:text-ds-text transition-colors">
                             <app-icon [name]="isEditPasswordVisible ? 'Eye' : 'EyeOff'" size="16"></app-icon>
@@ -281,9 +281,9 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Clearance Tier</label>
+                    <label class="block text-ds-text ml-1">Clearance Tier</label>
                     <div class="relative">
-                        <select formControlName="role" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase appearance-none cursor-pointer">
+                        <select formControlName="role" class="form-input !h-11 !px-ds-4 appearance-none cursor-pointer">
                             <option value="Admin">Personnel (Restricted)</option>
                             <option value="Staff">Staff (Granular Access)</option>
                             <option value="SuperAdmin">Executive (Full Clearance)</option>
@@ -297,22 +297,22 @@
 
               <!-- Menu Access Checklist for Staff (Edit) -->
               <div *ngIf="editForm.get('role')?.value === 'Staff'" class="space-y-4 pt-4 border-t border-ds-border">
-                  <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Staff Access Privileges</label>
+                  <label class="block text-ds-text ml-1">Staff Access Privileges</label>
                   <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                       <label *ngFor="let menu of availableMenus" class="flex items-center gap-2 cursor-pointer group p-2 border border-ds-border/50 rounded-sm hover:border-ds-border bg-ds-bg/30">
                           <input type="checkbox" 
                                  [checked]="selectedMenus.includes(menu.key)"
                                  (change)="toggleMenuSelection(menu.key)"
                                  class="form-checkbox text-ds-text border-ds-border rounded-sm focus:ring-0 cursor-pointer">
-                          <span class="text-[10px] font-bold uppercase tracking-widest text-ds-text-muted group-hover:text-ds-text transition-colors">{{ menu.label }}</span>
+                          <span class="text-ds-text-muted group-hover:text-ds-text transition-colors">{{ menu.label }}</span>
                       </label>
                   </div>
               </div>
 
               <div class="flex gap-ds-4 pt-ds-4">
-                  <button type="button" (click)="isEditModalOpen = false" class="btn btn-secondary flex-1 !h-12 !text-[11px] font-bold uppercase tracking-[0.2em]">Abort</button>
+                  <button type="button" (click)="isEditModalOpen = false" class="btn btn-secondary flex-1 !h-12">Abort</button>
                   <button type="submit" [disabled]="editForm.invalid || isSubmitting"
-                          class="btn btn-primary flex-[2] !h-12 !text-[11px] font-bold uppercase tracking-[0.2em] !bg-ds-text !text-ds-surface">
+                          class="btn btn-primary flex-[2] !h-12 !bg-ds-text !text-ds-surface">
                       <app-icon *ngIf="isSubmitting" name="Loader2" size="16" className="animate-spin"></app-icon>
                       <span>{{ isSubmitting ? 'SYNCING...' : 'SYNCHRONIZE PROFILE' }}</span>
                   </button>

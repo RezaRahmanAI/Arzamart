@@ -3,16 +3,16 @@
     <!-- Section Header -->
     <div class="flex flex-col md:flex-row justify-between items-end mb-ds-16">
       <div class="space-y-ds-4">
-        <span class="block text-[10px] uppercase tracking-[0.4em] font-bold text-ds-text-muted">
+        <span class="block text-ds-text-muted">
           Curated Collections
         </span>
-        <h2 class="text-ds-4xl md:text-ds-5xl font-serif italic text-ds-text leading-none uppercase">
+        <h2 class="text-ds-text">
           Explore by Category
         </h2>
       </div>
       <a
         routerLink="/shop"
-        class="hidden md:inline-flex items-center gap-ds-2 text-[10px] uppercase tracking-[0.2em] font-bold border-b border-ds-text pb-1 hover:text-ds-accent hover:border-transparent transition-all duration-base"
+        class="hidden md:inline-flex items-center gap-ds-2 border-b border-ds-text pb-1 hover:text-ds-accent hover:border-transparent transition-all duration-base"
       >
         View All Collections
       </a>
@@ -42,10 +42,10 @@
           <!-- Content -->
           <div class="absolute inset-0 flex flex-col justify-end p-ds-8 md:p-ds-12">
             <div class="transform translate-y-4 group-hover:translate-y-0 transition-all duration-700">
-              <h3 class="text-white text-ds-2xl md:text-ds-3xl font-bold uppercase tracking-tight mb-ds-2">
+              <h3 class="text-white mb-ds-2">
                 {{ category.name }}
               </h3>
-              <span class="inline-flex items-center gap-ds-3 text-[10px] uppercase tracking-[0.3em] text-white/80 font-bold opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
+              <span class="inline-flex items-center gap-ds-3 text-white/80 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
                 Explore Now
                 <app-icon name="ArrowRight" size="16"></app-icon>
               </span>

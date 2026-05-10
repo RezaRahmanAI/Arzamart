@@ -4,18 +4,18 @@
       <div class="flex flex-col gap-8">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-3xl font-bold text-primary dark:text-white">Account</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Manage your profile, addresses, and orders.</p>
+            <h1 class="text-primary dark:text-white">Account</h1>
+            <p class="text-slate-500 dark:text-slate-400">Manage your profile, addresses, and orders.</p>
           </div>
-          <a class="text-sm font-semibold text-primary hover:underline" routerLink="/orders">View all orders</a>
+          <a class="text-primary hover:underline" routerLink="/orders">View all orders</a>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-            <h2 class="text-lg font-semibold text-primary dark:text-white mb-4">Profile details</h2>
+            <h2 class="text-primary dark:text-white mb-4">Profile details</h2>
             <form class="space-y-4" [formGroup]="profileForm">
               <div>
-                <label class="text-sm font-medium text-slate-600 dark:text-slate-300">Full name</label>
+                <label class="text-slate-600 dark:text-slate-300">Full name</label>
                 <input
                   class="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
                   formControlName="name"
@@ -23,7 +23,7 @@
                 />
               </div>
               <div>
-                <label class="text-sm font-medium text-slate-600 dark:text-slate-300">Email</label>
+                <label class="text-slate-600 dark:text-slate-300">Email</label>
                 <input
                   class="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
                   formControlName="email"
@@ -31,7 +31,7 @@
                 />
               </div>
               <div>
-                <label class="text-sm font-medium text-slate-600 dark:text-slate-300">Phone</label>
+                <label class="text-slate-600 dark:text-slate-300">Phone</label>
                 <input
                   class="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
                   formControlName="phone"
@@ -39,7 +39,7 @@
                 />
               </div>
               <button
-                class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5 text-sm font-semibold"
+                class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5"
                 type="button"
                 (click)="saveProfile(vm.profile)"
               >
@@ -49,25 +49,25 @@
           </div>
 
           <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-            <h2 class="text-lg font-semibold text-primary dark:text-white mb-4">Order history</h2>
+            <h2 class="text-primary dark:text-white mb-4">Order history</h2>
             <div class="space-y-4">
               @for (order of vm.orders; track order.id) {
                 <div
                   class="flex items-center justify-between border border-slate-200 dark:border-slate-800 rounded-lg p-4"
                 >
                   <div>
-                    <p class="text-sm font-semibold text-primary dark:text-white">Order {{ order.id }}</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ order.items.length }} items · {{ order.status }}</p>
+                    <p class="text-primary dark:text-white">Order {{ order.id }}</p>
+                    <p class="text-slate-500 dark:text-slate-400">{{ order.items.length }} items · {{ order.status }}</p>
                   </div>
                   <a
-                    class="text-sm font-semibold text-primary hover:underline"
+                    class="text-primary hover:underline"
                     [routerLink]="['/order-confirmation', order.id]"
                   >
                     View
                   </a>
                 </div>
               } @empty {
-                <p class="text-sm text-slate-500 dark:text-slate-400">No orders yet.</p>
+                <p class="text-slate-500 dark:text-slate-400">No orders yet.</p>
               }
             </div>
           </div>
@@ -76,8 +76,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
             <div class="flex items-center justify-between mb-4">
-              <h2 class="text-lg font-semibold text-primary dark:text-white">Address book</h2>
-              <button class="text-sm font-semibold text-primary hover:underline" type="button" (click)="resetAddressForm()">
+              <h2 class="text-primary dark:text-white">Address book</h2>
+              <button class="text-primary hover:underline" type="button" (click)="resetAddressForm()">
                 Add new
               </button>
             </div>
@@ -87,20 +87,20 @@
                   class="border border-slate-200 dark:border-slate-800 rounded-lg p-4 flex items-start justify-between gap-4"
                 >
                   <div>
-                    <p class="text-sm font-semibold text-primary dark:text-white">
+                    <p class="text-primary dark:text-white">
                       {{ address.label }}
                       @if (address.isDefault) {
-                        <span class="ml-2 text-xs text-accent font-semibold">Default</span>
+                        <span class="ml-2 text-accent">Default</span>
                       }
                     </p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                    <p class="text-slate-500 dark:text-slate-400">
                       {{ address.recipient }} · {{ address.phone }}
                     </p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                    <p class="text-slate-500 dark:text-slate-400">
                       {{ address.address }}, {{ address.city }}, {{ address.region }}
                     </p>
                   </div>
-                  <div class="flex flex-col gap-2 text-xs">
+                  <div class="flex flex-col gap-2">
                     <button class="text-primary hover:underline" type="button" (click)="startEditAddress(address)">Edit</button>
                     <button class="text-slate-500 hover:underline" type="button" (click)="setDefaultAddress(vm.profile, address.id)">
                       Set default
@@ -109,7 +109,7 @@
                   </div>
                 </div>
               } @empty {
-                <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">No saved addresses yet.</p>
+                <p class="text-slate-500 dark:text-slate-400 mb-6">No saved addresses yet.</p>
               }
             </div>
 
@@ -128,10 +128,10 @@
               </div>
               <div class="flex items-center gap-2">
                 <input class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox" formControlName="isDefault" />
-                <span class="text-xs text-slate-500 dark:text-slate-400">Set as default</span>
+                <span class="text-slate-500 dark:text-slate-400">Set as default</span>
               </div>
               <button
-                class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5 text-sm font-semibold"
+                class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5"
                 type="button"
                 (click)="submitAddress(vm.profile)"
               >
@@ -142,8 +142,8 @@
 
           <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
             <div class="flex items-center justify-between mb-4">
-              <h2 class="text-lg font-semibold text-primary dark:text-white">Payment methods</h2>
-              <button class="text-sm font-semibold text-primary hover:underline" type="button" (click)="resetPaymentForm()">
+              <h2 class="text-primary dark:text-white">Payment methods</h2>
+              <button class="text-primary hover:underline" type="button" (click)="resetPaymentForm()">
                 Add new
               </button>
             </div>
@@ -153,17 +153,17 @@
                   class="border border-slate-200 dark:border-slate-800 rounded-lg p-4 flex items-start justify-between gap-4"
                 >
                   <div>
-                    <p class="text-sm font-semibold text-primary dark:text-white">
+                    <p class="text-primary dark:text-white">
                       {{ method.label }}
                       @if (method.isDefault) {
-                        <span class="ml-2 text-xs text-accent font-semibold">Default</span>
+                        <span class="ml-2 text-accent">Default</span>
                       }
                     </p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                    <p class="text-slate-500 dark:text-slate-400">
                       {{ method.brand }} · **** {{ method.last4 }} · {{ method.expMonth }}/{{ method.expYear }}
                     </p>
                   </div>
-                  <div class="flex flex-col gap-2 text-xs">
+                  <div class="flex flex-col gap-2">
                     <button class="text-primary hover:underline" type="button" (click)="startEditPayment(method)">Edit</button>
                     <button class="text-slate-500 hover:underline" type="button" (click)="setDefaultPayment(vm.profile, method.id)">
                       Set default
@@ -172,7 +172,7 @@
                   </div>
                 </div>
               } @empty {
-                <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">No saved payment methods yet.</p>
+                <p class="text-slate-500 dark:text-slate-400 mb-6">No saved payment methods yet.</p>
               }
             </div>
 
@@ -185,10 +185,10 @@
               </div>
               <div class="flex items-center gap-2">
                 <input class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox" formControlName="isDefault" />
-                <span class="text-xs text-slate-500 dark:text-slate-400">Set as default</span>
+                <span class="text-slate-500 dark:text-slate-400">Set as default</span>
               </div>
               <button
-                class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5 text-sm font-semibold"
+                class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5"
                 type="button"
                 (click)="submitPayment(vm.profile)"
               >

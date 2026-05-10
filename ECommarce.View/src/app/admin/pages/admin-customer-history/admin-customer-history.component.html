@@ -2,32 +2,32 @@
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <div class="flex items-center gap-ds-2 text-[9px] font-bold uppercase tracking-[0.3em] text-ds-text-muted mb-2">
+      <div class="flex items-center gap-ds-2 text-ds-text-muted mb-2">
         <span>Analytics</span>
         <app-icon name="ChevronRight" size="10"></app-icon>
         <span>Customer Ledger</span>
         <app-icon name="ChevronRight" size="10"></app-icon>
         <span class="text-ds-text">Historical Records</span>
       </div>
-      <h2 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">Customer Archive</h2>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">Comprehensive Transactional & Behavioral Log</p>
+      <h2 class="text-ds-text">Customer Archive</h2>
+      <p class="text-ds-text-muted mt-1.5">Comprehensive Transactional & Behavioral Log</p>
     </div>
 
     <div class="flex flex-wrap items-center gap-ds-3">
       <button
         (click)="refreshOrders()"
         [disabled]="isRefreshing"
-        class="btn btn-secondary h-11 px-ds-6 !text-[10px] font-bold uppercase tracking-widest"
+        class="btn btn-secondary h-11 px-ds-6"
       >
         <app-icon name="RotateCw" size="14" [className]="isRefreshing ? 'animate-spin' : ''"></app-icon>
         <span>{{ isRefreshing ? 'Syncing...' : 'Sync Registry' }}</span>
       </button>
 
-      <a routerLink="/admin/orders/create" class="btn btn-primary h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest">
+      <a routerLink="/admin/orders/create" class="btn btn-primary h-11 px-ds-8">
         <app-icon name="Plus" size="14"></app-icon>
         <span>Manual Entry</span>
       </a>
-      <a routerLink="/admin/orders/pre-order" class="btn h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest bg-ds-text text-ds-surface hover:opacity-90">
+      <a routerLink="/admin/orders/pre-order" class="btn h-11 px-ds-8 bg-ds-text text-ds-surface hover:opacity-90">
         <app-icon name="PackagePlus" size="14"></app-icon>
         <span>Pre-Order Log</span>
       </a>
@@ -43,35 +43,35 @@
       </div>
       
       <div class="relative">
-        <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em] mb-ds-6 pb-ds-3 border-b border-ds-border">Identity Profile</h3>
+        <h3 class="text-ds-text mb-ds-6 pb-ds-3 border-b border-ds-border">Identity Profile</h3>
         
         <div class="grid grid-cols-2 gap-ds-8 mb-ds-10">
           <div class="space-y-1">
-            <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Legal Name</p>
-            <p class="text-[13px] font-bold text-ds-text uppercase tracking-tight">{{ orders.length > 0 ? orders[0].customerName : 'ANONYMOUS ENTITY' }}</p>
+            <p class="text-ds-text-muted">Legal Name</p>
+            <p class="text-ds-text">{{ orders.length > 0 ? orders[0].customerName : 'ANONYMOUS ENTITY' }}</p>
           </div>
           <div class="space-y-1">
-            <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Phone Interface</p>
-            <p class="text-[13px] font-bold text-ds-text font-mono">{{ selectedCustomerPhone }}</p>
+            <p class="text-ds-text-muted">Phone Interface</p>
+            <p class="text-ds-text">{{ selectedCustomerPhone }}</p>
           </div>
           <div class="col-span-2 space-y-3">
-            <p class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Merchant Sentiment</p>
+            <p class="text-ds-text-muted">Merchant Sentiment</p>
             <div class="flex items-center gap-ds-4">
-               <span class="inline-flex items-center gap-ds-2 px-ds-4 py-1.5 rounded-sm bg-ds-success/10 text-ds-success font-bold text-[10px] border border-ds-success/20 uppercase tracking-widest">
+               <span class="inline-flex items-center gap-ds-2 px-ds-4 py-1.5 rounded-sm bg-ds-success/10 text-ds-success border border-ds-success/20">
                  <app-icon name="ThumbsUp" size="14"></app-icon> Positive: 0
                </span>
-               <span class="inline-flex items-center gap-ds-2 px-ds-4 py-1.5 rounded-sm bg-red-500/10 text-red-500 font-bold text-[10px] border border-red-500/20 uppercase tracking-widest">
+               <span class="inline-flex items-center gap-ds-2 px-ds-4 py-1.5 rounded-sm bg-red-500/10 text-red-500 border border-red-500/20">
                  <app-icon name="ThumbsDown" size="14"></app-icon> Caution: 0
                </span>
             </div>
           </div>
         </div>
         
-        <p class="text-[10px] font-bold text-ds-text uppercase tracking-[0.3em] mb-ds-4">Consolidated Ledger Status</p>
+        <p class="text-ds-text mb-ds-4">Consolidated Ledger Status</p>
         <div class="bg-ds-bg/30 border border-ds-border rounded-sm overflow-hidden">
-          <table class="w-full text-[10px] border-collapse">
+          <table class="w-full border-collapse">
             <thead>
-              <tr class="bg-ds-bg border-b border-ds-border text-ds-text-muted uppercase font-bold tracking-widest">
+              <tr class="bg-ds-bg border-b border-ds-border text-ds-text-muted">
                 <th class="px-ds-4 py-3 text-left">Segment</th>
                 <th class="px-ds-4 py-3 text-center">Volume</th>
                 <th class="px-ds-4 py-3 text-right">Value</th>
@@ -81,18 +81,18 @@
             </thead>
             <tbody class="divide-y divide-ds-border/50">
               <tr *ngFor="let item of customerSummary" class="hover:bg-ds-bg/50 transition-colors">
-                <td class="px-ds-4 py-3 font-bold uppercase text-ds-text-sec">{{ item.status }}</td>
-                <td class="px-ds-4 py-3 text-center font-bold">{{ item.count }}</td>
-                <td class="px-ds-4 py-3 text-right font-mono tracking-tighter">৳{{ item.amount }}</td>
-                <td class="px-ds-4 py-3 text-right font-mono text-ds-success tracking-tighter">৳{{ item.paid }}</td>
-                <td class="px-ds-4 py-3 text-right font-mono tracking-tighter" [class.text-red-500]="item.due > 0">৳{{ item.due }}</td>
+                <td class="px-ds-4 py-3 text-ds-text-sec">{{ item.status }}</td>
+                <td class="px-ds-4 py-3 text-center">{{ item.count }}</td>
+                <td class="px-ds-4 py-3 text-right">৳{{ item.amount }}</td>
+                <td class="px-ds-4 py-3 text-right text-ds-success">৳{{ item.paid }}</td>
+                <td class="px-ds-4 py-3 text-right" [class.text-red-500]="item.due > 0">৳{{ item.due }}</td>
               </tr>
-              <tr class="bg-ds-text text-ds-surface font-bold uppercase tracking-widest">
+              <tr class="bg-ds-text text-ds-surface">
                 <td class="px-ds-4 py-3">Global Matrix</td>
                 <td class="px-ds-4 py-3 text-center">{{ customerStats.total }}</td>
-                <td class="px-ds-4 py-3 text-right font-mono">৳{{ customerStats.totalAmount }}</td>
-                <td class="px-ds-4 py-3 text-right font-mono">৳{{ customerStats.totalPaid }}</td>
-                <td class="px-ds-4 py-3 text-right font-mono">৳{{ customerStats.totalDue }}</td>
+                <td class="px-ds-4 py-3 text-right">৳{{ customerStats.totalAmount }}</td>
+                <td class="px-ds-4 py-3 text-right">৳{{ customerStats.totalPaid }}</td>
+                <td class="px-ds-4 py-3 text-right">৳{{ customerStats.totalDue }}</td>
               </tr>
             </tbody>
           </table>
@@ -103,25 +103,25 @@
     <!-- Analytics Card -->
     <div class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm relative overflow-hidden group">
        <div class="flex items-center justify-between mb-ds-8 pb-ds-3 border-b border-ds-border">
-         <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em] flex items-center gap-ds-3">
+         <h3 class="text-ds-text flex items-center gap-ds-3">
            <app-icon name="Activity" size="16" className="text-ds-text"></app-icon>
            Fulfillment Performance
          </h3>
-         <span class="text-[10px] font-bold text-ds-text-muted font-mono uppercase tracking-widest">{{ selectedCustomerPhone }}</span>
+         <span class="text-ds-text-muted">{{ selectedCustomerPhone }}</span>
        </div>
 
        <div class="grid grid-cols-3 gap-ds-4 mb-ds-10">
          <div class="bg-ds-bg border border-ds-border p-ds-4 rounded-sm text-center">
-           <p class="text-ds-xl font-bold text-ds-text">{{ customerStats.total }}</p>
-           <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-1">Total Requests</p>
+           <p class="text-ds-text">{{ customerStats.total }}</p>
+           <p class="text-ds-text-muted mt-1">Total Requests</p>
          </div>
          <div class="bg-ds-bg border border-ds-border p-ds-4 rounded-sm text-center">
-           <p class="text-ds-xl font-bold text-ds-success">{{ customerStats.delivered }}</p>
-           <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-1">Delivered</p>
+           <p class="text-ds-success">{{ customerStats.delivered }}</p>
+           <p class="text-ds-text-muted mt-1">Delivered</p>
          </div>
          <div class="bg-ds-bg border border-ds-border p-ds-4 rounded-sm text-center">
-           <p class="text-ds-xl font-bold text-red-500">{{ customerStats.cancelled }}</p>
-           <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-1">Revoked</p>
+           <p class="text-red-500">{{ customerStats.cancelled }}</p>
+           <p class="text-ds-text-muted mt-1">Revoked</p>
          </div>
        </div>
 
@@ -134,17 +134,17 @@
                       [style.stroke-dasharray]="customerStats.successRate + ', 100'"></circle>
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <span class="text-ds-2xl font-bold text-ds-text leading-none tracking-tighter">{{ customerStats.successRate }}%</span>
-              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1.5">Efficiency</span>
+              <span class="text-ds-text">{{ customerStats.successRate }}%</span>
+              <span class="text-ds-text-muted mt-1.5">Efficiency</span>
             </div>
           </div>
        </div>
 
        <div class="mt-ds-8 p-ds-5 bg-ds-bg border border-ds-border rounded-sm text-center">
-          <p class="text-[9px] font-bold text-ds-text-muted mb-ds-3 uppercase tracking-[0.4em]">Operational Reliability Recommendation</p>
+          <p class="text-ds-text-muted mb-ds-3">Operational Reliability Recommendation</p>
           <div class="flex items-center justify-center gap-ds-3">
             <app-icon name="ShieldCheck" size="20" className="text-ds-success"></app-icon>
-            <p class="text-ds-lg font-bold text-ds-text uppercase tracking-tight">Verified Secure Entity</p>
+            <p class="text-ds-text">Verified Secure Entity</p>
           </div>
        </div>
     </div>
@@ -155,7 +155,7 @@
     <div *ngIf="isLoading" class="absolute inset-0 bg-ds-surface/60 backdrop-blur-md z-[50] flex items-center justify-center">
       <div class="flex flex-col items-center gap-ds-4">
         <app-icon name="Loader2" size="40" className="text-ds-text animate-spin"></app-icon>
-        <p class="text-[10px] font-bold text-ds-text uppercase tracking-[0.5em] animate-pulse">Accessing Encrypted Records...</p>
+        <p class="text-ds-text animate-pulse">Accessing Encrypted Records...</p>
       </div>
     </div>
 
@@ -163,49 +163,49 @@
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="bg-ds-bg/50 border-b border-ds-border">
-            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest text-center w-12">#</th>
-            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Timestamp</th>
-            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Serial #</th>
-            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Origin</th>
-            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Operator</th>
-            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">Status</th>
-            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest text-center">Gross</th>
-            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest text-center">Settled</th>
-            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest text-center">Due</th>
-            <th class="px-ds-4 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-widest text-right">Actions</th>
+            <th class="px-ds-4 py-ds-4 text-ds-text-muted text-center w-12">#</th>
+            <th class="px-ds-4 py-ds-4 text-ds-text-muted">Timestamp</th>
+            <th class="px-ds-4 py-ds-4 text-ds-text-muted">Serial #</th>
+            <th class="px-ds-4 py-ds-4 text-ds-text-muted">Origin</th>
+            <th class="px-ds-4 py-ds-4 text-ds-text-muted">Operator</th>
+            <th class="px-ds-4 py-ds-4 text-ds-text-muted">Status</th>
+            <th class="px-ds-4 py-ds-4 text-ds-text-muted text-center">Gross</th>
+            <th class="px-ds-4 py-ds-4 text-ds-text-muted text-center">Settled</th>
+            <th class="px-ds-4 py-ds-4 text-ds-text-muted text-center">Due</th>
+            <th class="px-ds-4 py-ds-4 text-ds-text-muted text-right">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-ds-border/50">
           <tr *ngFor="let order of orders; let i = index" class="hover:bg-ds-bg/30 transition-colors group">
-            <td class="px-ds-4 py-ds-4 text-center text-[10px] font-bold text-ds-text-muted/40 group-hover:text-ds-text transition-colors">{{ i + 1 }}</td>
+            <td class="px-ds-4 py-ds-4 text-center text-ds-text-muted/40 group-hover:text-ds-text transition-colors">{{ i + 1 }}</td>
             <td class="px-ds-4 py-ds-4">
-              <div class="text-[10px] font-bold text-ds-text-muted uppercase tracking-tight">{{ order.createdAt | date: 'dd/MM/yyyy • HH:mm' }}</div>
+              <div class="text-ds-text-muted">{{ order.createdAt | date: 'dd/MM/yyyy • HH:mm' }}</div>
             </td>
             <td class="px-ds-4 py-ds-4">
-              <div class="text-[11px] font-bold text-ds-text font-mono group-hover:underline underline-offset-4 decoration-ds-text/20">{{ order.orderNumber }}</div>
+              <div class="text-ds-text group-hover:underline underline-offset-4 decoration-ds-text/20">{{ order.orderNumber }}</div>
             </td>
             <td class="px-ds-4 py-ds-4">
               <div class="flex flex-col gap-0.5">
-                <span class="text-[9px] font-bold text-ds-text uppercase tracking-widest">{{ order.sourcePageName || 'ARCHIVE' }}</span>
-                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest opacity-60">DIRECT</span>
+                <span class="text-ds-text">{{ order.sourcePageName || 'ARCHIVE' }}</span>
+                <span class="text-ds-text-muted opacity-60">DIRECT</span>
               </div>
             </td>
-            <td class="px-ds-4 py-ds-4 text-[10px] font-bold text-ds-text-muted uppercase tracking-tight">Personnel</td>
+            <td class="px-ds-4 py-ds-4 text-ds-text-muted">Personnel</td>
             <td class="px-ds-4 py-ds-4">
-              <div class="px-ds-3 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest text-center border" [ngStyle]="{ backgroundColor: getStatusColor(order.status) + '15', color: getStatusColor(order.status), borderColor: getStatusColor(order.status) + '30' }">
+              <div class="px-ds-3 py-1 rounded-sm text-center border" [ngStyle]="{ backgroundColor: getStatusColor(order.status) + '15', color: getStatusColor(order.status), borderColor: getStatusColor(order.status) + '30' }">
                 {{ order.status }}
               </div>
             </td>
-            <td class="px-ds-4 py-ds-4 text-center font-bold text-[11px] text-ds-text font-mono tracking-tighter">৳{{ order.total }}</td>
-            <td class="px-ds-4 py-ds-4 text-center font-bold text-[11px] text-ds-success font-mono tracking-tighter">৳{{ getPaidAmount(order) }}</td>
-            <td class="px-ds-4 py-ds-4 text-center font-bold text-[11px] font-mono tracking-tighter" [class.text-red-500]="getDueAmount(order) > 0">৳{{ getDueAmount(order) }}</td>
+            <td class="px-ds-4 py-ds-4 text-center text-ds-text">৳{{ order.total }}</td>
+            <td class="px-ds-4 py-ds-4 text-center text-ds-success">৳{{ getPaidAmount(order) }}</td>
+            <td class="px-ds-4 py-ds-4 text-center" [class.text-red-500]="getDueAmount(order) > 0">৳{{ getDueAmount(order) }}</td>
             <td class="px-ds-4 py-ds-4">
               <div class="flex items-center justify-end flex-wrap gap-ds-1 max-w-[220px] ml-auto">
-                <button (click)="openTracking(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-[8px] font-bold uppercase tracking-widest text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">Logs</button>
-                <button (click)="openNotes(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-[8px] font-bold uppercase tracking-widest text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">Notes</button>
-                <button (click)="printInvoice(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-[8px] font-bold uppercase tracking-widest text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">PDF</button>
-                <button (click)="sendWhatsApp(order, $event)" class="px-2 py-1 bg-ds-success/10 border border-ds-success/20 text-[8px] font-bold uppercase tracking-widest text-ds-success hover:bg-ds-success/20 transition-colors">WA</button>
-                <button (click)="editOrder(order, $event)" class="px-2 py-1 bg-ds-text text-ds-surface text-[8px] font-bold uppercase tracking-widest hover:opacity-80 transition-colors">Modify</button>
+                <button (click)="openTracking(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">Logs</button>
+                <button (click)="openNotes(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">Notes</button>
+                <button (click)="printInvoice(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">PDF</button>
+                <button (click)="sendWhatsApp(order, $event)" class="px-2 py-1 bg-ds-success/10 border border-ds-success/20 text-ds-success hover:bg-ds-success/20 transition-colors">WA</button>
+                <button (click)="editOrder(order, $event)" class="px-2 py-1 bg-ds-text text-ds-surface hover:opacity-80 transition-colors">Modify</button>
               </div>
             </td>
           </tr>
@@ -216,8 +216,8 @@
     <!-- Empty State -->
     <div *ngIf="!isLoading && orders.length === 0" class="py-ds-32 text-center">
       <app-icon name="Inbox" size="64" className="mx-auto mb-ds-6 text-ds-text-muted opacity-10"></app-icon>
-      <h3 class="text-[12px] font-bold text-ds-text-muted uppercase tracking-[0.4em]">Zero Activity Records</h3>
-      <p class="text-[10px] font-bold text-ds-text-muted/60 uppercase tracking-widest italic mt-2">Historical ledger is currently devoid of transactional nodes.</p>
+      <h3 class="text-ds-text-muted">Zero Activity Records</h3>
+      <p class="text-ds-text-muted/60 mt-2">Historical ledger is currently devoid of transactional nodes.</p>
     </div>
   </div>
 
@@ -230,8 +230,8 @@
       <div class="flex flex-col h-[550px] max-h-[85vh]">
         <div class="px-ds-8 py-ds-6 border-b border-ds-border bg-ds-bg/50 flex items-center justify-between">
           <div>
-            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Internal Correspondence</h3>
-            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Order #{{ notesOrder.orderNumber }} Archive</p>
+            <h3 class="text-ds-text">Internal Correspondence</h3>
+            <p class="text-ds-text-muted mt-1">Order #{{ notesOrder.orderNumber }} Archive</p>
           </div>
           <button (click)="isNotesModalOpen = false" class="size-10 rounded-sm hover:bg-ds-text/10 flex items-center justify-center text-ds-text-muted hover:text-ds-text transition-colors">
             <app-icon name="X" size="20"></app-icon>
@@ -239,22 +239,22 @@
         </div>
         <div class="flex-1 overflow-y-auto p-ds-8 space-y-ds-6 bg-ds-bg/20">
           <div *ngFor="let note of notesOrder.notes" class="flex flex-col space-y-ds-2">
-            <div class="flex items-center justify-between px-1 text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">
+            <div class="flex items-center justify-between px-1 text-ds-text-muted">
               <span class="text-ds-text">{{ note.adminName }}</span>
-              <span>{{ note.createdAt | date:'MMM d • h:mm a' }}</span>
+              <span>{{ note.createdAt | date: 'MMM d • h:mm a' }}</span>
             </div>
             <div class="bg-ds-surface px-ds-5 py-ds-4 rounded-sm border border-ds-border shadow-sm">
-              <p class="text-[11px] font-bold text-ds-text-sec uppercase tracking-tight leading-relaxed">{{ note.content }}</p>
+              <p class="text-ds-text-sec">{{ note.content }}</p>
             </div>
           </div>
           <div *ngIf="!notesOrder.notes?.length" class="h-full flex flex-col items-center justify-center opacity-20">
             <app-icon name="MessageSquareOff" size="48"></app-icon>
-            <p class="text-[9px] font-bold uppercase tracking-widest mt-4">Zero Internal Notes</p>
+            <p class="mt-4">Zero Internal Notes</p>
           </div>
         </div>
         <div class="p-ds-8 border-t border-ds-border bg-ds-surface">
           <div class="flex items-start gap-ds-4">
-            <textarea [(ngModel)]="newNoteText" placeholder="ENCODE INTERNAL MEMO..." class="form-input !min-h-[80px] !py-3 !px-4 !text-[11px] font-bold uppercase tracking-tight flex-1"></textarea>
+            <textarea [(ngModel)]="newNoteText" placeholder="ENCODE INTERNAL MEMO..." class="form-input !min-h-[80px] !py-3 !px-4 flex-1"></textarea>
             <button (click)="addNote()" [disabled]="isSavingNote || !newNoteText.trim()" class="size-12 rounded-sm bg-ds-text text-ds-surface flex items-center justify-center hover:opacity-90 disabled:opacity-20 transition-all shadow-xl">
               <app-icon name="Send" size="20"></app-icon>
             </button>
@@ -269,19 +269,19 @@
     <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in duration-base" (click)="$event.stopPropagation()">
       <div class="px-ds-8 py-ds-6 border-b border-ds-border bg-ds-text text-ds-surface flex items-center justify-between">
         <div>
-          <h3 class="text-[12px] font-bold uppercase tracking-[0.1em]">Protocol Log Hierarchy</h3>
-          <p class="text-[9px] font-bold uppercase tracking-[0.4em] opacity-60 mt-1">Transaction #{{ trackingOrder.orderNumber }}</p>
+          <h3 >Protocol Log Hierarchy</h3>
+          <p class="opacity-60 mt-1">Transaction #{{ trackingOrder.orderNumber }}</p>
         </div>
         <button (click)="isTrackingModalOpen = false" class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm"><app-icon name="X" size="20"></app-icon></button>
       </div>
       <div class="p-ds-8 max-h-[500px] overflow-y-auto space-y-ds-4 bg-ds-bg/20">
         <div *ngFor="let log of trackingOrder.logs; let i = index" class="p-ds-5 bg-ds-surface rounded-sm border border-ds-border group hover:border-ds-text transition-colors">
           <div class="flex justify-between items-start mb-ds-3">
-            <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">{{ log.statusTo }}</span>
-            <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest">{{ log.createdAt | date:'dd/MM/yyyy • h:mm a' }}</span>
+            <span class="text-ds-text">{{ log.statusTo }}</span>
+            <span class="text-ds-text-muted">{{ log.createdAt | date: 'dd/MM/yyyy • h:mm a' }}</span>
           </div>
-          <p class="text-[11px] font-bold text-ds-text-sec uppercase tracking-tight italic" *ngIf="log.note">"{{ log.note }}"</p>
-          <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-ds-4 border-t border-ds-border/50 pt-2">Operator Identity: {{ log.changedBy }}</p>
+          <p class="text-ds-text-sec" *ngIf="log.note">"{{ log.note }}"</p>
+          <p class="text-ds-text-muted mt-ds-4 border-t border-ds-border/50 pt-2">Operator Identity: {{ log.changedBy }}</p>
         </div>
       </div>
     </div>

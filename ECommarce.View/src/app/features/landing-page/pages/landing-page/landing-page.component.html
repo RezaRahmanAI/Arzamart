@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-[#F5F5F5] font-sans text-[#1a1a1a] pb-20">
+<div class="min-h-screen bg-[#F5F5F5] text-[#1a1a1a] pb-20">
   <!-- Loading State -->
   @if (isLoading) {
     <div
@@ -9,7 +9,7 @@
         size="48"
         className="text-[#1a1a1a] animate-spin"
       ></app-icon>
-      <p class="text-[#1A1A1A] font-medium tracking-widest text-xs uppercase">
+      <p class="text-[#1A1A1A]">
         Loading...
       </p>
     </div>
@@ -72,7 +72,7 @@
               @if (product.tier) {
                 <div class="absolute top-6 right-6 z-10">
                   <span
-                    class="px-4 py-1.5 bg-white/95 text-[10px] uppercase tracking-[0.3em] font-bold text-[#1a1a1a] border border-[#E0E0E0] backdrop-blur-sm shadow-sm"
+                    class="px-4 py-1.5 bg-white/95 text-[#1a1a1a] border border-[#E0E0E0] backdrop-blur-sm shadow-sm"
                   >
                     {{ product.tier }}
                   </span>
@@ -133,31 +133,31 @@
         <!-- ===== RIGHT: Product Info ===== -->
         <div class="lg:col-span-5 space-y-8 lg:pl-4">
           <div class="space-y-4">
-            <h1 class="text-3xl lg:text-4xl font-bold text-[#1a1a1a] leading-tight">
+            <h1 class="text-[#1a1a1a]">
               {{ product.name }}
             </h1>
             @if (product.shortDescription) {
-              <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#111111] whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></div>
+              <div class="text-[#111111] whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></div>
             }
           </div>
 
           <!-- Pricing Section -->
           <div class="flex items-baseline gap-4 py-5 border-y border-[#E0E0E0]">
             <app-price-display
-              class="text-3xl font-bold text-[#1a1a1a]"
+              class="text-[#1a1a1a]"
               [amount]="currentPrice"
               size="md"
             ></app-price-display>
 
             @if (currentCompareAtPrice && currentCompareAtPrice > currentPrice) {
               <app-price-display
-                class="line-through text-gray-400 text-lg"
+                class="line-through text-gray-400"
                 [amount]="currentCompareAtPrice"
                 size="sm"
               ></app-price-display>
 
               <span
-                class="text-[10px] font-bold text-red-500 uppercase tracking-[0.3em] ml-auto"
+                class="text-red-500 ml-auto"
               >
                 Offer -৳{{ getDiscountAmount({ price: currentPrice, compareAtPrice: currentCompareAtPrice }) }}
               </span>
@@ -170,15 +170,15 @@
             @if (product.variants && product.variants.length > 0) {
               <div class="space-y-5">
                 <div class="flex items-center justify-between">
-                  <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">Select Size</p>
-                  <button (click)="openSizeGuide()" type="button" class="text-[9px] uppercase tracking-[0.2em] text-[#BBBBBB] hover:text-[#1a1a1a] transition-colors border-b border-[#E0E0E0] pb-0.5">Size Guide</button>
+                  <p class="text-[#1a1a1a]">Select Size</p>
+                  <button (click)="openSizeGuide()" type="button" class="text-[#BBBBBB] hover:text-[#1a1a1a] transition-colors border-b border-[#E0E0E0] pb-0.5">Size Guide</button>
                 </div>
                 <div class="flex flex-wrap gap-2">
                   @for (v of product.variants; track v.id) {
                     <button
                       (click)="checkoutForm.patchValue({ selectedSize: v.size })"
                       type="button"
-                      class="min-w-[60px] h-14 border text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300"
+                      class="min-w-[60px] h-14 border transition-all duration-300"
                       [class.bg-[#1a1a1a]]="v.size === checkoutForm.controls.selectedSize.value"
                       [class.text-white]="v.size === checkoutForm.controls.selectedSize.value"
                       [class.border-[#1a1a1a]]="v.size === checkoutForm.controls.selectedSize.value"
@@ -191,7 +191,7 @@
                   }
                 </div>
                 @if (checkoutForm.controls.selectedSize.value) {
-                  <p class="text-[9px] uppercase tracking-[0.2em] text-[#BBBBBB] font-medium">
+                  <p class="text-[#BBBBBB]">
                     Stock Status: <span class="text-[#1a1a1a]">In stock</span>
                   </p>
                 }
@@ -203,8 +203,8 @@
           <div class="space-y-8 pt-8 border-t border-[#E0E0E0]">
             @if (product.description) {
               <div class="space-y-4">
-                <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-[#111111]">Description</h3>
-                <div class="text-[16px] text-[#1A1A1A] leading-[1.7] font-light whitespace-pre-line prose prose-slate prose-sm max-w-none" [innerHTML]="product.description | safeHtml"></div>
+                <h3 class="text-[#111111]">Description</h3>
+                <div class="text-[#1A1A1A] whitespace-pre-line prose prose-slate prose-sm max-w-none" [innerHTML]="product.description | safeHtml"></div>
               </div>
             }
 
@@ -214,13 +214,13 @@
                 <div class="w-8 h-8 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center">
                   <app-icon name="Truck" size="16" className="text-[#888888]"></app-icon>
                 </div>
-                <span class="text-[9px] uppercase tracking-[0.1em] text-[#888888] font-bold">Priority Shipping</span>
+                <span class="text-[#888888]">Priority Shipping</span>
               </div>
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center">
                   <app-icon name="ShieldCheck" size="16" className="text-[#888888]"></app-icon>
                 </div>
-                <span class="text-[9px] uppercase tracking-[0.1em] text-[#888888] font-bold">Secure Payment</span>
+                <span class="text-[#888888]">Secure Payment</span>
               </div>
             </div>
           </div>
@@ -236,7 +236,7 @@
                 class="flex items-center justify-between py-5 cursor-pointer list-none"
               >
                 <span
-                  class="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]"
+                  class="text-[#1a1a1a]"
                   >Fabric & Care</span
                 >
                 <app-icon
@@ -245,7 +245,7 @@
                   className="text-[#888888] transition-transform duration-300 group-open:rotate-45"
                 ></app-icon>
               </summary>
-              <div class="pb-6 text-xs text-[#888888] leading-relaxed font-medium whitespace-pre-line" [innerHTML]="product.fabricAndCare | safeHtml">
+              <div class="pb-6 text-[#888888] whitespace-pre-line" [innerHTML]="product.fabricAndCare | safeHtml">
               </div>
             </details>
           }
@@ -254,7 +254,7 @@
               class="flex items-center justify-between py-5 cursor-pointer list-none"
             >
               <span
-                class="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]"
+                class="text-[#1a1a1a]"
                 >Delivery & Returns</span
               >
               <app-icon
@@ -263,7 +263,7 @@
                 className="text-[#888888] transition-transform duration-300 group-open:rotate-45"
               ></app-icon>
             </summary>
-            <div class="pb-6 text-xs text-[#888888] leading-relaxed font-medium whitespace-pre-line" [innerHTML]="(product.shippingAndReturns || 'Express delivery in 24-48 hours. Stress-free returns.') | safeHtml">
+            <div class="pb-6 text-[#888888] whitespace-pre-line" [innerHTML]="(product.shippingAndReturns || 'Express delivery in 24-48 hours. Stress-free returns.') | safeHtml">
             </div>
           </details>
         </div>
@@ -274,13 +274,13 @@
         <div class="max-w-[1000px] mx-auto">
           <div class="text-center mb-16 space-y-4">
             <h2
-              class="text-4xl lg:text-5xl font-black text-[#1a1a1a] uppercase tracking-tight"
+              class="text-[#1a1a1a]"
             >
               Complete Your Order
             </h2>
             <div class="flex items-center justify-center gap-4">
               <span class="h-[1px] w-12 bg-[#E0E0E0]"></span>
-              <p class="text-xs font-bold text-[#888888] uppercase tracking-[0.2em]">
+              <p class="text-[#888888]">
                 Cash on delivery nationwide
               </p>
               <span class="h-[1px] w-12 bg-[#E0E0E0]"></span>
@@ -308,13 +308,13 @@
                       <app-icon name="User" size="24" className="text-white"></app-icon>
                     </div>
                     <div>
-                      <p class="text-xs font-black text-[#1a1a1a] uppercase tracking-widest">Saved Information Found</p>
-                      <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Would you like to use your last order details?</p>
+                      <p class="text-[#1a1a1a]">Saved Information Found</p>
+                      <p class="text-gray-400">Would you like to use your last order details?</p>
                     </div>
                   </div>
                   <div class="flex gap-3 w-full sm:w-auto">
-                    <button type="button" (click)="dismissAutofill()" class="flex-1 sm:flex-none px-6 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#1a1a1a] transition-colors">No</button>
-                    <button type="button" (click)="applyAutofill()" class="flex-1 sm:flex-none px-8 py-3 bg-[#1a1a1a] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl shadow-xl shadow-[#1a1a1a]/20 active:scale-95 transition-all">Yes, Use Info</button>
+                    <button type="button" (click)="dismissAutofill()" class="flex-1 sm:flex-none px-6 py-3 text-gray-400 hover:text-[#1a1a1a] transition-colors">No</button>
+                    <button type="button" (click)="applyAutofill()" class="flex-1 sm:flex-none px-8 py-3 bg-[#1a1a1a] text-white rounded-xl shadow-xl shadow-[#1a1a1a]/20 active:scale-95 transition-all">Yes, Use Info</button>
                   </div>
                 </div>
               }
@@ -332,7 +332,7 @@
                       ></app-icon>
                     </div>
                     <h3
-                      class="text-xs font-black uppercase tracking-[0.2em] text-[#1a1a1a]"
+                      class="text-[#1a1a1a]"
                     >
                       Customer Info
                     </h3>
@@ -342,22 +342,22 @@
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="space-y-2">
                       <label
-                        class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1"
+                        class="text-[#888888] ml-1"
                         >Mobile Number</label
                       >
                       <div class="relative flex">
-                        <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-[#E0E0E0] bg-[#FFFFFF] text-xs font-black text-[#888888]">+88</span>
+                        <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-[#E0E0E0] bg-[#FFFFFF] text-[#888888]">+88</span>
                         <input
                           type="tel"
                           formControlName="phone"
                           placeholder="01xxxxxxxxx"
                           autocomplete="tel"
-                          class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-r-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#E0E0E0]"
+                          class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-r-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]"
                         />
                       </div>
                       @if (checkoutForm.controls.phone.touched && checkoutForm.controls.phone.invalid) {
                         <p
-                          class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
+                          class="text-red-500 ml-1"
                         >
                           Required
                         </p>
@@ -366,7 +366,7 @@
 
                     <div class="space-y-2">
                       <label
-                        class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1"
+                        class="text-[#888888] ml-1"
                         >Full Name</label
                       >
                       <input
@@ -374,11 +374,11 @@
                         formControlName="fullName"
                         placeholder="e.g. Abdullah"
                         autocomplete="name"
-                        class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#E0E0E0]"
+                        class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]"
                       />
                       @if (checkoutForm.controls.fullName.touched && checkoutForm.controls.fullName.invalid) {
                         <p
-                          class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
+                          class="text-red-500 ml-1"
                         >
                           Required
                         </p>
@@ -390,11 +390,11 @@
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <!-- City -->
                     <div class="space-y-2">
-                      <label class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1">City</label>
+                      <label class="text-[#888888] ml-1">City</label>
                       <div class="relative">
                         <div class="relative items-center flex cursor-pointer" (click)="toggleCityDropdown()">
                           <input
-                            class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#E0E0E0] pointer-events-none"
+                            class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
                             type="text"
                             [value]="checkoutForm.controls.city.value"
                             placeholder="Select city"
@@ -413,7 +413,7 @@
                                 <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
                                 <input
                                   type="text"
-                                  class="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border-none rounded-xl text-sm font-bold focus:ring-0 outline-none"
+                                  class="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border-none rounded-xl focus:ring-0 outline-none"
                                   placeholder="Search cities..."
                                   (input)="filterCities($event)"
                                   [value]="citySearch"
@@ -423,12 +423,12 @@
                             </div>
                             <ul class="max-h-60 overflow-y-auto py-1">
                               @if (filteredCities.length === 0) {
-                                <li class="px-5 py-3 text-xs text-[#888888] text-center font-bold">No cities found</li>
+                                <li class="px-5 py-3 text-[#888888] text-center">No cities found</li>
                               }
                               @for (city of filteredCities; track city) {
                                 <li
                                   (click)="selectCity(city)"
-                                  class="px-5 py-3 text-sm text-[#1A1A1A] font-bold hover:bg-[#FFFFFF] hover:text-[#1a1a1a] cursor-pointer transition-colors"
+                                  class="px-5 py-3 text-[#1A1A1A] hover:bg-[#FFFFFF] hover:text-[#1a1a1a] cursor-pointer transition-colors"
                                   [ngClass]="{'bg-[#1a1a1a]/5 text-[#1a1a1a]': checkoutForm.controls.city.value === city}"
                                 >
                                   {{ city }}
@@ -445,11 +445,11 @@
 
                     <!-- Area -->
                     <div class="space-y-2">
-                      <label class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1">Area</label>
+                      <label class="text-[#888888] ml-1">Area</label>
                       <div class="relative">
                         <div class="relative items-center flex cursor-pointer" (click)="toggleAreaDropdown()">
                           <input
-                            class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#E0E0E0] pointer-events-none"
+                            class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
                             [class.opacity-50]="!checkoutForm.controls.city.value"
                             type="text"
                             [value]="checkoutForm.controls.area.value"
@@ -469,7 +469,7 @@
                                 <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
                                 <input
                                   type="text"
-                                  class="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border-none rounded-xl text-sm font-bold focus:ring-0 outline-none"
+                                  class="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border-none rounded-xl focus:ring-0 outline-none"
                                   placeholder="Search areas..."
                                   (input)="filterAreas($event)"
                                   [value]="areaSearch"
@@ -479,12 +479,12 @@
                             </div>
                             <ul class="max-h-60 overflow-y-auto py-1">
                               @if (filteredAreas.length === 0) {
-                                <li class="px-5 py-3 text-xs text-[#888888] text-center font-bold">No areas found</li>
+                                <li class="px-5 py-3 text-[#888888] text-center">No areas found</li>
                               }
                               @for (area of filteredAreas; track area) {
                                 <li
                                   (click)="selectArea(area)"
-                                  class="px-5 py-3 text-sm text-[#1A1A1A] font-bold hover:bg-[#FFFFFF] hover:text-[#1a1a1a] cursor-pointer transition-colors"
+                                  class="px-5 py-3 text-[#1A1A1A] hover:bg-[#FFFFFF] hover:text-[#1a1a1a] cursor-pointer transition-colors"
                                   [ngClass]="{'bg-[#1a1a1a]/5 text-[#1a1a1a]': checkoutForm.controls.area.value === area}"
                                 >
                                   {{ area }}
@@ -503,7 +503,7 @@
                   <!-- Address -->
                   <div class="space-y-2">
                     <label
-                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1"
+                      class="text-[#888888] ml-1"
                       >Delivery Address</label
                     >
                     <textarea
@@ -511,11 +511,11 @@
                       rows="3"
                       placeholder="House, Road..."
                       autocomplete="street-address"
-                      class="w-full p-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all font-bold text-sm placeholder:text-[#E0E0E0] resize-none"
+                      class="w-full p-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] resize-none"
                     ></textarea>
                     @if (checkoutForm.controls.address.touched && checkoutForm.controls.address.invalid) {
                       <p
-                        class="text-[9px] text-red-500 font-black uppercase tracking-widest ml-1"
+                        class="text-red-500 ml-1"
                       >
                         Required
                       </p>
@@ -536,7 +536,7 @@
                       ></app-icon>
                     </div>
                     <h3
-                      class="text-xs font-black uppercase tracking-[0.2em] text-[#1a1a1a]"
+                      class="text-[#1a1a1a]"
                     >
                       Order Details
                     </h3>
@@ -545,7 +545,7 @@
                   <!-- Shipping -->
                   <div class="space-y-4">
                     <label
-                      class="text-[10px] uppercase tracking-[0.2em] font-black text-[#888888] ml-1"
+                      class="text-[#888888] ml-1"
                       >Delivery Method</label
                     >
                     <div class="space-y-3">
@@ -583,17 +583,17 @@
                               }
                             </div>
                             <div class="space-y-0.5">
-                              <p class="text-xs font-black uppercase text-[#1a1a1a]">
+                              <p class="text-[#1a1a1a]">
                                 {{ method.name }}
                               </p>
-                              <p class="text-[9px] font-black text-[#888888] uppercase tracking-widest">
+                              <p class="text-[#888888]">
                                 {{ method.estimatedDays }} Estimated
                               </p>
                             </div>
                           </div>
                           <div class="text-right">
-                            <p class="text-xs font-black text-[#1a1a1a]">
-                              {{ method.cost === 0 ? 'FREE' : (method.cost | number:'1.0-0') + ' ৳' }}
+                            <p class="text-[#1a1a1a]">
+                              {{ method.cost === 0 ? 'FREE' : (method.cost | number: '1.0-0') + ' ৳' }}
                             </p>
                           </div>
                         </div>
@@ -607,7 +607,7 @@
                   >
                     <div class="space-y-1">
                       <span
-                        class="text-[10px] font-black text-[#888888] uppercase tracking-widest"
+                        class="text-[#888888]"
                         >Quantity</span
                       >
                       <div
@@ -624,7 +624,7 @@
                           ></app-icon>
                         </button>
                         <div
-                          class="w-10 h-full flex items-center justify-center font-black text-xs text-[#1a1a1a]"
+                          class="w-10 h-full flex items-center justify-center text-[#1a1a1a]"
                         >
                           {{ checkoutForm.controls.quantity.value }}
                         </div>
@@ -643,14 +643,14 @@
 
                     <div class="text-right space-y-1">
                       <span
-                        class="text-[10px] font-black text-[#888888] uppercase tracking-widest"
+                        class="text-[#888888]"
                         >Total Amount</span
                       >
                       <div>
                         <app-price-display
                           [amount]="total"
                           size="lg"
-                          class="text-[#1a1a1a] font-black text-2xl tracking-tighter"
+                          class="text-[#1a1a1a]"
                         ></app-price-display>
                       </div>
                     </div>
@@ -664,7 +664,7 @@
                   <button
                     type="submit"
                     [disabled]="isOrdering"
-                    class="h-16 bg-[#1a1a1a] text-white text-xs font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#333333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group"
+                    class="h-16 bg-[#1a1a1a] text-white rounded-2xl hover:bg-[#333333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group"
                   >
                     @if (isOrdering) {
                       <app-icon
@@ -688,7 +688,7 @@
                   <button
                     type="button"
                     (click)="addToCart()"
-                    class="h-16 bg-white border-2 border-[#E0E0E0] hover:border-[#1a1a1a] text-[#1a1a1a] text-xs font-black uppercase tracking-[0.3em] rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
+                    class="h-16 bg-white border-2 border-[#E0E0E0] hover:border-[#1a1a1a] text-[#1a1a1a] rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
                   >
                     <app-icon
                       name="ShoppingCart"
@@ -699,7 +699,7 @@
                 </div>
                 @if (errorMessage) {
                   <p
-                    class="text-[10px] text-red-500 text-center font-black uppercase tracking-widest mt-6"
+                    class="text-red-500 text-center mt-6"
                   >
                     {{ errorMessage }}
                   </p>
@@ -718,7 +718,7 @@
       >
         <div class="flex items-center gap-3">
           <app-icon name="ExternalLink" size="18" className="text-[#1a1a1a]"></app-icon>
-          <span class="text-[#1a1a1a] font-black text-[10px] uppercase tracking-[0.2em]">Visit Website</span>
+          <span class="text-[#1a1a1a]">Visit Website</span>
         </div>
       </a>
       <!-- Subtle pulse ripple -->
@@ -726,7 +726,7 @@
     </div>
 
     <div class="mt-16 text-center pb-12">
-      <p class="text-[#1a1a1a]/30 text-[10px] font-black uppercase tracking-[0.5em]">
+      <p class="text-[#1a1a1a]/30">
         © {{ 2024 }} {{ brandName$ | async }} • Timeless Elegance
       </p>
     </div>

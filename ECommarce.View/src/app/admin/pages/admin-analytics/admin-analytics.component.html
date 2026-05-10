@@ -1,8 +1,8 @@
 <div class="site-container-admin mx-auto flex flex-col gap-ds-8">
   <!-- Section Header -->
   <div>
-    <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Operational Intelligence</h1>
-    <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+    <h1 class="text-ds-text">Operational Intelligence</h1>
+    <p class="text-ds-text-muted mt-1.5">
       System Analytics & Performance Matrices
     </p>
   </div>
@@ -14,14 +14,14 @@
     <div class="col-span-1 lg:col-span-2 bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
       <div class="px-ds-6 py-ds-4 border-b border-ds-border flex items-center justify-between bg-ds-bg/50">
         <div>
-           <h3 class="text-ds-sm font-bold text-ds-text uppercase tracking-[0.2em]">Revenue Velocity</h3>
-           <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Global Transactional Overview</p>
+           <h3 class="text-ds-text">Revenue Velocity</h3>
+           <p class="text-ds-text-muted mt-1">Global Transactional Overview</p>
         </div>
         <div class="flex gap-1 border border-ds-border p-1 bg-ds-surface rounded-sm">
           <button 
             *ngFor="let p of periods"
             (click)="onPeriodChange(p)"
-            class="px-ds-4 py-1.5 rounded-sm text-ds-xs font-bold uppercase tracking-widest transition-all"
+            class="px-ds-4 py-1.5 rounded-sm transition-all"
             [ngClass]="salesPeriod === p ? 'bg-ds-text text-ds-surface shadow-sm' : 'text-ds-text-muted hover:text-ds-text hover:bg-ds-bg'"
           >
             {{ p }}
@@ -32,7 +32,7 @@
       <!-- CSS Bar Chart -->
       <div class="p-ds-8">
         <div class="h-72 flex items-end justify-between gap-ds-2 bg-ds-bg/30 p-ds-6 rounded-sm border border-ds-border/50 relative">
-          <div *ngIf="salesData.length === 0" class="absolute inset-0 flex items-center justify-center text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest italic">
+          <div *ngIf="salesData.length === 0" class="absolute inset-0 flex items-center justify-center text-ds-text-muted">
             Zero telemetry captured for this horizon.
           </div>
           <div 
@@ -40,15 +40,15 @@
             class="flex-1 flex flex-col items-center gap-ds-3 group relative h-full justify-end"
           >
             <!-- Tooltip -->
-            <div class="absolute bottom-full mb-ds-3 bg-ds-text text-ds-surface text-ds-xs font-bold px-ds-3 py-1.5 rounded-sm opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0 whitespace-nowrap z-10 pointer-events-none uppercase tracking-widest">
-              {{ item.date | date:'MMM d' }}: ৳{{ item.amount }}
+            <div class="absolute bottom-full mb-ds-3 bg-ds-text text-ds-surface px-ds-3 py-1.5 rounded-sm opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0 whitespace-nowrap z-10 pointer-events-none">
+              {{ item.date | date: 'MMM d' }}: ৳{{ item.amount }}
             </div>
             
             <div 
               class="w-full bg-ds-text/20 group-hover:bg-ds-text rounded-t-sm transition-all duration-500"
               [style.height]="getBarHeight(item.amount)"
             ></div>
-            <span class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest hidden sm:block">{{ item.date | date:'MM/dd' }}</span>
+            <span class="text-ds-text-muted hidden sm:block">{{ item.date | date: 'MM/dd' }}</span>
           </div>
         </div>
       </div>
@@ -57,27 +57,27 @@
     <!-- Top Products -->
     <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden flex flex-col">
       <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
-        <h3 class="text-ds-sm font-bold text-ds-text uppercase tracking-[0.2em]">Inventory Velocity</h3>
-        <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Highest Conversion SKU</p>
+        <h3 class="text-ds-text">Inventory Velocity</h3>
+        <p class="text-ds-text-muted mt-1">Highest Conversion SKU</p>
       </div>
       <div class="p-ds-6 space-y-ds-4 flex-1">
         <div *ngFor="let product of topProducts; let i = index" class="flex items-center gap-ds-4 group">
-           <span class="text-ds-xs font-bold text-ds-text-muted/30 w-4 font-mono">0{{ i + 1 }}</span>
+           <span class="text-ds-text-muted/30 w-4">0{{ i + 1 }}</span>
            <div 
              class="size-12 rounded-sm bg-ds-bg bg-cover bg-center border border-ds-border grayscale group-hover:grayscale-0 transition-all duration-500"
              [style.background-image]="'url(' + imageUrlService.getImageUrl(product.imageUrl) + ')'"
            ></div>
            <div class="flex-1 min-w-0">
-             <h4 class="text-ds-xs font-bold text-ds-text uppercase tracking-tight truncate" [title]="product.name">{{ product.name }}</h4>
-             <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest mt-0.5">{{ product.soldCount }} units moved</p>
+             <h4 class="text-ds-text truncate" [title]="product.name">{{ product.name }}</h4>
+             <p class="text-ds-text-muted mt-0.5">{{ product.soldCount }} units moved</p>
            </div>
            <div class="text-right">
-             <span class="text-ds-xs font-bold text-ds-text font-mono tracking-tighter">৳{{ product.price }}</span>
+             <span class="text-ds-text">৳{{ product.price }}</span>
            </div>
         </div>
         <div *ngIf="topProducts.length === 0" class="flex flex-col items-center justify-center py-ds-12 text-center">
           <app-icon name="BarChart3" size="32" className="text-ds-text-muted opacity-10 mb-ds-3"></app-icon>
-          <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest italic">No conversion data recorded.</p>
+          <p class="text-ds-text-muted">No conversion data recorded.</p>
         </div>
       </div>
     </div>
@@ -85,12 +85,12 @@
     <!-- Order Status Distribution -->
     <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden flex flex-col">
       <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
-        <h3 class="text-ds-sm font-bold text-ds-text uppercase tracking-[0.2em]">Workflow Allocation</h3>
-        <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Lifecycle State Distribution</p>
+        <h3 class="text-ds-text">Workflow Allocation</h3>
+        <p class="text-ds-text-muted mt-1">Lifecycle State Distribution</p>
       </div>
       <div class="p-ds-6 space-y-ds-6 flex-1">
         <div *ngFor="let item of statusDistribution">
-           <div class="flex justify-between text-ds-xs font-bold uppercase tracking-[0.2em] mb-2">
+           <div class="flex justify-between mb-2">
              <span class="text-ds-text-muted">{{ item.status }}</span>
              <span class="text-ds-text">{{ item.count }} Units</span>
            </div>
@@ -110,7 +110,7 @@
         </div>
         <div *ngIf="statusDistribution.length === 0" class="flex flex-col items-center justify-center py-ds-12 text-center">
           <app-icon name="PieChart" size="32" className="text-ds-text-muted opacity-10 mb-ds-3"></app-icon>
-          <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest italic">No workflow telemetry captured.</p>
+          <p class="text-ds-text-muted">No workflow telemetry captured.</p>
         </div>
       </div>
     </div>
@@ -118,24 +118,24 @@
     <!-- Customer Growth -->
     <div class="col-span-1 lg:col-span-2 bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
       <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
-        <h3 class="text-ds-sm font-bold text-ds-text uppercase tracking-[0.2em]">Network Expansion</h3>
-        <p class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Customer Acquisition Delta</p>
+        <h3 class="text-ds-text">Network Expansion</h3>
+        <p class="text-ds-text-muted mt-1">Customer Acquisition Delta</p>
       </div>
       <div class="p-ds-8">
         <div class="flex items-end justify-between gap-ds-6 h-56 px-ds-4 bg-ds-bg/30 rounded-sm border border-ds-border/50 p-ds-6 relative">
-           <div *ngIf="customerGrowth.length === 0" class="absolute inset-0 flex items-center justify-center text-ds-xs font-bold text-ds-text-muted uppercase tracking-widest italic">
+           <div *ngIf="customerGrowth.length === 0" class="absolute inset-0 flex items-center justify-center text-ds-text-muted">
             Zero acquisition events recorded.
           </div>
           <div 
             *ngFor="let item of customerGrowth" 
             class="flex flex-col items-center gap-ds-3 group flex-1 h-full justify-end"
           >
-            <div class="text-ds-xs font-bold text-ds-text opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-1 group-hover:translate-y-0">{{ item.count }}</div>
+            <div class="text-ds-text opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-1 group-hover:translate-y-0">{{ item.count }}</div>
             <div 
               class="w-full bg-ds-text/10 border-t border-ds-text group-hover:bg-ds-text/30 transition-all duration-700 rounded-t-sm"
                [style.height]="getCustomerGrowthHeight(item.count)"
             ></div>
-            <span class="text-ds-xs font-bold text-ds-text-muted uppercase tracking-[0.2em]">{{ item.date }}</span>
+            <span class="text-ds-text-muted">{{ item.date }}</span>
           </div>
         </div>
       </div>

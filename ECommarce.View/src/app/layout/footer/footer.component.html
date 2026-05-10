@@ -11,7 +11,7 @@
               class="h-8 lg:h-9 w-auto brightness-0 invert opacity-90 transition-transform duration-base hover:scale-105"
             />
           </a>
-          <p class="text-ds-hero-text/60 text-ds-sm leading-relaxed max-w-sm font-medium">
+          <p class="text-ds-hero-text/60 max-w-sm">
             {{ settings.description || "Curated collection of premium fashion and lifestyle essentials." }}
           </p>
           
@@ -23,7 +23,7 @@
                 target="_blank"
                 class="hover:text-ds-hero-text text-ds-hero-text/40 transition-all duration-base hover:-translate-y-1"
               >
-                <span class="text-[10px] uppercase tracking-[0.4em] font-bold">Facebook</span>
+                <span >Facebook</span>
               </a>
             }
             @if (settings.instagramUrl) {
@@ -32,7 +32,7 @@
                 target="_blank"
                 class="hover:text-ds-hero-text text-ds-hero-text/40 transition-all duration-base hover:-translate-y-1"
               >
-                <span class="text-[10px] uppercase tracking-[0.4em] font-bold">Instagram</span>
+                <span >Instagram</span>
               </a>
             }
             @if (settings.twitterUrl) {
@@ -41,7 +41,7 @@
                 target="_blank"
                 class="hover:text-ds-hero-text text-ds-hero-text/40 transition-all duration-base hover:-translate-y-1"
               >
-                <span class="text-[10px] uppercase tracking-[0.4em] font-bold">Twitter</span>
+                <span >Twitter</span>
               </a>
             }
           </div>
@@ -51,8 +51,8 @@
         <div class="md:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-ds-10 md:gap-ds-12">
           <!-- Legal -->
           <div class="space-y-ds-8">
-            <h4 class="text-[10px] uppercase tracking-[0.4em] font-bold text-ds-hero-text opacity-40">Legal</h4>
-            <ul class="flex flex-col gap-ds-4 text-[11px] uppercase tracking-[0.2em] font-bold text-ds-hero-text/60">
+            <h4 class="text-ds-hero-text opacity-40">Legal</h4>
+            <ul class="flex flex-col gap-ds-4 text-ds-hero-text/60">
               <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/shipping-policy">Shipping Policy</a></li>
               <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/terms">Terms & Conditions</a></li>
               <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/privacy">Privacy Policy</a></li>
@@ -62,8 +62,8 @@
   
           <!-- Information -->
           <div class="space-y-ds-8">
-            <h4 class="text-[10px] uppercase tracking-[0.4em] font-bold text-ds-hero-text opacity-40">Information</h4>
-            <ul class="flex flex-col gap-ds-4 text-[11px] uppercase tracking-[0.2em] font-bold text-ds-hero-text/60">
+            <h4 class="text-ds-hero-text opacity-40">Information</h4>
+            <ul class="flex flex-col gap-ds-4 text-ds-hero-text/60">
               <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/exchange-refund">Exchange & Refund</a></li>
               <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/size-guide">Size Guide</a></li>
               <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/loyalty">Loyalty Program</a></li>
@@ -73,8 +73,8 @@
   
           <!-- Company -->
           <div class="space-y-ds-8">
-            <h4 class="text-[10px] uppercase tracking-[0.4em] font-bold text-ds-hero-text opacity-40">Company</h4>
-            <ul class="flex flex-col gap-ds-4 text-[11px] uppercase tracking-[0.2em] font-bold text-ds-hero-text/60">
+            <h4 class="text-ds-hero-text opacity-40">Company</h4>
+            <ul class="flex flex-col gap-ds-4 text-ds-hero-text/60">
               <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/about">About Us</a></li>
               <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/contact">Contact Us</a></li>
               <li><a class="hover:text-ds-hero-text transition-colors duration-base" routerLink="/careers">Careers</a></li>
@@ -83,17 +83,17 @@
   
           <!-- Service Center -->
           <div class="space-y-ds-8">
-            <h4 class="text-[10px] uppercase tracking-[0.4em] font-bold text-ds-hero-text opacity-40">Service Center</h4>
-            <ul class="flex flex-col gap-ds-8 text-[11px] font-bold uppercase tracking-widest text-ds-hero-text/60">
+            <h4 class="text-ds-hero-text opacity-40">Service Center</h4>
+            <ul class="flex flex-col gap-ds-8 text-ds-hero-text/60">
               @if (settings.contactPhone) {
                 <li class="space-y-ds-2">
-                  <span class="opacity-30 text-[9px] uppercase tracking-[0.3em]">Phone</span>
+                  <span class="opacity-30">Phone</span>
                   <a [href]="'tel:' + settings.contactPhone" class="block hover:text-ds-hero-text transition-colors">{{ settings.contactPhone }}</a>
                 </li>
               }
               @if (settings.contactEmail) {
                 <li class="space-y-ds-2">
-                  <span class="opacity-30 text-[9px] uppercase tracking-[0.3em]">Email</span>
+                  <span class="opacity-30">Email</span>
                   <a [href]="'mailto:' + settings.contactEmail" class="block hover:text-ds-hero-text transition-colors truncate">{{ settings.contactEmail }}</a>
                 </li>
               }
@@ -104,10 +104,10 @@
   
       <!-- Payment Methods -->
       <div class="mb-ds-20 pb-ds-12 border-b border-white/5">
-        <h4 class="text-[10px] uppercase tracking-[0.4em] font-bold text-ds-hero-text opacity-40 mb-ds-10">Accepted Payments</h4>
+        <h4 class="text-ds-hero-text opacity-40 mb-ds-10">Accepted Payments</h4>
         <div class="flex flex-wrap items-center gap-ds-6">
           @for (method of ['Visa', 'Mastercard', 'bKash', 'Nagad', 'COD']; track method) {
-            <div class="px-ds-8 py-ds-4 bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-[0.3em] text-ds-hero-text/40 hover:text-ds-hero-text hover:bg-white/10 transition-all duration-base">
+            <div class="px-ds-8 py-ds-4 bg-white/5 border border-white/10 text-ds-hero-text/40 hover:text-ds-hero-text hover:bg-white/10 transition-all duration-base">
               {{ method }}
             </div>
           }
@@ -116,10 +116,10 @@
   
       <!-- Bottom Bar -->
       <div class="flex flex-col md:flex-row justify-between items-center gap-ds-8">
-        <p class="text-[10px] text-ds-hero-text/30 uppercase tracking-[0.4em] font-bold">
+        <p class="text-ds-hero-text/30">
           © {{ currentYear }} {{ settings.websiteName || "Arza Mart" }}.
         </p>
-        <div class="flex gap-ds-12 text-[10px] text-ds-hero-text/30 uppercase tracking-[0.4em] font-bold">
+        <div class="flex gap-ds-12 text-ds-hero-text/30">
           <a class="hover:text-ds-hero-text transition-colors" routerLink="/privacy">Privacy</a>
           <a class="hover:text-ds-hero-text transition-colors" routerLink="/terms">Terms</a>
           <a class="hover:text-ds-hero-text transition-colors" routerLink="/cookies">Cookies</a>

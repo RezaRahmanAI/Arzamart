@@ -18,7 +18,7 @@ export class ImageUrlService {
     const trimmedUrl = imageUrl.trim();
 
     // If it's a data URI or blob URL (local preview), return as is
-    if (trimmedUrl.startsWith("data:") || trimmedUrl.startsWith("blob:")) {
+    if (trimmedUrl.startsWith("data: ") || trimmedUrl.startsWith("blob:")) {
       return trimmedUrl;
     }
 

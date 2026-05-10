@@ -37,10 +37,10 @@
           </div>
         </div>
         <div class="flex flex-col">
-          <h1 class="text-white text-base font-bold uppercase tracking-tight leading-none">
+          <h1 class="text-white">
             {{ settings.websiteName || "Admin Console" }}
           </h1>
-          <span class="text-ds-xs text-white/40 uppercase tracking-[0.2em] font-bold mt-1.5">
+          <span class="text-white/40 mt-1.5">
             Enterprise Panel
           </span>
         </div>
@@ -54,7 +54,7 @@
       <div class="space-y-ds-10">
         <!-- Main Section -->
         <div>
-          <p class="px-ds-4 mb-ds-6 text-ds-xs font-bold text-white/30 uppercase tracking-[0.3em]">Core Navigation</p>
+          <p class="px-ds-4 mb-ds-6 text-white/30">Core Navigation</p>
           <nav class="space-y-1">
             <a
               *ngFor="let item of topItems"
@@ -66,7 +66,7 @@
               [routerLinkActiveOptions]="{ exact: false }"
             >
               <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-105" [className]="rla.isActive ? 'text-white' : ''"></app-icon>
-              <span class="text-xs font-bold uppercase tracking-widest">{{ item.label }}</span>
+              <span >{{ item.label }}</span>
               <div *ngIf="rla.isActive" class="absolute left-0 w-1 h-5 bg-white rounded-r-full"></div>
             </a>
 
@@ -81,7 +81,7 @@
               >
                 <div class="flex items-center gap-ds-4">
                   <app-icon name="PlusCircle" size="20" className="group-hover:scale-105" [className]="isOrdersMenuOpen ? 'text-white' : ''"></app-icon>
-                  <span class="text-xs font-bold uppercase tracking-widest">Orders</span>
+                  <span >Orders</span>
                 </div>
                 <app-icon
                   [name]="isOrdersMenuOpen ? 'ChevronUp' : 'ChevronDown'"
@@ -93,7 +93,7 @@
               <div class="overflow-hidden transition-all duration-300" [style.max-height]="isOrdersMenuOpen ? '400px' : '0px'">
                 <div class="pl-ds-12 pr-ds-4 py-ds-2 space-y-1">
                   <a
-                    class="block px-ds-4 py-ds-2.5 text-ds-xs font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
+                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
                     routerLink="/admin/orders/pre-order"
                     routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -101,7 +101,7 @@
                     Pre-Order Create
                   </a>
                   <a
-                    class="block px-ds-4 py-ds-2.5 text-ds-xs font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
+                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
                     routerLink="/admin/orders/create"
                     routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -122,7 +122,7 @@
               >
                 <div class="flex items-center gap-ds-4">
                   <app-icon name="Eye" size="20" className="group-hover:scale-105" [className]="isOrderViewMenuOpen ? 'text-white' : ''"></app-icon>
-                  <span class="text-xs font-bold uppercase tracking-widest">Order View</span>
+                  <span >Order View</span>
                 </div>
                 <app-icon
                   [name]="isOrderViewMenuOpen ? 'ChevronUp' : 'ChevronDown'"
@@ -134,7 +134,7 @@
               <div class="overflow-hidden transition-all duration-300" [style.max-height]="isOrderViewMenuOpen ? '400px' : '0px'">
                 <div class="pl-ds-12 pr-ds-4 py-ds-2 space-y-1">
                   <a
-                    class="block px-ds-4 py-ds-2.5 text-ds-xs font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
+                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
                     routerLink="/admin/orders"
                     routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -142,7 +142,7 @@
                     All Orders
                   </a>
                   <a
-                    class="block px-ds-4 py-ds-2.5 text-ds-xs font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
+                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
                     routerLink="/admin/orders/pre-orders"
                     routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -150,7 +150,7 @@
                     Pre Orders
                   </a>
                   <a
-                    class="block px-ds-4 py-ds-2.5 text-ds-xs font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
+                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
                     routerLink="/admin/orders/website"
                     routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -171,7 +171,7 @@
               >
                 <div class="flex items-center gap-ds-4">
                   <app-icon name="ShoppingBag" size="20" className="group-hover:scale-105" [className]="isProductsMenuOpen ? 'text-white' : ''"></app-icon>
-                  <span class="text-xs font-bold uppercase tracking-widest">Inventory</span>
+                  <span >Inventory</span>
                 </div>
                 <app-icon
                   [name]="isProductsMenuOpen ? 'ChevronUp' : 'ChevronDown'"
@@ -183,7 +183,7 @@
               <div class="overflow-hidden transition-all duration-300" [style.max-height]="isProductsMenuOpen ? '400px' : '0px'">
                 <div class="pl-ds-12 pr-ds-4 py-ds-2 space-y-1">
                   <a
-                    class="block px-ds-4 py-ds-2.5 text-ds-xs font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
+                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
                     routerLink="/admin/products"
                     routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -191,7 +191,7 @@
                     Product Catalog
                   </a>
                   <a
-                    class="block px-ds-4 py-ds-2.5 text-ds-xs font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
+                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
                     routerLink="/admin/products/categories"
                     routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -199,7 +199,7 @@
                     Main Collections
                   </a>
                   <a
-                    class="block px-ds-4 py-ds-2.5 text-ds-xs font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
+                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
                     routerLink="/admin/products/sub-categories"
                     routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -207,7 +207,7 @@
                     Sub Collections
                   </a>
                   <a
-                    class="block px-ds-4 py-ds-2.5 text-ds-xs font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
+                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
                     routerLink="/admin/inventory"
                     routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -215,7 +215,7 @@
                     Inventory Management
                   </a>
                   <a
-                    class="block px-ds-4 py-ds-2.5 text-ds-xs font-bold text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5 uppercase tracking-widest"
+                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
                     routerLink="/admin/products/groups"
                     routerLinkActive="text-white bg-white/5"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -236,7 +236,7 @@
               [routerLinkActiveOptions]="{ exact: false }"
             >
               <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-105" [className]="rlaSecondary.isActive ? 'text-white' : ''"></app-icon>
-              <span class="text-xs font-bold uppercase tracking-widest">{{ item.label }}</span>
+              <span >{{ item.label }}</span>
               <div *ngIf="rlaSecondary.isActive" class="absolute left-0 w-1 h-5 bg-white rounded-r-full"></div>
             </a>
           </nav>

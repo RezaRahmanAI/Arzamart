@@ -1,8 +1,8 @@
 <section class="bg-ds-bg min-h-screen py-ds-16">
   <div class="site-container">
     <div class="flex items-center justify-between mb-ds-12">
-      <h1 class="text-ds-4xl font-bold text-ds-text uppercase tracking-tight">Your Orders</h1>
-      <a class="text-[11px] font-bold text-ds-text-sec uppercase tracking-[0.2em] border-b border-ds-text-sec hover:text-ds-text hover:border-ds-text transition-all" routerLink="/account">Back to account</a>
+      <h1 class="text-ds-text">Your Orders</h1>
+      <a class="text-ds-text-sec border-b border-ds-text-sec hover:text-ds-text hover:border-ds-text transition-all" routerLink="/account">Back to account</a>
     </div>
     
     <div class="space-y-ds-6">
@@ -12,8 +12,8 @@
             class="bg-ds-surface border border-ds-border p-ds-6 lg:p-ds-8 flex items-center justify-between group hover:border-ds-text transition-colors"
           >
             <div class="space-y-ds-2">
-              <p class="text-ds-base font-bold text-ds-text uppercase tracking-tight">Order {{ order.id }}</p>
-              <div class="flex items-center gap-ds-3 text-[11px] font-bold text-ds-text-muted uppercase tracking-widest">
+              <p class="text-ds-text">Order {{ order.id }}</p>
+              <div class="flex items-center gap-ds-3 text-ds-text-muted">
                 <span>{{ order.items.length }} items</span>
                 <span class="w-1 h-1 bg-ds-border rounded-full"></span>
                 <span class="text-ds-accent">{{ order.status }}</span>
@@ -21,13 +21,13 @@
                 <app-price-display [amount]="order.total" size="sm"></app-price-display>
               </div>
             </div>
-            <a class="btn btn-secondary !w-auto h-11 px-ds-8 !text-[10px] !tracking-[0.2em] uppercase" [routerLink]="['/order-confirmation', order.id]">
+            <a class="btn btn-secondary !w-auto h-11 px-ds-8" [routerLink]="['/order-confirmation', order.id]">
               View Details
             </a>
           </div>
         } @empty {
           <div class="py-ds-20 text-center bg-ds-surface border border-ds-border">
-            <p class="text-ds-text-muted font-bold uppercase tracking-[0.2em]">No orders yet.</p>
+            <p class="text-ds-text-muted">No orders yet.</p>
           </div>
         }
       }

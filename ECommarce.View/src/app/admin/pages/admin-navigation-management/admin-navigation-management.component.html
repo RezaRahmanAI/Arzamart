@@ -2,14 +2,14 @@
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Navigation Architecture</h1>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+      <h1 class="text-ds-text">Navigation Architecture</h1>
+      <p class="text-ds-text-muted mt-1.5">
         Site Structure & Menu Hierarchy Governance
       </p>
     </div>
     <button
       (click)="openAddModal()"
-      class="btn btn-primary h-11 px-ds-8 !text-[10px] font-bold uppercase tracking-widest"
+      class="btn btn-primary h-11 px-ds-8"
      *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
       <app-icon name="Plus" size="14"></app-icon>
       <span>Initialize Menu</span>
@@ -18,7 +18,7 @@
 
   <div class="bg-ds-surface rounded-sm border border-ds-border overflow-hidden shadow-sm">
     <div class="px-ds-6 py-ds-3 border-b border-ds-border bg-ds-bg/50">
-      <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Operational Hierarchy</span>
+      <span class="text-ds-text-muted">Operational Hierarchy</span>
     </div>
 
     <div class="p-ds-6">
@@ -41,8 +41,8 @@
                 className="text-ds-text-muted/20 drag-handle cursor-move group-hover:text-ds-text transition-colors"
               ></app-icon>
               <div class="flex flex-col">
-                <span class="text-[11px] font-bold text-ds-text uppercase tracking-tight">{{ item.name }}</span>
-                <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em] mt-0.5 font-mono">{{ item.link }}</span>
+                <span class="text-ds-text">{{ item.name }}</span>
+                <span class="text-ds-text-muted mt-0.5">{{ item.link }}</span>
               </div>
             </div>
             <div
@@ -94,11 +94,11 @@
         size="64"
         className="text-ds-text-muted opacity-10 mb-ds-6 mx-auto"
       ></app-icon>
-      <h3 class="text-[12px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mb-2">Structure Undefined</h3>
-      <p class="text-[10px] font-bold text-ds-text-muted/60 uppercase tracking-widest italic mb-ds-8">
+      <h3 class="text-ds-text-muted mb-2">Structure Undefined</h3>
+      <p class="text-ds-text-muted/60 mb-ds-8">
         No navigational nodes detected in current schema.
       </p>
-      <button (click)="openAddModal()" class="btn btn-secondary !h-10 !px-ds-8 !text-[10px] uppercase tracking-widest">
+      <button (click)="openAddModal()" class="btn btn-secondary !h-10 !px-ds-8">
         Generate Initial Node
       </button>
     </div>
@@ -119,10 +119,10 @@
       class="px-ds-8 py-ds-4 border-b border-ds-border flex justify-between items-center bg-ds-bg/50"
     >
       <div>
-        <h2 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">
+        <h2 class="text-ds-text">
           {{ isEditing ? "Modify Configuration" : "Initialize Node" }}
         </h2>
-        <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Navigation Logic Terminal</p>
+        <p class="text-ds-text-muted mt-0.5">Navigation Logic Terminal</p>
       </div>
       <button
         (click)="closeModal()"
@@ -135,31 +135,31 @@
     <form [formGroup]="menuForm" (ngSubmit)="onSubmit()" class="p-ds-8 flex flex-col gap-ds-6">
       <div class="space-y-ds-4">
         <div class="space-y-2">
-          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-1.5">Node Nomenclature</label>
+          <label class="block text-ds-text ml-1 mb-1.5">Node Nomenclature</label>
           <input
             type="text"
             formControlName="name"
-            class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase"
+            class="form-input !h-11 !px-ds-4"
             placeholder="E.G. AUTUMN ARCHIVE"
           />
         </div>
 
         <div class="space-y-2">
-          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-1.5">Routing Destination</label>
+          <label class="block text-ds-text ml-1 mb-1.5">Routing Destination</label>
           <input
             type="text"
             formControlName="link"
-            class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono"
+            class="form-input !h-11 !px-ds-4"
             placeholder="E.G. /COLLECTIONS/AUTUMN"
           />
         </div>
 
         <div class="grid grid-cols-2 gap-ds-4">
           <div class="space-y-2">
-            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-1.5">Parent Affinity</label>
+            <label class="block text-ds-text ml-1 mb-1.5">Parent Affinity</label>
             <select
               formControlName="parentMenuId"
-              class="form-input !h-11 !px-ds-4 !text-[10px] font-bold uppercase appearance-none cursor-pointer"
+              class="form-input !h-11 !px-ds-4 appearance-none cursor-pointer"
             >
               <option [ngValue]="null">Standalone (Root)</option>
               <option *ngFor="let m of getMenuItems()" [ngValue]="m.id">
@@ -168,11 +168,11 @@
             </select>
           </div>
           <div class="space-y-2">
-            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-1.5">Sort Sequence</label>
+            <label class="block text-ds-text ml-1 mb-1.5">Sort Sequence</label>
             <input
               type="number"
               formControlName="displayOrder"
-              class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono"
+              class="form-input !h-11 !px-ds-4"
             />
           </div>
         </div>
@@ -182,7 +182,7 @@
             <input type="checkbox" formControlName="isActive" class="sr-only peer">
             <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
           </label>
-          <span class="text-[10px] font-bold text-ds-text uppercase tracking-widest">Mark as Operational</span>
+          <span class="text-ds-text">Mark as Operational</span>
         </div>
       </div>
 
@@ -190,14 +190,14 @@
         <button
           type="button"
           (click)="closeModal()"
-          class="btn btn-secondary flex-1 !h-12 !text-[11px] font-bold uppercase tracking-[0.2em]"
+          class="btn btn-secondary flex-1 !h-12"
         >
           Abort
         </button>
         <button
           type="submit"
           [disabled]="isSubmitting"
-          class="btn btn-primary flex-[2] !h-12 !text-[11px] font-bold uppercase tracking-[0.2em] !bg-ds-text !text-ds-surface flex items-center justify-center gap-ds-2"
+          class="btn btn-primary flex-[2] !h-12 !bg-ds-text !text-ds-surface flex items-center justify-center gap-ds-2"
         >
           <app-icon *ngIf="isSubmitting" name="Loader2" size="16" className="animate-spin"></app-icon>
           <span>{{ isSubmitting ? "Syncing" : (isEditing ? "Establish Change" : "Initialize Node") }}</span>

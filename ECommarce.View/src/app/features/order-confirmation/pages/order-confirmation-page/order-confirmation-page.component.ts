@@ -91,9 +91,9 @@ export class OrderConfirmationPageComponent {
   stepLabelClasses(order: Order, step: OrderStatus): string {
     const state = this.stepState(order, step);
     if (state === "pending") {
-      return "mt-2 text-sm font-medium text-gray-400";
+      return "mt-2 text-gray-400";
     }
-    return "mt-2 text-sm font-semibold";
+    return "mt-2";
   }
 
   connectorClasses(order: Order, index: number): string {

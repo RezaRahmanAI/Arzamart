@@ -504,7 +504,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     // Copy to clipboard as a backup
     navigator.clipboard.writeText(msg);
     
-    // Trigger SMS protocol - Using '?' for compatibility, though iOS sometimes prefers ';'
+    // Trigger SMS protocol - Using '? ' for compatibility, though iOS sometimes prefers ';'
     const smsUrl = `sms:${phone}?body=${encodeURIComponent(msg)}`;
     
     try {

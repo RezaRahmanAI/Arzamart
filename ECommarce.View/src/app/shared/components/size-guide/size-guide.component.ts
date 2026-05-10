@@ -29,7 +29,7 @@ import { map } from "rxjs";
         <div
           class="flex items-center justify-between px-8 py-6 border-b border-gray-100"
         >
-          <h2 class="text-xl font-serif text-primary italic tracking-tight">
+          <h2 class="text-primary">
             Size Guide
           </h2>
           <button
@@ -43,7 +43,7 @@ import { map } from "rxjs";
         <!-- Content -->
         <div class="flex-1 overflow-y-auto px-8 py-8">
           <p
-            class="text-[11px] text-slate-500 uppercase tracking-widest mb-8 text-center font-medium"
+            class="text-slate-500 mb-8 text-center"
           >
             {{
               customImageUrl || (settings$ | async)?.sizeGuideImageUrl
@@ -62,7 +62,7 @@ import { map } from "rxjs";
                   class="w-full h-auto object-contain"
                 />
               </div>
-              <p class="mt-4 text-[10px] text-slate-400 text-center italic">
+              <p class="mt-4 text-slate-400 text-center">
                 * This chart is specifically for this product.
               </p>
             </div>
@@ -76,7 +76,7 @@ import { map } from "rxjs";
                     class="w-full h-auto object-contain"
                   />
                 </div>
-                <p class="mt-4 text-[10px] text-slate-400 text-center italic">
+                <p class="mt-4 text-slate-400 text-center">
                   * Measurements shown in the image are for reference.
                 </p>
               </div>
@@ -87,7 +87,7 @@ import { map } from "rxjs";
                   class="inline-flex rounded-lg border border-gray-100 p-1 bg-gray-50/50"
                 >
                   <button
-                    class="px-6 py-2 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all duration-300"
+                    class="px-6 py-2 rounded-md transition-all duration-300"
                     [ngClass]="
                       unit === 'cm'
                         ? 'bg-white shadow-sm text-primary'
@@ -98,7 +98,7 @@ import { map } from "rxjs";
                     CM
                   </button>
                   <button
-                    class="px-6 py-2 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all duration-300"
+                    class="px-6 py-2 rounded-md transition-all duration-300"
                     [ngClass]="
                       unit === 'in'
                         ? 'bg-white shadow-sm text-primary'
@@ -117,33 +117,33 @@ import { map } from "rxjs";
                   <thead>
                     <tr class="border-b border-gray-100">
                       <th
-                        class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900"
+                        class="pb-3 text-slate-900"
                       >
                         Size
                       </th>
                       <th
-                        class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900 text-right"
+                        class="pb-3 text-slate-900 text-right"
                       >
                         Chest
                       </th>
                       <th
-                        class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900 text-right"
+                        class="pb-3 text-slate-900 text-right"
                       >
                         Length
                       </th>
                       <th
-                        class="pb-3 text-[10px] uppercase tracking-widest font-bold text-slate-900 text-right"
+                        class="pb-3 text-slate-900 text-right"
                       >
                         Shoulder
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="text-xs text-slate-600 font-light">
+                  <tbody class="text-slate-600">
                     @for (row of sizeData; track row.size) {
                       <tr
                         class="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors"
                       >
-                        <td class="py-4 font-bold text-slate-900">
+                        <td class="py-4 text-slate-900">
                           {{ row.size }}
                         </td>
                         <td class="py-4 text-right">{{ convert(row.chest) }}</td>
@@ -159,25 +159,25 @@ import { map } from "rxjs";
                 class="mt-12 bg-gray-50 p-6 rounded-none border border-gray-100"
               >
                 <h4
-                  class="text-[10px] uppercase tracking-widest font-bold text-slate-900 mb-2"
+                  class="text-slate-900 mb-2"
                 >
                   How to measure
                 </h4>
                 <div
-                  class="space-y-3 text-[11px] text-slate-500 leading-relaxed font-light"
+                  class="space-y-3 text-slate-500"
                 >
                   <p>
-                    <span class="font-medium text-slate-700">Chest:</span> Measure
+                    <span class="text-slate-700">Chest:</span> Measure
                     around the fullest part of your chest, keeping the tape
                     horizontal.
                   </p>
                   <p>
-                    <span class="font-medium text-slate-700">Length:</span>
+                    <span class="text-slate-700">Length:</span>
                     Measure from the highest point of the shoulder down to the
                     hem.
                   </p>
                   <p>
-                    <span class="font-medium text-slate-700">Shoulder:</span>
+                    <span class="text-slate-700">Shoulder:</span>
                     Measure across the back from shoulder tip to shoulder tip.
                   </p>
                 </div>

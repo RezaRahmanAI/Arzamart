@@ -2,13 +2,13 @@
   <div class="site-container">
     <div class="mx-auto text-center flex flex-col items-center gap-ds-12">
       <div class="mx-auto flex flex-col items-center space-y-ds-6">
-        <span class="text-[10px] uppercase tracking-[0.5em] text-ds-accent font-bold block">
+        <span class="text-ds-accent block">
           The Insider
         </span>
-        <h2 class="text-ds-3xl md:text-ds-4xl lg:text-ds-5xl font-serif italic tracking-tighter text-ds-text leading-tight uppercase">
+        <h2 class="text-ds-text">
           Join the refined world<br />of {{ settings.websiteName || "Arza Mart" }}
         </h2>
-        <p class="text-ds-text-sec text-[11px] uppercase tracking-[0.2em] leading-loose opacity-80 max-w-lg font-medium">
+        <p class="text-ds-text-sec opacity-80 max-w-lg">
           {{
             settings.description ||
               "Receive exclusive updates on new collections, limited releases, and refined products."
@@ -19,21 +19,21 @@
       <form class="flex w-full flex-col sm:flex-row gap-ds-8 mt-ds-4 max-w-xl group">
         <div class="flex-1 relative">
           <input
-            class="w-full h-14 bg-transparent border-0 border-b border-ds-border px-0 focus:ring-0 focus:border-ds-accent text-ds-text text-sm uppercase tracking-widest placeholder:text-ds-text-muted transition-all duration-300"
+            class="w-full h-14 bg-transparent border-0 border-b border-ds-border px-0 focus:ring-0 focus:border-ds-accent text-ds-text placeholder:text-ds-text-muted transition-all duration-300"
             placeholder="E-MAIL ADDRESS"
             required
             type="email"
           />
         </div>
         <button
-          class="btn btn-primary h-14 !text-[11px] !tracking-[0.3em] uppercase px-ds-12"
+          class="btn btn-primary h-14 px-ds-12"
           type="submit"
         >
           Subscribe
         </button>
       </form>
 
-      <p class="text-[9px] text-ds-text-muted uppercase tracking-[0.3em] font-medium">
+      <p class="text-ds-text-muted">
         By joining, you agree to our refined policies.
       </p>
     </div>

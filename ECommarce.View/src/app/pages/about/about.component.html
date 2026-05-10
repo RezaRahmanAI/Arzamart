@@ -5,21 +5,21 @@
       <div class="flex flex-col lg:flex-row items-center gap-ds-12 lg:gap-ds-20">
         <div class="w-full lg:w-1/2 space-y-ds-8">
           <div class="space-y-ds-4">
-            <span class="text-ds-accent font-bold uppercase tracking-[0.2em] text-[11px]">
+            <span class="text-ds-accent">
               {{ heroEyebrow }}
             </span>
-            <h1 class="text-ds-text text-ds-4xl md:text-ds-5xl font-bold leading-tight tracking-tight uppercase">
+            <h1 class="text-ds-text">
               {{ heroTitle }}
             </h1>
-            <p class="text-ds-text-sec text-ds-lg font-medium leading-relaxed max-w-xl">
+            <p class="text-ds-text-sec max-w-xl">
               {{ heroSubtitle }}
             </p>
           </div>
           <div class="flex flex-col sm:flex-row gap-ds-4">
-            <button class="btn btn-primary h-14 !text-[11px] !tracking-[0.3em] uppercase px-ds-10" routerLink="/products">
+            <button class="btn btn-primary h-14 px-ds-10" routerLink="/products">
               Explore Collections
             </button>
-            <button class="btn btn-secondary h-14 !text-[11px] !tracking-[0.3em] uppercase px-ds-10" routerLink="/contact">
+            <button class="btn btn-secondary h-14 px-ds-10" routerLink="/contact">
               Contact Us
             </button>
           </div>
@@ -51,10 +51,10 @@
           </div>
         </div>
         <div class="w-full lg:w-1/2 order-1 lg:order-2 space-y-ds-8">
-          <h2 class="text-ds-4xl font-bold uppercase tracking-tight">
+          <h2 >
             How We Started
           </h2>
-          <div class="text-ds-text-sec text-ds-base leading-loose space-y-ds-6 font-medium">
+          <div class="text-ds-text-sec space-y-ds-6">
             <p>
               Arzamart was born out of a simple necessity: the desire to find
               clothing that honored our traditions without compromising on
@@ -78,11 +78,11 @@
   <section class="bg-ds-hero-bg py-ds-24 text-ds-hero-text text-center">
     <div class="site-container space-y-ds-10">
       <app-icon name="Flower2" size="64" className="text-ds-text-muted mx-auto opacity-30"></app-icon>
-      <h2 class="text-ds-3xl md:text-ds-4xl font-bold leading-tight tracking-tight uppercase max-w-4xl mx-auto italic">
+      <h2 class="max-w-4xl mx-auto">
         "To empower individuals through modest, timeless fashion that honors
         tradition and instills confidence."
       </h2>
-      <p class="text-ds-hero-text/70 text-ds-lg max-w-2xl mx-auto font-medium">
+      <p class="text-ds-hero-text/70 max-w-2xl mx-auto">
         We believe that what you wear is an expression of your values. Our
         mission is to make that expression effortless and beautiful.
       </p>
@@ -93,10 +93,10 @@
   <section class="py-ds-24 bg-ds-surface">
     <div class="site-container">
       <div class="text-center mb-ds-16 space-y-ds-4">
-        <h2 class="text-ds-4xl font-bold uppercase tracking-tight">
+        <h2 >
           Our Core Values
         </h2>
-        <p class="text-ds-text-sec max-w-xl mx-auto font-medium">
+        <p class="text-ds-text-sec max-w-xl mx-auto">
           The principles that guide every stitch, every decision, and every
           interaction.
         </p>
@@ -109,10 +109,10 @@
           <div class="w-16 h-16 bg-ds-surface flex items-center justify-center mb-ds-8 text-ds-text">
             <app-icon [name]="value.icon" size="32"></app-icon>
           </div>
-          <h3 class="text-ds-xl font-bold uppercase tracking-tight mb-ds-4">
+          <h3 class="mb-ds-4">
             {{ value.title }}
           </h3>
-          <p class="text-ds-text-sec leading-relaxed font-medium">
+          <p class="text-ds-text-sec">
             {{ value.description }}
           </p>
         </div>
@@ -125,10 +125,10 @@
     <div class="site-container space-y-ds-12">
       <div class="flex justify-between items-end">
         <div class="space-y-ds-2">
-          <h2 class="text-ds-4xl font-bold uppercase tracking-tight">
+          <h2 >
             Behind the Scenes
           </h2>
-          <p class="text-ds-text-sec font-medium">
+          <p class="text-ds-text-sec">
             A glimpse into our creative process.
           </p>
         </div>
@@ -150,10 +150,10 @@
             ></div>
             <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-base"></div>
           </div>
-          <h3 class="text-ds-xl font-bold uppercase tracking-tight">
+          <h3 >
             {{ step.title }}
           </h3>
-          <p class="text-ds-sm text-ds-text-sec font-medium uppercase tracking-widest mt-ds-1">
+          <p class="text-ds-text-sec mt-ds-1">
             {{ step.subtitle }}
           </p>
         </div>

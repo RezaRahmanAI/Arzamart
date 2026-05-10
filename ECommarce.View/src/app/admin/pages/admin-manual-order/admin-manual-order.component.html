@@ -5,14 +5,14 @@
         <div class="bg-ds-bg/50 px-ds-4 py-ds-2 border-b border-ds-border flex items-center justify-between">
           <div class="flex items-center gap-ds-3">
             <app-icon [name]="isPreOrderMode ? 'Clock' : 'ShoppingCart'" size="16" [className]="isPreOrderMode ? 'text-orange-500' : 'text-ds-text'"></app-icon>
-            <h2 class="text-[10px] font-bold uppercase tracking-[0.2em]" [ngClass]="isPreOrderMode ? 'text-orange-500' : 'text-ds-text'">
+            <h2  [ngClass]="isPreOrderMode ? 'text-orange-500' : 'text-ds-text'">
               {{ isPreOrderMode ? 'Pre-Order Registry' : 'Transaction Ledger' }}
             </h2>
           </div>
           <button 
             *ngIf="cart().length > 0"
             (click)="clearCart()"
-            class="text-[9px] font-bold uppercase tracking-widest text-red-500 hover:text-red-700 transition-colors flex items-center gap-1.5"
+            class="text-red-500 hover:text-red-700 transition-colors flex items-center gap-1.5"
           >
             Clear Archive <app-icon name="RotateCcw" size="10"></app-icon>
           </button>
@@ -21,7 +21,7 @@
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-ds-bg border-b border-ds-border text-[9px] uppercase font-bold text-ds-text-muted tracking-[0.2em]">
+              <tr class="bg-ds-bg border-b border-ds-border text-ds-text-muted">
                 <th class="px-ds-4 py-2">Product</th>
                 <th class="px-ds-2 py-2 text-center">Qty</th>
                 <th class="px-ds-2 py-2 text-center">Size</th>
@@ -33,17 +33,17 @@
             <tbody class="divide-y divide-ds-border/50">
               <tr *ngFor="let item of cart()" class="hover:bg-ds-bg transition-colors">
                 <td class="px-ds-4 py-1.5 min-w-[120px]">
-                  <p class="text-[10px] font-bold text-ds-text tracking-tight truncate">{{ item.product.name }}</p>
+                  <p class="text-ds-text truncate">{{ item.product.name }}</p>
                 </td>
                 <td class="px-ds-2 py-1.5">
                   <div class="flex items-center justify-center gap-2">
                     <button (click)="updateQuantity(item, -1)" class="size-5 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-red-500">-</button>
-                    <span class="text-[10px] font-bold w-4 text-center">{{ item.quantity }}</span>
+                    <span class="w-4 text-center">{{ item.quantity }}</span>
                     <button (click)="updateQuantity(item, 1)" class="size-5 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-ds-accent">+</button>
                   </div>
                 </td>
                 <td class="px-ds-2 py-1.5 text-center">
-                  <span *ngIf="item.selectedSize" class="px-1.5 py-0.5 bg-ds-bg border border-ds-border text-ds-text rounded-sm text-[8px] font-bold uppercase tracking-widest">{{ item.selectedSize }}</span>
+                  <span *ngIf="item.selectedSize" class="px-1.5 py-0.5 bg-ds-bg border border-ds-border text-ds-text rounded-sm">{{ item.selectedSize }}</span>
                 </td>
                 <td class="px-ds-2 py-1.5 text-right">
                   <input 
@@ -51,12 +51,12 @@
                     [(ngModel)]="item.unitPrice" 
                     (ngModelChange)="onPriceChange()"
                     (focus)="$any($event.target).select()"
-                    class="w-16 bg-transparent border-none p-0 text-[10px] font-bold text-ds-text text-right focus:ring-0 outline-none"
+                    class="w-16 bg-transparent border-none p-0 text-ds-text text-right focus:ring-0 outline-none"
 
                   >
                 </td>
                 <td class="px-ds-2 py-1.5 text-right">
-                  <span class="text-[10px] font-bold text-ds-text">৳{{ item.unitPrice * item.quantity }}</span>
+                  <span class="text-ds-text">৳{{ item.unitPrice * item.quantity }}</span>
                 </td>
                 <td class="px-ds-2 py-1.5 text-center">
                   <button (click)="removeFromCart(item)" class="size-6 flex items-center justify-center text-ds-text-muted hover:text-red-500 transition-colors">
@@ -73,66 +73,66 @@
         <div class="space-y-ds-1.5">
           <div class="grid grid-cols-2 gap-ds-2">
             <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm h-8">
-              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Total Qty</span>
-              <span class="text-[11px] font-bold text-ds-text uppercase">{{ totalItemsCount }}</span>
+              <span class="text-ds-text-muted">Total Qty</span>
+              <span class="text-ds-text">{{ totalItemsCount }}</span>
             </div>
             <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm h-8">
-              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Sub Total</span>
-              <span class="text-[11px] font-bold text-ds-text uppercase">৳{{ subtotal }}</span>
+              <span class="text-ds-text-muted">Sub Total</span>
+              <span class="text-ds-text">৳{{ subtotal }}</span>
             </div>
           </div>
 
           <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm h-8">
-            <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest">Delivery Charge</span>
-            <span class="text-[11px] font-bold text-ds-text uppercase">৳{{ shippingCost }}</span>
+            <span class="text-ds-text-muted">Delivery Charge</span>
+            <span class="text-ds-text">৳{{ shippingCost }}</span>
           </div>
 
           <div class="grid grid-cols-3 gap-ds-2" [formGroup]="orderForm">
             <div class="flex justify-between items-center px-ds-3 h-10 bg-red-500/5 border border-red-500/10 rounded-sm">
-              <span class="text-[8px] font-black text-red-500 uppercase tracking-widest">Discount</span>
-              <input type="number" formControlName="additionalDiscount" (focus)="$any($event.target).select()" class="w-16 !h-8 bg-white border border-red-500 ring-2 ring-red-500/20 rounded-md px-1.5 text-[10px] font-black text-red-500 text-right outline-none">
+              <span class="text-red-500">Discount</span>
+              <input type="number" formControlName="additionalDiscount" (focus)="$any($event.target).select()" class="w-16 !h-8 bg-white border border-red-500 ring-2 ring-red-500/20 rounded-md px-1.5 text-red-500 text-right outline-none">
             </div>
             <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-success/5 border border-ds-success/10 rounded-sm">
-              <span class="text-[8px] font-black text-ds-success uppercase tracking-widest">Advance</span>
-              <input type="number" formControlName="advancePayment" (focus)="$any($event.target).select()" class="w-16 !h-8 bg-white border border-ds-success ring-2 ring-ds-success/20 rounded-md px-1.5 text-[10px] font-black text-ds-success text-right outline-none">
+              <span class="text-ds-success">Advance</span>
+              <input type="number" formControlName="advancePayment" (focus)="$any($event.target).select()" class="w-16 !h-8 bg-white border border-ds-success ring-2 ring-ds-success/20 rounded-md px-1.5 text-ds-success text-right outline-none">
             </div>
             <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-text/5 border border-ds-border rounded-sm">
-              <span class="text-[7px] font-bold text-ds-text-muted uppercase tracking-widest">Arrears</span>
-              <span class="text-[10px] font-bold text-ds-text">৳{{ dueAmount }}</span>
+              <span class="text-ds-text-muted">Arrears</span>
+              <span class="text-ds-text">৳{{ dueAmount }}</span>
             </div>
           </div>
 
           <div class="flex justify-between items-center px-ds-5 py-ds-2 bg-ds-text text-ds-surface rounded-sm shadow-xl mt-1">
-            <span class="text-[10px] font-bold uppercase tracking-[0.2em]">Gross Settlement</span>
-            <span class="text-ds-lg font-bold tracking-tight">৳{{ total }}</span>
+            <span >Gross Settlement</span>
+            <span >৳{{ total }}</span>
           </div>
         </div>
 
         <div class="space-y-ds-2 pt-ds-3 border-t border-ds-border" [formGroup]="orderForm">
           <div class="flex flex-col gap-ds-2">
             <label class="flex flex-col gap-0.5">
-              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Terminal Phone *</span>
-              <input formControlName="phone" type="text" placeholder="IDENTITY DIGITS" class="form-input !h-8 !text-[11px] font-mono">
+              <span class="text-ds-text-muted ml-1">Terminal Phone *</span>
+              <input formControlName="phone" type="text" placeholder="IDENTITY DIGITS" class="form-input !h-8">
             </label>
             <label class="flex flex-col gap-0.5">
-              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Legal Name *</span>
-              <input formControlName="name" type="text" placeholder="FULL NOMENCLATURE" class="form-input !h-8 !text-[11px] uppercase tracking-tight">
+              <span class="text-ds-text-muted ml-1">Legal Name *</span>
+              <input formControlName="name" type="text" placeholder="FULL NOMENCLATURE" class="form-input !h-8">
             </label>
             <label class="flex flex-col gap-0.5">
-              <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Archive Address *</span>
-              <textarea formControlName="address" rows="1" placeholder="PHYSICAL LOCATION" class="form-input !h-8 !py-1.5 !px-4 !text-[11px] uppercase tracking-tight resize-none"></textarea>
+              <span class="text-ds-text-muted ml-1">Archive Address *</span>
+              <textarea formControlName="address" rows="1" placeholder="PHYSICAL LOCATION" class="form-input !h-8 !py-1.5 !px-4 resize-none"></textarea>
             </label>
 
             <div class="grid grid-cols-2 gap-ds-2">
                <div class="relative group">
-                  <select formControlName="sourcePageId" class="form-input !h-8 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+                  <select formControlName="sourcePageId" class="form-input !h-8 appearance-none cursor-pointer">
                     <option [value]="null">Origin Page</option>
                     <option *ngFor="let page of sourcePages" [value]="page.id">{{ page.name }}</option>
                   </select>
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                </div>
                <div class="relative group">
-                  <select formControlName="socialMediaSourceId" class="form-input !h-8 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+                  <select formControlName="socialMediaSourceId" class="form-input !h-8 appearance-none cursor-pointer">
                     <option [value]="null">Social Node</option>
                     <option *ngFor="let source of socialMediaSources" [value]="source.id">{{ source.name }}</option>
                   </select>
@@ -142,29 +142,29 @@
 
             <div class="grid grid-cols-2 gap-ds-2">
                <div class="relative group" (click)="toggleCityDropdown()">
-                  <input class="form-input !h-8 !text-[9px] uppercase tracking-widest cursor-pointer" type="text" [value]="orderForm.get('city')?.value || 'Select City'" readonly />
+                  <input class="form-input !h-8 cursor-pointer" type="text" [value]="orderForm.get('city')?.value || 'Select City'" readonly />
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                   <div *ngIf="isCityDropdownOpen" class="absolute bottom-full left-0 z-[100] w-full mb-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-base" (click)="$event.stopPropagation()">
-                     <input type="text" class="w-full px-4 py-2 bg-ds-bg border-b border-ds-border text-[10px] font-bold uppercase tracking-widest outline-none" placeholder="Search Matrix..." (input)="filterCities($event)" [value]="citySearch" />
+                     <input type="text" class="w-full px-4 py-2 bg-ds-bg border-b border-ds-border outline-none" placeholder="Search Matrix..." (input)="filterCities($event)" [value]="citySearch" />
                      <ul class="max-h-48 overflow-y-auto py-1">
-                       <li *ngFor="let city of filteredCities" (click)="selectCity(city)" class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-ds-bg cursor-pointer transition-colors">{{ city }}</li>
+                       <li *ngFor="let city of filteredCities" (click)="selectCity(city)" class="px-4 py-2 hover:bg-ds-bg cursor-pointer transition-colors">{{ city }}</li>
                      </ul>
                   </div>
                </div>
                <div class="relative group" (click)="toggleAreaDropdown()">
-                  <input class="form-input !h-8 !text-[9px] uppercase tracking-widest cursor-pointer" type="text" [value]="orderForm.get('area')?.value || 'Select Area'" readonly />
+                  <input class="form-input !h-8 cursor-pointer" type="text" [value]="orderForm.get('area')?.value || 'Select Area'" readonly />
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                   <div *ngIf="isAreaDropdownOpen" class="absolute bottom-full left-0 z-[100] w-full mb-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-base" (click)="$event.stopPropagation()">
-                      <input type="text" class="w-full px-4 py-2 bg-ds-bg border-b border-ds-border text-[10px] font-bold uppercase tracking-widest outline-none" placeholder="Search Delta..." (input)="filterAreas($event)" [value]="areaSearch" />
+                      <input type="text" class="w-full px-4 py-2 bg-ds-bg border-b border-ds-border outline-none" placeholder="Search Delta..." (input)="filterAreas($event)" [value]="areaSearch" />
                       <ul class="max-h-48 overflow-y-auto py-1">
-                        <li *ngFor="let area of filteredAreas" (click)="selectArea(area)" class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-ds-bg cursor-pointer transition-colors">{{ area }}</li>
+                        <li *ngFor="let area of filteredAreas" (click)="selectArea(area)" class="px-4 py-2 hover:bg-ds-bg cursor-pointer transition-colors">{{ area }}</li>
                       </ul>
                   </div>
                </div>
             </div>
 
             <div class="relative group">
-              <select formControlName="deliveryMethodId" class="form-input !h-8 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+              <select formControlName="deliveryMethodId" class="form-input !h-8 appearance-none cursor-pointer">
                 <option [value]="null">Logistics Strategy</option>
                 <option *ngFor="let method of deliveryMethods" [value]="method.id">{{ method.name }} — ৳{{ method.cost }}</option>
               </select>
@@ -173,13 +173,13 @@
 
             <div class="flex flex-col gap-ds-2">
                <div class="relative group">
-                  <select formControlName="noteType" class="form-input !h-8 !text-[9px] uppercase tracking-widest appearance-none cursor-pointer">
+                  <select formControlName="noteType" class="form-input !h-8 appearance-none cursor-pointer">
                     <option value="Official">Internal Memo (Restricted)</option>
                     <option value="Customer">Customer Addendum (Public)</option>
                   </select>
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                </div>
-               <textarea formControlName="noteText" rows="1" placeholder="ENCODE CORRESPONDENCE..." class="form-input !h-8 !py-1.5 !px-4 !text-[11px] uppercase tracking-tight resize-none"></textarea>
+               <textarea formControlName="noteText" rows="1" placeholder="ENCODE CORRESPONDENCE..." class="form-input !h-8 !py-1.5 !px-4 resize-none"></textarea>
             </div>
           </div>
 
@@ -187,7 +187,7 @@
             <button 
               (click)="submitOrder()"
               [disabled]="isSubmitting || cart().length === 0"
-              class="btn w-full !h-10 !text-[11px] font-bold uppercase tracking-[0.3em] shadow-xl hover:shadow-2xl transition-all disabled:opacity-30"
+              class="btn w-full !h-10 shadow-xl hover:shadow-2xl transition-all disabled:opacity-30"
               [ngClass]="isPreOrderMode ? 'bg-orange-600 border-orange-600 text-white' : 'btn-primary'"
             >
               {{ isSubmitting ? 'Synchronizing...' : (isEditMode ? 'Authorize Update' : (isPreOrderMode ? 'Initialize Pre-Order' : 'Initialize Transaction')) }}
@@ -207,7 +207,7 @@
             [formControl]="searchControl"
             type="text" 
             placeholder="SEARCH REPOSITORY..."
-            class="form-input !h-12 !pl-ds-12 !text-[11px] font-bold tracking-widest uppercase"
+            class="form-input !h-12 !pl-ds-12"
           >
           <div *ngIf="isLoadingProducts" class="absolute right-ds-4 top-1/2 -translate-y-1/2">
             <app-icon name="Loader2" size="16" className="text-ds-text animate-spin"></app-icon>
@@ -215,7 +215,7 @@
         </div>
         <button 
           (click)="onSearchClick()"
-          class="btn btn-primary px-ds-8 !h-12 !text-[10px] font-bold uppercase tracking-widest"
+          class="btn btn-primary px-ds-8 !h-12"
         >
           Execute
         </button>
@@ -229,7 +229,7 @@
                   class="bg-ds-surface border border-ds-border rounded-sm p-ds-3 shadow-sm hover:shadow-md transition-all group relative flex flex-col hover:border-ds-text"
                 >
                   <div class="absolute top-2 left-2 z-10">
-                    <span class="px-1.5 py-0.5 rounded-sm text-[7px] font-bold uppercase tracking-widest shadow-sm" 
+                    <span class="px-1.5 py-0.5 rounded-sm shadow-sm" 
                           [ngClass]="product.stockQuantity > 0 ? 'bg-ds-success text-white' : 'bg-red-500 text-white'">
                       ST: {{ product.stockQuantity }}
                     </span>
@@ -251,10 +251,10 @@
                     </div>
 
                   <div class="flex-1 min-w-0 mb-ds-3">
-                    <h4 class="text-[9px] font-bold text-ds-text tracking-tight truncate mb-1" [title]="product.name">{{ product.name }}</h4>
+                    <h4 class="text-ds-text truncate mb-1" [title]="product.name">{{ product.name }}</h4>
                     <div class="flex items-center gap-2">
-                       <app-price-display [amount]="product.price" className="text-[10px] font-bold text-ds-text"></app-price-display>
-                       <span *ngIf="product.compareAtPrice" class="text-[8px] text-ds-text-muted line-through opacity-50 italic">৳{{ product.compareAtPrice }}</span>
+                       <app-price-display [amount]="product.price" className="text-ds-text"></app-price-display>
+                       <span *ngIf="product.compareAtPrice" class="text-ds-text-muted line-through opacity-50">৳{{ product.compareAtPrice }}</span>
                     </div>
                   </div>
 
@@ -263,7 +263,7 @@
                       <button 
                         *ngIf="variant.size"
                         (click)="addToCart(product, variant.size); $event.stopPropagation()"
-                        class="px-1.5 py-0.5 rounded-sm border text-[7px] font-bold transition-all flex items-center gap-1 uppercase tracking-widest"
+                        class="px-1.5 py-0.5 rounded-sm border transition-all flex items-center gap-1"
                         [ngClass]="variant.stockQuantity > 0 
                             ? 'bg-ds-surface border-ds-border text-ds-text-muted hover:border-ds-text hover:text-ds-text' 
                             : 'bg-ds-bg border-ds-border text-ds-text-muted/30 cursor-not-allowed'"
@@ -279,7 +279,7 @@
 
             <div *ngIf="!isLoadingProducts && products().length === 0" class="h-full flex flex-col items-center justify-center opacity-10">
                 <app-icon name="PackageX" size="64" className="mb-4"></app-icon>
-                <p class="text-[11px] font-bold uppercase tracking-[0.5em]">Repository Search Awaited</p>
+                <p >Repository Search Awaited</p>
             </div>
         </div>
       </div>
@@ -302,8 +302,8 @@
               <img [src]="imageUrlService.getImageUrl(selectedProduct()?.imageUrl || '')" class="w-full h-full object-cover">
             </div>
             <div class="flex-1">
-              <h3 class="text-ds-xl font-bold text-ds-text tracking-tight mb-2 leading-tight">{{ selectedProduct()?.name }}</h3>
-              <app-price-display [amount]="currentSelectedPrice" className="text-ds-2xl font-bold text-ds-text tracking-tighter"></app-price-display>
+              <h3 class="text-ds-text mb-2">{{ selectedProduct()?.name }}</h3>
+              <app-price-display [amount]="currentSelectedPrice" className="text-ds-text"></app-price-display>
             </div>
           </div>
           <button (click)="selectedProduct.set(null)" class="size-12 rounded-sm hover:bg-ds-bg flex items-center justify-center text-ds-text-muted hover:text-ds-text transition-colors border border-transparent hover:border-ds-border">
@@ -313,16 +313,16 @@
 
         <div class="space-y-ds-10">
           <div *ngIf="selectedProduct()?.variants?.length">
-            <label class="block text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mb-ds-4">Allocation Matrix</label>
+            <label class="block text-ds-text-muted mb-ds-4">Allocation Matrix</label>
             <div class="flex flex-wrap gap-ds-3">
               <button 
                 *ngFor="let variant of selectedProduct()?.variants"
                 (click)="selectedSize.set(variant.size || null)"
-                class="flex flex-col items-center justify-center min-w-[90px] px-ds-6 py-ds-3 rounded-sm text-[10px] font-bold transition-all border uppercase tracking-widest"
+                class="flex flex-col items-center justify-center min-w-[90px] px-ds-6 py-ds-3 rounded-sm transition-all border"
                 [ngClass]="selectedSize() === variant.size ? 'bg-ds-text text-ds-surface border-ds-text shadow-xl' : 'bg-ds-surface text-ds-text-muted border-ds-border hover:border-ds-text hover:text-ds-text'"
               >
                 <span>{{ variant.size }}</span>
-                <span class="text-[8px] mt-1 font-bold uppercase opacity-50 tracking-widest">
+                <span class="mt-1 opacity-50">
                     {{ variant.stockQuantity }} Logic
                 </span>
               </button>
@@ -331,7 +331,7 @@
 
           <button 
             (click)="addToCart(selectedProduct()!, selectedSize() || undefined)"
-            class="btn btn-primary w-full !h-16 !text-[12px] font-bold uppercase tracking-[0.3em] shadow-2xl mt-4"
+            class="btn btn-primary w-full !h-16 shadow-2xl mt-4"
             [ngClass]="(selectedProduct()?.variants?.length && !selectedSize()) 
                 ? 'opacity-30 cursor-not-allowed' 
                 : 'hover:scale-[1.02] active:scale-95'"
@@ -354,8 +354,8 @@
         <div class="size-20 bg-red-500/10 text-red-500 rounded-sm flex items-center justify-center mx-auto mb-ds-8 border border-red-500/20">
           <app-icon name="AlertTriangle" size="40"></app-icon>
         </div>
-        <h3 class="text-ds-xl font-bold text-ds-text uppercase tracking-tight mb-2">Inventory Depletion Detected</h3>
-        <p class="text-[11px] font-bold text-ds-text-muted uppercase tracking-widest mb-ds-10 leading-relaxed">
+        <h3 class="text-ds-text mb-2">Inventory Depletion Detected</h3>
+        <p class="text-ds-text-muted mb-ds-10">
           The selected nodes exceed current registry volumes. Proceeding will trigger <span class="text-red-500">Back-Order Protocol</span>.
         </p>
         
@@ -363,12 +363,12 @@
           <ul class="space-y-ds-3">
             <li *ngFor="let item of outOfStockItems()" class="flex justify-between items-start gap-ds-4 p-ds-4 bg-ds-surface rounded-sm border border-red-500/20 shadow-sm">
               <div class="flex-1 min-w-0 text-left">
-                <p class="text-[10px] font-bold text-ds-text tracking-tight truncate" [title]="item.name">{{ item.name }}</p>
-                <p *ngIf="item.size" class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-1">Size: {{ item.size }}</p>
+                <p class="text-ds-text truncate" [title]="item.name">{{ item.name }}</p>
+                <p *ngIf="item.size" class="text-ds-text-muted mt-1">Size: {{ item.size }}</p>
               </div>
               <div class="text-right whitespace-nowrap">
-                <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest">Requested: {{ item.needed }}</p>
-                <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em] mt-1">Stock: {{ item.stock }}</p>
+                <p class="text-red-500">Requested: {{ item.needed }}</p>
+                <p class="text-ds-text-muted mt-1">Stock: {{ item.stock }}</p>
               </div>
             </li>
           </ul>
@@ -377,13 +377,13 @@
         <div class="flex gap-ds-4">
           <button 
             (click)="cancelOrder()"
-            class="btn btn-secondary flex-1 !h-12 !text-[10px] font-bold uppercase tracking-widest"
+            class="btn btn-secondary flex-1 !h-12"
           >
             Abort
           </button>
           <button 
             (click)="confirmOrder()"
-            class="btn btn-primary flex-1 !h-12 !text-[10px] font-bold uppercase tracking-widest !bg-red-600 !border-red-600"
+            class="btn btn-primary flex-1 !h-12 !bg-red-600 !border-red-600"
           >
             Override & Sync
           </button>

@@ -2,10 +2,10 @@
   <div class="bg-ds-bg min-h-screen text-ds-text">
     <!-- Breadcrumb -->
     <div class="site-container pt-ds-16 pb-ds-2">
-      <nav class="flex items-center gap-ds-3 text-[10px] uppercase tracking-[0.2em] text-ds-text-muted">
+      <nav class="flex items-center gap-ds-3 text-ds-text-muted">
         <a routerLink="/" class="hover:text-ds-text transition-colors">Home</a>
-        <span class="text-ds-border text-xs">/</span>
-        <span class="text-ds-text font-bold">{{ vm.product.name }}</span>
+        <span class="text-ds-border">/</span>
+        <span class="text-ds-text">{{ vm.product.name }}</span>
       </nav>
     </div>
 
@@ -13,10 +13,10 @@
     <div class="site-container pb-ds-12 md:pb-ds-20">
       <!-- Mobile header -->
       <div class="lg:hidden mb-ds-6 space-y-ds-2 text-center">
-        <h1 class="text-ds-2xl font-bold text-ds-text leading-tight">
+        <h1 class="text-ds-text">
           {{ vm.product.name }}
         </h1>
-        <div class="flex items-center justify-center gap-3 text-[9px] uppercase tracking-[0.2em] font-bold text-[#BBBBBB]">
+        <div class="flex items-center justify-center gap-3 text-[#BBBBBB]">
         </div>
       </div>
 
@@ -64,7 +64,7 @@
                 <!-- Offer Badge -->
                 @if (vm.currentCompareAtPrice && vm.currentCompareAtPrice > vm.currentPrice) {
                   <div class="absolute top-ds-4 left-ds-4 z-10">
-                    <span class="badge badge-active !text-[10px] !py-2 !px-4 tracking-widest uppercase">
+                    <span class="badge badge-active !py-2 !px-4">
                       OFFER -৳{{ getDiscountAmount({ price: vm.currentPrice, compareAtPrice: vm.currentCompareAtPrice }) }}
                     </span>
                   </div>
@@ -97,8 +97,8 @@
             <!-- Description (Desktop) -->
             <div class="hidden lg:block space-y-ds-10 pt-ds-10 border-t border-ds-border">
               <div class="space-y-ds-4">
-                <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-ds-text-sec">Description</h3>
-                <div class="text-ds-lg text-ds-text leading-relaxed font-light prose prose-sm max-w-none" [innerHTML]="vm.product.description | safeHtml"></div>
+                <h3 class="text-ds-text-sec">Description</h3>
+                <div class="text-ds-text prose prose-sm max-w-none" [innerHTML]="vm.product.description | safeHtml"></div>
               </div>
 
               <!-- Accordions -->
@@ -106,18 +106,18 @@
                 @if (vm.product.fabricAndCare) {
                   <details class="group">
                     <summary class="flex items-center justify-between py-ds-6 cursor-pointer list-none">
-                      <span class="text-[11px] uppercase tracking-[0.3em] font-bold">Details & Composition</span>
+                      <span >Details & Composition</span>
                       <app-icon name="Plus" size="16" className="text-ds-text-muted group-open:rotate-45 transition-transform"></app-icon>
                     </summary>
-                    <div class="pb-ds-8 text-ds-base text-ds-text-sec leading-relaxed font-light" [innerHTML]="vm.product.fabricAndCare | safeHtml"></div>
+                    <div class="pb-ds-8 text-ds-text-sec" [innerHTML]="vm.product.fabricAndCare | safeHtml"></div>
                   </details>
                 }
                 <details class="group">
                   <summary class="flex items-center justify-between py-ds-6 cursor-pointer list-none">
-                    <span class="text-[11px] uppercase tracking-[0.3em] font-bold">Shipping & Care</span>
+                    <span >Shipping & Care</span>
                     <app-icon name="Plus" size="16" className="text-ds-text-muted group-open:rotate-45 transition-transform"></app-icon>
                   </summary>
-                  <div class="pb-ds-8 text-ds-base text-ds-text-sec leading-relaxed font-light" [innerHTML]="vm.product.shippingAndReturns || 'Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary.' | safeHtml"></div>
+                  <div class="pb-ds-8 text-ds-text-sec" [innerHTML]="vm.product.shippingAndReturns || 'Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary.' | safeHtml"></div>
                 </details>
               </div>
             </div>
@@ -129,23 +129,23 @@
             <!-- Product Identity -->
             <div class="space-y-ds-4">
               @if (hasDiscount(vm.product)) {
-                <div class="inline-flex items-center px-ds-3 py-ds-1 bg-ds-accent text-ds-hero-text text-[9px] font-bold uppercase tracking-[0.2em]">
+                <div class="inline-flex items-center px-ds-3 py-ds-1 bg-ds-accent text-ds-hero-text">
                   {{ getDiscountPercentage(vm.product) }}% OFF
                 </div>
               }
-              <h1 class="text-ds-3xl md:text-ds-4xl font-bold tracking-tight text-ds-text leading-tight">
+              <h1 class="text-ds-text">
                 {{ vm.product.name }}
               </h1>
-              <p class="text-[11px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+              <p class="text-ds-text-muted">
                 SKU: {{ vm.product.sku || 'N/A' }}
               </p>
             </div>
 
             <!-- Pricing -->
             <div class="flex items-baseline gap-ds-4 py-ds-6 border-y border-ds-border">
-              <span class="text-ds-2xl font-bold text-ds-text">৳{{ vm.currentPrice }}</span>
+              <span class="text-ds-text">৳{{ vm.currentPrice }}</span>
               @if (vm.currentCompareAtPrice && vm.currentCompareAtPrice > vm.currentPrice) {
-                <span class="text-ds-lg text-ds-text-muted line-through font-medium">৳{{ vm.currentCompareAtPrice }}</span>
+                <span class="text-ds-text-muted line-through">৳{{ vm.currentCompareAtPrice }}</span>
               }
             </div>
 
@@ -153,14 +153,14 @@
             @if (vm.uniqueSizes.length > 0) {
               <div class="space-y-ds-5">
                 <div class="flex items-center justify-between">
-                  <span class="text-[11px] font-bold uppercase tracking-[0.2em]">Select Size</span>
-                  <button (click)="openSizeGuide()" class="text-[10px] font-bold uppercase tracking-widest border-b border-ds-text-muted hover:border-ds-text transition-colors pb-1">Size Guide</button>
+                  <span >Select Size</span>
+                  <button (click)="openSizeGuide()" class="border-b border-ds-text-muted hover:border-ds-text transition-colors pb-1">Size Guide</button>
                 </div>
                 <div class="flex flex-wrap gap-ds-2">
                   @for (size of vm.uniqueSizes; track size) {
                     <button
                       (click)="selectSize(size || '')"
-                      class="h-11 sm:h-14 min-w-[60px] sm:min-w-[70px] border transition-all duration-base text-[11px] sm:text-[12px] font-bold uppercase tracking-widest"
+                      class="h-11 sm:h-14 min-w-[60px] sm:min-w-[70px] border transition-all duration-base"
                       [ngClass]="{
                         'bg-ds-accent border-ds-accent text-ds-hero-text': size === vm.selectedSize,
                         'bg-ds-bg border-ds-border text-ds-text hover:border-ds-text': size !== vm.selectedSize
@@ -180,29 +180,29 @@
                 <button (click)="decreaseQuantity()" class="w-11 sm:w-14 h-full flex items-center justify-center hover:bg-ds-surface transition-colors">
                   <app-icon name="Minus" size="14"></app-icon>
                 </button>
-                <div class="flex-1 text-center font-bold text-ds-base tracking-widest">{{ quantity$ | async }}</div>
+                <div class="flex-1 text-center">{{ quantity$ | async }}</div>
                 <button (click)="increaseQuantity()" class="w-11 sm:w-14 h-full flex items-center justify-center hover:bg-ds-surface transition-colors">
                   <app-icon name="Plus" size="14"></app-icon>
                 </button>
               </div>
 
               @if (selectionError) {
-                <div class="p-ds-4 bg-ds-danger/5 text-ds-danger text-[11px] font-bold uppercase tracking-widest border border-ds-danger/20">
+                <div class="p-ds-4 bg-ds-danger/5 text-ds-danger border border-ds-danger/20">
                   {{ selectionError }}
                 </div>
               }
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-ds-3">
-                <button (click)="addToCart(vm.product)" class="btn btn-secondary h-11 sm:h-14 !text-[10px] sm:!text-[11px] !tracking-[0.3em] uppercase">
+                <button (click)="addToCart(vm.product)" class="btn btn-secondary h-11 sm:h-14">
                   ADD TO BAG
                 </button>
-                <button (click)="buyNow(vm.product)" class="btn btn-primary h-11 sm:h-14 !text-[10px] sm:!text-[11px] !tracking-[0.3em] uppercase">
+                <button (click)="buyNow(vm.product)" class="btn btn-primary h-11 sm:h-14">
                   ORDER NOW
                 </button>
               </div>
 
               @if ((settings$ | async)?.whatsAppNumber; as whatsApp) {
-                <a [href]="getWhatsAppUrl(vm.product, whatsApp)" target="_blank" class="btn btn-whatsapp-glow w-full h-11 sm:h-14 !bg-[#25D366] !text-white !border-none !text-[10px] sm:!text-[11px] !tracking-[0.3em] uppercase flex items-center justify-center gap-2">
+                <a [href]="getWhatsAppUrl(vm.product, whatsApp)" target="_blank" class="btn btn-whatsapp-glow w-full h-11 sm:h-14 !bg-[#25D366] !text-white !border-none flex items-center justify-center gap-2">
                   <app-icon name="WhatsApp" size="18"></app-icon>
                   WHATSAPP US
                 </a>
@@ -212,7 +212,7 @@
               <div class="p-ds-4 rounded-sm flex items-center gap-ds-3 border border-[#E63946]/50 animate-pulse"
                    style="background: rgba(230,57,70,0.05);">
                 <app-icon name="Eye" size="16" className="text-[#E63946]"></app-icon>
-                <p class="text-[11px] font-bold text-ds-text-sec uppercase tracking-widest">
+                <p class="text-ds-text-sec">
                   <span class="text-[#E63946]">{{ watchingCount }}</span> People watching this product now!
                 </p>
               </div>
@@ -222,29 +222,29 @@
             <div class="grid grid-cols-2 gap-ds-4 pt-ds-8 border-t border-ds-border">
               <div class="flex items-center gap-ds-3">
                 <app-icon name="Truck" size="18" className="text-ds-text-sec"></app-icon>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-ds-text-sec">Free Shipping</span>
+                <span class="text-ds-text-sec">Free Shipping</span>
               </div>
               <div class="flex items-center gap-ds-3">
                 <app-icon name="ShieldCheck" size="18" className="text-ds-text-sec"></app-icon>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-ds-text-sec">100% Genuine</span>
+                <span class="text-ds-text-sec">100% Genuine</span>
               </div>
             </div>
 
             <!-- Mobile Description -->
             <div class="lg:hidden pt-ds-10 space-y-ds-10 border-t border-ds-border">
               <div class="space-y-ds-4">
-                <h3 class="text-[11px] uppercase tracking-[0.4em] font-bold text-ds-text-sec">Description</h3>
-                <div class="text-ds-base text-ds-text leading-relaxed font-light prose prose-sm" [innerHTML]="vm.product.description | safeHtml"></div>
+                <h3 class="text-ds-text-sec">Description</h3>
+                <div class="text-ds-text prose prose-sm" [innerHTML]="vm.product.description | safeHtml"></div>
               </div>
               <!-- Mobile Accordions -->
               <div class="divide-y divide-ds-border border-y border-ds-border">
                 @if (vm.product.fabricAndCare) {
                   <details class="group">
                     <summary class="flex items-center justify-between py-ds-5 cursor-pointer list-none">
-                      <span class="text-[11px] uppercase tracking-[0.3em] font-bold">Composition</span>
+                      <span >Composition</span>
                       <app-icon name="Plus" size="14" className="text-ds-text-muted group-open:rotate-45 transition-transform"></app-icon>
                     </summary>
-                    <div class="pb-ds-6 text-ds-sm text-ds-text-sec leading-relaxed" [innerHTML]="vm.product.fabricAndCare | safeHtml"></div>
+                    <div class="pb-ds-6 text-ds-text-sec" [innerHTML]="vm.product.fabricAndCare | safeHtml"></div>
                   </details>
                 }
               </div>
@@ -259,7 +259,7 @@
       <section class="section-py border-t border-ds-border">
         <div class="site-container">
           <div class="text-center mb-ds-16 space-y-ds-2">
-            <p class="text-[10px] uppercase tracking-[0.4em] text-ds-text-muted font-bold">Curated Selection</p>
+            <p class="text-ds-text-muted">Curated Selection</p>
             <h2 class="section-title">Complete The Look</h2>
           </div>
           
@@ -318,7 +318,7 @@
           <!-- Counter -->
           @if (vm.gallery.length > 1) {
             <div class="absolute bottom-ds-6 left-1/2 -translate-x-1/2 px-ds-6 py-ds-2 bg-ds-bg/10 border border-ds-border/20 backdrop-blur-md rounded-full">
-              <span class="text-ds-hero-text text-[10px] font-bold uppercase tracking-[0.4em]">
+              <span class="text-ds-hero-text">
                 {{ lightboxIndex + 1 }} / {{ vm.gallery.length }}
               </span>
             </div>

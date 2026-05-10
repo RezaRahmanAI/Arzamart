@@ -2,19 +2,19 @@
   <!-- Page Heading & Global Actions -->
   <div class="flex flex-col justify-between gap-ds-4 sm:flex-row sm:items-center border-b border-ds-border pb-ds-4">
     <div>
-      <div class="flex items-center gap-2 text-[9px] text-ds-text-muted mb-2 uppercase font-bold tracking-[0.3em]">
+      <div class="flex items-center gap-2 text-ds-text-muted mb-2">
         <span>Catalog</span>
         <app-icon name="ChevronRight" size="10"></app-icon>
         <span class="text-ds-text">Product Groups</span>
       </div>
-      <h1 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">
+      <h1 class="text-ds-text">
         Product Relationship Manager
       </h1>
     </div>
     <div class="flex items-center gap-ds-3">
       <button
         (click)="startCreate()"
-        class="btn btn-primary h-11 px-ds-8 !text-[10px] uppercase tracking-widest"
+        class="btn btn-primary h-11 px-ds-8"
        *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
         <app-icon name="Plus" size="14"></app-icon>
         <span>Create New Group</span>
@@ -26,7 +26,7 @@
     <!-- Left Column: List -->
     <div class="flex flex-col gap-ds-4 lg:col-span-1">
       <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
-        <h2 class="mb-ds-6 text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+        <h2 class="mb-ds-6 text-ds-text-muted">
           Available Groups
         </h2>
         
@@ -35,7 +35,7 @@
             [formControl]="filterControl"
             type="text"
             placeholder="Search groups..."
-            class="form-input !h-10 !text-[11px] tracking-tight pl-ds-10"
+            class="form-input !h-10 pl-ds-10"
           />
           <div class="absolute left-3 top-1/2 -translate-y-1/2 text-ds-text-muted">
             <app-icon name="Search" size="14"></app-icon>
@@ -50,8 +50,8 @@
             [ngClass]="selectedId === group.id ? 'bg-ds-bg border-ds-border shadow-sm' : 'bg-transparent border-transparent hover:bg-ds-bg/50'"
           >
             <div class="flex flex-col">
-              <span class="text-[11px] font-bold text-ds-text tracking-tight group-hover/item:text-ds-accent transition-colors">{{ group.name }}</span>
-              <span class="text-[8px] text-ds-text-muted uppercase tracking-widest mt-0.5">ID: {{ group.id }}</span>
+              <span class="text-ds-text group-hover/item:text-ds-accent transition-colors">{{ group.name }}</span>
+              <span class="text-ds-text-muted mt-0.5">ID: {{ group.id }}</span>
             </div>
             <app-icon
               name="ChevronRight"
@@ -61,7 +61,7 @@
           </div>
 
           <div *ngIf="filteredGroups.length === 0" class="py-ds-10 text-center border border-dashed border-ds-border rounded-sm bg-ds-bg/10">
-            <p class="text-ds-text-muted text-[10px] font-bold uppercase tracking-widest">No groups found</p>
+            <p class="text-ds-text-muted">No groups found</p>
           </div>
         </div>
       </div>
@@ -72,7 +72,7 @@
       <!-- Group Identity Card -->
       <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
         <div class="flex items-center justify-between mb-ds-6">
-          <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+          <h2 class="text-ds-text-muted">
             Group Identity
           </h2>
           <button
@@ -88,21 +88,21 @@
         <form [formGroup]="groupForm" (ngSubmit)="saveGroup()" class="space-y-ds-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-4">
             <label class="flex flex-col gap-ds-2">
-              <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Group Name</span>
+              <span class="text-ds-text-muted">Group Name</span>
               <input
                 formControlName="name"
                 type="text"
                 placeholder="e.g. Cotton Chino Variants"
-                class="form-input !h-12 !text-[11px] tracking-tight"
+                class="form-input !h-12"
               />
             </label>
             <label class="flex flex-col gap-ds-2">
-              <span class="text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">Description (Optional)</span>
+              <span class="text-ds-text-muted">Description (Optional)</span>
               <input
                 formControlName="description"
                 type="text"
                 placeholder="Brief purpose of this group"
-                class="form-input !h-12 !text-[11px] tracking-tight"
+                class="form-input !h-12"
               />
             </label>
           </div>
@@ -112,14 +112,14 @@
               *ngIf="mode === 'edit'"
               (click)="cancelEdit()"
               type="button"
-              class="btn btn-secondary h-11 px-ds-8 !text-[10px] uppercase tracking-widest"
+              class="btn btn-secondary h-11 px-ds-8"
             >
               Cancel
             </button>
             <button
               type="submit"
               [disabled]="isSaving"
-              class="btn btn-primary h-11 px-ds-10 !text-[10px] uppercase tracking-widest"
+              class="btn btn-primary h-11 px-ds-10"
             >
               <app-icon *ngIf="isSaving" name="Loader2" size="14" className="animate-spin"></app-icon>
               <span>{{ isSaving ? 'Syncing...' : (mode === 'create' ? 'Commit Group' : 'Update Identity') }}</span>
@@ -131,22 +131,22 @@
       <!-- Assigned Products Card -->
       <div *ngIf="mode === 'edit'" class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm animate-in fade-in slide-in-from-top-2 duration-base">
         <div class="flex flex-col mb-ds-6">
-          <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-ds-text-muted">
+          <h2 class="text-ds-text-muted">
             Assigned Products
           </h2>
-          <p class="text-[9px] text-ds-text-muted font-bold uppercase tracking-widest mt-1">Cross-pollination mapping for related entries</p>
+          <p class="text-ds-text-muted mt-1">Cross-pollination mapping for related entries</p>
         </div>
 
         <!-- Product Search -->
         <div class="relative group/search mb-ds-6">
-          <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em] mb-1.5 block">Search & Add to Group</span>
+          <span class="text-ds-text-muted mb-1.5 block">Search & Add to Group</span>
           <div class="relative">
             <input
               #productSearchInput
               type="text"
               placeholder="Type product name or SKU..."
               (input)="onSearchProduct($event)"
-              class="form-input !h-11 !text-[11px] tracking-tight pl-ds-10"
+              class="form-input !h-11 pl-ds-10"
             />
             <div class="absolute left-3 top-1/2 -translate-y-1/2 text-ds-text-muted">
               <app-icon name="Plus" size="14"></app-icon>
@@ -168,8 +168,8 @@
                   <img [src]="getImageUrl(p.imageUrl)" class="w-full h-full object-cover">
                 </div>
                 <div class="flex flex-col">
-                  <span class="text-[10px] font-bold text-ds-text tracking-tight group-hover/result:text-ds-accent transition-colors">{{ p.name }}</span>
-                  <span class="text-[8px] text-ds-text-muted uppercase tracking-widest mt-0.5">৳{{ p.price }} | SKU: {{ p.sku }}</span>
+                  <span class="text-ds-text group-hover/result:text-ds-accent transition-colors">{{ p.name }}</span>
+                  <span class="text-ds-text-muted mt-0.5">৳{{ p.price }} | SKU: {{ p.sku }}</span>
                 </div>
               </div>
             </div>
@@ -188,8 +188,8 @@
                   <img [src]="getImageUrl(p.imageUrl)" class="w-full h-full object-cover" />
                 </div>
                 <div class="flex flex-col min-w-0">
-                  <span class="text-[10px] font-bold text-ds-text tracking-tight truncate">{{ p.name }}</span>
-                  <span class="text-[8px] font-bold text-ds-text-muted uppercase tracking-widest mt-0.5">{{ p.categoryName || 'Uncategorized' }}</span>
+                  <span class="text-ds-text truncate">{{ p.name }}</span>
+                  <span class="text-ds-text-muted mt-0.5">{{ p.categoryName || 'Uncategorized' }}</span>
                 </div>
               </div>
             </div>
@@ -204,8 +204,8 @@
 
           <div *ngIf="currentGroupProducts.length === 0" class="py-ds-12 text-center border border-dashed border-ds-border rounded-sm bg-ds-bg/10">
             <app-icon name="Link2" size="24" className="mx-auto text-ds-text-muted opacity-20 mb-ds-3"></app-icon>
-            <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">No products assigned yet</p>
-            <p class="text-[8px] font-bold text-ds-text-muted/60 uppercase tracking-[0.2em] mt-1">Use the search above to link entries</p>
+            <p class="text-ds-text-muted">No products assigned yet</p>
+            <p class="text-ds-text-muted/60 mt-1">Use the search above to link entries</p>
           </div>
         </div>
       </div>

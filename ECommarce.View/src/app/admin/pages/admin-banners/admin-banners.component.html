@@ -1,12 +1,12 @@
 <div class="site-container-admin mx-auto flex flex-col gap-ds-8">
   <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Campaign Assets</h1>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">Visual Engagement & Promotion Management</p>
+      <h1 class="text-ds-text">Campaign Assets</h1>
+      <p class="text-ds-text-muted mt-1.5">Visual Engagement & Promotion Management</p>
     </div>
     <button
       (click)="openAddModal()"
-      class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest"
+      class="btn btn-primary h-11 px-ds-10"
      *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
       <app-icon name="Plus" size="14"></app-icon>
       <span>Initialize Asset</span>
@@ -19,21 +19,21 @@
             [class.border-ds-text]="currentTab === 'Hero'" 
             [class.text-ds-text]="currentTab === 'Hero'"
             [class.text-ds-text-muted]="currentTab !== 'Hero'"
-            class="px-2 py-4 border-b-2 border-transparent font-bold text-[10px] uppercase tracking-[0.3em] transition-all whitespace-nowrap">
+            class="px-2 py-4 border-b-2 border-transparent transition-all whitespace-nowrap">
       Main Architecture
     </button>
     <button (click)="setTab('Spotlight')" 
             [class.border-ds-text]="currentTab === 'Spotlight'" 
             [class.text-ds-text]="currentTab === 'Spotlight'"
             [class.text-ds-text-muted]="currentTab !== 'Spotlight'"
-            class="px-2 py-4 border-b-2 border-transparent font-bold text-[10px] uppercase tracking-[0.3em] transition-all whitespace-nowrap">
+            class="px-2 py-4 border-b-2 border-transparent transition-all whitespace-nowrap">
       Side Modules
     </button>
     <button (click)="setTab('Promo')" 
             [class.border-ds-text]="currentTab === 'Promo'" 
             [class.text-ds-text]="currentTab === 'Promo'"
             [class.text-ds-text-muted]="currentTab !== 'Promo'"
-            class="px-2 py-4 border-b-2 border-transparent font-bold text-[10px] uppercase tracking-[0.3em] transition-all whitespace-nowrap">
+            class="px-2 py-4 border-b-2 border-transparent transition-all whitespace-nowrap">
       Secondary Banners
     </button>
   </div>
@@ -67,21 +67,21 @@
           </button>
         </div>
         <div class="absolute top-2 right-2 flex flex-col gap-1.5 items-end">
-          <span class="bg-ds-text text-ds-surface text-[8px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-widest">SEQ #{{ banner.displayOrder }}</span>
-          <span *ngIf="banner.isActive" class="bg-ds-success text-ds-surface text-[8px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-widest">Live</span>
-          <span class="bg-ds-surface text-ds-text text-[8px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-widest border border-ds-border">{{ banner.type || 'HERO' }}</span>
+          <span class="bg-ds-text text-ds-surface px-2 py-0.5 rounded-sm">SEQ #{{ banner.displayOrder }}</span>
+          <span *ngIf="banner.isActive" class="bg-ds-success text-ds-surface px-2 py-0.5 rounded-sm">Live</span>
+          <span class="bg-ds-surface text-ds-text px-2 py-0.5 rounded-sm border border-ds-border">{{ banner.type || 'HERO' }}</span>
         </div>
       </div>
       <div class="p-ds-4 bg-ds-surface">
-        <h3 class="font-bold text-ds-text text-[11px] mb-1 line-clamp-1 uppercase tracking-tight">
+        <h3 class="text-ds-text mb-1 line-clamp-1">
           {{ banner.title || "UNTITLED ASSET" }}
         </h3>
-        <p class="text-ds-text-muted text-[9px] line-clamp-1 mb-3 font-bold uppercase tracking-widest">
+        <p class="text-ds-text-muted line-clamp-1 mb-3">
           {{ banner.subtitle }}
         </p>
         <div class="flex items-center gap-ds-2 pt-ds-3 border-t border-ds-border/50">
           <app-icon name="Link" size="10" className="text-ds-text-muted/40"></app-icon>
-          <span class="text-[8px] text-ds-text-muted truncate font-mono uppercase tracking-tighter">{{ banner.linkUrl || "NO ASSIGNED DESTINATION" }}</span>
+          <span class="text-ds-text-muted truncate">{{ banner.linkUrl || "NO ASSIGNED DESTINATION" }}</span>
         </div>
       </div>
     </div>
@@ -97,13 +97,13 @@
       size="64"
       className="text-ds-text-muted opacity-10 mb-ds-6"
     ></app-icon>
-    <h3 class="text-[12px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mb-2">No Visual Assets Detected</h3>
-    <p class="text-[10px] font-bold text-ds-text-muted/60 uppercase tracking-widest mb-ds-8">
+    <h3 class="text-ds-text-muted mb-2">No Visual Assets Detected</h3>
+    <p class="text-ds-text-muted/60 mb-ds-8">
       Initialize your first hero module to engage catalog traffic.
     </p>
     <button
       (click)="openAddModal()"
-      class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest"
+      class="btn btn-primary h-11 px-ds-10"
     >
       Initialize {{ currentTab === 'Hero' ? 'Module' : 'Banner' }}
     </button>
@@ -124,10 +124,10 @@
       class="px-ds-8 py-ds-4 border-b border-ds-border flex justify-between items-center bg-ds-bg/50"
     >
       <div>
-        <h2 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">
+        <h2 class="text-ds-text">
           {{ isEditing ? "Synchronize Asset" : "Initialize Asset" }}
         </h2>
-        <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Campaign Visual Configuration</p>
+        <p class="text-ds-text-muted mt-0.5">Campaign Visual Configuration</p>
       </div>
       <button
         (click)="closeModal()"
@@ -140,59 +140,59 @@
     <form [formGroup]="bannerForm" (ngSubmit)="onSubmit()" class="p-ds-8 flex flex-col gap-ds-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
         <div class="col-span-2">
-          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Asset Classification</label>
+          <label class="block text-ds-text ml-1 mb-2">Asset Classification</label>
           <div class="flex gap-ds-3">
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Hero" class="peer hidden" />
               <div class="py-ds-3 px-ds-2 border border-ds-border bg-ds-bg rounded-sm peer-checked:bg-ds-text peer-checked:text-ds-surface peer-checked:border-ds-text transition-all text-center">
-                <p class="font-bold text-[9px] uppercase tracking-widest">Main Hero</p>
+                <p >Main Hero</p>
               </div>
             </label>
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Promo" class="peer hidden" />
               <div class="py-ds-3 px-ds-2 border border-ds-border bg-ds-bg rounded-sm peer-checked:bg-ds-text peer-checked:text-ds-surface peer-checked:border-ds-text transition-all text-center">
-                <p class="font-bold text-[9px] uppercase tracking-widest">Secondary</p>
+                <p >Secondary</p>
               </div>
             </label>
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Spotlight" class="peer hidden" />
               <div class="py-ds-3 px-ds-2 border border-ds-border bg-ds-bg rounded-sm peer-checked:bg-ds-text peer-checked:text-ds-surface peer-checked:border-ds-text transition-all text-center">
-                <p class="font-bold text-[9px] uppercase tracking-widest">Offer Spotlight</p>
+                <p >Offer Spotlight</p>
               </div>
             </label>
           </div>
         </div>
 
         <div class="col-span-2">
-          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Lead Nomenclature (Title)</label>
-          <input type="text" formControlName="title" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" placeholder="E.G. AUTUMN ARCHIVE 2026" />
+          <label class="block text-ds-text ml-1 mb-2">Lead Nomenclature (Title)</label>
+          <input type="text" formControlName="title" class="form-input !h-11 !px-ds-4" placeholder="E.G. AUTUMN ARCHIVE 2026" />
         </div>
 
         <div class="col-span-2">
-          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Supporting Narrative (Subtitle)</label>
-          <input type="text" formControlName="subtitle" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" placeholder="E.G. CURATED MINIMALISM" />
+          <label class="block text-ds-text ml-1 mb-2">Supporting Narrative (Subtitle)</label>
+          <input type="text" formControlName="subtitle" class="form-input !h-11 !px-ds-4" placeholder="E.G. CURATED MINIMALISM" />
         </div>
 
         <div>
-          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Display Sequence</label>
-          <input type="number" formControlName="displayOrder" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold font-mono" />
+          <label class="block text-ds-text ml-1 mb-2">Display Sequence</label>
+          <input type="number" formControlName="displayOrder" class="form-input !h-11 !px-ds-4" />
         </div>
 
         <div>
-          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Action Directive (Button)</label>
-          <input type="text" formControlName="buttonText" class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase" placeholder="E.G. EXPLORE" />
+          <label class="block text-ds-text ml-1 mb-2">Action Directive (Button)</label>
+          <input type="text" formControlName="buttonText" class="form-input !h-11 !px-ds-4" placeholder="E.G. EXPLORE" />
         </div>
 
         <div class="col-span-2">
-          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Destination Protocol (Link)</label>
-          <input type="text" formControlName="linkUrl" class="form-input !h-11 !px-ds-4 !text-[11px] font-mono font-bold" placeholder="/COLLECTIONS/ARCHIVE" />
+          <label class="block text-ds-text ml-1 mb-2">Destination Protocol (Link)</label>
+          <input type="text" formControlName="linkUrl" class="form-input !h-11 !px-ds-4" placeholder="/COLLECTIONS/ARCHIVE" />
         </div>
 
         <div class="col-span-2">
-          <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Asset Source Configuration</label>
+          <label class="block text-ds-text ml-1 mb-2">Asset Source Configuration</label>
           <div class="grid grid-cols-2 gap-ds-6">
             <div class="space-y-3">
-              <p class="text-[8px] text-ds-text-muted uppercase font-bold tracking-[0.2em] text-center">Desktop Viewport</p>
+              <p class="text-ds-text-muted text-center">Desktop Viewport</p>
               <div class="relative h-24 bg-ds-bg rounded-sm border border-dashed border-ds-border flex items-center justify-center overflow-hidden group/upload">
                 <img *ngIf="bannerForm.get('imageUrl')?.value" [src]="getBannerImageUrl(bannerForm.get('imageUrl')?.value!)" class="w-full h-full object-cover transition-all duration-500" />
                 <div *ngIf="!bannerForm.get('imageUrl')?.value" class="text-ds-text-muted/20 flex flex-col items-center">
@@ -202,7 +202,7 @@
               </div>
             </div>
             <div class="space-y-3">
-              <p class="text-[8px] text-ds-text-muted uppercase font-bold tracking-[0.2em] text-center">Mobile Viewport</p>
+              <p class="text-ds-text-muted text-center">Mobile Viewport</p>
               <div class="relative h-24 bg-ds-bg rounded-sm border border-dashed border-ds-border flex items-center justify-center overflow-hidden group/upload">
                 <img *ngIf="bannerForm.get('mobileImageUrl')?.value" [src]="getBannerImageUrl(bannerForm.get('mobileImageUrl')?.value!)" class="w-full h-full object-cover transition-all duration-500" />
                 <div *ngIf="!bannerForm.get('mobileImageUrl')?.value" class="text-ds-text-muted/20 flex flex-col items-center">
@@ -219,13 +219,13 @@
             <input class="sr-only peer" type="checkbox" formControlName="isActive" />
             <div class="w-9 h-5 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-4 after:w-4 after:transition-all peer-checked:bg-ds-text"></div>
           </label>
-          <span class="text-[10px] font-bold uppercase text-ds-text-muted tracking-widest">Synchronize with Live Frontend</span>
+          <span class="text-ds-text-muted">Synchronize with Live Frontend</span>
         </div>
       </div>
 
       <div class="flex justify-end gap-ds-4 pt-ds-6 border-t border-ds-border">
-        <button type="button" (click)="closeModal()" class="btn btn-secondary !h-12 px-ds-10 !text-[10px] font-bold uppercase tracking-widest">Abort</button>
-        <button type="submit" [disabled]="isSubmitting" class="btn btn-primary !h-12 px-ds-12 !text-[10px] font-bold uppercase tracking-widest !bg-ds-text !text-ds-surface">
+        <button type="button" (click)="closeModal()" class="btn btn-secondary !h-12 px-ds-10">Abort</button>
+        <button type="submit" [disabled]="isSubmitting" class="btn btn-primary !h-12 px-ds-12 !bg-ds-text !text-ds-surface">
           <app-icon *ngIf="isSubmitting" name="Loader2" size="14" className="animate-spin mr-ds-2"></app-icon>
           <span>{{ isEditing ? "Synchronize" : "Establish Module" }}</span>
         </button>

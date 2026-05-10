@@ -24,7 +24,7 @@
             @for (item of vm.menu.slice(0, 4); track item.id) {
               <a
                 [routerLink]="['/category', item.slug]"
-                class="nav-link !py-0 !text-[10px] lg:!text-[11px] !tracking-widest"
+                class="nav-link !py-0"
               >
                 {{ item.name }}
               </a>
@@ -40,7 +40,7 @@
             <a routerLink="/cart" class="relative group p-ds-2 text-ds-text transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
               @if (vm.cartCount > 0) {
-                <span class="absolute top-ds-1 right-ds-1 h-3.5 w-3.5 bg-ds-accent text-ds-hero-text text-[8px] font-bold rounded-full flex items-center justify-center">
+                <span class="absolute top-ds-1 right-ds-1 h-3.5 w-3.5 bg-ds-accent text-ds-hero-text rounded-full flex items-center justify-center">
                   {{ vm.cartCount }}
                 </span>
               }
@@ -54,7 +54,7 @@
             <div class="hidden lg:flex items-center ml-ds-4">
               <button
                 (click)="toggleCategoriesMenu()"
-                class="flex items-center gap-ds-2 text-[11px] font-bold uppercase tracking-widest text-ds-text transition-colors"
+                class="flex items-center gap-ds-2 text-ds-text transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-500" [class.rotate-90]="isCategoriesMenuOpen"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
                 <span>Explore</span>
@@ -87,8 +87,8 @@
                 (click)="isCategoriesMenuOpen = false"
                 class="group flex flex-col gap-ds-2"
               >
-                <span class="text-ds-sm font-bold text-ds-text group-hover:text-ds-text-sec transition-colors">{{ item.name }}</span>
-                <span class="text-[10px] text-ds-text-muted uppercase tracking-widest">Shop All</span>
+                <span class="text-ds-text group-hover:text-ds-text-sec transition-colors">{{ item.name }}</span>
+                <span class="text-ds-text-muted">Shop All</span>
               </a>
             }
           </div>
@@ -107,7 +107,7 @@
                 (input)="searchQuery = searchInput.value"
                 (keyup.enter)="onSearch()"
                 placeholder="What are you looking for?"
-                class="w-full h-12 bg-transparent border-none text-ds-xl font-bold text-ds-text placeholder:text-ds-text-muted focus:ring-0"
+                class="w-full h-12 bg-transparent border-none text-ds-text placeholder:text-ds-text-muted focus:ring-0"
               />
               <button (click)="onSearch()" class="p-ds-2 text-ds-text hover:text-ds-text-sec transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -140,7 +140,7 @@
             (input)="searchQuery = mobileSearchInput.value"
             (keyup.enter)="onSearch()"
             placeholder="Search for products..."
-            class="w-full h-12 pl-12 pr-ds-6 bg-ds-surface border border-ds-border rounded-sm text-ds-base font-bold uppercase tracking-widest text-ds-text placeholder:text-ds-text-muted outline-none focus:border-ds-accent transition-colors"
+            class="w-full h-12 pl-12 pr-ds-6 bg-ds-surface border border-ds-border rounded-sm text-ds-text placeholder:text-ds-text-muted outline-none focus:border-ds-accent transition-colors"
           />
           <span class="absolute left-ds-4 top-1/2 -translate-y-1/2 text-ds-text-muted">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -150,7 +150,7 @@
     }
 
     <div class="flex justify-between items-center mb-ds-8">
-       <span class="text-ds-lg font-bold uppercase tracking-[0.4em]">Menu</span>
+       <span >Menu</span>
        <button (click)="closeMenu()" class="p-ds-2 border border-ds-border text-ds-text-muted hover:text-ds-text transition-colors">
          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
        </button>
@@ -162,7 +162,7 @@
             <a 
                 [routerLink]="['/category', item.slug]"
                 (click)="closeMenu()"
-                class="py-ds-6 border-b border-ds-border text-[11px] font-bold uppercase tracking-[0.3em] text-ds-text hover:text-ds-accent transition-colors"
+                class="py-ds-6 border-b border-ds-border text-ds-text hover:text-ds-accent transition-colors"
             >
                 {{ item.name }}
             </a>
@@ -171,11 +171,11 @@
     </nav>
 
     <div class="mt-ds-10 space-y-ds-2">
-      <a routerLink="/cart" (click)="closeMenu()" class="flex items-center gap-ds-3 py-ds-4 text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text transition-colors">
+      <a routerLink="/cart" (click)="closeMenu()" class="flex items-center gap-ds-3 py-ds-4 text-ds-text transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         Your Bag
       </a>
-      <a routerLink="/profile" (click)="closeMenu()" class="flex items-center gap-ds-3 py-ds-4 text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text transition-colors">
+      <a routerLink="/profile" (click)="closeMenu()" class="flex items-center gap-ds-3 py-ds-4 text-ds-text transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Account
       </a>

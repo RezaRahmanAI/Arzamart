@@ -1,11 +1,11 @@
 ﻿<main class="flex-1 w-full max-w-[1440px] mx-auto px-4 lg:px-10 py-8">
   <div class="flex flex-col gap-4 mb-8">
     <h1
-      class="text-primary text-4xl md:text-5xl font-black leading-tight tracking-[-0.033em]"
+      class="text-primary"
     >
       Accessories
     </h1>
-    <p class="text-text-sub text-lg max-w-2xl">
+    <p class="text-text-sub max-w-2xl">
       Complete your modest look with our curated collection of scarves, jewelry,
       and more. Elegant finishing touches for every occasion.
     </p>
@@ -15,52 +15,52 @@
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary text-white pl-3 pr-4 shadow-sm transition-transform active:scale-95"
     >
       <app-icon name="LayoutGrid" size="18"></app-icon>
-      <p class="text-sm font-medium">All</p>
+      <p >All</p>
     </button>
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
     >
       <app-icon name="Filter" size="18"></app-icon>
-      <p class="text-sm font-medium">Scarves</p>
+      <p >Scarves</p>
     </button>
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
     >
       <app-icon name="Shirt" size="18"></app-icon>
-      <p class="text-sm font-medium">Hats</p>
+      <p >Hats</p>
     </button>
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
     >
       <app-icon name="Trophy" size="18"></app-icon>
-      <p class="text-sm font-medium">Belts</p>
+      <p >Belts</p>
     </button>
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
     >
       <app-icon name="Gem" size="18"></app-icon>
-      <p class="text-sm font-medium">Jewelry</p>
+      <p >Jewelry</p>
     </button>
     <button
       class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-accent hover:bg-accent/80 text-primary pl-3 pr-4 transition-colors"
     >
       <app-icon name="ShoppingBag" size="18"></app-icon>
-      <p class="text-sm font-medium">Bags</p>
+      <p >Bags</p>
     </button>
   </div>
   <div class="flex flex-col lg:flex-row gap-10">
     <aside class="w-full lg:w-64 shrink-0 hidden lg:block space-y-8">
       <div>
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-primary">Filters</h3>
-          <button class="text-sm text-secondary-text hover:text-primary">
+          <h3 class="text-primary">Filters</h3>
+          <button class="text-secondary-text hover:text-primary">
             Clear all
           </button>
         </div>
         <div class="space-y-6">
           <div class="border-b border-accent pb-6">
             <p
-              class="font-bold text-primary mb-3 text-sm uppercase tracking-wider"
+              class="text-primary mb-3"
             >
               Category
             </p>
@@ -109,12 +109,12 @@
           </div>
           <div class="border-b border-accent pb-6">
             <p
-              class="font-bold text-primary mb-3 text-sm uppercase tracking-wider"
+              class="text-primary mb-3"
             >
               Price Range
             </p>
             <div
-              class="flex items-center gap-2 text-sm text-primary font-medium mb-4"
+              class="flex items-center gap-2 text-primary mb-4"
             >
               <span>0</span>
               <input
@@ -127,12 +127,12 @@
             </div>
             <div class="flex gap-2">
               <input
-                class="w-full rounded-lg border-none bg-accent text-sm py-2 px-3 text-primary placeholder:text-secondary-text/50"
+                class="w-full rounded-lg border-none bg-accent py-2 px-3 text-primary placeholder:text-secondary-text/50"
                 placeholder="Min"
                 type="number"
               />
               <input
-                class="w-full rounded-lg border-none bg-accent text-sm py-2 px-3 text-primary placeholder:text-secondary-text/50"
+                class="w-full rounded-lg border-none bg-accent py-2 px-3 text-primary placeholder:text-secondary-text/50"
                 placeholder="Max"
                 type="number"
               />
@@ -140,7 +140,7 @@
           </div>
           <div>
             <p
-              class="font-bold text-primary mb-3 text-sm uppercase tracking-wider"
+              class="text-primary mb-3"
             >
               Color
             </p>
@@ -167,18 +167,18 @@
     </aside>
     <div class="flex-1 flex flex-col">
       <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
-        <p class="text-secondary-text text-sm font-medium">
+        <p class="text-secondary-text">
           Showing
-          <span class="text-primary font-bold">{{ products.length }}</span>
+          <span class="text-primary">{{ products.length }}</span>
           products
         </p>
         <div class="flex items-center gap-3 ml-auto">
-          <span class="text-secondary-text text-sm hidden sm:inline"
+          <span class="text-secondary-text hidden sm:inline"
             >Sort by:</span
           >
           <div class="relative">
             <select
-              class="appearance-none bg-accent text-primary text-sm font-bold py-2.5 pl-4 pr-10 rounded-lg border-none cursor-pointer focus:ring-1 focus:ring-primary/20"
+              class="appearance-none bg-accent text-primary py-2.5 pl-4 pr-10 rounded-lg border-none cursor-pointer focus:ring-1 focus:ring-primary/20"
             >
               <option>Popularity</option>
               <option>Newest Arrivals</option>
@@ -232,7 +232,7 @@
             <div>
               <div class="flex justify-between items-start">
                 <h3
-                  class="text-primary text-base font-bold leading-tight line-clamp-2 mb-1 group-hover:underline decoration-1 underline-offset-4"
+                  class="text-primary line-clamp-2 mb-1 group-hover:underline decoration-1 underline-offset-4"
                 >
                   {{ product.name }}
                 </h3>
@@ -242,11 +242,11 @@
                   size="sm"
                 ></app-price-display>
               </div>
-              <p class="text-secondary-text text-sm mb-3">
+              <p class="text-secondary-text mb-3">
                 {{ product.description }}
               </p>
               <button
-                class="w-full py-2.5 rounded-lg border border-primary text-primary font-bold text-sm hover:bg-primary hover:text-white transition-all duration-200 flex items-center justify-center gap-2"
+                class="w-full py-2.5 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white transition-all duration-200 flex items-center justify-center gap-2"
               >
                 <app-icon
                   name="ShoppingCart"
@@ -264,7 +264,7 @@
       </div>
       <div class="mt-12 flex justify-center">
         <button
-          class="px-8 py-3 bg-accent text-primary font-bold rounded-lg hover:bg-accent/80 transition-colors w-full sm:w-auto"
+          class="px-8 py-3 bg-accent text-primary rounded-lg hover:bg-accent/80 transition-colors w-full sm:w-auto"
         >
           Load More Products
         </button>

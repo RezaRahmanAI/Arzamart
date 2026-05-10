@@ -2,7 +2,7 @@
   <!-- Editorial Header -->
   <div class="bg-ds-surface border-b border-ds-border py-ds-12 mb-ds-16">
     <div class="site-container">
-      <div class="flex items-center gap-ds-3 text-[10px] uppercase tracking-[0.3em] text-ds-text-muted mb-ds-4 font-bold">
+      <div class="flex items-center gap-ds-3 text-ds-text-muted mb-ds-4">
         <a routerLink="/" class="hover:text-ds-text transition-colors">Home</a>
         @if (parentCategorySlug) {
           <span class="text-ds-border">/</span>
@@ -11,7 +11,7 @@
         <span class="text-ds-border">/</span>
         <span class="text-ds-text">{{ title }}</span>
       </div>
-      <h1 class="text-ds-4xl font-bold text-ds-text uppercase tracking-tight">{{ title }}</h1>
+      <h1 class="text-ds-text">{{ title }}</h1>
     </div>
   </div>
 
@@ -21,7 +21,7 @@
       <aside class="hidden lg:block w-full lg:w-72 shrink-0">
         <div class="bg-ds-surface border border-ds-border sticky top-24">
           <div class="p-ds-6 border-b border-ds-border bg-ds-bg/50">
-            <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">
+            <h3 class="text-ds-text">
               {{ isOffersPage ? 'Offers by Category' : (parentCategoryName || 'Categories') }}
             </h3>
           </div>
@@ -33,13 +33,13 @@
                 @if (parentCategorySlug) {
                   <button 
                     (click)="navigateToSub('/category/' + parentCategorySlug)"
-                    class="w-full flex items-center justify-between p-ds-4 text-[11px] font-bold transition-all group"
+                    class="w-full flex items-center justify-between p-ds-4 transition-all group"
                     [ngClass]="{
                       'bg-ds-accent text-ds-hero-text': !activeSubSlug,
                       'text-ds-text-sec hover:bg-ds-bg hover:text-ds-text': activeSubSlug
                     }"
                   >
-                    <span class="uppercase tracking-widest">All {{ parentCategoryName }}</span>
+                    <span >All {{ parentCategoryName }}</span>
                     <app-icon name="ArrowRight" size="14" [className]="!activeSubSlug ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0'"></app-icon>
                   </button>
                 }
@@ -47,13 +47,13 @@
                 @for (sub of subCategories; track sub.id) {
                   <button 
                     (click)="navigateToSub('/subcategory/' + sub.slug)"
-                    class="w-full flex items-center justify-between p-ds-4 text-[11px] font-bold transition-all group"
+                    class="w-full flex items-center justify-between p-ds-4 transition-all group"
                     [ngClass]="{
                       'bg-ds-accent text-ds-hero-text': sub.slug === activeSubSlug,
                       'text-ds-text-sec hover:bg-ds-bg hover:text-ds-text': sub.slug !== activeSubSlug
                     }"
                   >
-                    <span class="uppercase tracking-widest">{{ sub.name }}</span>
+                    <span >{{ sub.name }}</span>
                     <app-icon name="ArrowRight" size="14" [className]="sub.slug === activeSubSlug ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0'"></app-icon>
                   </button>
                 }
@@ -66,16 +66,16 @@
                 @for (cat of offerCategories; track cat.id) {
                   <div class="space-y-ds-4">
                     <div class="flex items-center gap-ds-3 px-ds-2">
-                      <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.3em]">{{ cat.name }}</span>
+                      <span class="text-ds-text-muted">{{ cat.name }}</span>
                       <div class="h-[1px] flex-1 bg-ds-border opacity-50"></div>
                     </div>
                     <nav class="flex flex-col gap-ds-1">
                       @for (sub of cat.subCategories; track sub.id) {
                         <button 
                           (click)="navigateToSub('/subcategory/' + sub.slug + '?isOffer=true')"
-                          class="w-full flex items-center justify-between p-ds-3 text-[11px] font-bold text-ds-text-sec hover:bg-ds-bg hover:text-ds-text transition-all group"
+                          class="w-full flex items-center justify-between p-ds-3 text-ds-text-sec hover:bg-ds-bg hover:text-ds-text transition-all group"
                         >
-                          <span class="uppercase tracking-widest pl-ds-2">{{ sub.name }}</span>
+                          <span class="pl-ds-2">{{ sub.name }}</span>
                           <app-icon name="ArrowRight" size="14" className="opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0"></app-icon>
                         </button>
                       }
@@ -87,7 +87,7 @@
             
             @if ((!isOffersPage && subCategories.length === 0) || (isOffersPage && offerCategories.length === 0)) {
               <div class="py-ds-10 text-center">
-                <p class="text-[10px] text-ds-text-muted uppercase tracking-[0.3em] font-bold">No Categories Found</p>
+                <p class="text-ds-text-muted">No Categories Found</p>
               </div>
             }
           </div>
@@ -126,10 +126,10 @@
               <div class="w-20 h-20 bg-ds-bg border border-ds-border flex items-center justify-center mb-ds-8">
                 <app-icon name="PackageSearch" size="32" className="text-ds-text-muted opacity-30"></app-icon>
               </div>
-              <h3 class="text-ds-lg font-bold text-ds-text uppercase tracking-tight mb-ds-2">No products found</h3>
-              <p class="text-ds-text-muted text-ds-xs uppercase tracking-[0.2em] max-w-xs mx-auto">Try a different size or clear filters.</p>
+              <h3 class="text-ds-text mb-ds-2">No products found</h3>
+              <p class="text-ds-text-muted max-w-xs mx-auto">Try a different size or clear filters.</p>
               @if (selectedSize !== 'All Sizes') {
-                <button (click)="selectSizeFilter('All Sizes')" class="btn btn-primary mt-ds-8 h-12 px-ds-10 !text-[10px] !tracking-[0.3em] uppercase">Clear Size Filter</button>
+                <button (click)="selectSizeFilter('All Sizes')" class="btn btn-primary mt-ds-8 h-12 px-ds-10">Clear Size Filter</button>
               }
             </div>
           }

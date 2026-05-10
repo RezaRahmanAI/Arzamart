@@ -1,5 +1,5 @@
 <div
-  class="bg-background-light dark:bg-background-dark text-ds-text dark:text-white font-display antialiased flex flex-col min-h-screen"
+  class="bg-background-light dark:bg-background-dark text-ds-text dark:text-white antialiased flex flex-col min-h-screen"
 >
   <!-- Main Split Layout -->
   <main class="flex flex-1 flex-col lg:flex-row">
@@ -18,10 +18,10 @@
       ></div>
       <!-- Overlay Content -->
       <div class="absolute bottom-0 left-0 p-12 text-white">
-        <h2 class="text-4xl font-bold mb-4 tracking-tight">
+        <h2 class="mb-4">
           Elegance in Every Detail.
         </h2>
-        <p class="text-lg opacity-90 max-w-md font-light">
+        <p class="opacity-90 max-w-md">
           Join our community and discover a curated collection of modest fashion
           that speaks to your style.
         </p>
@@ -35,12 +35,12 @@
         <!-- Page Heading -->
         <div class="mb-10">
           <h1
-            class="text-ds-text dark:text-white tracking-tight text-[32px] font-bold leading-tight mb-3"
+            class="text-ds-text dark:text-white mb-3"
           >
             Admin Access
           </h1>
           <p
-            class="text-[#888888] dark:text-gray-400 text-sm font-normal leading-normal"
+            class="text-[#888888] dark:text-gray-400"
           >
             Sign in to manage the store dashboard.
           </p>
@@ -54,18 +54,18 @@
           <!-- Email/Username Input -->
           <label class="flex flex-col w-full">
             <span
-              class="text-[#111111] dark:text-gray-200 text-base font-medium leading-normal pb-2"
+              class="text-[#111111] dark:text-gray-200 pb-2"
               >Email or Username</span
             >
             <input
-              class="form-input w-full rounded-lg text-[#111111] dark:text-white bg-[#F5F5F5] dark:bg-gray-800 border border-[#F5F5F5] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 placeholder:text-[#888888] text-base"
+              class="form-input w-full rounded-lg text-[#111111] dark:text-white bg-[#F5F5F5] dark:bg-gray-800 border border-[#F5F5F5] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 placeholder:text-[#888888]"
               placeholder="Enter your email or username"
               type="text"
               formControlName="emailOrUsername"
             />
             @if (emailOrUsername.touched && emailOrUsername.invalid) {
               <span
-                class="text-sm text-red-500 mt-2"
+                class="text-red-500 mt-2"
                 >Email or username is required.</span
               >
             }
@@ -74,13 +74,13 @@
           <label class="flex flex-col w-full">
             <div class="flex justify-between items-center pb-2">
               <span
-                class="text-[#111111] dark:text-gray-200 text-base font-medium leading-normal"
+                class="text-[#111111] dark:text-gray-200"
                 >Password</span
               >
             </div>
             <div class="flex w-full items-stretch rounded-lg relative">
               <input
-                class="form-input w-full rounded-lg text-[#111111] dark:text-white bg-[#F5F5F5] dark:bg-gray-800 border border-[#F5F5F5] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 pr-12 placeholder:text-[#888888] text-base"
+                class="form-input w-full rounded-lg text-[#111111] dark:text-white bg-[#F5F5F5] dark:bg-gray-800 border border-[#F5F5F5] dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 pr-12 placeholder:text-[#888888]"
                 placeholder="Enter your password"
                 [type]="isPasswordVisible ? 'text' : 'password'"
                 formControlName="password"
@@ -97,7 +97,7 @@
             </div>
             @if (password.touched && password.invalid) {
               <span
-                class="text-sm text-red-500 mt-2"
+                class="text-red-500 mt-2"
                 >Password must be at least 6 characters.</span
               >
             }
@@ -111,21 +111,21 @@
                 formControlName="rememberMe"
               />
               <span
-                class="text-[#111111] dark:text-gray-300 text-base font-normal"
+                class="text-[#111111] dark:text-gray-300"
                 >Remember me</span
               >
             </label>
           </div>
           <!-- Submit Button -->
           <button
-            class="mt-4 w-full h-14 bg-ds-accent hover:bg-ds-accent-hover text-white text-base font-bold rounded-lg shadow-lg shadow-black/10 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
+            class="mt-4 w-full h-14 bg-ds-accent hover:bg-ds-accent-hover text-white rounded-lg shadow-lg shadow-black/10 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
             type="submit"
             [disabled]="loginForm.invalid || isLoading"
           >
             {{ isLoading ? 'Logging in...' : 'Log In' }}
           </button>
           @if (errorMessage) {
-            <span class="text-sm text-red-500 text-center"
+            <span class="text-red-500 text-center"
               >{{ errorMessage }}</span
             >
           }

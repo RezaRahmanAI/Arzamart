@@ -15,7 +15,7 @@
     <!-- Sophisticated Badge -->
     <div class="absolute top-ds-4 left-ds-4">
       @if (hasDiscount) {
-        <span class="bg-ds-text text-ds-bg px-ds-3 py-1 text-[10px] font-bold tracking-[0.2em] uppercase">
+        <span class="bg-ds-text text-ds-bg px-ds-3 py-1">
           -৳{{ discountAmount }}
         </span>
       }
@@ -25,7 +25,7 @@
     <div class="absolute bottom-0 left-0 right-0 p-ds-4 translate-y-full group-hover:translate-y-0 transition-transform duration-base hidden lg:block">
       <button 
         (click)="orderNow($event)"
-        class="w-full h-11 bg-ds-bg/90 backdrop-blur-sm text-ds-text text-[10px] font-bold uppercase tracking-[0.3em] border border-ds-border hover:bg-ds-text hover:text-ds-bg hover:border-ds-text transition-all"
+        class="w-full h-11 bg-ds-bg/90 backdrop-blur-sm text-ds-text border border-ds-border hover:bg-ds-text hover:text-ds-bg hover:border-ds-text transition-all"
       >
         Quick Order
       </button>
@@ -36,13 +36,13 @@
   <div class="pt-ds-6 pb-ds-2 flex flex-col gap-ds-4 flex-1">
     <!-- Meta Info -->
     <div class="space-y-ds-2">
-      <h3 class="text-[12px] font-bold tracking-[0.2em] text-ds-text truncate">
+      <h3 class="text-ds-text truncate">
         {{ product.name }}
       </h3>
       <div class="flex items-center gap-ds-3">
-        <p class="text-ds-base font-bold text-ds-text leading-none">৳{{ currentPrice }}</p>
+        <p class="text-ds-text">৳{{ currentPrice }}</p>
         @if (hasDiscount) {
-          <span class="text-[11px] text-ds-text-muted line-through font-medium">৳{{ originalPrice }}</span>
+          <span class="text-ds-text-muted line-through">৳{{ originalPrice }}</span>
         }
       </div>
     </div>
@@ -53,7 +53,7 @@
         @for (size of availableSizes; track size) {
           <button
             (click)="selectSize(size); $event.preventDefault(); $event.stopPropagation()"
-            class="h-8 min-w-[2.5rem] px-2 flex items-center justify-center text-[10px] font-bold uppercase transition-all border"
+            class="h-8 min-w-[2.5rem] px-2 flex items-center justify-center transition-all border"
             [ngClass]="{
               'bg-ds-text border-ds-text text-ds-bg': selectedSize === size,
               'bg-ds-bg border-ds-border text-ds-text-sec hover:border-ds-text': selectedSize !== size
@@ -69,7 +69,7 @@
     <div class="mt-auto lg:hidden">
       <button
         (click)="orderNow($event)"
-        class="w-full h-11 bg-ds-text text-ds-bg text-[10px] font-bold uppercase tracking-[0.3em] transition-all"
+        class="w-full h-11 bg-ds-text text-ds-bg transition-all"
       >
         Buy Now
       </button>

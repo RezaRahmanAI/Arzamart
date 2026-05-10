@@ -1,10 +1,8 @@
 import { Product } from "../models/product";
 
 const defaultMeta: any = {
-  fabricAndCare:
-    "100% premium fabric. Machine wash cold, tumble dry low. Cool iron if needed.",
-  shippingAndReturns:
-    "Free shipping on orders over $150. Returns accepted within 30 days of delivery.",
+  fabricAndCare: "100% premium fabric. Machine wash cold, tumble dry low. Cool iron if needed.",
+  shippingAndReturns: "Free shipping on orders over $150. Returns accepted within 30 days of delivery.",
 };
 
 const defaultRatings: any = {
@@ -71,8 +69,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 1,
     name: "Premium Silk Abaya",
-    description:
-      "Elegantly crafted from breathable Medina silk, featuring gathered cuffs and a flowing silhouette perfect for everyday modesty. The fabric offers a subtle sheen and drapes beautifully for a flattering, comfortable fit.",
+    description: "Elegantly crafted from breathable Medina silk, featuring gathered cuffs and a flowing silhouette perfect for everyday modesty. The fabric offers a subtle sheen and drapes beautifully for a flattering, comfortable fit.",
     category: "Women",
     subCategory: "Abayas",
     tags: ["Silk", "Modest Wear", "Evening"],
@@ -137,10 +134,8 @@ export const MOCK_PRODUCTS: any[] = [
       sizes: buildSizes(["XS", "S", "M", "L", "XL"], "M"),
     },
     meta: {
-      fabricAndCare:
-        "100% Medina Silk. Machine wash cold on delicate cycle. Hang to dry. Do not bleach. Cool iron if needed.",
-      shippingAndReturns:
-        "Free shipping on orders over $150. Returns accepted within 30 days of delivery. Items must be unworn and with original tags.",
+      fabricAndCare: "100% Medina Silk. Machine wash cold on delicate cycle. Hang to dry. Do not bleach. Cool iron if needed.",
+      shippingAndReturns: "Free shipping on orders over $150. Returns accepted within 30 days of delivery. Items must be unworn and with original tags.",
     },
     relatedProducts: [
       {
@@ -198,8 +193,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 2,
     name: "Urban Cotton Thobe",
-    description:
-      "Lightweight cotton thobe designed for modern daily wear with a crisp finish.",
+    description: "Lightweight cotton thobe designed for modern daily wear with a crisp finish.",
     category: "Men",
     subCategory: "Thobes",
     tags: ["Cotton", "Everyday"],
@@ -228,8 +222,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 3,
     name: "Floral A-Line Dress",
-    description:
-      "Soft floral dress designed for girls with a breathable cotton lining.",
+    description: "Soft floral dress designed for girls with a breathable cotton lining.",
     category: "Kids",
     subCategory: "Dresses",
     tags: ["Girls", "4-10Y"],
@@ -257,8 +250,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 4,
     name: "Silk Chiffon Scarf - Midnight",
-    description:
-      "Premium silk blend with a subtle sheen for elevated everyday styling.",
+    description: "Premium silk blend with a subtle sheen for elevated everyday styling.",
     category: "Accessories",
     subCategory: "Scarves",
     tags: ["Silk Blend"],
@@ -280,8 +272,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 5,
     name: "Classic Linen Thobe",
-    description:
-      "Classic linen thobe with breathable weave and timeless tailoring.",
+    description: "Classic linen thobe with breathable weave and timeless tailoring.",
     category: "Men",
     subCategory: "Thobes",
     tags: ["Linen", "Classic"],
@@ -339,8 +330,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 7,
     name: "Evening Maxi Dress",
-    description:
-      "Flowing evening maxi with elegant drape for formal occasions.",
+    description: "Flowing evening maxi with elegant drape for formal occasions.",
     category: "Women",
     subCategory: "Dresses",
     tags: ["Evening", "Formal"],
@@ -414,8 +404,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 10,
     name: "Classic Cotton Kurta",
-    description:
-      "Crisp cotton kurta for traditional gatherings and daily prayer.",
+    description: "Crisp cotton kurta for traditional gatherings and daily prayer.",
     category: "Men",
     subCategory: "Kurtas",
     tags: ["Cotton", "Classic"],
@@ -463,8 +452,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 12,
     name: "Modern Bomber Jacket",
-    description:
-      "Structured bomber jacket with modern tailoring and matte finish.",
+    description: "Structured bomber jacket with modern tailoring and matte finish.",
     category: "Men",
     subCategory: "Shirts",
     tags: ["Modern"],
@@ -514,8 +502,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 14,
     name: "Patterned Casual Shirt",
-    description:
-      "Patterned casual shirt with lightweight fabric and relaxed fit.",
+    description: "Patterned casual shirt with lightweight fabric and relaxed fit.",
     category: "Men",
     subCategory: "Shirts",
     tags: ["Casual"],
@@ -562,8 +549,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 16,
     name: "Midnight Maxi Dress",
-    description:
-      "Midnight maxi dress with elegant drape and modern silhouette.",
+    description: "Midnight maxi dress with elegant drape and modern silhouette.",
     category: "Women",
     subCategory: "Dresses",
     tags: ["Evening"],
@@ -607,8 +593,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 18,
     name: "Garden Floral Day Dress",
-    description:
-      "Garden floral day dress with lightweight lining and soft drape.",
+    description: "Garden floral day dress with lightweight lining and soft drape.",
     category: "Women",
     subCategory: "Dresses",
     tags: ["Floral"],
@@ -630,8 +615,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 19,
     name: "Classic Linen Two-Piece",
-    description:
-      "Crisp linen two-piece set with structured tailoring and clean lines.",
+    description: "Crisp linen two-piece set with structured tailoring and clean lines.",
     category: "Women",
     subCategory: "Sets",
     tags: ["Linen", "Set"],
@@ -654,8 +638,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 20,
     name: "Urban Denim Longline Jacket",
-    description:
-      "Longline denim jacket with structured collar and relaxed fit.",
+    description: "Longline denim jacket with structured collar and relaxed fit.",
     category: "Women",
     subCategory: "Tops",
     tags: ["Denim"],
@@ -706,8 +689,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 22,
     name: "Kids Prayer Set",
-    description:
-      "Soft prayer set with easy fit and cozy fabric for daily wear.",
+    description: "Soft prayer set with easy fit and cozy fabric for daily wear.",
     category: "Kids",
     subCategory: "Sets",
     tags: ["Unisex", "4-8Y"],
@@ -842,8 +824,7 @@ export const MOCK_PRODUCTS: any[] = [
   {
     id: 27,
     name: "Textured Leather Tote",
-    description:
-      "Genuine leather tote with structured shape and roomy interior.",
+    description: "Genuine leather tote with structured shape and roomy interior.",
     category: "Accessories",
     subCategory: "Bags",
     tags: ["Genuine Leather"],

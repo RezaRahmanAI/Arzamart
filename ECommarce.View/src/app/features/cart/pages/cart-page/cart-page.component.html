@@ -6,23 +6,23 @@
           <!-- Left: Items -->
           <div class="lg:col-span-8 space-y-ds-12">
             <div class="space-y-ds-4">
-              <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.5em]">Bag — {{ vm.cartItems.length }} Items</span>
-              <h1 class="text-ds-4xl font-bold uppercase tracking-tight">Shopping Bag</h1>
+              <span class="text-ds-text-muted">Bag — {{ vm.cartItems.length }} Items</span>
+              <h1 >Shopping Bag</h1>
             </div>
 
             <!-- Free Shipping Progress -->
             <div class="p-ds-8 bg-ds-surface border border-ds-border">
               <div class="flex justify-between items-end mb-ds-4">
                 @if (vm.summary.freeShippingRemaining > 0) {
-                  <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec">
+                  <p class="text-ds-text-sec">
                     Spend ৳{{ vm.summary.freeShippingRemaining }} more for <span class="text-ds-accent">Free Delivery</span>
                   </p>
                 } @else {
-                  <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-ds-success">
-                    You have unlocked <span class="font-bold">Free Delivery</span>
+                  <p class="text-ds-success">
+                    You have unlocked <span >Free Delivery</span>
                   </p>
                 }
-                <span class="text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">
+                <span class="text-ds-text-muted">
                   {{ vm.summary.freeShippingProgress | number: "1.0-0" }}%
                 </span>
               </div>
@@ -43,11 +43,11 @@
                   <div class="flex flex-1 flex-col justify-between py-ds-2">
                     <div class="flex justify-between items-start gap-ds-6">
                       <div class="space-y-ds-2">
-                        <h3 class="text-ds-lg font-bold text-ds-text uppercase tracking-tight">
+                        <h3 class="text-ds-text">
                           {{ item.name }}
                         </h3>
                         <div class="flex flex-col gap-ds-1">
-                          <p class="text-[10px] text-ds-text-sec font-bold uppercase tracking-widest">Size: {{ item.size }}</p>
+                          <p class="text-ds-text-sec">Size: {{ item.size }}</p>
                         </div>
                       </div>
                       <button
@@ -68,7 +68,7 @@
                           <app-icon name="Minus" size="14"></app-icon>
                         </button>
                         <input
-                          class="w-10 h-10 text-center bg-transparent border-none p-0 text-ds-sm font-bold text-ds-text focus:ring-0"
+                          class="w-10 h-10 text-center bg-transparent border-none p-0 text-ds-text focus:ring-0"
                           readonly
                           type="text"
                           [value]="item.quantity"
@@ -82,7 +82,7 @@
                         </button>
                       </div>
                       <app-price-display
-                        class="text-ds-text font-bold"
+                        class="text-ds-text"
                         [amount]="item.price * item.quantity"
                         size="md"
                       ></app-price-display>
@@ -98,17 +98,17 @@
             <div class="sticky top-24 space-y-ds-8">
               <div class="bg-ds-surface p-ds-8 lg:p-ds-10 border border-ds-border relative">
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-ds-text"></div>
-                <h2 class="text-ds-xl font-bold text-ds-text uppercase tracking-tight mb-ds-8">
+                <h2 class="text-ds-text mb-ds-8">
                   Order Summary
                 </h2>
                 <div class="space-y-ds-4 pb-ds-8 border-b border-ds-border">
-                  <div class="flex justify-between text-ds-xs font-bold uppercase tracking-widest text-ds-text-sec">
+                  <div class="flex justify-between text-ds-text-sec">
                     <span>Subtotal</span>
                     <app-price-display [amount]="vm.summary.subtotal" size="sm"></app-price-display>
                   </div>
-                  <div class="flex justify-between text-ds-xs font-bold uppercase tracking-widest text-ds-text-sec">
+                  <div class="flex justify-between text-ds-text-sec">
                     <span>Shipping Estimate</span>
-                    <span class="font-bold">
+                    <span >
                       @if (vm.summary.shipping === 0) {
                         FREE
                       } @else {
@@ -118,11 +118,11 @@
                   </div>
                 </div>
                 <div class="flex justify-between items-center py-ds-8">
-                  <span class="text-ds-base font-bold uppercase tracking-tight text-ds-text">Total</span>
-                  <app-price-display class="text-ds-text font-bold" [amount]="vm.summary.total" size="lg"></app-price-display>
+                  <span class="text-ds-text">Total</span>
+                  <app-price-display class="text-ds-text" [amount]="vm.summary.total" size="lg"></app-price-display>
                 </div>
                 <button
-                  class="btn btn-primary w-full h-14 !text-[11px] !tracking-[0.4em] uppercase flex items-center justify-center gap-ds-4"
+                  class="btn btn-primary w-full h-14 flex items-center justify-center gap-ds-4"
                   type="button"
                   routerLink="/checkout"
                 >
@@ -131,15 +131,15 @@
                 </button>
 
                 <div class="mt-ds-8 space-y-ds-6">
-                  <div class="flex items-center justify-center gap-ds-3 text-[10px] font-bold text-ds-text-muted uppercase tracking-widest">
+                  <div class="flex items-center justify-center gap-ds-3 text-ds-text-muted">
                     <app-icon name="ShieldCheck" size="14" className="text-ds-success"></app-icon>
                     Secure SSL Encryption
                   </div>
                   <div class="flex items-center justify-center gap-ds-6 opacity-30 contrast-125">
-                    <div class="text-[9px] font-bold tracking-widest uppercase">Visa</div>
-                    <div class="text-[9px] font-bold tracking-widest uppercase">Mastercard</div>
-                    <div class="text-[9px] font-bold tracking-widest uppercase">Bkash</div>
-                    <div class="text-[9px] font-bold tracking-widest uppercase">COD</div>
+                    <div >Visa</div>
+                    <div >Mastercard</div>
+                    <div >Bkash</div>
+                    <div >COD</div>
                   </div>
                 </div>
               </div>
@@ -147,17 +147,17 @@
               <!-- Promo Code -->
               <div class="bg-ds-surface p-ds-6 border border-ds-border">
                 <details class="group">
-                  <summary class="flex items-center justify-between cursor-pointer list-none text-[11px] font-bold text-ds-text-sec uppercase tracking-[0.2em]">
+                  <summary class="flex items-center justify-between cursor-pointer list-none text-ds-text-sec">
                     <span>Have a promo code?</span>
                     <app-icon name="ChevronDown" size="16" className="transition-transform group-open:rotate-180"></app-icon>
                   </summary>
                   <div class="mt-ds-6 flex gap-ds-3">
                     <input
-                      class="form-input !h-12 !text-ds-xs uppercase tracking-widest"
+                      class="form-input !h-12"
                       placeholder="ENTER CODE"
                       type="text"
                     />
-                    <button class="btn btn-secondary h-12 !text-[10px] !tracking-[0.2em] uppercase px-ds-6 border-ds-border hover:border-ds-text">
+                    <button class="btn btn-secondary h-12 px-ds-6 border-ds-border hover:border-ds-text">
                       Apply
                     </button>
                   </div>
@@ -172,12 +172,12 @@
             <app-icon name="ShoppingBag" size="48" className="text-ds-text-muted opacity-30 group-hover:opacity-100 transition-opacity duration-base"></app-icon>
           </div>
           <div class="space-y-ds-3">
-            <h2 class="text-ds-3xl font-bold text-ds-text uppercase tracking-tight">Your bag is empty</h2>
-            <p class="text-ds-text-sec text-[11px] font-medium uppercase tracking-widest max-w-xs mx-auto leading-relaxed">
+            <h2 class="text-ds-text">Your bag is empty</h2>
+            <p class="text-ds-text-sec max-w-xs mx-auto">
               Looks like you haven't added anything <br>to your refined collection yet.
             </p>
           </div>
-          <a routerLink="/" class="btn btn-primary h-14 !text-[11px] !tracking-[0.4em] uppercase px-ds-12 mt-ds-4">
+          <a routerLink="/" class="btn btn-primary h-14 px-ds-12 mt-ds-4">
             Start Shopping
           </a>
         </div>

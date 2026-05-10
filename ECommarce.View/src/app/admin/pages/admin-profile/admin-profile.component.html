@@ -2,8 +2,8 @@
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h2 class="text-ds-2xl font-bold text-ds-text uppercase tracking-tight">Personnel Profile</h2>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+      <h2 class="text-ds-text">Personnel Profile</h2>
+      <p class="text-ds-text-muted mt-1.5">
         Administrative Identity & Security Credentials Governance
       </p>
     </div>
@@ -11,7 +11,7 @@
 
   <div *ngIf="isLoading" class="py-ds-32 flex flex-col items-center justify-center gap-ds-6">
     <div class="w-12 h-12 border-2 border-ds-border border-t-ds-text rounded-sm animate-spin"></div>
-    <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.5em] animate-pulse">Hydrating Profile Metadata...</p>
+    <p class="text-ds-text-muted animate-pulse">Hydrating Profile Metadata...</p>
   </div>
 
   <div *ngIf="!isLoading" class="grid grid-cols-1 lg:grid-cols-12 gap-ds-8 animate-in fade-in duration-500">
@@ -23,46 +23,46 @@
                 <app-icon name="User" size="18"></app-icon>
             </div>
             <div>
-                <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Identity Parameters</h3>
-                <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Personnel Visible Registry Data</p>
+                <h3 class="text-ds-text">Identity Parameters</h3>
+                <p class="text-ds-text-muted mt-0.5">Personnel Visible Registry Data</p>
             </div>
         </div>
 
         <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" class="p-ds-8 flex flex-col gap-ds-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
                 <div class="space-y-2">
-                    <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Official Nomenclature</label>
+                    <label class="text-ds-text-muted ml-1">Official Nomenclature</label>
                     <div class="relative group">
                         <app-icon name="User" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                         <input type="text" formControlName="fullName" 
-                               class="form-input !h-12 !pl-12 !text-[11px] font-bold uppercase tracking-tight">
+                               class="form-input !h-12 !pl-12">
                     </div>
                 </div>
                 <div class="space-y-2">
-                    <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">System Alias</label>
+                    <label class="text-ds-text-muted ml-1">System Alias</label>
                     <div class="relative group">
                         <app-icon name="Shield" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                         <input type="text" formControlName="userName" 
-                               class="form-input !h-12 !pl-12 !text-[11px] font-bold uppercase tracking-tight">
+                               class="form-input !h-12 !pl-12">
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
                 <div class="space-y-2">
-                    <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Communication Terminal (Email)</label>
+                    <label class="text-ds-text-muted ml-1">Communication Terminal (Email)</label>
                     <div class="relative group">
                         <app-icon name="Mail" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                         <input type="email" formControlName="email" 
-                               class="form-input !h-12 !pl-12 !text-[11px] font-bold tracking-tight">
+                               class="form-input !h-12 !pl-12">
                     </div>
                 </div>
                 <div class="space-y-2">
-                    <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Direct Interface (Phone)</label>
+                    <label class="text-ds-text-muted ml-1">Direct Interface (Phone)</label>
                     <div class="relative group">
                         <app-icon name="Phone" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                         <input type="text" formControlName="phone" 
-                               class="form-input !h-12 !pl-12 !text-[11px] font-bold font-mono tracking-tight">
+                               class="form-input !h-12 !pl-12">
                     </div>
                 </div>
             </div>
@@ -71,21 +71,21 @@
             <div *ngIf="profileForm.get('email')?.dirty && userProfile?.role === 'SuperAdmin'" class="p-ds-6 bg-ds-bg border border-ds-border rounded-sm space-y-ds-4 animate-in fade-in slide-in-from-top-4 duration-300">
                 <div class="flex items-center gap-ds-3 text-ds-text">
                     <app-icon name="ShieldAlert" size="16"></app-icon>
-                    <span class="text-[9px] font-bold uppercase tracking-[0.3em]">Authority Verification Required</span>
+                    <span >Authority Verification Required</span>
                 </div>
-                <p class="text-[10px] font-bold text-ds-text-muted leading-relaxed uppercase tracking-widest italic">
+                <p class="text-ds-text-muted">
                     Administrative email modification detected. Identity confirmation required for Super Admin tier.
                 </p>
                 <div class="space-y-2">
-                    <label class="text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Confirm Primary Access Key</label>
+                    <label class="text-ds-text ml-1">Confirm Primary Access Key</label>
                     <input type="password" formControlName="currentPassword" placeholder="ENCODE PASSWORD"
-                           class="form-input !h-11 !px-ds-4 !text-[11px] font-bold tracking-widest !bg-ds-surface">
+                           class="form-input !h-11 !px-ds-4 !bg-ds-surface">
                 </div>
             </div>
 
             <div class="flex justify-end pt-ds-4">
                 <button type="submit" [disabled]="profileForm.invalid || isSubmitting"
-                        class="btn btn-primary h-12 px-ds-10 !text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-ds-3">
+                        class="btn btn-primary h-12 px-ds-10 flex items-center justify-center gap-ds-3">
                     <app-icon *ngIf="isSubmitting" name="Loader2" size="18" className="animate-spin"></app-icon>
                     <app-icon *ngIf="!isSubmitting" name="Check" size="18"></app-icon>
                     <span>{{ isSubmitting ? 'Syncing...' : 'Establish Profile' }}</span>
@@ -103,41 +103,41 @@
                     <app-icon name="Key" size="18"></app-icon>
                 </div>
                 <div>
-                    <h3 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Security Protocol</h3>
-                    <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Access Credential Rotation Terminal</p>
+                    <h3 class="text-ds-text">Security Protocol</h3>
+                    <p class="text-ds-text-muted mt-0.5">Access Credential Rotation Terminal</p>
                 </div>
             </div>
     
             <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="p-ds-8 flex flex-col gap-ds-6">
                 <div class="space-y-ds-5">
                     <div class="space-y-2">
-                        <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Operational Access Key</label>
+                        <label class="text-ds-text-muted ml-1">Operational Access Key</label>
                         <div class="relative group">
                             <app-icon name="Lock" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                             <input type="password" formControlName="currentPassword" placeholder="••••••••"
-                                   class="form-input !h-11 !pl-12 !text-[11px] font-bold tracking-widest">
+                                   class="form-input !h-11 !pl-12">
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">New Protocol Key</label>
+                        <label class="text-ds-text-muted ml-1">New Protocol Key</label>
                         <div class="relative group">
                             <app-icon name="Key" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                             <input type="password" formControlName="newPassword" placeholder="••••••••"
-                                   class="form-input !h-11 !pl-12 !text-[11px] font-bold tracking-widest">
+                                   class="form-input !h-11 !pl-12">
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[9px] font-bold text-ds-text-muted uppercase tracking-widest ml-1">Verify Protocol Key</label>
+                        <label class="text-ds-text-muted ml-1">Verify Protocol Key</label>
                         <div class="relative group">
                             <app-icon name="Key" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
                             <input type="password" formControlName="confirmPassword" placeholder="••••••••"
-                                   class="form-input !h-11 !pl-12 !text-[11px] font-bold tracking-widest">
+                                   class="form-input !h-11 !pl-12">
                         </div>
                     </div>
                 </div>
     
                 <button type="submit" [disabled]="passwordForm.invalid || isPasswordSubmitting"
-                        class="btn btn-secondary !h-12 !w-full !text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-ds-3">
+                        class="btn btn-secondary !h-12 !w-full flex items-center justify-center gap-ds-3">
                     <app-icon *ngIf="isPasswordSubmitting" name="Loader2" size="18" className="animate-spin"></app-icon>
                     <span>{{ isPasswordSubmitting ? 'Rotating Credentials...' : 'Establish New Access Key' }}</span>
                 </button>
@@ -151,17 +151,17 @@
                     <div class="size-10 rounded-sm bg-ds-surface text-ds-text flex items-center justify-center">
                         <app-icon name="Shield" size="18"></app-icon>
                     </div>
-                    <span class="text-[10px] font-bold uppercase tracking-[0.4em]">Active Session Matrix</span>
+                    <span >Active Session Matrix</span>
                 </div>
                 <div>
-                    <p class="text-[8px] text-ds-surface/60 font-bold uppercase tracking-widest mb-1">Identity Verified</p>
-                    <h4 class="text-ds-xl font-bold uppercase tracking-tight">{{ userProfile?.fullName }}</h4>
-                    <p class="text-[10px] font-bold font-mono text-ds-surface/80 mt-1 uppercase tracking-widest">LOGID: {{ userProfile?.userName }}</p>
+                    <p class="text-ds-surface/60 mb-1">Identity Verified</p>
+                    <h4 >{{ userProfile?.fullName }}</h4>
+                    <p class="text-ds-surface/80 mt-1">LOGID: {{ userProfile?.userName }}</p>
                 </div>
                 <div class="pt-ds-4 border-t border-ds-surface/10">
                   <div class="flex items-center gap-ds-3">
                     <div class="size-2 bg-ds-surface animate-pulse"></div>
-                    <span class="text-[9px] font-bold uppercase tracking-[0.3em]">Authority: {{ userProfile?.role }} Clearance</span>
+                    <span >Authority: {{ userProfile?.role }} Clearance</span>
                   </div>
                 </div>
             </div>

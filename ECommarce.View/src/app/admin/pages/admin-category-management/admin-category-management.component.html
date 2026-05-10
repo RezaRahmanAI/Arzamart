@@ -2,10 +2,10 @@
   <!-- Header Section -->
   <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Product Taxonomy</h1>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">Collection Architecture & Categorization</p>
+      <h1 class="text-ds-text">Product Taxonomy</h1>
+      <p class="text-ds-text-muted mt-1.5">Collection Architecture & Categorization</p>
     </div>
-    <button class="btn btn-primary h-11 px-ds-10 !text-[10px] font-bold uppercase tracking-widest" type="button" (click)="startCreate()" *ngIf="mode === 'edit' && authService.currentUserSnapshot()?.role !== 'Staff'">
+    <button class="btn btn-primary h-11 px-ds-10" type="button" (click)="startCreate()" *ngIf="mode === 'edit' && authService.currentUserSnapshot()?.role !== 'Staff'">
       <app-icon name="Plus" size="14"></app-icon>
       <span>New Collection</span>
     </button>
@@ -18,7 +18,7 @@
       <div class="relative max-w-sm">
         <app-icon name="Search" size="14" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted"></app-icon>
         <input
-          class="form-input !h-10 !pl-11 !pr-4 !text-[10px] font-bold uppercase"
+          class="form-input !h-10 !pl-11 !pr-4"
           placeholder="Filter Taxonomy..."
           type="text"
           [formControl]="filterControl"
@@ -31,11 +31,11 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="bg-ds-bg/30 border-b border-ds-border">
-                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Insignia & Name</th>
-                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Route</th>
-                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Weight</th>
-                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em]">Availability</th>
-                <th class="px-ds-6 py-ds-4 text-[9px] font-bold text-ds-text-muted uppercase tracking-[0.2em] text-right">Protocol</th>
+                <th class="px-ds-6 py-ds-4 text-ds-text-muted">Insignia & Name</th>
+                <th class="px-ds-6 py-ds-4 text-ds-text-muted">Route</th>
+                <th class="px-ds-6 py-ds-4 text-ds-text-muted">Weight</th>
+                <th class="px-ds-6 py-ds-4 text-ds-text-muted">Availability</th>
+                <th class="px-ds-6 py-ds-4 text-ds-text-muted text-right">Protocol</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-ds-border/50">
@@ -54,22 +54,22 @@
                         }
                       </div>
                       <div class="flex flex-col">
-                        <span class="font-bold text-ds-text text-[11px] uppercase tracking-tight leading-tight">{{ cat.name }}</span>
-                        <span class="text-[8px] text-ds-text-muted font-bold uppercase tracking-widest mt-0.5">Primary Node</span>
+                        <span class="text-ds-text">{{ cat.name }}</span>
+                        <span class="text-ds-text-muted mt-0.5">Primary Node</span>
                       </div>
                     </div>
                   </td>
                   <td class="px-ds-6 py-ds-4">
-                    <span class="text-[10px] font-mono font-bold text-ds-text-muted">{{ cat.slug }}</span>
+                    <span class="text-ds-text-muted">{{ cat.slug }}</span>
                   </td>
                   <td class="px-ds-6 py-ds-4">
-                    <span class="text-[10px] font-bold text-ds-text font-mono">{{ cat.displayOrder }}</span>
+                    <span class="text-ds-text">{{ cat.displayOrder }}</span>
                   </td>
                   <td class="px-ds-6 py-ds-4">
                     <div class="flex items-center gap-ds-2">
                       <div [class]="cat.isActive ? 'bg-ds-success' : 'bg-ds-text-muted/30'" class="size-1.5 rounded-full"></div>
                       <span [class]="cat.isActive ? 'text-ds-success' : 'text-ds-text-muted'"
-                            class="text-[9px] font-bold uppercase tracking-widest">
+                            >
                         {{ cat.isActive ? 'Operational' : 'Offline' }}
                       </span>
                     </div>
@@ -92,7 +92,7 @@
                   <td colspan="5" class="px-ds-6 py-ds-16 text-center">
                     <div class="flex flex-col items-center gap-ds-3 text-ds-text-muted/40">
                       <app-icon name="Inbox" size="48" className="opacity-10"></app-icon>
-                      <p class="text-[10px] font-bold uppercase tracking-[0.3em] italic">No Taxonomy Captured.</p>
+                      <p >No Taxonomy Captured.</p>
                     </div>
                   </td>
                 </tr>
@@ -108,15 +108,15 @@
       <div class="bg-ds-surface rounded-sm border border-ds-border shadow-xl overflow-hidden">
         <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex justify-between items-center">
           <div>
-            <h3 class="text-[11px] font-bold text-ds-text flex items-center gap-ds-3 uppercase tracking-[0.2em]">
+            <h3 class="text-ds-text flex items-center gap-ds-3">
               <app-icon [name]="mode === 'create' ? 'Plus' : 'Edit3'" size="14" className="text-ds-text"></app-icon>
               {{ mode === "create" ? "Initialize Node" : "Modify Registry" }}
             </h3>
-            <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Parameter Configuration</p>
+            <p class="text-ds-text-muted mt-0.5">Parameter Configuration</p>
           </div>
           
           <div class="flex items-center gap-ds-3 bg-ds-bg px-ds-3 py-1.5 rounded-sm border border-ds-border">
-            <span class="text-[8px] font-bold uppercase text-ds-text-muted tracking-widest">Status</span>
+            <span class="text-ds-text-muted">Status</span>
             <label class="relative inline-flex items-center cursor-pointer">
               <input class="sr-only peer" type="checkbox" [formControl]="categoryForm.controls.isActive" />
               <div class="w-9 h-5 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-4 after:w-4 after:transition-all peer-checked:bg-ds-text"></div>
@@ -127,24 +127,24 @@
         <form class="p-ds-8 flex flex-col gap-ds-6" [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
           <!-- Name -->
           <div class="space-y-2">
-            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1" for="cat-name">Collection Nomenclature</label>
-            <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold uppercase"
+            <label class="block text-ds-text ml-1" for="cat-name">Collection Nomenclature</label>
+            <input class="form-input !h-11 !px-ds-4"
                    id="cat-name" type="text" formControlName="name" placeholder="E.G. NEW ARRIVALS" />
             @if (categoryForm.get('name')?.touched && categoryForm.get('name')?.errors?.['required']) {
-              <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest ml-1 mt-1">Identity Required</p>
+              <p class="text-red-500 ml-1 mt-1">Identity Required</p>
             }
           </div>
 
           <!-- Slug -->
           <div class="space-y-2">
-            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1" for="cat-slug">System Route</label>
-            <input class="form-input !h-11 !px-ds-4 !text-[11px] font-mono font-bold text-ds-text-muted cursor-not-allowed"
+            <label class="block text-ds-text ml-1" for="cat-slug">System Route</label>
+            <input class="form-input !h-11 !px-ds-4 text-ds-text-muted cursor-not-allowed"
                    id="cat-slug" type="text" formControlName="slug" readonly />
           </div>
 
           <!-- Image Upload -->
           <div class="space-y-2">
-            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Visual Insignia (Banner)</label>
+            <label class="block text-ds-text ml-1">Visual Insignia (Banner)</label>
             <div class="flex items-center gap-ds-6 p-ds-4 bg-ds-bg/30 rounded-sm border border-ds-border">
               <div class="size-16 rounded-sm bg-ds-surface border border-ds-border relative overflow-hidden flex items-center justify-center shadow-sm">
                 @if (getPreviewUrl()) {
@@ -163,7 +163,7 @@
               <div class="flex-1 flex flex-col">
                 <label class="flex items-center justify-center px-ds-4 py-ds-2 bg-ds-surface border border-dashed border-ds-border rounded-sm cursor-pointer hover:border-ds-text transition-all group">
                   <app-icon name="UploadCloud" size="14" className="text-ds-text-muted mr-ds-3 group-hover:text-ds-text transition-colors"></app-icon>
-                  <span class="text-[9px] font-bold uppercase tracking-widest text-ds-text-muted group-hover:text-ds-text">
+                  <span class="text-ds-text-muted group-hover:text-ds-text">
                     {{ selectedImageFile ? 'Replace Asset' : 'Select Asset' }}
                   </span>
                   <input class="hidden" type="file" accept="image/*" (change)="handleImageUpload($event)" />
@@ -175,28 +175,28 @@
           <!-- Meta Info -->
           <div class="grid grid-cols-2 gap-ds-6">
             <div class="space-y-2">
-              <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Heirarchy Weight</label>
-              <input class="form-input !h-11 !px-ds-4 !text-[11px] font-mono font-bold"
+              <label class="block text-ds-text ml-1">Heirarchy Weight</label>
+              <input class="form-input !h-11 !px-ds-4"
                      type="number" formControlName="displayOrder" />
             </div>
             <div class="space-y-2">
-              <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Meta Identity (SEO)</label>
-              <input class="form-input !h-11 !px-ds-4 !text-[11px] font-bold"
+              <label class="block text-ds-text ml-1">Meta Identity (SEO)</label>
+              <input class="form-input !h-11 !px-ds-4"
                      type="text" formControlName="metaTitle" />
             </div>
           </div>
 
           <div class="space-y-2">
-            <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1">Meta Manifest (SEO)</label>
-            <textarea class="form-input !py-ds-3 !px-ds-4 !text-[11px] font-bold leading-relaxed min-h-[80px]"
+            <label class="block text-ds-text ml-1">Meta Manifest (SEO)</label>
+            <textarea class="form-input !py-ds-3 !px-ds-4 min-h-[80px]"
                       rows="2" formControlName="metaDescription"></textarea>
           </div>
 
           <!-- Actions -->
           <div class="pt-ds-4 flex items-center gap-ds-4">
-            <button class="btn btn-secondary flex-1 !h-11 !text-[10px] font-bold uppercase tracking-widest"
+            <button class="btn btn-secondary flex-1 !h-11"
                     type="button" (click)="cancelEdit()">Abort</button>
-            <button class="btn btn-primary flex-[2] !h-11 !text-[10px] font-bold uppercase tracking-widest"
+            <button class="btn btn-primary flex-[2] !h-11"
                     type="submit" [disabled]="isUploadingImage || isSaving">
               <app-icon *ngIf="isSaving" name="Loader" size="14" className="animate-spin"></app-icon>
               <span>{{ isSaving ? 'Syncing...' : (mode === 'create' ? 'Initialize' : 'Synchronize') }}</span>

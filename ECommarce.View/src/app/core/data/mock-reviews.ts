@@ -17,8 +17,7 @@ export const MOCK_REVIEWS: Review[] = [
     productId: 1,
     customerName: "Fatima K.",
     rating: 4,
-    comment:
-      "The color is exactly as pictured, a very deep beautiful blue. It was a bit long for me but easily hemmed. Very elegant flow.",
+    comment: "The color is exactly as pictured, a very deep beautiful blue. It was a bit long for me but easily hemmed. Very elegant flow.",
     date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 week ago
     isVerifiedPurchase: true,
     isFeatured: false,

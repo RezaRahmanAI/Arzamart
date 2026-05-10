@@ -1,8 +1,8 @@
 <aside class="w-full shrink-0">
   <div class="sticky top-28 space-y-ds-12">
     <div>
-      <h3 class="mb-ds-6 text-[10px] font-bold uppercase tracking-[0.3em] text-ds-text">Categories</h3>
-      <ul class="space-y-ds-4 text-[11px] font-bold uppercase tracking-widest text-ds-text-sec">
+      <h3 class="mb-ds-6 text-ds-text">Categories</h3>
+      <ul class="space-y-ds-4 text-ds-text-sec">
         <li *ngFor="let category of categoryCounts">
           <a
             class="flex items-center justify-between group transition-colors"
@@ -10,7 +10,7 @@
             href="#"
           >
             <span>{{ category.label }}</span>
-            <span class="text-[10px] text-ds-text-muted font-medium opacity-50 group-hover:opacity-100 transition-opacity">({{ category.count }})</span>
+            <span class="text-ds-text-muted opacity-50 group-hover:opacity-100 transition-opacity">({{ category.count }})</span>
           </a>
         </li>
       </ul>
@@ -19,12 +19,12 @@
     <div class="h-[1px] bg-ds-border/50"></div>
     
     <div>
-      <h3 class="mb-ds-6 text-[10px] font-bold uppercase tracking-[0.3em] text-ds-text">Size</h3>
+      <h3 class="mb-ds-6 text-ds-text">Size</h3>
       <div class="grid grid-cols-3 gap-ds-2">
         <button 
           *ngFor="let s of ['XS', 'S', 'M', 'L', 'XL', 'XXL']"
           [class]="s === 'M' ? 'bg-ds-text text-ds-bg border-ds-text' : 'bg-ds-bg text-ds-text-sec border-ds-border hover:border-ds-text'"
-          class="flex h-10 items-center justify-center border text-[10px] font-bold uppercase tracking-widest transition-all"
+          class="flex h-10 items-center justify-center border transition-all"
         >
           {{ s }}
         </button>

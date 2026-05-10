@@ -2,8 +2,8 @@
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-ds-2xl font-bold text-ds-text tracking-tight uppercase">Feedback Ledger</h1>
-      <p class="text-[10px] font-bold text-ds-text-muted uppercase tracking-[0.4em] mt-1.5">
+      <h1 class="text-ds-text">Feedback Ledger</h1>
+      <p class="text-ds-text-muted mt-1.5">
         Reputation Moderation & Sentiment Analysis
       </p>
     </div>
@@ -32,8 +32,8 @@
           ></app-icon>
         </div>
         <div>
-          <h3 class="text-[12px] font-bold text-ds-text uppercase tracking-tight">{{ review.userName }}</h3>
-          <div class="flex items-center gap-ds-3 text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.2em] mt-1">
+          <h3 class="text-ds-text">{{ review.userName }}</h3>
+          <div class="flex items-center gap-ds-3 text-ds-text-muted mt-1">
             <span>{{ review.createdAt | date: "MMM dd, yyyy" }}</span>
             <span
               *ngIf="review.isVerifiedPurchase"
@@ -60,11 +60,11 @@
             className="text-ds-text-muted/20"
           ></app-icon>
         </div>
-        <p class="text-ds-text text-[11px] font-medium leading-relaxed italic border-l-2 border-ds-border pl-ds-4 py-1">
+        <p class="text-ds-text border-l-2 border-ds-border pl-ds-4 py-1">
           "{{ review.comment }}"
         </p>
         <div
-          class="flex items-center gap-ds-6 text-[9px] font-bold uppercase tracking-[0.2em] text-ds-text-muted pt-ds-3 border-t border-ds-border/50"
+          class="flex items-center gap-ds-6 text-ds-text-muted pt-ds-3 border-t border-ds-border/50"
         >
           <span class="flex items-center gap-ds-2">
             <app-icon name="Package" size="12"></app-icon>
@@ -109,8 +109,8 @@
       size="64"
       className="text-ds-text-muted opacity-10 mb-ds-6 mx-auto"
     ></app-icon>
-    <h3 class="text-[12px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mb-2">No Feedback Detected</h3>
-    <p class="text-[10px] font-bold text-ds-text-muted/60 uppercase tracking-widest italic">Archival records are currently empty.</p>
+    <h3 class="text-ds-text-muted mb-2">No Feedback Detected</h3>
+    <p class="text-ds-text-muted/60">Archival records are currently empty.</p>
   </div>
 </div>
 
@@ -123,8 +123,8 @@
   <div class="bg-ds-surface rounded-sm border border-ds-border w-full max-w-md shadow-2xl overflow-hidden" (click)="$event.stopPropagation()">
     <div class="px-ds-8 py-ds-4 border-b border-ds-border flex justify-between items-center bg-ds-bg/50">
       <div>
-        <h2 class="text-[11px] font-bold text-ds-text uppercase tracking-[0.2em]">Synchronize Feedback</h2>
-        <p class="text-[8px] font-bold text-ds-text-muted uppercase tracking-[0.3em] mt-0.5">Sentiment Moderation Terminal</p>
+        <h2 class="text-ds-text">Synchronize Feedback</h2>
+        <p class="text-ds-text-muted mt-0.5">Sentiment Moderation Terminal</p>
       </div>
       <button
         (click)="closeModal()"
@@ -136,7 +136,7 @@
 
     <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="p-ds-8 flex flex-col gap-ds-6">
       <div class="space-y-2">
-        <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Quantified Sentiment (Rating)</label>
+        <label class="block text-ds-text ml-1 mb-2">Quantified Sentiment (Rating)</label>
         <div class="flex gap-ds-2">
           <button
             type="button"
@@ -155,11 +155,11 @@
       </div>
 
       <div class="space-y-2">
-        <label class="block text-[9px] font-bold text-ds-text uppercase tracking-widest ml-1 mb-2">Narrative Entry (Comment)</label>
+        <label class="block text-ds-text ml-1 mb-2">Narrative Entry (Comment)</label>
         <textarea
           formControlName="comment"
           rows="4"
-          class="form-input !py-ds-4 !px-ds-4 !text-[11px] font-bold italic resize-none"
+          class="form-input !py-ds-4 !px-ds-4 resize-none"
           placeholder="E.G. EXCEPTIONAL ARCHITECTURAL QUALITY..."
         ></textarea>
       </div>
@@ -168,14 +168,14 @@
         <button
           type="button"
           (click)="closeModal()"
-          class="btn btn-secondary flex-1 !h-12 !text-[11px] font-bold uppercase tracking-[0.2em]"
+          class="btn btn-secondary flex-1 !h-12"
         >
           Abort
         </button>
         <button
           type="submit"
           [disabled]="isSubmitting"
-          class="btn btn-primary flex-[2] !h-12 !text-[11px] font-bold uppercase tracking-[0.2em] !bg-ds-text !text-ds-surface"
+          class="btn btn-primary flex-[2] !h-12 !bg-ds-text !text-ds-surface"
         >
           <app-icon *ngIf="isSubmitting" name="Loader2" size="16" className="animate-spin mr-ds-2"></app-icon>
           <span>Establish Synchronization</span>

@@ -168,8 +168,7 @@ export class LandingPageComponent implements OnInit {
             this.checkoutForm.patchValue({
               selectedSize:
                 product.variants?.find((v) => v.isDefault)?.size ??
-                sizes[0] ??
-                "",
+                sizes[0] ?? "",
             });
           }
 

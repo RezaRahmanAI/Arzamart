@@ -2,8 +2,8 @@
   <div class="site-container">
     <div class="flex flex-col mx-auto text-center">
       <div class="mb-ds-12 md:mb-ds-16">
-        <span class="text-[10px] uppercase tracking-[0.5em] text-ds-accent font-bold mb-ds-4 block">Just In</span>
-        <h2 class="text-ds-4xl md:text-ds-5xl lg:text-ds-6xl font-serif italic tracking-tighter text-ds-text uppercase">New Arrivals</h2>
+        <span class="text-ds-accent mb-ds-4 block">Just In</span>
+        <h2 class="text-ds-text">New Arrivals</h2>
       </div>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-ds-4 md:gap-ds-6 lg:gap-ds-10">
         <app-product-card *ngFor="let product of products; trackBy: trackByProduct" [product]="product"></app-product-card>

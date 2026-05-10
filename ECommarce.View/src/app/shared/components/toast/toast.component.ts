@@ -47,10 +47,10 @@ import {
         >
           <div class="flex flex-col">
             <span
-              class="text-[10px] uppercase tracking-widest font-bold opacity-70"
+              class="opacity-70"
               >{{ toast.type }}</span
             >
-            <span class="text-sm font-medium">{{ toast.message }}</span>
+            <span >{{ toast.message }}</span>
           </div>
           <button
             (click)="remove(toast.id)"

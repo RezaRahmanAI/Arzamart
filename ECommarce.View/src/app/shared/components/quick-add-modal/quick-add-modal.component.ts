@@ -45,21 +45,21 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
 
         <!-- Selection Details (Scrollable independent of image) -->
         <div class="flex-1 p-4 sm:p-6 flex flex-col justify-start sm:justify-center overflow-y-auto pb-6 sm:pb-8">
-          <h2 class="text-[10px] sm:text-sm uppercase tracking-[0.2em] font-bold text-gray-400 mb-0.5 sm:mb-1">
+          <h2 class="text-gray-400 mb-0.5 sm:mb-1">
             Quick Add
           </h2>
-          <h3 class="text-sm sm:text-lg font-bold text-black mb-1 sm:mb-2 leading-tight">{{ product.name }}</h3>
+          <h3 class="text-black mb-1 sm:mb-2">{{ product.name }}</h3>
           
           <div class="flex items-center gap-2 mb-3 sm:mb-4">
             <app-price-display
               [amount]="currentPrice"
-              class="text-base sm:text-lg font-bold block"
+              class="block"
             ></app-price-display>
             @if (originalPrice > 0) {
               <app-price-display
                 [amount]="originalPrice"
                 size="sm"
-                class="line-through opacity-50 text-[10px] sm:text-sm"
+                class="line-through opacity-50"
               ></app-price-display>
             }
           </div>
@@ -67,14 +67,14 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
           <!-- Size Selection -->
           @if (availableSizes.length > 0) {
             <div class="mb-3 sm:mb-5">
-              <label class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-gray-500 block mb-2 sm:mb-3">
+              <label class="text-gray-500 block mb-2 sm:mb-3">
                 Select Size: <span class="text-black">{{ selectedSize || 'required' }}</span>
               </label>
               <div class="flex flex-wrap gap-1.5 sm:gap-2">
                 @for (size of availableSizes; track size) {
                   <button
                     (click)="selectSize(size)"
-                    class="min-w-[2.25rem] h-8 sm:min-w-10 sm:h-10 px-2 flex items-center justify-center border text-[10px] sm:text-[11px] font-bold transition-all duration-300 rounded-md sm:rounded-lg"
+                    class="min-w-[2.25rem] h-8 sm:min-w-10 sm:h-10 px-2 flex items-center justify-center border transition-all duration-300 rounded-md sm:rounded-lg"
                     [class.bg-ds-accent]="selectedSize === size"
                     [class.text-ds-hero-text]="selectedSize === size"
                     [class.border-ds-accent]="selectedSize === size"
@@ -92,7 +92,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
 
           <!-- Quantity Selection -->
           <div class="mb-4 sm:mb-6 mt-4 sm:mt-0">
-            <label class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-gray-500 block mb-2 sm:mb-3">
+            <label class="text-gray-500 block mb-2 sm:mb-3">
               Quantity
             </label>
             <div class="flex items-center gap-3 sm:gap-4">
@@ -102,7 +102,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
               >
                 <app-icon name="Minus" size="14"></app-icon>
               </button>
-              <span class="text-sm sm:text-lg font-bold w-6 sm:w-8 text-center">{{ quantity }}</span>
+              <span class="w-6 sm:w-8 text-center">{{ quantity }}</span>
               <button 
                 (click)="increaseQuantity()"
                 class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-ds-border rounded-md sm:rounded-lg text-ds-text-sec hover:text-ds-text transition-colors"
@@ -115,7 +115,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
           <button
             (click)="confirm()"
             [disabled]="availableSizes.length > 0 && !selectedSize"
-            class="w-full py-2.5 sm:py-4 bg-ds-accent text-white text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-bold transition-all duration-300 hover:opacity-90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-lg sm:rounded-xl shadow-lg shadow-ds-accent/20"
+            class="w-full py-2.5 sm:py-4 bg-ds-accent text-white transition-all duration-300 hover:opacity-90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-lg sm:rounded-xl shadow-lg shadow-ds-accent/20"
           >
             <app-icon name="ShoppingBag" size="14" class="sm:w-4 sm:h-4"></app-icon>
             {{ (selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity) > 0 ? 'Confirm Selection' : 'Confirm Pre-order' }}

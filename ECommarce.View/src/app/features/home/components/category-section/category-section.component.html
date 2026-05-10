@@ -4,10 +4,10 @@
     <div
       class="flex items-baseline justify-between mb-6 md:mb-8 border-b border-gray-100 pb-3 md:pb-4"
     >
-      <h2 class="text-2xl md:text-3xl lg:text-4xl font-serif text-primary">{{ title }}</h2>
+      <h2 class="text-primary">{{ title }}</h2>
       <a
         [routerLink]="viewAllLink"
-        class="text-[10px] uppercase tracking-[0.2em] font-bold text-text-sub hover:text-accent transition-colors border-b border-transparent hover:border-accent pb-1"
+        class="text-text-sub hover:text-accent transition-colors border-b border-transparent hover:border-accent pb-1"
       >
         Explore All
       </a>
@@ -35,7 +35,7 @@
           <!-- Content -->
           <div class="absolute inset-0 flex flex-col justify-end p-6">
             <h3
-              class="text-white text-xl font-medium tracking-wide transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500"
+              class="text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500"
             >
               {{ category.name }}
             </h3>

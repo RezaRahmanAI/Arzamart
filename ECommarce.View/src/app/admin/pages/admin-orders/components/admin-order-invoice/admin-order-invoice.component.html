@@ -10,11 +10,11 @@
   >
     <!-- Modal Toolbar — hidden on print -->
     <div class="shrink-0 flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 print:hidden">
-      <span class="text-xs font-semibold tracking-widest uppercase text-gray-400">Invoice Preview</span>
+      <span class="text-gray-400">Invoice Preview</span>
       <div class="flex items-center gap-2">
         <button
           (click)="printInvoice()"
-          class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-900 hover:bg-gray-700 text-white text-xs font-semibold transition-all"
+          class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-900 hover:bg-gray-700 text-white transition-all"
         >
           <app-icon name="Printer" size="13"></app-icon> Print
         </button>
@@ -34,7 +34,7 @@
            INVOICE PAPER — constrained to half A4
            A4 width = 210mm | half height = 148.5mm
       ════════════════════════════════════════ -->
-      <div id="invoice-paper" class="bg-white mx-auto shadow-xl print:shadow-none" style="width:680px; font-family:'Outfit',system-ui,sans-serif;">
+      <div id="invoice-paper" class="bg-white mx-auto shadow-xl print:shadow-none" style="width:680px; font-family: 'Outfit',system-ui,sans-serif;">
 
         <!-- Gold rule top -->
         <div style="height:3px;background:linear-gradient(90deg,#111 0%,#111 60%,#c8a140 100%);"></div>
@@ -62,7 +62,7 @@
               <div style="background:#111;color:#fff;text-align:center;padding:3px 6px;font-size:8px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;">Customer Info</div>
               <div style="padding:7px 9px;display:grid;grid-template-columns:72px 1fr;row-gap:3px;line-height:1.4;">
                 <span style="color:#888;">Order ID</span>      <span style="color:#111;">{{ order.orderNumber }}</span>
-                <span style="color:#888;">Date</span>          <span style="color:#111;">{{ order.createdAt | date:'dd MMM yyyy' }}</span>
+                <span style="color:#888;">Date</span>          <span style="color:#111;">{{ order.createdAt | date: 'dd MMM yyyy' }}</span>
                 <span style="color:#888;">Phone</span>         <span style="color:#111;">{{ order.customerPhone }}</span>
                 <span style="color:#888;">Name</span>          <span style="color:#111;">{{ order.customerName }}</span>
                 <span style="color:#888;">Address</span>
@@ -109,7 +109,7 @@
             <div style="font-size:8.5px;color:#666;font-weight:500;line-height:1.7;">
               <div><span style="color:#aaa;font-size:8px;text-transform:uppercase;letter-spacing:.8px;">Page</span>&nbsp; {{ order.sourcePageName || '—' }}</div>
               <div><span style="color:#aaa;font-size:8px;text-transform:uppercase;letter-spacing:.8px;">Courier</span>&nbsp; —</div>
-              <div style="color:#bbb;font-size:8px;margin-top:3px;">Printed: {{ currentDate | date:'dd/MM/yyyy, h:mm a' }}</div>
+              <div style="color:#bbb;font-size:8px;margin-top:3px;">Printed: {{ currentDate | date: 'dd/MM/yyyy, h:mm a' }}</div>
             </div>
 
             <!-- Right: Totals box -->

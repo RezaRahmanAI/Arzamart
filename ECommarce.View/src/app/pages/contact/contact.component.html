@@ -6,10 +6,10 @@
       style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCPF-DNnIgGr2PC6sPo8ie7AjTarAweTokcLmcirPISt2hZKlaY4RjJM-DYIAxB5tA3nhWDuk4F9VJg-eC2q9MljINFzs4tfsgL5Aou2W-uAB0g3wnK56RRKkjCkTIpNLzb1ZNGP99oe_GY5OP109sayp2A-rtSqH9DuPTM6IIEZ9ot7jkIyvVtse9uPw0Aw9sEVgMGZaatmytcrqehPQrdS8STrd7b6FECtCKtqyl8YigQXhQk-chPA4jxyX3UFIvjdz5hZGUmbBQ');"
     ></div>
     <div class="site-container relative z-10 text-center">
-      <h1 class="text-ds-hero-text text-ds-4xl md:text-ds-5xl font-bold leading-tight tracking-tight mb-ds-4 uppercase">
+      <h1 class="text-ds-hero-text mb-ds-4">
         Contact Us
       </h1>
-      <p class="text-ds-hero-text/80 text-ds-lg font-medium max-w-2xl mx-auto leading-relaxed">
+      <p class="text-ds-hero-text/80 max-w-2xl mx-auto">
         Whether you have a question about sizing, shipping, or just want to say
         salam, our team is here to help you.
       </p>
@@ -22,10 +22,10 @@
       <!-- Left Column: Contact Info -->
       <div class="lg:col-span-5 flex flex-col gap-ds-10 order-2 lg:order-1">
         <div class="space-y-ds-2">
-          <h3 class="text-ds-3xl font-bold uppercase tracking-tight">
+          <h3 >
             Get in touch
           </h3>
-          <p class="text-ds-text-sec font-medium">
+          <p class="text-ds-text-sec">
             Our team is available {{ officeHours }}
           </p>
         </div>
@@ -37,14 +37,14 @@
               <app-icon name="Mail" size="20"></app-icon>
             </div>
             <div class="space-y-ds-1">
-              <h4 class="text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec">
+              <h4 class="text-ds-text-sec">
                 Email Support
               </h4>
-              <p class="text-ds-base text-ds-text-sec font-light mb-ds-2">
+              <p class="text-ds-text-sec mb-ds-2">
                 Speak to our friendly team.
               </p>
               <a
-                class="text-ds-text font-bold border-b border-ds-text hover:border-transparent transition-all pb-1"
+                class="text-ds-text border-b border-ds-text hover:border-transparent transition-all pb-1"
                 [href]="'mailto:' + supportEmail"
               >
                 {{ supportEmail }}
@@ -58,14 +58,14 @@
               <app-icon name="Phone" size="20"></app-icon>
             </div>
             <div class="space-y-ds-1">
-              <h4 class="text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec">
+              <h4 class="text-ds-text-sec">
                 Call Us
               </h4>
-              <p class="text-ds-base text-ds-text-sec font-light mb-ds-2">
+              <p class="text-ds-text-sec mb-ds-2">
                 Mon-Fri from 9am to 6pm.
               </p>
               <a
-                class="text-ds-text font-bold border-b border-ds-text hover:border-transparent transition-all pb-1"
+                class="text-ds-text border-b border-ds-text hover:border-transparent transition-all pb-1"
                 [href]="'tel:' + phoneDial"
               >
                 {{ phone }}
@@ -79,13 +79,13 @@
               <app-icon name="MapPin" size="20"></app-icon>
             </div>
             <div class="space-y-ds-1">
-              <h4 class="text-[11px] font-bold uppercase tracking-[0.2em] text-ds-text-sec">
+              <h4 class="text-ds-text-sec">
                 Visit Us
               </h4>
-              <p class="text-ds-base text-ds-text-sec font-light mb-ds-2">
+              <p class="text-ds-text-sec mb-ds-2">
                 Come say hi at our HQ.
               </p>
-              <p class="text-ds-text font-bold">
+              <p class="text-ds-text">
                 <span *ngFor="let line of addressLines; let isLast = last">
                   {{ line }}<br *ngIf="!isLast" />
                 </span>
@@ -96,7 +96,7 @@
 
         <!-- Socials -->
         <div class="pt-ds-10 border-t border-ds-border">
-          <h4 class="text-[10px] font-bold uppercase tracking-[0.3em] text-ds-text-muted mb-ds-6">
+          <h4 class="text-ds-text-muted mb-ds-6">
             Follow Us
           </h4>
           <div class="flex gap-ds-4">
@@ -119,7 +119,7 @@
       <!-- Right Column: Contact Form -->
       <div class="lg:col-span-7 order-1 lg:order-2">
         <div class="bg-ds-surface border border-ds-border p-ds-6 lg:p-ds-12">
-          <h3 class="text-ds-3xl font-bold uppercase tracking-tight mb-ds-10">
+          <h3 class="mb-ds-10">
             Send Message
           </h3>
           <form class="flex flex-col gap-ds-6" [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -189,13 +189,13 @@
 
             <!-- Submit Button -->
             <button
-              class="btn btn-primary h-14 !text-[11px] !tracking-[0.3em] uppercase w-full sm:w-auto"
+              class="btn btn-primary h-14 w-full sm:w-auto"
               type="submit"
               [disabled]="form.invalid || isSubmitting"
             >
               {{ isSubmitting ? "Sending..." : "Send Message" }}
             </button>
-            <p *ngIf="successMessage" class="text-ds-success text-[11px] font-bold uppercase tracking-widest mt-ds-2">
+            <p *ngIf="successMessage" class="text-ds-success mt-ds-2">
               {{ successMessage }}
             </p>
           </form>
@@ -206,7 +206,7 @@
     <!-- Map Section -->
     <div class="mt-ds-20 lg:mt-ds-32">
       <div class="mb-ds-10">
-        <h3 class="text-ds-3xl font-bold uppercase tracking-tight">
+        <h3 >
           Find our Flagship Store
         </h3>
       </div>
@@ -223,14 +223,14 @@
               <app-icon name="Store" size="20"></app-icon>
             </div>
             <div class="space-y-ds-1">
-              <h5 class="text-ds-base font-bold uppercase tracking-tight">
+              <h5 >
                 {{ mapDetails.storeName }}
               </h5>
-              <p class="text-ds-sm text-ds-text-sec font-medium">
+              <p class="text-ds-text-sec">
                 {{ mapDetails.openHours }}
               </p>
               <button
-                class="text-[10px] font-bold uppercase tracking-[0.2em] text-ds-text border-b border-ds-text hover:border-transparent transition-all mt-ds-4 block"
+                class="text-ds-text border-b border-ds-text hover:border-transparent transition-all mt-ds-4 block"
                 type="button"
                 (click)="openDirections()"
               >
@@ -245,15 +245,15 @@
     <!-- FAQ Teaser -->
     <div class="mt-ds-20 text-center bg-ds-surface border border-ds-border p-ds-10 lg:p-ds-20">
       <app-icon name="HelpCircle" size="48" className="text-ds-text-muted mb-ds-6"></app-icon>
-      <h3 class="text-ds-2xl font-bold uppercase tracking-tight mb-ds-4">
+      <h3 class="mb-ds-4">
         Need a quick answer?
       </h3>
-      <p class="text-ds-text-sec max-w-lg mx-auto mb-ds-10 leading-relaxed font-medium">
+      <p class="text-ds-text-sec max-w-lg mx-auto mb-ds-10">
         Check out our frequently asked questions for information on shipping,
         returns, and product care.
       </p>
       <a
-        class="btn btn-secondary h-12 !text-[10px] !tracking-[0.2em] uppercase !w-auto mx-auto"
+        class="btn btn-secondary h-12 !w-auto mx-auto"
         [routerLink]="helpCenterLink || '/faq'"
       >
         Visit Help Center
