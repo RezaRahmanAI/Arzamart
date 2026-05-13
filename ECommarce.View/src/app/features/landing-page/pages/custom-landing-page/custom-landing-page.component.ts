@@ -303,12 +303,21 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   startRelativeTimer(productId: number, totalMinutes: number): void {
     if (isPlatformBrowser(this.platformId)) {
       const storageKey = `clp_timer_${productId}`;
+      const minutesKey = `clp_timer_mins_${productId}`;
+      
       let endTimeStr = localStorage.getItem(storageKey);
+      let storedMins = localStorage.getItem(minutesKey);
       let endTime: number;
       const now = new Date().getTime();
-      if (!endTimeStr || (parseInt(endTimeStr, 10) < now)) {
+
+      // Reset timer if:
+      // 1. No previous end time
+      // 2. Previous end time has passed
+      // 3. The configured total minutes has changed
+      if (!endTimeStr || (parseInt(endTimeStr, 10) < now) || (storedMins !== totalMinutes.toString())) {
         endTime = now + (totalMinutes || 180) * 60 * 1000;
         localStorage.setItem(storageKey, endTime.toString());
+        localStorage.setItem(minutesKey, totalMinutes.toString());
       } else {
         endTime = parseInt(endTimeStr, 10);
       }
