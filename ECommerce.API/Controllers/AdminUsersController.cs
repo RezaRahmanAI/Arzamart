@@ -28,11 +28,12 @@ public class AdminUsersController : ControllerBase
     {
         var users = await _userManager.Users
             .Where(u => u.Role == "Admin" || u.Role == "SuperAdmin" || u.Role == "Staff")
-            .Select(u => new
+.Select(u => new
             {
                 u.Id,
                 u.FullName,
                 u.Email,
+                u.UserName,
                 u.Phone,
                 u.Role,
                 u.IsActive,

@@ -26,12 +26,12 @@ export class AdminUserManagementComponent implements OnInit {
   isCreatePasswordVisible = false;
   isEditPasswordVisible = false;
   
-  createForm = this.fb.nonNullable.group({
+createForm = this.fb.nonNullable.group({
     fullName: ["", [Validators.required]],
-    email: ["", [Validators.email]], // Optional
+    email: [""],
     userName: ["", [Validators.required]],
     password: ["", [Validators.required, Validators.minLength(6)]],
-    role: ["Admin" as "Admin" | "SuperAdmin" | "Staff", [Validators.required]]
+    role: ["Staff" as "Admin" | "SuperAdmin" | "Staff", [Validators.required]]
   });
 
   availableMenus = [
@@ -54,12 +54,12 @@ export class AdminUserManagementComponent implements OnInit {
 
   isEditModalOpen = false;
   editingAdmin: AdminUser | null = null;
-  editForm = this.fb.nonNullable.group({
+editForm = this.fb.nonNullable.group({
     fullName: ["", [Validators.required]],
-    email: ["", [Validators.email]],
+    email: [""],
     userName: ["", [Validators.required]],
-    password: ["", [Validators.minLength(6)]],
-    role: ["Admin" as "Admin" | "SuperAdmin" | "Staff", [Validators.required]]
+    password: [""],
+    role: ["Staff" as "Admin" | "SuperAdmin" | "Staff", [Validators.required]]
   });
 
   currentUserRole = "";
@@ -115,7 +115,7 @@ export class AdminUserManagementComponent implements OnInit {
         this.isSubmitting = false;
         this.isCreateModalOpen = false;
         this.selectedMenus = [];
-        this.createForm.reset({ role: 'Admin' });
+        this.createForm.reset({ role: 'Staff' });
         this.notification.success("Admin user created successfully!");
       },
       error: (err) => {

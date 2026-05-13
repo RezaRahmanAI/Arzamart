@@ -140,6 +140,7 @@ public class AuthController : ControllerBase
             user.Email ?? string.Empty,
             role,
             user.Phone,
+            user.UserName,
             user.AllowedMenus);
     }
 }
