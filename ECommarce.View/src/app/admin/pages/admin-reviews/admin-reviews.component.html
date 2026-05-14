@@ -7,6 +7,16 @@
         Reputation Moderation & Sentiment Analysis
       </p>
     </div>
+    <div class="flex items-center gap-ds-3">
+      <button
+        class="btn btn-primary h-11 px-ds-6 !bg-ds-text !text-ds-surface"
+        type="button"
+        (click)="openCreateModal()"
+      >
+        <app-icon name="Plus" size="14"></app-icon>
+        <span>Add Manual Testimonial</span>
+      </button>
+    </div>
   </div>
 
   <!-- Reviews List -->
@@ -21,7 +31,7 @@
         >
           <img
             *ngIf="review.userAvatar"
-            [src]="review.userAvatar"
+            [src]="getImageUrl(review.userAvatar)"
             class="w-full h-full object-cover"
           />
           <app-icon
@@ -117,71 +127,228 @@
 <!-- Edit Modal -->
 <div
   *ngIf="isModalOpen"
-  class="fixed inset-0 bg-ds-text/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
+  class="fixed inset-0 bg-ds-text/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6"
   (click)="closeModal()"
 >
-  <div class="bg-ds-surface rounded-sm border border-ds-border w-full max-w-md shadow-2xl overflow-hidden" (click)="$event.stopPropagation()">
-    <div class="px-ds-8 py-ds-4 border-b border-ds-border flex justify-between items-center bg-ds-bg/50">
+  <div 
+    class="bg-ds-surface rounded-sm border border-ds-border w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] transition-all duration-300 scale-100 modal-animate-in" 
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+    <div class="px-6 py-5 border-b border-ds-border flex justify-between items-center bg-ds-bg/30">
       <div>
-        <h2 class="text-ds-text">Synchronize Feedback</h2>
-        <p class="text-ds-text-muted mt-0.5">Sentiment Moderation Terminal</p>
+        <h2 class="text-ds-text text-xl font-medium tracking-tight">
+          {{ modalMode === 'create' ? 'Establish New Feedback' : 'Synchronize Feedback' }}
+        </h2>
+        <p class="text-ds-text-muted text-xs uppercase tracking-widest mt-1 opacity-60">Sentiment Moderation Terminal</p>
       </div>
       <button
         (click)="closeModal()"
         class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm text-ds-text-muted hover:text-ds-text"
       >
-        <app-icon name="X" size="18"></app-icon>
+        <app-icon name="X" size="20"></app-icon>
       </button>
     </div>
 
-    <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="p-ds-8 flex flex-col gap-ds-6">
-      <div class="space-y-2">
-        <label class="block text-ds-text ml-1 mb-2">Quantified Sentiment (Rating)</label>
-        <div class="flex gap-ds-2">
-          <button
-            type="button"
-            *ngFor="let r of [1, 2, 3, 4, 5]"
-            (click)="reviewForm.patchValue({ rating: r })"
-            class="transition-transform active:scale-90"
-            [ngClass]="reviewForm.get('rating')?.value! >= r ? 'text-ds-text' : 'text-ds-text-muted/20'"
-          >
-            <app-icon
-              name="Star"
-              size="28"
-              [className]="reviewForm.get('rating')?.value! >= r ? 'fill-ds-text' : ''"
-            ></app-icon>
-          </button>
+    <!-- Modal Body (Scrollable) -->
+    <div class="flex-grow overflow-y-auto p-6 sm:p-8 custom-scrollbar">
+      <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-8">
+        
+        <!-- Section: Identity -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">User Identity (Name) *</label>
+            <input
+              formControlName="userName"
+              type="text"
+              class="form-input !h-12 w-full"
+              placeholder="E.G. JOHN DOE"
+            />
+          </div>
+          <div class="space-y-2">
+            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Avatar Source (URL or Upload)</label>
+            <div class="flex items-center gap-4">
+              <!-- Avatar Preview -->
+              <div class="size-12 rounded-sm bg-ds-bg border border-ds-border flex-shrink-0 overflow-hidden flex items-center justify-center">
+                <img 
+                  *ngIf="reviewForm.get('userAvatar')?.value" 
+                  [src]="getImageUrl(reviewForm.get('userAvatar')?.value)" 
+                  class="w-full h-full object-cover"
+                >
+                <app-icon 
+                  *ngIf="!reviewForm.get('userAvatar')?.value" 
+                  name="User" 
+                  size="20" 
+                  className="text-ds-text-muted/30"
+                ></app-icon>
+              </div>
+              
+              <!-- Input & Upload -->
+              <div class="flex-grow flex gap-2">
+                <input
+                  formControlName="userAvatar"
+                  type="text"
+                  class="form-input !h-12 flex-grow text-xs"
+                  placeholder="URL or Upload..."
+                />
+                <button 
+                  type="button"
+                  (click)="avatarInput.click()"
+                  [disabled]="isUploadingAvatar"
+                  class="size-12 flex items-center justify-center bg-ds-bg border border-ds-border hover:border-ds-text/30 transition-colors rounded-sm group relative"
+                  title="Upload Image"
+                >
+                  <app-icon *ngIf="!isUploadingAvatar" name="Upload" size="18" className="text-ds-text-muted group-hover:text-ds-text"></app-icon>
+                  <app-icon *ngIf="isUploadingAvatar" name="Loader2" size="18" className="animate-spin text-ds-primary"></app-icon>
+                  <input 
+                    #avatarInput 
+                    type="file" 
+                    class="hidden" 
+                    accept="image/*"
+                    (change)="onAvatarFileSelected($event)"
+                  >
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="space-y-2">
-        <label class="block text-ds-text ml-1 mb-2">Narrative Entry (Comment)</label>
-        <textarea
-          formControlName="comment"
-          rows="4"
-          class="form-input !py-ds-4 !px-ds-4 resize-none"
-          placeholder="E.G. EXCEPTIONAL ARCHITECTURAL QUALITY..."
-        ></textarea>
-      </div>
+        <!-- Section: Product Targeting (Searchable Dropdown) -->
+        <div class="space-y-2 relative">
+          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Target Product Node *</label>
+          
+          <!-- Dropdown Trigger -->
+          <button 
+            type="button"
+            (click)="toggleProductDropdown($event)"
+            class="form-input !h-12 w-full flex items-center justify-between px-4 hover:border-ds-text/30 transition-colors bg-ds-bg/20"
+            [class.border-ds-text]="isProductDropdownOpen"
+          >
+            <span class="truncate" [class.text-ds-text-muted]="!reviewForm.get('productId')?.value">
+              {{ selectedProductName }}
+            </span>
+            <app-icon [name]="isProductDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16"></app-icon>
+          </button>
 
-      <div class="flex gap-ds-4 pt-ds-4">
-        <button
-          type="button"
-          (click)="closeModal()"
-          class="btn btn-secondary flex-1 !h-12"
-        >
-          Abort
-        </button>
-        <button
-          type="submit"
-          [disabled]="isSubmitting"
-          class="btn btn-primary flex-[2] !h-12 !bg-ds-text !text-ds-surface"
-        >
-          <app-icon *ngIf="isSubmitting" name="Loader2" size="16" className="animate-spin mr-ds-2"></app-icon>
-          <span>Establish Synchronization</span>
-        </button>
-      </div>
-    </form>
+          <!-- Dropdown Menu -->
+          @if (isProductDropdownOpen) {
+            <div 
+              class="absolute z-[110] left-0 right-0 mt-2 bg-ds-surface border border-ds-border shadow-2xl rounded-sm overflow-hidden flex flex-col max-h-72 dropdown-animate"
+              (click)="$event.stopPropagation()"
+            >
+              <!-- Search Input -->
+              <div class="p-3 border-b border-ds-border bg-ds-bg/50 flex items-center gap-3">
+                <app-icon name="Search" size="14" className="text-ds-text-muted"></app-icon>
+                <input 
+                  type="text" 
+                  [(ngModel)]="productSearchTerm" 
+                  [ngModelOptions]="{standalone: true}"
+                  placeholder="Filter by name or SKU..."
+                  class="bg-transparent border-none outline-none text-sm w-full text-ds-text"
+                  (click)="$event.stopPropagation()"
+                >
+              </div>
+
+              <!-- Options List -->
+              <div class="overflow-y-auto flex-grow custom-scrollbar">
+                @for (product of filteredProducts; track product.id) {
+                  <button 
+                    type="button"
+                    (click)="selectProduct(product)"
+                    class="w-full text-left px-4 py-3 hover:bg-ds-bg transition-colors flex items-center gap-4 group"
+                  >
+                    <div class="size-8 bg-ds-bg border border-ds-border rounded-sm overflow-hidden flex-shrink-0">
+                      <img *ngIf="product.imageUrl" [src]="getImageUrl(product.imageUrl)" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-grow min-w-0">
+                      <p class="text-sm text-ds-text truncate group-hover:text-ds-primary transition-colors">{{ product.name }}</p>
+                      <p class="text-[10px] text-ds-text-muted uppercase tracking-tighter opacity-60">{{ product.sku }}</p>
+                    </div>
+                    <div *ngIf="reviewForm.get('productId')?.value === product.id" class="text-ds-success">
+                      <app-icon name="Check" size="14"></app-icon>
+                    </div>
+                  </button>
+                }
+                @if (filteredProducts.length === 0) {
+                  <div class="p-8 text-center text-ds-text-muted text-xs italic">
+                    No matching products detected in catalog.
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+          <!-- Section: Rating -->
+          <div class="space-y-4">
+            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Sentiment Magnitude (Rating)</label>
+            <div class="flex gap-1.5">
+              <button
+                type="button"
+                *ngFor="let r of [1, 2, 3, 4, 5]"
+                (click)="reviewForm.patchValue({ rating: r })"
+                class="transition-all duration-300 hover:scale-110 active:scale-95"
+                [ngClass]="reviewForm.get('rating')?.value! >= r ? 'text-ds-text scale-110' : 'text-ds-text-muted/20'"
+              >
+                <app-icon
+                  name="Star"
+                  size="32"
+                  [className]="reviewForm.get('rating')?.value! >= r ? 'fill-ds-text' : ''"
+                ></app-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section: Verified Switch -->
+          <div 
+            class="flex items-center gap-4 p-4 bg-ds-bg/20 border border-ds-border/50 rounded-sm cursor-pointer hover:bg-ds-bg/30 transition-all"
+            (click)="reviewForm.patchValue({ isVerifiedPurchase: !reviewForm.get('isVerifiedPurchase')?.value })"
+          >
+            <div 
+              class="size-5 border-2 flex items-center justify-center transition-all"
+              [class.bg-ds-text]="reviewForm.get('isVerifiedPurchase')?.value"
+              [class.border-ds-text]="reviewForm.get('isVerifiedPurchase')?.value"
+              [class.border-ds-text-muted]="!reviewForm.get('isVerifiedPurchase')?.value"
+            >
+              <app-icon *ngIf="reviewForm.get('isVerifiedPurchase')?.value" name="Check" size="12" className="text-ds-surface"></app-icon>
+            </div>
+            <label class="text-xs text-ds-text uppercase tracking-widest font-medium cursor-pointer">Verified Purchase Node</label>
+          </div>
+        </div>
+
+        <!-- Section: Narrative -->
+        <div class="space-y-2">
+          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Narrative Content (Comment) *</label>
+          <textarea
+            formControlName="comment"
+            rows="4"
+            class="form-input !py-4 !px-4 resize-none w-full min-h-[120px]"
+            placeholder="E.G. EXCEPTIONAL ARCHITECTURAL QUALITY AND BUILD FIDELITY..."
+          ></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="px-8 py-6 border-t border-ds-border flex gap-4 bg-ds-bg/10">
+      <button
+        type="button"
+        (click)="closeModal()"
+        class="flex-1 h-12 text-ds-text-muted hover:text-ds-text text-xs uppercase tracking-widest font-bold transition-colors"
+      >
+        Abort
+      </button>
+      <button
+        type="button"
+        (click)="onSubmit()"
+        [disabled]="isSubmitting"
+        class="flex-[2] h-14 bg-ds-text text-ds-surface hover:bg-ds-text/90 transition-all font-bold uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 shadow-xl"
+      >
+        <app-icon *ngIf="isSubmitting" name="Loader2" size="16" className="animate-spin"></app-icon>
+        <span>{{ modalMode === 'create' ? 'Establish Entry' : 'Synchronize Synchronization' }}</span>
+      </button>
+    </div>
   </div>
 </div>
 

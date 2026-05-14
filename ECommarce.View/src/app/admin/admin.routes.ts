@@ -28,7 +28,6 @@ export const ADMIN_ROUTES: Routes = [
           ),
         data: { title: "Products", menuKey: "products" }, canActivate: [staffGuard],
       },
-
       {
         path: "products/categories",
         loadComponent: () =>
@@ -76,14 +75,6 @@ export const ADMIN_ROUTES: Routes = [
             (m) => m.AdminProductFormComponent,
           ),
         data: { title: "Edit Product", menuKey: "products" }, canActivate: [staffGuard],
-      },
-      {
-        path: "products/:id/custom-lp",
-        loadComponent: () =>
-          import("./pages/admin-custom-landing-page-config/admin-custom-landing-page-config.component").then(
-            (m) => m.AdminCustomLandingPageConfigComponent,
-          ),
-        data: { title: "Custom LP Settings", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "orders",
@@ -248,4 +239,3 @@ export const ADMIN_ROUTES: Routes = [
     ],
   },
 ];
-

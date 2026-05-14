@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe } from "@angular/common";
+import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe, DatePipe, NgFor } from "@angular/common";
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -22,6 +22,8 @@ import { CustomerOrderApiService } from "../../../../core/services/customer-orde
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DestroyRef } from "@angular/core";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
+import { Review } from "../../../../core/models/review";
+import { ReviewService } from "../../../../core/services/review.service";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
 import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
@@ -44,7 +46,7 @@ interface LandingPageData {
 @Component({
   selector: "app-custom-landing-page",
   standalone: true,
-  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe, QuickAddModalComponent, NgIf],
+  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe, DatePipe, NgFor, QuickAddModalComponent, NgIf],
   templateUrl: "./custom-landing-page.component.html",
   styleUrl: "./custom-landing-page.component.css"
 })
@@ -64,9 +66,16 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private readonly userPersistence = inject(UserPersistenceService);
   private readonly notification = inject(NotificationService);
   private readonly authService = inject(AuthService);
+  private readonly reviewService = inject(ReviewService);
 
   brandName$ = this.siteSettingsService.getSettings().pipe(map(s => s.websiteName));
-  isAdmin$ = this.authService.currentUser.pipe(map(user => user?.role === 'Admin' || user?.role === 'SuperAdmin'));
+  isAdmin$ = this.authService.currentUser.pipe(
+    map(user => 
+      user?.role === 'Admin' || 
+      user?.role === 'SuperAdmin' || 
+      (user?.role === 'Staff' && user.allowedMenus?.includes('products'))
+    )
+  );
 
   isEditorOpen = false;
   isSaving = false;
@@ -79,11 +88,15 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     { id: 'discount-cta',   type: 'discount-cta',   label: '💚 Discount CTA',         visible: true },
     { id: 'info-banner',    type: 'info-banner',    label: '🟡 Info Banner',          visible: true },
     { id: 'product-select', type: 'product-select', label: '📦 Product Selection',    visible: true },
+    { id: 'product-details',type: 'product-details', label: 'ℹ️ Product Details',     visible: true },
+    { id: 'trust-banner',   type: 'trust-banner',   label: '🛡️ Trust Banner',        visible: true },
+    { id: 'reviews',        type: 'reviews',        label: '💬 Customer Reviews',     visible: false },
     { id: 'order-form',     type: 'order-form',     label: '📝 Order Form',           visible: true },
   ];
 
   data: LandingPageData | null = null;
   relatedProducts: Product[] = [];
+  productReviews: Review[] = [];
   deliveryMethods: DeliveryMethod[] = [];
   isLoading = true;
   isOrdering = false;
@@ -133,6 +146,36 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     paymentMethod: ["cod", [Validators.required]]
   });
 
+  readonly configForm = this.fb.nonNullable.group({
+    relativeTimerTotalMinutes: [null as number | null],
+    isTimerVisible: [true],
+    headerTitle: ["অফারটি শেষ হতে মাত্র কিছুক্ষণ বাকি আছে!"],
+    isProductDetailsVisible: [true],
+    productDetailsTitle: ["🔥 প্রোডাক্ট ডিটেইলস"],
+    isFabricVisible: [true],
+    isDesignVisible: [true],
+    isTrustBannerVisible: [true],
+    trustBannerText: ["দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই"],
+    featuredProductName: [""],
+    promoPrice: [0],
+    originalPrice: [0],
+    isMarqueeVisible: [false],
+    marqueeText: ["🔥 সীমিত স্টক — মাত্র ৩৪টি বাকি! 🚚 সারা বাংলাদেশে ফ্রি ডেলিভারি 💥 আজকের জন্য ৩০% ছাড় — মধ্যরাতে শেষ 💵 ক্যাশ অন ডেলিভারি আছে ⚡"],
+    promoText: ["যেকোনো কালার যেকোনো সাইজ দুই পিস অর্ডার করলেই পাচ্ছেন মাত্র ১৪৫০ টাকা"],
+    freeShippingThresholdQuantity: [null as number | null],
+    isReviewsVisible: [true],
+    heroTitle: ["একচেটিয়া অফার! আজকের জন্যই সেরা সুযোগ"],
+    heroSubtitle: ["প্রিমিয়াম কোয়ালিটি এখন সাশ্রয়ী মূল্যে"],
+    heroBadge: ["স্টক ফুরিয়ে যাওয়ার আগেই সংগ্রহ করুন"],
+    productHeroTitle: ["আমাদের প্রিমিয়াম প্রসাধনী"],
+    productHeroDescription: ["সেরা উপাদান দিয়ে তৈরি যা আপনার ত্বকের যত্ন নেবে। আমাদের হাজার হাজার সন্তুষ্ট গ্রাহকের তালিকায় আপনিও যুক্ত হোন।"],
+    discountCtaTitle: ["অবিশ্বাস্য ডিসকাউন্ট অফার!"],
+    discountCtaDescription: ["আপনি কি সেরা কোয়ালিটির পণ্যটি খুঁজছেন? আজই অর্ডার করলে পাবেন বিশেষ ছাড় এবং ফ্রি ডেলিভারি।"],
+    infoBannerTitle: ["প্রোডাক্ট ব্যবহারের নিয়মাবলী"],
+    infoBannerDescription: ["প্রতিদিন সকালে ও রাতে পরিষ্কার ত্বকে অল্প পরিমাণে ক্রিম লাগিয়ে আলতোভাবে ম্যাসাজ করুন। নিয়মিত ব্যবহারে আপনি দৃশ্যমান পরিবর্তন লক্ষ্য করবেন। আমাদের পণ্যগুলি ১০০% প্রাকৃতিক উপাদান দিয়ে তৈরি।"],
+    sectionsJson: [""],
+  });
+
   cities = Object.keys(BANGLADESH_LOCATIONS).sort();
   filteredCities: string[] = [];
   citySearch = "";
@@ -153,8 +196,12 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         const queryParams = this.route.snapshot.queryParamMap;
         const qSize = queryParams.get('qSize');
         const qQty = queryParams.get('qQty');
+        const shouldEdit = queryParams.get('edit') === 'true';
+
         if (qSize) this.orderForm.patchValue({ selectedSize: qSize });
         if (qQty) this.orderForm.patchValue({ quantity: parseInt(qQty, 10) || 1 });
+        if (shouldEdit) this.isEditorOpen = true;
+
         if (isPlatformBrowser(this.platformId)) window.scrollTo({ top: 0, behavior: "smooth" });
       }
     });
@@ -282,9 +329,23 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
           const firstActive = methods.find(m => m.isActive) || methods[0];
           this.orderForm.patchValue({ deliveryMethodId: firstActive.id });
         }
-        if (res.config?.relativeTimerTotalMinutes) {
-          this.startRelativeTimer(res.config.productId, res.config.relativeTimerTotalMinutes);
+        if (res.config) {
+          this.configForm.patchValue({
+            ...res.config,
+            featuredProductName: res.config.featuredProductName || res.product.name,
+            promoPrice: res.config.promoPrice || res.product.price,
+            originalPrice: res.config.originalPrice || res.product.compareAtPrice || res.product.price
+          });
+          if (res.config.relativeTimerTotalMinutes) {
+            this.startRelativeTimer(res.config.productId, res.config.relativeTimerTotalMinutes);
+          }
         }
+        if (res.product?.id) {
+          this.reviewService.getReviewsByProductId(res.product.id).subscribe(reviews => {
+            this.productReviews = reviews;
+          });
+        }
+
         if (res.product?.categoryId) {
           this.productService.getRelatedProducts(undefined, res.product.categoryId, 6)
             .subscribe({
@@ -569,19 +630,37 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       'ad-banners': '🖼 Ad Banners',
       'discount-cta': '💚 Discount CTA',
       'info-banner': '🟡 Info Banner',
+      'product-details': 'ℹ️ Product Details',
+      'trust-banner': '🛡️ Trust Banner',
       'product-select': '📦 Product Selection',
+      'reviews': '💬 Customer Reviews',
       'order-form': '📝 Order Form'
     };
     this.sections.push({ id: `${type}_${Date.now()}`, type, label: labels[type] || 'New Section', visible: true });
   }
 
   saveLayout(): void {
-    if (!this.data?.config) return;
+    if (!this.data) return;
     this.isSaving = true;
-    const config = { ...this.data.config, sectionsJson: JSON.stringify(this.sections) };
+    
+    const formValue = this.configForm.getRawValue();
+    const config: CustomLandingPageConfig = {
+      ...formValue,
+      productId: this.data.product.id,
+      sectionsJson: JSON.stringify(this.sections),
+      relativeTimerTotalMinutes: formValue.relativeTimerTotalMinutes ?? undefined
+    };
+
     this.http.post(`${environment.apiBaseUrl}/admin/custom-landing-page`, config).subscribe({
-      next: () => { this.isSaving = false; this.notification.success('Layout saved!'); },
-      error: () => { this.isSaving = false; this.notification.error('Save failed.'); }
+      next: () => { 
+        this.isSaving = false; 
+        this.notification.success('Landing Page Updated!'); 
+        if (this.data) this.data.config = config;
+      },
+      error: () => { 
+        this.isSaving = false; 
+        this.notification.error('Update failed.'); 
+      }
     });
   }
 }

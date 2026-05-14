@@ -131,6 +131,31 @@ public class AdminProductsController : ControllerBase
         return Ok(sizes);
     }
 
+    [HttpGet("catalog")]
+    public async Task<ActionResult<List<object>>> GetProductCatalog()
+    {
+        var products = await _context.Products
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Include(p => p.Variants)
+            .OrderByDescending(p => p.CreatedAt)
+            .Select(p => new 
+            {
+                p.Id,
+                p.Name,
+                p.Sku,
+                p.ImageUrl,
+                Price = p.Variants.Any() ? p.Variants.Min(v => v.Price) : 0,
+                IsActive = p.IsActive,
+                Status = p.IsActive ? "Active" : "Draft",
+                StockQuantity = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
+                Slug = p.Slug
+            })
+            .ToListAsync();
+        
+        return Ok(products);
+    }
+
     [HttpGet]
     public async Task<ActionResult<object>> GetProducts(
         [FromQuery] string? searchTerm,
@@ -571,4 +596,3 @@ public class AdminProductsController : ControllerBase
         return Ok(new { message = "All products are already synchronized." });
     }
 }
-

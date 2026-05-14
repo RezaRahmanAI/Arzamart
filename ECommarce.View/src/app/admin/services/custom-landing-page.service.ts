@@ -22,6 +22,16 @@ export interface CustomLandingPageConfig {
   freeShippingThresholdQuantity?: number | null;
   isMarqueeVisible?: boolean;
   marqueeText?: string;
+  isReviewsVisible?: boolean;
+  heroTitle?: string;
+  heroSubtitle?: string;
+  heroBadge?: string;
+  productHeroTitle?: string;
+  productHeroDescription?: string;
+  discountCtaTitle?: string;
+  discountCtaDescription?: string;
+  infoBannerTitle?: string;
+  infoBannerDescription?: string;
   sectionsJson?: string;
 }
 

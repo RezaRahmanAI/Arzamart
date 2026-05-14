@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, map } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
 
 export interface AdminReview {
@@ -23,17 +23,40 @@ export class AdminReviewsService {
   private readonly baseUrl = "/admin/reviews";
 
   getAll(): Observable<AdminReview[]> {
-    return this.api.get<AdminReview[]>(this.baseUrl);
+    return this.api.get<any[]>(this.baseUrl).pipe(
+      map(reviews => reviews.map(r => ({
+        ...r,
+        userName: r.customerName,
+        userAvatar: r.customerAvatar,
+        createdAt: r.date // mapping date to createdAt if needed
+      })))
+    );
   }
 
   delete(id: number): Observable<void> {
-    return this.api.delete<void>(`${this.baseUrl}/${id}`);
+    return this.api.post<void>(`${this.baseUrl}/${id}/delete`, {});
   }
 
-  update(
-    id: number,
-    payload: { rating: number; comment: string },
-  ): Observable<AdminReview> {
-    return this.api.post<AdminReview>(`${this.baseUrl}/${id}`, payload);
+  create(payload: any): Observable<AdminReview> {
+    const backendPayload = {
+      productId: payload.productId,
+      customerName: payload.userName,
+      customerAvatar: payload.userAvatar,
+      rating: payload.rating,
+      comment: payload.comment,
+      isVerifiedPurchase: payload.isVerifiedPurchase
+    };
+    return this.api.post<AdminReview>(this.baseUrl, backendPayload);
+  }
+
+  update(id: number, payload: any): Observable<AdminReview> {
+    const backendPayload = {
+      customerName: payload.userName,
+      customerAvatar: payload.userAvatar,
+      rating: payload.rating,
+      comment: payload.comment,
+      isVerifiedPurchase: payload.isVerifiedPurchase
+    };
+    return this.api.post<AdminReview>(`${this.baseUrl}/${id}`, backendPayload);
   }
 }
