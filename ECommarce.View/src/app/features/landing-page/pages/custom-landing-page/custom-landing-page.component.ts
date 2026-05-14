@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe, DatePipe, NgFor } from "@angular/common";
+import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe, DatePipe, NgFor, TitleCasePipe } from "@angular/common";
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -46,7 +46,7 @@ interface LandingPageData {
 @Component({
   selector: "app-custom-landing-page",
   standalone: true,
-  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe, DatePipe, NgFor, QuickAddModalComponent, NgIf],
+  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe, DatePipe, NgFor, QuickAddModalComponent, NgIf, TitleCasePipe],
   templateUrl: "./custom-landing-page.component.html",
   styleUrl: "./custom-landing-page.component.css"
 })
@@ -79,6 +79,18 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   isEditorOpen = false;
   isSaving = false;
+  activeEditorSection: string = 'global';
+
+  sharePageLink(): void {
+    if (typeof window !== 'undefined') {
+      const url = window.location.href.split('?')[0]; // Clean URL without query params
+      navigator.clipboard.writeText(url).then(() => {
+        this.notification.success('Link copied to clipboard! You can now share it with customers.');
+      }).catch(() => {
+        this.notification.error('Failed to copy link.');
+      });
+    }
+  }
   
   sections: LandingSection[] = [
     { id: 'countdown',      type: 'countdown',      label: '⏱ Countdown Bar',       visible: true },
