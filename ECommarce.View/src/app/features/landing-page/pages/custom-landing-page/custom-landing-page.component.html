@@ -64,30 +64,33 @@
 
           <!-- Section: Layout & Components -->
           <div class="space-y-3">
-            <p class="text-[10px] uppercase tracking-widest text-white/30 font-bold px-2">Layout Components</p>
+            <div class="flex items-center justify-between px-2">
+              <p class="text-[10px] uppercase tracking-widest text-white/30 font-bold">Layout Components</p>
+              <p class="text-[9px] text-white/20 italic">Drag to reorder</p>
+            </div>
             
-            <div class="space-y-2">
+            <div class="space-y-2" cdkDropList (cdkDropListDropped)="drop($event)">
               @for (section of sections; track section.id; let i = $index) {
                 <div class="bg-white/5 rounded-lg border border-white/5 overflow-hidden transition-all"
+                     cdkDrag
                      [class.active-section-border]="activeEditorSection === section.id">
                   
                   <!-- Section Header -->
-                  <div class="flex items-center gap-2 p-2 hover:bg-white/5 group">
+                  <div class="flex items-center gap-1 p-1 hover:bg-white/5 group">
+                    <!-- Drag Handle -->
+                    <div cdkDragHandle class="p-2 cursor-grab active:cursor-grabbing text-white/20 hover:text-white/40 transition-colors">
+                      <app-icon name="GripVertical" size="14"></app-icon>
+                    </div>
+
                     <button (click)="activeEditorSection = activeEditorSection === section.id ? '' : section.id"
-                            class="flex-1 flex items-center gap-2 text-left min-w-0 px-2">
+                            class="flex-1 flex items-center gap-2 text-left min-w-0 px-1 py-1.5">
                       <span class="text-white/90 truncate text-sm">{{ section.label }}</span>
                       <app-icon [name]="activeEditorSection === section.id ? 'ChevronUp' : 'ChevronDown'" size="12" class="text-white/20"></app-icon>
                     </button>
                     
-                    <div class="flex items-center gap-1">
+                    <div class="flex items-center gap-1 pr-1">
                       <button (click)="toggleVisibility(i)" class="p-1.5 hover:bg-white/10 rounded-md transition-colors" [class.text-[#3B4FD8]]="section.visible">
                         <app-icon [name]="section.visible ? 'Eye' : 'EyeOff'" size="14"></app-icon>
-                      </button>
-                      <button (click)="moveSection(i, 'up')" [disabled]="i === 0" class="p-1.5 hover:bg-white/10 rounded-md disabled:opacity-10">
-                        <app-icon name="ChevronUp" size="14"></app-icon>
-                      </button>
-                      <button (click)="moveSection(i, 'down')" [disabled]="i === sections.length - 1" class="p-1.5 hover:bg-white/10 rounded-md disabled:opacity-10">
-                        <app-icon name="ChevronDown" size="14"></app-icon>
                       </button>
                       <button (click)="deleteSection(i)" class="p-1.5 hover:bg-red-500/20 text-red-400 rounded-md">
                         <app-icon name="Trash2" size="14"></app-icon>

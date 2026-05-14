@@ -1,4 +1,5 @@
 import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe, DatePipe, NgFor, TitleCasePipe } from "@angular/common";
+import { CdkDragDrop, moveItemInArray, DragDropModule } from "@angular/cdk/drag-drop";
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -46,7 +47,7 @@ interface LandingPageData {
 @Component({
   selector: "app-custom-landing-page",
   standalone: true,
-  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe, DatePipe, NgFor, QuickAddModalComponent, NgIf, TitleCasePipe],
+  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe, DatePipe, NgFor, QuickAddModalComponent, NgIf, TitleCasePipe, DragDropModule],
   templateUrl: "./custom-landing-page.component.html",
   styleUrl: "./custom-landing-page.component.css"
 })
@@ -629,6 +630,10 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     } else if (direction === 'down' && index < this.sections.length - 1) {
       [this.sections[index], this.sections[index+1]] = [this.sections[index+1], this.sections[index]];
     }
+  }
+
+  drop(event: CdkDragDrop<LandingSection[]>): void {
+    moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
   }
 
   toggleVisibility(index: number): void { this.sections[index].visible = !this.sections[index].visible; }
