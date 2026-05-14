@@ -644,7 +644,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       'countdown': '⏱ Countdown Bar',
       'hero': '🎯 Hero / Offer',
       'product-hero': '🛍 Product Hero',
-      'ad-banners': '🖼 Ad Banners',
       'discount-cta': '💚 Discount CTA',
       'info-banner': '🟡 Info Banner',
       'product-details': 'ℹ️ Product Details',

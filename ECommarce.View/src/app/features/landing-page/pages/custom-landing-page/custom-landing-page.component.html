@@ -236,7 +236,7 @@
               </button>
               <div class="hidden group-hover:block absolute bottom-full left-0 right-0 bg-[#222] border border-white/10 shadow-2xl z-50 overflow-hidden rounded-lg mb-2">
                 <div class="max-h-64 overflow-y-auto custom-scrollbar">
-                  @for (type of ['countdown', 'hero', 'product-hero', 'ad-banners', 'discount-cta', 'info-banner', 'product-details', 'trust-banner', 'reviews', 'product-select', 'order-form']; track type) {
+                  @for (type of ['countdown', 'hero', 'product-hero', 'discount-cta', 'info-banner', 'product-details', 'trust-banner', 'reviews', 'product-select', 'order-form']; track type) {
                     <button (click)="addSection(type)" class="w-full text-left px-4 py-2.5 text-white/60 hover:bg-[#3B4FD8] hover:text-white transition-all border-b border-white/5 last:border-0 text-sm">
                       {{ type.replace('-', ' ') | titlecase }}
                     </button>
@@ -364,35 +364,6 @@
                   </section>
                 }
 
-                <!-- MODULE 4: Ad Banner / Social Proof -->
-                @case ('ad-banners') {
-                  <section class="section-padding bg-[#F5F5F5]">
-                    <div class="max-w-[1200px] mx-auto">
-                      <h2 class="text-center mb-12">আমাদের প্রতি গ্রাহকের আস্থা</h2>
-                      
-                      <!-- Desktop Grid -->
-                      <div class="hidden md:grid grid-cols-4 gap-6">
-                        @for (i of [1,2,3,4]; track i) {
-                          <div class="bg-white rounded-[12px] overflow-hidden shadow-sm hover:shadow-xl transition-shadow cursor-pointer">
-                            <img src="https://placehold.co/400x500?text=Customer+Proof" class="w-full h-full object-cover">
-                          </div>
-                        }
-                      </div>
-
-                      <!-- Mobile Carousel (simplified) -->
-                      <div class="md:hidden relative group overflow-hidden rounded-[12px]">
-                        <div class="flex transition-transform duration-500">
-                          <img src="https://placehold.co/600x800?text=Happy+Customer" class="w-full flex-shrink-0">
-                        </div>
-                        <!-- Indicators -->
-                        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-                          <div class="w-2 h-2 rounded-full bg-black/20"></div>
-                          <div class="w-2 h-2 rounded-full bg-black"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-                }
 
                 <!-- MODULE 5: Discount CTA -->
                 @case ('discount-cta') {
