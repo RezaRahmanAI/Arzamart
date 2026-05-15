@@ -137,17 +137,37 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
 
   relatedProducts$ = this.product$.pipe(
     switchMap((product) => {
+      // Extract code from name (e.g., "KPLZ01" from "KPLZ01 Black Wash")
+      const nameParts = (product.name || "").trim().split(" ");
+      const nameCode = (nameParts.length > 0 && nameParts[0].length >= 3) ? nameParts[0] : null;
+
+      // 1. If we have a code, search by code (broadest match for same-style items)
+      if (nameCode) {
+        return this.productService
+          .getRelatedProducts(undefined, undefined, undefined, 12, nameCode)
+          .pipe(
+            map((res) => res.data.filter((p) => p.id !== product.id))
+          );
+      }
+      
+      // 2. Fallback to Product Group (manual link)
       if (product.productGroupId) {
         return this.productService
           .getRelatedProducts(undefined, undefined, product.productGroupId, 12)
           .pipe(
             map((res) => res.data.filter((p) => p.id !== product.id))
           );
-      } else if (product.collectionId) {
+      } 
+      
+      // 3. Fallback to Collection
+      if (product.collectionId) {
         return this.productService
           .getRelatedProducts(product.collectionId, undefined, undefined, 4)
           .pipe(map((res) => res.data));
-      } else if (product.categoryId) {
+      } 
+      
+      // 4. Fallback to Category
+      if (product.categoryId) {
         return this.productService
           .getRelatedProducts(undefined, product.categoryId, undefined, 4)
           .pipe(map((res) => res.data));

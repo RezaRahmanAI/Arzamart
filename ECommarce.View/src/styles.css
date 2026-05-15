@@ -79,7 +79,7 @@
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 15px; /* Reduced from 16px */
   }
 
   /* Universal Enforcement: Target EVERY element in EVERY corner */
@@ -92,7 +92,7 @@
     font-family: "Montserrat", sans-serif !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    letter-spacing: normal !important;
+    letter-spacing: -0.01em !important;
     word-spacing: normal !important;
     font-style: normal;
     text-transform: none;
@@ -109,7 +109,7 @@
   
   h1 {
     font-family: 'Montserrat', sans-serif !important;
-    font-size: 48px;
+    font-size: clamp(28px, 4vw, 38px);
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.02em;
@@ -118,7 +118,7 @@
 
   h2 {
     font-family: 'Montserrat', sans-serif !important;
-    font-size: 36px;
+    font-size: clamp(22px, 3vw, 30px);
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: -0.02em;
@@ -127,7 +127,7 @@
 
   h3 {
     font-family: 'Montserrat', sans-serif !important;
-    font-size: 24px;
+    font-size: clamp(18px, 2.5vw, 22px);
     font-weight: 600;
     line-height: 1.3;
     margin-bottom: 0.5em;
@@ -135,16 +135,16 @@
 
   h4 {
     font-family: 'Montserrat', sans-serif !important;
-    font-size: 20px;
+    font-size: clamp(16px, 2vw, 18px);
     font-weight: 600;
     line-height: 1.4;
   }
 
   p {
     font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
-    line-height: 18.4px;
+    line-height: 1.6;
     letter-spacing: normal;
     font-style: normal;
     text-transform: none;
@@ -154,9 +154,9 @@
 
   a {
     font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
-    line-height: 18.4px;
+    line-height: 1.6;
     letter-spacing: normal;
     font-style: normal;
     text-transform: none;
@@ -168,9 +168,9 @@
   /* Global Button Aesthetics */
   button, .btn {
     font-family: 'Montserrat', sans-serif !important;
-    font-size: 17.6px;
+    font-size: 15px;
     font-weight: 600;
-    line-height: 20.24px;
+    line-height: normal;
     letter-spacing: normal;
     font-style: normal;
     text-transform: none;
@@ -181,8 +181,8 @@
 
   li {
     font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 500;
     line-height: normal;
     letter-spacing: normal;
     font-style: normal;
@@ -191,8 +191,8 @@
 
   span {
     font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 500;
     line-height: normal;
     letter-spacing: normal;
     font-style: normal;
@@ -201,7 +201,7 @@
 
   label {
     font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     line-height: normal;
     letter-spacing: normal;
@@ -211,9 +211,9 @@
 
   input, textarea, select {
     font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
-    line-height: 18.4px;
+    line-height: normal;
     letter-spacing: normal;
     font-style: normal;
     text-transform: none;

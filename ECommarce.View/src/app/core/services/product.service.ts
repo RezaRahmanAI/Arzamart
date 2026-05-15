@@ -112,6 +112,7 @@ export class ProductService {
     categoryId?: number,
     productGroupId?: number,
     limit = 4,
+    searchTerm?: string,
     context?: HttpContext,
   ): Observable<Pagination<Product>> {
     const params: any = { pageSize: limit };
@@ -122,6 +123,11 @@ export class ProductService {
     } else if (categoryId) {
       params.categoryId = categoryId;
     }
+
+    if (searchTerm) {
+      params.searchTerm = searchTerm;
+    }
+    
     return this.api.get<Pagination<Product>>(this.baseUrl, { params, context });
   }
 

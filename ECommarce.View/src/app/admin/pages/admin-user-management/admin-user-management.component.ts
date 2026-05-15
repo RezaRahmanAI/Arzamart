@@ -26,10 +26,10 @@ export class AdminUserManagementComponent implements OnInit {
   isCreatePasswordVisible = false;
   isEditPasswordVisible = false;
   
-createForm = this.fb.nonNullable.group({
+  createForm = this.fb.nonNullable.group({
     fullName: ["", [Validators.required]],
-    email: [""],
-    userName: ["", [Validators.required]],
+    email: ["", [Validators.pattern(/^[^A-Z]+$/)]],
+    userName: ["", [Validators.required, Validators.pattern(/^[a-z0-9]+$/)]],
     password: ["", [Validators.required, Validators.minLength(6)]],
     role: ["Staff" as "Admin" | "SuperAdmin" | "Staff", [Validators.required]]
   });
@@ -54,10 +54,10 @@ createForm = this.fb.nonNullable.group({
 
   isEditModalOpen = false;
   editingAdmin: AdminUser | null = null;
-editForm = this.fb.nonNullable.group({
+  editForm = this.fb.nonNullable.group({
     fullName: ["", [Validators.required]],
-    email: [""],
-    userName: ["", [Validators.required]],
+    email: ["", [Validators.pattern(/^[^A-Z]+$/)]],
+    userName: ["", [Validators.required, Validators.pattern(/^[a-z0-9]+$/)]],
     password: [""],
     role: ["Staff" as "Admin" | "SuperAdmin" | "Staff", [Validators.required]]
   });

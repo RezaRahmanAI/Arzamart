@@ -34,6 +34,8 @@ export class CartService {
   private shippingCharge = 0;
   private readonly taxRate = 0;
   private readonly sessionIdKey = "cart_session_id";
+  private readonly sessionTimeKey = "cart_session_timestamp";
+  private readonly sessionExpiryDays = 7;
   private readonly apiUrl = `/Cart`;
 
   private readonly settingsService = inject(SettingsService);
@@ -101,18 +103,38 @@ export class CartService {
 
   getSessionId(): string {
     let sessionId = localStorage.getItem(this.sessionIdKey);
-    // Explicitly reject invalid strings that might be stored accidentally
+    const sessionTimestamp = localStorage.getItem(this.sessionTimeKey);
+    const now = Date.now();
+    const expiryMs = this.sessionExpiryDays * 24 * 60 * 60 * 1000;
+
+    let isExpired = false;
+    if (sessionTimestamp) {
+      const startTime = parseInt(sessionTimestamp, 10);
+      if (isNaN(startTime) || now - startTime > expiryMs) {
+        isExpired = true;
+      }
+    }
+
     if (
       !sessionId ||
       sessionId === "null" ||
       sessionId === "undefined" ||
-      sessionId.trim() === "" ||
-      sessionId.length < 10
+      sessionId.length < 10 ||
+      isExpired
     ) {
       sessionId = uuidv4();
-      localStorage.setItem(this.sessionIdKey, sessionId);
+      this.saveSessionId(sessionId);
+    } else {
+      // Refresh timestamp on every active session access to extend life if active
+      localStorage.setItem(this.sessionTimeKey, now.toString());
     }
+
     return sessionId;
+  }
+
+  private saveSessionId(id: string): void {
+    localStorage.setItem(this.sessionIdKey, id);
+    localStorage.setItem(this.sessionTimeKey, Date.now().toString());
   }
 
   private get options() {

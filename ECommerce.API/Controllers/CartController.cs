@@ -206,6 +206,9 @@ public class CartController : ControllerBase
         var userId = GetUserId();
         var sessionId = GetSessionId();
 
+        _logger.LogInformation("Cart access request - User: {UserId}, Session: {SessionId}", 
+            userId ?? "Anonymous", sessionId ?? "None");
+
         Cart? cart = null;
 
         if (!string.IsNullOrEmpty(userId))
@@ -223,7 +226,12 @@ public class CartController : ControllerBase
             if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(finalSessionId))
             {
                 finalSessionId = Guid.NewGuid().ToString();
+                _logger.LogInformation("Generating new session ID: {SessionId}", finalSessionId);
             }
+
+            _logger.LogInformation("Creating new cart for {Type}: {Id}", 
+                !string.IsNullOrEmpty(userId) ? "User" : "Session", 
+                userId ?? finalSessionId);
 
             cart = new Cart
             {

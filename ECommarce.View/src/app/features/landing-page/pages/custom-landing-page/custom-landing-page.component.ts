@@ -109,11 +109,23 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   data: LandingPageData | null = null;
   relatedProducts: Product[] = [];
+  currentProduct: Product | null = null;
   productReviews: Review[] = [];
   deliveryMethods: DeliveryMethod[] = [];
   isLoading = true;
   isOrdering = false;
   watchingCount: number = Math.floor(Math.random() * (45 - 15 + 1) + 15);
+
+  switchProduct(product: Product): void {
+    this.currentProduct = product;
+    this.selectedImage = product.imageUrl || "";
+    
+    // Update size if needed
+    if (product.variants?.length > 0) {
+      const defaultVariant = product.variants.find(v => v.isDefault) || product.variants[0];
+      this.orderForm.patchValue({ selectedSize: defaultVariant.size || "" });
+    }
+  }
 
   get processedMarqueeText(): string {
     if (!this.data?.config?.marqueeText) return "";
@@ -327,6 +339,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     ]).subscribe({
       next: ([res, methods]) => {
         this.data = res;
+        this.currentProduct = res.product;
+        this.selectedImage = res.product?.imageUrl || "";
         this.deliveryMethods = methods;
         this.isLoading = false;
         if (res.config?.sectionsJson) {
@@ -359,15 +373,27 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
           });
         }
 
-        if (res.product?.categoryId) {
-          this.productService.getRelatedProducts(undefined, res.product.categoryId, 6)
-            .subscribe({
-              next: (related) => {
-                this.selectedImage = res.product.imageUrl || "";
-                this.relatedProducts = related.data.filter(p => p.id !== res.product.id);
-                this.startAutoSlide();
-              }
-            });
+        if (res.product) {
+          const nameParts = (res.product.name || "").trim().split(" ");
+          const nameCode = (nameParts.length > 0 && nameParts[0].length >= 3) ? nameParts[0] : undefined;
+
+          // If we have a code, use it for broad matching, otherwise fallback to standard group/category
+          const pGroupId = nameCode ? undefined : (res.product.productGroupId || undefined);
+          const cId = nameCode ? undefined : (res.product.categoryId || undefined);
+
+          this.productService.getRelatedProducts(
+            undefined, 
+            cId, 
+            pGroupId, 
+            6,
+            nameCode
+          ).subscribe({
+            next: (related) => {
+              this.selectedImage = res.product.imageUrl || "";
+              this.relatedProducts = related.data.filter(p => p.id !== res.product.id);
+              this.startAutoSlide();
+            }
+          });
         }
       },
       error: () => this.isLoading = false
@@ -420,24 +446,24 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   get selectedVariantPrice(): number {
     const selectedSize = this.orderForm.get("selectedSize")?.value;
-    const variant = this.data?.product?.variants?.find(v => v.size === selectedSize);
-    return variant?.price || this.data?.config?.promoPrice || this.data?.product?.price || 0;
+    const variant = this.currentProduct?.variants?.find(v => v.size === selectedSize);
+    return variant?.price || (this.currentProduct === this.data?.product ? this.data?.config?.promoPrice : 0) || this.currentProduct?.price || 0;
   }
 
   get selectedVariantStock(): number {
     const selectedSize = this.orderForm.get("selectedSize")?.value;
     if (selectedSize) {
-      const variant = this.data?.product?.variants?.find(v => v.size === selectedSize);
+      const variant = this.currentProduct?.variants?.find(v => v.size === selectedSize);
       return variant?.stockQuantity || 0;
     }
-    return this.data?.product?.variants?.reduce((sum, v) => sum + v.stockQuantity, 0) || this.data?.product?.stockQuantity || 0;
+    return this.currentProduct?.variants?.reduce((sum, v) => sum + v.stockQuantity, 0) || this.currentProduct?.stockQuantity || 0;
   }
 
   get selectedVariantDiscountAmount(): number {
     const selectedSize = this.orderForm.get("selectedSize")?.value;
-    const variant = this.data?.product?.variants?.find(v => v.size === selectedSize);
+    const variant = this.currentProduct?.variants?.find(v => v.size === selectedSize);
     const price = this.selectedVariantPrice;
-    const comparePrice = variant?.compareAtPrice || this.data?.config?.originalPrice || this.data?.product?.compareAtPrice || 0;
+    const comparePrice = variant?.compareAtPrice || (this.currentProduct === this.data?.product ? this.data?.config?.originalPrice : 0) || this.currentProduct?.compareAtPrice || 0;
     return comparePrice > price ? (comparePrice - price) : 0;
   }
 
@@ -459,18 +485,18 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   get uniqueSizes(): string[] {
-    if (!this.data?.product?.variants) return [];
-    return Array.from(new Set(this.data.product.variants.map(v => v.size).filter(Boolean))) as string[];
+    if (!this.currentProduct?.variants) return [];
+    return Array.from(new Set(this.currentProduct.variants.map(v => v.size).filter(Boolean))) as string[];
   }
 
   onSubmit(): void {
-    if (this.orderForm.invalid || !this.data) {
+    if (this.orderForm.invalid || !this.data || !this.currentProduct) {
       this.orderForm.markAllAsTouched();
       return;
     }
     this.isOrdering = true;
     const form = this.orderForm.getRawValue();
-    const product = this.data.product;
+    const product = this.currentProduct;
     const method = this.selectedDeliveryMethod;
     const cartItem: CartItem = {
       id: "clp-" + Date.now(),
