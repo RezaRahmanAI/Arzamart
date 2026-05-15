@@ -265,7 +265,7 @@
                       <img [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" class="w-full h-full object-cover transition-all duration-base">
                     </div>
                     <div class="flex-1 min-w-0 space-y-ds-1">
-                      <p class="text-ds-text truncate">{{ item.name }}</p>
+                      <p class="text-ds-text">{{ item.name }}</p>
                       <p class="text-ds-text-sec">QTY: {{ item.quantity }} • SIZE: {{ item.size }}</p>
                       <app-price-display [amount]="item.price * item.quantity" size="sm" className="mt-2 text-ds-text"></app-price-display>
                     </div>

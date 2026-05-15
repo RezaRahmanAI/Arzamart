@@ -114,8 +114,6 @@ export class AdminProductFormComponent {
   dynamicSizes: string[] = [];
   allAvailableSizes: string[] = [...this.standardSizes];
 
-  // No longer using complex ratings/meta objects in the new DTO
-
   mediaError = "";
   private mediaFileMap = new Map<string, File>();
 
@@ -173,9 +171,6 @@ export class AdminProductFormComponent {
     this.form.get("productType")?.valueChanges.subscribe((type) => {
       const typeNum = Number(type);
       if (typeNum === ProductType.Combo && this.comboItemsArray.length === 0) {
-        // In the new UI, we don't necessarily want to add items automatically, 
-        // as the user will search and add. But we can leave it empty or add one.
-        // The user specifically wants to search and select.
       }
     });
   }
@@ -187,7 +182,6 @@ export class AdminProductFormComponent {
   private loadInitialData(): void {
     this.isLoading = true;
     
-    // Load categories and subcategories
     combineLatest([
       this.categoriesService.getAll(),
       this.subCategoriesService.getAll(),
@@ -198,8 +192,6 @@ export class AdminProductFormComponent {
         this.subCategories = subCategories;
         this.productGroups = groups;
         this.loadAvailableSizes();
-        
-        // Return paramMap to handle route changes (component reuse)
         return this.route.paramMap;
       })
     ).subscribe({
@@ -222,7 +214,7 @@ export class AdminProductFormComponent {
       error: (err) => {
         console.error("Error loading initial data:", err);
         this.isLoading = false;
-        this.notification.error("Failed to load categories.");
+        this.notification.error("Failed to load initial data.");
       }
     });
   }
@@ -235,10 +227,7 @@ export class AdminProductFormComponent {
     this.isLoading = false;
   }
 
-
-
   loadCategories(): void {
-    // Legacy - keeping for compatibility if called elsewhere, but we use pipe in ngOnInit
     this.categoriesService.getAll().subscribe((categories) => {
       this.categories = categories;
       this.loadAvailableSizes();
@@ -256,7 +245,23 @@ export class AdminProductFormComponent {
     });
   }
 
+  getFilteredSizes(): string[] {
+    const productType = this.form.get("productType")?.value;
+    if (Number(productType) !== ProductType.Combo || this.comboItemsArray.length === 0) {
+      return this.allAvailableSizes;
+    }
 
+    const allSizes = new Set<string>();
+    this.comboItemsArray.controls.forEach((control) => {
+      const productId = control.get('productId')?.value;
+      const variants = this.comboItemVariantsMap.get(productId) || [];
+      variants.forEach((v: any) => {
+        if (v.size) allSizes.add(v.size);
+      });
+    });
+
+    return allSizes.size > 0 ? Array.from(allSizes).sort() : this.allAvailableSizes;
+  }
 
   setupCascadingSelects(): void {
     this.form.get("category")?.valueChanges.subscribe((categoryId) => {
@@ -270,14 +275,10 @@ export class AdminProductFormComponent {
         return;
       }
 
-      // Filter subcategories based on parent category
       this.filteredSubCategories = this.subCategories.filter(
         (sc) => String(sc.categoryId) === String(categoryId),
       );
 
-      // Clear downstream if user manually changed it (not programmatic patch)
-      // We can distinguish via options or just always clear if value doesn't match?
-      // For now, simpler: if the current subCategory value is not in the new list, clear it.
       const currentSubId = this.form.get("subCategory")?.value;
       const exists = this.filteredSubCategories.find(
         (sc) => String(sc.id) === String(currentSubId),
@@ -327,12 +328,9 @@ export class AdminProductFormComponent {
     return media.get('url')?.value || '';
   }
 
-  // Media Management
   get mediaItemsArray(): FormArray {
     return this.form.get("mediaItems") as FormArray;
   }
-
-
 
   get sizesArray(): FormArray {
     return this.form.get("variants.sizes") as FormArray;
@@ -342,21 +340,15 @@ export class AdminProductFormComponent {
     return this.form.get("comboItems") as FormArray;
   }
 
-
-
   loadProduct(productId: number): void {
     this.isLoading = true;
     this.productsService
       .getProductById(productId)
       .subscribe({
         next: (product: AdminProduct) => {
-          console.log("Admin Product Edit - Full Product Response:", product);
-          
-          // CRITICAL: Clear existing arrays before repopulating
           this.mediaItemsArray.clear();
           this.mediaFileMap.clear();
           this.sizesArray.clear();
-        // Pre-fill filtered lists based on product data BEFORE patching
         if (product.categoryId) {
           this.filteredSubCategories = this.subCategories.filter(
             (sc) => String(sc.categoryId) === String(product.categoryId),
@@ -394,7 +386,6 @@ export class AdminProductFormComponent {
           productGroupId: product.productGroupId ?? (product as any).ProductGroupId ?? null,
         });
 
-        // 1.5 Combo Items
         this.comboItemsArray.clear();
         const comboItems = product.comboItems || (product as any).ComboItems || [];
         const totalBundleSize = product.bundleSize || comboItems.reduce((acc: number, item: any) => acc + (item.quantity || 0), 0);
@@ -415,7 +406,6 @@ export class AdminProductFormComponent {
           });
         }
 
-        // 2. Sizes from Variants
         this.sizesArray.clear();
         const variants = (product as any).variants || (product as any).Variants || [];
 
@@ -447,8 +437,6 @@ export class AdminProductFormComponent {
           this.sizesArray.push(this.createSizeGroup(true));
         }
 
-        // 3. Load Media
-        // Load existing media with details
         if ((product as any).images && (product as any).images.length > 0) {
           (product as any).images.forEach((img: any, index: number) => {
             this.addMediaItem({
@@ -461,7 +449,6 @@ export class AdminProductFormComponent {
             });
           });
         } else if (product.images && product.images.length > 0) {
-          // Fallback for legacy (if any) or if typed as ProductImage[]
           product.images.forEach((img, index) => {
             this.addMediaItem({
               url: img.imageUrl,
@@ -483,15 +470,6 @@ export class AdminProductFormComponent {
           });
         }
 
-        // Load colors (from Images or previously saved structure if we supported it)
-        // In new backend: Colors come from Images metadata or we can infer them?
-        // Actually, the new backend 'GetProductById' returns 'Variants.Colors' as a list of names!
-        // We should use that.
-
-        // We removed the legacy 'else if' block because 'backendVariants' in GetProductById
-        // is now ALWAYS an object (ProductVariantsDto), never an array of entities.
-
-        // Load meta
         this.form.patchValue({
           meta: {
             fabricAndCare:
@@ -599,7 +577,7 @@ export class AdminProductFormComponent {
   }
 
   setSelectedSize(index: number): void {
-    this.ensureSingleSelected(this.sizesArray, "selected", index);
+    this.ensureSingleSelected(this.sizesArray, "isMain", index);
   }
 
   handleFilesSelected(event: Event): void {
@@ -717,7 +695,6 @@ export class AdminProductFormComponent {
       fullText.substring(0, start) + replacement + fullText.substring(end);
     this.form.patchValue({ description: newValue });
 
-    // Restore focus and selection
     setTimeout(() => {
       textarea.focus();
       textarea.setSelectionRange(
@@ -726,8 +703,6 @@ export class AdminProductFormComponent {
       );
     }, 0);
   }
-
-
 
   toggleSizeDropdown(index: number, event: Event): void {
     event.stopPropagation();
@@ -744,25 +719,20 @@ export class AdminProductFormComponent {
   }
 
   onDocumentClick(event: MouseEvent): void {
-    // If click happens outside the dropdown (or we just close it on any document click since toggle stops propagation)
     this.openSizeDropdownIndex = null;
   }
 
   saveProduct(): void {
     if (this.isSubmitting) return;
 
-    console.log("=== Save Product Started ===");
     this.mediaError = "";
 
     if (this.mediaItemsArray.length === 0) {
       this.mediaError = "Add at least one image or video for the product.";
-      console.error("Validation failed: No media items");
     }
 
     if (this.form.invalid || this.mediaItemsArray.length === 0) {
       this.form.markAllAsTouched();
-
-      // Log detailed validation errors
       const errorMessages: string[] = [];
       Object.keys(this.form.controls).forEach((key) => {
         const control = this.form.get(key);
@@ -773,31 +743,25 @@ export class AdminProductFormComponent {
         }
       });
 
-
       this.notification.error(`Form has errors:\n${errorMessages.join("\n")}`);
       return;
     }
 
     const files = this.getSelectedFiles();
-    console.log("Files to upload:", files.length);
 
     this.isSubmitting = true;
     this.productsService
       .uploadProductMedia(files)
       .pipe(
         switchMap((mediaUrls) => {
-          console.log("Media uploaded successfully:", mediaUrls);
           const payload = this.buildPayload(mediaUrls);
 
-          // Use update or create based on mode
           if (this.isEditMode && this.productId !== null) {
-            console.log("Updating product with payload:", payload);
             return this.productsService.updateProduct(
               this.productId,
               payload as any,
             );
           } else {
-            console.log("Creating product with payload:", payload);
             return this.productsService.createProduct(payload as any);
           }
         }),
@@ -806,7 +770,6 @@ export class AdminProductFormComponent {
         next: (product) => {
           this.isSubmitting = false;
           const action = this.isEditMode ? "updated" : "created";
-          console.log(`Product ${action} successfully:`, product);
           this.refreshAllData();
           this.notification.success(`Product ${action} successfully.`);
           void this.router.navigate(["/admin/products"]);
@@ -814,7 +777,6 @@ export class AdminProductFormComponent {
         error: (error) => {
           this.isSubmitting = false;
           const action = this.isEditMode ? "update" : "create";
-          console.error(`Error ${action}ing product:`, error);
           const errorMessage =
             error?.error?.message ||
             error?.message ||
@@ -827,8 +789,6 @@ export class AdminProductFormComponent {
   trackByIndex(index: number): number {
     return index;
   }
-
-
 
   private createSizeGroup(selected: boolean): AbstractControl {
     return this.formBuilder.group({
@@ -852,8 +812,6 @@ export class AdminProductFormComponent {
       source: [item.source],
     });
   }
-
-
 
   private addFiles(files: File[]): void {
     files.forEach((file) => {
@@ -927,7 +885,6 @@ export class AdminProductFormComponent {
   private buildPayload(uploadedUrls: string[]): ProductCreatePayload {
     const raw = this.form.getRawValue();
 
-    // 1. Handle Media (Main + Thumbnails)
     const mediaItems = this.buildMediaItems(uploadedUrls);
     const mainImageItem = mediaItems.find((i) => i.isMain) || mediaItems[0];
     const thumbnailItems = mediaItems.filter((i) => i !== mainImageItem);
@@ -946,7 +903,6 @@ export class AdminProductFormComponent {
       alt: item.alt,
     }));
 
-    // 2. Handle Variants (Definitions)
     const rawSizes = this.sizesArray.getRawValue();
 
     const sizes = rawSizes.map((s: any) => ({
@@ -961,15 +917,9 @@ export class AdminProductFormComponent {
       selected: true,
     }));
 
-    // 3. Handle Inventory Variants (Specific SKUs)
-    // NOW: Size-based only. No cross-multiplication with colors.
     const inventoryVariants: any[] = [];
 
-    // We only care about sizes for stock. Colors are just tags.
     rawSizes.forEach((s: any) => {
-      // If no size label, skip? Or allow empty size for "One Size"?
-      // Let's assume label is required or defaults to "One Size" if empty?
-      // For now, take label as is.
       const sizeLabel = s.label || "One Size";
 
       inventoryVariants.push({
@@ -988,12 +938,10 @@ export class AdminProductFormComponent {
       });
     });
 
-    // 4. Resolve Category Name
     const categoryObj = this.categories.find(
       (c) => String(c.id) === String(raw.category),
     );
 
-    // 5. Derive product-level price from first (default) size variant
     const firstSize = rawSizes[0];
     const productPrice = firstSize ? Number(firstSize.price || 0) : 0;
     const productSalePrice =
@@ -1009,7 +957,7 @@ export class AdminProductFormComponent {
       description: raw.description ?? "",
       shortDescription: raw.shortDescription ?? "",
       statusActive: Boolean(raw.statusActive),
-      category: categoryObj?.name || "", // Send Name, not ID
+      category: categoryObj?.name || "", 
       gender: raw.gender ?? "women",
       price: productPrice,
       salePrice: productSalePrice,
@@ -1050,9 +998,6 @@ export class AdminProductFormComponent {
       bundleSize: Number(raw.bundleSize || 0),
       productGroupId: raw.productGroupId ? Number(raw.productGroupId) : null,
     };
-    // but we want to match backend DTO structure primarily.
-    // Actually the interface is updated, so it should be fine.
-    // Removing 'as any' if possible to verify type safety.
   }
 
   private buildMediaItems(uploadedUrls: string[]): MediaFormValue[] {
@@ -1119,8 +1064,6 @@ export class AdminProductFormComponent {
     this.mediaItemsArray.clear();
     this.mediaFileMap.clear();
 
-
-
     while (this.sizesArray.length > 1) {
       this.sizesArray.removeAt(0, { emitEvent: false });
     }
@@ -1142,9 +1085,7 @@ export class AdminProductFormComponent {
   }
 
   private refreshAllData(): void {
-    // Notify all services that data has changed to clear caches
     this.publicProductService.refreshData();
     this.publicBannerService.refresh();
   }
 }
-

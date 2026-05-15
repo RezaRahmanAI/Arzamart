@@ -105,9 +105,9 @@ export class ProductGalleryComponent implements OnInit {
       filterParams.subCategorySlug = subCategorySlug || slug;
       this.title = (subCategorySlug || slug).replace(/-/g, " ");
     } else if (this.route.snapshot.url[0]?.path === "offers") {
-      filterParams.isFeatured = true;
+      filterParams.productType = 1; // Combo
       this.isOffersPage = true;
-      this.title = "Offer Products";
+      this.title = "Combo Offer";
     } else if (
       collectionSlug ||
       (this.route.snapshot.url[0]?.path === "collection" && slug)

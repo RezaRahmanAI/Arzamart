@@ -38,6 +38,14 @@ export const appRoutes: Routes = [
         (m) => m.AccessoriesPageComponent,
       ),
   },
+  {
+    path: "offers",
+    loadComponent: () =>
+      import("./features/products/pages/product-gallery/product-gallery.component").then(
+        (m) => m.ProductGalleryComponent,
+      ),
+    title: "Combo Offers",
+  },
 
   { path: "products", redirectTo: "women", pathMatch: "full" },
   {

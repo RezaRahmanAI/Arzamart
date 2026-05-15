@@ -316,7 +316,7 @@
                     class="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-ds-surface border border-ds-border rounded-sm shadow-2xl py-1 animate-in fade-in slide-in-from-top-1 duration-base"
                   >
                     <div
-                      *ngFor="let sz of allAvailableSizes"
+                      *ngFor="let sz of getFilteredSizes()"
                       (click)="selectSize(sizeIndex, sz, $event)"
                       class="px-ds-4 py-ds-2 text-ds-text-muted hover:text-ds-text hover:bg-ds-bg cursor-pointer flex justify-between items-center transition-colors"
                     >

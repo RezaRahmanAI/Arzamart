@@ -4,7 +4,7 @@ namespace ECommerce.Core.Specifications;
 
 public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
 {
-    public ProductsWithCategoriesSpecification(string? sort, int? categoryId, int? subCategoryId, int? collectionId, string? categorySlug, string? subCategorySlug, string? collectionSlug, string? search, string? tier, string? tags, bool? isNew = null, bool? isFeatured = null, int? skip = null, int? take = null, int? productGroupId = null)
+    public ProductsWithCategoriesSpecification(string? sort, int? categoryId, int? subCategoryId, int? collectionId, string? categorySlug, string? subCategorySlug, string? collectionSlug, string? search, string? tier, string? tags, bool? isNew = null, bool? isFeatured = null, int? skip = null, int? take = null, int? productGroupId = null, int? productType = null)
         : base(x => 
             (x.IsActive) &&
             (string.IsNullOrEmpty(search) || x.Name.ToLower().Contains(search.ToLower()) || (x.Description != null && x.Description.ToLower().Contains(search.ToLower()))) &&
@@ -17,7 +17,8 @@ public class ProductsWithCategoriesSpecification : BaseSpecification<Product>
             (string.IsNullOrEmpty(tags) || (x.Tags != null && x.Tags.ToLower().Contains(tags.ToLower()))) &&
             (!isNew.HasValue || x.IsNew == isNew.Value) &&
             (!isFeatured.HasValue || x.IsFeatured == isFeatured.Value) &&
-            (!productGroupId.HasValue || x.ProductGroupId == productGroupId.Value)
+            (!productGroupId.HasValue || x.ProductGroupId == productGroupId.Value) &&
+            (!productType.HasValue || (int)x.ProductType == productType.Value)
         )
 
     {
