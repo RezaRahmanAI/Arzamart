@@ -542,17 +542,18 @@
                             </div>
 
                             <!-- Size Selection for each product -->
-                            @if (p.variants && p.variants.length > 0) {
+                            @if (getUniqueSizes(p).length > 0) {
                               <div class="mb-6">
                                 <p class="text-[#888] mb-3 text-[10px] uppercase font-bold tracking-widest">Select Size</p>
                                 <div class="flex flex-wrap gap-2">
-                                  @for (variant of p.variants; track variant.id) {
-                                    <button (click)="selectProductSize(p, variant.size || '')"
-                                            class="w-10 h-10 flex items-center justify-center transition-all border text-xs font-bold"
-                                            [style.background]="(getSelectedSize(p) === variant.size) ? '#1E6FD9' : 'transparent'"
-                                            [style.color]="(getSelectedSize(p) === variant.size) ? 'white' : '#1A1A1A'"
-                                            [style.borderColor]="(getSelectedSize(p) === variant.size) ? '#1E6FD9' : '#E0E0E0'">
-                                      {{ variant.size }}
+                                  @for (size of getUniqueSizes(p); track size) {
+                                    <button (click)="selectProductSize(p, size)"
+                                            class="w-10 h-10 flex items-center justify-center transition-all border text-xs font-bold rounded-sm"
+                                            [style.background]="(getSelectedSize(p) === size) ? '#1E6FD9' : 'transparent'"
+                                            [style.color]="(getSelectedSize(p) === size) ? 'white' : '#1A1A1A'"
+                                            [style.borderColor]="(getSelectedSize(p) === size) ? '#1E6FD9' : '#E0E0E0'"
+                                            [style.boxShadow]="(getSelectedSize(p) === size) ? '0 4px 12px rgba(30,111,217,0.2)' : 'none'">
+                                      {{ size }}
                                     </button>
                                   }
                                 </div>

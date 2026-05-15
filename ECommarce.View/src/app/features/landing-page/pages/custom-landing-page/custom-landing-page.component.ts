@@ -24,6 +24,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DestroyRef } from "@angular/core";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { Review } from "../../../../core/models/review";
+import { sortProductSizes } from "../../../../core/constants/product.constants";
 import { ReviewService } from "../../../../core/services/review.service";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
@@ -566,7 +567,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   // Helper for old components that might still use uniqueSizes
   getUniqueSizes(product: Product): string[] {
     if (!product.variants) return [];
-    return Array.from(new Set(product.variants.map((v: any) => v.size).filter(Boolean))) as string[];
+    const sizes = Array.from(new Set(product.variants.map((v: any) => v.size).filter(Boolean))) as string[];
+    return sortProductSizes(sizes);
   }
 
   onSubmit(): void {

@@ -62,6 +62,11 @@ public class CustomLandingPageController : ControllerBase
         // We fetch products from the same category or group as a baseline
         var relatedItems = await _context.Products
             .AsNoTracking()
+            .IgnoreQueryFilters() // Also allow inactive for related suggestions in designer
+            .Include(p => p.Images)
+            .Include(p => p.Variants)
+            .Include(p => p.Category)
+            .Include(p => p.ProductGroup)
             .Where(p => p.Id != product.Id && (p.CategoryId == product.CategoryId || (product.ProductGroupId != null && p.ProductGroupId == product.ProductGroupId)))
             .OrderBy(p => p.IsFeatured ? 0 : 1)
             .ThenByDescending(p => p.CreatedAt)
