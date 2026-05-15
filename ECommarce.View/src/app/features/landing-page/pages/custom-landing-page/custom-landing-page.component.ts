@@ -1,7 +1,7 @@
 import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe, DatePipe, NgFor, TitleCasePipe } from "@angular/common";
 import { CdkDragDrop, moveItemInArray, DragDropModule } from "@angular/cdk/drag-drop";
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../../environments/environment";
@@ -37,17 +37,19 @@ interface LandingSection {
   type: string;
   label: string;
   visible: boolean;
+  settings?: any;
 }
 
 interface LandingPageData {
   product: Product;
   config: CustomLandingPageConfig | null;
+  relatedProducts?: Product[];
 }
 
 @Component({
   selector: "app-custom-landing-page",
   standalone: true,
-  imports: [AsyncPipe, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe, DatePipe, NgFor, QuickAddModalComponent, NgIf, TitleCasePipe, DragDropModule],
+  imports: [AsyncPipe, NgClass, FormsModule, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe, DatePipe, NgFor, QuickAddModalComponent, NgIf, TitleCasePipe, DragDropModule],
   templateUrl: "./custom-landing-page.component.html",
   styleUrl: "./custom-landing-page.component.css"
 })
@@ -80,6 +82,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   isEditorOpen = false;
   isSaving = false;
+  isEditMode = false;
   activeEditorSection: string = 'global';
 
   sharePageLink(): void {
@@ -109,22 +112,82 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   data: LandingPageData | null = null;
   relatedProducts: Product[] = [];
-  currentProduct: Product | null = null;
   productReviews: Review[] = [];
   deliveryMethods: DeliveryMethod[] = [];
   isLoading = true;
   isOrdering = false;
   watchingCount: number = Math.floor(Math.random() * (45 - 15 + 1) + 15);
 
-  switchProduct(product: Product): void {
-    this.currentProduct = product;
-    this.selectedImage = product.imageUrl || "";
-    
-    // Update size if needed
-    if (product.variants?.length > 0) {
-      const defaultVariant = product.variants.find(v => v.isDefault) || product.variants[0];
-      this.orderForm.patchValue({ selectedSize: defaultVariant.size || "" });
+  // Custom Selection for Editor
+  allProducts: Product[] = [];
+  defaultRelatedProducts: Product[] = []; // Pool of related products for easy selection
+  productSearchTerm = "";
+  isProductSelectionLoading = false;
+
+  productSelections: { [id: number]: { quantity: number; selectedSize: string; product: Product } } = {};
+  showDetailsModal = false;
+  selectedProductForDetails: Product | null = null;
+
+  isProductSelected(product: Product): boolean {
+    return (this.productSelections[product.id]?.quantity ?? 0) > 0;
+  }
+
+  getProductQuantity(product: Product): number {
+    return this.productSelections[product.id]?.quantity ?? 0;
+  }
+
+  getSelectedSize(product: Product): string {
+    return this.productSelections[product.id]?.selectedSize ?? "";
+  }
+
+  private updateSelections(product: Product, quantity: number, size?: string): void {
+    if (!this.productSelections[product.id]) {
+      this.productSelections[product.id] = {
+        quantity: 0,
+        selectedSize: size || (product.variants?.[0]?.size || ""),
+        product: product
+      };
     }
+    
+    if (size !== undefined) {
+      this.productSelections[product.id].selectedSize = size;
+    }
+    
+    this.productSelections[product.id].quantity = quantity;
+  }
+
+  get selectedProductList() {
+    return Object.values(this.productSelections).filter(s => s.quantity > 0);
+  }
+
+  openProductDetails(product: Product): void {
+    this.selectedProductForDetails = product;
+    this.showDetailsModal = true;
+  }
+
+  onModalConfirm(selection: { size?: string; quantity: number }): void {
+    if (this.selectedProductForDetails) {
+      this.updateSelections(this.selectedProductForDetails, selection.quantity, selection.size);
+    }
+    this.showDetailsModal = false;
+  }
+
+  updateProductQuantity(product: Product, delta: number): void {
+    const current = this.productSelections[product.id]?.quantity || 0;
+    const newQty = Math.max(0, current + delta);
+    this.updateSelections(product, newQty);
+  }
+
+  selectProductSize(product: Product, size: string): void {
+    this.updateSelections(product, this.productSelections[product.id]?.quantity || 0, size);
+  }
+
+  switchProduct(product: Product): void {
+    // Legacy support for older sections if needed, but primarily we use updateSelections now
+    if (this.productSelections[product.id]?.quantity === 0) {
+      this.updateSelections(product, 1);
+    }
+    this.selectedImage = product.imageUrl || "";
   }
 
   get processedMarqueeText(): string {
@@ -222,6 +285,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         const qSize = queryParams.get('qSize');
         const qQty = queryParams.get('qQty');
         const shouldEdit = queryParams.get('edit') === 'true';
+        this.isEditMode = shouldEdit;
 
         if (qSize) this.orderForm.patchValue({ selectedSize: qSize });
         if (qQty) this.orderForm.patchValue({ quantity: parseInt(qQty, 10) || 1 });
@@ -339,14 +403,46 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     ]).subscribe({
       next: ([res, methods]) => {
         this.data = res;
-        this.currentProduct = res.product;
         this.selectedImage = res.product?.imageUrl || "";
         this.deliveryMethods = methods;
         this.isLoading = false;
+        
+        // Initialize main product selection
+        if (res.product) {
+          this.updateSelections(res.product, 1);
+          if (res.product.variants?.length > 0) {
+            const defaultVariant = res.product.variants.find(v => v.isDefault) || res.product.variants[0];
+            this.updateSelections(res.product, 1, defaultVariant.size || "");
+          }
+        }
+
         if (res.config?.sectionsJson) {
           try {
             this.sections = JSON.parse(res.config.sectionsJson);
-          } catch (e) { console.error('Failed to parse sectionsJson', e); }
+            this.configForm.patchValue({ sectionsJson: res.config.sectionsJson });
+            
+            // Check for custom products and fetch if needed
+            const selectSection = this.sections.find(s => s.type === "product-select");
+            const customIds = selectSection?.settings?.customProductIds as number[] | undefined;
+            if (customIds && customIds.length > 0) {
+              this.productService.getProducts({ ids: customIds.join(","), pageSize: 100 }).subscribe({
+                next: (pRes) => {
+                  this.relatedProducts = pRes.data.filter(p => p.id !== res.product?.id);
+                }
+              });
+            } else {
+              this.relatedProducts = res.relatedProducts || [];
+            }
+          } catch (e) {
+            console.error("Invalid sections JSON", e);
+            this.relatedProducts = res.relatedProducts || [];
+          }
+        } else {
+          this.relatedProducts = res.relatedProducts || [];
+        }
+
+        if (this.isEditMode) {
+          this.loadAllProducts();
         }
         if (res.product?.variants?.length > 0) {
           const defaultVariant = res.product.variants.find(v => v.isDefault) || res.product.variants[0];
@@ -377,26 +473,26 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
           const nameParts = (res.product.name || "").trim().split(" ");
           const nameCode = (nameParts.length > 0 && nameParts[0].length >= 3) ? nameParts[0] : undefined;
 
-          // If we have a code, use it for broad matching, otherwise fallback to standard group/category
-          const pGroupId = nameCode ? undefined : (res.product.productGroupId || undefined);
-          const cId = nameCode ? undefined : (res.product.categoryId || undefined);
-
           this.productService.getRelatedProducts(
             undefined, 
-            cId, 
-            pGroupId, 
-            6,
+            nameCode ? undefined : res.product.categoryId, 
+            nameCode ? undefined : res.product.productGroupId, 
+            12,
             nameCode
           ).subscribe({
             next: (related) => {
-              this.selectedImage = res.product.imageUrl || "";
-              this.relatedProducts = related.data.filter(p => p.id !== res.product.id);
+              this.defaultRelatedProducts = related.data.filter(p => p.id !== res.product.id);
+              this.refreshRelatedProducts();
               this.startAutoSlide();
             }
           });
         }
       },
-      error: () => this.isLoading = false
+      error: (err) => {
+        this.isLoading = false;
+        console.error("Failed to load landing page data", err);
+        this.notification.error(err.error?.message || "Resource not found. The product might be inactive or deleted.");
+      }
     });
   }
 
@@ -445,87 +541,88 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   get selectedVariantPrice(): number {
-    const selectedSize = this.orderForm.get("selectedSize")?.value;
-    const variant = this.currentProduct?.variants?.find(v => v.size === selectedSize);
-    return variant?.price || (this.currentProduct === this.data?.product ? this.data?.config?.promoPrice : 0) || this.currentProduct?.price || 0;
+    // For single-product legacy getters (used in some old banners)
+    const product = this.data?.product;
+    if (!product) return 0;
+    const selection = this.productSelections[product.id];
+    const variant = product.variants?.find(v => v.size === selection?.selectedSize);
+    return variant?.price || this.data?.config?.promoPrice || product.price || 0;
   }
 
-  get selectedVariantStock(): number {
-    const selectedSize = this.orderForm.get("selectedSize")?.value;
-    if (selectedSize) {
-      const variant = this.currentProduct?.variants?.find(v => v.size === selectedSize);
-      return variant?.stockQuantity || 0;
-    }
-    return this.currentProduct?.variants?.reduce((sum, v) => sum + v.stockQuantity, 0) || this.currentProduct?.stockQuantity || 0;
-  }
-
-  get selectedVariantDiscountAmount(): number {
-    const selectedSize = this.orderForm.get("selectedSize")?.value;
-    const variant = this.currentProduct?.variants?.find(v => v.size === selectedSize);
-    const price = this.selectedVariantPrice;
-    const comparePrice = variant?.compareAtPrice || (this.currentProduct === this.data?.product ? this.data?.config?.originalPrice : 0) || this.currentProduct?.compareAtPrice || 0;
-    return comparePrice > price ? (comparePrice - price) : 0;
-  }
-
-  get selectedDeliveryMethod(): DeliveryMethod | null {
-    const id = this.orderForm.get("deliveryMethodId")?.value;
-    return this.deliveryMethods.find(m => m.id === id) || null;
-  }
-
-  get shippingCost(): number {
-    const qty = this.orderForm.get("quantity")?.value || 1;
-    const threshold = this.data?.config?.freeShippingThresholdQuantity;
-    if (threshold && qty >= threshold) return 0;
-    return this.selectedDeliveryMethod?.cost ?? 0;
+  getProductPrice(product: Product): number {
+    const selection = this.productSelections[product.id];
+    const variant = product.variants?.find(v => v.size === selection?.selectedSize);
+    return variant?.price || (product.id === this.data?.product.id ? this.data?.config?.promoPrice : 0) || product.price || 0;
   }
 
   get total(): number {
-    const qty = this.orderForm.get("quantity")?.value || 1;
-    return (this.selectedVariantPrice * qty) + this.shippingCost;
+    let subtotal = 0;
+    for (const selection of this.selectedProductList) {
+      subtotal += this.getProductPrice(selection.product) * selection.quantity;
+    }
+    return subtotal + this.shippingCost;
   }
 
-  get uniqueSizes(): string[] {
-    if (!this.currentProduct?.variants) return [];
-    return Array.from(new Set(this.currentProduct.variants.map(v => v.size).filter(Boolean))) as string[];
+  // Helper for old components that might still use uniqueSizes
+  getUniqueSizes(product: Product): string[] {
+    if (!product.variants) return [];
+    return Array.from(new Set(product.variants.map((v: any) => v.size).filter(Boolean))) as string[];
   }
 
   onSubmit(): void {
-    if (this.orderForm.invalid || !this.data || !this.currentProduct) {
+    const selections = this.selectedProductList;
+    if (this.orderForm.invalid || !this.data || selections.length === 0) {
       this.orderForm.markAllAsTouched();
+      if (selections.length === 0) {
+        this.notification.error("Please select at least one product.");
+        this.scrollToOrder();
+      }
       return;
     }
     this.isOrdering = true;
     const form = this.orderForm.getRawValue();
-    const product = this.currentProduct;
     const method = this.selectedDeliveryMethod;
-    const cartItem: CartItem = {
-      id: "clp-" + Date.now(),
-      productId: product.id,
-      name: product.name,
-      price: this.selectedVariantPrice,
-      quantity: form.quantity,
-      size: form.selectedSize,
-      imageUrl: product.imageUrl || "",
-      imageAlt: product.name,
-      discountPercentage: 0,
-      compareAtPrice: this.data.config?.originalPrice || product.compareAtPrice
-    };
-    const subtotal = cartItem.price * form.quantity;
+
+    const cartItems: CartItem[] = selections.map(s => {
+      const price = this.getProductPrice(s.product);
+      return {
+        id: "clp-" + s.product.id + "-" + Date.now(),
+        productId: s.product.id,
+        name: s.product.name,
+        price: price,
+        quantity: s.quantity,
+        size: s.selectedSize,
+        imageUrl: s.product.imageUrl || "",
+        imageAlt: s.product.name,
+        discountPercentage: 0,
+        compareAtPrice: s.product.id === this.data?.product.id ? this.data?.config?.originalPrice : s.product.compareAtPrice
+      };
+    });
+
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const shipping = this.shippingCost;
     const summary: CartSummary = {
-      itemsCount: form.quantity,
+      itemsCount: cartItems.reduce((sum, item) => sum + item.quantity, 0),
       subtotal,
       tax: 0,
       shipping,
-      discount: cartItem.compareAtPrice ? (cartItem.compareAtPrice - cartItem.price) * form.quantity : 0,
+      discount: cartItems.reduce((sum, item) => sum + (item.compareAtPrice ? (item.compareAtPrice - item.price) * item.quantity : 0), 0),
       total: subtotal + shipping,
       freeShippingThreshold: 0,
       freeShippingRemaining: 0,
       freeShippingProgress: 100
     };
+
     this.orderService.placeOrder({
-      state: { fullName: form.fullName, phone: form.phone, address: form.address, city: method?.name || "", area: "", deliveryMethodId: form.deliveryMethodId },
-      cartItems: [cartItem],
+      state: { 
+        fullName: form.fullName, 
+        phone: form.phone, 
+        address: form.address, 
+        city: method?.name || "", 
+        area: "", 
+        deliveryMethodId: form.deliveryMethodId 
+      },
+      cartItems: cartItems,
       summary,
       deliveryMethodId: form.deliveryMethodId
     }).subscribe({
@@ -538,6 +635,19 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       },
       error: () => this.isOrdering = false
     });
+  }
+
+  // Re-implement shipping helpers for multi-product
+  get selectedDeliveryMethod(): DeliveryMethod | null {
+    const id = this.orderForm.get("deliveryMethodId")?.value;
+    return this.deliveryMethods.find(m => m.id === id) || null;
+  }
+
+  get shippingCost(): number {
+    const totalQty = this.selectedProductList.reduce((sum, s) => sum + s.quantity, 0);
+    const threshold = this.data?.config?.freeShippingThresholdQuantity;
+    if (threshold && totalQty >= threshold) return 0;
+    return this.selectedDeliveryMethod?.cost ?? 0;
   }
 
   selectSize(size: string): void { this.orderForm.patchValue({ selectedSize: size }); }
@@ -622,9 +732,16 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   whatsappUs(): void {
     if (!this.data) return;
+    const selections = this.selectedProductList;
+    if (selections.length === 0) {
+      this.notification.error("Please select a product first.");
+      return;
+    }
+
     this.siteSettingsService.getSettings().subscribe(settings => {
       const phone = (settings.whatsAppNumber || settings.contactPhone || "").replace(/\D/g, "");
-      const message = encodeURIComponent(`Hello, I'm interested in ${this.data?.product.name}. Can you help me?`);
+      const productNames = selections.map(s => `${s.product.name} (Size: ${s.selectedSize}, Qty: ${s.quantity})`).join(", ");
+      const message = encodeURIComponent(`Hello, I'm interested in: ${productNames}. Can you help me?`);
       if (phone) window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
     });
   }
@@ -678,7 +795,91 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       'reviews': '💬 Customer Reviews',
       'order-form': '📝 Order Form'
     };
-    this.sections.push({ id: `${type}_${Date.now()}`, type, label: labels[type] || 'New Section', visible: true });
+    const settings: any = {};
+    if (type === 'product-select') settings.customProductIds = [];
+    this.sections.push({ id: `${type}_${Date.now()}`, type, label: labels[type] || 'New Section', visible: true, settings });
+  }
+
+  // --- PRODUCT SELECTION MANAGEMENT ---
+  get productsForSelectionPool(): Product[] {
+    const pool = [...this.defaultRelatedProducts];
+    
+    // Add search results if searching
+    if (this.productSearchTerm) {
+      this.allProducts.forEach(p => {
+        if (!pool.find(item => item.id === p.id)) {
+          if (p.name.toLowerCase().includes(this.productSearchTerm.toLowerCase()) || 
+              p.sku.toLowerCase().includes(this.productSearchTerm.toLowerCase())) {
+            pool.push(p);
+          }
+        }
+      });
+    }
+    
+    return pool;
+  }
+
+  toggleProductSelection(productId: number): void {
+    const section = this.sections.find(s => s.type === "product-select");
+    if (!section) return;
+    
+    if (!section.settings) section.settings = {};
+    if (!section.settings.customProductIds) section.settings.customProductIds = [];
+    
+    const index = section.settings.customProductIds.indexOf(productId);
+    if (index > -1) {
+      section.settings.customProductIds.splice(index, 1);
+    } else {
+      section.settings.customProductIds.push(productId);
+    }
+    
+    this.refreshRelatedProducts();
+    this.updateSections();
+  }
+
+  updateSections(): void {
+    const json = JSON.stringify(this.sections);
+    this.configForm.patchValue({ sectionsJson: json });
+  }
+
+  private loadAllProducts(): void {
+    this.isProductSelectionLoading = true;
+    this.productService.getProducts({ pageSize: 100, orderBy: "name" }).subscribe({
+      next: (res) => {
+        this.allProducts = res.data;
+        this.isProductSelectionLoading = false;
+        this.refreshRelatedProducts();
+      },
+      error: () => (this.isProductSelectionLoading = false)
+    });
+  }
+
+  isProductInCustomSelection(productId: number): boolean {
+    const section = this.sections.find(s => s.type === "product-select");
+    return section?.settings?.customProductIds?.includes(productId) || false;
+  }
+
+  private refreshRelatedProducts(): void {
+    const section = this.sections.find(s => s.type === "product-select");
+    const customIds = section?.settings?.customProductIds as number[] | undefined;
+    
+    if (customIds && customIds.length > 0) {
+      // Prioritize from allProducts if in edit mode and loaded, else from pool
+      const combined = [...this.allProducts, ...this.defaultRelatedProducts];
+      const selected = combined.filter(p => customIds.includes(p.id) && p.id !== this.data?.product.id);
+      
+      // If we don't have all selected products in the local pool, we'll need to fetch them
+      if (selected.length < customIds.length && !this.isProductSelectionLoading) {
+        this.productService.getProducts({ ids: customIds.join(","), pageSize: 100 }).subscribe(res => {
+          this.relatedProducts = res.data.filter(p => p.id !== this.data?.product.id);
+        });
+      } else {
+        this.relatedProducts = selected;
+      }
+    } else {
+      // Fallback to automatic related products if no custom selection is made
+      this.relatedProducts = this.data?.relatedProducts || this.defaultRelatedProducts || [];
+    }
   }
 
   saveLayout(): void {

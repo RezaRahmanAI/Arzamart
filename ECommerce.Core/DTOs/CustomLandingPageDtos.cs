@@ -62,4 +62,5 @@ public class CustomLandingPageDataDto
 {
     public ProductDto Product { get; set; } = null!;
     public CustomLandingPageConfigDto? Config { get; set; }
+    public IReadOnlyList<ProductListDto>? RelatedProducts { get; set; }
 }

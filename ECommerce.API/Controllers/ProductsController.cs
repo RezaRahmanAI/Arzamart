@@ -53,15 +53,38 @@ public class ProductsController : ControllerBase
         [FromQuery] bool? isFeatured,
         [FromQuery] int? productGroupId,
         [FromQuery] int? productType,
+        [FromQuery] string? ids,
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 12)
     {
         // Build a deterministic cache key from all query parameters
-        var cacheKey = $"products_{sort}_{categoryId}_{subCategoryId}_{collectionId}_{categorySlug}_{subCategorySlug}_{collectionSlug}_{searchTerm}_{tier}_{tags}_{isNew}_{isFeatured}_{pageIndex}_{pageSize}_{productGroupId}_{productType}";
+        var cacheKey = $"products_{sort}_{categoryId}_{subCategoryId}_{collectionId}_{categorySlug}_{subCategorySlug}_{collectionSlug}_{searchTerm}_{tier}_{tags}_{isNew}_{isFeatured}_{pageIndex}_{pageSize}_{productGroupId}_{productType}_{ids}";
 
         if (_cache.TryGetValue(cacheKey, out PaginationDto<ProductListDto>? cached) && cached != null)
         {
             return Ok(cached);
+        }
+
+        // 0. Handle explicit ID list (for manual product curation)
+        if (!string.IsNullOrEmpty(ids))
+        {
+            var idList = ids.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                           .Select(id => int.TryParse(id, out var val) ? val : 0)
+                           .Where(v => v > 0)
+                           .ToList();
+
+            if (idList.Any())
+            {
+                var idSpec = new ProductsWithCategoriesSpecification(idList);
+                var idProducts = await _productsRepo.ListAsync(idSpec);
+                var idDtos = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductListDto>>(idProducts);
+                
+                // Return as a single page containing all requested items
+                var idResult = new PaginationDto<ProductListDto>(1, idDtos.Count, idDtos.Count, idDtos);
+                
+                _cache.Set(cacheKey, idResult, new MemoryCacheEntryOptions().SetSize(1).SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+                return Ok(idResult);
+            }
         }
 
         // Map categorySlug to categoryId if not provided

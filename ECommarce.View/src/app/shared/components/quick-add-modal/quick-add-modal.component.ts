@@ -23,7 +23,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
 
       <!-- Modal Content -->
       <div
-        class="relative w-full max-w-lg bg-white shadow-2xl overflow-hidden transform transition-all duration-500 ease-out max-h-[90vh] sm:max-h-[90vh] flex flex-col sm:flex-row rounded-2xl sm:rounded-3xl"
+        class="relative w-full max-w-lg bg-white shadow-2xl overflow-hidden transform transition-all duration-500 ease-out max-h-[95vh] sm:max-h-[90vh] flex flex-col sm:flex-row rounded-2xl sm:rounded-3xl"
       >
         <!-- Close Button -->
         <button
@@ -34,53 +34,79 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
         </button>
 
         <!-- Product Image Preview -->
-        <div class="w-full sm:w-1/2 h-[25vh] min-h-[160px] sm:min-h-0 sm:h-auto sm:aspect-[3/4] bg-gray-50 flex-shrink-0 relative p-2 sm:p-0">
-          <!-- Ekhane object-cover er bodole object-contain deya hoyeche -->
+        <div class="w-full sm:w-1/2 h-[30vh] sm:h-auto bg-gray-50 flex-shrink-0 relative group">
           <img
             [src]="imageUrlService.getImageUrl(selectedImage || product.imageUrl || '')"
             [alt]="product.name"
-            class="w-full h-full object-contain sm:object-cover mix-blend-multiply"
+            class="w-full h-full object-contain sm:object-cover mix-blend-multiply transition-all duration-500"
           />
+          
+          <!-- Image Dots -->
+          @if (product.images.length > 1) {
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+              @for (img of product.images; track img.id; let i = $index) {
+                <button type="button" (click)="selectImage(img.imageUrl)"
+                        class="w-2 h-2 rounded-full transition-all duration-300"
+                        [style.backgroundColor]="(selectedImage || product.imageUrl) === img.imageUrl ? '#1E6FD9' : 'rgba(0,0,0,0.2)'"
+                        [style.transform]="(selectedImage || product.imageUrl) === img.imageUrl ? 'scale(1.25)' : 'scale(1)'"></button>
+              }
+            </div>
+          }
         </div>
 
         <!-- Selection Details (Scrollable independent of image) -->
-        <div class="flex-1 p-4 sm:p-6 flex flex-col justify-start sm:justify-center overflow-y-auto pb-6 sm:pb-8">
-          <h2 class="text-gray-400 mb-0.5 sm:mb-1">
-            Quick Add
-          </h2>
-          <h3 class="text-black mb-1 sm:mb-2">{{ product.name }}</h3>
-          
-          <div class="flex items-center gap-2 mb-3 sm:mb-4">
-            <app-price-display
-              [amount]="currentPrice"
-              class="block"
-            ></app-price-display>
-            @if (originalPrice > 0) {
+        <div class="flex-1 p-4 sm:p-8 flex flex-col overflow-y-auto custom-scrollbar">
+          <div class="mb-4 sm:mb-6">
+            <h2 class="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-1.5 sm:mb-2 font-bold">
+              Product Overview
+            </h2>
+            <h3 class="text-lg sm:text-2xl text-black font-bold mb-1 sm:mb-2 leading-tight">{{ product.name }}</h3>
+            
+            <div class="flex items-center gap-3">
               <app-price-display
-                [amount]="originalPrice"
-                size="sm"
-                class="line-through opacity-50"
+                [amount]="currentPrice"
+                class="text-lg sm:text-xl font-bold text-ds-accent"
               ></app-price-display>
-            }
+              @if (originalPrice > 0) {
+                <app-price-display
+                  [amount]="originalPrice"
+                  size="sm"
+                  class="line-through opacity-40"
+                ></app-price-display>
+              }
+            </div>
           </div>
+
+          <!-- Description Section -->
+          @if (product.description) {
+            <div class="mb-8">
+              <h4 class="text-xs font-bold text-black uppercase tracking-wider mb-3 flex items-center gap-2">
+                <app-icon name="FileText" size="14"></app-icon>
+                Description
+              </h4>
+              <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                {{ product.description }}
+              </p>
+            </div>
+          }
 
           <!-- Size Selection -->
           @if (availableSizes.length > 0) {
-            <div class="mb-3 sm:mb-5">
-              <label class="text-gray-500 block mb-2 sm:mb-3">
-                Select Size: <span class="text-black">{{ selectedSize || 'required' }}</span>
+            <div class="mb-8">
+              <label class="text-xs font-bold text-black uppercase tracking-wider mb-4 block">
+                Select Size: <span class="text-ds-accent ml-1">{{ selectedSize || 'Required' }}</span>
               </label>
-              <div class="flex flex-wrap gap-1.5 sm:gap-2">
+              <div class="flex flex-wrap gap-2">
                 @for (size of availableSizes; track size) {
                   <button
                     (click)="selectSize(size)"
-                    class="min-w-[2.25rem] h-8 sm:min-w-10 sm:h-10 px-2 flex items-center justify-center border transition-all duration-300 rounded-md sm:rounded-lg"
+                    class="min-w-[3rem] h-11 px-3 flex items-center justify-center border transition-all duration-300 rounded-lg text-sm font-medium"
                     [class.bg-ds-accent]="selectedSize === size"
-                    [class.text-ds-hero-text]="selectedSize === size"
+                    [class.text-white]="selectedSize === size"
                     [class.border-ds-accent]="selectedSize === size"
-                    [class.bg-ds-bg]="selectedSize !== size"
-                    [class.text-ds-text]="selectedSize !== size"
-                    [class.border-ds-border]="selectedSize !== size"
+                    [class.bg-white]="selectedSize !== size"
+                    [class.text-gray-700]="selectedSize !== size"
+                    [class.border-gray-200]="selectedSize !== size"
                     [class.hover:border-ds-accent]="selectedSize !== size"
                   >
                     {{ size }}
@@ -90,36 +116,64 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
             </div>
           }
 
-          <!-- Quantity Selection -->
-          <div class="mb-4 sm:mb-6 mt-4 sm:mt-0">
-            <label class="text-gray-500 block mb-2 sm:mb-3">
-              Quantity
-            </label>
-            <div class="flex items-center gap-3 sm:gap-4">
-              <button 
-                (click)="decreaseQuantity()"
-                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-ds-border rounded-md sm:rounded-lg text-ds-text-sec hover:text-ds-text transition-colors"
-              >
-                <app-icon name="Minus" size="14"></app-icon>
-              </button>
-              <span class="w-6 sm:w-8 text-center">{{ quantity }}</span>
-              <button 
-                (click)="increaseQuantity()"
-                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-ds-border rounded-md sm:rounded-lg text-ds-text-sec hover:text-ds-text transition-colors"
-              >
-                <app-icon name="Plus" size="14"></app-icon>
-              </button>
+          <!-- Extra Info Tabs/Sections -->
+          @if (product.fabricAndCare || product.shippingAndReturns) {
+            <div class="space-y-4 mb-8">
+              @if (product.fabricAndCare) {
+                <div class="p-4 bg-gray-50 rounded-xl">
+                  <h4 class="text-xs font-bold text-black mb-2 flex items-center gap-2">
+                    <app-icon name="Wind" size="14"></app-icon>
+                    Fabric & Care
+                  </h4>
+                  <p class="text-xs text-gray-500 leading-relaxed">{{ product.fabricAndCare }}</p>
+                </div>
+              }
+              @if (product.shippingAndReturns) {
+                <div class="p-4 bg-gray-50 rounded-xl">
+                  <h4 class="text-xs font-bold text-black mb-2 flex items-center gap-2">
+                    <app-icon name="Truck" size="14"></app-icon>
+                    Shipping & Returns
+                  </h4>
+                  <p class="text-xs text-gray-500 leading-relaxed">{{ product.shippingAndReturns }}</p>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Quantity & Confirm (Sticky at bottom of scrollable area) -->
+          <div class="mt-auto pt-4 sm:pt-6 border-t border-gray-100">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-6 mb-2">
+              <div class="flex items-center justify-between sm:flex-col sm:items-start gap-1">
+                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-gray-400">Quantity</span>
+                <div class="flex items-center gap-3">
+                  <button 
+                    (click)="decreaseQuantity()"
+                    class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-black transition-colors"
+                  >
+                    <app-icon name="Minus" size="12"></app-icon>
+                  </button>
+                  <span class="w-6 text-center font-bold text-sm">{{ quantity }}</span>
+                  <button 
+                    (click)="increaseQuantity()"
+                    class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-black transition-colors"
+                  >
+                    <app-icon name="Plus" size="12"></app-icon>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="flex-1">
+                <button
+                  (click)="confirm()"
+                  [disabled]="availableSizes.length > 0 && !selectedSize"
+                  class="w-full h-12 sm:h-14 bg-ds-accent text-white transition-all duration-300 hover:opacity-90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-3 rounded-xl shadow-lg shadow-ds-accent/20 font-bold text-sm sm:text-base"
+                >
+                  <app-icon name="CheckCircle" size="16" class="sm:w-5 sm:h-5"></app-icon>
+                  Update Selection
+                </button>
+              </div>
             </div>
           </div>
-
-          <button
-            (click)="confirm()"
-            [disabled]="availableSizes.length > 0 && !selectedSize"
-            class="w-full py-2.5 sm:py-4 bg-ds-accent text-white transition-all duration-300 hover:opacity-90 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-lg sm:rounded-xl shadow-lg shadow-ds-accent/20"
-          >
-            <app-icon name="ShoppingBag" size="14" class="sm:w-4 sm:h-4"></app-icon>
-            {{ (selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity) > 0 ? 'Confirm Selection' : 'Confirm Pre-order' }}
-          </button>
         </div>
       </div>
     </div>
@@ -183,12 +237,16 @@ export class QuickAddModalComponent {
     this.selectedSize = size;
   }
 
+  selectImage(url: string): void {
+    this.selectedImage = url;
+  }
+
   increaseQuantity(): void {
     this.quantity++;
   }
 
   decreaseQuantity(): void {
-    if (this.quantity > 1) {
+    if (this.quantity > 0) {
       this.quantity--;
     }
   }
