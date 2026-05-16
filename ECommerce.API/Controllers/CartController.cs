@@ -95,12 +95,17 @@ public class CartController : ControllerBase
         var cacheKey = GetCacheKey();
         if (!string.IsNullOrEmpty(cacheKey)) _cache.Remove(cacheKey);
 
-        // Return fast response as requested
-        return Ok(new { 
-            success = true, 
-            message = "Added", 
-            cartCount = cart.Items.Sum(i => i.Quantity) 
-        });
+        // Return full cart to avoid extra refresh calls on frontend
+        var updatedCart = await GetCartQuery(cart.Id).FirstAsync();
+        var cartDto = MapToDto(updatedCart);
+        
+        // Also update cache for subsequent GETs
+        if (!string.IsNullOrEmpty(cacheKey))
+        {
+            _cache.Set(cacheKey, cartDto, TimeSpan.FromMinutes(10));
+        }
+
+        return Ok(cartDto);
     }
 
     [HttpPost("items/{id}")]

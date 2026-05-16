@@ -333,11 +333,6 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
       )
       .subscribe();
 
-    // Show success notification
-    this.notificationService.success(
-      `Added ${quantity} x ${product.name} to your bag`,
-    );
-
     this.selectionError = "";
   }
 

@@ -185,37 +185,36 @@ export class CartService {
 
     const targetSize = resolvedSize ?? "One Size";
 
-    // 1. Optimistic UI update
+    // 1. Check for duplicates
     const currentItems = this.cartItemsSubject.getValue();
     const existingIndex = currentItems.findIndex(
       (i) => i.productId === product.id && i.size === targetSize
     );
 
-    let updatedItems = [...currentItems];
     if (existingIndex !== -1) {
-      updatedItems[existingIndex] = {
-        ...updatedItems[existingIndex],
-        quantity: updatedItems[existingIndex].quantity + quantity,
-      };
-    } else {
-      const tempItem: CartItem = {
-        id: `temp-${Date.now()}`,
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: quantity,
-        size: targetSize,
-        imageUrl: product.imageUrl || "",
-        imageAlt: product.name,
-        discountPercentage: product.compareAtPrice ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100) : 0,
-        compareAtPrice: product.compareAtPrice,
-      };
-      updatedItems.push(tempItem);
+      this.notificationService.info(`${product.name} is already in your Bag`);
+      return of(null) as any;
     }
+
+    // 2. Optimistic UI update for NEW item
+    const tempItem: CartItem = {
+      id: `temp-${Date.now()}`,
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: quantity,
+      size: targetSize,
+      imageUrl: product.imageUrl || "",
+      imageAlt: product.name,
+      discountPercentage: product.compareAtPrice ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100) : 0,
+      compareAtPrice: product.compareAtPrice,
+    };
+    
+    const updatedItems = [...currentItems, tempItem];
     this.cartItemsSubject.next(updatedItems);
     this.notificationService.success(`${product.name} added to Bag`);
 
-    // 2. Perform background sync
+    // 3. Perform background sync
     const payload: AddToCartDto = {
       productId: product.id,
       quantity,
@@ -223,11 +222,10 @@ export class CartService {
     };
 
     return this.api
-      .post<any>(`${this.apiUrl}/items`, payload, this.options)
+      .post<CartDto>(`${this.apiUrl}/items`, payload, this.options)
       .pipe(
-        tap((res) => {
-          // Sync real state in background after a tiny delay
-          setTimeout(() => this.refreshCartFromServer(), 1000);
+        tap((dto) => {
+          this.updateLocalState(dto);
         }),
         catchError((err) => {
           console.error("Failed to add item to cart", err);
