@@ -66,12 +66,18 @@
     }
 
     <!-- Mobile Actions (Always Visible) -->
-    <div class="mt-auto lg:hidden">
+    <div class="mt-auto lg:hidden w-full flex items-center gap-2">
       <button
         (click)="orderNow($event)"
-        class="w-full h-11 bg-ds-text text-ds-bg transition-all"
+        class="flex-1 h-11 bg-ds-accent text-ds-bg font-bold rounded-md transition-all active:scale-95 flex items-center justify-center"
       >
         Buy Now
+      </button>
+      <button
+        (click)="addToCart($event)"
+        class="size-11 flex items-center justify-center bg-ds-surface border border-ds-border text-ds-text rounded-md shadow-sm active:scale-95 transition-all"
+      >
+        <app-icon name="Heart" size="20"></app-icon>
       </button>
     </div>
   </div>

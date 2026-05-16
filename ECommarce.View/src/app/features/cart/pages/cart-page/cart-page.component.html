@@ -31,65 +31,63 @@
               </div>
             </div>
 
-            <div class="space-y-ds-8">
-              @for (item of vm.cartItems; track item.id) {
-                <div class="group relative flex flex-col sm:flex-row gap-ds-8 bg-ds-surface p-ds-6 border border-ds-border transition-all duration-base hover:border-ds-text">
-                  <div class="shrink-0 relative w-full sm:w-[160px] aspect-[3/4] bg-ds-bg overflow-hidden border border-ds-border">
-                    <div
-                      class="absolute inset-0 bg-cover bg-center transition-all duration-700 group-hover:scale-105"
-                      [style.backgroundImage]="'url(' + imageUrlService.getImageUrl(item.imageUrl) + ')'"
-                    ></div>
-                  </div>
-                  <div class="flex flex-1 flex-col justify-between py-ds-2">
-                    <div class="flex justify-between items-start gap-ds-6">
-                      <div class="space-y-ds-2">
-                        <h3 class="text-ds-text">
-                          {{ item.name }}
-                        </h3>
-                        <div class="flex flex-col gap-ds-1">
-                          <p class="text-ds-text-sec">Size: {{ item.size }}</p>
-                        </div>
-                      </div>
-                      <button
-                        (click)="removeItem(item)"
-                        class="text-ds-text-muted hover:text-ds-text transition-colors p-ds-2"
-                        type="button"
-                      >
-                        <app-icon name="Trash2" size="20"></app-icon>
-                      </button>
-                    </div>
-                    <div class="flex justify-between items-end mt-ds-8 sm:mt-0">
-                      <div class="flex items-center bg-ds-bg border border-ds-border">
-                        <button
-                          (click)="decreaseQuantity(item)"
-                          class="w-10 h-10 flex items-center justify-center text-ds-text-sec hover:text-ds-text transition-colors"
-                          type="button"
-                        >
-                          <app-icon name="Minus" size="14"></app-icon>
-                        </button>
-                        <input
-                          class="w-10 h-10 text-center bg-transparent border-none p-0 text-ds-text focus:ring-0"
-                          readonly
-                          type="text"
-                          [value]="item.quantity"
-                        />
-                        <button
-                          (click)="increaseQuantity(item)"
-                          class="w-10 h-10 flex items-center justify-center text-ds-text-sec hover:text-ds-text transition-colors"
-                          type="button"
-                        >
-                          <app-icon name="Plus" size="14"></app-icon>
-                        </button>
-                      </div>
-                      <app-price-display
-                        class="text-ds-text"
-                        [amount]="item.price * item.quantity"
-                        size="md"
-                      ></app-price-display>
-                    </div>
-                  </div>
-                </div>
-              }
+            <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[600px]">
+                  <thead>
+                    <tr class="bg-ds-bg/50 border-b border-ds-border text-ds-text-muted">
+                      <th class="px-ds-6 py-ds-4 font-semibold text-xs uppercase tracking-wider">Product Information</th>
+                      <th class="px-ds-4 py-ds-4 font-semibold text-xs uppercase tracking-wider text-center">Unit Price</th>
+                      <th class="px-ds-4 py-ds-4 font-semibold text-xs uppercase tracking-wider text-center">Quantity</th>
+                      <th class="px-ds-4 py-ds-4 font-semibold text-xs uppercase tracking-wider text-right">Subtotal</th>
+                      <th class="px-ds-4 py-ds-4 font-semibold text-xs uppercase tracking-wider text-right"></th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-ds-border/30">
+                    @for (item of vm.cartItems; track item.id) {
+                      <tr class="group hover:bg-ds-bg/20 transition-colors">
+                        <td class="px-ds-6 py-ds-6">
+                          <div class="flex items-center gap-ds-6">
+                            <div class="shrink-0 w-16 h-20 bg-ds-bg border border-ds-border rounded-sm overflow-hidden shadow-inner">
+                              <img [src]="imageUrlService.getImageUrl(item.imageUrl)" class="w-full h-full object-cover transition-transform duration-base group-hover:scale-105">
+                            </div>
+                            <div class="flex flex-col gap-1.5 min-w-0">
+                              <span class="text-ds-text font-semibold truncate max-w-[200px] leading-tight">{{ item.name }}</span>
+                              <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 bg-ds-bg border border-ds-border text-[10px] text-ds-text-sec rounded-sm uppercase font-bold">Size: {{ item.size }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-ds-4 py-ds-6 text-center whitespace-nowrap">
+                          <app-price-display [amount]="item.price" size="sm"></app-price-display>
+                        </td>
+                        <td class="px-ds-4 py-ds-6">
+                          <div class="flex items-center justify-center">
+                            <div class="flex items-center bg-ds-bg border border-ds-border rounded-sm shadow-inner overflow-hidden">
+                              <button (click)="decreaseQuantity(item)" class="size-8 flex items-center justify-center hover:bg-ds-surface transition-colors text-ds-text-sec">
+                                <app-icon name="Minus" size="10"></app-icon>
+                              </button>
+                              <span class="w-8 text-center text-xs font-bold text-ds-text">{{ item.quantity }}</span>
+                              <button (click)="increaseQuantity(item)" class="size-8 flex items-center justify-center hover:bg-ds-surface transition-colors text-ds-text-sec border-l border-ds-border/30">
+                                <app-icon name="Plus" size="10"></app-icon>
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-ds-4 py-ds-6 text-right whitespace-nowrap">
+                          <app-price-display class="text-ds-text font-bold" [amount]="item.price * item.quantity" size="sm"></app-price-display>
+                        </td>
+                        <td class="px-ds-4 py-ds-6 text-right">
+                          <button (click)="removeItem(item)" class="size-8 flex items-center justify-center text-ds-text-muted hover:text-red-500 hover:bg-red-50 transition-all rounded-sm">
+                            <app-icon name="Trash2" size="16"></app-icon>
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
