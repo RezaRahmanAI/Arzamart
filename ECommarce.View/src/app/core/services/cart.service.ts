@@ -179,34 +179,59 @@ export class CartService {
         : (hasVariants ? undefined : "One Size");
 
     if (hasVariants && !resolvedSize) {
+      this.notificationService.error("Please select a size");
       throw new Error("Size is required for this product.");
     }
 
+    const targetSize = resolvedSize ?? "One Size";
+
+    // 1. Optimistic UI update
+    const currentItems = this.cartItemsSubject.getValue();
+    const existingIndex = currentItems.findIndex(
+      (i) => i.productId === product.id && i.size === targetSize
+    );
+
+    let updatedItems = [...currentItems];
+    if (existingIndex !== -1) {
+      updatedItems[existingIndex] = {
+        ...updatedItems[existingIndex],
+        quantity: updatedItems[existingIndex].quantity + quantity,
+      };
+    } else {
+      const tempItem: CartItem = {
+        id: `temp-${Date.now()}`,
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: quantity,
+        size: targetSize,
+        imageUrl: product.imageUrl || "",
+        imageAlt: product.name,
+        discountPercentage: product.compareAtPrice ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100) : 0,
+        compareAtPrice: product.compareAtPrice,
+      };
+      updatedItems.push(tempItem);
+    }
+    this.cartItemsSubject.next(updatedItems);
+    this.notificationService.success(`${product.name} added to Bag`);
+
+    // 2. Perform background sync
     const payload: AddToCartDto = {
       productId: product.id,
       quantity,
-      size: resolvedSize ?? "One Size",
+      size: targetSize,
     };
 
     return this.api
-      .post<CartDto>(`${this.apiUrl}/items`, payload, this.options)
+      .post<any>(`${this.apiUrl}/items`, payload, this.options)
       .pipe(
-        tap((dto) => {
-          this.updateLocalState(dto);
-          // Analytics requires CartItem structure
-          const newItem = this.cartItemsSubject
-            .getValue()
-            .find(
-              (i) =>
-                i.productId === payload.productId &&
-                i.size === payload.size,
-            );
-          if (newItem) {
-            this.analyticsService.trackAddToCart(newItem);
-          }
+        tap((res) => {
+          // Sync real state in background after a tiny delay
+          setTimeout(() => this.refreshCartFromServer(), 1000);
         }),
         catchError((err) => {
           console.error("Failed to add item to cart", err);
+          this.refreshCartFromServer(); // Re-sync to revert local state on failure
           throw err;
         }),
       );
@@ -255,14 +280,15 @@ export class CartService {
   }
 
   clearCart(): Observable<any> {
-    // Perform backend deletion
+    // 1. Optimistic UI update
+    const previousItems = this.cartItemsSubject.getValue();
+    this.cartItemsSubject.next([]);
+
+    // 2. Perform backend deletion
     return this.api.delete(this.apiUrl, this.options).pipe(
-      tap(() => {
-        this.cartItemsSubject.next([]);
-      }),
       catchError((err) => {
         console.error("Failed to clear cart on server", err);
-        this.refreshCartFromServer(); // Re-sync if failed
+        this.cartItemsSubject.next(previousItems); // Rollback on failure
         throw err;
       }),
     );

@@ -75,9 +75,17 @@
       </button>
       <button
         (click)="addToCart($event)"
-        class="size-11 flex items-center justify-center bg-ds-surface border border-ds-border text-ds-text rounded-md shadow-sm active:scale-95 transition-all"
+        [disabled]="isAdding"
+        class="size-11 flex items-center justify-center bg-ds-surface border border-ds-border text-ds-text rounded-md shadow-sm active:scale-95 transition-all disabled:opacity-50"
+        [ngClass]="{
+          'text-ds-accent bg-ds-accent/5 border-ds-accent/20': isInCart
+        }"
       >
-        <app-icon name="Heart" size="20"></app-icon>
+        @if (isAdding) {
+          <span class="size-4 border-2 border-ds-accent/30 border-t-ds-accent rounded-full animate-spin"></span>
+        } @else {
+          <app-icon [name]="isInCart ? 'Check' : 'Heart'" [size]="isInCart ? 16 : 20"></app-icon>
+        }
       </button>
     </div>
   </div>

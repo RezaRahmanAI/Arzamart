@@ -208,9 +208,13 @@ export class ProductCardComponent {
     this.selectedSize = size;
   }
 
+  isAdding = false;
+
   addToCart(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
+
+    if (this.isAdding) return;
 
     const sizes = this.availableSizes;
     if (sizes.length > 0 && !this.selectedSize) {
@@ -219,26 +223,52 @@ export class ProductCardComponent {
     }
 
     if ("id" in this.product) {
+      this.isAdding = true;
       this.cartService
         .addItem(this.product as Product, 1, this.selectedSize ?? undefined)
-        .subscribe();
+        .subscribe({
+          next: () => {
+            // Briefly disable to prevent double clicks but keep it snappy
+            setTimeout(() => (this.isAdding = false), 1000);
+          },
+          error: () => (this.isAdding = false),
+        });
     }
+  }
+
+  get isInCart(): boolean {
+    const cart = this.cartService.getCartSnapshot();
+    return cart.some(
+      (item) =>
+        item.productId === this.product.id &&
+        (!this.selectedSize || item.size === this.selectedSize),
+    );
   }
 
   onQuickAddConfirm(selection: { size?: string; quantity: number }): void {
     if ("id" in this.product) {
+      if (this.isAdding) return;
+
       this.showQuickAdd = false;
+      this.isAdding = true;
+
       this.cartService
         .addItem(
           this.product as Product,
           selection.quantity,
           selection.size ?? this.selectedSize ?? undefined,
         )
-        .subscribe(() => {
-          if (this.isOrdering) {
-            window.location.href = "/checkout";
-          }
+        .subscribe({
+          next: () => {
+            setTimeout(() => (this.isAdding = false), 1000);
+          },
+          error: () => (this.isAdding = false),
         });
+
+      if (this.isOrdering) {
+        // Instant redirect for "Buy Now"
+        window.location.href = "/checkout";
+      }
     }
   }
 

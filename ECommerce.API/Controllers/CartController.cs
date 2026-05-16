@@ -5,6 +5,7 @@ using ECommerce.Core.Entities;
 using ECommerce.Core.DTOs;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ECommerce.API.Controllers;
 
@@ -14,11 +15,13 @@ public class CartController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<CartController> _logger;
+    private readonly Microsoft.Extensions.Caching.Memory.IMemoryCache _cache;
 
-    public CartController(ApplicationDbContext context, ILogger<CartController> logger)
+    public CartController(ApplicationDbContext context, ILogger<CartController> logger, Microsoft.Extensions.Caching.Memory.IMemoryCache cache)
     {
         _context = context;
         _logger = logger;
+        _cache = cache;
     }
 
     private string? GetUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -42,23 +45,31 @@ public class CartController : ControllerBase
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public async Task<ActionResult<CartDto>> GetCart()
     {
+        var cacheKey = GetCacheKey();
+        if (!string.IsNullOrEmpty(cacheKey) && _cache.TryGetValue(cacheKey, out CartDto? cachedCart))
+        {
+            return Ok(cachedCart);
+        }
+
         var cart = await GetOrCreateCartAsync();
-        return Ok(MapToDto(cart));
+        var dto = MapToDto(cart);
+
+        if (!string.IsNullOrEmpty(cacheKey))
+        {
+            _cache.Set(cacheKey, dto, TimeSpan.FromMinutes(10));
+        }
+
+        return Ok(dto);
     }
 
     [HttpPost("items")]
-    public async Task<ActionResult<CartDto>> AddItem(AddToCartDto dto)
+    public async Task<ActionResult> AddItem(AddToCartDto dto)
     {
         var cart = await GetOrCreateCartAsync();
         
-        var product = await _context.Products
-            .Include(p => p.Images)
-            .Include(p => p.Variants)
-            .FirstOrDefaultAsync(p => p.Id == dto.ProductId && p.IsActive);
-            
-        if (product == null) return NotFound("Product not found");
-
-        // Removed stock check to allow pre-ordering out-of-stock items
+        // Background validation and save
+        var product = await _context.Products.AnyAsync(p => p.Id == dto.ProductId && p.IsActive);
+        if (!product) return NotFound("Product not found");
 
         var existingItem = cart.Items.FirstOrDefault(i => 
             i.ProductId == dto.ProductId && 
@@ -80,9 +91,16 @@ public class CartController : ControllerBase
 
         await _context.SaveChangesAsync();
         
-        // Reload cart items to get proper product mapping
-        cart = await GetCartQuery(cart.Id).FirstAsync();
-        return Ok(MapToDto(cart));
+        // Invalidate cache
+        var cacheKey = GetCacheKey();
+        if (!string.IsNullOrEmpty(cacheKey)) _cache.Remove(cacheKey);
+
+        // Return fast response as requested
+        return Ok(new { 
+            success = true, 
+            message = "Added", 
+            cartCount = cart.Items.Sum(i => i.Quantity) 
+        });
     }
 
     [HttpPost("items/{id}")]
@@ -201,14 +219,24 @@ public class CartController : ControllerBase
         return Ok(MapToDto(userCart));
     }
 
+    private string GetCacheKey()
+    {
+        var userId = GetUserId();
+        if (!string.IsNullOrEmpty(userId)) return $"cart_{userId}";
+        
+        var sessionId = GetSessionId();
+        if (!string.IsNullOrEmpty(sessionId)) return $"cart_{sessionId}";
+        
+        return string.Empty;
+    }
+
     private async Task<Cart> GetOrCreateCartAsync()
     {
         var userId = GetUserId();
         var sessionId = GetSessionId();
 
-        _logger.LogInformation("Cart access request - User: {UserId}, Session: {SessionId}", 
-            userId ?? "Anonymous", sessionId ?? "None");
-
+        var cacheKey = GetCacheKey();
+        
         Cart? cart = null;
 
         if (!string.IsNullOrEmpty(userId))
@@ -226,22 +254,15 @@ public class CartController : ControllerBase
             if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(finalSessionId))
             {
                 finalSessionId = Guid.NewGuid().ToString();
-                _logger.LogInformation("Generating new session ID: {SessionId}", finalSessionId);
             }
-
-            _logger.LogInformation("Creating new cart for {Type}: {Id}", 
-                !string.IsNullOrEmpty(userId) ? "User" : "Session", 
-                userId ?? finalSessionId);
 
             cart = new Cart
             {
                 UserId = userId,
                 SessionId = string.IsNullOrEmpty(userId) ? finalSessionId : null,
-                Items = new List<CartItem>() // Initialize empty items
+                Items = new List<CartItem>()
             };
             
-            // Note: We don't save here immediately to avoid blocking GetCart with a write
-            // We only save when something is actually added, or we can save it as-is
             _context.Carts.Add(cart);
             await _context.SaveChangesAsync();
         }

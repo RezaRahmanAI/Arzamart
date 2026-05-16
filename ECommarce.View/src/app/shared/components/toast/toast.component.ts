@@ -11,62 +11,54 @@ import {
   trigger,
   state,
 } from "@angular/animations";
+import { AppIconComponent } from "../app-icon/app-icon.component";
 
 @Component({
   selector: "app-toast",
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, AppIconComponent],
   animations: [
     trigger("toastAnimation", [
-      state("void", style({ transform: "translateY(20px)", opacity: 0 })),
+      state("void", style({ transform: "translateY(-20px)", opacity: 0 })),
       state("*", style({ transform: "translateY(0)", opacity: 1 })),
-      transition("void => *", animate("300ms cubic-bezier(0.2, 0, 0, 1)")),
+      transition("void => *", animate("400ms cubic-bezier(0.2, 0.8, 0.2, 1)")),
       transition(
         "* => void",
         animate(
-          "300ms ease-out",
-          style({ opacity: 0, transform: "translateY(10px)" }),
+          "300ms ease-in",
+          style({ opacity: 0, transform: "translateY(-10px)" }),
         ),
       ),
     ]),
   ],
   template: `
     <div
-      class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"
+      class="fixed top-6 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-3 pointer-events-none w-[calc(100%-2rem)] sm:w-auto min-w-[320px] max-w-md"
     >
       @for (toast of toasts; track toast.id) {
         <div
           @toastAnimation
-          class="pointer-events-auto min-w-[300px] bg-[#1a1a1a] text-white px-6 py-4 shadow-xl flex items-center justify-between gap-4 border-l-4"
-          [ngClass]="{
-            'border-green-500': toast.type === 'SUCCESS',
-            'border-red-500': toast.type === 'ERROR',
-            'border-blue-500': toast.type === 'INFO',
-            'border-yellow-500': toast.type === 'WARNING',
-          }"
+          class="pointer-events-auto w-full bg-white text-gray-900 px-4 py-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex items-center justify-between gap-4 rounded-xl border border-gray-100"
         >
-          <div class="flex flex-col">
-            <span
-              class="opacity-70"
-              >{{ toast.type }}</span
-            >
-            <span >{{ toast.message }}</span>
+          <div class="flex items-center gap-3">
+             @if (toast.type === 'SUCCESS') {
+                <div class="size-8 rounded-full bg-green-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-green-500/20">
+                   <app-icon name="Check" size="18"></app-icon>
+                </div>
+             } @else if (toast.type === 'ERROR') {
+                <div class="size-8 rounded-full bg-red-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-red-500/20">
+                   <app-icon name="AlertCircle" size="18"></app-icon>
+                </div>
+             }
+             <div class="flex flex-col min-w-0">
+               <span class="text-sm font-semibold leading-tight">{{ toast.message }}</span>
+             </div>
           </div>
           <button
             (click)="remove(toast.id)"
-            class="text-white/50 hover:text-white transition-colors"
+            class="size-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-all"
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+            <app-icon name="X" size="14"></app-icon>
           </button>
         </div>
       }
@@ -87,7 +79,7 @@ export class ToastComponent implements OnInit {
 
   add(toast: ToastMessage) {
     this.toasts.push(toast);
-    setTimeout(() => this.remove(toast.id), 4000); // Auto remove after 4s
+    setTimeout(() => this.remove(toast.id), 3000); // Auto remove after 3s
   }
 
   remove(id: number) {

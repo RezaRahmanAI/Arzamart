@@ -32,55 +32,55 @@
             </div>
 
             <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm">
-              <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse min-w-[600px]">
+              <div class="overflow-x-auto custom-scrollbar-thin">
+                <table class="w-full text-left border-collapse min-w-[500px] sm:min-w-full">
                   <thead>
                     <tr class="bg-ds-bg/50 border-b border-ds-border text-ds-text-muted">
-                      <th class="px-ds-6 py-ds-4 font-semibold text-xs uppercase tracking-wider">Product Information</th>
-                      <th class="px-ds-4 py-ds-4 font-semibold text-xs uppercase tracking-wider text-center">Unit Price</th>
-                      <th class="px-ds-4 py-ds-4 font-semibold text-xs uppercase tracking-wider text-center">Quantity</th>
-                      <th class="px-ds-4 py-ds-4 font-semibold text-xs uppercase tracking-wider text-right">Subtotal</th>
-                      <th class="px-ds-4 py-ds-4 font-semibold text-xs uppercase tracking-wider text-right"></th>
+                      <th class="px-ds-3 sm:px-ds-6 py-ds-3 font-semibold text-[10px] sm:text-xs uppercase tracking-wider">Product</th>
+                      <th class="px-ds-2 py-ds-3 font-semibold text-[10px] sm:text-xs uppercase tracking-wider text-center">Price</th>
+                      <th class="px-ds-2 py-ds-3 font-semibold text-[10px] sm:text-xs uppercase tracking-wider text-center">Qty</th>
+                      <th class="px-ds-2 py-ds-3 font-semibold text-[10px] sm:text-xs uppercase tracking-wider text-right">Total</th>
+                      <th class="px-ds-3 py-ds-3 font-semibold text-[10px] sm:text-xs uppercase tracking-wider text-right"></th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-ds-border/30">
                     @for (item of vm.cartItems; track item.id) {
                       <tr class="group hover:bg-ds-bg/20 transition-colors">
-                        <td class="px-ds-6 py-ds-6">
-                          <div class="flex items-center gap-ds-6">
-                            <div class="shrink-0 w-16 h-20 bg-ds-bg border border-ds-border rounded-sm overflow-hidden shadow-inner">
+                        <td class="px-ds-3 sm:px-ds-6 py-ds-4">
+                          <div class="flex items-center gap-ds-3 sm:gap-ds-6">
+                            <div class="shrink-0 w-12 h-16 sm:w-16 sm:h-20 bg-ds-bg border border-ds-border rounded-sm overflow-hidden shadow-inner">
                               <img [src]="imageUrlService.getImageUrl(item.imageUrl)" class="w-full h-full object-cover transition-transform duration-base group-hover:scale-105">
                             </div>
-                            <div class="flex flex-col gap-1.5 min-w-0">
-                              <span class="text-ds-text font-semibold truncate max-w-[200px] leading-tight">{{ item.name }}</span>
+                            <div class="flex flex-col gap-0.5 sm:gap-1.5 min-w-0">
+                              <span class="text-ds-text font-semibold truncate max-w-[120px] sm:max-w-[200px] text-xs sm:text-sm leading-tight">{{ item.name }}</span>
                               <div class="flex items-center gap-2">
-                                <span class="px-2 py-0.5 bg-ds-bg border border-ds-border text-[10px] text-ds-text-sec rounded-sm uppercase font-bold">Size: {{ item.size }}</span>
+                                <span class="px-1.5 py-0.5 bg-ds-bg border border-ds-border text-[9px] sm:text-[10px] text-ds-text-sec rounded-sm uppercase font-bold">Size: {{ item.size }}</span>
                               </div>
                             </div>
                           </div>
                         </td>
-                        <td class="px-ds-4 py-ds-6 text-center whitespace-nowrap">
+                        <td class="px-ds-2 py-ds-4 text-center whitespace-nowrap">
                           <app-price-display [amount]="item.price" size="sm"></app-price-display>
                         </td>
-                        <td class="px-ds-4 py-ds-6">
+                        <td class="px-ds-2 py-ds-4">
                           <div class="flex items-center justify-center">
                             <div class="flex items-center bg-ds-bg border border-ds-border rounded-sm shadow-inner overflow-hidden">
-                              <button (click)="decreaseQuantity(item)" class="size-8 flex items-center justify-center hover:bg-ds-surface transition-colors text-ds-text-sec">
-                                <app-icon name="Minus" size="10"></app-icon>
+                              <button (click)="decreaseQuantity(item)" class="size-6 sm:size-8 flex items-center justify-center hover:bg-ds-surface transition-colors text-ds-text-sec">
+                                <app-icon name="Minus" size="8"></app-icon>
                               </button>
-                              <span class="w-8 text-center text-xs font-bold text-ds-text">{{ item.quantity }}</span>
-                              <button (click)="increaseQuantity(item)" class="size-8 flex items-center justify-center hover:bg-ds-surface transition-colors text-ds-text-sec border-l border-ds-border/30">
-                                <app-icon name="Plus" size="10"></app-icon>
+                              <span class="w-6 sm:w-8 text-center text-[10px] sm:text-xs font-bold text-ds-text">{{ item.quantity }}</span>
+                              <button (click)="increaseQuantity(item)" class="size-6 sm:size-8 flex items-center justify-center hover:bg-ds-surface transition-colors text-ds-text-sec border-l border-ds-border/30">
+                                <app-icon name="Plus" size="8"></app-icon>
                               </button>
                             </div>
                           </div>
                         </td>
-                        <td class="px-ds-4 py-ds-6 text-right whitespace-nowrap">
+                        <td class="px-ds-2 py-ds-4 text-right whitespace-nowrap">
                           <app-price-display class="text-ds-text font-bold" [amount]="item.price * item.quantity" size="sm"></app-price-display>
                         </td>
-                        <td class="px-ds-4 py-ds-6 text-right">
-                          <button (click)="removeItem(item)" class="size-8 flex items-center justify-center text-ds-text-muted hover:text-red-500 hover:bg-red-50 transition-all rounded-sm">
-                            <app-icon name="Trash2" size="16"></app-icon>
+                        <td class="px-ds-3 py-ds-4 text-right">
+                          <button (click)="removeItem(item)" class="size-7 sm:size-8 flex items-center justify-center text-ds-text-muted hover:text-red-500 hover:bg-red-50 transition-all rounded-sm">
+                            <app-icon name="Trash2" size="14"></app-icon>
                           </button>
                         </td>
                       </tr>
@@ -96,48 +96,42 @@
             <div class="sticky top-24 space-y-ds-8">
               <div class="bg-ds-surface p-ds-8 lg:p-ds-10 border border-ds-border relative">
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-ds-text"></div>
-                <h2 class="text-ds-text mb-ds-8">
+                <h3 class="text-ds-text mb-ds-4 sm:mb-ds-8 text-lg sm:text-xl">
                   Order Summary
-                </h2>
-                <div class="space-y-ds-4 pb-ds-8 border-b border-ds-border">
-                  <div class="flex justify-between text-ds-text-sec">
+                </h3>
+                <div class="space-y-ds-3 pb-ds-6 border-b border-ds-border">
+                  <div class="flex justify-between text-ds-text-sec text-sm">
                     <span>Subtotal</span>
                     <app-price-display [amount]="vm.summary.subtotal" size="sm"></app-price-display>
                   </div>
-                  <div class="flex justify-between text-ds-text-sec">
+                  <div class="flex justify-between text-ds-text-sec text-sm">
                     <span>Shipping Estimate</span>
-                    <span >
+                    <span class="font-medium text-xs">
                       @if (vm.summary.shipping === 0) {
-                        FREE
+                        <span class="text-ds-success uppercase tracking-wider">Free Delivery</span>
                       } @else {
                         <app-price-display [amount]="vm.summary.shipping" size="sm"></app-price-display>
                       }
                     </span>
                   </div>
                 </div>
-                <div class="flex justify-between items-center py-ds-8">
-                  <span class="text-ds-text">Total</span>
-                  <app-price-display class="text-ds-text" [amount]="vm.summary.total" size="lg"></app-price-display>
+                <div class="flex justify-between items-center py-ds-6">
+                  <span class="text-ds-text font-semibold">Total</span>
+                  <app-price-display class="text-ds-text font-bold" [amount]="vm.summary.total" size="lg"></app-price-display>
                 </div>
                 <button
-                  class="btn btn-primary w-full h-14 flex items-center justify-center gap-ds-4"
+                  class="btn btn-primary w-full h-12 sm:h-14 flex items-center justify-center gap-ds-3 sm:gap-ds-4 text-sm sm:text-base"
                   type="button"
                   routerLink="/checkout"
                 >
-                  <app-icon name="Lock" size="18"></app-icon>
+                  <app-icon name="Lock" size="16"></app-icon>
                   Proceed to Checkout
                 </button>
-
-                <div class="mt-ds-8 space-y-ds-6">
-                  <div class="flex items-center justify-center gap-ds-3 text-ds-text-muted">
-                    <app-icon name="ShieldCheck" size="14" className="text-ds-success"></app-icon>
+ 
+                <div class="mt-ds-6 space-y-ds-4">
+                  <div class="flex items-center justify-center gap-ds-2 text-[10px] sm:text-xs text-ds-text-muted">
+                    <app-icon name="ShieldCheck" size="12" className="text-ds-success"></app-icon>
                     Secure SSL Encryption
-                  </div>
-                  <div class="flex items-center justify-center gap-ds-6 opacity-30 contrast-125">
-                    <div >Visa</div>
-                    <div >Mastercard</div>
-                    <div >Bkash</div>
-                    <div >COD</div>
                   </div>
                 </div>
               </div>
