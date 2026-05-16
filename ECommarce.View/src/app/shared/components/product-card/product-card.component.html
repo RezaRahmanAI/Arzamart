@@ -15,8 +15,8 @@
     <!-- Sophisticated Badge -->
     <div class="absolute top-ds-4 left-ds-4">
       @if (hasDiscount) {
-        <span class="bg-ds-text text-ds-bg px-ds-3 py-1">
-          -৳{{ discountAmount }}
+        <span class="bg-red-500 text-white px-2 py-0.5 rounded-sm text-[10px] font-bold shadow-sm uppercase">
+          -৳{{ discountAmount }} OFF
         </span>
       }
     </div>
@@ -33,18 +33,18 @@
   </a>
 
   <!-- Content Area -->
-  <div class="pt-ds-6 pb-ds-2 flex flex-col gap-ds-4 flex-1">
+  <div class="pt-ds-6 pb-ds-2 flex flex-col items-start text-left gap-ds-4 flex-1">
     <!-- Meta Info -->
-    <div class="space-y-ds-2">
-      <h4 class="text-ds-text">
-        {{ product.name }}
-      </h4>
-      <div class="flex items-center gap-ds-3">
-        <p class="text-ds-text">৳{{ currentPrice }}</p>
+    <div class="space-y-1.5">
+      <div class="flex items-center flex-nowrap gap-2">
+        <span class="text-red-500 font-bold text-lg whitespace-nowrap">৳{{ currentPrice }}</span>
         @if (hasDiscount) {
-          <span class="text-ds-text-muted line-through">৳{{ originalPrice }}</span>
+          <span class="text-ds-text-muted line-through text-sm whitespace-nowrap opacity-70">৳{{ originalPrice }}</span>
         }
       </div>
+      <h4 class="text-ds-text font-normal leading-tight line-clamp-2">
+        {{ product.name }}
+      </h4>
     </div>
 
     <!-- Size Selector -->

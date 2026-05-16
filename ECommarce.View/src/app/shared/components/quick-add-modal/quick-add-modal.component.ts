@@ -77,16 +77,16 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
             <h2 class="text-[10px] uppercase tracking-[0.3em] text-ds-primary font-bold mb-3">Product Specifications</h2>
             <h3 class="text-2xl md:text-3xl text-[#1A1A1A] font-bold mb-4 leading-tight">{{ product.name }}</h3>
             
-            <div class="flex items-center gap-4">
+            <div class="flex items-center flex-nowrap gap-4">
               <app-price-display
                 [amount]="currentPrice"
-                class="text-2xl md:text-3xl font-bold text-[#1A1A1A]"
+                class="text-2xl md:text-3xl font-bold text-[#1A1A1A] whitespace-nowrap"
               ></app-price-display>
               @if (originalPrice > currentPrice) {
                 <app-price-display
                   [amount]="originalPrice"
                   size="sm"
-                  class="line-through text-gray-400 font-medium"
+                  class="line-through text-gray-400 font-medium whitespace-nowrap"
                 ></app-price-display>
               }
             </div>
@@ -149,7 +149,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
                 </button>
                 @if (openSections['description']) {
                   <div class="px-6 pb-6 animate-in slide-in-from-top-2 duration-300">
-                    <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-line font-medium">
+                    <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap font-medium">
                       {{ product.description }}
                     </p>
                   </div>
@@ -171,7 +171,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
                 </button>
                 @if (openSections['fabric']) {
                   <div class="px-6 pb-6 animate-in slide-in-from-top-2 duration-300">
-                    <p class="text-sm text-gray-600 leading-relaxed font-medium">{{ product.fabricAndCare }}</p>
+                    <p class="text-sm text-gray-600 leading-relaxed font-medium whitespace-pre-wrap">{{ product.fabricAndCare }}</p>
                   </div>
                 }
               </div>
@@ -191,7 +191,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
                 </button>
                 @if (openSections['shipping']) {
                   <div class="px-6 pb-6 animate-in slide-in-from-top-2 duration-300">
-                    <p class="text-sm text-gray-600 leading-relaxed font-medium">{{ product.shippingAndReturns }}</p>
+                    <p class="text-sm text-gray-600 leading-relaxed font-medium whitespace-pre-wrap">{{ product.shippingAndReturns }}</p>
                   </div>
                 }
               </div>

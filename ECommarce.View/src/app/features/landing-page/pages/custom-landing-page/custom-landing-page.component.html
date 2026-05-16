@@ -456,7 +456,7 @@
                             </div>
                             <div>
                               <h4 class="font-bold mb-1">উপাদান ও গুণমান</h4>
-                              <p class="text-sm text-gray-600">{{ data.product.description }}</p>
+                              <p class="text-sm text-gray-600 whitespace-pre-wrap">{{ data.product.description }}</p>
                             </div>
                           </div>
                         }
@@ -534,10 +534,10 @@
                             
                             <h4 class="mb-2 !text-base !font-bold">{{ p.name }}</h4>
                             
-                            <div class="flex items-center gap-3 mb-6">
-                              <span class="text-[#1E6FD9] font-bold">৳ {{ getProductPrice(p) }}</span>
+                            <div class="flex items-center flex-nowrap gap-3 mb-6">
+                              <span class="text-[#1E6FD9] font-bold whitespace-nowrap">৳ {{ getProductPrice(p) }}</span>
                               @if (p.compareAtPrice && p.compareAtPrice > p.price) {
-                                <span class="text-[#888] line-through text-xs">৳ {{ p.compareAtPrice }}</span>
+                                <span class="text-[#888] line-through text-xs whitespace-nowrap">৳ {{ p.compareAtPrice }}</span>
                               }
                             </div>
 

@@ -432,14 +432,14 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
                 }
               });
             } else {
-              this.relatedProducts = res.relatedProducts || [];
+              this.relatedProducts = [];
             }
           } catch (e) {
             console.error("Invalid sections JSON", e);
-            this.relatedProducts = res.relatedProducts || [];
+            this.relatedProducts = [];
           }
         } else {
-          this.relatedProducts = res.relatedProducts || [];
+          this.relatedProducts = [];
         }
 
         if (this.isEditMode) {
@@ -879,8 +879,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.relatedProducts = selected;
       }
     } else {
-      // Fallback to automatic related products if no custom selection is made
-      this.relatedProducts = this.data?.relatedProducts || this.defaultRelatedProducts || [];
+      // Strictly manual curation - if nothing selected, show nothing
+      this.relatedProducts = [];
     }
   }
 

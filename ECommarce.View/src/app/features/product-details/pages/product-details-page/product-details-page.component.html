@@ -90,7 +90,7 @@
             <div class="hidden lg:block space-y-ds-10 pt-ds-10 border-t border-ds-border">
               <div class="space-y-ds-4">
                 <h3 class="text-ds-text-sec">Description</h3>
-                <div class="text-ds-text prose prose-sm max-w-none" [innerHTML]="vm.product.description | safeHtml"></div>
+                <div class="text-ds-text prose prose-sm max-w-none whitespace-pre-wrap" [innerHTML]="vm.product.description | safeHtml"></div>
               </div>
 
               <!-- Accordions -->
@@ -101,7 +101,7 @@
                       <span >Details & Composition</span>
                       <app-icon name="Plus" size="16" className="text-ds-text-muted group-open:rotate-45 transition-transform"></app-icon>
                     </summary>
-                    <div class="pb-ds-8 text-ds-text-sec" [innerHTML]="vm.product.fabricAndCare | safeHtml"></div>
+                    <div class="pb-ds-8 text-ds-text-sec whitespace-pre-wrap" [innerHTML]="vm.product.fabricAndCare | safeHtml"></div>
                   </details>
                 }
                 <details class="group">
@@ -109,7 +109,7 @@
                     <span >Shipping & Care</span>
                     <app-icon name="Plus" size="16" className="text-ds-text-muted group-open:rotate-45 transition-transform"></app-icon>
                   </summary>
-                  <div class="pb-ds-8 text-ds-text-sec" [innerHTML]="vm.product.shippingAndReturns || 'Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary.' | safeHtml"></div>
+                  <div class="pb-ds-8 text-ds-text-sec whitespace-pre-wrap" [innerHTML]="(vm.product.shippingAndReturns || 'Dry clean or hand wash cold. Do not tumble dry. Iron at low temperature if necessary.') | safeHtml"></div>
                 </details>
               </div>
             </div>
@@ -226,7 +226,7 @@
             <div class="lg:hidden pt-ds-10 space-y-ds-10 border-t border-ds-border">
               <div class="space-y-ds-4">
                 <h3 class="text-ds-text-sec">Description</h3>
-                <div class="text-ds-text prose prose-sm" [innerHTML]="vm.product.description | safeHtml"></div>
+                <div class="text-ds-text prose prose-sm whitespace-pre-wrap" [innerHTML]="vm.product.description | safeHtml"></div>
               </div>
               <!-- Mobile Accordions -->
               <div class="divide-y divide-ds-border border-y border-ds-border">
@@ -236,7 +236,7 @@
                       <span >Composition</span>
                       <app-icon name="Plus" size="14" className="text-ds-text-muted group-open:rotate-45 transition-transform"></app-icon>
                     </summary>
-                    <div class="pb-ds-6 text-ds-text-sec" [innerHTML]="vm.product.fabricAndCare | safeHtml"></div>
+                    <div class="pb-ds-6 text-ds-text-sec whitespace-pre-wrap" [innerHTML]="vm.product.fabricAndCare | safeHtml"></div>
                   </details>
                 }
               </div>
