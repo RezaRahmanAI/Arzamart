@@ -252,7 +252,7 @@ export class QuickAddModalComponent {
   selectedSize: string | null = null;
   selectedImage: string | null = null;
   quantity = 1;
-  openSections: { [key: string]: boolean } = { description: true };
+  openSections: { [key: string]: boolean } = { description: false };
 
   toggleSection(section: string): void {
     this.openSections[section] = !this.openSections[section];

@@ -230,9 +230,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     city: ["", [Validators.required]],
     area: ["", [Validators.required]],
     deliveryMethodId: [0, [Validators.required, Validators.min(1)]],
-    selectedSize: ["", [Validators.required]],
-    quantity: [1, [Validators.required, Validators.min(1)]],
-    paymentMethod: ["cod", [Validators.required]]
+    selectedSize: [""],
+    quantity: [1],
+    paymentMethod: ["cod"]
   });
 
   readonly configForm = this.fb.nonNullable.group({
@@ -588,6 +588,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       if (selections.length === 0) {
         this.notification.error("Please select at least one product.");
         this.scrollToOrder();
+      } else {
+        this.notification.error("Please fill in all required fields.");
       }
       return;
     }

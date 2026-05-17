@@ -1,33 +1,4 @@
 <div class="site-container-admin mx-auto flex flex-col gap-ds-8">
-  <!-- Page Heading & Actions -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-ds-6">
-    <div>
-      <h2 class="text-ds-text">
-        Inventory
-      </h2>
-      <p class="text-ds-text-muted mt-1.5">
-        Management & global pricing
-      </p>
-    </div>
-    <div class="flex items-center gap-ds-3">
-      <button
-        class="btn btn-secondary h-11 px-ds-6"
-        type="button"
-        (click)="exportProducts()"
-       *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
-        <app-icon name="FileUp" size="14"></app-icon>
-        <span>Export</span>
-      </button>
-      <a
-        class="btn btn-primary h-11 px-ds-6"
-        routerLink="/admin/products/create"
-      >
-        <app-icon name="Plus" size="14"></app-icon>
-        <span>Add Product</span>
-      </a>
-    </div>
-  </div>
-
   <!-- Filters & Search -->
   <div class="grid grid-cols-1 md:grid-cols-12 gap-ds-3">
     <!-- Search -->
@@ -63,19 +34,28 @@
     </div>
     <!-- Status Filter -->
     <div class="md:col-span-4">
-      <div class="relative group">
-        <span class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text">
-          <app-icon name="Filter" size="16"></app-icon>
-        </span>
-        <select
-          class="form-input !pl-ds-10 !h-11 appearance-none cursor-pointer"
-          [formControl]="statusControl"
-        >
-          <option *ngFor="let tab of statusTabs">{{ tab }}</option>
-        </select>
-        <div class="absolute inset-y-0 right-ds-4 flex items-center pointer-events-none text-ds-text-muted">
-          <app-icon name="ChevronDown" size="14"></app-icon>
+      <div class="flex items-center gap-ds-3">
+        <div class="relative group flex-1">
+          <span class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text">
+            <app-icon name="Filter" size="16"></app-icon>
+          </span>
+          <select
+            class="form-input !pl-ds-10 !h-11 appearance-none cursor-pointer"
+            [formControl]="statusControl"
+          >
+            <option *ngFor="let tab of statusTabs">{{ tab }}</option>
+          </select>
+          <div class="absolute inset-y-0 right-ds-4 flex items-center pointer-events-none text-ds-text-muted">
+            <app-icon name="ChevronDown" size="14"></app-icon>
+          </div>
         </div>
+        <a
+          class="btn btn-primary h-11 px-ds-6 flex-shrink-0"
+          routerLink="/admin/products/create"
+        >
+          <app-icon name="Plus" size="14"></app-icon>
+          <span>Add Product</span>
+        </a>
       </div>
     </div>
   </div>

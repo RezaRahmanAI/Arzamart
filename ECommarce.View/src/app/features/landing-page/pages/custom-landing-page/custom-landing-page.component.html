@@ -642,8 +642,13 @@
                           </div>
 
                           <button type="submit" [disabled]="isOrdering"
-                                  class="w-full h-16 bg-[#E52222] text-white shadow-[0_15px_35px_rgba(229,34,34,0.3)] hover:-translate-y-1 transition-all active:scale-[0.98]">
-                            অর্ডার সম্পন্ন করুন
+                                  class="w-full h-16 bg-[#E52222] text-white shadow-[0_15px_35px_rgba(229,34,34,0.3)] hover:-translate-y-1 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+                            @if (isOrdering) {
+                              <app-icon name="Loader2" size="20" className="animate-spin inline-block mr-2"></app-icon>
+                              <span>অর্ডার প্রক্রিয়াকরণ...</span>
+                            } @else {
+                              <span>অর্ডার সম্পন্ন করুন</span>
+                            }
                           </button>
                         </form>
 
