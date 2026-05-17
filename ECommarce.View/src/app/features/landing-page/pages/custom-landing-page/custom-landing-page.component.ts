@@ -16,7 +16,7 @@ import { SiteSettingsService } from "../../../../core/services/site-settings.ser
 import { SettingsService } from "../../../../admin/services/settings.service";
 import { DeliveryMethod } from "../../../../admin/models/settings.models";
 import { ProductService } from "../../../../core/services/product.service";
-import { of, combineLatest } from "rxjs";
+import { of, combineLatest, forkJoin } from "rxjs";
 import { map, catchError, debounceTime, distinctUntilChanged, filter, switchMap } from "rxjs/operators";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
@@ -413,48 +413,33 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.data = res;
         this.selectedImage = res.product?.imageUrl || "";
         this.deliveryMethods = methods;
-        this.isLoading = false;
-        
-        // Initialize main product selection
+
         if (res.product) {
-          this.updateSelections(res.product, 1, ""); // No default size
+          this.updateSelections(res.product, 1, "");
         }
 
         if (res.config?.sectionsJson) {
           try {
             this.sections = JSON.parse(res.config.sectionsJson);
             this.configForm.patchValue({ sectionsJson: res.config.sectionsJson });
-            
-            // Check for custom products and fetch if needed
-            const selectSection = this.sections.find(s => s.type === "product-select");
-            const customIds = selectSection?.settings?.customProductIds as number[] | undefined;
-            if (customIds && customIds.length > 0) {
-              this.productService.getProducts({ ids: customIds.join(","), pageSize: 100 }).subscribe({
-                next: (pRes) => {
-                  this.relatedProducts = pRes.data.filter(p => p.id !== res.product?.id);
-                }
-              });
-            } else {
-              this.relatedProducts = [];
-            }
           } catch (e) {
             console.error("Invalid sections JSON", e);
-            this.relatedProducts = [];
           }
-        } else {
-          this.relatedProducts = [];
         }
 
         if (this.isEditMode) {
           this.loadAllProducts();
         }
+
         if (res.product?.variants?.length > 0) {
-          this.orderForm.patchValue({ selectedSize: "" }); // No default size
+          this.orderForm.patchValue({ selectedSize: "" });
         }
+
         if (methods.length > 0) {
           const firstActive = methods.find(m => m.isActive) || methods[0];
           this.orderForm.patchValue({ deliveryMethodId: firstActive.id });
         }
+
         if (res.config) {
           this.configForm.patchValue({
             ...res.config,
@@ -466,30 +451,38 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
             this.startRelativeTimer(res.config.productId, res.config.relativeTimerTotalMinutes);
           }
         }
-        if (res.product?.id) {
-          this.reviewService.getReviewsByProductId(res.product.id).subscribe(reviews => {
-            this.productReviews = reviews;
-          });
-        }
 
-        if (res.product) {
-          const nameParts = (res.product.name || "").trim().split(" ");
-          const nameCode = (nameParts.length > 0 && nameParts[0].length >= 3) ? nameParts[0] : undefined;
+        // Show page immediately with essential data
+        this.isLoading = false;
 
-          this.productService.getRelatedProducts(
-            undefined, 
-            nameCode ? undefined : res.product.categoryId, 
-            nameCode ? undefined : res.product.productGroupId, 
+        // Start auto-slide right away (only needs product.images, already loaded)
+        this.startAutoSlide();
+
+        // Fire all non-critical API calls in parallel
+        const selectSection = this.sections.find(s => s.type === "product-select");
+        const customIds = selectSection?.settings?.customProductIds as number[] | undefined;
+        const nameParts = (res.product?.name || "").trim().split(" ");
+        const nameCode = (nameParts.length > 0 && nameParts[0].length >= 3) ? nameParts[0] : undefined;
+
+        forkJoin({
+          reviews: res.product?.id ? this.reviewService.getReviewsByProductId(res.product.id) : of([]),
+          customProducts: customIds?.length ? this.productService.getProducts({ ids: customIds.join(","), pageSize: 100 }) : of({ data: [] as Product[] }),
+          related: res.product ? this.productService.getRelatedProducts(
+            undefined,
+            nameCode ? undefined : res.product.categoryId,
+            nameCode ? undefined : res.product.productGroupId,
             12,
             nameCode
-          ).subscribe({
-            next: (related) => {
-              this.defaultRelatedProducts = related.data.filter(p => p.id !== res.product.id);
-              this.refreshRelatedProducts();
-              this.startAutoSlide();
-            }
-          });
-        }
+          ) : of({ data: [] as Product[] })
+        }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+          next: (result) => {
+            this.productReviews = result.reviews;
+            this.defaultRelatedProducts = result.related.data.filter(p => p.id !== res.product?.id);
+            this.relatedProducts = result.customProducts.data.length > 0
+              ? result.customProducts.data.filter(p => p.id !== res.product?.id)
+              : [];
+          }
+        });
       },
       error: (err) => {
         this.isLoading = false;

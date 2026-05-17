@@ -73,7 +73,7 @@ export class CheckoutPageComponent {
     address: ["", [Validators.required, Validators.minLength(5)]],
     city: [""],
     area: [""],
-    deliveryMethodId: [0, Validators.required],
+    deliveryMethodId: [0, Validators.min(0)],
     paymentMethod: ["cod", Validators.required],
   });
 
@@ -397,6 +397,11 @@ export class CheckoutPageComponent {
       this.filteredAreas = [...this.areas];
       this.areaSearch = this.checkoutForm.get('area')?.value || "";
     }
+  }
+
+  getSelectedMethod(methods: DeliveryMethod[]): DeliveryMethod | undefined {
+    const id = this.checkoutForm.get('deliveryMethodId')?.value;
+    return methods.find(m => m.id === id);
   }
 
   trackCartItem(_: number, item: CartItem): string {

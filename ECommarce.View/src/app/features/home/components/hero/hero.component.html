@@ -49,7 +49,7 @@
     </div>
 
     <!-- Spotlight Section -->
-    <div class="lg:col-span-4 bg-ds-accent relative overflow-hidden flex flex-col justify-center p-ds-10 text-ds-hero-text border border-ds-border">
+    <div class="lg:col-span-4 bg-ds-accent relative overflow-hidden flex flex-col justify-end p-ds-10 lg:p-ds-16 text-ds-hero-text border border-ds-border">
       @if (spotlightSlide) {
         <div class="absolute inset-0 bg-cover bg-center opacity-40 transition-transform duration-[2000ms] hover:scale-110" 
              [style.background-image]="'url(' + imageUrlService.getImageUrl(spotlightSlide.image) + ')'"></div>

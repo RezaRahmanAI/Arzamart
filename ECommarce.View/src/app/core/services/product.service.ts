@@ -22,6 +22,23 @@ export class ProductService {
   private readonly adminBaseUrl = "/admin/products";
 
   private readonly refreshSubject = new BehaviorSubject<void>(void 0);
+  private readonly cache = new Map<string, { data: any; expires: number }>();
+  private readonly CACHE_TTL = 5 * 60 * 1000;
+
+  private getCached<T>(key: string): T | null {
+    const entry = this.cache.get(key);
+    if (entry && Date.now() < entry.expires) return entry.data as T;
+    this.cache.delete(key);
+    return null;
+  }
+
+  private setCache<T>(key: string, data: T): void {
+    if (this.cache.size > 50) {
+      const first = this.cache.keys().next().value;
+      if (first) this.cache.delete(first);
+    }
+    this.cache.set(key, { data, expires: Date.now() + this.CACHE_TTL });
+  }
 
   // Reactive Data Streams
   readonly homeData$ = this.refreshSubject.pipe(
@@ -70,6 +87,7 @@ export class ProductService {
   }
 
   refreshData(): void {
+    this.cache.clear();
     this.refreshSubject.next();
   }
 
@@ -127,8 +145,14 @@ export class ProductService {
     if (searchTerm) {
       params.searchTerm = searchTerm;
     }
+
+    const cacheKey = `related_${JSON.stringify(params)}`;
+    const cached = this.getCached<Pagination<Product>>(cacheKey);
+    if (cached) return of(cached);
     
-    return this.api.get<Pagination<Product>>(this.baseUrl, { params, context });
+    return this.api.get<Pagination<Product>>(this.baseUrl, { params, context }).pipe(
+      tap(data => this.setCache(cacheKey, data))
+    );
   }
 
   getById(id: number, context?: HttpContext): Observable<Product> {
@@ -138,13 +162,25 @@ export class ProductService {
   }
 
   getBySlug(slug: string, context?: HttpContext): Observable<Product> {
-    return this.withTransfer(`product_slug_${slug}`, 
+    const cacheKey = `product_slug_${slug}`;
+    const cached = this.getCached<Product>(cacheKey);
+    if (cached) return of(cached);
+
+    return this.withTransfer(cacheKey, 
       this.api.get<Product>(`${this.baseUrl}/${slug}`, { context })
+    ).pipe(
+      tap(product => this.setCache(cacheKey, product))
     );
   }
 
   getReviewsByProductId(productId: number): Observable<Review[]> {
-    return this.api.get<Review[]>(`/reviews/products/${productId}`);
+    const cacheKey = `reviews_product_${productId}`;
+    const cached = this.getCached<Review[]>(cacheKey);
+    if (cached) return of(cached);
+
+    return this.api.get<Review[]>(`/reviews/products/${productId}`).pipe(
+      tap(reviews => this.setCache(cacheKey, reviews))
+    );
   }
 
   getAdminProducts(): Observable<Product[]> {

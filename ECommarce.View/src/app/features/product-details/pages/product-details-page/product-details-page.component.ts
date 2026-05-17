@@ -326,6 +326,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
     // Size remains strictly mandatory
     if (!selectedSize && product.variants?.length) {
       this.notificationService.warn("Please select a size first");
+      this.selectionError = "Size required";
       return;
     }
 
@@ -344,7 +345,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
   buyNow(product: Product | null): void {
     this.addToCart(product);
     if (!this.selectionError) {
-      void this.router.navigateByUrl("/checkout");
+      void this.router.navigateByUrl("/cart");
     }
   }
 

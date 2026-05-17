@@ -1,280 +1,207 @@
-<div class="min-h-screen bg-ds-bg py-ds-12 lg:py-ds-20">
+<div class="min-h-screen bg-ds-bg py-6 lg:py-10">
   <div class="site-container">
     @if (vm$ | async; as vm) {
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-12 lg:gap-ds-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
         <!-- Main Content -->
-        <div class="lg:col-span-7 xl:col-span-8 space-y-ds-12">
-          <div class="flex items-center gap-ds-6 mb-ds-4">
+        <div class="lg:col-span-7 xl:col-span-8">
+          <div class="flex items-center gap-4 mb-4">
             <a routerLink="/cart" class="btn-icon !bg-ds-bg border border-ds-border text-ds-text-sec hover:text-ds-text hover:border-ds-text transition-colors">
-              <app-icon name="ChevronLeft" size="20"></app-icon>
+              <app-icon name="ChevronLeft" size="18"></app-icon>
             </a>
-            <h1 class="text-ds-text">Checkout</h1>
+            <h1 class="text-ds-text text-lg font-bold">Checkout</h1>
           </div>
 
           <!-- Autofill Prompt -->
           @if (showAutofillPrompt) {
-            <div class="p-ds-8 bg-ds-surface border border-ds-border flex flex-col sm:flex-row items-center justify-between gap-ds-8 animate-fade-in">
-              <div class="flex items-center gap-ds-6">
-                <div class="w-14 h-14 bg-ds-accent text-ds-hero-text flex items-center justify-center shrink-0">
-                  <app-icon name="User" size="28"></app-icon>
+            <div class="p-4 bg-ds-surface border border-ds-border flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in mb-6">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-ds-accent text-ds-hero-text flex items-center justify-center shrink-0">
+                  <app-icon name="User" size="20"></app-icon>
                 </div>
-                <div class="space-y-ds-1">
-                  <h3 class="text-ds-text">Welcome back</h3>
-                  <p class="text-ds-text-sec">We found your information from a previous order. Apply it now?</p>
+                <div>
+                  <h3 class="text-ds-text text-sm font-semibold">Welcome back</h3>
+                  <p class="text-ds-text-sec text-xs">We found your information from a previous order. Apply it now?</p>
                 </div>
               </div>
-              <div class="flex gap-ds-4 w-full sm:w-auto">
-                <button (click)="dismissAutofill()" class="btn btn-secondary h-11 px-ds-6 border-ds-border hover:border-ds-text">
+              <div class="flex gap-3 w-full sm:w-auto">
+                <button (click)="dismissAutofill()" class="btn btn-secondary h-9 px-4 text-sm border-ds-border hover:border-ds-text">
                   No, thanks
                 </button>
-                <button (click)="applyAutofill()" class="btn btn-primary h-11 px-ds-8">
+                <button (click)="applyAutofill()" class="btn btn-primary h-9 px-5 text-sm">
                   Yes, apply
                 </button>
               </div>
             </div>
           }
 
-          <form [formGroup]="checkoutForm" class="space-y-ds-12">
+          <form [formGroup]="checkoutForm" class="space-y-6">
             <!-- Contact Information -->
-            <section class="bg-ds-surface p-ds-8 lg:p-ds-12 border border-ds-border space-y-ds-8">
-              <div class="flex items-center gap-ds-4 mb-ds-2">
-                <div class="w-10 h-10 bg-ds-text text-ds-bg flex items-center justify-center">
-                  <app-icon name="User" size="20"></app-icon>
-                </div>
-                <h2 class="text-ds-text">Contact Information</h2>
-              </div>
+            <section class="space-y-3">
+              <h2 class="text-[#1A1A1A] font-bold">Contact Information</h2>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-8">
-                <div class="space-y-ds-3">
-                  <label class="text-ds-text-muted ml-1">Phone Number</label>
-                  <div class="relative group">
-                    <app-icon name="Phone" size="18" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
-                    <input
-                      formControlName="phone"
-                      type="tel"
-                      placeholder="017XXXXXXXX"
-                      autocomplete="tel"
-                      class="form-input !pl-12 !h-14"
-                    />
-                  </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="space-y-1.5">
+                  <label class="text-[#1A1A1A] text-sm">Phone Number</label>
+                  <input
+                    formControlName="phone"
+                    type="tel"
+                    placeholder="017XXXXXXXX"
+                    autocomplete="tel"
+                    class="w-full h-11 px-4 bg-[#F5F5F5] border-none focus:ring-2 focus:ring-[#E52222] transition-all outline-none text-sm"
+                  />
                 </div>
 
-                <div class="space-y-ds-3">
-                  <label class="text-ds-text-muted ml-1">Full Name</label>
-                  <div class="relative group">
-                    <app-icon name="User" size="18" className="absolute left-4 top-1/2 -translate-y-1/2 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
-                    <input
-                      formControlName="fullName"
-                      type="text"
-                      placeholder="e.g. Rizve Rahman"
-                      autocomplete="name"
-                      class="form-input !pl-12 !h-14"
-                    />
-                  </div>
+                <div class="space-y-1.5">
+                  <label class="text-[#1A1A1A] text-sm">Full Name</label>
+                  <input
+                    formControlName="fullName"
+                    type="text"
+                    placeholder="e.g. Rizve Rahman"
+                    autocomplete="name"
+                    class="w-full h-11 px-4 bg-[#F5F5F5] border-none focus:ring-2 focus:ring-[#E52222] transition-all outline-none text-sm"
+                  />
                 </div>
               </div>
             </section>
 
             <!-- Shipping Address -->
-            <section class="bg-ds-surface p-ds-8 lg:p-ds-12 border border-ds-border space-y-ds-8">
-              <div class="flex items-center gap-ds-4 mb-ds-2">
-                <div class="w-10 h-10 bg-ds-text text-ds-bg flex items-center justify-center">
-                  <app-icon name="MapPin" size="20"></app-icon>
-                </div>
-                <h2 class="text-ds-text">Shipping Address</h2>
-              </div>
+            <section class="space-y-3">
+              <h2 class="text-[#1A1A1A] font-bold">Shipping Address</h2>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <!-- City Selection -->
-                <div class="space-y-ds-3">
-                  <label class="text-ds-text-muted ml-1">City / District</label>
-                  <div class="relative" (click)="$event.stopPropagation()">
-                    <button
-                      type="button"
-                      (click)="toggleCityDropdown()"
-                      class="form-select !h-14 flex items-center justify-between px-ds-5"
-                    >
-                      <span [class.text-ds-text-muted]="!checkoutForm.get('city')?.value" >
-                        {{ checkoutForm.get('city')?.value || 'Select City' }}
-                      </span>
-                      <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="text-ds-text-muted"></app-icon>
-                    </button>
+                <div class="space-y-1.5 relative" (click)="$event.stopPropagation()">
+                  <label class="text-[#1A1A1A] text-sm">City / District</label>
+                  <button
+                    type="button"
+                    (click)="toggleCityDropdown()"
+                    class="w-full h-11 px-4 bg-[#F5F5F5] text-left flex items-center justify-between text-sm"
+                  >
+                    <span [class.text-[#999]]="!checkoutForm.get('city')?.value" class="truncate">
+                      {{ checkoutForm.get('city')?.value || 'Select City' }}
+                    </span>
+                    <app-icon name="ChevronDown" size="14"></app-icon>
+                  </button>
 
-                    @if (isCityDropdownOpen) {
-                      <div class="absolute z-50 left-0 right-0 mt-2 bg-ds-bg border border-ds-border shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                        <div class="p-3 border-b border-ds-border">
-                          <input
-                            type="text"
-                            placeholder="Search cities..."
-                            [value]="citySearch"
-                            (input)="filterCities($event)"
-                            class="w-full px-4 py-2 bg-ds-surface border-none outline-none text-ds-text"
-                            autofocus
-                          />
-                        </div>
-                        <ul class="max-h-60 overflow-y-auto py-2 custom-scrollbar-thin">
-                          @for (city of filteredCities; track city) {
-                            <li>
-                              <button
-                                type="button"
-                                (click)="selectCity(city)"
-                                class="w-full px-5 py-3 text-left hover:bg-ds-surface transition-colors"
-                                [class.text-ds-accent]="checkoutForm.get('city')?.value === city"
-                              >
-                                {{ city }}
-                              </button>
-                            </li>
-                          }
-                        </ul>
+                  @if (isCityDropdownOpen) {
+                    <div class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-100 shadow-2xl overflow-hidden">
+                      <div class="p-2 border-b border-gray-100">
+                        <input
+                          type="text"
+                          placeholder="Search cities..."
+                          [value]="citySearch"
+                          (input)="filterCities($event)"
+                          class="w-full px-3 py-2 bg-[#F5F5F5] border-none outline-none text-sm"
+                          autofocus
+                        />
                       </div>
-                    }
-                  </div>
+                      <ul class="max-h-40 overflow-y-auto">
+                        @for (city of filteredCities; track city) {
+                          <li>
+                            <button type="button" (click)="selectCity(city)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50">
+                              {{ city }}
+                            </button>
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  }
                 </div>
 
                 <!-- Area Selection -->
-                <div class="space-y-ds-3">
-                  <label class="text-ds-text-muted ml-1">Area / Thana</label>
-                  <div class="relative" (click)="$event.stopPropagation()">
-                    <button
-                      type="button"
-                      (click)="toggleAreaDropdown()"
-                      [disabled]="!checkoutForm.get('city')?.value"
-                      class="form-select !h-14 flex items-center justify-between px-ds-5 disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                      <span [class.text-ds-text-muted]="!checkoutForm.get('area')?.value" >
-                        {{ checkoutForm.get('area')?.value || 'Select Area' }}
-                      </span>
-                      <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="text-ds-text-muted"></app-icon>
-                    </button>
+                <div class="space-y-1.5 relative" (click)="$event.stopPropagation()">
+                  <label class="text-[#1A1A1A] text-sm">Area / Thana</label>
+                  <button
+                    type="button"
+                    (click)="toggleAreaDropdown()"
+                    [disabled]="!checkoutForm.get('city')?.value"
+                    class="w-full h-11 px-4 bg-[#F5F5F5] text-left flex items-center justify-between text-sm disabled:opacity-50"
+                  >
+                    <span [class.text-[#999]]="!checkoutForm.get('area')?.value" class="truncate">
+                      {{ checkoutForm.get('area')?.value || 'Select Area' }}
+                    </span>
+                    <app-icon name="ChevronDown" size="14"></app-icon>
+                  </button>
 
-                    @if (isAreaDropdownOpen) {
-                      <div class="absolute z-50 left-0 right-0 mt-2 bg-ds-bg border border-ds-border shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                        <div class="p-3 border-b border-ds-border">
-                          <input
-                            type="text"
-                            placeholder="Search areas..."
-                            [value]="areaSearch"
-                            (input)="filterAreas($event)"
-                            class="w-full px-4 py-2 bg-ds-surface border-none outline-none text-ds-text"
-                            autofocus
-                          />
-                        </div>
-                        <ul class="max-h-60 overflow-y-auto py-2 custom-scrollbar-thin">
-                          @for (area of filteredAreas; track area) {
-                            <li>
-                              <button
-                                type="button"
-                                (click)="selectArea(area)"
-                                class="w-full px-5 py-3 text-left hover:bg-ds-surface transition-colors"
-                                [class.text-ds-accent]="checkoutForm.get('area')?.value === area"
-                              >
-                                {{ area }}
-                              </button>
-                            </li>
-                          }
-                        </ul>
+                  @if (isAreaDropdownOpen) {
+                    <div class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-100 shadow-2xl overflow-hidden">
+                      <div class="p-2 border-b border-gray-100">
+                        <input
+                          type="text"
+                          placeholder="Search areas..."
+                          [value]="areaSearch"
+                          (input)="filterAreas($event)"
+                          class="w-full px-3 py-2 bg-[#F5F5F5] border-none outline-none text-sm"
+                          autofocus
+                        />
                       </div>
-                    }
-                  </div>
+                      <ul class="max-h-40 overflow-y-auto">
+                        @for (area of filteredAreas; track area) {
+                          <li>
+                            <button type="button" (click)="selectArea(area)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50">
+                              {{ area }}
+                            </button>
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  }
                 </div>
 
                 <!-- Detailed Address -->
-                <div class="md:col-span-2 space-y-ds-3">
-                  <label class="text-ds-text-muted ml-1">Detailed Address</label>
-                  <div class="relative group">
-                    <app-icon name="Home" size="18" className="absolute left-4 top-5 text-ds-text-muted group-focus-within:text-ds-text transition-colors"></app-icon>
-                    <textarea
-                      formControlName="address"
-                      rows="3"
-                      placeholder="House #12, Road #4, Block B..."
-                      autocomplete="street-address"
-                      class="form-textarea !pl-12 !py-4"
-                    ></textarea>
-                  </div>
+                <div class="md:col-span-2 space-y-1.5">
+                  <label class="text-[#1A1A1A] text-sm">Detailed Address</label>
+                  <textarea formControlName="address" rows="2" placeholder="House #12, Road #4, Block B..."
+                            class="w-full p-4 bg-[#F5F5F5] border-none focus:ring-2 focus:ring-[#E52222] transition-all outline-none resize-none text-sm"></textarea>
                 </div>
               </div>
             </section>
 
-            <!-- Delivery Method -->
-            <section class="bg-ds-surface p-ds-8 lg:p-ds-12 border border-ds-border space-y-ds-8">
-              <div class="flex items-center gap-ds-4 mb-ds-2">
-                <div class="w-10 h-10 bg-ds-text text-ds-bg flex items-center justify-center">
-                  <app-icon name="Truck" size="20"></app-icon>
-                </div>
-                <h2 class="text-ds-text">Delivery Method</h2>
-              </div>
-
-              <div class="grid grid-cols-1 gap-ds-4">
-                @for (method of vm.deliveryMethods; track method.id) {
-                  <div 
-                    class="relative flex items-center justify-between p-ds-6 border transition-all duration-base group cursor-pointer"
-                    [ngClass]="{
-                      'border-ds-text bg-ds-bg': checkoutForm.get('deliveryMethodId')?.value === method.id,
-                      'border-ds-border hover:border-ds-text/50': checkoutForm.get('deliveryMethodId')?.value !== method.id
-                    }"
-                  >
-                    <input
-                      type="radio"
-                      formControlName="deliveryMethodId"
-                      [value]="method.id"
-                      [id]="'method-' + method.id"
-                      class="hidden"
-                    />
-                    <label [for]="'method-' + method.id" class="absolute inset-0 z-10 cursor-pointer"></label>
-                    
-                    <div class="flex items-center gap-ds-6">
-                      <div class="w-12 h-12 bg-ds-surface border border-ds-border flex items-center justify-center text-ds-text group-hover:scale-110 transition-transform duration-base">
-                        <app-icon [name]="method.name.toLowerCase().includes('inside') ? 'Building2' : 'Truck'" size="24"></app-icon>
-                      </div>
-                      <div class="space-y-ds-1">
-                        <p class="text-ds-text">{{ method.name }}</p>
-                        <p class="text-ds-text-sec">{{ method.estimatedDays }} ESTIMATED DELIVERY</p>
-                      </div>
+            <!-- Delivery Method (read-only) -->
+            <section class="space-y-3">
+              <h2 class="text-[#1A1A1A] font-bold">Delivery Method</h2>
+              @let selectedMethod = getSelectedMethod(vm.deliveryMethods);
+              @if (selectedMethod) {
+                <div class="flex items-center justify-between p-4 bg-[#F5F5F5]">
+                  <div class="flex items-center gap-3">
+                    <app-icon name="Truck" size="18"></app-icon>
+                    <div>
+                      <p class="text-[#1A1A1A] text-sm font-medium">{{ selectedMethod.name }}</p>
+                      <p class="text-[#888] text-xs">{{ selectedMethod.estimatedDays }} ESTIMATED DELIVERY</p>
                     </div>
-                    <div class="text-right">
-                      <p class="text-ds-text">
-                        {{ method.cost === 0 ? 'FREE' : (method.cost | number: '1.0-0') + ' ৳' }}
-                      </p>
-                    </div>
-                    
-                    @if (checkoutForm.get('deliveryMethodId')?.value === method.id) {
-                      <div class="absolute -top-2 -right-2 w-6 h-6 bg-ds-text text-ds-bg flex items-center justify-center animate-in zoom-in duration-300">
-                        <app-icon name="Check" size="14"></app-icon>
-                      </div>
-                    }
                   </div>
-                }
-              </div>
+                  <span class="text-[#1A1A1A] text-sm font-bold">
+                    {{ selectedMethod.cost === 0 ? 'FREE' : (selectedMethod.cost | number: '1.0-0') + ' ৳' }}
+                  </span>
+                </div>
+              }
             </section>
           </form>
         </div>
 
         <!-- Sidebar Summary -->
         <div class="lg:col-span-5 xl:col-span-4">
-          <div class="sticky top-24 space-y-ds-8">
-            <div class="bg-ds-surface p-ds-8 lg:p-ds-12 border border-ds-border relative">
-              <div class="absolute top-0 left-0 w-full h-1.5 bg-ds-accent"></div>
+          <div class="sticky top-24 space-y-4">
+            <div class="bg-ds-surface p-5 lg:p-6 border border-ds-border relative">
+              <div class="absolute top-0 left-0 w-full h-1 bg-ds-accent"></div>
               
-              <h2 class="text-ds-text mb-ds-10">Order Summary</h2>
+              <h2 class="text-ds-text font-bold mb-5">Order Summary</h2>
 
               <!-- Items List -->
-              <div class="space-y-ds-6 max-h-[400px] overflow-y-auto pr-ds-4 custom-scrollbar-thin mb-ds-10">
+              <div class="space-y-3 max-h-[300px] overflow-y-auto pr-3 custom-scrollbar-thin mb-5">
                 @for (item of vm.cartItems; track trackCartItem($index, item)) {
-                  <div class="flex gap-ds-5">
-                    <div class="w-20 h-24 bg-ds-bg border border-ds-border overflow-hidden shrink-0">
-                      <img [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" class="w-full h-full object-cover transition-all duration-base">
-                    </div>
-                    <div class="flex-1 min-w-0 space-y-ds-1">
-                      <p class="text-ds-text">{{ item.name }}</p>
-                      <p class="text-ds-text-sec">QTY: {{ item.quantity }} • SIZE: {{ item.size }}</p>
-                      <app-price-display [amount]="item.price * item.quantity" size="sm" className="mt-2 text-ds-text"></app-price-display>
+                  <div class="flex gap-3">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-ds-text text-sm font-medium truncate">{{ item.name }}</p>
+                      <p class="text-ds-text-sec text-xs">QTY: {{ item.quantity }} @if (item.size) { • SIZE: {{ item.size }} }</p>
+                      <app-price-display [amount]="item.price * item.quantity" size="sm" className="mt-1 text-ds-text"></app-price-display>
                     </div>
                   </div>
                 }
               </div>
 
               <!-- Price Breakdown -->
-              <div class="space-y-ds-4 pt-ds-8 border-t border-ds-border">
+              <div class="space-y-2 pt-4 border-t border-ds-border text-sm">
                 <div class="flex justify-between text-ds-text-sec">
                   <span>Subtotal</span>
                   <app-price-display [amount]="vm.summary.subtotal"></app-price-display>
@@ -294,13 +221,13 @@
                   </div>
                 }
                 
-                <div class="pt-ds-8 mt-ds-4 border-t border-ds-text/10">
+                <div class="pt-4 mt-2 border-t border-ds-text/10">
                   <div class="flex justify-between items-end">
-                    <div class="space-y-ds-1">
-                      <p class="text-ds-text-muted">Total Amount</p>
-                      <app-price-display [amount]="vm.summary.total" size="lg" className="text-ds-text"></app-price-display>
+                    <div>
+                      <p class="text-ds-text-muted text-xs">Total Amount</p>
+                      <app-price-display [amount]="vm.summary.total" size="md" className="text-ds-text font-bold"></app-price-display>
                     </div>
-                    <div class="bg-ds-accent/10 px-ds-4 py-2 border border-ds-accent/20">
+                    <div class="bg-ds-accent/10 px-3 py-1.5 border border-ds-accent/20 text-xs">
                       <p class="text-ds-accent">Cash on Delivery</p>
                     </div>
                   </div>
@@ -310,31 +237,31 @@
               <button
                 (click)="placeOrder()"
                 [disabled]="isLoading || checkoutForm.invalid"
-                class="btn btn-primary w-full h-16 mt-ds-10 disabled:opacity-30 flex items-center justify-center gap-ds-4"
+                class="btn btn-primary w-full h-12 mt-5 disabled:opacity-30 flex items-center justify-center gap-3"
               >
                 @if (isLoading) {
-                  <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
+                  <app-icon name="Loader2" size="18" className="animate-spin"></app-icon>
                   <span>Processing...</span>
                 } @else {
-                  <app-icon name="ShoppingBag" size="20"></app-icon>
+                  <app-icon name="ShoppingBag" size="18"></app-icon>
                   <span>Complete Order</span>
                 }
               </button>
               
-              <p class="mt-ds-6 text-ds-text-muted text-center">
-                By completing your order, you agree to our <br>Terms of Service and Privacy Policy.
+              <p class="mt-4 text-ds-text-muted text-center text-xs">
+                By completing your order, you agree to our Terms of Service and Privacy Policy.
               </p>
             </div>
 
             <!-- Trust Badges -->
-            <div class="grid grid-cols-2 gap-ds-4">
-              <div class="p-ds-6 bg-ds-surface border border-ds-border flex items-center gap-ds-4 group">
-                <app-icon name="ShieldCheck" size="20" className="text-ds-text-muted group-hover:text-ds-text transition-colors"></app-icon>
-                <span class="text-ds-text-muted group-hover:text-ds-text transition-colors">Secure Payment</span>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-4 bg-ds-surface border border-ds-border flex items-center gap-3 group">
+                <app-icon name="ShieldCheck" size="16" className="text-ds-text-muted group-hover:text-ds-text transition-colors"></app-icon>
+                <span class="text-ds-text-muted group-hover:text-ds-text transition-colors text-xs">Secure Payment</span>
               </div>
-              <div class="p-ds-6 bg-ds-surface border border-ds-border flex items-center gap-ds-4 group">
-                <app-icon name="RotateCcw" size="20" className="text-ds-text-muted group-hover:text-ds-text transition-colors"></app-icon>
-                <span class="text-ds-text-muted group-hover:text-ds-text transition-colors">Easy Returns</span>
+              <div class="p-4 bg-ds-surface border border-ds-border flex items-center gap-3 group">
+                <app-icon name="RotateCcw" size="16" className="text-ds-text-muted group-hover:text-ds-text transition-colors"></app-icon>
+                <span class="text-ds-text-muted group-hover:text-ds-text transition-colors text-xs">Easy Returns</span>
               </div>
             </div>
           </div>

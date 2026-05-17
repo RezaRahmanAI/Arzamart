@@ -52,12 +52,11 @@ export class CheckoutService {
         deliveryMethodId: state.deliveryMethodId,
       })
       .pipe(
-        switchMap((order) => {
+        map((order) => {
           this.profileService.storePhone(state.phone);
           this.resetState();
-          return this.cartService.clearCart().pipe(
-            map(() => order.id)
-          );
+          this.cartService.clearCart().subscribe();
+          return order.id;
         })
       );
   }

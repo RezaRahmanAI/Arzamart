@@ -71,9 +71,6 @@ export class OrderService {
         map((response) => this.buildOrder(response, items, payload.summary)),
         tap((order) => {
           this.addOrderToHistory(order);
-          this.cartService.clearCart().subscribe({
-            error: (err) => console.error("Failed to clear cart after order", err)
-          });
         }),
       );
   }
