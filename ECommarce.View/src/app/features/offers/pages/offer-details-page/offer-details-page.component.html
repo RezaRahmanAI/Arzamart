@@ -14,6 +14,7 @@
     <div class="offer-content">
       <div class="offer-media">
         <img
+          loading="lazy"
           [src]="
             offer?.imageUrl ? imageUrlService.getImageUrl(offer!.imageUrl) : ''
           "

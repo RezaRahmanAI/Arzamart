@@ -26,7 +26,7 @@ import { adminCacheInterceptor } from "./app/interceptors/admin-cache.intercepto
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZoneChangeDetection({ eventCoalescing: true, runCoalescing: true }),
     provideRouter(
       appRoutes,
       withInMemoryScrolling({

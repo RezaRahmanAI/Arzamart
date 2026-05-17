@@ -81,10 +81,7 @@ public class CustomersController : ControllerBase
             return BadRequest(new { error = "Phone number is required" });
         }
 
-        // Ideally we should have a specific method in OrderService for this
-        // For MVP, we filter the results here
-        var allOrders = await _orderService.GetOrdersAsync();
-        var customerOrders = allOrders.Where(o => o.CustomerPhone == phone).ToList();
+        var customerOrders = await _orderService.GetOrdersByPhoneAsync(phone);
         
         return Ok(customerOrders);
     }

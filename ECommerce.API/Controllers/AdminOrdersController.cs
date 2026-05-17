@@ -61,10 +61,11 @@ public class AdminOrdersController : ControllerBase
         [FromQuery] int? socialMediaSourceId = null,
         [FromQuery] string? customerPhone = null,
         [FromQuery] int? productId = null,
-        [FromQuery] string? orderNumber = null)
+        [FromQuery] string? orderNumber = null,
+        [FromQuery] int pageSize = 50)
     {
-        // Keep for backward compatibility if needed, but this is the slow one
-        var (items, _) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, 1, 100000, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber);
+        pageSize = Math.Min(Math.Max(1, pageSize), 100);
+        var (items, _) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, 1, pageSize, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber);
         return Ok(items);
     }
 

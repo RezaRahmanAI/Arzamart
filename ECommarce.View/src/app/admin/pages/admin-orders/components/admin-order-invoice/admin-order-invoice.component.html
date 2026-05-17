@@ -47,12 +47,12 @@
 
             <!-- Left: Logo / Brand -->
             <div style="display:flex;flex-direction:column;gap:4px;">
-              <img *ngIf="logoUrl" [src]="logoUrl" style="height:28px;width:auto;object-fit:contain;" alt="Logo">
+              <img *ngIf="logoUrl" loading="lazy" [src]="logoUrl" style="height:28px;width:auto;object-fit:contain;" alt="Logo">
               <span *ngIf="!logoUrl" style="font-size:17px;font-weight:800;letter-spacing:-0.5px;color:#0f0e0d;">{{ settings?.websiteName || 'Store' }}</span>
               <span style="font-size:8.5px;color:#888;letter-spacing:0.3px;">{{ settings?.contactPhone }} &nbsp;·&nbsp; {{ settings?.websiteName }}</span>
               <!-- Barcode -->
               <div style="margin-top:6px;">
-                <img [src]="getBarcodeUrl(order.orderNumber)" style="height:28px;width:120px;" alt="Barcode">
+                <img loading="lazy" [src]="getBarcodeUrl(order.orderNumber)" style="height:28px;width:120px;" alt="Barcode">
                 <div style="font-size:8px;font-weight:800;letter-spacing:0.18em;color:#333;margin-top:2px;">{{ order.orderNumber }}</div>
               </div>
             </div>
@@ -90,7 +90,7 @@
                   [style.background]="even ? '#fafafa' : '#ffffff'"
                   style="border-bottom:1px solid #e8e8e8;">
                 <td style="padding:5px 7px;text-align:center;">
-                  <img *ngIf="item.imageUrl" [src]="imageUrlService.getImageUrl(item.imageUrl)" style="width:30px;height:30px;object-fit:cover;border-radius:3px;border:1px solid #e5e5e5;" alt="">
+                  <img *ngIf="item.imageUrl" loading="lazy" [src]="imageUrlService.getImageUrl(item.imageUrl)" style="width:30px;height:30px;object-fit:cover;border-radius:3px;border:1px solid #e5e5e5;" alt="">
                   <span *ngIf="!item.imageUrl" style="display:block;width:30px;height:30px;background:#f0f0f0;border-radius:3px;margin:auto;"></span>
                 </td>
                 <td style="padding:5px 7px;font-weight:600;color:#111;">{{ item.productName }}</td>

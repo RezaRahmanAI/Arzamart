@@ -54,7 +54,7 @@
             >
               <img
                 *ngIf="user.avatarUrl"
-                [src]="imageUrlService.getImageUrl(user.avatarUrl)"
+                loading="lazy" [src]="imageUrlService.getImageUrl(user.avatarUrl)"
                 class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-base"
                 [alt]="user.name"
               />

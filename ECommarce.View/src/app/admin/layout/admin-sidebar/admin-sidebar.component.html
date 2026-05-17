@@ -24,7 +24,7 @@
           <div class="relative bg-white/5 border border-white/10 p-ds-3 rounded-sm backdrop-blur-md">
             <img
               *ngIf="settings.logoUrl"
-              [src]="imageUrlService.getImageUrl(settings.logoUrl)"
+              loading="lazy" [src]="imageUrlService.getImageUrl(settings.logoUrl)"
               class="w-8 h-8 object-contain brightness-0 invert"
               alt="Logo"
             />

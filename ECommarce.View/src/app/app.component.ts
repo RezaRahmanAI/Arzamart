@@ -1,9 +1,10 @@
-import { Component, inject, OnInit, Renderer2 } from "@angular/core";
+import { Component, inject, OnInit, Renderer2, DestroyRef } from "@angular/core";
 import { AsyncPipe, DOCUMENT } from "@angular/common";
 import { Title } from "@angular/platform-browser";
 import { SiteSettingsService } from "./core/services/site-settings.service";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { filter, map, startWith } from "rxjs";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { NavbarComponent } from "./layout/navbar/navbar.component";
 import { FooterComponent } from "./layout/footer/footer.component";
@@ -36,6 +37,7 @@ export class AppComponent implements OnInit {
   private logger = inject(LoggerService);
   private titleService = inject(Title);
   private analyticsService = inject(AnalyticsService);
+  private destroyRef = inject(DestroyRef);
 
   showPublicLayout$ = this.router.events.pipe(
     filter((event) => event instanceof NavigationEnd),
@@ -67,7 +69,7 @@ export class AppComponent implements OnInit {
         }
       });
 
-    this.siteSettingsService.getSettings().subscribe((settings) => {
+    this.siteSettingsService.getSettings().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((settings) => {
       if (settings.websiteName) {
         this.titleService.setTitle(settings.websiteName);
       }

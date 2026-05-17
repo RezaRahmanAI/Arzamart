@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, OnInit, inject, DestroyRef } from "@angular/core";
 import { NgClass } from '@angular/common';
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest } from "rxjs";
@@ -26,6 +26,7 @@ export class ProductGalleryComponent implements OnInit {
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   products: Product[] = [];
   filteredProducts: Product[] = [];
@@ -141,7 +142,7 @@ export class ProductGalleryComponent implements OnInit {
 
     this.activeSubSlug = isSubCategoryRoute ? currentSlug : null;
 
-    this.categoryService.getCategories().subscribe(categories => {
+    this.categoryService.getCategories().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(categories => {
       let currentCat: Category | undefined;
 
       if (isCategoryRoute) {

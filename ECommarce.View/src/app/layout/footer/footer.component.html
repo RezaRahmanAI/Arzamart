@@ -6,7 +6,7 @@
         <div class="md:col-span-4 space-y-ds-10">
           <a routerLink="/" class="inline-block">
             <img
-              [src]="settings.logoUrl ? imageUrlService.getImageUrl(settings.logoUrl) : 'assets/logo.svg'"
+              loading="lazy" [src]="settings.logoUrl ? imageUrlService.getImageUrl(settings.logoUrl) : 'assets/logo.svg'"
               alt="Arza Mart Logo"
               class="h-8 lg:h-9 w-auto brightness-0 invert opacity-90 transition-transform duration-base hover:scale-105"
             />

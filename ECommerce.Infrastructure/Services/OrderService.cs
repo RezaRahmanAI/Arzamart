@@ -310,12 +310,24 @@ public class OrderService : IOrderService
         return _mapper.Map<Order, OrderDto>(order);
     }
 
-    public async Task<IReadOnlyList<OrderDto>> GetOrdersAsync()
+    public async Task<PaginationDto<OrderDto>> GetOrdersAsync(int page = 1, int pageSize = 10)
     {
         var spec = new BaseSpecification<Order>();
         spec.AddInclude(x => x.Items);
+        spec.ApplyPaging((page - 1) * pageSize, pageSize);
+        var total = await _unitOfWork.Repository<Order>().CountAsync(new BaseSpecification<Order>());
         var orders = await _unitOfWork.Repository<Order>().ListAsync(spec);
-            
+
+        var dtos = _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderDto>>(orders);
+        return new PaginationDto<OrderDto>(page, pageSize, total, dtos);
+    }
+
+    public async Task<IReadOnlyList<OrderDto>> GetOrdersByPhoneAsync(string phone)
+    {
+        var spec = new BaseSpecification<Order>(x => x.CustomerPhone == phone);
+        spec.AddInclude(x => x.Items);
+        var orders = await _unitOfWork.Repository<Order>().ListAsync(spec);
+
         return _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderDto>>(orders);
     }
 

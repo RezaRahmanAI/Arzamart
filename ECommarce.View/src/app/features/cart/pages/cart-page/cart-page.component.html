@@ -40,7 +40,7 @@
                           
                           <!-- Product Thumbnail Image -->
                           <div class="cart-img-wrapper shrink-0 mr-4">
-                            <img #imgRef [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" (error)="imgRef.src = 'assets/images/placeholder.png'">
+                            <img #imgRef loading="lazy" [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" (error)="imgRef.src = 'assets/images/placeholder.png'">
                           </div>
                           
                           <!-- Product Title & Optional Size -->
@@ -87,7 +87,7 @@
                   <div class="cart-card-header">
                     <!-- Image -->
                     <div class="cart-card-img">
-                      <img #mobileImgRef [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" (error)="mobileImgRef.src = 'assets/images/placeholder.png'">
+                      <img #mobileImgRef loading="lazy" [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" (error)="mobileImgRef.src = 'assets/images/placeholder.png'">
                     </div>
                     
                     <!-- Absolute Delete Cross Button -->

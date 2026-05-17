@@ -100,7 +100,7 @@
                 <div class="size-10 rounded-sm overflow-hidden bg-ds-bg border border-ds-border flex-shrink-0">
                   <img 
                     *ngIf="product.imageUrl"
-                    [src]="imageUrlService.getImageUrl(product.imageUrl)" 
+                    loading="lazy" [src]="imageUrlService.getImageUrl(product.imageUrl)" 
                     class="w-full h-full object-cover transition-all duration-base"
                   >
                 </div>

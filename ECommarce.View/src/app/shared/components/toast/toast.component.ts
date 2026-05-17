@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, OnInit, inject, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
 import {
   NotificationService,
@@ -17,6 +17,7 @@ import { AppIconComponent } from "../app-icon/app-icon.component";
   selector: "app-toast",
   standalone: true,
   imports: [NgClass, AppIconComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger("toastAnimation", [
       state("void", style({ transform: "translateY(-20px)", opacity: 0 })),

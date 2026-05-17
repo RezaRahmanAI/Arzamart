@@ -60,9 +60,6 @@ try
 
     // ── 4. Middleware Pipeline ───────────────────────────────────────
 
-    // CORS (Must be at the very top to ensure preflights and error responses have headers)
-    app.UseCors("DefaultPolicy");
-
     // Global Exception & Logging (Absolute Top)
     app.UseAppExceptionHandling();
 
@@ -84,6 +81,8 @@ try
     });
 
     app.UseRouting();
+
+    app.UseCors("DefaultPolicy");
 
     app.UseRateLimiter();
 

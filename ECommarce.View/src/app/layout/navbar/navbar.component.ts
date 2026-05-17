@@ -1,4 +1,4 @@
-import { Component, inject, HostListener } from "@angular/core";
+import { Component, inject, HostListener, ChangeDetectionStrategy } from "@angular/core";
 import { AsyncPipe } from "@angular/common";
 
 import { RouterModule, Router, NavigationEnd } from "@angular/router";
@@ -17,6 +17,7 @@ import { CustomerProfileService } from "../../core/services/customer-profile.ser
   imports: [AsyncPipe, RouterModule],
   templateUrl: "./navbar.component.html",
   styleUrl: "./navbar.component.css",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavbarComponent {
   private readonly authService = inject(AuthService);

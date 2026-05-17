@@ -31,7 +31,7 @@
         >
           <img
             *ngIf="review.userAvatar"
-            [src]="getImageUrl(review.userAvatar)"
+            loading="lazy" [src]="getImageUrl(review.userAvatar)"
             class="w-full h-full object-cover"
           />
           <app-icon
@@ -172,7 +172,7 @@
               <div class="size-12 rounded-sm bg-ds-bg border border-ds-border flex-shrink-0 overflow-hidden flex items-center justify-center">
                 <img 
                   *ngIf="reviewForm.get('userAvatar')?.value" 
-                  [src]="getImageUrl(reviewForm.get('userAvatar')?.value)" 
+                  loading="lazy" [src]="getImageUrl(reviewForm.get('userAvatar')?.value)" 
                   class="w-full h-full object-cover"
                 >
                 <app-icon 
@@ -258,7 +258,7 @@
                     class="w-full text-left px-4 py-3 hover:bg-ds-bg transition-colors flex items-center gap-4 group"
                   >
                     <div class="size-8 bg-ds-bg border border-ds-border rounded-sm overflow-hidden flex-shrink-0">
-                      <img *ngIf="product.imageUrl" [src]="getImageUrl(product.imageUrl)" class="w-full h-full object-cover">
+                      <img *ngIf="product.imageUrl" loading="lazy" [src]="getImageUrl(product.imageUrl)" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-grow min-w-0">
                       <p class="text-sm text-ds-text truncate group-hover:text-ds-primary transition-colors">{{ product.name }}</p>

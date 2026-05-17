@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, Input } from "@angular/core";
+import { Component, OnInit, OnDestroy, inject, Input, NgZone, ChangeDetectionStrategy } from "@angular/core";
  
 import { RouterModule } from "@angular/router"; 
 import { trigger, transition, style, animate } from "@angular/animations";
@@ -20,6 +20,7 @@ interface Slide {
   imports: [RouterModule, AppIconComponent],
   templateUrl: "./hero.component.html",
   styleUrl: "./hero.component.css",
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger("slideSlide", [
       transition(":enter", [
@@ -40,6 +41,7 @@ interface Slide {
 })
 export class HeroComponent implements OnInit, OnDestroy {
   public imageUrlService = inject(ImageUrlService);
+  private readonly ngZone = inject(NgZone);
 
   private _slides: Slide[] = [];
   @Input() 
@@ -85,15 +87,17 @@ export class HeroComponent implements OnInit, OnDestroy {
     // 5000ms / 16ms ≈ 312 steps
     const step = 100 / (5000 / 16);
     
-    this.timer = setInterval(() => {
-      if (!this.isPaused) {
-        this.slideProgress += step;
-        if (this.slideProgress >= 100) {
-          this.next();
-          this.slideProgress = 0;
+    this.ngZone.runOutsideAngular(() => {
+      this.timer = setInterval(() => {
+        if (!this.isPaused) {
+          this.slideProgress += step;
+          if (this.slideProgress >= 100) {
+            this.ngZone.run(() => { this.next(); });
+            this.slideProgress = 0;
+          }
         }
-      }
-    }, 16);
+      }, 16);
+    });
   }
 
   stopTimer() {

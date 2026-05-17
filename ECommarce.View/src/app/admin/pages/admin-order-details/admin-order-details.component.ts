@@ -108,7 +108,9 @@ export class AdminOrderDetailsComponent implements OnInit {
     this.ordersService
       .updateStatus(orderId, newStatus, `Status updated to ${newStatus}`)
       .subscribe(() => {
-        window.location.reload();
+        if (this.currentOrder) {
+          this.currentOrder.status = newStatus;
+        }
       });
   }
 

@@ -68,7 +68,7 @@ public class CartController : ControllerBase
         var cart = await GetOrCreateCartAsync();
         
         // Background validation and save
-        var product = await _context.Products.AnyAsync(p => p.Id == dto.ProductId && p.IsActive);
+        var product = await _context.Products.AsNoTracking().AnyAsync(p => p.Id == dto.ProductId && p.IsActive);
         if (!product) return NotFound("Product not found");
 
         var existingItem = cart.Items.FirstOrDefault(i => 
@@ -113,6 +113,7 @@ public class CartController : ControllerBase
     {
         // Faster lookup: directly fetch the item and its cart
         var item = await _context.CartItems
+            .AsNoTracking()
             .Include(i => i.Cart)
             .FirstOrDefaultAsync(i => i.Id == id);
         
@@ -277,7 +278,7 @@ public class CartController : ControllerBase
 
     private IQueryable<Cart> GetCartQuery(int? id = null)
     {
-        var query = _context.Carts.AsQueryable();
+        var query = _context.Carts.AsNoTracking().AsQueryable();
 
         if (id.HasValue)
         {

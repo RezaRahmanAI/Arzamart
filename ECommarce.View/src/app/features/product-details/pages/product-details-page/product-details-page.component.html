@@ -26,7 +26,7 @@
                     [class.border-ds-text]="i === currentImageIndex"
                     [class.border-ds-border]="i !== currentImageIndex"
                   >
-                    <img [src]="imageUrlService.getImageUrl(url)" class="w-full h-full object-cover" [class.opacity-60]="i !== currentImageIndex" />
+                    <img loading="lazy" [src]="imageUrlService.getImageUrl(url)" class="w-full h-full object-cover" [class.opacity-60]="i !== currentImageIndex" />
                   </button>
                 }
               </div>
@@ -43,7 +43,7 @@
                 <!-- Images -->
                 @for (url of vm.gallery; track url; let i = $index) {
                   <img
-                    [src]="imageUrlService.getImageUrl(url)"
+                    loading="lazy" [src]="imageUrlService.getImageUrl(url)"
                     [alt]="vm.product.name"
                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 pointer-events-none"
                     [ngClass]="{
@@ -287,7 +287,7 @@
               class="flex-shrink-0 w-full aspect-[3/4] border transition-all duration-base overflow-hidden"
               [ngClass]="i === lightboxIndex ? 'border-ds-hero-text' : 'border-ds-hero-text/20'"
             >
-              <img [src]="imageUrlService.getImageUrl(url)" class="w-full h-full object-cover" [class.opacity-60]="i !== lightboxIndex" />
+              <img loading="lazy" [src]="imageUrlService.getImageUrl(url)" class="w-full h-full object-cover" [class.opacity-60]="i !== lightboxIndex" />
             </button>
             }
           </div>
@@ -295,7 +295,7 @@
 
         <!-- Main Lightbox Image Area -->
         <div class="relative flex-1 flex items-center justify-center p-ds-4 bg-ds-bg/5 rounded-lg border border-ds-hero-text/5 overflow-hidden">
-          <img [src]="imageUrlService.getImageUrl(vm.gallery[lightboxIndex])" class="max-w-full max-h-full object-contain animate-fade-in" [alt]="vm.product.name" />
+          <img loading="lazy" [src]="imageUrlService.getImageUrl(vm.gallery[lightboxIndex])" class="max-w-full max-h-full object-contain animate-fade-in" [alt]="vm.product.name" />
 
           <!-- Nav Arrows -->
           @if (vm.gallery.length > 1) {

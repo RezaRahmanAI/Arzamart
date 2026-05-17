@@ -165,7 +165,7 @@
             >
               <div class="flex items-center gap-3">
                 <div class="size-10 bg-ds-bg rounded-sm overflow-hidden flex-shrink-0">
-                  <img [src]="getImageUrl(p.imageUrl)" class="w-full h-full object-cover">
+                  <img loading="lazy" [src]="getImageUrl(p.imageUrl)" class="w-full h-full object-cover">
                 </div>
                 <div class="flex flex-col">
                   <span class="text-ds-text group-hover/result:text-ds-accent transition-colors">{{ p.name }}</span>
@@ -185,7 +185,7 @@
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-ds-3">
                 <div class="size-10 bg-ds-bg border border-ds-border rounded-sm overflow-hidden flex-shrink-0">
-                  <img [src]="getImageUrl(p.imageUrl)" class="w-full h-full object-cover" />
+                  <img loading="lazy" [src]="getImageUrl(p.imageUrl)" class="w-full h-full object-cover" />
                 </div>
                 <div class="flex flex-col min-w-0">
                   <span class="text-ds-text truncate">{{ p.name }}</span>

@@ -112,7 +112,6 @@ public static class ServiceExtensions
         services.AddScoped<INavigationService, NavigationService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IReviewService, ReviewService>();
-        services.AddSignalR();
 
         return services;
     }

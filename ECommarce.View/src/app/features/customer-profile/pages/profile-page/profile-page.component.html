@@ -181,7 +181,7 @@
                   >
                     <div class="w-16 h-20 bg-ds-bg border border-ds-border overflow-hidden">
                       <img
-                        [src]="imageUrlService.getImageUrl(item.imageUrl)"
+                        loading="lazy" [src]="imageUrlService.getImageUrl(item.imageUrl)"
                         [alt]="item.productName"
                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-base"
                       />

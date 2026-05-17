@@ -442,36 +442,33 @@ public class AdminProductsController : ControllerBase
     [HttpGet("inventory")]
     public async Task<ActionResult<List<ProductInventoryDto>>> GetInventory()
     {
-        var spec = new BaseSpecification<Product>();
-        spec.AddInclude(x => x.Variants);
-        
-        // Performance: Use AsNoTracking indirectly via the repository if it supports it, 
-        // but here we are using ListAsync(spec).
-        var products = await _unitOfWork.Repository<Product>().ListAsync(spec);
-
-        var inventory = products.Select(p => new ProductInventoryDto
-        {
-            ProductId = p.Id,
-            ProductName = p.Name,
-            ProductSku = p.Sku ?? string.Empty,
-            ProductSlug = p.Slug ?? string.Empty,
-            ImageUrl = p.ImageUrl ?? string.Empty,
-            TotalStock = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
-            StockQuantity = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
-            Price = p.Variants.FirstOrDefault()?.Price,
-            CompareAtPrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
-            PurchaseRate = p.Variants.FirstOrDefault()?.PurchaseRate,
-            Variants = p.Variants.Select(v => new VariantInventoryDto
+        var inventory = await _context.Products
+            .AsNoTracking()
+            .Include(p => p.Variants)
+            .Select(p => new ProductInventoryDto
             {
-                VariantId = v.Id,
-                Sku = v.Sku ?? string.Empty,
-                Size = v.Size ?? string.Empty,
-                StockQuantity = v.StockQuantity,
-                Price = v.Price,
-                CompareAtPrice = v.CompareAtPrice,
-                PurchaseRate = v.PurchaseRate
-            }).ToList()
-        }).ToList();
+                ProductId = p.Id,
+                ProductName = p.Name,
+                ProductSku = p.Sku ?? string.Empty,
+                ProductSlug = p.Slug ?? string.Empty,
+                ImageUrl = p.ImageUrl ?? string.Empty,
+                TotalStock = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
+                StockQuantity = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
+                Price = p.Variants.FirstOrDefault()!.Price,
+                CompareAtPrice = p.Variants.FirstOrDefault()!.CompareAtPrice,
+                PurchaseRate = p.Variants.FirstOrDefault()!.PurchaseRate,
+                Variants = p.Variants.Select(v => new VariantInventoryDto
+                {
+                    VariantId = v.Id,
+                    Sku = v.Sku ?? string.Empty,
+                    Size = v.Size ?? string.Empty,
+                    StockQuantity = v.StockQuantity,
+                    Price = v.Price,
+                    CompareAtPrice = v.CompareAtPrice,
+                    PurchaseRate = v.PurchaseRate
+                }).ToList()
+            })
+            .ToListAsync();
 
         return Ok(inventory);
     }

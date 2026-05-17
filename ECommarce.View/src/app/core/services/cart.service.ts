@@ -23,7 +23,6 @@ import {
   UpdateCartItemDto,
 } from "../models/cart-dto.model";
 import { NotificationService } from "./notification.service";
-import { v4 as uuidv4 } from "uuid";
 import { ApiHttpClient } from "../http/http-client";
 
 @Injectable({
@@ -122,7 +121,7 @@ export class CartService {
       sessionId.length < 10 ||
       isExpired
     ) {
-      sessionId = uuidv4();
+      sessionId = crypto.randomUUID();
       this.saveSessionId(sessionId);
     } else {
       // Refresh timestamp on every active session access to extend life if active

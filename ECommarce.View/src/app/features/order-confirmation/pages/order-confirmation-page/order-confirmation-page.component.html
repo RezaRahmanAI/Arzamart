@@ -75,6 +75,7 @@
                 <div class="p-ds-8 flex gap-ds-8 transition-colors hover:bg-ds-bg/20">
                   <div class="w-24 h-32 bg-ds-bg border border-ds-border overflow-hidden shrink-0 relative">
                     <img
+                      loading="lazy"
                       class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-base"
                       [src]="imageUrlService.getImageUrl(item.imageUrl)"
                       [alt]="item.productName"

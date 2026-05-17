@@ -511,8 +511,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
         this.reviewName = "";
         this.reviewRating = 5;
 
-        // Refresh reviews
-        window.location.reload();
+        // Reviews will refresh on next product navigation
       },
       error: (err: unknown) => {
         this.isSubmittingReview = false;

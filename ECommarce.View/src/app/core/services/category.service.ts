@@ -1,18 +1,15 @@
 import { Injectable, inject } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable, shareReplay, map, of } from "rxjs";
+import { Observable, shareReplay, map } from "rxjs";
 import { Category } from "../models/category";
-import { environment } from "../../../environments/environment";
+import { ApiHttpClient } from "../http/http-client";
 
 @Injectable({
   providedIn: "root",
 })
 export class CategoryService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiBaseUrl}/categories`;
+  private readonly api = inject(ApiHttpClient);
 
-  // Dynamic stream from API
-  readonly categories$ = this.http.get<Category[]>(this.baseUrl).pipe(
+  readonly categories$ = this.api.get<Category[]>("/categories").pipe(
     shareReplay(1)
   );
 

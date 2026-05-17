@@ -94,7 +94,7 @@
                   >
                     <ng-container *ngIf="logoPreviewUrl; else logoPlaceholder">
                       <img
-                        [src]="logoPreviewUrl"
+                        loading="lazy" [src]="logoPreviewUrl"
                         class="w-full h-full object-contain transition-all"
                         alt="Store Logo"
                       />
@@ -153,7 +153,7 @@
                   >
                     <ng-container *ngIf="sizeGuidePreviewUrl; else sizeGuidePlaceholder">
                       <img
-                        [src]="sizeGuidePreviewUrl"
+                        loading="lazy" [src]="sizeGuidePreviewUrl"
                         class="w-full h-full object-contain transition-all"
                         alt="Size Guide"
                       />

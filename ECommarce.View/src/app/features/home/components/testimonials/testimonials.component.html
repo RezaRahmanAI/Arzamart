@@ -42,6 +42,7 @@
             >
               <img
                 *ngIf="review.customerAvatar"
+                loading="lazy"
                 class="h-full w-full object-cover"
                 [alt]="review.customerName"
                 [src]="imageUrlService.getImageUrl(review.customerAvatar)"

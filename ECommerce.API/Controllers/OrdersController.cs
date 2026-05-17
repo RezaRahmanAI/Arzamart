@@ -41,7 +41,7 @@ public class OrdersController : ControllerBase
         }
 
         // Check if customer is suspicious
-        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Phone == orderDto.Phone);
+        var customer = await _context.Customers.AsNoTracking().FirstOrDefaultAsync(c => c.Phone == orderDto.Phone);
         if (customer != null && customer.IsSuspicious)
         {
             return StatusCode(403, new { success = false, message = "Your account has been suspended. Please contact support." });
@@ -98,8 +98,11 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<OrderDto>>> GetOrders()
+    public async Task<ActionResult<PaginationDto<OrderDto>>> GetOrders(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
     {
-        return Ok(await _orderService.GetOrdersAsync());
+        pageSize = Math.Min(Math.Max(1, pageSize), 100);
+        return Ok(await _orderService.GetOrdersAsync(page, pageSize));
     }
 }

@@ -46,7 +46,7 @@
                     <div class="flex items-center gap-ds-4">
                       <div class="size-10 rounded-sm bg-ds-bg border border-ds-border overflow-hidden flex-shrink-0 grayscale group-hover:grayscale-0 transition-all duration-500">
                         @if (cat.imageUrl) {
-                          <img [src]="getImageUrl(cat.imageUrl)" class="w-full h-full object-cover" [alt]="cat.name" />
+                          <img loading="lazy" [src]="getImageUrl(cat.imageUrl)" class="w-full h-full object-cover" [alt]="cat.name" />
                         } @else {
                           <div class="w-full h-full flex items-center justify-center text-ds-text-muted/20">
                             <app-icon name="Image" size="16"></app-icon>
@@ -148,7 +148,7 @@
             <div class="flex items-center gap-ds-6 p-ds-4 bg-ds-bg/30 rounded-sm border border-ds-border">
               <div class="size-16 rounded-sm bg-ds-surface border border-ds-border relative overflow-hidden flex items-center justify-center shadow-sm">
                 @if (getPreviewUrl()) {
-                  <img [src]="getPreviewUrl()" class="w-full h-full object-cover grayscale" alt="Preview" />
+                  <img loading="lazy" [src]="getPreviewUrl()" class="w-full h-full object-cover grayscale" alt="Preview" />
                 } @else {
                   <app-icon name="Image" size="20" className="text-ds-text-muted/20"></app-icon>
                 }
