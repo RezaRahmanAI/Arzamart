@@ -24,10 +24,10 @@
     <!-- Quick Shop Trigger (Hidden on Mobile) -->
     <div class="absolute bottom-0 left-0 right-0 p-ds-4 translate-y-full group-hover:translate-y-0 transition-transform duration-base hidden lg:block">
       <button 
-        (click)="orderNow($event)"
+        (click)="viewDetails($event)"
         class="w-full h-11 bg-ds-bg/90 backdrop-blur-sm text-ds-text border border-ds-border hover:bg-ds-text hover:text-ds-bg hover:border-ds-text transition-all"
       >
-        Quick Order
+        Go to Details Page
       </button>
     </div>
   </a>
@@ -65,8 +65,8 @@
       </div>
     }
 
-    <!-- Mobile Actions (Always Visible) -->
-    <div class="mt-auto lg:hidden w-full flex items-center gap-2">
+    <!-- Actions (Always Visible) -->
+    <div class="mt-auto w-full flex items-center gap-2">
       <button
         (click)="orderNow($event)"
         class="flex-1 h-11 bg-ds-accent text-ds-bg font-bold rounded-md transition-all active:scale-95 flex items-center justify-center"
@@ -84,7 +84,7 @@
         @if (isAdding) {
           <span class="size-4 border-2 border-ds-accent/30 border-t-ds-accent rounded-full animate-spin"></span>
         } @else {
-          <app-icon [name]="isInCart ? 'Check' : 'Heart'" [size]="isInCart ? 16 : 20"></app-icon>
+          <app-icon [name]="isInCart ? 'Check' : 'ShoppingCart'" [size]="isInCart ? 16 : 20"></app-icon>
         }
       </button>
     </div>

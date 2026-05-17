@@ -145,7 +145,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     if (!this.productSelections[product.id]) {
       this.productSelections[product.id] = {
         quantity: 0,
-        selectedSize: size || (product.variants?.[0]?.size || ""),
+        selectedSize: size || "",
         product: product
       };
     }
@@ -304,7 +304,14 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.orderForm.patchValue({ area: "" });
         this.areaSearch = "";
         this.citySearch = city;
-        this.updateDeliveryMethodByCity(city);
+        this.updateDeliveryMethod(city, "");
+      });
+
+    this.orderForm.controls.area.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((area) => {
+        const city = this.orderForm.controls.city.value;
+        this.updateDeliveryMethod(city, area);
       });
 
     this.orderForm.controls.phone.valueChanges
@@ -324,7 +331,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
             this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
             this.filteredAreas = [...this.areas];
             this.citySearch = customer.city;
-            this.updateDeliveryMethodByCity(customer.city);
+            this.updateDeliveryMethod(customer.city, customer.area || "");
           }
           this.orderForm.patchValue({
             fullName: customer.name,
@@ -371,7 +378,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.areas = BANGLADESH_LOCATIONS[details.city] || [];
         this.filteredAreas = [...this.areas];
         this.citySearch = details.city;
-        this.updateDeliveryMethodByCity(details.city);
+        this.updateDeliveryMethod(details.city, details.area || "");
       }
       this.orderForm.patchValue({
         fullName: details.fullName,
@@ -410,11 +417,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         
         // Initialize main product selection
         if (res.product) {
-          this.updateSelections(res.product, 1);
-          if (res.product.variants?.length > 0) {
-            const defaultVariant = res.product.variants.find(v => v.isDefault) || res.product.variants[0];
-            this.updateSelections(res.product, 1, defaultVariant.size || "");
-          }
+          this.updateSelections(res.product, 1, ""); // No default size
         }
 
         if (res.config?.sectionsJson) {
@@ -446,8 +449,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
           this.loadAllProducts();
         }
         if (res.product?.variants?.length > 0) {
-          const defaultVariant = res.product.variants.find(v => v.isDefault) || res.product.variants[0];
-          this.orderForm.patchValue({ selectedSize: defaultVariant.size || "" });
+          this.orderForm.patchValue({ selectedSize: "" }); // No default size
         }
         if (methods.length > 0) {
           const firstActive = methods.find(m => m.isActive) || methods[0];
@@ -573,6 +575,14 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     const selections = this.selectedProductList;
+    
+    // Check if any selected product is missing a size
+    const itemsMissingSize = selections.filter(s => (s.product.variants?.length ?? 0) > 0 && !s.selectedSize);
+    if (itemsMissingSize.length > 0) {
+      this.notification.warn(`Please select a size for ${itemsMissingSize[0].product.name}`);
+      return;
+    }
+
     if (this.orderForm.invalid || !this.data || selections.length === 0) {
       this.orderForm.markAllAsTouched();
       if (selections.length === 0) {
@@ -702,8 +712,10 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     this.filteredAreas = this.areas.filter(a => a.toLowerCase().includes(query));
   }
 
-  private updateDeliveryMethodByCity(city: string): void {
-    const isDhaka = city.toLowerCase() === "dhaka";
+  private updateDeliveryMethod(city: string, area: string): void {
+    const outskirts = ["keraniganj", "savar", "ashulia", "asulia", "dohar"];
+    const isOutskirts = area && outskirts.includes(area.toLowerCase());
+    const isDhaka = city.toLowerCase() === "dhaka" && !isOutskirts;
     const method = this.deliveryMethods.find((m) =>
       isDhaka ? m.name.toLowerCase().includes("inside") : m.name.toLowerCase().includes("outside"),
     );

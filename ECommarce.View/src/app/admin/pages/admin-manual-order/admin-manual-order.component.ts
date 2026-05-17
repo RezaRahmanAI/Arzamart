@@ -303,17 +303,24 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     );
   }
 
+  private updateDeliveryMethod(city: string, area: string): void {
+    if (this.deliveryMethods.length >= 2) {
+      const outskirts = ["keraniganj", "savar", "ashulia", "asulia", "dohar"];
+      const isOutskirts = area && outskirts.includes(area.toLowerCase());
+      const isInsideDhaka = city.toLowerCase() === "dhaka" && !isOutskirts;
+      this.orderForm.patchValue({ 
+        deliveryMethodId: isInsideDhaka ? this.deliveryMethods[0].id : this.deliveryMethods[1].id 
+      });
+    }
+  }
+
   selectCity(city: string) {
     this.orderForm.patchValue({ city, area: "" });
     this.isCityDropdownOpen = false;
     this.citySearch = "";
     
     // Auto-select delivery method
-    if (this.deliveryMethods.length >= 2) {
-      // 0 is usually Inside Dhaka, 1 is Outside Dhaka
-      const isInsideDhaka = city.toLowerCase() === "dhaka";
-      this.orderForm.patchValue({ deliveryMethodId: isInsideDhaka ? this.deliveryMethods[0].id : this.deliveryMethods[1].id });
-    }
+    this.updateDeliveryMethod(city, "");
 
     // Update areas based on selected city
     this.areas = (BANGLADESH_LOCATIONS as any)[city] || [];
@@ -324,6 +331,10 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     this.orderForm.patchValue({ area });
     this.isAreaDropdownOpen = false;
     this.areaSearch = "";
+
+    // Auto-select delivery method
+    const city = this.orderForm.get("city")?.value || "";
+    this.updateDeliveryMethod(city, area);
   }
 
 

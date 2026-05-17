@@ -70,6 +70,7 @@ public class ProductCreateDto
 
 public class ComboItemDto
 {
+    public int? Id { get; set; }
     public int ProductId { get; set; }
     public int? ProductVariantId { get; set; }
     public int Quantity { get; set; } = 1;
@@ -144,6 +145,7 @@ public class ProductUpdateDto
 
 public class ProductVariantEditDto
 {
+    public int? Id { get; set; }
     public string Label { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public decimal? SalePrice { get; set; }

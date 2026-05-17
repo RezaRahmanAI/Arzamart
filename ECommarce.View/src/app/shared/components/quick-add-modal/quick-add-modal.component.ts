@@ -5,6 +5,7 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
 import { PriceDisplayComponent } from "../price-display/price-display.component";
 import { AppIconComponent } from "../app-icon/app-icon.component";
 import { sortProductSizes } from "../../../core/constants/product.constants";
+import { NotificationService } from "../../../core/services/notification.service";
 
 @Component({
   selector: "app-quick-add-modal",
@@ -225,8 +226,7 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
               <div class="flex-1 pt-4 sm:pt-0">
                 <button
                   (click)="confirm()"
-                  [disabled]="availableSizes.length > 0 && !selectedSize"
-                  class="w-full h-16 bg-[#3B4FD8] text-white transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-3 rounded-2xl shadow-[0_15px_30px_rgba(59,79,216,0.3)] font-bold text-base group"
+                  class="w-full h-16 bg-[#3B4FD8] text-white transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 rounded-2xl shadow-[0_15px_30px_rgba(59,79,216,0.3)] font-bold text-base group"
                 >
                   <app-icon name="CheckCircle" size="20" class="group-hover:animate-bounce"></app-icon>
                   Confirm Selection
@@ -316,14 +316,17 @@ export class QuickAddModalComponent {
     }
   }
 
-  confirm(): void {
-    const sizeValid = this.availableSizes.length === 0 || !!this.selectedSize;
+  readonly notification = inject(NotificationService);
 
-    if (sizeValid) {
-      this.added.emit({
-        size: this.selectedSize || undefined,
-        quantity: this.quantity,
-      });
+  confirm(): void {
+    if (this.availableSizes.length > 0 && !this.selectedSize) {
+      this.notification.warn("Please select a size first");
+      return;
     }
+
+    this.added.emit({
+      size: this.selectedSize || undefined,
+      quantity: this.quantity,
+    });
   }
 }

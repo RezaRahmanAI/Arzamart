@@ -118,7 +118,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
         new Set(product.variants?.map((v) => v.size).filter((s): s is string => !!s)),
       );
       const sortedSizes = sortProductSizes(sizes);
-      this.selectedSizeSubject.next(sortedSizes[0] ?? null);
+      this.selectedSizeSubject.next(null); // No size selected by default as per user request
 
       this.quantitySubject.next(1);
       this.selectedMediaSubject.next(null); // Reset or set to first image
@@ -208,15 +208,20 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
           ? selectedVariant.stockQuantity
           : product.stockQuantity;
 
-        // Use variant price if available and > 0, fallback to product price
+        const sortedVariants = product.variants ? sortProductSizes(product.variants.map(v => v.size || ""))
+          .map(size => product.variants.find(v => (v.size || "") === size)!)
+          .filter(v => !!v) : [];
+        const smallestVariant = sortedVariants[0];
+
+        // Use variant price if available and > 0, fallback to smallest variant or product price
         const currentPrice =
           (selectedVariant?.price ?? 0) > 0
             ? selectedVariant!.price!
-            : product.price;
+            : (smallestVariant?.price ?? product.price);
         const currentCompareAtPrice =
           (selectedVariant?.compareAtPrice ?? 0) > 0
             ? selectedVariant!.compareAtPrice!
-            : product.compareAtPrice;
+            : (smallestVariant?.compareAtPrice ?? product.compareAtPrice);
 
         return {
           product,
@@ -320,7 +325,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
 
     // Size remains strictly mandatory
     if (!selectedSize && product.variants?.length) {
-      this.selectionError = "Please select a size before adding to cart.";
+      this.notificationService.warn("Please select a size first");
       return;
     }
 

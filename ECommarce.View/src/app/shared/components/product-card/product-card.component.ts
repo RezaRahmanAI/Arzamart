@@ -1,6 +1,6 @@
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
-import { RouterLink } from "@angular/router";
+import { RouterLink, Router } from "@angular/router";
 
 import {
   Product,
@@ -12,6 +12,7 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
 import { CartService } from "../../../core/services/cart.service";
 import { QuickAddModalComponent } from "../quick-add-modal/quick-add-modal.component";
 import { AppIconComponent } from "../app-icon/app-icon.component";
+import { NotificationService } from "../../../core/services/notification.service";
 import { sortProductSizes } from "../../../core/constants/product.constants";
 
 @Component({
@@ -38,14 +39,13 @@ export class ProductCardComponent {
   constructor(
     public readonly imageUrlService: ImageUrlService,
     private readonly cartService: CartService,
+    private readonly notificationService: NotificationService,
+    private readonly router: Router,
   ) {}
 
   ngOnInit() {
-    // Select the default or smallest size on init
-    const defaultVariant = this.smallestVariant;
-    if (defaultVariant && defaultVariant.size) {
-      this.selectedSize = defaultVariant.size;
-    }
+    // No size selected by default as per user request
+    this.selectedSize = null;
   }
 
   get mainImage(): string | null {
@@ -218,7 +218,7 @@ export class ProductCardComponent {
 
     const sizes = this.availableSizes;
     if (sizes.length > 0 && !this.selectedSize) {
-      this.showQuickAdd = true;
+      this.notificationService.warn("Please select a size first");
       return;
     }
 
@@ -276,7 +276,17 @@ export class ProductCardComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    this.isOrdering = true;
-    this.showQuickAdd = true;
+    if (this.product.slug) {
+      this.router.navigate(["/product", this.product.slug]);
+    }
+  }
+
+  viewDetails(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (this.product.slug) {
+      this.router.navigate(["/product", this.product.slug]);
+    }
   }
 }

@@ -119,7 +119,7 @@ export class LandingPageComponent implements OnInit {
         this.areas = BANGLADESH_LOCATIONS[details.city] || [];
         this.filteredAreas = [...this.areas];
         this.citySearch = details.city;
-        this.updateDeliveryMethodByCity(details.city);
+        this.updateDeliveryMethod(details.city, details.area || "");
       }
 
       this.checkoutForm.patchValue({
@@ -184,7 +184,7 @@ export class LandingPageComponent implements OnInit {
             const initialCity = this.checkoutForm.controls.city.value;
             this.areas = BANGLADESH_LOCATIONS[initialCity] || [];
             this.filteredAreas = [...this.areas];
-            this.updateDeliveryMethodByCity(initialCity);
+            this.updateDeliveryMethod(initialCity, "");
           }
         },
         error: () => {
@@ -217,7 +217,7 @@ export class LandingPageComponent implements OnInit {
             this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
             this.filteredAreas = [...this.areas];
             this.citySearch = customer.city;
-            this.updateDeliveryMethodByCity(customer.city);
+            this.updateDeliveryMethod(customer.city, customer.area || "");
           }
 
           this.checkoutForm.patchValue(
@@ -251,7 +251,14 @@ export class LandingPageComponent implements OnInit {
         this.checkoutForm.patchValue({ area: "" });
         this.areaSearch = "";
         this.citySearch = city;
-        this.updateDeliveryMethodByCity(city);
+        this.updateDeliveryMethod(city, "");
+      });
+
+    this.checkoutForm.controls.area.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((area) => {
+        const city = this.checkoutForm.controls.city.value;
+        this.updateDeliveryMethod(city, area);
       });
 
     this.checkoutForm.controls.address.valueChanges
@@ -281,8 +288,10 @@ export class LandingPageComponent implements OnInit {
   }
 
 
-  private updateDeliveryMethodByCity(city: string): void {
-    const isDhaka = city.toLowerCase() === "dhaka";
+  private updateDeliveryMethod(city: string, area: string): void {
+    const outskirts = ["keraniganj", "savar", "ashulia", "asulia", "dohar"];
+    const isOutskirts = area && outskirts.includes(area.toLowerCase());
+    const isDhaka = city.toLowerCase() === "dhaka" && !isOutskirts;
     const method = this.deliveryMethods.find((m) =>
       isDhaka
         ? m.name.toLowerCase().includes("inside")
@@ -453,8 +462,10 @@ export class LandingPageComponent implements OnInit {
     }
   }
 
-  private calculateShipping(subtotal: number, city: string): number {
-    const isInsideDhaka = city.toLowerCase().includes("dhaka");
+  private calculateShipping(subtotal: number, city: string, area: string): number {
+    const outskirts = ["keraniganj", "savar", "ashulia", "asulia", "dohar"];
+    const isOutskirts = area && outskirts.includes(area.toLowerCase());
+    const isInsideDhaka = city.toLowerCase().includes("dhaka") && !isOutskirts;
     return isInsideDhaka ? 60 : 120;
   }
 
@@ -501,7 +512,7 @@ export class LandingPageComponent implements OnInit {
 
     const cartItems = [cartItem];
     const subtotal = this.currentPrice * form.quantity;
-    const shipping = this.calculateShipping(subtotal, form.city);
+    const shipping = this.calculateShipping(subtotal, form.city, form.area);
     const summary: CartSummary = {
       itemsCount: form.quantity,
       subtotal: subtotal,

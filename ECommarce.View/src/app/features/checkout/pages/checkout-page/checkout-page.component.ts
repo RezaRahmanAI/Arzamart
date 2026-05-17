@@ -177,7 +177,7 @@ export class CheckoutPageComponent {
           this.areas = BANGLADESH_LOCATIONS[state.city] || [];
           this.filteredAreas = [...this.areas];
           this.citySearch = state.city;
-          this.updateDeliveryMethodByCity(state.city);
+          this.updateDeliveryMethod(state.city, state.area || "");
         }
         if (state.area) {
           this.areaSearch = state.area;
@@ -196,7 +196,14 @@ export class CheckoutPageComponent {
         this.checkoutForm.patchValue({ area: "" });
         this.areaSearch = "";
         this.citySearch = city;
-        this.updateDeliveryMethodByCity(city);
+        this.updateDeliveryMethod(city, "");
+      });
+
+    this.checkoutForm.controls.area.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((area) => {
+        const city = this.checkoutForm.controls.city.value;
+        this.updateDeliveryMethod(city, area);
       });
 
     this.checkoutForm.controls.phone.valueChanges
@@ -224,7 +231,7 @@ export class CheckoutPageComponent {
             this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
             this.filteredAreas = [...this.areas];
             this.citySearch = customer.city;
-            this.updateDeliveryMethodByCity(customer.city);
+            this.updateDeliveryMethod(customer.city, customer.area || "");
           }
           this.checkoutForm.patchValue(
             {
@@ -277,7 +284,7 @@ export class CheckoutPageComponent {
         this.areas = BANGLADESH_LOCATIONS[details.city] || [];
         this.filteredAreas = [...this.areas];
         this.citySearch = details.city;
-        this.updateDeliveryMethodByCity(details.city);
+        this.updateDeliveryMethod(details.city, details.area || "");
       }
       this.checkoutForm.patchValue({
         fullName: details.fullName,
@@ -332,8 +339,11 @@ export class CheckoutPageComponent {
       });
   }
 
-  private updateDeliveryMethodByCity(city: string): void {
-    const isDhaka = city.toLowerCase() === "dhaka";
+  private updateDeliveryMethod(city: string, area: string): void {
+    const outskirts = ["keraniganj", "savar", "ashulia", "asulia", "dohar"];
+    const outskirtsSet = new Set(outskirts);
+    const isOutskirts = area && outskirtsSet.has(area.toLowerCase());
+    const isDhaka = city.toLowerCase() === "dhaka" && !isOutskirts;
     this.deliveryMethods$.subscribe((methods) => {
       const method = methods.find((m) =>
         isDhaka

@@ -401,7 +401,8 @@ export class AdminProductFormComponent {
               productVariantId: [ci.productVariantId],
               quantity: [ci.quantity, [Validators.required, Validators.min(1)]],
               productName: [ci.productName],
-              variantName: [ci.variantName]
+              variantName: [ci.variantName],
+              id: [ci.id ?? ci.Id ?? null]
             }));
           });
         }
@@ -430,6 +431,7 @@ export class AdminProductFormComponent {
                 [Validators.min(0)],
               ],
               selected: [true],
+              id: [v.id ?? v.Id ?? null]
             });
             this.sizesArray.push(sizeGroup);
           });
@@ -511,7 +513,8 @@ export class AdminProductFormComponent {
       productVariantId: [variant?.id || null],
       quantity: [1, [Validators.required, Validators.min(1)]],
       productName: [product?.name || ""],
-      variantName: [variant?.size || ""]
+      variantName: [variant?.size || ""],
+      id: [null]
     }));
   }
 
@@ -798,6 +801,7 @@ export class AdminProductFormComponent {
       purchaseRate: [0, [Validators.required, Validators.min(0)]],
       stock: [0, [Validators.min(0)]],
       selected: [selected],
+      id: [null]
     });
   }
 
@@ -935,6 +939,7 @@ export class AdminProductFormComponent {
           .replace(/\s+/g, ""),
         inventory: Number(s.stock || 0),
         imageUrl: "",
+        id: s.id || null
       });
     });
 
@@ -994,7 +999,14 @@ export class AdminProductFormComponent {
       subCategoryId: (raw.subCategory && raw.subCategory !== "null" && raw.subCategory !== "0") ? Number(raw.subCategory) : null,
       collectionId: (raw.collection && raw.collection !== "null" && raw.collection !== "0") ? Number(raw.collection) : null,
       productType: Number(raw.productType),
-      comboItems: Number(raw.productType) === ProductType.Combo ? (raw.comboItems as ComboItem[]) : [],
+      comboItems: Number(raw.productType) === ProductType.Combo ? (raw.comboItems as any[]).map(ci => ({
+        id: ci.id || null,
+        productId: ci.productId,
+        productVariantId: ci.productVariantId,
+        quantity: ci.quantity,
+        productName: ci.productName,
+        variantName: ci.variantName
+      })) : [],
       bundleSize: Number(raw.bundleSize || 0),
       productGroupId: raw.productGroupId ? Number(raw.productGroupId) : null,
     };
@@ -1067,7 +1079,7 @@ export class AdminProductFormComponent {
     while (this.sizesArray.length > 1) {
       this.sizesArray.removeAt(0, { emitEvent: false });
     }
-    this.sizesArray.at(0)?.patchValue({ label: "", stock: 0, selected: true });
+    this.sizesArray.at(0)?.patchValue({ label: "", stock: 0, selected: true, id: null });
   }
 
   private titleize(value: string): string {

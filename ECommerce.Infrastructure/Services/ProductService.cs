@@ -212,31 +212,93 @@ public class ProductService : IProductService
         }
 
         // Sync variants
-        foreach (var v in product.Variants.ToList()) _unitOfWork.Repository<ProductVariant>().Delete(v);
-        foreach (var v in dto.InventoryVariants)
+        var existingVariants = product.Variants.ToList();
+        var incomingVariants = dto.InventoryVariants;
+
+        // 1. Mark for deletion those not in incoming list
+        foreach (var existing in existingVariants)
         {
-            product.Variants.Add(new ProductVariant {
-                Sku = v.Sku,
-                Price = v.SalePrice ?? v.Price,
-                CompareAtPrice = v.SalePrice.HasValue ? v.Price : null,
-                PurchaseRate = v.PurchaseRate,
-                StockQuantity = v.Inventory,
-                Size = v.Label
-            });
+            if (!incomingVariants.Any(iv => iv.Id == existing.Id))
+            {
+                // Safety check: Don't delete if referenced by ComboItems or OrderItems
+                // (Though the DB constraint will catch it anyway, this is cleaner)
+                _unitOfWork.Repository<ProductVariant>().Delete(existing);
+            }
+        }
+
+        // 2. Add or Update
+        foreach (var iv in incomingVariants)
+        {
+            if (iv.Id.HasValue && iv.Id > 0)
+            {
+                // Update existing
+                var existing = existingVariants.FirstOrDefault(v => v.Id == iv.Id);
+                if (existing != null)
+                {
+                    existing.Sku = iv.Sku;
+                    existing.Price = iv.SalePrice ?? iv.Price;
+                    existing.CompareAtPrice = iv.SalePrice.HasValue ? iv.Price : null;
+                    existing.PurchaseRate = iv.PurchaseRate;
+                    existing.StockQuantity = iv.Inventory;
+                    existing.Size = iv.Label;
+                    _unitOfWork.Repository<ProductVariant>().Update(existing);
+                }
+            }
+            else
+            {
+                // Add new
+                product.Variants.Add(new ProductVariant
+                {
+                    Sku = iv.Sku,
+                    Price = iv.SalePrice ?? iv.Price,
+                    CompareAtPrice = iv.SalePrice.HasValue ? iv.Price : null,
+                    PurchaseRate = iv.PurchaseRate,
+                    StockQuantity = iv.Inventory,
+                    Size = iv.Label
+                });
+            }
         }
 
         // Sync combo items
-        foreach (var ci in product.ComboItems.ToList()) _unitOfWork.Repository<ComboItem>().Delete(ci);
-        if (dto.ProductType == ProductType.Combo && dto.ComboItems != null)
+        var existingComboItems = product.ComboItems.ToList();
+        var incomingComboItems = dto.ComboItems ?? new List<ComboItemDto>();
+
+        // 1. Mark for deletion those not in incoming list
+        foreach (var existing in existingComboItems)
         {
-            foreach (var ci in dto.ComboItems)
+            if (!incomingComboItems.Any(ici => ici.Id == existing.Id))
             {
-                product.ComboItems.Add(new ComboItem
+                _unitOfWork.Repository<ComboItem>().Delete(existing);
+            }
+        }
+
+        // 2. Add or Update
+        if (dto.ProductType == ProductType.Combo)
+        {
+            foreach (var ici in incomingComboItems)
+            {
+                if (ici.Id.HasValue && ici.Id > 0)
                 {
-                    ProductId = ci.ProductId,
-                    ProductVariantId = ci.ProductVariantId,
-                    Quantity = ci.Quantity
-                });
+                    // Update existing
+                    var existing = existingComboItems.FirstOrDefault(ci => ci.Id == ici.Id);
+                    if (existing != null)
+                    {
+                        existing.ProductId = ici.ProductId;
+                        existing.ProductVariantId = ici.ProductVariantId;
+                        existing.Quantity = ici.Quantity;
+                        _unitOfWork.Repository<ComboItem>().Update(existing);
+                    }
+                }
+                else
+                {
+                    // Add new
+                    product.ComboItems.Add(new ComboItem
+                    {
+                        ProductId = ici.ProductId,
+                        ProductVariantId = ici.ProductVariantId,
+                        Quantity = ici.Quantity
+                    });
+                }
             }
         }
 

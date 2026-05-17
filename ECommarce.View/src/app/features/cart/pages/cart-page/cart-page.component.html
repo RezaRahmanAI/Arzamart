@@ -1,179 +1,265 @@
 @if (vm$ | async; as vm) {
-  <div class="bg-ds-bg min-h-screen text-ds-text">
-    <main class="site-container py-ds-12 lg:py-ds-20 flex flex-1 flex-col">
+  <div class="bg-[#FFFFFF] min-h-screen text-[#1A1A1A] py-8 sm:py-12">
+    <div class="site-container">
+      
+      <!-- Elegant Serif Header -->
+      <div class="text-center mb-8 sm:mb-12">
+        <h1>Cart</h1>
+      </div>
+
       @if (vm.cartItems.length > 0) {
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-12 lg:gap-ds-16">
-          <!-- Left: Items -->
-          <div class="lg:col-span-8 space-y-ds-12">
-            <div class="space-y-ds-4">
-              <span class="text-ds-text-muted">Bag — {{ vm.cartItems.length }} Items</span>
-              <h1 >Shopping Bag</h1>
-            </div>
-
-            <!-- Free Shipping Progress -->
-            <div class="p-ds-8 bg-ds-surface border border-ds-border">
-              <div class="flex justify-between items-end mb-ds-4">
-                @if (vm.summary.freeShippingRemaining > 0) {
-                  <p class="text-ds-text-sec">
-                    Spend ৳{{ vm.summary.freeShippingRemaining }} more for <span class="text-ds-accent">Free Delivery</span>
-                  </p>
-                } @else {
-                  <p class="text-ds-success">
-                    You have unlocked <span >Free Delivery</span>
-                  </p>
-                }
-                <span class="text-ds-text-muted">
-                  {{ vm.summary.freeShippingProgress | number: "1.0-0" }}%
-                </span>
-              </div>
-              <div class="w-full bg-ds-bg border border-ds-border h-2 overflow-hidden">
-                <div class="bg-ds-text h-full transition-all duration-1000" [style.width.%]="vm.summary.freeShippingProgress"></div>
-              </div>
-            </div>
-
-            <div class="bg-ds-surface border border-ds-border rounded-sm overflow-hidden shadow-sm">
-              <div class="overflow-x-auto custom-scrollbar-thin">
-                <table class="w-full text-left border-collapse min-w-[500px] sm:min-w-full">
-                  <thead>
-                    <tr class="bg-ds-bg/50 border-b border-ds-border text-ds-text-muted">
-                      <th class="px-ds-3 sm:px-ds-6 py-ds-3 font-semibold text-[10px] sm:text-xs uppercase tracking-wider">Product</th>
-                      <th class="px-ds-2 py-ds-3 font-semibold text-[10px] sm:text-xs uppercase tracking-wider text-center">Price</th>
-                      <th class="px-ds-2 py-ds-3 font-semibold text-[10px] sm:text-xs uppercase tracking-wider text-center">Qty</th>
-                      <th class="px-ds-2 py-ds-3 font-semibold text-[10px] sm:text-xs uppercase tracking-wider text-right">Total</th>
-                      <th class="px-ds-3 py-ds-3 font-semibold text-[10px] sm:text-xs uppercase tracking-wider text-right"></th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-ds-border/30">
-                    @for (item of vm.cartItems; track item.id) {
-                      <tr class="group hover:bg-ds-bg/20 transition-colors">
-                        <td class="px-ds-3 sm:px-ds-6 py-ds-4">
-                          <div class="flex items-center gap-ds-3 sm:gap-ds-6">
-                            <div class="shrink-0 w-12 h-16 sm:w-16 sm:h-20 bg-ds-bg border border-ds-border rounded-sm overflow-hidden shadow-inner">
-                              <img [src]="imageUrlService.getImageUrl(item.imageUrl)" class="w-full h-full object-cover transition-transform duration-base group-hover:scale-105">
-                            </div>
-                            <div class="flex flex-col gap-0.5 sm:gap-1.5 min-w-0">
-                              <span class="text-ds-text font-semibold truncate max-w-[120px] sm:max-w-[200px] text-xs sm:text-sm leading-tight">{{ item.name }}</span>
-                              <div class="flex items-center gap-2">
-                                <span class="px-1.5 py-0.5 bg-ds-bg border border-ds-border text-[9px] sm:text-[10px] text-ds-text-sec rounded-sm uppercase font-bold">Size: {{ item.size }}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-ds-2 py-ds-4 text-center whitespace-nowrap">
-                          <app-price-display [amount]="item.price" size="sm"></app-price-display>
-                        </td>
-                        <td class="px-ds-2 py-ds-4">
-                          <div class="flex items-center justify-center">
-                            <div class="flex items-center bg-ds-bg border border-ds-border rounded-sm shadow-inner overflow-hidden">
-                              <button (click)="decreaseQuantity(item)" class="size-6 sm:size-8 flex items-center justify-center hover:bg-ds-surface transition-colors text-ds-text-sec">
-                                <app-icon name="Minus" size="8"></app-icon>
-                              </button>
-                              <span class="w-6 sm:w-8 text-center text-[10px] sm:text-xs font-bold text-ds-text">{{ item.quantity }}</span>
-                              <button (click)="increaseQuantity(item)" class="size-6 sm:size-8 flex items-center justify-center hover:bg-ds-surface transition-colors text-ds-text-sec border-l border-ds-border/30">
-                                <app-icon name="Plus" size="8"></app-icon>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-ds-2 py-ds-4 text-right whitespace-nowrap">
-                          <app-price-display class="text-ds-text font-bold" [amount]="item.price * item.quantity" size="sm"></app-price-display>
-                        </td>
-                        <td class="px-ds-3 py-ds-4 text-right">
-                          <button (click)="removeItem(item)" class="size-7 sm:size-8 flex items-center justify-center text-ds-text-muted hover:text-red-500 hover:bg-red-50 transition-all rounded-sm">
-                            <app-icon name="Trash2" size="14"></app-icon>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- LEFT SIDE: Cart Items (8 Cols) -->
+          <div class="lg:col-span-8 space-y-6">
+            
+            <!-- DESKTOP VIEW: Table (Hidden on Mobile) -->
+            <div class="hidden md:block bg-[#FFFFFF] border border-[#EAEAEA] rounded-[8px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
+              <table class="cart-table">
+                <thead>
+                  <tr>
+                    <th class="w-[50%]">Product</th>
+                    <th class="text-center w-[15%]">Price</th>
+                    <th class="text-center w-[15%]">Quantity</th>
+                    <th class="text-right w-[20%]">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of vm.cartItems; track item.id) {
+                    <tr>
+                      <!-- Product details column -->
+                      <td>
+                        <div class="flex items-center">
+                          <!-- Red Outline Delete Cross Icon -->
+                          <button (click)="removeItem(item)" class="cart-delete-btn" aria-label="Remove item">
+                            <svg viewBox="0 0 24 24" class="w-[22px] h-[22px]" fill="none">
+                              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" fill="none"/>
+                              <path d="M8.5 8.5L15.5 15.5M15.5 8.5L8.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
                           </button>
-                        </td>
-                      </tr>
+                          
+                          <!-- Product Thumbnail Image -->
+                          <div class="cart-img-wrapper shrink-0 mr-4">
+                            <img #imgRef [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" (error)="imgRef.src = 'assets/images/placeholder.png'">
+                          </div>
+                          
+                          <!-- Product Title & Optional Size -->
+                          <div class="flex flex-col min-w-0">
+                            <span class="cart-product-title truncate max-w-[220px] lg:max-w-[280px]" [title]="item.name">{{ item.name }}</span>
+                            @if (item.size && item.size !== 'One Size') {
+                              <span class="text-[11px] text-[#888888] font-semibold uppercase tracking-wider mt-1">Size: {{ item.size }}</span>
+                            }
+                          </div>
+                        </div>
+                      </td>
+                      
+                      <!-- Price Column -->
+                      <td class="text-center">
+                        <span class="price-text">৳{{ item.price | number: '1.2-2' }}</span>
+                      </td>
+                      
+                      <!-- Quantity Selector Column -->
+                      <td class="text-center">
+                        <div class="flex justify-center">
+                          <div class="qty-selector">
+                            <button (click)="decreaseQuantity(item)" class="qty-btn" type="button" aria-label="Decrease quantity">-</button>
+                            <span class="qty-val">{{ item.quantity }}</span>
+                            <button (click)="increaseQuantity(item)" class="qty-btn" type="button" aria-label="Increase quantity">+</button>
+                          </div>
+                        </div>
+                      </td>
+                      
+                      <!-- Subtotal Column -->
+                      <td class="text-right">
+                        <span class="subtotal-text">৳{{ (item.price * item.quantity) | number: '1.2-2' }}</span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <!-- MOBILE VIEW: Cards (Hidden on Desktop) -->
+            <div class="block md:hidden space-y-4">
+              @for (item of vm.cartItems; track item.id) {
+                <div class="cart-item-card">
+                  <!-- Header: Thumbnail Image & Delete Button -->
+                  <div class="cart-card-header">
+                    <!-- Image -->
+                    <div class="cart-card-img">
+                      <img #mobileImgRef [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.imageAlt" (error)="mobileImgRef.src = 'assets/images/placeholder.png'">
+                    </div>
+                    
+                    <!-- Absolute Delete Cross Button -->
+                    <div class="cart-card-delete-absolute">
+                      <button (click)="removeItem(item)" class="cart-delete-btn" aria-label="Remove item">
+                        <svg viewBox="0 0 24 24" class="w-[22px] h-[22px]" fill="none">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" fill="none"/>
+                          <path d="M8.5 8.5L15.5 15.5M15.5 8.5L8.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Rows: Key-Value details -->
+                  <div class="cart-card-rows">
+                    <!-- Product row -->
+                    <div class="card-row">
+                      <span class="card-label">Product:</span>
+                      <span class="card-value font-semibold">{{ item.name }}</span>
+                    </div>
+                    
+                    <!-- Size row (optional) -->
+                    @if (item.size && item.size !== 'One Size') {
+                      <div class="card-row">
+                        <span class="card-label">Size:</span>
+                        <span class="card-value font-semibold uppercase">{{ item.size }}</span>
+                      </div>
                     }
-                  </tbody>
-                </table>
+
+                    <!-- Price row -->
+                    <div class="card-row">
+                      <span class="card-label">Price:</span>
+                      <span class="card-value card-value-bold">৳{{ item.price | number: '1.2-2' }}</span>
+                    </div>
+
+                    <!-- Quantity row -->
+                    <div class="card-row">
+                      <span class="card-label">Quantity:</span>
+                      <div class="qty-selector">
+                        <button (click)="decreaseQuantity(item)" class="qty-btn" type="button" aria-label="Decrease quantity">-</button>
+                        <span class="qty-val">{{ item.quantity }}</span>
+                        <button (click)="increaseQuantity(item)" class="qty-btn" type="button" aria-label="Increase quantity">+</button>
+                      </div>
+                    </div>
+
+                    <!-- Subtotal row -->
+                    <div class="card-row">
+                      <span class="card-label font-bold text-[#1A1A1A]">Subtotal:</span>
+                      <span class="card-value-subtotal">৳{{ (item.price * item.quantity) | number: '1.2-2' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- LAUREL FRAME MEDIA TRUST SEAL (Left Side under Products) -->
+            <div class="laurel-wreath-container">
+              <!-- Left Laurel branch -->
+              <svg viewBox="0 0 120 200" fill="none" class="laurel-wreath-svg shrink-0">
+                <path d="M100 180 C 60 160, 40 100, 70 30" stroke="currentColor" stroke-width="1.8" stroke-dasharray="2,2"/>
+                <path d="M70 30 C75 25, 80 20, 85 22 C87 25, 85 30, 75 35 Z" fill="currentColor"/>
+                <path d="M68 45 C58 40, 50 35, 52 30 C55 28, 62 32, 66 42 Z" fill="currentColor"/>
+                <path d="M73 55 C83 50, 90 45, 92 48 C92 52, 85 56, 75 58 Z" fill="currentColor"/>
+                <path d="M60 70 C50 63, 42 58, 44 53 C46 51, 53 55, 58 65 Z" fill="currentColor"/>
+                <path d="M68 82 C78 75, 85 70, 88 73 C88 77, 81 81, 71 84 Z" fill="currentColor"/>
+                <path d="M53 98 C43 90, 35 85, 37 80 C39 78, 46 82, 51 92 Z" fill="currentColor"/>
+                <path d="M63 110 C73 102, 80 97, 83 100 C83 104, 76 108, 66 111 Z" fill="currentColor"/>
+                <path d="M48 126 C38 118, 30 113, 32 108 C34 106, 41 110, 46 120 Z" fill="currentColor"/>
+                <path d="M58 138 C68 130, 75 125, 78 128 C78 132, 71 136, 61 139 Z" fill="currentColor"/>
+              </svg>
+
+              <!-- Central Trust Seal Text & Logos -->
+              <div class="trust-seal-content">
+                <span class="trust-title">As Seen on Leading Global Media</span>
+                
+                <div class="trust-logos">
+                  <span class="trust-logo-item font-extrabold tracking-tighter text-sm">BUSINESS INSIDER</span>
+                  <span class="trust-logo-item font-black italic text-[15px] tracking-tight">yahoo!<span class="font-normal text-[9px] not-italic ml-0.5">finance</span></span>
+                  <span class="trust-logo-item font-bold text-base tracking-wide font-serif">AP</span>
+                  
+                  <div class="trust-logo-item flex items-center gap-0.5">
+                    <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current">
+                      <path d="M12 2C10.5 2 9 3.5 9 5c0 .8.3 1.5.8 2C8.3 7 7 8.5 7 10.5c0 1.2.6 2.2 1.5 2.8C7.3 13.7 6.5 15 6.5 16.5c0 1.5 1.2 2.7 2.7 2.7.8 0 1.5-.3 2-.8.5.5 1.2.8 2 .8s1.5-.3 2-.8c.5.5 1.2.8 2 .8 1.5 0 2.7-1.2 2.7-2.7 0-1.5-.8-2.8-2-3.2.9-.6 1.5-1.6 1.5-2.8 0-2-1.3-3.5-2.8-3.5.5-.5.8-1.2.8-2 0-1.5-1.5-3-3-3z"/>
+                    </svg>
+                    <span class="font-black text-sm tracking-tight">NBC</span>
+                  </div>
+                  
+                  <div class="trust-logo-item border border-[#333333] px-1 py-0.2 text-[10px] font-black tracking-tight leading-none">FOX NEWS</div>
+                  <div class="trust-logo-item border border-[#333333] rounded-full w-[22px] h-[22px] flex items-center justify-center text-[10px] font-black leading-none">abc</div>
+                  <span class="trust-logo-item font-extrabold text-sm tracking-wider">IBT</span>
+                </div>
+
+                <span class="trust-subtext">Recognized across 700+ global media outlets</span>
               </div>
+
+              <!-- Right Laurel branch (Mirrored) -->
+              <svg viewBox="0 0 120 200" fill="none" class="laurel-wreath-svg mirror-x shrink-0">
+                <path d="M100 180 C 60 160, 40 100, 70 30" stroke="currentColor" stroke-width="1.8" stroke-dasharray="2,2"/>
+                <path d="M70 30 C75 25, 80 20, 85 22 C87 25, 85 30, 75 35 Z" fill="currentColor"/>
+                <path d="M68 45 C58 40, 50 35, 52 30 C55 28, 62 32, 66 42 Z" fill="currentColor"/>
+                <path d="M73 55 C83 50, 90 45, 92 48 C92 52, 85 56, 75 58 Z" fill="currentColor"/>
+                <path d="M60 70 C50 63, 42 58, 44 53 C46 51, 53 55, 58 65 Z" fill="currentColor"/>
+                <path d="M68 82 C78 75, 85 70, 88 73 C88 77, 81 81, 71 84 Z" fill="currentColor"/>
+                <path d="M53 98 C43 90, 35 85, 37 80 C39 78, 46 82, 51 92 Z" fill="currentColor"/>
+                <path d="M63 110 C73 102, 80 97, 83 100 C83 104, 76 108, 66 111 Z" fill="currentColor"/>
+                <path d="M48 126 C38 118, 30 113, 32 108 C34 106, 41 110, 46 120 Z" fill="currentColor"/>
+                <path d="M58 138 C68 130, 75 125, 78 128 C78 132, 71 136, 61 139 Z" fill="currentColor"/>
+              </svg>
+            </div>
+
+          </div>
+
+          <!-- RIGHT SIDE: Cart Totals Sidebar (4 Cols) -->
+          <div class="lg:col-span-4 sticky top-24">
+            <div class="cart-totals-card">
+              <!-- Sidebar Header with Quantity Badge -->
+              <div class="cart-totals-header">
+                <span class="cart-totals-title">Cart totals</span>
+                <span class="qty-badge">Total Quantity {{ vm.summary.itemsCount }}</span>
+              </div>
+
+              <!-- Sidebar Rows -->
+              <div class="space-y-1">
+                <!-- Original Subtotal before discount -->
+                <div class="totals-row">
+                  <span class="totals-label">Subtotal</span>
+                  <span class="totals-value">৳{{ (vm.summary.subtotal + vm.summary.discount) | number: '1.2-2' }}</span>
+                </div>
+
+                <!-- Total discount row -->
+                <div class="totals-row border-line">
+                  <span class="totals-label">Total Discount</span>
+                  <span class="totals-value text-[#D94F4F]">-৳{{ vm.summary.discount | number: '1.2-2' }}</span>
+                </div>
+
+                <!-- Total payable row -->
+                <div class="totals-row grand-total">
+                  <span class="label">Total</span>
+                  <span class="value">৳{{ vm.summary.total | number: '1.2-2' }}</span>
+                </div>
+              </div>
+
+              <!-- Premium Checkout Button -->
+              <button
+                class="btn-checkout"
+                type="button"
+                routerLink="/checkout"
+              >
+                Proceed To Checkout
+              </button>
             </div>
           </div>
 
-          <!-- Right: Sidebar -->
-          <div class="lg:col-span-4">
-            <div class="sticky top-24 space-y-ds-8">
-              <div class="bg-ds-surface p-ds-8 lg:p-ds-10 border border-ds-border relative">
-                <div class="absolute top-0 left-0 w-full h-1.5 bg-ds-text"></div>
-                <h3 class="text-ds-text mb-ds-4 sm:mb-ds-8 text-lg sm:text-xl">
-                  Order Summary
-                </h3>
-                <div class="space-y-ds-3 pb-ds-6 border-b border-ds-border">
-                  <div class="flex justify-between text-ds-text-sec text-sm">
-                    <span>Subtotal</span>
-                    <app-price-display [amount]="vm.summary.subtotal" size="sm"></app-price-display>
-                  </div>
-                  <div class="flex justify-between text-ds-text-sec text-sm">
-                    <span>Shipping Estimate</span>
-                    <span class="font-medium text-xs">
-                      @if (vm.summary.shipping === 0) {
-                        <span class="text-ds-success uppercase tracking-wider">Free Delivery</span>
-                      } @else {
-                        <app-price-display [amount]="vm.summary.shipping" size="sm"></app-price-display>
-                      }
-                    </span>
-                  </div>
-                </div>
-                <div class="flex justify-between items-center py-ds-6">
-                  <span class="text-ds-text font-semibold">Total</span>
-                  <app-price-display class="text-ds-text font-bold" [amount]="vm.summary.total" size="lg"></app-price-display>
-                </div>
-                <button
-                  class="btn btn-primary w-full h-12 sm:h-14 flex items-center justify-center gap-ds-3 sm:gap-ds-4 text-sm sm:text-base"
-                  type="button"
-                  routerLink="/checkout"
-                >
-                  <app-icon name="Lock" size="16"></app-icon>
-                  Proceed to Checkout
-                </button>
- 
-                <div class="mt-ds-6 space-y-ds-4">
-                  <div class="flex items-center justify-center gap-ds-2 text-[10px] sm:text-xs text-ds-text-muted">
-                    <app-icon name="ShieldCheck" size="12" className="text-ds-success"></app-icon>
-                    Secure SSL Encryption
-                  </div>
-                </div>
-              </div>
-
-              <!-- Promo Code -->
-              <div class="bg-ds-surface p-ds-6 border border-ds-border">
-                <details class="group">
-                  <summary class="flex items-center justify-between cursor-pointer list-none text-ds-text-sec">
-                    <span>Have a promo code?</span>
-                    <app-icon name="ChevronDown" size="16" className="transition-transform group-open:rotate-180"></app-icon>
-                  </summary>
-                  <div class="mt-ds-6 flex gap-ds-3">
-                    <input
-                      class="form-input !h-12"
-                      placeholder="ENTER CODE"
-                      type="text"
-                    />
-                    <button class="btn btn-secondary h-12 px-ds-6 border-ds-border hover:border-ds-text">
-                      Apply
-                    </button>
-                  </div>
-                </details>
-              </div>
-            </div>
-          </div>
         </div>
       } @else {
-        <div class="flex flex-col items-center justify-center py-ds-32 text-center space-y-ds-8">
-          <div class="w-32 h-32 bg-ds-surface border border-ds-border flex items-center justify-center mb-ds-4 group">
-            <app-icon name="ShoppingBag" size="48" className="text-ds-text-muted opacity-30 group-hover:opacity-100 transition-opacity duration-base"></app-icon>
+        <!-- Empty Cart State -->
+        <div class="flex flex-col items-center justify-center py-20 text-center space-y-6">
+          <div class="w-28 h-28 bg-[#F5F5F5] border border-[#E0E0E0] rounded-sm flex items-center justify-center mb-2 group">
+            <app-icon name="ShoppingBag" size="44" className="text-[#888888] opacity-40 group-hover:opacity-100 transition-opacity duration-200"></app-icon>
           </div>
-          <div class="space-y-ds-3">
-            <h2 class="text-ds-text">Your bag is empty</h2>
-            <p class="text-ds-text-sec max-w-xs mx-auto">
-              Looks like you haven't added anything <br>to your refined collection yet.
+          <div class="space-y-2">
+            <h2 class="text-xl font-bold text-[#1A1A1A]">Your cart is empty</h2>
+            <p class="text-sm text-[#888888] max-w-xs mx-auto">
+              Looks like you haven't added anything to your cart yet.
             </p>
           </div>
-          <a routerLink="/" class="btn btn-primary h-14 px-ds-12 mt-ds-4">
+          <a routerLink="/" class="btn btn-primary min-h-[48px] px-8 text-sm inline-flex items-center justify-center bg-[#111111] text-white rounded-md mt-4">
             Start Shopping
           </a>
         </div>
       }
-    </main>
+
+    </div>
   </div>
 }
