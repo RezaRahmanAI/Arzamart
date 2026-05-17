@@ -130,71 +130,6 @@
 }
 
 /* Laurel Frame Media Trust Seal */
-.laurel-wreath-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 30px 15px;
-  border-radius: 8px;
-  margin-top: 40px;
-}
-
-.laurel-wreath-svg {
-  width: 80px;
-  height: 120px;
-  opacity: 0.35;
-  fill: #777777;
-}
-
-.laurel-wreath-svg.mirror-x {
-  transform: scaleX(-1);
-}
-
-.trust-seal-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  flex: 1;
-  max-width: 500px;
-}
-
-.trust-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: #666666;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 20px;
-}
-
-.trust-logos {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 20px 24px;
-  opacity: 0.55;
-  margin-bottom: 20px;
-}
-
-.trust-logo-item {
-  color: #333333;
-  display: flex;
-  align-items: center;
-}
-
-.trust-subtext {
-  font-size: 11px;
-  font-weight: 500;
-  color: #888888;
-  letter-spacing: 0.02em;
-  border-top: 1px solid rgba(0,0,0,0.06);
-  padding-top: 15px;
-  width: 100%;
-}
-
 /* Cart Totals Card */
 .cart-totals-card {
   background: #FFFFFF;
@@ -266,32 +201,6 @@
 .totals-value {
   color: #1A1A1A;
   font-weight: 600;
-}
-
-/* Premium Gold Checkout Button */
-.btn-checkout {
-  width: 100%;
-  background: #FAD980 !important;
-  color: #111111 !important;
-  font-weight: 600 !important;
-  font-size: 15px !important;
-  padding: 14px 24px !important;
-  border-radius: 6px !important;
-  border: none !important;
-  cursor: pointer !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.2s ease, transform 0.1s ease !important;
-  box-shadow: 0 4px 12px rgba(250, 217, 128, 0.15);
-}
-
-.btn-checkout:hover {
-  opacity: 0.92;
-}
-
-.btn-checkout:active {
-  transform: scale(0.99);
 }
 
 /* Mobile Cart Item Cards */
