@@ -23,7 +23,7 @@ export class ProductService {
 
   private readonly refreshSubject = new BehaviorSubject<void>(void 0);
   private readonly cache = new Map<string, { data: any; expires: number }>();
-  private readonly CACHE_TTL = 5 * 60 * 1000;
+  private readonly CACHE_TTL = 60 * 60 * 1000;
 
   private getCached<T>(key: string): T | null {
     const entry = this.cache.get(key);

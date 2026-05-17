@@ -17,7 +17,7 @@ import { SettingsService } from "../../../../admin/services/settings.service";
 import { DeliveryMethod } from "../../../../admin/models/settings.models";
 import { ProductService } from "../../../../core/services/product.service";
 import { of, combineLatest, forkJoin } from "rxjs";
-import { map, catchError, debounceTime, distinctUntilChanged, filter, switchMap } from "rxjs/operators";
+import { map, catchError, debounceTime, distinctUntilChanged, filter, switchMap, tap } from "rxjs/operators";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -55,6 +55,9 @@ interface LandingPageData {
   styleUrl: "./custom-landing-page.component.css"
 })
 export class CustomLandingPageComponent implements OnInit, OnDestroy {
+  private static readonly dataCache = new Map<string, { data: LandingPageData; expires: number }>();
+  private static readonly CACHE_TTL = 60 * 60 * 1000;
+
   private readonly http = inject(HttpClient);
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
@@ -405,8 +408,17 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   loadData(slug: string): void {
     this.isLoading = true;
+
+    const cacheKey = `clp_${slug}`;
+    const cached = CustomLandingPageComponent.dataCache.get(cacheKey);
+    const mainData$ = cached && Date.now() < cached.expires
+      ? of(cached.data)
+      : this.http.get<LandingPageData>(`${environment.apiBaseUrl}/custom-landing-page/${slug}`).pipe(
+          tap(data => CustomLandingPageComponent.dataCache.set(cacheKey, { data, expires: Date.now() + CustomLandingPageComponent.CACHE_TTL }))
+        );
+
     combineLatest([
-      this.http.get<LandingPageData>(`${environment.apiBaseUrl}/custom-landing-page/${slug}`),
+      mainData$,
       this.settingsService.getPublicDeliveryMethods()
     ]).subscribe({
       next: ([res, methods]) => {
