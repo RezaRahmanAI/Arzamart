@@ -49,6 +49,8 @@ export class CartService {
     map((items) => this.calculateSummary(items)),
   );
 
+  private lastMutation = 0;
+
   private readonly qtyUpdateSubject = new BehaviorSubject<{
     id: string;
     qty: number;
@@ -145,12 +147,15 @@ export class CartService {
   refreshCartFromServer(): void {
     const sessionId = this.getSessionId();
     const params = new HttpParams().set("sid", sessionId); // Add sid to URL to bypass potential CDN/Proxy shared caching
-    
+    const requestTime = Date.now();
+
     this.api
       .get<CartDto>(this.apiUrl, { ...this.options, params })
       .pipe(catchError(() => of(null)))
       .subscribe((dto) => {
-        if (dto) this.updateLocalState(dto);
+        if (dto && requestTime > this.lastMutation) {
+          this.updateLocalState(dto);
+        }
       });
   }
 
@@ -220,6 +225,8 @@ export class CartService {
       size: targetSize,
     };
 
+    this.lastMutation = Date.now();
+
     return this.api
       .post<CartDto>(`${this.apiUrl}/items`, payload, this.options)
       .pipe(
@@ -234,6 +241,10 @@ export class CartService {
       );
   }
 
+  private setLastMutation(): void {
+    this.lastMutation = Date.now();
+  }
+
   removeItem(cartItemId: string): void {
     // Backend uses numeric ID for cart items
     const numericId = parseInt(cartItemId, 10);
@@ -246,6 +257,7 @@ export class CartService {
 
     // 2. Perform backend deletion
     // ApiHttpClient.delete automatically converts to POST /delete
+    this.lastMutation = Date.now();
     this.api
       .delete<CartDto>(`${this.apiUrl}/items/${numericId}`, this.options)
       .subscribe({
@@ -272,6 +284,7 @@ export class CartService {
       this.cartItemsSubject.next(updatedItems);
 
       // 2. Schedule server sync
+      this.lastMutation = Date.now();
       this.qtyUpdateSubject.next({ id: cartItemId, qty: sanitizedQty });
     }
   }
@@ -282,6 +295,7 @@ export class CartService {
     this.cartItemsSubject.next([]);
 
     // 2. Perform backend deletion
+    this.lastMutation = Date.now();
     return this.api.delete(this.apiUrl, this.options).pipe(
       catchError((err) => {
         console.error("Failed to clear cart on server", err);

@@ -31,9 +31,9 @@
             }
             <a
               routerLink="/offers"
-              class="nav-link !py-0 font-semibold text-ds-accent hover:text-ds-accent/80 animate-pulse-subtle"
+              class="glowing-offer-btn relative overflow-hidden"
             >
-              অফার
+              <span class="relative z-10">Offers</span>
             </a>
           </nav>
 
@@ -165,13 +165,15 @@
     </div>
 
     <nav class="flex flex-col border-t border-ds-border">
-      <a 
-          routerLink="/offers"
-          (click)="closeMenu()"
-          class="py-ds-6 border-b border-ds-border font-semibold text-ds-accent transition-colors"
-      >
-          অফার
-      </a>
+      <div class="py-ds-4 border-b border-ds-border flex items-center">
+        <a 
+            routerLink="/offers"
+            (click)="closeMenu()"
+            class="glowing-offer-btn relative overflow-hidden"
+        >
+            <span class="relative z-10">Offers</span>
+        </a>
+      </div>
       @if (vm$ | async; as vm) {
           @for (item of vm.menu; track item.id) {
             <a 

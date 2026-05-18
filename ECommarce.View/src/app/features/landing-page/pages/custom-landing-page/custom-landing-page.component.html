@@ -499,7 +499,7 @@
 
                 <!-- MODULE 9: Product Selection -->
                 @case ('product-select') {
-                  <section class="section-padding bg-white">
+                  <section id="product-select-section" class="section-padding bg-white">
                     <div class="max-w-[1200px] mx-auto">
                       <div class="text-center mb-12">
                         <h2 class="mb-2">পণ্য নির্বাচন করুন</h2>
@@ -585,71 +585,193 @@
                       <div class="grid lg:grid-cols-[1fr_400px] gap-8 lg:gap-12">
                         
                         <!-- Form -->
-                        <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="space-y-6">
-                          <div class="space-y-2">
-                            <label class="text-[#1A1A1A]">আপনার নাম *</label>
-                            <input type="text" formControlName="fullName" placeholder="সম্পূর্ণ নাম লিখুন"
-                                   class="w-full h-14 px-5 bg-[#F5F5F5] border-none focus:ring-2 focus:ring-[#E52222] transition-all outline-none">
-                          </div>
+                        <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+                          <!-- Saved Info Prompt -->
+                          @if (showAutofillPrompt) {
+                            <div class="mb-8 p-6 bg-slate-50 border-2 border-[#1a1a1a]/5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in slide-in-from-top duration-300">
+                              <div class="flex items-center gap-4 text-center sm:text-left">
+                                <div class="w-12 h-12 rounded-2xl bg-[#1a1a1a] flex items-center justify-center shrink-0 shadow-lg">
+                                  <app-icon name="User" size="24" className="text-white"></app-icon>
+                                </div>
+                                <div>
+                                  <p class="text-[#1a1a1a]">Saved Information Found</p>
+                                  <p class="text-gray-400">Would you like to use your last order details?</p>
+                                </div>
+                              </div>
+                              <div class="flex gap-3 w-full sm:w-auto">
+                                <button type="button" (click)="dismissAutofill()" class="flex-1 sm:flex-none px-6 py-3 text-gray-400 hover:text-[#1a1a1a] transition-colors">No</button>
+                                <button type="button" (click)="applyAutofill()" class="flex-1 sm:flex-none px-8 py-3 bg-[#1a1a1a] text-white rounded-xl shadow-xl shadow-[#1a1a1a]/20 active:scale-95 transition-all">Yes, Use Info</button>
+                              </div>
+                            </div>
+                          }
 
-                          <div class="space-y-2">
-                            <label class="text-[#1A1A1A]">মোবাইল নম্বর *</label>
-                            <input type="tel" formControlName="phone" placeholder="017XXXXXXXX"
-                                   class="w-full h-14 px-5 bg-[#F5F5F5] border-none focus:ring-2 focus:ring-[#E52222] transition-all outline-none">
-                          </div>
+                          <div class="space-y-8">
+                            <!-- Customer Info Section -->
+                            <div class="flex items-center gap-3 mb-2">
+                              <div class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center">
+                                <app-icon name="User" size="16" className="text-white"></app-icon>
+                              </div>
+                              <h3 class="text-[#1a1a1a]">Customer Info</h3>
+                            </div>
 
-                          <div class="grid grid-cols-2 gap-4">
-                            <div class="space-y-2 relative" (click)="$event.stopPropagation()">
-                                <label class="text-[#1A1A1A]">জেলা *</label>
-                                <button type="button" (click)="toggleCityDropdown()"
-                                        class="w-full h-14 px-5 bg-[#F5F5F5] text-left flex items-center justify-between">
-                                  <span class="truncate">{{ orderForm.get('city')?.value || 'সিলেক্ট করুন' }}</span>
-                                  <app-icon name="ChevronDown" size="14"></app-icon>
-                                </button>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                              <div class="space-y-2">
+                                <label class="text-[#888888] ml-1">মোবাইল নম্বর *</label>
+                                <div class="relative flex">
+                                  <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-[#E0E0E0] bg-white text-[#888888]">+88</span>
+                                  <input type="tel" formControlName="phone" placeholder="01xxxxxxxxx"
+                                         class="w-full h-14 px-6 bg-white border-2 border-[#E0E0E0] rounded-r-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]" />
+                                </div>
+                                @if (orderForm.controls.phone.touched && orderForm.controls.phone.invalid) {
+                                  <p class="text-red-500 ml-1">Required</p>
+                                }
+                              </div>
+                              <div class="space-y-2">
+                                <label class="text-[#888888] ml-1">আপনার নাম *</label>
+                                <input type="text" formControlName="fullName" placeholder="e.g. Abdullah"
+                                       class="w-full h-14 px-6 bg-white border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]" />
+                                @if (orderForm.controls.fullName.touched && orderForm.controls.fullName.invalid) {
+                                  <p class="text-red-500 ml-1">Required</p>
+                                }
+                              </div>
+                            </div>
+
+                            <!-- City & Area Grid -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                              <!-- City -->
+                              <div class="space-y-2 relative" (click)="$event.stopPropagation()">
+                                <label class="text-[#888888] ml-1">জেলা *</label>
+                                <div class="relative items-center flex cursor-pointer" (click)="toggleCityDropdown()">
+                                  <input class="w-full h-14 px-6 bg-white border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
+                                         type="text" [value]="orderForm.get('city')?.value" placeholder="সিলেক্ট করুন" readonly />
+                                  <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-[#888888] pointer-events-none"></app-icon>
+                                </div>
                                 @if (isCityDropdownOpen) {
-                                  <div class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-100 shadow-2xl max-h-52 overflow-y-auto">
-                                    @for (city of cities; track city) {
-                                      <button type="button" (click)="selectCity(city)" class="w-full text-left px-5 py-3 hover:bg-gray-50">
-                                        {{ city }}
-                                      </button>
-                                    }
+                                  <div class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+                                       (click)="$event.stopPropagation()">
+                                    <div class="p-3 border-b border-[#E0E0E0]">
+                                      <div class="relative flex items-center">
+                                        <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
+                                        <input type="text" class="w-full pl-10 pr-4 py-2 bg-white border-none rounded-xl focus:ring-0 outline-none"
+                                               placeholder="Search cities..." (input)="filterCities($event)" [value]="citySearch" autofocus />
+                                      </div>
+                                    </div>
+                                    <ul class="max-h-60 overflow-y-auto py-1">
+                                      @if (filteredCities.length === 0) {
+                                        <li class="px-5 py-3 text-[#888888] text-center">No cities found</li>
+                                      }
+                                      @for (city of filteredCities; track city) {
+                                        <li (click)="selectCity(city)" class="px-5 py-3 text-[#1A1A1A] hover:bg-gray-50 cursor-pointer transition-colors"
+                                            [ngClass]="{'bg-[#1a1a1a]/5': orderForm.get('city')?.value === city}">
+                                          {{ city }}
+                                        </li>
+                                      }
+                                    </ul>
                                   </div>
                                 }
-                            </div>
-                            <div class="space-y-2 relative" (click)="$event.stopPropagation()">
-                                <label class="text-[#1A1A1A]">এলাকা *</label>
-                                <button type="button" (click)="toggleAreaDropdown()" [disabled]="!orderForm.get('city')?.value"
-                                        class="w-full h-14 px-5 bg-[#F5F5F5] text-left flex items-center justify-between disabled:opacity-50">
-                                  <span class="truncate">{{ orderForm.get('area')?.value || 'সিলেক্ট করুন' }}</span>
-                                  <app-icon name="ChevronDown" size="14"></app-icon>
-                                </button>
+                                @if (isCityDropdownOpen) {
+                                  <div class="fixed inset-0 z-40" (click)="toggleCityDropdown()"></div>
+                                }
+                              </div>
+
+                              <!-- Area -->
+                              <div class="space-y-2 relative" (click)="$event.stopPropagation()">
+                                <label class="text-[#888888] ml-1">এলাকা *</label>
+                                <div class="relative items-center flex cursor-pointer" (click)="toggleAreaDropdown()">
+                                  <input class="w-full h-14 px-6 bg-white border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
+                                         [class.opacity-50]="!orderForm.get('city')?.value"
+                                         type="text" [value]="orderForm.get('area')?.value" placeholder="সিলেক্ট করুন" readonly />
+                                  <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-[#888888] pointer-events-none"></app-icon>
+                                </div>
                                 @if (isAreaDropdownOpen) {
-                                  <div class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-100 shadow-2xl max-h-52 overflow-y-auto">
-                                    @for (area of areas; track area) {
-                                      <button type="button" (click)="selectArea(area)" class="w-full text-left px-5 py-3 hover:bg-gray-50">
-                                        {{ area }}
-                                      </button>
-                                    }
+                                  <div class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+                                       (click)="$event.stopPropagation()">
+                                    <div class="p-3 border-b border-[#E0E0E0]">
+                                      <div class="relative flex items-center">
+                                        <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
+                                        <input type="text" class="w-full pl-10 pr-4 py-2 bg-white border-none rounded-xl focus:ring-0 outline-none"
+                                               placeholder="Search areas..." (input)="filterAreas($event)" [value]="areaSearch" autofocus />
+                                      </div>
+                                    </div>
+                                    <ul class="max-h-60 overflow-y-auto py-1">
+                                      @if (filteredAreas.length === 0) {
+                                        <li class="px-5 py-3 text-[#888888] text-center">No areas found</li>
+                                      }
+                                      @for (area of filteredAreas; track area) {
+                                        <li (click)="selectArea(area)" class="px-5 py-3 text-[#1A1A1A] hover:bg-gray-50 cursor-pointer transition-colors"
+                                            [ngClass]="{'bg-[#1a1a1a]/5': orderForm.get('area')?.value === area}">
+                                          {{ area }}
+                                        </li>
+                                      }
+                                    </ul>
                                   </div>
                                 }
+                                @if (isAreaDropdownOpen) {
+                                  <div class="fixed inset-0 z-40" (click)="toggleAreaDropdown()"></div>
+                                }
+                              </div>
                             </div>
-                          </div>
 
-                          <div class="space-y-2">
-                            <label class="text-[#1A1A1A]">সম্পূর্ণ ঠিকানা *</label>
-                            <textarea formControlName="address" rows="3" placeholder="বাড়ি/রোড নম্বর এবং এলাকা..."
-                                      class="w-full p-5 bg-[#F5F5F5] border-none focus:ring-2 focus:ring-[#E52222] transition-all outline-none resize-none"></textarea>
-                          </div>
+                            <!-- Address -->
+                            <div class="space-y-2">
+                              <label class="text-[#888888] ml-1">সম্পূর্ণ ঠিকানা *</label>
+                              <textarea formControlName="address" rows="3" placeholder="House, Road..."
+                                        class="w-full p-6 bg-white border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] resize-none"></textarea>
+                              @if (orderForm.controls.address.touched && orderForm.controls.address.invalid) {
+                                <p class="text-red-500 ml-1">Required</p>
+                              }
+                            </div>
 
-                          <button type="submit" [disabled]="isOrdering"
-                                  class="w-full h-16 bg-[#E52222] text-white shadow-[0_15px_35px_rgba(229,34,34,0.3)] hover:-translate-y-1 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0">
-                            @if (isOrdering) {
-                              <app-icon name="Loader2" size="20" className="animate-spin inline-block mr-2"></app-icon>
-                              <span>অর্ডার প্রক্রিয়াকরণ...</span>
-                            } @else {
-                              <span>অর্ডার সম্পন্ন করুন</span>
-                            }
-                          </button>
+                            <!-- Delivery Method -->
+                            <div class="space-y-4">
+                              <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center">
+                                  <app-icon name="Truck" size="16" className="text-white"></app-icon>
+                                </div>
+                                <h3 class="text-[#1a1a1a]">ডেলিভারি অপশন</h3>
+                              </div>
+                              <div class="space-y-3">
+                                @for (method of deliveryMethods; track method.id) {
+                                  @if (!orderForm.controls.city.value || orderForm.controls.deliveryMethodId.value === method.id) {
+                                    <div class="relative flex items-center justify-between p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 group"
+                                         [ngClass]="orderForm.controls.deliveryMethodId.value === method.id ? 'border-[#1a1a1a] bg-[#1a1a1a]/5' : 'border-[#E0E0E0] hover:border-[#E0E0E0]'">
+                                      <input type="radio" formControlName="deliveryMethodId" [value]="method.id" [id]="'clp-method-' + method.id" class="hidden" />
+                                      <label [for]="'clp-method-' + method.id" class="absolute inset-0 z-10 cursor-pointer"></label>
+                                      <div class="flex items-center gap-4">
+                                        <div class="w-5 h-5 rounded-full border-2 border-[#E0E0E0] flex items-center justify-center shadow-inner"
+                                             [class.border-[#1a1a1a]]="orderForm.controls.deliveryMethodId.value === method.id">
+                                          @if (orderForm.controls.deliveryMethodId.value === method.id) {
+                                            <div class="w-2.5 h-2.5 rounded-full bg-[#1a1a1a] animate-scale-in"></div>
+                                          }
+                                        </div>
+                                        <div class="space-y-0.5">
+                                          <p class="text-[#1a1a1a]">{{ method.name }}</p>
+                                          <p class="text-[#888888]">{{ method.estimatedDays }} Estimated</p>
+                                        </div>
+                                      </div>
+                                      <div class="text-right">
+                                        <p class="text-[#1a1a1a]">{{ method.cost === 0 ? 'FREE' : (method.cost | number: '1.0-0') + ' ৳' }}</p>
+                                      </div>
+                                    </div>
+                                  }
+                                }
+                              </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" [disabled]="isOrdering"
+                                    class="w-full h-16 bg-[#1a1a1a] text-white rounded-2xl hover:bg-[#333333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group">
+                              @if (isOrdering) {
+                                <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
+                                <span>অর্ডার প্রক্রিয়াকরণ...</span>
+                              } @else {
+                                <span>অর্ডার সম্পন্ন করুন</span>
+                              }
+                              @if (!isOrdering) {
+                                <app-icon name="ChevronRight" size="16" className="group-hover:translate-x-1 transition-transform"></app-icon>
+                              }
+                            </button>
+                          </div>
                         </form>
 
                         <!-- Cart Summary -->

@@ -278,7 +278,7 @@ public class CartController : ControllerBase
 
     private IQueryable<Cart> GetCartQuery(int? id = null)
     {
-        var query = _context.Carts.AsNoTracking().AsQueryable();
+        var query = _context.Carts.AsQueryable();
 
         if (id.HasValue)
         {

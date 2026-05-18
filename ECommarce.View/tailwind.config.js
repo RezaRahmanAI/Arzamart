@@ -28,8 +28,8 @@ module.exports = {
         "border-dark":          "#333333",
       },
       fontFamily: {
-        sans:    ["Outfit", "system-ui", "sans-serif"],
-        display: ["Outfit", "system-ui", "sans-serif"],
+        sans:    ["Montserrat", "system-ui", "sans-serif"],
+        display: ["Montserrat", "system-ui", "sans-serif"],
       },
       fontSize: {
         "ds-xs":   ["0.8125rem",  { lineHeight: "1.5" }], // 13px

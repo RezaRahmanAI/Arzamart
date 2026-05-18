@@ -584,7 +584,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     // Check if any selected product is missing a size
     const itemsMissingSize = selections.filter(s => (s.product.variants?.length ?? 0) > 0 && !s.selectedSize);
     if (itemsMissingSize.length > 0) {
-      this.notification.warn(`Please select a size for ${itemsMissingSize[0].product.name}`);
+      this.notification.warn(`"${itemsMissingSize[0].product.name}" - আগে সাইজ সিলেক্ট করুন`);
+      const el = document.getElementById("product-select-section");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 
