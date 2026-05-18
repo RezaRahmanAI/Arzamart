@@ -60,9 +60,12 @@ export class AdminReviewsComponent implements OnInit, OnDestroy {
     userAvatar: [""],
     productId: [null as number | null, [Validators.required]],
     rating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
-    comment: ["", [Validators.required]],
+    comment: [""],
     isVerifiedPurchase: [true],
+    screenshotUrl: [""],
   });
+
+  isUploadingScreenshot = false;
 
   ngOnInit(): void {
     this.loadReviews();
@@ -98,7 +101,8 @@ export class AdminReviewsComponent implements OnInit, OnDestroy {
       isVerifiedPurchase: true,
       userName: "",
       userAvatar: "",
-      productId: null
+      productId: null,
+      screenshotUrl: ""
     });
     this.isModalOpen = true;
   }
@@ -113,6 +117,7 @@ export class AdminReviewsComponent implements OnInit, OnDestroy {
       rating: review.rating,
       comment: review.comment,
       isVerifiedPurchase: review.isVerifiedPurchase,
+      screenshotUrl: review.screenshotUrl || "",
     });
     this.isModalOpen = true;
   }
@@ -149,6 +154,25 @@ export class AdminReviewsComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.isUploadingAvatar = false;
+      }
+    });
+  }
+
+  onScreenshotFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.isUploadingScreenshot = true;
+    this.productsService.uploadProductMedia([file]).subscribe({
+      next: (urls) => {
+        if (urls && urls.length > 0) {
+          this.reviewForm.patchValue({ screenshotUrl: urls[0] });
+        }
+        this.isUploadingScreenshot = false;
+      },
+      error: () => {
+        this.isUploadingScreenshot = false;
+        this.notification.error("Failed to upload screenshot.");
       }
     });
   }

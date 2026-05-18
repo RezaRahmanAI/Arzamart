@@ -277,6 +277,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   filteredAreas: string[] = [];
   areaSearch = "";
   isAreaDropdownOpen = false;
+  isAddSectionMenuOpen = false;
 
   didAutofill = false;
 
@@ -433,6 +434,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         if (res.config?.sectionsJson) {
           try {
             this.sections = JSON.parse(res.config.sectionsJson);
+            this.sections.forEach(s => this.ensureSectionSettings(s));
             this.configForm.patchValue({ sectionsJson: res.config.sectionsJson });
           } catch (e) {
             console.error("Invalid sections JSON", e);
@@ -790,20 +792,81 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   // --- MODULAR SECTION MANAGEMENT ---
+  ensureSectionSettings(section: LandingSection): void {
+    if (!section.settings) section.settings = {};
+    const s = section.settings;
+    const form = this.configForm.value;
+    
+    if (section.type === 'countdown') {
+      if (s.isTimerVisible === undefined) s.isTimerVisible = form.isTimerVisible !== undefined ? form.isTimerVisible : true;
+      if (s.headerTitle === undefined) s.headerTitle = form.headerTitle || 'অফারটি শেষ হতে মাত্র কিছুক্ষণ বাকি আছে!';
+      if (s.relativeTimerTotalMinutes === undefined) s.relativeTimerTotalMinutes = form.relativeTimerTotalMinutes !== undefined ? form.relativeTimerTotalMinutes : null;
+    } else if (section.type === 'hero') {
+      if (s.heroTitle === undefined) s.heroTitle = form.heroTitle || 'একচেটিয়া অফার! আজকের জন্যই সেরা সুযোগ';
+      if (s.heroSubtitle === undefined) s.heroSubtitle = form.heroSubtitle || 'প্রিমিয়াম কোয়ালিটি এখন সাশ্রয়ী মূল্যে';
+      if (s.heroBadge === undefined) s.heroBadge = form.heroBadge || 'স্টক ফুরিয়ে যাওয়ার আগেই সংগ্রহ করুন';
+    } else if (section.type === 'product-hero') {
+      if (s.productHeroTitle === undefined) s.productHeroTitle = form.productHeroTitle || 'আমাদের প্রিমিয়াম প্রসাধনী';
+      if (s.productHeroDescription === undefined) s.productHeroDescription = form.productHeroDescription || 'সেরা উপাদান দিয়ে তৈরি যা আপনার ত্বকের যত্ন নেবে।';
+    } else if (section.type === 'discount-cta') {
+      if (s.discountCtaTitle === undefined) s.discountCtaTitle = form.discountCtaTitle || 'অবিশ্বাস্য ডিসকাউন্ট অফার!';
+      if (s.discountCtaDescription === undefined) s.discountCtaDescription = form.discountCtaDescription || 'আজই অর্ডার করলে পাবেন বিশেষ ছাড় এবং ফ্রি ডেলিভারি।';
+    } else if (section.type === 'info-banner') {
+      if (s.infoBannerTitle === undefined) s.infoBannerTitle = form.infoBannerTitle || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী';
+      if (s.infoBannerDescription === undefined) s.infoBannerDescription = form.infoBannerDescription || 'প্রতিদিন সকালে ও রাতে পরিষ্কার ত্বকে অল্প পরিমাণে ক্রিম লাগিয়ে আলতোভাবে ম্যাসাজ করুন।';
+    } else if (section.type === 'product-details') {
+      if (s.isProductDetailsVisible === undefined) s.isProductDetailsVisible = form.isProductDetailsVisible !== undefined ? form.isProductDetailsVisible : true;
+      if (s.productDetailsTitle === undefined) s.productDetailsTitle = form.productDetailsTitle || '🔥 প্রোডাক্ট ডিটেইলস';
+      if (s.isFabricVisible === undefined) s.isFabricVisible = form.isFabricVisible !== undefined ? form.isFabricVisible : true;
+      if (s.isDesignVisible === undefined) s.isDesignVisible = form.isDesignVisible !== undefined ? form.isDesignVisible : true;
+    } else if (section.type === 'trust-banner') {
+      if (s.isTrustBannerVisible === undefined) s.isTrustBannerVisible = form.isTrustBannerVisible !== undefined ? form.isTrustBannerVisible : true;
+      if (s.trustBannerText === undefined) s.trustBannerText = form.trustBannerText || 'দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই';
+    } else if (section.type === 'reviews') {
+      if (s.isReviewsVisible === undefined) s.isReviewsVisible = form.isReviewsVisible !== undefined ? form.isReviewsVisible : true;
+    } else if (section.type === 'order-form') {
+      if (s.promoText === undefined) s.promoText = form.promoText || 'যেকোনো কালার যেকোনো সাইজ দুই পিস অর্ডার করলেই পাচ্ছেন মাত্র ১৪৫০ টাকা';
+    }
+  }
+
+  toggleActiveSection(section: LandingSection): void {
+    this.ensureSectionSettings(section);
+    this.activeEditorSection = this.activeEditorSection === section.id ? '' : section.id;
+  }
+
   moveSection(index: number, direction: 'up' | 'down'): void {
     if (direction === 'up' && index > 0) {
       [this.sections[index], this.sections[index-1]] = [this.sections[index-1], this.sections[index]];
     } else if (direction === 'down' && index < this.sections.length - 1) {
       [this.sections[index], this.sections[index+1]] = [this.sections[index+1], this.sections[index]];
     }
+    this.sections = [...this.sections];
+    this.updateSections();
   }
 
   drop(event: CdkDragDrop<LandingSection[]>): void {
     moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
+    this.sections = [...this.sections];
+    this.updateSections();
   }
 
-  toggleVisibility(index: number): void { this.sections[index].visible = !this.sections[index].visible; }
-  deleteSection(index: number): void { if (confirm('Delete this section?')) this.sections.splice(index, 1); }
+  toggleVisibility(index: number): void { 
+    this.sections[index].visible = !this.sections[index].visible; 
+    this.sections = [...this.sections];
+    this.updateSections();
+  }
+
+  deleteSection(index: number): void { 
+    if (confirm('Delete this section?')) {
+      const deletedSection = this.sections[index];
+      if (deletedSection && this.activeEditorSection === deletedSection.id) {
+        this.activeEditorSection = '';
+      }
+      this.sections.splice(index, 1); 
+      this.sections = [...this.sections];
+      this.updateSections();
+    }
+  }
   
   addSection(type: string): void {
     const labels: Record<string, string> = {
@@ -820,7 +883,11 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     };
     const settings: any = {};
     if (type === 'product-select') settings.customProductIds = [];
-    this.sections.push({ id: `${type}_${Date.now()}`, type, label: labels[type] || 'New Section', visible: true, settings });
+    const section = { id: `${type}_${Date.now()}`, type, label: labels[type] || 'New Section', visible: true, settings };
+    this.ensureSectionSettings(section);
+    this.sections.push(section);
+    this.sections = [...this.sections];
+    this.updateSections();
   }
 
   // --- PRODUCT SELECTION MANAGEMENT ---

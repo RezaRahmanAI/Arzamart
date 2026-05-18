@@ -9,6 +9,7 @@ export interface Review {
   isVerifiedPurchase: boolean;
   isFeatured: boolean;
   likes: number;
+  screenshotUrl?: string;
 }
 
 export interface CreateReview {

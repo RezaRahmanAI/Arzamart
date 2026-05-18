@@ -82,17 +82,17 @@
                       <app-icon name="GripVertical" size="14"></app-icon>
                     </div>
 
-                    <button (click)="activeEditorSection = activeEditorSection === section.id ? '' : section.id"
+                    <button (click)="toggleActiveSection(section)"
                             class="flex-1 flex items-center gap-2 text-left min-w-0 px-1 py-1.5">
                       <span class="text-white/90 truncate text-sm">{{ section.label }}</span>
                       <app-icon [name]="activeEditorSection === section.id ? 'ChevronUp' : 'ChevronDown'" size="12" class="text-white/20"></app-icon>
                     </button>
                     
                     <div class="flex items-center gap-1 pr-1">
-                      <button (click)="toggleVisibility(i)" class="p-1.5 hover:bg-white/10 rounded-md transition-colors" [class.text-[#3B4FD8]]="section.visible">
+                      <button (click)="toggleVisibility(i); $event.stopPropagation()" class="p-1.5 hover:bg-white/10 rounded-md transition-colors" [class.text-[#3B4FD8]]="section.visible">
                         <app-icon [name]="section.visible ? 'Eye' : 'EyeOff'" size="14"></app-icon>
                       </button>
-                      <button (click)="deleteSection(i)" class="p-1.5 hover:bg-red-500/20 text-red-400 rounded-md">
+                      <button (click)="deleteSection(i); $event.stopPropagation()" class="p-1.5 hover:bg-red-500/20 text-red-400 rounded-md">
                         <app-icon name="Trash2" size="14"></app-icon>
                       </button>
                     </div>
@@ -106,15 +106,15 @@
                           <div class="space-y-3 pt-3">
                             <div class="flex items-center justify-between">
                               <span class="text-xs text-white/60">Visible</span>
-                              <input type="checkbox" formControlName="isTimerVisible" class="toggle-sm">
+                              <input type="checkbox" [(ngModel)]="section.settings.isTimerVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm">
                             </div>
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Bar Title</label>
-                              <input type="text" formControlName="headerTitle" class="editor-input bg-black/40">
+                              <input type="text" [(ngModel)]="section.settings.headerTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
                             </div>
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Reset Minutes</label>
-                              <input type="number" formControlName="relativeTimerTotalMinutes" class="editor-input bg-black/40">
+                              <input type="number" [(ngModel)]="section.settings.relativeTimerTotalMinutes" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
                             </div>
                           </div>
                         }
@@ -122,15 +122,15 @@
                           <div class="space-y-3 pt-3">
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Main Title</label>
-                              <textarea formControlName="heroTitle" rows="2" class="editor-textarea bg-black/40"></textarea>
+                              <textarea [(ngModel)]="section.settings.heroTitle" [ngModelOptions]="{standalone: true}" rows="2" class="editor-textarea bg-black/40"></textarea>
                             </div>
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Subtitle</label>
-                              <textarea formControlName="heroSubtitle" rows="2" class="editor-textarea bg-black/40"></textarea>
+                              <textarea [(ngModel)]="section.settings.heroSubtitle" [ngModelOptions]="{standalone: true}" rows="2" class="editor-textarea bg-black/40"></textarea>
                             </div>
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Badge Text</label>
-                              <input type="text" formControlName="heroBadge" class="editor-input bg-black/40">
+                              <input type="text" [(ngModel)]="section.settings.heroBadge" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
                             </div>
                           </div>
                         }
@@ -138,11 +138,11 @@
                           <div class="space-y-3 pt-3">
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Section Title</label>
-                              <input type="text" formControlName="productHeroTitle" class="editor-input bg-black/40">
+                              <input type="text" [(ngModel)]="section.settings.productHeroTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
                             </div>
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Description</label>
-                              <textarea formControlName="productHeroDescription" rows="3" class="editor-textarea bg-black/40"></textarea>
+                              <textarea [(ngModel)]="section.settings.productHeroDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-black/40"></textarea>
                             </div>
                           </div>
                         }
@@ -150,11 +150,11 @@
                           <div class="space-y-3 pt-3">
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">CTA Title</label>
-                              <input type="text" formControlName="discountCtaTitle" class="editor-input bg-black/40">
+                              <input type="text" [(ngModel)]="section.settings.discountCtaTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
                             </div>
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">CTA Description</label>
-                              <textarea formControlName="discountCtaDescription" rows="3" class="editor-textarea bg-black/40"></textarea>
+                              <textarea [(ngModel)]="section.settings.discountCtaDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-black/40"></textarea>
                             </div>
                           </div>
                         }
@@ -162,11 +162,11 @@
                           <div class="space-y-3 pt-3">
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Banner Title</label>
-                              <input type="text" formControlName="infoBannerTitle" class="editor-input bg-black/40">
+                              <input type="text" [(ngModel)]="section.settings.infoBannerTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
                             </div>
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Banner Description</label>
-                              <textarea formControlName="infoBannerDescription" rows="3" class="editor-textarea bg-black/40"></textarea>
+                              <textarea [(ngModel)]="section.settings.infoBannerDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-black/40"></textarea>
                             </div>
                           </div>
                         }
@@ -174,19 +174,19 @@
                           <div class="space-y-3 pt-3">
                             <div class="flex items-center justify-between">
                               <span class="text-xs text-white/60">Visible</span>
-                              <input type="checkbox" formControlName="isProductDetailsVisible" class="toggle-sm">
+                              <input type="checkbox" [(ngModel)]="section.settings.isProductDetailsVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm">
                             </div>
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Section Title</label>
-                              <input type="text" formControlName="productDetailsTitle" class="editor-input bg-black/40">
+                              <input type="text" [(ngModel)]="section.settings.productDetailsTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
                             </div>
                             <div class="flex items-center justify-between">
                               <span class="text-xs text-white/40">Show Fabric Info</span>
-                              <input type="checkbox" formControlName="isFabricVisible" class="toggle-sm scale-75">
+                              <input type="checkbox" [(ngModel)]="section.settings.isFabricVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm scale-75">
                             </div>
                             <div class="flex items-center justify-between">
                               <span class="text-xs text-white/40">Show Design Info</span>
-                              <input type="checkbox" formControlName="isDesignVisible" class="toggle-sm scale-75">
+                              <input type="checkbox" [(ngModel)]="section.settings.isDesignVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm scale-75">
                             </div>
                           </div>
                         }
@@ -194,11 +194,11 @@
                           <div class="space-y-3 pt-3">
                             <div class="flex items-center justify-between">
                               <span class="text-xs text-white/60">Visible</span>
-                              <input type="checkbox" formControlName="isTrustBannerVisible" class="toggle-sm">
+                              <input type="checkbox" [(ngModel)]="section.settings.isTrustBannerVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm">
                             </div>
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Trust Message</label>
-                              <textarea formControlName="trustBannerText" rows="3" class="editor-textarea bg-black/40"></textarea>
+                              <textarea [(ngModel)]="section.settings.trustBannerText" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-black/40"></textarea>
                             </div>
                           </div>
                         }
@@ -206,7 +206,7 @@
                           <div class="space-y-3 pt-3">
                             <div class="flex items-center justify-between">
                               <span class="text-xs text-white/60">Show Reviews</span>
-                              <input type="checkbox" formControlName="isReviewsVisible" class="toggle-sm">
+                              <input type="checkbox" [(ngModel)]="section.settings.isReviewsVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm">
                             </div>
                           </div>
                         }
@@ -214,7 +214,7 @@
                           <div class="space-y-3 pt-3">
                             <div class="space-y-1.5">
                               <label class="text-[10px] text-white/40 uppercase">Offer/Promo Text</label>
-                              <textarea formControlName="promoText" rows="3" class="editor-textarea bg-black/40" placeholder="Shown in order summary..."></textarea>
+                              <textarea [(ngModel)]="section.settings.promoText" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-black/40" placeholder="Shown in order summary..."></textarea>
                             </div>
                           </div>
                         }
@@ -275,20 +275,23 @@
             </div>
 
             <!-- Add Section -->
-            <div class="relative group mt-6">
-              <button class="w-full h-11 border border-dashed border-white/10 hover:border-[#3B4FD8] text-white/30 hover:text-[#3B4FD8] flex items-center justify-center gap-2 transition-all rounded-lg text-sm bg-white/[0.02]">
+            <div class="relative mt-6">
+              <button (click)="isAddSectionMenuOpen = !isAddSectionMenuOpen" 
+                      class="w-full h-11 border border-dashed border-white/10 hover:border-[#3B4FD8] text-white/30 hover:text-[#3B4FD8] flex items-center justify-center gap-2 transition-all rounded-lg text-sm bg-white/[0.02]">
                 <app-icon name="Plus" size="14"></app-icon>
                 Add Component
               </button>
-              <div class="hidden group-hover:block absolute bottom-full left-0 right-0 bg-[#222] border border-white/10 shadow-2xl z-50 overflow-hidden rounded-lg mb-2">
-                <div class="max-h-64 overflow-y-auto custom-scrollbar">
-                  @for (type of ['countdown', 'hero', 'product-hero', 'discount-cta', 'info-banner', 'product-details', 'trust-banner', 'reviews', 'product-select', 'order-form']; track type) {
-                    <button (click)="addSection(type)" class="w-full text-left px-4 py-2.5 text-white/60 hover:bg-[#3B4FD8] hover:text-white transition-all border-b border-white/5 last:border-0 text-sm">
-                      {{ type.replace('-', ' ') | titlecase }}
-                    </button>
-                  }
+              @if (isAddSectionMenuOpen) {
+                <div class="absolute bottom-full left-0 right-0 bg-[#222] border border-white/10 shadow-2xl z-50 overflow-hidden rounded-lg mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                  <div class="max-h-64 overflow-y-auto custom-scrollbar">
+                    @for (type of ['countdown', 'hero', 'product-hero', 'discount-cta', 'info-banner', 'product-details', 'trust-banner', 'reviews', 'product-select', 'order-form']; track type) {
+                      <button (click)="addSection(type); isAddSectionMenuOpen = false" class="w-full text-left px-4 py-2.5 text-white/60 hover:bg-[#3B4FD8] hover:text-white transition-all border-b border-white/5 last:border-0 text-sm">
+                        {{ type.replace('-', ' ') | titlecase }}
+                      </button>
+                    }
+                  </div>
                 </div>
-              </div>
+              }
             </div>
           </div>
 
@@ -339,24 +342,26 @@
                 
                 <!-- MODULE 1: Countdown Bar -->
                 @case ('countdown') {
-                  <div class="sticky top-0 z-[60] w-full bg-[#E52222] text-white py-2 px-4 shadow-lg overflow-hidden">
-                    <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-center gap-4">
-                      <span class="font-bengali">{{ configForm.get('headerTitle')?.value || 'অফার শেষ হতে বাকি:' }}</span>
-                      <div class="flex gap-2">
-                        @for (unit of [
-                          { val: timeLeft.days, label: 'দিন' },
-                          { val: timeLeft.hours, label: 'ঘন্টা' },
-                          { val: timeLeft.minutes, label: 'মিনিট' },
-                          { val: timeLeft.seconds, label: 'সেকেন্ড' }
-                        ]; track unit.label) {
-                          <div class="flex flex-col items-center justify-center w-14 h-12 bg-white/15 rounded-sm">
-                            <span >{{ unit.val | number: '2.0' }}</span>
-                            <span class="font-bengali mt-1 opacity-70">{{ unit.label }}</span>
-                          </div>
-                        }
+                  @if (section.settings?.isTimerVisible !== undefined ? section.settings.isTimerVisible : configForm.get('isTimerVisible')?.value) {
+                    <div class="sticky top-0 z-[60] w-full bg-[#E52222] text-white py-2 px-4 shadow-lg overflow-hidden">
+                      <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-center gap-4">
+                        <span class="font-bengali">{{ section.settings?.headerTitle !== undefined ? section.settings.headerTitle : (configForm.get('headerTitle')?.value || 'অফার শেষ হতে বাকি:') }}</span>
+                        <div class="flex gap-2">
+                          @for (unit of [
+                            { val: timeLeft.days, label: 'দিন' },
+                            { val: timeLeft.hours, label: 'ঘন্টা' },
+                            { val: timeLeft.minutes, label: 'মিনিট' },
+                            { val: timeLeft.seconds, label: 'সেকেন্ড' }
+                          ]; track unit.label) {
+                            <div class="flex flex-col items-center justify-center w-14 h-12 bg-white/15 rounded-sm">
+                              <span >{{ unit.val | number: '2.0' }}</span>
+                              <span class="font-bengali mt-1 opacity-70">{{ unit.label }}</span>
+                            </div>
+                          }
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  }
                 }
 
                 <!-- MODULE 2: Hero / Offer -->
@@ -366,13 +371,13 @@
                     <div class="max-w-[800px] mx-auto">
                       <p class="mb-4">🚀</p>
                       <h1 class="mb-6">
-                        {{ configForm.get('heroTitle')?.value || 'একচেটিয়া অফার! আজকের জন্যই সেরা সুযোগ' }}
+                        {{ section.settings?.heroTitle !== undefined ? section.settings.heroTitle : (configForm.get('heroTitle')?.value || 'একচেটিয়া অফার! আজকের জন্যই সেরা সুযোগ') }}
                       </h1>
                       <p class="text-white/90 mb-8">
-                        {{ configForm.get('heroSubtitle')?.value || 'প্রিমিয়াম কোয়ালিটি এখন সাশ্রয়ী মূল্যে' }}
+                        {{ section.settings?.heroSubtitle !== undefined ? section.settings.heroSubtitle : (configForm.get('heroSubtitle')?.value || 'প্রিমিয়াম কোয়ালিটি এখন সাশ্রয়ী মূল্যে') }}
                       </p>
                       <div class="inline-block px-6 py-2 bg-[#F5C518] text-[#1A1A1A] rounded-[12px] mb-10">
-                        {{ configForm.get('heroBadge')?.value || 'স্টক ফুরিয়ে যাওয়ার আগেই সংগ্রহ করুন' }}
+                        {{ section.settings?.heroBadge !== undefined ? section.settings.heroBadge : (configForm.get('heroBadge')?.value || 'স্টক ফুরিয়ে যাওয়ার আগেই সংগ্রহ করুন') }}
                       </div>
                       <div>
                         <button (click)="scrollToOrder()" 
@@ -391,9 +396,9 @@
                     <div class="max-w-[1200px] mx-auto grid lg:grid-cols-2">
                       <!-- Text Content -->
                       <div class="p-8 md:p-16 flex flex-col justify-center text-white order-2 lg:order-1">
-                        <h2 class="mb-6">{{ configForm.get('productHeroTitle')?.value || 'আমাদের প্রিমিয়াম প্রসাধনী' }}</h2>
+                        <h2 class="mb-6">{{ section.settings?.productHeroTitle !== undefined ? section.settings.productHeroTitle : (configForm.get('productHeroTitle')?.value || 'আমাদের প্রিমিয়াম প্রসাধনী') }}</h2>
                         <p class="text-white/90 mb-10">
-                          {{ configForm.get('productHeroDescription')?.value || 'সেরা উপাদান দিয়ে তৈরি যা আপনার ত্বকের যত্ন নেবে।' }}
+                          {{ section.settings?.productHeroDescription !== undefined ? section.settings.productHeroDescription : (configForm.get('productHeroDescription')?.value || 'সেরা উপাদান দিয়ে তৈরি যা আপনার ত্বকের যত্ন নেবে।') }}
                         </p>
                         <div>
                           <button (click)="scrollToOrder()" class="btn-pill bg-white text-[#E91E8C] shadow-xl">
@@ -417,9 +422,9 @@
                            style="background: linear-gradient(135deg, #27A860, #1B9B7A);">
                     <div class="max-w-[800px] mx-auto">
                       <p class="mb-6">🎁</p>
-                      <h2 class="mb-4">{{ configForm.get('discountCtaTitle')?.value || 'অবিশ্বাস্য ডিসকাউন্ট অফার!' }}</h2>
+                      <h2 class="mb-4">{{ section.settings?.discountCtaTitle !== undefined ? section.settings.discountCtaTitle : (configForm.get('discountCtaTitle')?.value || 'অবিশ্বাস্য ডিসকাউন্ট অফার!') }}</h2>
                       <p class="text-white/90 mb-10">
-                        {{ configForm.get('discountCtaDescription')?.value || 'আজই অর্ডার করলে পাবেন বিশেষ ছাড় এবং ফ্রি ডেলিভারি।' }}
+                        {{ section.settings?.discountCtaDescription !== undefined ? section.settings.discountCtaDescription : (configForm.get('discountCtaDescription')?.value || 'আজই অর্ডার করলে পাবেন বিশেষ ছাড় এবং ফ্রি ডেলিভারি।') }}
                       </p>
                       <button (click)="scrollToOrder()" class="btn-pill bg-white text-[#27A860]">
                         অফারটি গ্রহণ করুন
@@ -435,9 +440,9 @@
                       <div class="size-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-black/10">
                         <app-icon name="Info" size="32" className="text-[#1A1A1A]"></app-icon>
                       </div>
-                      <h2 class="mb-4">{{ configForm.get('infoBannerTitle')?.value || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী' }}</h2>
+                      <h2 class="mb-4">{{ section.settings?.infoBannerTitle !== undefined ? section.settings.infoBannerTitle : (configForm.get('infoBannerTitle')?.value || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী') }}</h2>
                       <p class="text-white text-lg font-medium leading-relaxed">
-                        {{ configForm.get('infoBannerDescription')?.value || 'আমাদের পণ্যগুলি ১০০% প্রাকৃতিক উপাদান দিয়ে তৈরি।' }}
+                        {{ section.settings?.infoBannerDescription !== undefined ? section.settings.infoBannerDescription : (configForm.get('infoBannerDescription')?.value || 'আমাদের পণ্যগুলি ১০০% প্রাকৃতিক উপাদান দিয়ে তৈরি।') }}
                       </p>
                     </div>
                   </section>
@@ -445,56 +450,60 @@
 
                 <!-- MODULE 7: Product Details -->
                 @case ('product-details') {
-                  <section class="section-padding bg-white">
-                    <div class="max-w-[800px] mx-auto">
-                      <h2 class="text-center mb-10">{{ configForm.get('productDetailsTitle')?.value || 'প্রোডাক্টের বিবরণ' }}</h2>
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        @if (configForm.get('isFabricVisible')?.value) {
-                          <div class="flex gap-4 p-4 bg-gray-50 rounded-lg">
-                            <div class="size-10 bg-ds-primary/10 text-ds-primary flex items-center justify-center rounded-full shrink-0">
-                              <app-icon name="Info" size="20"></app-icon>
+                  @if (section.settings?.isProductDetailsVisible !== undefined ? section.settings.isProductDetailsVisible : configForm.get('isProductDetailsVisible')?.value) {
+                    <section class="section-padding bg-white">
+                      <div class="max-w-[800px] mx-auto">
+                        <h2 class="text-center mb-10">{{ section.settings?.productDetailsTitle !== undefined ? section.settings.productDetailsTitle : (configForm.get('productDetailsTitle')?.value || 'প্রোডাক্টের বিবরণ') }}</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          @if (section.settings?.isFabricVisible !== undefined ? section.settings.isFabricVisible : configForm.get('isFabricVisible')?.value) {
+                            <div class="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                              <div class="size-10 bg-ds-primary/10 text-ds-primary flex items-center justify-center rounded-full shrink-0">
+                                <app-icon name="Info" size="20"></app-icon>
+                              </div>
+                              <div>
+                                <h4 class="font-bold mb-1">উপাদান ও গুণমান</h4>
+                                <p class="text-sm text-gray-600 whitespace-pre-wrap">{{ data.product.description }}</p>
+                              </div>
                             </div>
-                            <div>
-                              <h4 class="font-bold mb-1">উপাদান ও গুণমান</h4>
-                              <p class="text-sm text-gray-600 whitespace-pre-wrap">{{ data.product.description }}</p>
+                          }
+                          @if (section.settings?.isDesignVisible !== undefined ? section.settings.isDesignVisible : configForm.get('isDesignVisible')?.value) {
+                            <div class="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                              <div class="size-10 bg-ds-primary/10 text-ds-primary flex items-center justify-center rounded-full shrink-0">
+                                <app-icon name="Layers" size="20"></app-icon>
+                              </div>
+                              <div>
+                                <h4 class="font-bold mb-1">ডিজাইন ও বিশেষত্ব</h4>
+                                <p class="text-sm text-gray-600">আমাদের দক্ষ ডিজাইনারদের দ্বারা তৈরি বিশেষ কালেকশন।</p>
+                              </div>
                             </div>
-                          </div>
-                        }
-                        @if (configForm.get('isDesignVisible')?.value) {
-                          <div class="flex gap-4 p-4 bg-gray-50 rounded-lg">
-                            <div class="size-10 bg-ds-primary/10 text-ds-primary flex items-center justify-center rounded-full shrink-0">
-                              <app-icon name="Layers" size="20"></app-icon>
-                            </div>
-                            <div>
-                              <h4 class="font-bold mb-1">ডিজাইন ও বিশেষত্ব</h4>
-                              <p class="text-sm text-gray-600">আমাদের দক্ষ ডিজাইনারদের দ্বারা তৈরি বিশেষ কালেকশন।</p>
-                            </div>
-                          </div>
-                        }
+                          }
+                        </div>
                       </div>
-                    </div>
-                  </section>
+                    </section>
+                  }
                 }
 
                 <!-- MODULE 8: Trust Banner -->
                 @case ('trust-banner') {
-                  <section class="py-10 bg-[#1A1A1A] text-white">
-                    <div class="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
-                      <div class="flex items-center gap-4">
-                        <div class="size-16 bg-white/10 rounded-full flex items-center justify-center">
-                          <app-icon name="ShieldCheck" size="32" className="text-[#F5C518]"></app-icon>
+                  @if (section.settings?.isTrustBannerVisible !== undefined ? section.settings.isTrustBannerVisible : configForm.get('isTrustBannerVisible')?.value) {
+                    <section class="py-10 bg-[#1A1A1A] text-white">
+                      <div class="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
+                        <div class="flex items-center gap-4">
+                          <div class="size-16 bg-white/10 rounded-full flex items-center justify-center">
+                            <app-icon name="ShieldCheck" size="32" className="text-[#F5C518]"></app-icon>
+                          </div>
+                          <div>
+                            <h3 class="text-[#F5C518]">১০০% বিশ্বস্ততা</h3>
+                            <p class="text-white/60 text-sm">হাজারো গ্রাহকের আস্থার প্রতীক</p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 class="text-[#F5C518]">১০০% বিশ্বস্ততা</h3>
-                          <p class="text-white/60 text-sm">হাজারো গ্রাহকের আস্থার প্রতীক</p>
-                        </div>
+                        <div class="h-px w-20 bg-white/10 hidden md:block"></div>
+                        <p class="max-w-[500px] text-lg italic">
+                          " {{ section.settings?.trustBannerText !== undefined ? section.settings.trustBannerText : (configForm.get('trustBannerText')?.value || 'নিশ্চিন্তে অর্ডার করুন, আমরা দিচ্ছি ১০০% অরিজিনাল পণ্যের গ্যারান্টি।') }} "
+                        </p>
                       </div>
-                      <div class="h-px w-20 bg-white/10 hidden md:block"></div>
-                      <p class="max-w-[500px] text-lg italic">
-                        " {{ configForm.get('trustBannerText')?.value || 'নিশ্চিন্তে অর্ডার করুন, আমরা দিচ্ছি ১০০% অরিজিনাল পণ্যের গ্যারান্টি।' }} "
-                      </p>
-                    </div>
-                  </section>
+                    </section>
+                  }
                 }
 
                 <!-- MODULE 9: Product Selection -->
@@ -778,10 +787,10 @@
                         <div class="bg-[#F5F5F5] p-8 rounded-[12px] h-fit sticky top-24">
                           <h3 class="mb-6 pb-4 border-b border-gray-200 font-bengali">অর্ডার সামারি</h3>
                           
-                          @if (configForm.get('promoText')?.value) {
+                          @if (section.settings?.promoText !== undefined ? section.settings.promoText : configForm.get('promoText')?.value) {
                             <div class="mb-6 p-4 bg-[#E52222]/5 border border-dashed border-[#E52222]/20 rounded-lg">
                               <p class="text-[#E52222] text-sm leading-relaxed font-bengali italic">
-                                " {{ configForm.get('promoText')?.value }} "
+                                " {{ section.settings?.promoText !== undefined ? section.settings.promoText : configForm.get('promoText')?.value }} "
                               </p>
                             </div>
                           }
@@ -830,48 +839,55 @@
 
                 <!-- MODULE 9: Customer Reviews -->
                 @case ('reviews') {
-                  <section class="section-padding bg-ds-bg/5">
-                    <div class="max-w-[1200px] mx-auto">
-                      <div class="text-center mb-12">
-                        <h2 class="mb-4">আমাদের সন্তুষ্ট কাস্টমারদের মতামত</h2>
-                        <div class="flex items-center justify-center gap-1">
-                          <app-icon *ngFor="let s of [1,2,3,4,5]" name="Star" size="20" className="text-yellow-400 fill-yellow-400"></app-icon>
-                          <span class="ml-2 font-bold">(4.9/5)</span>
+                  @if (section.settings?.isReviewsVisible !== undefined ? section.settings.isReviewsVisible : configForm.get('isReviewsVisible')?.value) {
+                    <section class="section-padding bg-ds-bg/5">
+                      <div class="max-w-[1200px] mx-auto">
+                        <div class="text-center mb-12">
+                          <h2 class="mb-4">আমাদের সন্তুষ্ট কাস্টমারদের মতামত</h2>
+                          <div class="flex items-center justify-center gap-1">
+                            <app-icon *ngFor="let s of [1,2,3,4,5]" name="Star" size="20" className="text-yellow-400 fill-yellow-400"></app-icon>
+                            <span class="ml-2 font-bold">(4.9/5)</span>
+                          </div>
                         </div>
-                      </div>
 
-                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @for (review of productReviews; track review.id) {
-                          <div class="bg-white p-6 rounded-[12px] shadow-sm border border-gray-100 flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                              <div class="flex items-center gap-3">
-                                <div class="size-10 rounded-full bg-gray-100 overflow-hidden border border-gray-200 flex items-center justify-center text-gray-400">
-                                  <img *ngIf="review.customerAvatar" loading="lazy" [src]="review.customerAvatar" class="w-full h-full object-cover">
-                                  <app-icon *ngIf="!review.customerAvatar" name="User" size="18"></app-icon>
-                                </div>
-                                <div>
-                                  <p class="font-bold text-sm">{{ review.customerName }}</p>
-                                  <div class="flex items-center gap-1 text-yellow-400">
-                                    <app-icon *ngFor="let s of [].constructor(review.rating)" name="Star" size="12" className="fill-yellow-400"></app-icon>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          @for (review of productReviews; track review.id) {
+                            <div class="bg-white p-6 rounded-[12px] shadow-sm border border-gray-100 flex flex-col gap-4">
+                              <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                  <div class="size-10 rounded-full bg-gray-100 overflow-hidden border border-gray-200 flex items-center justify-center text-gray-400">
+                                    <img *ngIf="review.customerAvatar" loading="lazy" [src]="review.customerAvatar" class="w-full h-full object-cover">
+                                    <app-icon *ngIf="!review.customerAvatar" name="User" size="18"></app-icon>
+                                  </div>
+                                  <div>
+                                    <p class="font-bold text-sm">{{ review.customerName }}</p>
+                                    <div class="flex items-center gap-1 text-yellow-400">
+                                      <app-icon *ngFor="let s of [].constructor(review.rating)" name="Star" size="12" className="fill-yellow-400"></app-icon>
+                                    </div>
                                   </div>
                                 </div>
+                                <div class="bg-green-50 text-green-600 px-2 py-1 rounded-sm text-[10px] font-bold border border-green-100 flex items-center gap-1">
+                                  <app-icon name="CheckCircle" size="10"></app-icon>
+                                  VERIFIED
+                                </div>
                               </div>
-                              <div class="bg-green-50 text-green-600 px-2 py-1 rounded-sm text-[10px] font-bold border border-green-100 flex items-center gap-1">
-                                <app-icon name="CheckCircle" size="10"></app-icon>
-                                VERIFIED
+                              <p class="text-gray-600 text-sm italic">"{{ review.comment }}"</p>
+                              <div *ngIf="review.screenshotUrl" class="mt-3">
+                                <a [href]="imageUrlService.getImageUrl(review.screenshotUrl)" target="_blank" class="inline-block border border-gray-100 rounded-lg overflow-hidden bg-gray-50 max-w-full hover:border-gray-300 transition-all">
+                                  <img [src]="imageUrlService.getImageUrl(review.screenshotUrl)" class="max-h-32 w-auto object-contain" alt="Customer Attachment">
+                                </a>
                               </div>
+                              <p class="text-[10px] text-gray-400 uppercase tracking-widest">{{ review.date | date:'longDate' }}</p>
                             </div>
-                            <p class="text-gray-600 text-sm italic">"{{ review.comment }}"</p>
-                            <p class="text-[10px] text-gray-400 uppercase tracking-widest">{{ review.date | date:'longDate' }}</p>
-                          </div>
-                        }
-                      </div>
+                          }
+                        </div>
 
-                      <div *ngIf="productReviews.length === 0" class="text-center py-12 text-gray-400 italic">
-                        No reviews found for this product yet.
+                        <div *ngIf="productReviews.length === 0" class="text-center py-12 text-gray-400 italic">
+                          No reviews found for this product yet.
+                        </div>
                       </div>
-                    </div>
-                  </section>
+                    </section>
+                  }
                 }
               }
             </div>

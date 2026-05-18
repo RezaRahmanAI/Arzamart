@@ -13,6 +13,7 @@ export interface AdminReview {
   productId: number;
   productName: string;
   likes: number;
+  screenshotUrl?: string;
 }
 
 @Injectable({
@@ -28,7 +29,8 @@ export class AdminReviewsService {
         ...r,
         userName: r.customerName,
         userAvatar: r.customerAvatar,
-        createdAt: r.date // mapping date to createdAt if needed
+        createdAt: r.date, // mapping date to createdAt if needed
+        screenshotUrl: r.screenshotUrl
       })))
     );
   }
@@ -44,7 +46,8 @@ export class AdminReviewsService {
       customerAvatar: payload.userAvatar,
       rating: payload.rating,
       comment: payload.comment,
-      isVerifiedPurchase: payload.isVerifiedPurchase
+      isVerifiedPurchase: payload.isVerifiedPurchase,
+      screenshotUrl: payload.screenshotUrl
     };
     return this.api.post<AdminReview>(this.baseUrl, backendPayload);
   }
@@ -55,7 +58,8 @@ export class AdminReviewsService {
       customerAvatar: payload.userAvatar,
       rating: payload.rating,
       comment: payload.comment,
-      isVerifiedPurchase: payload.isVerifiedPurchase
+      isVerifiedPurchase: payload.isVerifiedPurchase,
+      screenshotUrl: payload.screenshotUrl
     };
     return this.api.post<AdminReview>(`${this.baseUrl}/${id}`, backendPayload);
   }

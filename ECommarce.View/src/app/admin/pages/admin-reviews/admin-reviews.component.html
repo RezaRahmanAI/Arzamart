@@ -73,6 +73,11 @@
         <p class="text-ds-text border-l-2 border-ds-border pl-ds-4 py-1">
           "{{ review.comment }}"
         </p>
+        <div *ngIf="review.screenshotUrl" class="mt-ds-3">
+          <a [href]="getImageUrl(review.screenshotUrl)" target="_blank" class="inline-block border border-ds-border rounded-sm overflow-hidden bg-ds-bg max-w-[200px] hover:border-ds-text/30 transition-all">
+            <img [src]="getImageUrl(review.screenshotUrl)" class="max-h-24 w-auto object-contain" alt="Review Screenshot">
+          </a>
+        </div>
         <div
           class="flex items-center gap-ds-6 text-ds-text-muted pt-ds-3 border-t border-ds-border/50"
         >
@@ -317,9 +322,66 @@
           </div>
         </div>
 
+        <!-- Section: Screenshot Upload -->
+        <div class="space-y-2">
+          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Review Screenshot / Attachment (Optional)</label>
+          <div class="flex items-center gap-4">
+            <!-- Screenshot Preview -->
+            <div class="size-16 rounded-sm bg-ds-bg border border-ds-border flex-shrink-0 overflow-hidden flex items-center justify-center">
+              <img 
+                *ngIf="reviewForm.get('screenshotUrl')?.value" 
+                loading="lazy" [src]="getImageUrl(reviewForm.get('screenshotUrl')?.value)" 
+                class="w-full h-full object-cover"
+              >
+              <app-icon 
+                *ngIf="!reviewForm.get('screenshotUrl')?.value" 
+                name="Image" 
+                size="24" 
+                className="text-ds-text-muted/30"
+              ></app-icon>
+            </div>
+            
+            <!-- Input & Upload Button -->
+            <div class="flex-grow flex gap-2">
+              <input
+                formControlName="screenshotUrl"
+                type="text"
+                class="form-input !h-12 flex-grow text-xs"
+                placeholder="Screenshot URL or Upload..."
+              />
+              <button 
+                type="button"
+                (click)="screenshotInput.click()"
+                [disabled]="isUploadingScreenshot"
+                class="size-12 flex items-center justify-center bg-ds-bg border border-ds-border hover:border-ds-text/30 transition-colors rounded-sm group relative"
+                title="Upload Screenshot"
+              >
+                <app-icon *ngIf="!isUploadingScreenshot" name="Upload" size="18" className="text-ds-text-muted group-hover:text-ds-text"></app-icon>
+                <app-icon *ngIf="isUploadingScreenshot" name="Loader2" size="18" className="animate-spin text-ds-primary"></app-icon>
+                <input 
+                  #screenshotInput 
+                  type="file" 
+                  class="hidden" 
+                  accept="image/*"
+                  (change)="onScreenshotFileSelected($event)"
+                >
+              </button>
+              <button
+                *ngIf="reviewForm.get('screenshotUrl')?.value"
+                type="button"
+                (click)="reviewForm.patchValue({ screenshotUrl: '' })"
+                class="size-12 flex items-center justify-center bg-ds-bg border border-ds-border hover:border-red-500/30 transition-colors rounded-sm text-red-400"
+                title="Remove Screenshot"
+              >
+                <app-icon name="Trash2" size="18"></app-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Section: Narrative -->
         <div class="space-y-2">
-          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Narrative Content (Comment) *</label>
+          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Narrative Content (Comment - Optional)</label>
           <textarea
             formControlName="comment"
             rows="4"

@@ -10,7 +10,8 @@ public class ReviewDto
     public string CustomerName { get; set; } = string.Empty;
     public string? CustomerAvatar { get; set; }
     public int Rating { get; set; }
-    public string Comment { get; set; } = string.Empty;
+    public string? Comment { get; set; }
+    public string? ScreenshotUrl { get; set; }
     public DateTime Date { get; set; }
     public bool IsVerifiedPurchase { get; set; }
     public bool IsFeatured { get; set; }
@@ -30,9 +31,10 @@ public class CreateReviewDto
     [Range(1, 5)]
     public int Rating { get; set; }
 
-    [Required]
     [MaxLength(1000)]
-    public string Comment { get; set; } = string.Empty;
+    public string? Comment { get; set; }
+
+    public string? ScreenshotUrl { get; set; }
 
     public bool IsVerifiedPurchase { get; set; } = true;
 }
@@ -40,8 +42,9 @@ public class CreateReviewDto
 public class ReviewUpdateDto
 {
     public int Rating { get; set; }
-    public string Comment { get; set; } = string.Empty;
+    public string? Comment { get; set; }
     public string? CustomerName { get; set; }
     public string? CustomerAvatar { get; set; }
+    public string? ScreenshotUrl { get; set; }
     public bool IsVerifiedPurchase { get; set; }
 }

@@ -16,9 +16,10 @@ public class Review : BaseEntity
     [Range(1, 5)]
     public int Rating { get; set; }
 
-    [Required]
     [MaxLength(1000)]
-    public string Comment { get; set; } = string.Empty;
+    public string? Comment { get; set; }
+
+    public string? ScreenshotUrl { get; set; }
 
     public DateTime Date { get; set; } = DateTime.UtcNow;
 

@@ -32,6 +32,7 @@ public class AdminReviewsController : ControllerBase
                 CustomerAvatar = r.CustomerAvatar,
                 Rating = r.Rating,
                 Comment = r.Comment,
+                ScreenshotUrl = r.ScreenshotUrl,
                 IsVerifiedPurchase = r.IsVerifiedPurchase,
                 Date = r.Date,
                 ProductId = r.ProductId,
@@ -67,7 +68,10 @@ public class AdminReviewsController : ControllerBase
 
         review.Rating = dto.Rating;
         review.Comment = dto.Comment;
-        review.Date = DateTime.UtcNow; // Update date on edit? Or keep original? Usually keep original. Or add UpdatedAt if needed. Let's just update Date for now or leave it.
+        if (!string.IsNullOrEmpty(dto.CustomerName)) review.CustomerName = dto.CustomerName;
+        review.CustomerAvatar = dto.CustomerAvatar;
+        review.ScreenshotUrl = dto.ScreenshotUrl;
+        review.IsVerifiedPurchase = dto.IsVerifiedPurchase;
 
         await _context.SaveChangesAsync();
 
@@ -78,6 +82,7 @@ public class AdminReviewsController : ControllerBase
             CustomerAvatar = review.CustomerAvatar,
             Rating = review.Rating,
             Comment = review.Comment,
+            ScreenshotUrl = review.ScreenshotUrl,
             IsVerifiedPurchase = review.IsVerifiedPurchase,
             Date = review.Date,
             ProductId = review.ProductId,

@@ -9,9 +9,11 @@ export interface AdminReview {
   productId: number;
   productName: string;
   likes: number;
+  screenshotUrl?: string;
 }
 
 export interface ReviewUpdatePayload {
   rating: number;
   comment: string;
+  screenshotUrl?: string;
 }
