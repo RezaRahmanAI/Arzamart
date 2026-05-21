@@ -7,7 +7,7 @@
       <div class="flex items-center h-14 lg:h-16 w-full">
         
         <!-- Left: Logo -->
-        <div class="flex-1 flex items-center justify-start">
+        <div class="flex-shrink-0 flex items-center justify-start mr-ds-8">
           <a routerLink="/" class="flex items-center group">
             <img
               loading="lazy" [src]="vm.settings.logoUrl ? imageUrlService.getImageUrl(vm.settings.logoUrl!) : 'assets/logo.svg'"
@@ -18,7 +18,7 @@
         </div>
 
         <!-- Right: Actions -->
-        <div class="flex-1 flex items-center justify-end gap-ds-2 md:gap-ds-6 overflow-hidden">
+        <div class="flex-grow flex items-center justify-end gap-ds-2 md:gap-ds-6 overflow-hidden">
           <!-- Desktop Nav Links -->
           <nav class="hidden lg:flex items-center gap-ds-4 lg:gap-ds-8 mr-ds-2 lg:mr-ds-8 whitespace-nowrap">
             @for (item of vm.menu.slice(0, 4); track item.id) {

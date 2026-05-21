@@ -407,9 +407,9 @@
                         </div>
                       </div>
                       <!-- Image -->
-                      <div class="order-1 lg:order-2 h-[400px] lg:h-auto overflow-hidden">
+                      <div class="order-1 lg:order-2 h-[400px] lg:h-auto overflow-hidden bg-black/10">
                         <img loading="lazy" [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" 
-                             alt="Product" class="w-full h-full object-cover grayscale-[20%]">
+                             alt="Product" class="w-full h-full object-contain grayscale-[20%]">
                       </div>
                     </div>
                   </section>
@@ -517,33 +517,38 @@
 
                       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                         @for (p of [data.product].concat(relatedProducts); track p.id) {
-                          <div class="relative p-4 sm:p-6 transition-all duration-500 border-2"
+                          <div class="relative p-3 sm:p-4 transition-all duration-500 border-2"
                                [style.borderColor]="isProductSelected(p) ? '#1E6FD9' : '#F0F0F0'"
                                [style.boxShadow]="isProductSelected(p) ? '0 10px 30px rgba(30,111,217,0.1)' : 'none'">
                             
-                            @if (isProductSelected(p)) {
-                              <div class="absolute -top-3 -left-3 w-8 h-8 bg-[#1E6FD9] text-white flex items-center justify-center rounded-sm z-10 animate-in zoom-in duration-300">
-                                <app-icon name="Check" size="18"></app-icon>
+                            <!-- Checkbox -->
+                            <div class="absolute -top-2.5 -left-2.5 z-10" (click)="$event.stopPropagation(); toggleProductCheck(p)">
+                              <div class="w-7 h-7 flex items-center justify-center rounded-sm border-2 transition-all duration-200 cursor-pointer"
+                                   [style.background]="isProductSelected(p) ? '#1E6FD9' : 'white'"
+                                   [style.borderColor]="isProductSelected(p) ? '#1E6FD9' : '#D0D0D0'">
+                                @if (isProductSelected(p)) {
+                                  <app-icon name="Check" size="14" className="text-white"></app-icon>
+                                }
                               </div>
-                            }
+                            </div>
 
                             @if (p.compareAtPrice && p.compareAtPrice > p.price) {
-                              <div class="absolute top-4 right-4 bg-[#E52222] text-white px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
+                              <div class="absolute top-3 right-3 z-10 bg-[#E52222] text-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                                 ৳{{ (p.compareAtPrice - p.price) }} OFF
                               </div>
                             }
 
-                            <div class="cursor-pointer mb-6 group relative" (click)="openProductDetails(p)">
+                            <div class="cursor-pointer mb-4 group relative" (click)="$event.stopPropagation(); openProductDetails(p)">
                               <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" 
                                    class="w-full aspect-square object-cover rounded-sm">
                               <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span class="bg-white/90 px-4 py-2 rounded-full text-xs font-bold shadow-lg">Details</span>
+                                <span class="bg-white/90 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">Details</span>
                               </div>
                             </div>
                             
-                            <h4 class="mb-2 !text-base !font-bold">{{ p.name }}</h4>
+                            <h4 class="mb-1 !text-sm !font-bold">{{ p.name }}</h4>
                             
-                            <div class="flex items-center flex-nowrap gap-3 mb-6">
+                            <div class="flex items-center flex-nowrap gap-2 mb-4">
                               <span class="text-[#1E6FD9] font-bold whitespace-nowrap">৳ {{ getProductPrice(p) }}</span>
                               @if (p.compareAtPrice && p.compareAtPrice > p.price) {
                                 <span class="text-[#888] line-through text-xs whitespace-nowrap">৳ {{ p.compareAtPrice }}</span>
@@ -552,12 +557,12 @@
 
                             <!-- Size Selection for each product -->
                             @if (getUniqueSizes(p).length > 0) {
-                              <div class="mb-6">
-                                <p class="text-[#888] mb-3 text-[10px] uppercase font-bold tracking-widest">Select Size</p>
-                                <div class="flex flex-wrap gap-2">
+                              <div class="mb-4">
+                                <p class="text-[#888] mb-2 text-[10px] uppercase font-bold tracking-widest">Select Size</p>
+                                <div class="flex flex-wrap gap-1.5">
                                   @for (size of getUniqueSizes(p); track size) {
-                                    <button (click)="selectProductSize(p, size)"
-                                            class="w-10 h-10 flex items-center justify-center transition-all border text-xs font-bold rounded-sm"
+                                    <button (click)="$event.stopPropagation(); selectProductSize(p, size)"
+                                            class="w-9 h-9 flex items-center justify-center transition-all border text-xs font-bold rounded-sm"
                                             [style.background]="(getSelectedSize(p) === size) ? '#1E6FD9' : 'transparent'"
                                             [style.color]="(getSelectedSize(p) === size) ? 'white' : '#1A1A1A'"
                                             [style.borderColor]="(getSelectedSize(p) === size) ? '#1E6FD9' : '#E0E0E0'"
@@ -570,12 +575,12 @@
                             }
 
                             <!-- Quantity Selection for each product -->
-                            <div class="flex items-center gap-4">
-                              <p class="text-[#888] text-[10px] uppercase font-bold tracking-widest">Quantity</p>
+                            <div class="flex items-center gap-3">
+                              <p class="text-[#888] text-[10px] uppercase font-bold tracking-widest">Qty</p>
                               <div class="flex items-center border border-[#E0E0E0] rounded-sm overflow-hidden">
-                                <button (click)="updateProductQuantity(p, -1)" class="w-10 h-10 flex items-center justify-center hover:bg-gray-50">-</button>
-                                <div class="w-10 h-10 flex items-center justify-center font-bold">{{ getProductQuantity(p) }}</div>
-                                <button (click)="updateProductQuantity(p, 1)" class="w-10 h-10 flex items-center justify-center hover:bg-gray-50">+</button>
+                                <button (click)="$event.stopPropagation(); updateProductQuantity(p, -1)" class="w-9 h-9 flex items-center justify-center hover:bg-gray-50 text-sm">-</button>
+                                <div class="w-9 h-9 flex items-center justify-center font-bold text-sm">{{ getProductQuantity(p) || 1 }}</div>
+                                <button (click)="$event.stopPropagation(); updateProductQuantity(p, 1)" class="w-9 h-9 flex items-center justify-center hover:bg-gray-50 text-sm">+</button>
                               </div>
                             </div>
                           </div>

@@ -182,8 +182,25 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     this.updateSelections(product, newQty);
   }
 
+  toggleProductCheck(product: Product): void {
+    const hasVariants = (product.variants?.length ?? 0) > 0;
+    const currentQty = this.productSelections[product.id]?.quantity ?? 0;
+    const currentSize = this.productSelections[product.id]?.selectedSize ?? "";
+
+    if (currentQty > 0) {
+      this.updateSelections(product, 0);
+      return;
+    }
+
+    const size = currentSize || (hasVariants ? this.getUniqueSizes(product)[0] || "" : "");
+    this.updateSelections(product, 1, size);
+  }
+
   selectProductSize(product: Product, size: string): void {
     this.updateSelections(product, this.productSelections[product.id]?.quantity || 0, size);
+    if ((this.productSelections[product.id]?.quantity ?? 0) === 0) {
+      this.updateSelections(product, 1, size);
+    }
   }
 
   switchProduct(product: Product): void {
@@ -428,7 +445,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.deliveryMethods = methods;
 
         if (res.product) {
-          this.updateSelections(res.product, 1, "");
+          this.updateSelections(res.product, 0, "");
         }
 
         if (res.config?.sectionsJson) {
