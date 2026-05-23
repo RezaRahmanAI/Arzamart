@@ -345,7 +345,7 @@
                   @if (section.settings?.isTimerVisible !== undefined ? section.settings.isTimerVisible : configForm.get('isTimerVisible')?.value) {
                     <div class="sticky top-0 z-[60] w-full bg-[#E52222] text-white py-2 px-4 shadow-lg overflow-hidden">
                       <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-center gap-4">
-                        <span class="font-bengali">{{ section.settings?.headerTitle !== undefined ? section.settings.headerTitle : (configForm.get('headerTitle')?.value || 'অফার শেষ হতে বাকি:') }}</span>
+                        <span class="font-bengali whitespace-pre-line">{{ section.settings?.headerTitle !== undefined ? section.settings.headerTitle : (configForm.get('headerTitle')?.value || 'অফার শেষ হতে বাকি:') }}</span>
                         <div class="flex gap-2">
                           @for (unit of [
                             { val: timeLeft.days, label: 'দিন' },
@@ -370,13 +370,13 @@
                            style="background: linear-gradient(135deg, #3B4FD8, #7B3FE4, #8B2FC9);">
                     <div class="max-w-[800px] mx-auto">
                       <p class="mb-4">🚀</p>
-                      <h1 class="mb-6">
+                      <h1 class="mb-6 whitespace-pre-line">
                         {{ section.settings?.heroTitle !== undefined ? section.settings.heroTitle : (configForm.get('heroTitle')?.value || 'একচেটিয়া অফার! আজকের জন্যই সেরা সুযোগ') }}
                       </h1>
-                      <p class="text-white/90 mb-8">
+                      <p class="text-white/90 mb-8 whitespace-pre-line">
                         {{ section.settings?.heroSubtitle !== undefined ? section.settings.heroSubtitle : (configForm.get('heroSubtitle')?.value || 'প্রিমিয়াম কোয়ালিটি এখন সাশ্রয়ী মূল্যে') }}
                       </p>
-                      <div class="inline-block px-6 py-2 bg-[#F5C518] text-[#1A1A1A] rounded-[12px] mb-10">
+                      <div class="inline-block px-6 py-2 bg-[#F5C518] text-[#1A1A1A] rounded-[12px] mb-10 whitespace-pre-line">
                         {{ section.settings?.heroBadge !== undefined ? section.settings.heroBadge : (configForm.get('heroBadge')?.value || 'স্টক ফুরিয়ে যাওয়ার আগেই সংগ্রহ করুন') }}
                       </div>
                       <div>
@@ -396,8 +396,8 @@
                     <div class="max-w-[1200px] mx-auto grid lg:grid-cols-2">
                       <!-- Text Content -->
                       <div class="p-8 md:p-16 flex flex-col justify-center text-white order-2 lg:order-1">
-                        <h2 class="mb-6">{{ section.settings?.productHeroTitle !== undefined ? section.settings.productHeroTitle : (configForm.get('productHeroTitle')?.value || 'আমাদের প্রিমিয়াম প্রসাধনী') }}</h2>
-                        <p class="text-white/90 mb-10">
+                        <h2 class="mb-6 whitespace-pre-line">{{ section.settings?.productHeroTitle !== undefined ? section.settings.productHeroTitle : (configForm.get('productHeroTitle')?.value || 'আমাদের প্রিমিয়াম প্রসাধনী') }}</h2>
+                        <p class="text-white/90 mb-10 whitespace-pre-line">
                           {{ section.settings?.productHeroDescription !== undefined ? section.settings.productHeroDescription : (configForm.get('productHeroDescription')?.value || 'সেরা উপাদান দিয়ে তৈরি যা আপনার ত্বকের যত্ন নেবে।') }}
                         </p>
                         <div>
@@ -422,8 +422,8 @@
                            style="background: linear-gradient(135deg, #27A860, #1B9B7A);">
                     <div class="max-w-[800px] mx-auto">
                       <p class="mb-6">🎁</p>
-                      <h2 class="mb-4">{{ section.settings?.discountCtaTitle !== undefined ? section.settings.discountCtaTitle : (configForm.get('discountCtaTitle')?.value || 'অবিশ্বাস্য ডিসকাউন্ট অফার!') }}</h2>
-                      <p class="text-white/90 mb-10">
+                      <h2 class="mb-4 whitespace-pre-line">{{ section.settings?.discountCtaTitle !== undefined ? section.settings.discountCtaTitle : (configForm.get('discountCtaTitle')?.value || 'অবিশ্বাস্য ডিসকাউন্ট অফার!') }}</h2>
+                      <p class="text-white/90 mb-10 whitespace-pre-line">
                         {{ section.settings?.discountCtaDescription !== undefined ? section.settings.discountCtaDescription : (configForm.get('discountCtaDescription')?.value || 'আজই অর্ডার করলে পাবেন বিশেষ ছাড় এবং ফ্রি ডেলিভারি।') }}
                       </p>
                       <button (click)="scrollToOrder()" class="btn-pill bg-white text-[#27A860]">
@@ -440,8 +440,8 @@
                       <div class="size-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-black/10">
                         <app-icon name="Info" size="32" className="text-[#1A1A1A]"></app-icon>
                       </div>
-                      <h2 class="mb-4">{{ section.settings?.infoBannerTitle !== undefined ? section.settings.infoBannerTitle : (configForm.get('infoBannerTitle')?.value || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী') }}</h2>
-                      <p class="text-white text-lg font-medium leading-relaxed">
+                      <h2 class="mb-4 whitespace-pre-line">{{ section.settings?.infoBannerTitle !== undefined ? section.settings.infoBannerTitle : (configForm.get('infoBannerTitle')?.value || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী') }}</h2>
+                      <p class="text-white text-lg font-medium leading-relaxed whitespace-pre-line">
                         {{ section.settings?.infoBannerDescription !== undefined ? section.settings.infoBannerDescription : (configForm.get('infoBannerDescription')?.value || 'আমাদের পণ্যগুলি ১০০% প্রাকৃতিক উপাদান দিয়ে তৈরি।') }}
                       </p>
                     </div>
@@ -498,7 +498,7 @@
                           </div>
                         </div>
                         <div class="h-px w-20 bg-white/10 hidden md:block"></div>
-                        <p class="max-w-[500px] text-lg italic">
+                        <p class="max-w-[500px] text-lg italic whitespace-pre-line">
                           " {{ section.settings?.trustBannerText !== undefined ? section.settings.trustBannerText : (configForm.get('trustBannerText')?.value || 'নিশ্চিন্তে অর্ডার করুন, আমরা দিচ্ছি ১০০% অরিজিনাল পণ্যের গ্যারান্টি।') }} "
                         </p>
                       </div>
@@ -540,7 +540,7 @@
 
                             <div class="cursor-pointer mb-4 group relative" (click)="$event.stopPropagation(); openProductDetails(p)">
                               <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" 
-                                   class="w-full aspect-square object-cover rounded-sm">
+                                   class="w-full aspect-square object-contain rounded-sm bg-gray-50">
                               <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <span class="bg-white/90 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">Details</span>
                               </div>
@@ -794,7 +794,7 @@
                           
                           @if (section.settings?.promoText !== undefined ? section.settings.promoText : configForm.get('promoText')?.value) {
                             <div class="mb-6 p-4 bg-[#E52222]/5 border border-dashed border-[#E52222]/20 rounded-lg">
-                              <p class="text-[#E52222] text-sm leading-relaxed font-bengali italic">
+                              <p class="text-[#E52222] text-sm leading-relaxed font-bengali italic whitespace-pre-line">
                                 " {{ section.settings?.promoText !== undefined ? section.settings.promoText : configForm.get('promoText')?.value }} "
                               </p>
                             </div>

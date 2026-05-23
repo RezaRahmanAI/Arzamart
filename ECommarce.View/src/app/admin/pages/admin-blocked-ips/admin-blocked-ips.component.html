@@ -1,9 +1,9 @@
 <div class="site-container-admin mx-auto flex flex-col gap-ds-8">
   <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-ds-text">Network Security</h1>
+      <h1 class="text-ds-text">Blocked IPs</h1>
       <p class="text-ds-text-muted mt-1.5">
-        Terminal Authorization & IP Filtering
+        Block or unblock IP addresses
       </p>
     </div>
   </div>
@@ -15,14 +15,14 @@
         <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
           <app-icon name="Ban" size="14" className="text-red-500"></app-icon>
           <div>
-            <h3 class="text-ds-text">Add Restriction</h3>
-            <p class="text-ds-text-muted mt-0.5">Blacklist New Terminal</p>
+            <h3 class="text-ds-text">Block IP</h3>
+            <p class="text-ds-text-muted mt-0.5">Add new IP to blocklist</p>
           </div>
         </div>
         <div class="p-ds-8">
           <form [formGroup]="blockForm" (ngSubmit)="onSubmit()" class="space-y-ds-6">
             <div class="space-y-2">
-              <label class="block text-ds-text ml-1">Terminal Address (IPv4)</label>
+              <label class="block text-ds-text ml-1">IP Address</label>
               <input
                 type="text"
                 formControlName="ipAddress"
@@ -33,11 +33,11 @@
                 *ngIf="blockForm.get('ipAddress')?.touched && blockForm.get('ipAddress')?.errors?.['pattern']"
                 class="text-red-500 ml-1"
               >
-                Invalid IPv4 Syntax
+                Invalid IP format
               </p>
             </div>
             <div class="space-y-2">
-              <label class="block text-ds-text ml-1">Logic for Restriction</label>
+              <label class="block text-ds-text ml-1">Reason</label>
               <textarea
                 formControlName="reason"
                 placeholder="SPECIFY REASON..."
@@ -50,7 +50,7 @@
               [disabled]="blockForm.invalid || isLoading"
               class="btn btn-primary w-full !h-12 bg-red-600 hover:bg-red-700 border-red-600"
             >
-              Restrict Terminal
+              Block IP
             </button>
           </form>
         </div>
@@ -61,35 +61,35 @@
     <div class="lg:col-span-2">
       <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden flex flex-col min-h-[400px]">
         <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50">
-          <h3 class="text-ds-text">Restriction Registry</h3>
-          <p class="text-ds-text-muted mt-0.5">Active Blacklisted Nodes</p>
+          <h3 class="text-ds-text">Blocked IPs List</h3>
+          <p class="text-ds-text-muted mt-0.5">Currently blocked IPs</p>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="bg-ds-bg/30 border-b border-ds-border">
-                <th class="px-ds-6 py-ds-4 text-ds-text-muted">Terminal IP</th>
-                <th class="px-ds-6 py-ds-4 text-ds-text-muted">Rationalization</th>
-                <th class="px-ds-6 py-ds-4 text-ds-text-muted">Timestamp</th>
-                <th class="px-ds-6 py-ds-4 text-ds-text-muted text-right">Protocol</th>
+                <th class="px-ds-6 py-ds-4 text-ds-text-muted">IP Address</th>
+                <th class="px-ds-6 py-ds-4 text-ds-text-muted">Reason</th>
+                <th class="px-ds-6 py-ds-4 text-ds-text-muted">Blocked At</th>
+                <th class="px-ds-6 py-ds-4 text-ds-text-muted text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-ds-border/50">
               <tr *ngIf="isLoading">
                 <td colspan="4" class="px-ds-6 py-ds-16 text-center">
                   <app-icon name="Loader2" size="24" className="animate-spin text-ds-text-muted mx-auto mb-ds-3"></app-icon>
-                  <p class="text-ds-text-muted">Synchronizing Registry...</p>
+                  <p class="text-ds-text-muted">Loading...</p>
                 </td>
               </tr>
               <tr *ngIf="!isLoading && blockedIps.length === 0">
-                <td colspan="4" class="px-ds-6 py-ds-16 text-center text-ds-text-muted">Registry clear. No terminal restrictions active.</td>
+                <td colspan="4" class="px-ds-6 py-ds-16 text-center text-ds-text-muted">No IPs are currently blocked.</td>
               </tr>
               <tr *ngFor="let ip of blockedIps" class="hover:bg-red-50/10 transition-colors group">
                 <td class="px-ds-6 py-ds-4">
                   <span class="text-red-500">{{ ip.ipAddress }}</span>
                 </td>
                 <td class="px-ds-6 py-ds-4">
-                  <p class="text-ds-text truncate max-w-[200px]" [title]="ip.reason || 'No rationalization provided'">
+                  <p class="text-ds-text truncate max-w-[200px]" [title]="ip.reason || 'No reason provided'">
                     {{ ip.reason || "—" }}
                   </p>
                 </td>
@@ -101,7 +101,7 @@
                     (click)="unblockIp(ip.id)"
                     class="text-ds-success hover:text-ds-text transition-colors"
                   >
-                    Authorize Node
+                    Unblock
                   </button>
                 </td>
               </tr>

@@ -8,7 +8,7 @@
         <span class="text-ds-text">Product Groups</span>
       </div>
       <h1 class="text-ds-text">
-        Product Relationship Manager
+        Product Groups
       </h1>
     </div>
     <div class="flex items-center gap-ds-3">
@@ -69,11 +69,11 @@
 
     <!-- Right Column: Form & Assignment -->
     <div class="flex flex-col gap-ds-4 lg:col-span-2">
-      <!-- Group Identity Card -->
+      <!-- Group Info Card -->
       <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
         <div class="flex items-center justify-between mb-ds-6">
           <h2 class="text-ds-text-muted">
-            Group Identity
+            Group Info
           </h2>
           <button
             *ngIf="mode === 'edit'"
@@ -122,24 +122,24 @@
               class="btn btn-primary h-11 px-ds-10"
             >
               <app-icon *ngIf="isSaving" name="Loader2" size="14" className="animate-spin"></app-icon>
-              <span>{{ isSaving ? 'Syncing...' : (mode === 'create' ? 'Commit Group' : 'Update Identity') }}</span>
+              <span>{{ isSaving ? 'Syncing...' : (mode === 'create' ? 'Create Group' : 'Save') }}</span>
             </button>
           </div>
         </form>
       </div>
 
-      <!-- Assigned Products Card -->
+      <!-- Products in Group Card -->
       <div *ngIf="mode === 'edit'" class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm animate-in fade-in slide-in-from-top-2 duration-base">
         <div class="flex flex-col mb-ds-6">
           <h2 class="text-ds-text-muted">
-            Assigned Products
+            Products in Group
           </h2>
-          <p class="text-ds-text-muted mt-1">Cross-pollination mapping for related entries</p>
+          <p class="text-ds-text-muted mt-1">Link related products together</p>
         </div>
 
         <!-- Product Search -->
         <div class="relative group/search mb-ds-6">
-          <span class="text-ds-text-muted mb-1.5 block">Search & Add to Group</span>
+          <span class="text-ds-text-muted mb-1.5 block">Add Products to Group</span>
           <div class="relative">
             <input
               #productSearchInput

@@ -2,9 +2,9 @@
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-ds-text">Feedback Ledger</h1>
+      <h1 class="text-ds-text">Reviews</h1>
       <p class="text-ds-text-muted mt-1.5">
-        Reputation Moderation & Sentiment Analysis
+        Manage customer reviews
       </p>
     </div>
     <div class="flex items-center gap-ds-3">
@@ -14,7 +14,7 @@
         (click)="openCreateModal()"
       >
         <app-icon name="Plus" size="14"></app-icon>
-        <span>Add Manual Testimonial</span>
+        <span>Add Review</span>
       </button>
     </div>
   </div>
@@ -49,7 +49,7 @@
               *ngIf="review.isVerifiedPurchase"
               class="text-ds-success border border-ds-success/20 px-1.5 py-0.5 rounded-sm"
             >
-              Verified Node
+              Verified
             </span>
           </div>
         </div>
@@ -87,7 +87,7 @@
           </span>
           <span class="flex items-center gap-ds-2">
             <app-icon name="ThumbsUp" size="12"></app-icon>
-            {{ review.likes }} ENDORSEMENTS
+            {{ review.likes }} likes
           </span>
         </div>
       </div>
@@ -106,7 +106,7 @@
           *ngIf="authService.isSuperAdmin()"
           (click)="deleteReview(review.id)"
           class="size-9 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors"
-          title="Terminate Entry"
+          title="Delete"
         >
           <app-icon name="Trash2" size="16"></app-icon>
         </button>
@@ -124,8 +124,8 @@
       size="64"
       className="text-ds-text-muted opacity-10 mb-ds-6 mx-auto"
     ></app-icon>
-    <h3 class="text-ds-text-muted mb-2">No Feedback Detected</h3>
-    <p class="text-ds-text-muted/60">Archival records are currently empty.</p>
+    <h3 class="text-ds-text-muted mb-2">No reviews found</h3>
+    <p class="text-ds-text-muted/60">No reviews added yet.</p>
   </div>
 </div>
 
@@ -143,9 +143,9 @@
     <div class="px-6 py-5 border-b border-ds-border flex justify-between items-center bg-ds-bg/30">
       <div>
         <h2 class="text-ds-text text-xl font-medium tracking-tight">
-          {{ modalMode === 'create' ? 'Establish New Feedback' : 'Synchronize Feedback' }}
+          {{ modalMode === 'create' ? 'Add Review' : 'Edit Review' }}
         </h2>
-        <p class="text-ds-text-muted text-xs uppercase tracking-widest mt-1 opacity-60">Sentiment Moderation Terminal</p>
+        <p class="text-ds-text-muted text-xs uppercase tracking-widest mt-1 opacity-60">Review settings</p>
       </div>
       <button
         (click)="closeModal()"
@@ -162,7 +162,7 @@
         <!-- Section: Identity -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
-            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">User Identity (Name) *</label>
+            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Customer Name *</label>
             <input
               formControlName="userName"
               type="text"
@@ -171,7 +171,7 @@
             />
           </div>
           <div class="space-y-2">
-            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Avatar Source (URL or Upload)</label>
+            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Avatar (URL or Upload)</label>
             <div class="flex items-center gap-4">
               <!-- Avatar Preview -->
               <div class="size-12 rounded-sm bg-ds-bg border border-ds-border flex-shrink-0 overflow-hidden flex items-center justify-center">
@@ -220,7 +220,7 @@
 
         <!-- Section: Product Targeting (Searchable Dropdown) -->
         <div class="space-y-2 relative">
-          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Target Product Node *</label>
+          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Product *</label>
           
           <!-- Dropdown Trigger -->
           <button 
@@ -287,7 +287,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
           <!-- Section: Rating -->
           <div class="space-y-4">
-            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Sentiment Magnitude (Rating)</label>
+            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Rating</label>
             <div class="flex gap-1.5">
               <button
                 type="button"
@@ -318,13 +318,13 @@
             >
               <app-icon *ngIf="reviewForm.get('isVerifiedPurchase')?.value" name="Check" size="12" className="text-ds-surface"></app-icon>
             </div>
-            <label class="text-xs text-ds-text uppercase tracking-widest font-medium cursor-pointer">Verified Purchase Node</label>
+            <label class="text-xs text-ds-text uppercase tracking-widest font-medium cursor-pointer">Verified Purchase</label>
           </div>
         </div>
 
         <!-- Section: Screenshot Upload -->
         <div class="space-y-2">
-          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Review Screenshot / Attachment (Optional)</label>
+          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Screenshot (Optional)</label>
           <div class="flex items-center gap-4">
             <!-- Screenshot Preview -->
             <div class="size-16 rounded-sm bg-ds-bg border border-ds-border flex-shrink-0 overflow-hidden flex items-center justify-center">
@@ -381,7 +381,7 @@
 
         <!-- Section: Narrative -->
         <div class="space-y-2">
-          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Narrative Content (Comment - Optional)</label>
+          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Review Comment (Optional)</label>
           <textarea
             formControlName="comment"
             rows="4"
@@ -399,7 +399,7 @@
         (click)="closeModal()"
         class="flex-1 h-12 text-ds-text-muted hover:text-ds-text text-xs uppercase tracking-widest font-bold transition-colors"
       >
-        Abort
+        Cancel
       </button>
       <button
         type="button"
@@ -408,7 +408,7 @@
         class="flex-[2] h-14 bg-ds-text text-ds-surface hover:bg-ds-text/90 transition-all font-bold uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 shadow-xl"
       >
         <app-icon *ngIf="isSubmitting" name="Loader2" size="16" className="animate-spin"></app-icon>
-        <span>{{ modalMode === 'create' ? 'Establish Entry' : 'Synchronize Synchronization' }}</span>
+        <span>{{ modalMode === 'create' ? 'Save' : 'Save Changes' }}</span>
       </button>
     </div>
   </div>

@@ -1,15 +1,15 @@
 <div class="site-container-admin mx-auto flex flex-col gap-ds-8">
   <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
     <div>
-      <h1 class="text-ds-text">Campaign Assets</h1>
-      <p class="text-ds-text-muted mt-1.5">Visual Engagement & Promotion Management</p>
+      <h1 class="text-ds-text">Banners</h1>
+      <p class="text-ds-text-muted mt-1.5">Manage homepage banners</p>
     </div>
     <button
       (click)="openAddModal()"
       class="btn btn-primary h-11 px-ds-10"
      *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
       <app-icon name="Plus" size="14"></app-icon>
-      <span>Initialize Asset</span>
+      <span>Add Banner</span>
     </button>
   </div>
 
@@ -20,21 +20,21 @@
             [class.text-ds-text]="currentTab === 'Hero'"
             [class.text-ds-text-muted]="currentTab !== 'Hero'"
             class="px-2 py-4 border-b-2 border-transparent transition-all whitespace-nowrap">
-      Main Architecture
+      Hero Banners
     </button>
     <button (click)="setTab('Spotlight')" 
             [class.border-ds-text]="currentTab === 'Spotlight'" 
             [class.text-ds-text]="currentTab === 'Spotlight'"
             [class.text-ds-text-muted]="currentTab !== 'Spotlight'"
             class="px-2 py-4 border-b-2 border-transparent transition-all whitespace-nowrap">
-      Side Modules
+      Spotlight
     </button>
     <button (click)="setTab('Promo')" 
             [class.border-ds-text]="currentTab === 'Promo'" 
             [class.text-ds-text]="currentTab === 'Promo'"
             [class.text-ds-text-muted]="currentTab !== 'Promo'"
             class="px-2 py-4 border-b-2 border-transparent transition-all whitespace-nowrap">
-      Secondary Banners
+      Promo Banners
     </button>
   </div>
 
@@ -74,14 +74,14 @@
       </div>
       <div class="p-ds-4 bg-ds-surface">
         <h3 class="text-ds-text mb-1 line-clamp-1">
-          {{ banner.title || "UNTITLED ASSET" }}
+          {{ banner.title || "UNTITLED" }}
         </h3>
         <p class="text-ds-text-muted line-clamp-1 mb-3">
           {{ banner.subtitle }}
         </p>
         <div class="flex items-center gap-ds-2 pt-ds-3 border-t border-ds-border/50">
           <app-icon name="Link" size="10" className="text-ds-text-muted/40"></app-icon>
-          <span class="text-ds-text-muted truncate">{{ banner.linkUrl || "NO ASSIGNED DESTINATION" }}</span>
+          <span class="text-ds-text-muted truncate">{{ banner.linkUrl || "No link set" }}</span>
         </div>
       </div>
     </div>
@@ -97,15 +97,15 @@
       size="64"
       className="text-ds-text-muted opacity-10 mb-ds-6"
     ></app-icon>
-    <h3 class="text-ds-text-muted mb-2">No Visual Assets Detected</h3>
+    <h3 class="text-ds-text-muted mb-2">No banners found</h3>
     <p class="text-ds-text-muted/60 mb-ds-8">
-      Initialize your first hero module to engage catalog traffic.
+      Add your first banner to get started.
     </p>
     <button
       (click)="openAddModal()"
       class="btn btn-primary h-11 px-ds-10"
     >
-      Initialize {{ currentTab === 'Hero' ? 'Module' : 'Banner' }}
+      Create Banner
     </button>
   </div>
 </div>
@@ -125,9 +125,9 @@
     >
       <div>
         <h2 class="text-ds-text">
-          {{ isEditing ? "Synchronize Asset" : "Initialize Asset" }}
+          {{ isEditing ? "Edit Banner" : "Add Banner" }}
         </h2>
-        <p class="text-ds-text-muted mt-0.5">Campaign Visual Configuration</p>
+        <p class="text-ds-text-muted mt-0.5">Banner settings</p>
       </div>
       <button
         (click)="closeModal()"
@@ -140,59 +140,59 @@
     <form [formGroup]="bannerForm" (ngSubmit)="onSubmit()" class="p-ds-8 flex flex-col gap-ds-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
         <div class="col-span-2">
-          <label class="block text-ds-text ml-1 mb-2">Asset Classification</label>
+          <label class="block text-ds-text ml-1 mb-2">Banner Type</label>
           <div class="flex gap-ds-3">
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Hero" class="peer hidden" />
               <div class="py-ds-3 px-ds-2 border border-ds-border bg-ds-bg rounded-sm peer-checked:bg-ds-text peer-checked:text-ds-surface peer-checked:border-ds-text transition-all text-center">
-                <p >Main Hero</p>
+                <p >Hero</p>
               </div>
             </label>
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Promo" class="peer hidden" />
               <div class="py-ds-3 px-ds-2 border border-ds-border bg-ds-bg rounded-sm peer-checked:bg-ds-text peer-checked:text-ds-surface peer-checked:border-ds-text transition-all text-center">
-                <p >Secondary</p>
+                <p >Promo</p>
               </div>
             </label>
             <label class="flex-1 cursor-pointer">
               <input type="radio" formControlName="type" value="Spotlight" class="peer hidden" />
               <div class="py-ds-3 px-ds-2 border border-ds-border bg-ds-bg rounded-sm peer-checked:bg-ds-text peer-checked:text-ds-surface peer-checked:border-ds-text transition-all text-center">
-                <p >Offer Spotlight</p>
+                <p >Spotlight</p>
               </div>
             </label>
           </div>
         </div>
 
         <div class="col-span-2">
-          <label class="block text-ds-text ml-1 mb-2">Lead Nomenclature (Title)</label>
+          <label class="block text-ds-text ml-1 mb-2">Title</label>
           <input type="text" formControlName="title" class="form-input !h-11 !px-ds-4" placeholder="E.G. AUTUMN ARCHIVE 2026" />
         </div>
 
         <div class="col-span-2">
-          <label class="block text-ds-text ml-1 mb-2">Supporting Narrative (Subtitle)</label>
+          <label class="block text-ds-text ml-1 mb-2">Subtitle</label>
           <input type="text" formControlName="subtitle" class="form-input !h-11 !px-ds-4" placeholder="E.G. CURATED MINIMALISM" />
         </div>
 
         <div>
-          <label class="block text-ds-text ml-1 mb-2">Display Sequence</label>
+          <label class="block text-ds-text ml-1 mb-2">Sort Order</label>
           <input type="number" formControlName="displayOrder" class="form-input !h-11 !px-ds-4" />
         </div>
 
         <div>
-          <label class="block text-ds-text ml-1 mb-2">Action Directive (Button)</label>
+          <label class="block text-ds-text ml-1 mb-2">Button Text</label>
           <input type="text" formControlName="buttonText" class="form-input !h-11 !px-ds-4" placeholder="E.G. EXPLORE" />
         </div>
 
         <div class="col-span-2">
-          <label class="block text-ds-text ml-1 mb-2">Destination Protocol (Link)</label>
+          <label class="block text-ds-text ml-1 mb-2">Link URL</label>
           <input type="text" formControlName="linkUrl" class="form-input !h-11 !px-ds-4" placeholder="/COLLECTIONS/ARCHIVE" />
         </div>
 
         <div class="col-span-2">
-          <label class="block text-ds-text ml-1 mb-2">Asset Source Configuration</label>
+          <label class="block text-ds-text ml-1 mb-2">Banner Image</label>
           <div class="grid grid-cols-2 gap-ds-6">
             <div class="space-y-3">
-              <p class="text-ds-text-muted text-center">Desktop Viewport</p>
+              <p class="text-ds-text-muted text-center">Desktop Image</p>
               <div class="relative h-24 bg-ds-bg rounded-sm border border-dashed border-ds-border flex items-center justify-center overflow-hidden group/upload">
                 <img *ngIf="bannerForm.get('imageUrl')?.value" loading="lazy" [src]="getBannerImageUrl(bannerForm.get('imageUrl')?.value!)" class="w-full h-full object-cover transition-all duration-500" />
                 <div *ngIf="!bannerForm.get('imageUrl')?.value" class="text-ds-text-muted/20 flex flex-col items-center">
@@ -202,7 +202,7 @@
               </div>
             </div>
             <div class="space-y-3">
-              <p class="text-ds-text-muted text-center">Mobile Viewport</p>
+              <p class="text-ds-text-muted text-center">Mobile Image</p>
               <div class="relative h-24 bg-ds-bg rounded-sm border border-dashed border-ds-border flex items-center justify-center overflow-hidden group/upload">
                 <img *ngIf="bannerForm.get('mobileImageUrl')?.value" loading="lazy" [src]="getBannerImageUrl(bannerForm.get('mobileImageUrl')?.value!)" class="w-full h-full object-cover transition-all duration-500" />
                 <div *ngIf="!bannerForm.get('mobileImageUrl')?.value" class="text-ds-text-muted/20 flex flex-col items-center">
@@ -219,15 +219,15 @@
             <input class="sr-only peer" type="checkbox" formControlName="isActive" />
             <div class="w-9 h-5 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-4 after:w-4 after:transition-all peer-checked:bg-ds-text"></div>
           </label>
-          <span class="text-ds-text-muted">Synchronize with Live Frontend</span>
+          <span class="text-ds-text-muted">Active</span>
         </div>
       </div>
 
       <div class="flex justify-end gap-ds-4 pt-ds-6 border-t border-ds-border">
-        <button type="button" (click)="closeModal()" class="btn btn-secondary !h-12 px-ds-10">Abort</button>
+        <button type="button" (click)="closeModal()" class="btn btn-secondary !h-12 px-ds-10">Cancel</button>
         <button type="submit" [disabled]="isSubmitting" class="btn btn-primary !h-12 px-ds-12 !bg-ds-text !text-ds-surface">
           <app-icon *ngIf="isSubmitting" name="Loader2" size="14" className="animate-spin mr-ds-2"></app-icon>
-          <span>{{ isEditing ? "Synchronize" : "Establish Module" }}</span>
+          <span>{{ isEditing ? "Save" : "Create Banner" }}</span>
         </button>
       </div>
     </form>

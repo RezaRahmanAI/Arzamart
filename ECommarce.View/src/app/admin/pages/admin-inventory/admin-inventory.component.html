@@ -6,9 +6,9 @@
         <app-icon name="Boxes" size="20"></app-icon>
       </div>
       <div>
-        <h1 class="text-ds-text">Stock Ledger</h1>
+        <h1 class="text-ds-text">Inventory</h1>
         <p class="text-ds-text-muted mt-1.5">
-          Inventory Quantities & Valuation
+          Manage stock and prices
         </p>
       </div>
     </div>
@@ -21,7 +21,7 @@
       <input 
         [formControl]="searchControl"
         type="text" 
-        placeholder="SEARCH LEDGER..."
+        placeholder="Search products..."
         class="form-input !h-11 !pl-11 !pr-4"
       >
     </div>
@@ -33,12 +33,12 @@
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="bg-ds-bg/30 border-b border-ds-border text-ds-text-muted">
-            <th class="px-ds-6 py-ds-4">Asset Identification</th>
-            <th class="px-ds-6 py-ds-4">System SKU</th>
-            <th class="px-ds-6 py-ds-4 text-center">Available Units</th>
-            <th class="px-ds-6 py-ds-4">Market Valuation</th>
-            <th class="px-ds-6 py-ds-4">Configured Variants</th>
-            <th class="px-ds-6 py-ds-4 text-right">Protocol</th>
+            <th class="px-ds-6 py-ds-4">Product</th>
+            <th class="px-ds-6 py-ds-4">SKU</th>
+            <th class="px-ds-6 py-ds-4 text-center">Stock</th>
+            <th class="px-ds-6 py-ds-4">Pricing</th>
+            <th class="px-ds-6 py-ds-4">Variants</th>
+            <th class="px-ds-6 py-ds-4 text-right">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-ds-border/50">
@@ -55,7 +55,7 @@
                   </div>
                   <div class="flex flex-col">
                     <span class="text-ds-text truncate max-w-[180px]">{{ product.productName }}</span>
-                    <span class="text-ds-text-muted mt-0.5">Physical Asset</span>
+                    <span class="text-ds-text-muted mt-0.5">Product</span>
                   </div>
                 </div>
               </td>
@@ -73,11 +73,11 @@
               <td class="px-ds-6 py-ds-4">
                 <div class="flex flex-col gap-1">
                   <div class="flex justify-between items-center bg-ds-bg/50 px-2 py-0.5 rounded-sm border border-ds-border/50">
-                    <span class="text-ds-text-muted">Retail</span>
+                    <span class="text-ds-text-muted">Price</span>
                     <span class="text-ds-text">৳{{ product.price || 0 }}</span>
                   </div>
                   <div class="flex justify-between items-center bg-ds-bg/50 px-2 py-0.5 rounded-sm border border-ds-border/50">
-                    <span class="text-ds-text-muted">Acquisition</span>
+                    <span class="text-ds-text-muted">Buying Cost</span>
                     <span class="text-ds-text-muted">৳{{ product.purchaseRate || 0 }}</span>
                   </div>
                 </div>
@@ -91,7 +91,7 @@
                     <span class="text-ds-text-muted">[{{ variant.stockQuantity }}]</span>
                   </div>
                 </div>
-                <span *ngIf="!product.variants || product.variants.length === 0" class="text-ds-text-muted">Single Entity</span>
+                <span *ngIf="!product.variants || product.variants.length === 0" class="text-ds-text-muted">No Variants</span>
               </td>
               <td class="px-ds-6 py-ds-4 text-right">
                 <div class="flex items-center justify-end gap-2 ml-auto">
@@ -139,7 +139,7 @@
     <!-- Empty State -->
     <div *ngIf="filteredProducts.length === 0" class="flex flex-col items-center justify-center py-ds-24 text-ds-text-muted/40">
       <app-icon name="PackageX" size="48" className="mb-ds-4 opacity-10"></app-icon>
-      <p >No Assets Located in Registry.</p>
+      <p >No products found.</p>
     </div>
   </div>
 
@@ -148,8 +148,8 @@
     <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-lg overflow-hidden shadow-2xl" (click)="$event.stopPropagation()">
       <div class="flex items-center justify-between px-ds-8 py-ds-4 border-b border-ds-border bg-ds-bg/50">
         <div>
-          <h3 class="text-ds-text">Inventory Synchronization</h3>
-          <p class="text-ds-text-muted mt-0.5">Asset Re-valuation & Stock Audit</p>
+          <h3 class="text-ds-text">Update Stock</h3>
+          <p class="text-ds-text-muted mt-0.5">Update stock and prices</p>
         </div>
         <button (click)="closeStockModal()" class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm text-ds-text-muted hover:text-ds-text">
           <app-icon name="X" size="18"></app-icon>
@@ -163,19 +163,19 @@
           </div>
           <div class="min-w-0">
             <h4 class="text-ds-text">{{ selectedProduct.productName }}</h4>
-            <p class="text-ds-text-muted mt-1">Registry SKU: {{ selectedProduct.productSku }}</p>
+            <p class="text-ds-text-muted mt-1">SKU: {{ selectedProduct.productSku }}</p>
           </div>
         </div>
 
         <div class="space-y-ds-8">
           <div>
-            <label class="block text-ds-text ml-1 mb-2">Total Unit Availability</label>
+            <label class="block text-ds-text ml-1 mb-2">Total Stock</label>
             <p class="text-ds-text">{{ selectedProduct.totalStock }}</p>
           </div>
 
           <!-- Variants Section -->
           <div *ngIf="selectedProduct.variants && selectedProduct.variants.length > 0">
-            <label class="block text-ds-text ml-1 mb-4">Variant Configuration Ledger</label>
+            <label class="block text-ds-text ml-1 mb-4">Variant Stock</label>
             <div class="space-y-ds-6 max-h-[400px] overflow-y-auto pr-ds-4 custom-scrollbar">
               <div *ngFor="let variant of selectedProduct.variants; let i = index" class="p-ds-6 bg-ds-bg/30 border border-ds-border rounded-sm space-y-ds-6">
                 <div class="flex items-center justify-between border-b border-ds-border/50 pb-ds-3 mb-ds-3">
@@ -185,7 +185,7 @@
                 
                 <!-- Stock Row -->
                 <div class="flex items-center justify-between gap-ds-6">
-                  <span class="text-ds-text-muted">Unit Count</span>
+                  <span class="text-ds-text-muted">Stock</span>
                   <div class="flex items-center gap-ds-3">
                     <button (click)="adjustVariantStock(i, -1)" class="size-10 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center">
                       <app-icon name="Minus" size="14"></app-icon>
@@ -200,15 +200,15 @@
                 <!-- Price Row -->
                 <div class="grid grid-cols-3 gap-ds-4">
                   <div class="space-y-2">
-                    <label class="text-ds-text-muted block text-center">Retail</label>
+                    <label class="text-ds-text-muted block text-center">Price</label>
                     <input type="number" [(ngModel)]="variantPriceValues[i]" class="form-input !h-9 !text-center text-ds-success !px-2">
                   </div>
                   <div class="space-y-2">
-                    <label class="text-ds-text-muted block text-center">Market</label>
+                    <label class="text-ds-text-muted block text-center">Old Price</label>
                     <input type="number" [(ngModel)]="variantComparePriceValues[i]" class="form-input !h-9 !text-center text-ds-text-muted !px-2">
                   </div>
                   <div class="space-y-2">
-                    <label class="text-ds-text-muted block text-center">Cost</label>
+                    <label class="text-ds-text-muted block text-center">Buying Price</label>
                     <input type="number" [(ngModel)]="variantPurchasePriceValues[i]" class="form-input !h-9 !text-center text-ds-text !px-2">
                   </div>
                 </div>
@@ -221,7 +221,7 @@
             <div class="p-ds-8 bg-ds-bg/30 border border-ds-border rounded-sm space-y-ds-8">
               <!-- Stock -->
               <div class="space-y-4 text-center">
-                <label class="text-ds-text-muted">Registry Unit Count</label>
+                <label class="text-ds-text-muted">Stock</label>
                 <div class="flex items-center justify-center gap-ds-6">
                   <button (click)="adjustStock(-1)" class="size-14 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center shadow-sm">
                     <app-icon name="Minus" size="20"></app-icon>
@@ -236,21 +236,21 @@
               <!-- Prices Grid -->
               <div class="grid grid-cols-1 md:grid-cols-3 gap-ds-6 border-t border-ds-border/50 pt-ds-8">
                 <div class="space-y-2">
-                  <label class="text-ds-text-muted text-center block">Retail Unit</label>
+                  <label class="text-ds-text-muted text-center block">Price</label>
                   <div class="relative">
                     <input type="number" [(ngModel)]="newPriceValue" class="form-input !h-12 !text-center text-ds-success !bg-ds-surface shadow-inner">
                     <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ds-success/30">৳</span>
                   </div>
                 </div>
                 <div class="space-y-2">
-                  <label class="text-ds-text-muted text-center block">Market Unit</label>
+                  <label class="text-ds-text-muted text-center block">Old Price</label>
                   <div class="relative">
                     <input type="number" [(ngModel)]="newComparePriceValue" class="form-input !h-12 !text-center text-ds-text-muted !bg-ds-surface shadow-inner">
                     <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted/30">৳</span>
                   </div>
                 </div>
                 <div class="space-y-2">
-                  <label class="text-ds-text-muted text-center block">Acquisition Unit</label>
+                  <label class="text-ds-text-muted text-center block">Buying Price</label>
                   <div class="relative">
                     <input type="number" [(ngModel)]="newPurchasePriceValue" class="form-input !h-12 !text-center text-ds-text !bg-ds-surface shadow-inner">
                     <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text/30">৳</span>
@@ -263,12 +263,12 @@
 
         <div class="mt-ds-10 flex gap-ds-4">
           <button (click)="closeStockModal()" class="btn btn-secondary flex-1 !h-12">
-            Abort Synchronization
+            Cancel
           </button>
           <button (click)="saveStock()" [disabled]="isSaving" class="btn btn-primary flex-1 !h-12 !bg-ds-text !text-ds-surface">
             <app-icon *ngIf="isSaving" name="Loader2" size="18" className="animate-spin"></app-icon>
             <app-icon *ngIf="!isSaving" name="Save" size="18"></app-icon>
-            <span>{{ isSaving ? 'SYNCHRONIZING...' : 'COMMIT PARAMETERS' }}</span>
+            <span>{{ isSaving ? 'Saving...' : 'Save Changes' }}</span>
           </button>
         </div>
       </div>

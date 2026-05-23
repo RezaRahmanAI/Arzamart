@@ -6,7 +6,7 @@
         {{ isPreOrderMode ? 'Pre-orders' : 'Orders' }}
       </h2>
       <p class="text-ds-text-muted mt-1.5">
-        {{ isPreOrderMode ? 'Track pre-order fulfillment' : 'Fulfillment command center' }}
+        {{ isPreOrderMode ? 'Track pre-order fulfillment' : 'Manage all customer orders' }}
       </p>
     </div>
     <div class="flex flex-wrap items-center gap-ds-3">
@@ -224,7 +224,7 @@
     <div *ngIf="isLoading" class="absolute inset-0 bg-ds-bg/60 backdrop-blur-[2px] z-[50] flex items-center justify-center animate-in fade-in duration-300">
       <div class="flex flex-col items-center gap-ds-4">
         <div class="h-10 w-10 animate-spin rounded-sm border-2 border-ds-accent border-t-transparent"></div>
-        <p class="text-ds-text animate-pulse">Syncing Order Archive</p>
+        <p class="text-ds-text animate-pulse">Loading orders...</p>
       </div>
     </div>
 
@@ -325,7 +325,7 @@
             </td>
             <td class="px-ds-4 py-ds-4 text-center">
                 <app-price-display [amount]="order.total" [className]="'text-ds-sm text-ds-text tracking-tight'" size="sm"></app-price-display>
-                <div class="text-ds-text-muted mt-0.5">{{ order.itemsCount }} UNIT(S)</div>
+                <div class="text-ds-text-muted mt-0.5">{{ order.itemsCount }} items</div>
             </td>
             <td class="px-ds-4 py-ds-4">
               <div *ngIf="order.sourcePageName" class="flex items-center gap-1.5 text-ds-text-sec">
@@ -381,8 +381,8 @@
         <app-icon name="PackageX" size="40"></app-icon>
       </div>
       <div class="space-y-ds-2">
-        <h3 class="text-ds-text">Zero Orders Registered</h3>
-        <p class="text-ds-text-muted">The archive is currently empty for this selection.</p>
+        <h3 class="text-ds-text">No orders found</h3>
+        <p class="text-ds-text-muted">No orders match your current filters.</p>
       </div>
     </div>
   </div>
@@ -390,7 +390,7 @@
   <!-- Pagination -->
   <div class="flex flex-col sm:flex-row items-center justify-between gap-ds-6 bg-ds-surface border border-ds-border p-ds-6 rounded-sm">
     <div class="text-ds-text-muted">
-      Archive Range: <span class="text-ds-text">{{ paginationStart }}</span> — <span class="text-ds-text">{{ paginationEnd }}</span> of {{ totalResults }} results
+      Showing <span class="text-ds-text">{{ paginationStart }}</span> — <span class="text-ds-text">{{ paginationEnd }}</span> of {{ totalResults }} results
     </div>
     <div class="flex items-center gap-ds-3">
       <button (click)="goToPreviousPage()" [disabled]="page === 1" class="size-10 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text-muted hover:text-ds-text hover:border-ds-text disabled:opacity-20 disabled:pointer-events-none transition-colors">
@@ -413,7 +413,7 @@
     <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-xl overflow-hidden shadow-2xl animate-in zoom-in duration-base" (click)="$event.stopPropagation()">
       <div class="bg-ds-text p-ds-6 flex items-center justify-between text-ds-surface">
         <div>
-          <p class="opacity-60 mb-1">Audit Log</p>
+          <p class="opacity-60 mb-1">Order History</p>
           <h3 >History — {{ trackingOrder.orderNumber }}</h3>
         </div>
         <button (click)="isTrackingModalOpen = false" class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm">
@@ -434,7 +434,7 @@
         </div>
       </div>
       <div class="p-ds-6 bg-ds-bg border-t border-ds-border flex justify-end">
-        <button (click)="isTrackingModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8">Close Log</button>
+        <button (click)="isTrackingModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8">Close</button>
       </div>
     </div>
   </div>
@@ -444,7 +444,7 @@
     <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in duration-base" (click)="$event.stopPropagation()">
       <div class="bg-ds-text p-ds-6 flex items-center justify-between text-ds-surface">
         <div>
-          <p class="opacity-60 mb-1">Internal Communications</p>
+          <p class="opacity-60 mb-1">Notes</p>
           <h3 >Order Notes — {{ notesOrder.orderNumber }}</h3>
         </div>
         <button (click)="isNotesModalOpen = false" class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm">
@@ -455,13 +455,13 @@
       <div class="p-ds-8 flex flex-col gap-ds-6">
         <!-- Add New Note -->
         <div class="space-y-3">
-          <label class="text-ds-text ml-1">Append New Observation</label>
+          <label class="text-ds-text ml-1">Add Note</label>
           <div class="relative">
             <textarea 
               [(ngModel)]="newNoteText"
               rows="3"
               class="form-textarea !p-ds-4 bg-ds-bg/30"
-              placeholder="Enter administrative notation..."></textarea>
+              placeholder="Write a note..."></textarea>
             <button 
               (click)="addNote()"
               [disabled]="isSavingNote || !newNoteText.trim()"
@@ -474,7 +474,7 @@
 
         <!-- Note History -->
         <div class="space-y-4">
-          <p class="text-ds-text-muted border-b border-ds-border pb-2">Chronological Archive</p>
+          <p class="text-ds-text-muted border-b border-ds-border pb-2">All Notes</p>
           <div class="max-h-[300px] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
             <div *ngFor="let note of notesOrder.notes" class="p-ds-4 bg-ds-bg/50 border border-ds-border rounded-sm relative group">
               <p class="text-ds-text">{{ note.content }}</p>
@@ -485,14 +485,14 @@
             </div>
             
             <div *ngIf="!notesOrder.notes || notesOrder.notes.length === 0" class="py-ds-8 text-center">
-              <p class="text-ds-text-muted opacity-40">No internal notes discovered.</p>
+              <p class="text-ds-text-muted opacity-40">No notes yet.</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="p-ds-6 bg-ds-bg border-t border-ds-border flex justify-end">
-        <button (click)="isNotesModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8">Close Registry</button>
+        <button (click)="isNotesModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8">Close</button>
       </div>
     </div>
   </div>

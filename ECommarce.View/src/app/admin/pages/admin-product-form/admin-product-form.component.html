@@ -7,7 +7,7 @@
   <div *ngIf="isLoading" class="fixed inset-0 z-[100] flex items-center justify-center bg-ds-bg/80 backdrop-blur-sm">
     <div class="flex flex-col items-center gap-ds-6">
       <div class="h-12 w-12 animate-spin rounded-sm border-4 border-ds-accent border-t-transparent"></div>
-      <p class="text-ds-text animate-pulse">Synchronizing Product Data</p>
+      <p class="text-ds-text animate-pulse">Loading...</p>
     </div>
   </div>
 
@@ -15,9 +15,9 @@
   <div class="flex flex-col justify-between gap-ds-4 sm:flex-row sm:items-center border-b border-ds-border pb-ds-4">
     <div>
       <div class="flex items-center gap-2 text-ds-text-muted mb-2">
-        <span>Catalog</span>
+        <span>Products</span>
         <app-icon name="ChevronRight" size="10"></app-icon>
-        <span class="text-ds-text">{{ isEditMode ? "Edit Record" : "New Entry" }}</span>
+        <span class="text-ds-text">{{ isEditMode ? "Edit Product" : "New Product" }}</span>
       </div>
       <h1 class="text-ds-text">
         {{ pageTitle }}
@@ -38,7 +38,7 @@
       >
         <app-icon *ngIf="isSubmitting" name="Loader2" size="14" className="animate-spin"></app-icon>
         <app-icon *ngIf="!isSubmitting" name="Check" size="14"></app-icon>
-        <span>{{ isSubmitting ? 'Syncing...' : (isEditMode ? "Update Repository" : "Commit Product") }}</span>
+        <span>{{ isSubmitting ? 'Saving...' : (isEditMode ? "Update" : "Save Product") }}</span>
       </button>
     </div>
   </div>
@@ -49,12 +49,12 @@
       <!-- General Information Card -->
       <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
         <h2 class="mb-ds-6 text-ds-text-muted">
-          General Identity
+          Basic Info
         </h2>
         <div class="flex flex-col gap-ds-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-4">
             <label class="flex flex-col gap-ds-2">
-              <span class="text-ds-text-muted">Commercial Name</span>
+              <span class="text-ds-text-muted">Product Name</span>
               <input
                 class="form-input !h-12"
                 placeholder="e.g. Luxe Silk Abaya - Noir"
@@ -64,10 +64,10 @@
             </label>
 
             <label class="flex flex-col gap-ds-2">
-              <span class="text-ds-text-muted">Product Classification</span>
+              <span class="text-ds-text-muted">Product Type</span>
               <select class="form-input !h-12 appearance-none cursor-pointer" formControlName="productType">
-                <option [ngValue]="ProductType.Simple">Standard Product</option>
-                <option [ngValue]="ProductType.Combo">Combo Bundle</option>
+                <option [ngValue]="ProductType.Simple">Simple Product</option>
+                <option [ngValue]="ProductType.Combo">Combo</option>
               </select>
             </label>
           </div>
@@ -76,7 +76,7 @@
           <div *ngIf="form.get('productType')?.value == ProductType.Combo" class="flex flex-col gap-ds-4 p-ds-4 bg-ds-bg/20 border border-ds-border rounded-sm animate-in fade-in slide-in-from-top-2 duration-base">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-ds-4">
               <label class="flex flex-col gap-ds-1">
-                <span class="text-ds-text-muted">Bundle Size</span>
+                <span class="text-ds-text-muted">Bundle Quantity</span>
                 <input
                   class="form-input !h-10 text-center"
                   placeholder="e.g. 2"
@@ -87,13 +87,13 @@
               </label>
               
               <div class="md:col-span-3 flex flex-col gap-ds-1 relative">
-                <span class="text-ds-text-muted">Search & Add Products</span>
+                <span class="text-ds-text-muted">Add Products</span>
                 <div class="relative group/search">
                   <input 
                     #searchInput
                     type="text" 
                     class="form-input !h-10 pr-ds-10" 
-                    placeholder="Type product name or SKU..." 
+                    placeholder="Search by name or SKU..." 
                     (input)="searchProducts($event)"
                   />
                   <div class="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted">
@@ -126,7 +126,7 @@
             <!-- Selected Combo Items List -->
             <div class="space-y-ds-2 mt-ds-2" formArrayName="comboItems">
               <div class="flex items-center justify-between mb-1">
-                <h3 class="text-ds-text-muted">Selected Components</h3>
+                <h3 class="text-ds-text-muted">Selected Products</h3>
                 <div class="flex items-center gap-2">
                   <span class="text-ds-text-muted">Total:</span>
                   <span  [ngClass]="{'text-ds-accent': getTotalComboQuantity() === form.get('bundleSize')?.value, 'text-red-400': getTotalComboQuantity() !== form.get('bundleSize')?.value}">
@@ -164,7 +164,7 @@
                         <span *ngIf="getVariantsForItem(item.get('productId')?.value).length === 1" class="text-ds-accent">
                           {{ item.get('variantName')?.value }}
                         </span>
-                        <span *ngIf="getVariantsForItem(item.get('productId')?.value).length === 0" class="text-ds-text-muted">Standard Size</span>
+                        <span *ngIf="getVariantsForItem(item.get('productId')?.value).length === 0" class="text-ds-text-muted">Standard</span>
                       </div>
                     </div>
                   </div>
@@ -186,7 +186,7 @@
               </div>
 
               <div *ngIf="comboItemsArray.length === 0" class="py-ds-6 text-center border border-dashed border-ds-border rounded-sm bg-ds-bg/10">
-                <p class="text-ds-text-muted">No products selected for this bundle.</p>
+                <p class="text-ds-text-muted">No products added to this bundle.</p>
               </div>
             </div>
           </div>
@@ -194,7 +194,7 @@
 
 
           <label class="flex flex-col gap-ds-2">
-            <span class="text-ds-text-muted">Editorial Description</span>
+            <span class="text-ds-text-muted">Description</span>
             <div class="border border-ds-border rounded-sm overflow-hidden bg-ds-bg/30">
               <!-- Rich Text Toolbar -->
               <div class="flex items-center gap-ds-1 border-b border-ds-border bg-ds-bg px-ds-2 py-ds-2">
@@ -235,19 +235,19 @@
               <textarea
                 #descriptionArea
                 class="form-textarea !border-none !bg-transparent !p-ds-4"
-                placeholder="Compose detailed product narrative..."
+                placeholder="Write product description..."
                 rows="6"
                 formControlName="description"
               ></textarea>
             </div>
-            <span class="text-ds-text-muted mt-1">Material composition, fit architecture, and preservation instructions.</span>
+            <span class="text-ds-text-muted mt-1">Material, fit and care instructions.</span>
           </label>
 
           <label class="flex flex-col gap-ds-2">
-            <span class="text-ds-text-muted">Marketing Short Text</span>
+            <span class="text-ds-text-muted">Short Description</span>
             <textarea
               class="form-textarea !h-24"
-              placeholder="Concise overview for quick-view panels..."
+              placeholder="Short description for quick view..."
               rows="2"
               formControlName="shortDescription"
             ></textarea>
@@ -259,7 +259,7 @@
       <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm" formGroupName="variants">
         <div class="flex items-center justify-between mb-ds-8">
           <h2 class="text-ds-text-muted">
-            Variant Matrix
+            Sizes
           </h2>
           <button
             class="flex items-center gap-2 text-ds-accent hover:text-ds-text transition-colors"
@@ -267,14 +267,14 @@
             (click)="addSize()"
           >
             <app-icon name="PlusCircle" size="14"></app-icon>
-            Add Dimension
+            Add Size
           </button>
         </div>
 
         <div *ngIf="form.get('productType')?.value == ProductType.Combo" class="mb-ds-6 bg-ds-accent/5 border border-ds-accent/20 p-ds-4 rounded-sm">
           <p class="text-ds-accent">
             <app-icon name="Info" size="12" className="inline mr-1"></app-icon>
-            As a Combo Bundle, you can still define variants (like size) if the bundle itself comes in different sizes.
+            As a Combo, you can still define variants (like size) if the bundle itself comes in different sizes.
           </p>
         </div>
 
@@ -288,14 +288,14 @@
               class="absolute -top-3 -right-3 size-7 bg-ds-surface border border-ds-border text-red-500 rounded-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white z-10"
               type="button"
               (click)="removeSize(sizeIndex)"
-              title="Remove Variant"
+              title="Remove"
             >
               <app-icon name="X" size="14"></app-icon>
             </button>
 
             <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-ds-4 items-end">
               <label class="flex flex-col gap-ds-2">
-                <span class="text-ds-text-muted">Size Label</span>
+                <span class="text-ds-text-muted">Size Name</span>
                 <div class="relative group/select">
                   <input
                     class="form-input !h-10 pr-ds-8"
@@ -350,7 +350,7 @@
               </label>
 
               <label class="flex flex-col gap-ds-2">
-                <span class="text-ds-text-muted">Acquisition Cost</span>
+                <span class="text-ds-text-muted">Buying Cost</span>
                 <input
                   class="form-input !h-10 opacity-60"
                   type="number"
@@ -361,7 +361,7 @@
               </label>
 
               <label class="flex flex-col gap-ds-2">
-                <span class="text-ds-text-muted">Inventory Count</span>
+                <span class="text-ds-text-muted">Stock</span>
                 <input
                   class="form-input !h-10"
                   type="number"
@@ -393,14 +393,14 @@
       <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
         <div class="mb-ds-8 flex items-center justify-between">
           <h2 class="text-ds-text-muted">
-            Asset Repository
+            Images
           </h2>
           <button
             class="text-ds-accent hover:text-ds-text transition-colors"
             type="button"
             (click)="addFromUrl()"
           >
-            Import via URI
+            Add from URL
           </button>
         </div>
 
@@ -415,7 +415,7 @@
               <app-icon name="Upload" size="24" className="text-ds-text-muted opacity-40 group-hover:text-ds-text group-hover:opacity-100"></app-icon>
             </div>
             <div>
-              <p class="text-ds-text">Release files to catalog</p>
+              <p class="text-ds-text">Drop files here to upload</p>
               <p class="text-ds-text-muted mt-1.5">Recommended scale: <span class="text-ds-text">1200 x 1600 px</span> (3:4 Ratio)</p>
             </div>
           </div>
@@ -451,35 +451,35 @@
 
               <div class="flex-1 grid gap-ds-4 sm:grid-cols-2 items-start">
                 <label class="flex flex-col gap-ds-2">
-                  <span class="text-ds-text-muted">Label Description</span>
+                  <span class="text-ds-text-muted">Image Label</span>
                   <input class="form-input !h-10" type="text" formControlName="label" />
                 </label>
                 <label class="flex flex-col gap-ds-2">
-                  <span class="text-ds-text-muted">Accessibility Alt</span>
+                  <span class="text-ds-text-muted">Alt Text</span>
                   <input class="form-input !h-10" type="text" formControlName="alt" />
                 </label>
                 <label class="flex flex-col gap-ds-2">
-                  <span class="text-ds-text-muted">Media Categorization</span>
+                  <span class="text-ds-text-muted">Media Type</span>
                   <select class="form-input !h-10 appearance-none cursor-pointer" formControlName="type">
-                    <option value="image">Still Image</option>
-                    <option value="video">Motion Video</option>
+                    <option value="image">Image</option>
+                    <option value="video">Video</option>
                   </select>
                 </label>
 
                 <div class="flex flex-col gap-ds-4 pt-ds-2">
                   <label class="flex items-center gap-2 cursor-pointer group/radio">
                     <input class="form-radio" type="radio" name="mainMedia" [checked]="media.get('isMain')?.value" (change)="setMainMedia(mediaIndex)" />
-                    <span class="text-ds-text-muted group-hover/radio:text-ds-text transition-colors">Primary Display</span>
+                    <span class="text-ds-text-muted group-hover/radio:text-ds-text transition-colors">Main Image</span>
                   </label>
                   <button class="w-fit text-red-500 hover:text-red-700 transition-colors" type="button" (click)="removeMediaItem(mediaIndex)">
-                    Purge Asset
+                    Delete
                   </button>
                 </div>
               </div>
             </div>
           </div>
           <p *ngIf="mediaItemsArray.length === 0" class="text-ds-text-muted text-center py-ds-4">
-            Zero assets linked. Mandatory: 1 image or video for catalog preview.
+            No images added. Need at least 1 image.
           </p>
         </div>
       </div>
@@ -487,29 +487,29 @@
       <!-- Product Details Card -->
       <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm" formGroupName="meta">
         <h2 class="mb-ds-8 text-ds-text-muted">
-          Specifications
+          Details
         </h2>
         <div class="grid gap-ds-6">
           <label class="flex flex-col gap-ds-2">
-            <span class="text-ds-text-muted">Material & Care</span>
+            <span class="text-ds-text-muted">Fabric & Care</span>
             <textarea
               class="form-textarea !h-24"
               rows="3"
-              placeholder="Detail fabric weave and preservation methods..."
+              placeholder="Fabric, fit and care instructions..."
               formControlName="fabricAndCare"
             ></textarea>
           </label>
           <label class="flex flex-col gap-ds-2">
-            <span class="text-ds-text-muted">Logistics & Returns</span>
+            <span class="text-ds-text-muted">Shipping & Returns</span>
             <textarea
               class="form-textarea !h-24"
               rows="3"
-              placeholder="Outline distribution timelines and archival return policies..."
+              placeholder="Delivery and return policy..."
               formControlName="shippingAndReturns"
             ></textarea>
           </label>
           <label class="flex flex-col gap-ds-2">
-            <span class="text-ds-text-muted">Dimensional Chart URI</span>
+            <span class="text-ds-text-muted">Size Chart URL</span>
             <div class="flex gap-ds-2">
               <input
                 class="form-input !h-11 flex-1"
@@ -541,12 +541,12 @@
       <!-- Status Card -->
       <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
         <h2 class="mb-ds-6 text-ds-text-muted">
-          Visibility Controls
+          Status
         </h2>
         
         <div class="space-y-ds-4">
           <div class="flex items-center justify-between py-ds-2">
-            <span class="text-ds-text">Active Status</span>
+            <span class="text-ds-text">Active</span>
             <label class="form-toggle">
               <input type="checkbox" formControlName="statusActive" />
               <span></span>
@@ -581,19 +581,19 @@
       <!-- Organization Card -->
       <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
         <h2 class="mb-ds-8 text-ds-text-muted">
-          Categorization
+          Category
         </h2>
         <div class="flex flex-col gap-ds-4">
           <label class="flex flex-col gap-ds-2">
-            <span class="text-ds-text-muted">Primary Category</span>
+            <span class="text-ds-text-muted">Category</span>
             <select class="form-input !h-11 appearance-none cursor-pointer" formControlName="category">
-              <option value="" disabled>Select Segment</option>
+              <option value="" disabled>Choose category</option>
               <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
             </select>
           </label>
 
           <label class="flex flex-col gap-ds-2" *ngIf="filteredSubCategories.length > 0">
-            <span class="text-ds-text-muted">Sub-Segment</span>
+            <span class="text-ds-text-muted">Subcategory</span>
             <select class="form-input !h-11 appearance-none cursor-pointer" formControlName="subCategory">
               <option value="">None</option>
               <option *ngFor="let sub of filteredSubCategories" [value]="sub.id">{{ sub.name }}</option>
@@ -601,7 +601,7 @@
           </label>
 
           <label class="flex flex-col gap-ds-2" *ngIf="filteredCollections.length > 0">
-            <span class="text-ds-text-muted">Seasonal Collection</span>
+            <span class="text-ds-text-muted">Collection</span>
             <select class="form-input !h-11 appearance-none cursor-pointer" formControlName="collection">
               <option value="">Standalone</option>
               <option *ngFor="let col of filteredCollections" [value]="col.id">{{ col.name }}</option>
@@ -617,7 +617,7 @@
           </label>
 
           <label class="flex flex-col gap-ds-2">
-            <span class="text-ds-text-muted">Exclusivity Tier</span>
+            <span class="text-ds-text-muted">Tier</span>
             <select class="form-input !h-11 appearance-none cursor-pointer !border-ds-accent/30" formControlName="tier">
               <option value="">Standard</option>
               <option value="Premium">Premium</option>
@@ -628,12 +628,12 @@
           </label>
 
           <label class="flex flex-col gap-ds-2">
-            <span class="text-ds-text-muted">Indexing Tags</span>
-            <input class="form-input !h-11" type="text" placeholder="seasonal, minimal, trending..." formControlName="tags" />
+            <span class="text-ds-text-muted">Tags</span>
+            <input class="form-input !h-11" type="text" placeholder="e.g. winter, sale, new" formControlName="tags" />
           </label>
 
           <label class="flex flex-col gap-ds-2">
-            <span class="text-ds-text-muted">Global Sort Priority</span>
+            <span class="text-ds-text-muted">Sort Order</span>
             <input class="form-input !h-11" type="number" placeholder="0" formControlName="sortOrder" (focus)="$any($event.target).select()" min="0" />
           </label>
         </div>
