@@ -19,11 +19,13 @@ public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ApplicationDbContext _context;
 
-    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager)
+    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
     {
         _configuration = configuration;
         _userManager = userManager;
+        _context = context;
     }
 
     [HttpPost("login")]
@@ -62,6 +64,23 @@ public class AuthController : ControllerBase
 
         var token = GenerateToken(user, roles);
         var primaryRole = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? "Customer");
+
+        // Log admin/staff login activity
+        if (primaryRole == "SuperAdmin" || primaryRole == "Admin" || primaryRole == "Staff")
+        {
+            var loginLog = new AdminActivityLog
+            {
+                UserId = user.Id,
+                Action = "Login",
+                Details = $"Logged in as {primaryRole}",
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                PerformedByUserId = user.Id,
+                CreatedAt = DateTime.UtcNow
+            };
+            _context.AdminActivityLogs.Add(loginLog);
+            await _context.SaveChangesAsync();
+        }
+
         return Ok(new AuthResponse(token, ToSummary(user, primaryRole)));
     }
 
@@ -78,6 +97,66 @@ public class AuthController : ControllerBase
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
         {
+            // Try searching in StaffUser
+            if (Guid.TryParse(userId, out var staffUserId))
+            {
+                var staffUser = await _context.StaffUsers
+                    .Include(u => u.Role)
+                    .ThenInclude(r => r.RolePermissions)
+                    .ThenInclude(rp => rp.Permission)
+                    .ThenInclude(p => p.Module)
+                    .FirstOrDefaultAsync(u => u.Id == staffUserId, cancellationToken);
+
+                if (staffUser != null)
+                {
+                    // Map permissions to allowed menus
+                    var allowedMenus = new List<string>();
+                    var roleName = staffUser.Role.Name;
+                    
+                    if (roleName == "Super Admin")
+                    {
+                        allowedMenus.AddRange(new[] { "dashboard", "products", "orders", "customers", "analytics", "settings", "banners", "navigation", "pages", "reviews", "order-sources", "security", "users" });
+                    }
+                    else
+                    {
+                        var permissions = staffUser.Role.RolePermissions
+                            .Select(rp => $"{rp.Permission.Module.Slug}:{rp.Permission.Action}")
+                            .ToList();
+                            
+                        if (permissions.Any(p => p.StartsWith("inventory:"))) allowedMenus.Add("products");
+                        if (permissions.Any(p => p.StartsWith("sales:")))
+                        {
+                            allowedMenus.Add("orders");
+                            allowedMenus.Add("banners");
+                            allowedMenus.Add("reviews");
+                        }
+                        if (permissions.Any(p => p.StartsWith("hr:"))) allowedMenus.Add("customers");
+                        if (permissions.Any(p => p.StartsWith("reports:"))) allowedMenus.Add("analytics");
+                        if (permissions.Any(p => p.StartsWith("settings:")))
+                        {
+                            allowedMenus.Add("settings");
+                            allowedMenus.Add("navigation");
+                            allowedMenus.Add("pages");
+                            allowedMenus.Add("order-sources");
+                            allowedMenus.Add("security");
+                        }
+                        if (permissions.Any(p => p.StartsWith("staff-management:"))) allowedMenus.Add("users");
+                    }
+
+                    var summary = new UserSummary(
+                        staffUser.Id.ToString(),
+                        staffUser.FullName,
+                        staffUser.Email,
+                        roleName,
+                        null,
+                        staffUser.Username,
+                        allowedMenus
+                    );
+
+                    return Ok(summary);
+                }
+            }
+
             return Unauthorized();
         }
 

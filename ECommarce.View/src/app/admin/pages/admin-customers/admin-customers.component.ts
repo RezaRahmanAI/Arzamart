@@ -1,8 +1,9 @@
 import { NgIf, NgFor } from '@angular/common';
-import { Component, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
-import { debounceTime, distinctUntilChanged } from "rxjs";
+import { Subject, debounceTime, distinctUntilChanged } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import {
   AdminCustomersService,
   Customer,
@@ -14,9 +15,10 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
   standalone: true,
   imports: [NgIf, ReactiveFormsModule, RouterModule, AppIconComponent, NgFor],
   templateUrl: "./admin-customers.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminCustomersComponent implements OnInit {
-
+export class AdminCustomersComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   private customersService = inject(AdminCustomersService);
 
   searchControl = new FormControl("", { nonNullable: true });
@@ -30,7 +32,7 @@ export class AdminCustomersComponent implements OnInit {
     this.loadCustomers();
 
     this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged())
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.page = 1;
         this.loadCustomers();
@@ -45,6 +47,7 @@ export class AdminCustomersComponent implements OnInit {
         page: this.page,
         pageSize: this.pageSize,
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
           this.customers = data.items;
@@ -99,7 +102,7 @@ export class AdminCustomersComponent implements OnInit {
       ? this.customersService.unflagCustomer(customer.id)
       : this.customersService.flagCustomer(customer.id);
 
-    action.subscribe({
+    action.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         customer.isSuspicious = !customer.isSuspicious;
       },
@@ -107,5 +110,10 @@ export class AdminCustomersComponent implements OnInit {
         console.error("Failed to toggle suspicious status", err);
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

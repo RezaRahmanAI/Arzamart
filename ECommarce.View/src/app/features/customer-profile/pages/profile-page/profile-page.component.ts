@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { NgIf, AsyncPipe, DatePipe, NgFor } from '@angular/common';
 import {
   FormBuilder,
@@ -9,7 +9,7 @@ import {
 import { CustomerProfileService } from "../../../../core/services/customer-profile.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { Order } from "../../../../core/models/order";
-import { catchError, finalize, of, switchMap, tap } from "rxjs";
+import { catchError, finalize, of, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { RouterModule } from "@angular/router";
 
@@ -20,10 +20,12 @@ import { RouterModule } from "@angular/router";
   templateUrl: "./profile-page.component.html",
   styleUrl: "./profile-page.component.css",
 })
-export class ProfilePageComponent implements OnInit {
+export class ProfilePageComponent implements OnInit, OnDestroy {
   private readonly profileService = inject(CustomerProfileService);
   private readonly fb = inject(FormBuilder);
+  private readonly destroy$ = new Subject<void>();
   readonly imageUrlService = inject(ImageUrlService);
+  private successTimeout: ReturnType<typeof setTimeout> | null = null;
 
   phone$ = this.profileService.phone$;
   orders: Order[] = [];
@@ -54,11 +56,19 @@ export class ProfilePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.profileService.phone$.subscribe((phone) => {
+    this.profileService.phone$.pipe(takeUntil(this.destroy$)).subscribe((phone) => {
       if (phone) {
         this.loadData(phone);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.successTimeout) {
+      clearTimeout(this.successTimeout);
+    }
   }
 
   login(): void {
@@ -130,7 +140,7 @@ export class ProfilePageComponent implements OnInit {
       .subscribe({
         next: () => {
           this.saveSuccess = true;
-          setTimeout(() => (this.saveSuccess = false), 3000);
+          this.successTimeout = setTimeout(() => (this.saveSuccess = false), 3000);
         },
         error: (err) => {
           console.error("Failed to update profile", err);

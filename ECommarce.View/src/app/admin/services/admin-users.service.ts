@@ -11,6 +11,7 @@ export interface AdminUser {
   isActive: boolean;
   createdAt: string;
   allowedMenus?: string[];
+  plainPassword?: string;
 }
 
 export interface CreateAdminRequest {
@@ -46,5 +47,9 @@ export class AdminUsersService {
 
   resetPassword(userId: string, newPassword: string): Observable<any> {
     return this.api.post(`/admin/users/${userId}/reset-password`, { newPassword });
+  }
+
+  getPassword(userId: string): Observable<{ password: string; message?: string }> {
+    return this.api.get<{ password: string; message?: string }>(`/admin/users/${userId}/password`);
   }
 }

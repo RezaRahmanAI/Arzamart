@@ -1,5 +1,5 @@
 import { NgIf, NgClass, NgFor } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, signal } from "@angular/core";
 import {
   FormControl,
   FormGroup,
@@ -25,7 +25,7 @@ import { ProductsService } from "../../services/products.service";
 import { OrdersService } from "../../services/orders.service";
 import { AdminProduct } from "../../models/products.models";
 import { ImageUrlService } from "../../../core/services/image-url.service";
-import { CustomerOrderApiService } from "../../../core/services/customer-order-api.service";
+import { CustomerOrderApiService, CustomerOrderResponse } from "../../../core/services/customer-order-api.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { DeliveryMethod } from "../../models/settings.models";
 import { SettingsService } from "../../services/settings.service";
@@ -34,7 +34,27 @@ import { BANGLADESH_LOCATIONS } from "../../../core/utils/bangladesh-locations";
 import { SourceManagementService } from "../../../core/services/source-management.service";
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
 import { matchLocationFromAddress } from "../../../core/utils/location-matcher";
+import { Order, OrderDetail, OrderItem } from "../../models/orders.models";
 
+
+interface OrderPayload {
+  name: string;
+  phone: string;
+  address: string;
+  city: string;
+  area: string;
+  deliveryMethodId: number;
+  itemsCount: number;
+  total: number;
+  isPreOrder: boolean;
+  sourcePageId?: number | null;
+  socialMediaSourceId?: number | null;
+  discount: number;
+  advancePayment: number;
+  adminNote?: string;
+  customerNote?: string;
+  items: { productId: number; quantity: number; size?: string; unitPrice: number }[];
+}
 
 interface CartItem {
   product: AdminProduct;
@@ -48,6 +68,7 @@ interface CartItem {
   standalone: true,
   imports: [NgIf, NgClass, FormsModule, ReactiveFormsModule, RouterModule, AppIconComponent, PriceDisplayComponent, NgFor],
   templateUrl: "./admin-manual-order.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminManualOrderComponent implements OnInit, OnDestroy {
   private productsService = inject(ProductsService);
@@ -66,7 +87,7 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
   isPreOrderMode = false;
   showPreOrderWarningModal = signal(false);
   outOfStockItems = signal<{name: string, size?: string, needed: number, stock: number}[]>([]);
-  pendingOrderPayload: any = null;
+  pendingOrderPayload: OrderPayload | null = null;
   isEditMode = false;
   orderId: number | null = null;
   isLoadingProducts = false;
@@ -266,6 +287,42 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     }
   }
 
+  trackByProductId(_: number, product: AdminProduct): number {
+    return product.id;
+  }
+
+  trackByVariantId(_: number, variant: AdminProduct['variants'][0]): number {
+    return variant.id;
+  }
+
+  trackByCartItem(_: number, item: CartItem): string {
+    return `${item.product.id}-${item.selectedSize || ''}`;
+  }
+
+  trackByOutOfStockItem(_: number, item: {name: string}): string {
+    return item.name;
+  }
+
+  trackByCity(_: number, city: string): string {
+    return city;
+  }
+
+  trackByArea(_: number, area: string): string {
+    return area;
+  }
+
+  trackBySourcePage(_: number, page: SourcePage): number {
+    return page.id;
+  }
+
+  trackBySocialMediaSource(_: number, source: SocialMediaSource): number {
+    return source.id;
+  }
+
+  trackByDeliveryMethod(_: number, method: DeliveryMethod): number {
+    return method.id;
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -322,8 +379,7 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     // Auto-select delivery method
     this.updateDeliveryMethod(city, "");
 
-    // Update areas based on selected city
-    this.areas = (BANGLADESH_LOCATIONS as any)[city] || [];
+    this.areas = BANGLADESH_LOCATIONS[city] || [];
     this.filteredAreas = this.areas;
   }
 
@@ -483,7 +539,7 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     }
 
     this.isSubmitting = true;
-    const payload = {
+    const payload: OrderPayload = {
       name: this.orderForm.value.name!,
       phone: this.orderForm.value.phone!,
       address: this.orderForm.value.address!,
@@ -554,18 +610,19 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
     this.isSubmitting = false;
   }
 
-  private executeOrder(payload: any) {
-    const request = this.isEditMode && this.orderId
+  private executeOrder(payload: OrderPayload) {
+    const obs: Observable<CustomerOrderResponse | Order> = this.isEditMode && this.orderId
       ? this.ordersService.updateOrder(this.orderId, payload)
       : this.orderApi.placeOrder(payload);
 
-    (request as Observable<any>).subscribe({
-      next: (res: any) => {
+    obs.subscribe({
+      next: (res) => {
         this.notification.success(`Order ${res.orderNumber} ${this.isEditMode ? 'updated' : 'created'} successfully!`);
         this.router.navigate(["/admin/orders"]);
       },
-      error: (err: any) => {
-        this.notification.error(err.error?.message || `Failed to ${this.isEditMode ? 'update' : 'create'} order.`);
+      error: (err: Error) => {
+        const message = (err as any).error?.message || `Failed to ${this.isEditMode ? 'update' : 'create'} order.`;
+        this.notification.error(message);
         this.isSubmitting = false;
       }
     });
@@ -574,8 +631,7 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
   private loadOrderForEdit(id: number) {
     this.isLoading = true;
     this.ordersService.getOrderById(id).subscribe({
-      next: (order: any) => {
-        console.log("Loading order for edit:", order);
+      next: (order) => {
         this.orderForm.patchValue({
           phone: order.customerPhone,
           name: order.customerName,
@@ -592,23 +648,29 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
 
         if (order.city) {
             const cleanCity = order.city.trim();
-            const cityKey = Object.keys(BANGLADESH_LOCATIONS).find(k => k.toLowerCase() === cleanCity.toLowerCase());
+            const cityKey = Object.keys(BANGLADESH_LOCATIONS).find(k => k.toLowerCase() === cleanCity.toLowerCase()) as keyof typeof BANGLADESH_LOCATIONS | undefined;
             if (cityKey) {
-              this.areas = (BANGLADESH_LOCATIONS as any)[cityKey] || [];
+              this.areas = BANGLADESH_LOCATIONS[cityKey] || [];
               this.filteredAreas = this.areas;
             }
         }
 
-        // Map items to cart and fetch full product data to ensure stock levels are accurate
-        const cartItems: CartItem[] = (order.items || []).map((item: any) => ({
-          product: { 
-            id: item.productId, 
-            name: item.productName, 
-            price: item.unitPrice, 
-            imageUrl: item.imageUrl,
-            variants: [], // Will be populated below
-            stockQuantity: 0
-          } as any,
+        const cartItems: CartItem[] = (order.items || []).map((item: OrderItem) => ({
+          product: {
+            id: item.productId,
+            name: item.productName,
+            price: item.unitPrice,
+            imageUrl: item.imageUrl || "",
+            slug: "",
+            sku: "",
+            isActive: true,
+            isNew: false,
+            isFeatured: false,
+            categoryId: 0,
+            categoryName: "",
+            variants: [],
+            stockQuantity: 0,
+          } as unknown as AdminProduct,
           quantity: item.quantity,
           selectedSize: item.size,
           unitPrice: item.unitPrice
@@ -638,7 +700,7 @@ export class AdminManualOrderComponent implements OnInit, OnDestroy {
         }
         this.isLoading = false;
       },
-      error: (err: any) => {
+      error: (err: Error) => {
         console.error("Error loading order:", err);
         this.notification.error("Failed to load order for editing");
         this.isLoading = false;

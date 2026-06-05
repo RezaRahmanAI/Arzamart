@@ -1,6 +1,8 @@
 import { NgIf, NgClass, AsyncPipe, NgFor } from '@angular/common';
-import { Component, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { RouterModule, Router } from "@angular/router";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { SidebarService } from "../../services/sidebar.service";
 
@@ -20,8 +22,10 @@ import { AuthService } from "../../../core/services/auth.service";
   standalone: true,
   imports: [NgIf, NgClass, AsyncPipe, RouterModule, AppIconComponent, NgFor],
   templateUrl: "./admin-sidebar.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminSidebarComponent implements OnInit {
+export class AdminSidebarComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   protected sidebarService = inject(SidebarService);
   private router = inject(Router);
   private settingsService = inject(SiteSettingsService);
@@ -50,6 +54,9 @@ export class AdminSidebarComponent implements OnInit {
     if (url === "/admin/orders" || url.includes("/admin/orders/pre-orders") || url.includes("/admin/orders/website")) {
       this.isOrderViewMenuOpen = true;
     }
+    if (url.includes("/admin/staff") || url.includes("/admin/roles")) {
+      this.isStaffMenuOpen = true;
+    }
   }
 
   navItems: AdminNavItem[] = [
@@ -65,23 +72,21 @@ export class AdminSidebarComponent implements OnInit {
   isProductsMenuOpen = false;
   isOrdersMenuOpen = false;
   isOrderViewMenuOpen = false;
+  isStaffMenuOpen = false;
 
   currentUserRole = "";
   currentUserMenus: string[] = [];
 
   constructor() {
-    this.authService.currentUser.subscribe(user => {
+    this.authService.currentUser.pipe(takeUntil(this.destroy$)).subscribe(user => {
       this.currentUserRole = user?.role || "";
       this.currentUserMenus = user?.allowedMenus || [];
     });
   }
 
   hasAccess(menuKey: string): boolean {
-    if (this.currentUserRole === 'SuperAdmin' || this.currentUserRole === 'Admin') return true;
-    if (this.currentUserRole === 'Staff') {
-      return this.currentUserMenus.includes(menuKey);
-    }
-    return false;
+    if (this.currentUserRole === 'Super Admin' || this.currentUserRole === 'SuperAdmin' || this.currentUserRole === 'Admin') return true;
+    return this.currentUserMenus.includes(menuKey);
   }
 
   toggleProductsMenu() {
@@ -96,7 +101,16 @@ export class AdminSidebarComponent implements OnInit {
     this.isOrderViewMenuOpen = !this.isOrderViewMenuOpen;
   }
 
+  toggleStaffMenu() {
+    this.isStaffMenuOpen = !this.isStaffMenuOpen;
+  }
+
   isGroupActive(paths: string[]): boolean {
     return paths.some(path => this.router.url.includes(path));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

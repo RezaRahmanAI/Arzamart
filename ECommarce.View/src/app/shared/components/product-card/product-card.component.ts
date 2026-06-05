@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
+import { Component, Input, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
 import { RouterLink, Router } from "@angular/router";
 
@@ -29,9 +29,10 @@ import { sortProductSizes } from "../../../core/constants/product.constants";
   styleUrl: "./product-card.component.css",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductCardComponent {
+export class ProductCardComponent implements OnDestroy {
   @Input({ required: true }) product!: Product | RelatedProduct;
   selectedSize: string | null = null;
+  private resetTimeout: ReturnType<typeof setTimeout> | null = null;
 
   showQuickAdd = false;
   isOrdering = false;
@@ -204,6 +205,12 @@ export class ProductCardComponent {
     return desc.replace(/<[^>]*>/g, "");
   }
 
+  ngOnDestroy(): void {
+    if (this.resetTimeout) {
+      clearTimeout(this.resetTimeout);
+    }
+  }
+
   selectSize(size: string): void {
     this.selectedSize = size;
   }
@@ -228,8 +235,7 @@ export class ProductCardComponent {
         .addItem(this.product as Product, 1, this.selectedSize ?? undefined)
         .subscribe({
           next: () => {
-            // Briefly disable to prevent double clicks but keep it snappy
-            setTimeout(() => (this.isAdding = false), 1000);
+            this.resetTimeout = setTimeout(() => (this.isAdding = false), 1000);
           },
           error: () => (this.isAdding = false),
         });
@@ -260,7 +266,7 @@ export class ProductCardComponent {
         )
         .subscribe({
           next: () => {
-            setTimeout(() => (this.isAdding = false), 1000);
+            this.resetTimeout = setTimeout(() => (this.isAdding = false), 1000);
           },
           error: () => (this.isAdding = false),
         });

@@ -14,6 +14,8 @@ public class ApplicationUser : IdentityUser
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    public string? PasswordEncrypted { get; set; }
+
     // JWT columns
     public string? PasswordSalt { get; set; }
     public string? RefreshToken { get; set; }

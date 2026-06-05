@@ -4,14 +4,13 @@
     <div class="site-container">
       <div class="flex items-center gap-ds-3 text-ds-text-muted mb-ds-4">
         <a routerLink="/" class="hover:text-ds-text transition-colors">Home</a>
-        @if (parentCategorySlug) {
+        @if (parentCategorySlug && activeSubSlug) {
           <span class="text-ds-border">/</span>
           <a [routerLink]="['/category', parentCategorySlug]" class="hover:text-ds-text transition-colors">{{ parentCategoryName }}</a>
         }
         <span class="text-ds-border">/</span>
         <span class="text-ds-text">{{ title }}</span>
       </div>
-      <h1 class="text-ds-text">{{ title }}</h1>
     </div>
   </div>
 

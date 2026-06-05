@@ -5,7 +5,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-       
+        brand: {
+          blue: '#2f68ff',
+          dark: '#111111',
+          gray: '#a1a1aa',
+          light: '#f4f4f5',
+          green: '#046c4e',
+          red: '#9b1c1c',
+        },
         /* ── Design system tokens (new) ── */
         "ds-bg":           "var(--color-bg)",
         "ds-surface":      "var(--color-surface)",

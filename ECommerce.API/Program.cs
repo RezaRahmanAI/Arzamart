@@ -86,6 +86,8 @@ try
 
     app.UseRateLimiter();
 
+    app.UseMiddleware<ECommerce.API.Middleware.CustomForbiddenMiddleware>();
+
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseMiddleware<StaffDeleteRestrictionMiddleware>();
@@ -110,10 +112,8 @@ try
         // Ensure static categories exist (this method has internal check to skip if already present)
         await DataSeeder.SeedAsync(userManager, roleManager, context);
 
-        if (!await userManager.Users.AnyAsync())
-        {
-            Log.Information("Initial data seeding completed (Super Admin created).");
-        }
+        // Seed Staff RBAC tables
+        await StaffDataSeeder.SeedAsync(context, builder.Configuration);
     }
 
     app.Run();

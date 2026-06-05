@@ -38,6 +38,7 @@ export interface Order {
   subTotal: number;
   tax: number;
   shippingCost: number;
+  deliveryMethodId?: number;
   discount: number;
   advancePayment: number;
   total: number;

@@ -112,6 +112,7 @@ public static class ServiceExtensions
         services.AddScoped<INavigationService, NavigationService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IReviewService, ReviewService>();
+        services.AddScoped<PasswordProtector>();
 
         return services;
     }
@@ -119,6 +120,11 @@ public static class ServiceExtensions
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration config)
     {
         var connectionString = ResolveConnectionString(config);
+
+        var maskedConnStr = connectionString != null 
+            ? System.Text.RegularExpressions.Regex.Replace(connectionString, @"Password=[^;]+", "Password=***") 
+            : "null";
+        Console.WriteLine($"[DATABASE DIAGNOSTIC] Resolved connection string: {maskedConnStr}");
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {
@@ -196,7 +202,13 @@ public static class ServiceExtensions
             };
         });
 
-        services.AddAuthorization();
+        services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationPolicyProvider, ECommerce.API.Middleware.PermissionPolicyProvider>();
+        services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, ECommerce.API.Middleware.PermissionHandler>();
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("SuperAdminOnly", policy => policy.RequireClaim("is_super_admin", "true"));
+        });
 
         return services;
     }

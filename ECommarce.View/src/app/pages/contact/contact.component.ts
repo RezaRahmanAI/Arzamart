@@ -1,5 +1,5 @@
 import { NgIf, NgFor } from '@angular/common';
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -7,7 +7,8 @@ import {
   Validators,
 } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
-import { finalize } from "rxjs/operators";
+import { finalize, takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 import { ContactPayload, ContactService } from "./contact.service";
 import { SiteSettingsService } from "../../core/services/site-settings.service";
 import { AppIconComponent } from "../../shared/components/app-icon/app-icon.component";
@@ -30,8 +31,10 @@ type InquiryTopic = {
   standalone: true,
   imports: [NgIf, ReactiveFormsModule, RouterModule, AppIconComponent, NgFor],
   templateUrl: "./contact.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContactComponent {
+export class ContactComponent implements OnDestroy {
+  private destroy$ = new Subject<void>();
   supportEmail = "support@arzamart.com";
   phone = "+8801XXXXXXXXX";
   phoneDial = "+8801XXXXXXXXX";
@@ -88,7 +91,7 @@ export class ContactComponent {
     private router: Router,
     private settingsService: SiteSettingsService,
   ) {
-    this.settingsService.getSettings().subscribe((settings) => {
+    this.settingsService.getSettings().pipe(takeUntil(this.destroy$)).subscribe((settings) => {
       if (settings) {
         this.supportEmail = settings.contactEmail || this.supportEmail;
         this.phone = settings.contactPhone || this.phone;
@@ -138,6 +141,7 @@ export class ContactComponent {
     this.contactService
       .submitContact(payload)
       .pipe(
+        takeUntil(this.destroy$),
         finalize(() => {
           this.isSubmitting = false;
         }),
@@ -156,5 +160,10 @@ export class ContactComponent {
       return false;
     }
     return control.invalid && (control.touched || this.isSubmitted);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

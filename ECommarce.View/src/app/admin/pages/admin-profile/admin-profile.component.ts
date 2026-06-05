@@ -1,18 +1,22 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { ProfileService, UserProfile, UpdateProfileRequest } from "../../services/profile.service";
 import { AuthService } from "../../../core/services/auth.service";
 import { NotificationService } from "../../../core/services/notification.service";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-admin-profile",
   standalone: true,
   imports: [NgIf, ReactiveFormsModule, AppIconComponent],
   templateUrl: "./admin-profile.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminProfileComponent implements OnInit {
+export class AdminProfileComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
   private readonly fb = inject(FormBuilder);
   private readonly profileService = inject(ProfileService);
   private readonly authService = inject(AuthService);
@@ -45,7 +49,7 @@ export class AdminProfileComponent implements OnInit {
 
   loadProfile(): void {
     this.isLoading = true;
-    this.profileService.getProfile().subscribe({
+    this.profileService.getProfile().pipe(takeUntil(this.destroy$)).subscribe({
       next: (profile) => {
         this.userProfile = profile;
         this.profileForm.patchValue({
@@ -80,7 +84,7 @@ export class AdminProfileComponent implements OnInit {
       currentPassword: this.profileForm.value.currentPassword ?? undefined
     };
 
-    this.profileService.updateProfile(updateData).subscribe({
+    this.profileService.updateProfile(updateData).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.isSubmitting = false;
         this.notification.success(res.message || "Profile updated successfully!");
@@ -111,7 +115,7 @@ export class AdminProfileComponent implements OnInit {
     this.profileService.changePassword({
       currentPassword: this.passwordForm.value.currentPassword!,
       newPassword: this.passwordForm.value.newPassword!
-    }).subscribe({
+    }).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.isPasswordSubmitting = false;
         this.notification.success(res.message || "Password changed successfully!");
@@ -122,5 +126,10 @@ export class AdminProfileComponent implements OnInit {
         this.notification.error(err.error?.message || "Failed to change password");
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

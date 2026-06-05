@@ -15,7 +15,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { CartItem, CartSummary } from "../models/cart";
 import { Product } from "../models/product";
-import { SettingsService } from "../../admin/services/settings.service";
+import { SiteSettingsService } from "./site-settings.service";
 import { AnalyticsService } from "./analytics.service";
 import {
   CartDto,
@@ -37,7 +37,7 @@ export class CartService {
   private readonly sessionExpiryDays = 7;
   private readonly apiUrl = `/Cart`;
 
-  private readonly settingsService = inject(SettingsService);
+  private readonly settingsService = inject(SiteSettingsService);
   private readonly analyticsService = inject(AnalyticsService);
   private readonly notificationService = inject(NotificationService);
   private readonly api = inject(ApiHttpClient);
@@ -57,16 +57,14 @@ export class CartService {
   } | null>(null);
 
   constructor() {
-    // Subscribe to settings updates
-    this.settingsService.settings$.subscribe((settings: any) => {
+    // Subscribe to settings updates via public SiteSettingsService
+    this.settingsService.getSettings().subscribe((settings) => {
       if (settings) {
         this.freeShippingThreshold = settings.freeShippingThreshold || 0;
         this.shippingCharge = 0;
         this.cartItemsSubject.next(this.cartItemsSubject.getValue());
       }
     });
-
-    this.settingsService.getSettings().subscribe();
 
     // Initial load from server
     this.refreshCartFromServer();

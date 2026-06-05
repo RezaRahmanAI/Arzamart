@@ -37,9 +37,9 @@ export interface CustomerOrderRequest {
 export interface CustomerOrderResponse {
   id: number;
   orderNumber: string;
-  name: string;
-  phone: string;
-  address: string;
+  customerName: string;
+  customerPhone: string;
+  shippingAddress: string;
   city: string;
   area: string;
   subTotal: number;

@@ -213,12 +213,28 @@ export const ADMIN_ROUTES: Routes = [
         data: { title: "Security & IP Blocking", menuKey: "security" }, canActivate: [staffGuard],
       },
       {
-        path: "users",
+        path: "staff",
         loadComponent: () =>
-          import("./pages/admin-user-management/admin-user-management.component").then(
-            (m) => m.AdminUserManagementComponent,
+          import("./pages/staff-management/staff-management.component").then(
+            (m) => m.StaffManagementComponent,
           ),
-        data: { title: "User Management", menuKey: "users" }, canActivate: [staffGuard],
+        data: { title: "Staff Management", menuKey: "users" }, canActivate: [staffGuard],
+      },
+      {
+        path: "roles",
+        loadComponent: () =>
+          import("./pages/role-management/role-management.component").then(
+            (m) => m.RoleManagementComponent,
+          ),
+        data: { title: "Role Management Matrix", menuKey: "users" }, canActivate: [staffGuard],
+      },
+      {
+        path: "staff/audit",
+        loadComponent: () =>
+          import("./pages/staff-audit-log/staff-audit-log.component").then(
+            (m) => m.StaffAuditLogComponent,
+          ),
+        data: { title: "Staff Audit Trail", menuKey: "users" }, canActivate: [staffGuard],
       },
       {
         path: "profile",

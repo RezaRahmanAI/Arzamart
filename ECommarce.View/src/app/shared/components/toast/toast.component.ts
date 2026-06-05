@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
 import {
   NotificationService,
@@ -11,12 +11,12 @@ import {
   trigger,
   state,
 } from "@angular/animations";
-import { AppIconComponent } from "../app-icon/app-icon.component";
+
 
 @Component({
   selector: "app-toast",
   standalone: true,
-  imports: [NgClass, AppIconComponent],
+  imports: [NgClass],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger("toastAnimation", [
@@ -44,11 +44,11 @@ import { AppIconComponent } from "../app-icon/app-icon.component";
           <div class="flex items-center gap-3">
              @if (toast.type === 'SUCCESS') {
                 <div class="size-8 rounded-full bg-green-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-green-500/20">
-                   <app-icon name="Check" size="18"></app-icon>
+                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
                 </div>
              } @else if (toast.type === 'ERROR') {
                 <div class="size-8 rounded-full bg-red-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-red-500/20">
-                   <app-icon name="AlertCircle" size="18"></app-icon>
+                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                 </div>
              }
              <div class="flex flex-col min-w-0">
@@ -59,16 +59,17 @@ import { AppIconComponent } from "../app-icon/app-icon.component";
             (click)="remove(toast.id)"
             class="size-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-all"
           >
-            <app-icon name="X" size="14"></app-icon>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
           </button>
         </div>
       }
     </div>
   `,
 })
-export class ToastComponent implements OnInit {
+export class ToastComponent implements OnInit, OnDestroy {
   notificationService = inject(NotificationService);
   toasts: ToastMessage[] = [];
+  private timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
   ngOnInit() {
     this.notificationService.toast$.subscribe((toast) => {
@@ -78,9 +79,15 @@ export class ToastComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.timeoutIds.forEach(clearTimeout);
+    this.timeoutIds = [];
+  }
+
   add(toast: ToastMessage) {
     this.toasts.push(toast);
-    setTimeout(() => this.remove(toast.id), 3000); // Auto remove after 3s
+    const id = setTimeout(() => this.remove(toast.id), 3000);
+    this.timeoutIds.push(id);
   }
 
   remove(id: number) {

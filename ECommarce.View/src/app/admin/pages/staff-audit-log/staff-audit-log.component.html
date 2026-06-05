@@ -1,0 +1,213 @@
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
+    <div>
+      <h1 class="text-ds-text">Staff Security Audit Trail</h1>
+      <p class="text-ds-text-muted mt-1.5">
+        Review all sensitive actions performed by staff members (account creation, modifications, status toggles, and password reveals)
+      </p>
+    </div>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm p-ds-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-ds-4 items-end">
+      <!-- Actor Filter -->
+      <div class="lg:col-span-3 space-y-1.5">
+        <label class="block text-ds-text font-semibold text-xs ml-1">Actor (Performed By)</label>
+        <div class="relative">
+          <select 
+            [(ngModel)]="selectedActorId" 
+            (change)="onFilterChange()"
+            class="form-input !h-11 !px-4 appearance-none cursor-pointer text-sm">
+            <option value="">All Actors</option>
+            @for (staff of staffMembers; track staff.id) {
+              <option [value]="staff.id">{{ staff.fullName }} (&#64;{{ staff.username }})</option>
+            }
+          </select>
+          <app-icon name="ChevronDown" size="12" class="absolute right-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
+        </div>
+      </div>
+
+      <!-- Action Search -->
+      <div class="lg:col-span-3 space-y-1.5">
+        <label class="block text-ds-text font-semibold text-xs ml-1">Action Type</label>
+        <div class="relative">
+          <input 
+            type="text" 
+            [(ngModel)]="searchAction" 
+            (keyup.enter)="onFilterChange()"
+            placeholder="E.G. CREATE_STAFF..." 
+            class="form-input !h-11 !pl-10 text-sm">
+          <app-icon name="Search" size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ds-text-muted"></app-icon>
+        </div>
+      </div>
+
+      <!-- Start Date -->
+      <div class="lg:col-span-2 space-y-1.5">
+        <label class="block text-ds-text font-semibold text-xs ml-1">Start Date</label>
+        <input 
+          type="date" 
+          [(ngModel)]="startDate" 
+          (change)="onFilterChange()"
+          class="form-input !h-11 !px-3 text-sm">
+      </div>
+
+      <!-- End Date -->
+      <div class="lg:col-span-2 space-y-1.5">
+        <label class="block text-ds-text font-semibold text-xs ml-1">End Date</label>
+        <input 
+          type="date" 
+          [(ngModel)]="endDate" 
+          (change)="onFilterChange()"
+          class="form-input !h-11 !px-3 text-sm">
+      </div>
+
+      <!-- Reset -->
+      <div class="lg:col-span-2">
+        <button 
+          (click)="resetFilters()" 
+          class="btn btn-secondary !h-11 text-sm w-full">
+          <app-icon name="RotateCcw" size="14"></app-icon>
+          <span>Reset Filters</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Trail Log Table -->
+  <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden flex flex-col">
+    <div class="px-ds-6 py-ds-4 border-b border-ds-border flex items-center gap-ds-3 bg-ds-bg/50">
+      <div class="size-10 rounded-sm bg-ds-text flex items-center justify-center text-ds-surface">
+        <app-icon name="Activity" size="16"></app-icon>
+      </div>
+      <div>
+        <h3 class="text-ds-text">Audit Log Trail</h3>
+        <p class="text-ds-text-muted mt-0.5">Chronological log of staff mutations</p>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-ds-bg/30 border-b border-ds-border">
+            <th class="w-8 px-ds-6 py-ds-4"></th>
+            <th class="px-ds-6 py-ds-4 text-ds-text-muted text-xs font-bold uppercase tracking-wider">Date & Time</th>
+            <th class="px-ds-6 py-ds-4 text-ds-text-muted text-xs font-bold uppercase tracking-wider">Actor</th>
+            <th class="px-ds-6 py-ds-4 text-ds-text-muted text-xs font-bold uppercase tracking-wider">Action</th>
+            <th class="px-ds-6 py-ds-4 text-ds-text-muted text-xs font-bold uppercase tracking-wider">Target Personnel</th>
+            <th class="px-ds-6 py-ds-4 text-ds-text-muted text-xs font-bold uppercase tracking-wider text-right">Payload</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ds-border/50">
+          @for (log of auditLogs; track log.id) {
+            <!-- Main Row -->
+            <tr class="hover:bg-ds-bg transition-colors cursor-pointer group" (click)="toggleExpand(log.id)">
+              <td class="px-ds-6 py-ds-4 text-center">
+                <app-icon 
+                  [name]="expandedLogId === log.id ? 'ChevronUp' : 'ChevronDown'" 
+                  size="14" 
+                  className="text-ds-text-muted group-hover:text-ds-text transition-colors">
+                </app-icon>
+              </td>
+
+              <!-- Date & Time -->
+              <td class="px-ds-6 py-ds-4">
+                <span class="text-ds-text text-sm font-medium">{{ log.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</span>
+                <span class="text-ds-text-muted text-xs block mt-0.5">UTC</span>
+              </td>
+
+              <!-- Actor -->
+              <td class="px-ds-6 py-ds-4">
+                <div class="flex flex-col">
+                  <span class="text-ds-text text-sm font-semibold">{{ log.actorName }}</span>
+                  <span class="text-ds-text-muted text-xs mt-0.5">&#64;{{ log.actorUsername }}</span>
+                </div>
+              </td>
+
+              <!-- Action -->
+              <td class="px-ds-6 py-ds-4">
+                <div class="px-ds-3 py-1 rounded-sm border inline-flex items-center text-xs font-bold tracking-wide uppercase"
+                     [ngClass]="getActionBadgeClass(log.action)">
+                  <span>{{ log.action }}</span>
+                </div>
+              </td>
+
+              <!-- Target Personnel -->
+              <td class="px-ds-6 py-ds-4">
+                @if (log.targetStaffName) {
+                  <span class="text-ds-text text-sm font-medium">{{ log.targetStaffName }}</span>
+                } @else {
+                  <span class="text-ds-text-muted/40 italic text-xs">None</span>
+                }
+              </td>
+
+              <!-- Payload Expand Toggle -->
+              <td class="px-ds-6 py-ds-4 text-right">
+                <button 
+                  class="btn btn-ghost !h-8 !py-1 !px-3 text-xs"
+                  (click)="$event.stopPropagation(); toggleExpand(log.id)">
+                  {{ expandedLogId === log.id ? 'Hide Details' : 'View Payload' }}
+                </button>
+              </td>
+            </tr>
+
+            <!-- Expanded Details Row -->
+            @if (expandedLogId === log.id) {
+              <tr class="bg-ds-bg/30">
+                <td colspan="6" class="px-ds-8 py-ds-6 border-b border-ds-border">
+                  <div class="flex flex-col gap-ds-3">
+                    <div class="flex items-center gap-ds-2 text-ds-text-muted font-bold text-xs">
+                      <app-icon name="Code" size="14"></app-icon>
+                      <span>AUDIT METADATA PAYLOAD</span>
+                    </div>
+                    <pre class="bg-ds-bg border border-ds-border/60 p-ds-4 rounded-sm text-[11px] font-mono text-ds-text select-all overflow-x-auto whitespace-pre-wrap max-h-60 leading-relaxed">{{ formatDetailsJson(log.details) }}</pre>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    @if (!isLoading && auditLogs.length === 0) {
+      <div class="py-ds-24 text-center">
+        <app-icon name="Activity" size="48" className="mx-auto mb-ds-4 text-ds-text-muted opacity-25"></app-icon>
+        <h3 class="text-ds-text-muted">No security events found.</h3>
+      </div>
+    }
+
+    <!-- Loading State -->
+    @if (isLoading) {
+      <div class="p-ds-24 flex flex-col items-center justify-center space-y-ds-4 bg-ds-surface">
+        <app-icon name="Loader2" size="40" className="text-ds-text-muted/30 animate-spin"></app-icon>
+        <p class="text-ds-text-muted">Loading Audit Logs...</p>
+      </div>
+    }
+
+    <!-- Pagination Footer -->
+    @if (totalPages > 1) {
+      <div class="px-ds-6 py-ds-4 border-t border-ds-border bg-ds-bg/30 flex items-center justify-between">
+        <span class="text-ds-text-muted text-xs">
+          Showing Page {{ page }} of {{ totalPages }} ({{ totalCount }} security logs total)
+        </span>
+        <div class="flex items-center gap-ds-2">
+          <button 
+            [disabled]="page === 1" 
+            (click)="goToPage(page - 1)"
+            class="btn btn-secondary !h-9 !py-1 !px-3 text-xs disabled:opacity-40 disabled:cursor-not-allowed">
+            Previous
+          </button>
+          <button 
+            [disabled]="page === totalPages" 
+            (click)="goToPage(page + 1)"
+            class="btn btn-secondary !h-9 !py-1 !px-3 text-xs disabled:opacity-40 disabled:cursor-not-allowed">
+            Next
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

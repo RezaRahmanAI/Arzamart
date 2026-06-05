@@ -20,8 +20,12 @@ import { ApiHttpClient } from "../../core/http/http-client";
 export class AdminDashboardService {
   private readonly api = inject(ApiHttpClient);
 
-  getStats(): Observable<DashboardStats> {
-    return this.api.get<DashboardStats>("/admin/dashboard/stats");
+  getStats(startDate?: string, endDate?: string): Observable<DashboardStats> {
+    let url = "/admin/dashboard/stats";
+    if (startDate && endDate) {
+      url += `?startDate=${startDate}&endDate=${endDate}`;
+    }
+    return this.api.get<DashboardStats>(url);
   }
 
   getRecentOrders(): Observable<OrderItem[]> {

@@ -8,12 +8,12 @@ import {
   state,
 } from "@angular/animations";
 import { SiteSettingsService } from "../../../core/services/site-settings.service";
-import { AppIconComponent } from "../app-icon/app-icon.component";
+
 
 @Component({
   selector: "app-contact-fab",
   standalone: true,
-  imports: [NgIf, AppIconComponent],
+  imports: [NgIf],
   animations: [
     trigger("famTrigger", [
       state("void", style({ transform: "scale(0)", opacity: 0 })),
@@ -79,10 +79,7 @@ import { AppIconComponent } from "../app-icon/app-icon.component";
           class="w-12 h-12 flex items-center justify-center rounded-full bg-[#0084FF] shadow-lg hover:scale-110 transition-transform text-white border border-white/20"
           title="Messenger"
         >
-          <app-icon
-            name="MessageCircle"
-            size="20"
-          ></app-icon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
         </a>
 
         <!-- WhatsApp Option -->
@@ -94,10 +91,7 @@ import { AppIconComponent } from "../app-icon/app-icon.component";
           class="w-12 h-12 flex items-center justify-center rounded-full bg-[#25D366] shadow-lg hover:scale-110 transition-transform text-white border border-white/20"
           title="WhatsApp Us"
         >
-          <app-icon
-            name="MessageSquare"
-            size="20"
-          ></app-icon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
         </a>
 
         <!-- Phone Option -->
@@ -108,7 +102,7 @@ import { AppIconComponent } from "../app-icon/app-icon.component";
           class="w-12 h-12 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-md shadow-lg hover:scale-110 transition-transform text-[#0e181b] border border-white/20"
           title="Call Us"
         >
-          <app-icon name="Phone" size="20"></app-icon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
         </a>
       </div>
 
@@ -120,12 +114,7 @@ import { AppIconComponent } from "../app-icon/app-icon.component";
         [class.bg-gray-100]="isOpen"
       >
         <!-- Close / Add Icon -->
-        <app-icon
-          *ngIf="isOpen"
-          name="Plus"
-          size="28"
-          className="text-[#0e181b] rotate-45"
-        ></app-icon>
+        <svg *ngIf="isOpen" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#0e181b] rotate-45"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg>
 
         <!-- Animated Dots -->
         <div *ngIf="!isOpen" class="flex items-center gap-1">

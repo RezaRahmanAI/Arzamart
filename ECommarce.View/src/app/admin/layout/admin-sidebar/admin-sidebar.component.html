@@ -1,13 +1,24 @@
+<style>
+  /* Hide scrollbar for a cleaner look in the sidebar */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+
 <aside
-  class="fixed lg:sticky top-0 left-0 w-72 h-screen bg-ds-accent flex flex-col flex-shrink-0 transition-all duration-500 z-50 border-r border-ds-border lg:translate-x-0 overflow-hidden"
+  class="fixed lg:sticky top-0 left-0 w-64 h-screen bg-brand-dark text-gray-300 flex flex-col flex-shrink-0 transition-all duration-500 z-50 border-r border-gray-800 lg:translate-x-0 overflow-hidden"
   [class.-translate-x-full]="!sidebarService.isOpen()"
   [class.translate-x-0]="sidebarService.isOpen()"
 >
   <!-- Mobile Close Header -->
-  <div class="lg:hidden flex justify-end p-ds-4 relative z-10">
+  <div class="lg:hidden flex justify-end p-4 relative z-10">
     <button
       (click)="sidebarService.close()"
-      class="p-ds-2 text-ds-hero-text/40 hover:text-white transition-colors bg-white/5 rounded-full"
+      class="p-2 text-white/40 hover:text-white transition-colors bg-white/5 rounded-full"
       type="button"
     >
       <app-icon name="X" size="20"></app-icon>
@@ -16,235 +27,441 @@
 
   <!-- Main Scrollable Content -->
   <div class="flex-1 flex flex-col min-h-0 relative z-10">
-    
-    <!-- Header -->
-    <div class="px-ds-8 pt-ds-12 pb-ds-8">
-      <div class="flex items-center gap-ds-4 group cursor-default" *ngIf="settings$ | async as settings">
-        <div class="relative">
-          <div class="relative bg-white/5 border border-white/10 p-ds-3 rounded-sm backdrop-blur-md">
-            <img
-              *ngIf="settings.logoUrl"
-              loading="lazy" [src]="imageUrlService.getImageUrl(settings.logoUrl)"
-              class="w-8 h-8 object-contain brightness-0 invert"
-              alt="Logo"
-            />
-            <app-icon
-              *ngIf="!settings.logoUrl"
-              name="Store"
-              size="24"
-              className="text-white"
-            ></app-icon>
-          </div>
+    <!-- Branding -->
+    <div class="p-6 pb-2 border-b border-gray-800" *ngIf="settings$ | async as settings">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="bg-gray-800 p-2 rounded-lg">
+          <!-- Shop Icon -->
+          <img
+            *ngIf="settings.logoUrl"
+            loading="lazy"
+            [src]="imageUrlService.getImageUrl(settings.logoUrl)"
+            class="w-6 h-6 object-contain brightness-0 invert"
+            alt="Logo"
+          />
+          <app-icon
+            *ngIf="!settings.logoUrl"
+            name="Store"
+            size="24"
+            className="text-white"
+          ></app-icon>
         </div>
-        <div class="flex flex-col">
-          <h1 class="text-white">
-            {{ settings.websiteName || "Admin Console" }}
+        <div>
+          <h1 class="text-xl font-bold text-white tracking-tight">
+            {{ settings.websiteName || "Arza Mart" }}
           </h1>
-          <span class="text-white/40 mt-1.5">
+          <p class="text-xs text-brand-gray uppercase tracking-wider mt-0.5">
             Enterprise Panel
-          </span>
+          </p>
         </div>
       </div>
     </div>
 
-    <div class="h-px bg-ds-border/50 mx-ds-6 mb-ds-8"></div>
-
-    <!-- Scrollable Nav Section -->
-    <div class="flex-1 overflow-y-auto custom-sidebar-scroll px-ds-4 pb-ds-12">
-      <div class="space-y-ds-10">
-        <!-- Main Section -->
-        <div>
-          <p class="px-ds-4 mb-ds-6 text-white/30">Core Navigation</p>
-          <nav class="space-y-1">
+    <!-- Navigation Menu -->
+    <nav class="flex-1 overflow-y-auto no-scrollbar py-4 px-3 space-y-6">
+      
+      <!-- Section: Main Navigation -->
+      <div *ngIf="hasAccess('dashboard') || hasAccess('orders')">
+        <h2 class="px-3 text-xs font-semibold text-brand-gray uppercase tracking-wider mb-2">
+          Main Navigation
+        </h2>
+        <ul class="space-y-1">
+          <!-- Overview (Active item checks exact match) -->
+          <li *ngIf="hasAccess('dashboard')">
             <a
-              *ngFor="let item of topItems"
-              class="flex items-center gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group relative"
-              [routerLink]="item.route"
-              routerLinkActive="nav-active"
-              #rla="routerLinkActive"
-              [ngClass]="rla.isActive ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
-              [routerLinkActiveOptions]="{ exact: false }"
+              routerLink="/admin/dashboard"
+              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              #rlaOverview="routerLinkActive"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
+              [ngClass]="rlaOverview.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
             >
-              <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-105" [className]="rla.isActive ? 'text-white' : ''"></app-icon>
-              <span >{{ item.label }}</span>
-              <div *ngIf="rla.isActive" class="absolute left-0 w-1 h-5 bg-white rounded-r-full"></div>
+              <app-icon
+                name="LayoutDashboard"
+                size="20"
+                [className]="rlaOverview.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+              ></app-icon>
+              <span>Overview</span>
             </a>
+          </li>
 
-
-            <!-- Orders Dropdown -->
-            <div class="space-y-1" *ngIf="hasAccess('orders')">
+          <!-- Orders Dropdown -->
+          <li *ngIf="hasAccess('orders')">
+            <div class="space-y-1">
               <button
                 type="button"
-                class="flex items-center justify-between gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group w-full text-left relative"
                 (click)="toggleOrdersMenu()"
-                [ngClass]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
+                class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
+                [ngClass]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
               >
-                <div class="flex items-center gap-ds-4">
-                  <app-icon name="PlusCircle" size="20" className="group-hover:scale-105" [className]="isOrdersMenuOpen ? 'text-white' : ''"></app-icon>
-                  <span >Orders</span>
+                <div class="flex items-center gap-3">
+                  <app-icon
+                    name="PlusCircle"
+                    size="20"
+                    [className]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                  ></app-icon>
+                  <span>Orders</span>
                 </div>
                 <app-icon
                   [name]="isOrdersMenuOpen ? 'ChevronUp' : 'ChevronDown'"
                   size="14"
-                  className="text-white/20 group-hover:text-white transition-colors"
+                  [className]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
                 ></app-icon>
               </button>
               
-              <div class="overflow-hidden transition-all duration-300" [style.max-height]="isOrdersMenuOpen ? '400px' : '0px'">
-                <div class="pl-ds-12 pr-ds-4 py-ds-2 space-y-1">
-                  <a
-                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
-                    routerLink="/admin/orders/pre-order"
-                    routerLinkActive="text-white bg-white/5"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    Pre-Order Create
-                  </a>
-                  <a
-                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
-                    routerLink="/admin/orders/create"
-                    routerLinkActive="text-white bg-white/5"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    Manual Order Create
-                  </a>
-                </div>
+              <!-- Sub-menu -->
+              <div
+                class="overflow-hidden transition-all duration-300"
+                [style.max-height]="isOrdersMenuOpen ? '150px' : '0px'"
+              >
+                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-gray-400">
+                  <li>
+                    <a
+                      routerLink="/admin/orders/pre-order"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Pre-Order Create
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      routerLink="/admin/orders/create"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Manual Order Create
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
+          </li>
 
-            <!-- Order View Dropdown -->
-            <div class="space-y-1" *ngIf="hasAccess('orders')">
+          <!-- Order View Dropdown -->
+          <li *ngIf="hasAccess('orders')">
+            <div class="space-y-1">
               <button
                 type="button"
-                class="flex items-center justify-between gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group w-full text-left relative"
                 (click)="toggleOrderViewMenu()"
-                [ngClass]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
+                class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
+                [ngClass]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
               >
-                <div class="flex items-center gap-ds-4">
-                  <app-icon name="Eye" size="20" className="group-hover:scale-105" [className]="isOrderViewMenuOpen ? 'text-white' : ''"></app-icon>
-                  <span >Order View</span>
+                <div class="flex items-center gap-3">
+                  <app-icon
+                    name="Eye"
+                    size="20"
+                    [className]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                  ></app-icon>
+                  <span>Order View</span>
                 </div>
                 <app-icon
                   [name]="isOrderViewMenuOpen ? 'ChevronUp' : 'ChevronDown'"
                   size="14"
-                  className="text-white/20 group-hover:text-white transition-colors"
+                  [className]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
                 ></app-icon>
               </button>
               
-              <div class="overflow-hidden transition-all duration-300" [style.max-height]="isOrderViewMenuOpen ? '400px' : '0px'">
-                <div class="pl-ds-12 pr-ds-4 py-ds-2 space-y-1">
-                  <a
-                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
-                    routerLink="/admin/orders"
-                    routerLinkActive="text-white bg-white/5"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    All Orders
-                  </a>
-                  <a
-                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
-                    routerLink="/admin/orders/pre-orders"
-                    routerLinkActive="text-white bg-white/5"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    Pre Orders
-                  </a>
-                  <a
-                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
-                    routerLink="/admin/orders/website"
-                    routerLinkActive="text-white bg-white/5"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    Website Orders
-                  </a>
-                </div>
+              <!-- Sub-menu -->
+              <div
+                class="overflow-hidden transition-all duration-300"
+                [style.max-height]="isOrderViewMenuOpen ? '200px' : '0px'"
+              >
+                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-gray-400">
+                  <li>
+                    <a
+                      routerLink="/admin/orders"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      All Orders
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      routerLink="/admin/orders/pre-orders"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Pre Orders
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      routerLink="/admin/orders/website"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Website Orders
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
+          </li>
+        </ul>
+      </div>
 
-            <!-- Inventory Dropdown -->
-            <div class="space-y-1" *ngIf="hasAccess('products')">
+      <!-- Section: Management -->
+      <div *ngIf="hasAccess('products') || hasAccess('users')">
+        <h2 class="px-3 text-xs font-semibold text-brand-gray uppercase tracking-wider mb-2">
+          Management
+        </h2>
+        <ul class="space-y-1">
+          <!-- Inventory Dropdown -->
+          <li *ngIf="hasAccess('products')">
+            <div class="space-y-1">
               <button
                 type="button"
-                class="flex items-center justify-between gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group w-full text-left relative"
                 (click)="toggleProductsMenu()"
-                [ngClass]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
+                class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
+                [ngClass]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
               >
-                <div class="flex items-center gap-ds-4">
-                  <app-icon name="ShoppingBag" size="20" className="group-hover:scale-105" [className]="isProductsMenuOpen ? 'text-white' : ''"></app-icon>
-                  <span >Inventory</span>
+                <div class="flex items-center gap-3">
+                  <app-icon
+                    name="ShoppingBag"
+                    size="20"
+                    [className]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                  ></app-icon>
+                  <span>Inventory</span>
                 </div>
                 <app-icon
                   [name]="isProductsMenuOpen ? 'ChevronUp' : 'ChevronDown'"
                   size="14"
-                  className="text-white/20 group-hover:text-white transition-colors"
+                  [className]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
                 ></app-icon>
               </button>
               
-              <div class="overflow-hidden transition-all duration-300" [style.max-height]="isProductsMenuOpen ? '400px' : '0px'">
-                <div class="pl-ds-12 pr-ds-4 py-ds-2 space-y-1">
-                  <a
-                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
-                    routerLink="/admin/products"
-                    routerLinkActive="text-white bg-white/5"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    Product Catalog
-                  </a>
-                  <a
-                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
-                    routerLink="/admin/products/categories"
-                    routerLinkActive="text-white bg-white/5"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    Main Collections
-                  </a>
-                  <a
-                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
-                    routerLink="/admin/products/sub-categories"
-                    routerLinkActive="text-white bg-white/5"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    Sub Collections
-                  </a>
-                  <a
-                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
-                    routerLink="/admin/inventory"
-                    routerLinkActive="text-white bg-white/5"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    Inventory Management
-                  </a>
-                  <a
-                    class="block px-ds-4 py-ds-2.5 text-white/30 hover:text-white transition-all rounded-sm hover:bg-white/5"
-                    routerLink="/admin/products/groups"
-                    routerLinkActive="text-white bg-white/5"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                  >
-                    Product Groups
-                  </a>
-                </div>
+              <!-- Sub-menu -->
+              <div
+                class="overflow-hidden transition-all duration-300"
+                [style.max-height]="isProductsMenuOpen ? '250px' : '0px'"
+              >
+                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-gray-400">
+                  <li>
+                    <a
+                      routerLink="/admin/products"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Product Catalog
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      routerLink="/admin/products/categories"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Main Collections
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      routerLink="/admin/products/sub-categories"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Sub Collections
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      routerLink="/admin/inventory"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Inventory Management
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      routerLink="/admin/products/groups"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Product Groups
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
+          </li>
 
-            <a
-              *ngFor="let item of navItems"
-              class="flex items-center gap-ds-4 px-ds-4 py-ds-3.5 transition-all duration-300 group relative"
-              [routerLink]="item.route"
-              routerLinkActive="nav-active"
-              #rlaSecondary="routerLinkActive"
-              [ngClass]="rlaSecondary.isActive ? 'text-white bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'"
-              [routerLinkActiveOptions]="{ exact: false }"
-            >
-              <app-icon [name]="item.icon" size="20" className="transition-transform group-hover:scale-105" [className]="rlaSecondary.isActive ? 'text-white' : ''"></app-icon>
-              <span >{{ item.label }}</span>
-              <div *ngIf="rlaSecondary.isActive" class="absolute left-0 w-1 h-5 bg-white rounded-r-full"></div>
-            </a>
-          </nav>
-        </div>
-
-
+          <!-- Security & Staff Dropdown -->
+          <li *ngIf="hasAccess('users')">
+            <div class="space-y-1">
+              <button
+                type="button"
+                (click)="toggleStaffMenu()"
+                class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
+                [ngClass]="(isStaffMenuOpen || isGroupActive(['/admin/staff', '/admin/roles', '/admin/staff/audit'])) ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+              >
+                <div class="flex items-center gap-3">
+                  <app-icon
+                    name="Shield"
+                    size="20"
+                    [className]="(isStaffMenuOpen || isGroupActive(['/admin/staff', '/admin/roles', '/admin/staff/audit'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                  ></app-icon>
+                  <span>Security & Staff</span>
+                </div>
+                <app-icon
+                  [name]="isStaffMenuOpen ? 'ChevronUp' : 'ChevronDown'"
+                  size="14"
+                  [className]="(isStaffMenuOpen || isGroupActive(['/admin/staff', '/admin/roles', '/admin/staff/audit'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                ></app-icon>
+              </button>
+              
+              <!-- Sub-menu -->
+              <div
+                class="overflow-hidden transition-all duration-300"
+                [style.max-height]="isStaffMenuOpen ? '150px' : '0px'"
+              >
+                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-gray-400">
+                  <li>
+                    <a
+                      routerLink="/admin/staff"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Staff List
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      routerLink="/admin/roles"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Role Matrix
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      routerLink="/admin/staff/audit"
+                      routerLinkActive="text-white font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-white transition-colors"
+                    >
+                      Audit Logs
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
-    </div>
+
+      <!-- Section: Content & Marketing -->
+      <div>
+        <h2 class="px-3 text-xs font-semibold text-brand-gray uppercase tracking-wider mb-2">
+          Content & Marketing
+        </h2>
+        <ul class="space-y-1">
+          <!-- Banners & Campaigns -->
+          <li *ngIf="hasAccess('banners')">
+            <a
+              routerLink="/admin/banners"
+              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              #rlaBanners="routerLinkActive"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
+              [ngClass]="rlaBanners.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+            >
+              <app-icon
+                name="GalleryVertical"
+                size="20"
+                [className]="rlaBanners.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+              ></app-icon>
+              <span>Banners & Campaigns</span>
+            </a>
+          </li>
+
+          <!-- Site Content -->
+          <li *ngIf="hasAccess('pages')">
+            <a
+              routerLink="/admin/pages"
+              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              #rlaPages="routerLinkActive"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
+              [ngClass]="rlaPages.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+            >
+              <app-icon
+                name="FileText"
+                size="20"
+                [className]="rlaPages.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+              ></app-icon>
+              <span>Site Content</span>
+            </a>
+          </li>
+
+          <!-- Order Sources -->
+          <li *ngIf="hasAccess('order-sources')">
+            <a
+              routerLink="/admin/order-sources"
+              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              #rlaSources="routerLinkActive"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
+              [ngClass]="rlaSources.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+            >
+              <app-icon
+                name="Globe"
+                size="20"
+                [className]="rlaSources.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+              ></app-icon>
+              <span>Order Sources</span>
+            </a>
+          </li>
+
+          <!-- Customer Reviews -->
+          <li *ngIf="hasAccess('reviews')">
+            <a
+              routerLink="/admin/reviews"
+              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              #rlaReviews="routerLinkActive"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
+              [ngClass]="rlaReviews.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+            >
+              <app-icon
+                name="MessageSquare"
+                size="20"
+                [className]="rlaReviews.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+              ></app-icon>
+              <span>Customer Reviews</span>
+            </a>
+          </li>
+
+          <!-- Customers -->
+          <li *ngIf="hasAccess('customers')">
+            <a
+              routerLink="/admin/customers"
+              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              #rlaCustomers="routerLinkActive"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
+              [ngClass]="rlaCustomers.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+            >
+              <app-icon
+                name="Users"
+                size="20"
+                [className]="rlaCustomers.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+              ></app-icon>
+              <span>Customers</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
   </div>
 </aside>
-

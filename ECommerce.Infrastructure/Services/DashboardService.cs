@@ -23,37 +23,137 @@ public class DashboardService : IDashboardService
         _cache = cache;
     }
 
-    public async Task<DashboardStatsDto> GetDashboardStatsAsync()
+    public async Task<DashboardStatsDto> GetDashboardStatsAsync(DateTime? startDate = null, DateTime? endDate = null)
     {
-        return await _cache.GetOrCreateAsync(DashboardStatsCacheKey, async entry =>
+        string cacheKey = $"DashboardStats_{startDate?.Ticks}_{endDate?.Ticks}";
+        return await _cache.GetOrCreateAsync(cacheKey, async entry =>
         {
             entry.Size = 1;
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(15); // Short cache for dynamic filters to remain fresh
 
             var validStatuses = new[] { OrderStatus.Pending, OrderStatus.Confirmed, OrderStatus.Processing, OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered };
 
-            // Sequential queries to avoid DbContext threading issues
-            var orderStats = await _context.Orders
-                .AsNoTracking()
-                .GroupBy(o => 1)
-                .Select(g => new
-                {
-                    TotalOrders = g.Count(),
-                    TotalRevenue = g.Where(o => validStatuses.Contains(o.Status)).Sum(o => (decimal?)o.Total) ?? 0,
-                    DeliveredOrders = g.Count(o => o.Status == OrderStatus.Delivered),
-                    PendingOrders = g.Count(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Processing),
-                    ShippedOrders = g.Count(o => o.Status == OrderStatus.Shipped),
-                    CancelledOrders = g.Count(o => o.Status == OrderStatus.Cancelled)
-                })
-                .FirstOrDefaultAsync();
+            // Determine query date ranges
+            DateTime? todayRangeStart;
+            DateTime? todayRangeEnd;
+            DateTime? totalRangeStart;
+            DateTime? totalRangeEnd;
 
+            if (startDate.HasValue && endDate.HasValue)
+            {
+                todayRangeStart = startDate.Value.Date;
+                todayRangeEnd = endDate.Value.Date.AddDays(1).AddTicks(-1);
+                totalRangeStart = todayRangeStart;
+                totalRangeEnd = todayRangeEnd;
+            }
+            else
+            {
+                // Default: today for Row 1, all-time for Row 2
+                todayRangeStart = DateTime.UtcNow.Date;
+                todayRangeEnd = todayRangeStart.Value.AddDays(1).AddTicks(-1);
+                totalRangeStart = null;
+                totalRangeEnd = null;
+            }
+
+            // 1. Fetch Today/Filtered Period stats in a single DB trip
+            var todayQuery = _context.Orders.AsNoTracking().AsQueryable();
+            if (todayRangeStart.HasValue)
+                todayQuery = todayQuery.Where(o => o.CreatedAt >= todayRangeStart.Value);
+            if (todayRangeEnd.HasValue)
+                todayQuery = todayQuery.Where(o => o.CreatedAt <= todayRangeEnd.Value);
+
+            var todayStats = await todayQuery
+                .Include(o => o.DeliveryMethod)
+                .Include(o => o.SourcePage)
+                .Include(o => o.SocialMediaSource)
+                .Select(o => new
+                {
+                    o.Total,
+                    o.Status,
+                    o.IsPreOrder,
+                    DeliveryName = o.DeliveryMethod != null ? o.DeliveryMethod.Name : "",
+                    SourceName = o.SourcePage != null ? o.SourcePage.Name : "",
+                    SocialName = o.SocialMediaSource != null ? o.SocialMediaSource.Name : ""
+                })
+                .ToListAsync();
+
+            // Calculate row 1 aggregates in memory
+            int todayOrdersCount = todayStats.Count;
+            decimal todayOrdersRevenue = todayStats.Sum(o => o.Total);
+            int todayPendingCount = todayStats.Count(o => o.Status == OrderStatus.Pending);
+            decimal todayPendingRevenue = todayStats.Where(o => o.Status == OrderStatus.Pending).Sum(o => o.Total);
+            int todayConfirmCount = todayStats.Count(o => o.Status == OrderStatus.Confirmed);
+            decimal todayConfirmRevenue = todayStats.Where(o => o.Status == OrderStatus.Confirmed).Sum(o => o.Total);
+            int todayPackagingCount = todayStats.Count(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Packed);
+            decimal todayPackagingRevenue = todayStats.Where(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Packed).Sum(o => o.Total);
+            int todayShippedCount = todayStats.Count(o => o.Status == OrderStatus.Shipped);
+            decimal todayShippedRevenue = todayStats.Where(o => o.Status == OrderStatus.Shipped).Sum(o => o.Total);
+            int todayPreOrdersCount = todayStats.Count(o => o.Status == OrderStatus.PreOrder || o.IsPreOrder);
+            decimal todayPreOrdersRevenue = todayStats.Where(o => o.Status == OrderStatus.PreOrder || o.IsPreOrder).Sum(o => o.Total);
+            
+            int wapaShopCount = todayStats.Count(o => o.SourceName.Contains("Wapa") || o.SocialName.Contains("Wapa") || o.DeliveryName.Contains("Wapa"));
+            decimal wapaShopRevenue = todayStats.Where(o => o.SourceName.Contains("Wapa") || o.SocialName.Contains("Wapa") || o.DeliveryName.Contains("Wapa")).Sum(o => o.Total);
+            int mirpurShopCount = todayStats.Count(o => o.SourceName.Contains("Mirpur") || o.SocialName.Contains("Mirpur") || o.DeliveryName.Contains("Mirpur"));
+            decimal mirpurShopRevenue = todayStats.Where(o => o.SourceName.Contains("Mirpur") || o.SocialName.Contains("Mirpur") || o.DeliveryName.Contains("Mirpur")).Sum(o => o.Total);
+            
+            int pathaoReturnCount = todayStats.Count(o => (o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess) && o.DeliveryName.Contains("Pathao"));
+            decimal pathaoReturnRevenue = todayStats.Where(o => (o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess) && o.DeliveryName.Contains("Pathao")).Sum(o => o.Total);
+            int pathaoDeliveredCount = todayStats.Count(o => o.Status == OrderStatus.Delivered && o.DeliveryName.Contains("Pathao"));
+            decimal pathaoDeliveredRevenue = todayStats.Where(o => o.Status == OrderStatus.Delivered && o.DeliveryName.Contains("Pathao")).Sum(o => o.Total);
+
+            // 2. Fetch Total/Lifetime stats
+            var totalQuery = _context.Orders.AsNoTracking().AsQueryable();
+            if (totalRangeStart.HasValue)
+                totalQuery = totalQuery.Where(o => o.CreatedAt >= totalRangeStart.Value);
+            if (totalRangeEnd.HasValue)
+                totalQuery = totalQuery.Where(o => o.CreatedAt <= totalRangeEnd.Value);
+
+            var totalStatsList = await totalQuery
+                .Select(o => new
+                {
+                    o.Total,
+                    o.Status,
+                    o.IsPreOrder
+                })
+                .ToListAsync();
+
+            // Calculate row 2 aggregates
+            int totalPendingCount = totalStatsList.Count(o => o.Status == OrderStatus.Pending);
+            decimal totalPendingRevenue = totalStatsList.Where(o => o.Status == OrderStatus.Pending).Sum(o => o.Total);
+            int totalConfirmCount = totalStatsList.Count(o => o.Status == OrderStatus.Confirmed);
+            decimal totalConfirmRevenue = totalStatsList.Where(o => o.Status == OrderStatus.Confirmed).Sum(o => o.Total);
+            int totalPackagingCount = totalStatsList.Count(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Packed);
+            decimal totalPackagingRevenue = totalStatsList.Where(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Packed).Sum(o => o.Total);
+            int totalReturnProcessCount = totalStatsList.Count(o => o.Status == OrderStatus.ReturnProcess || o.Status == OrderStatus.Return || o.Status == OrderStatus.Refund);
+            decimal totalReturnProcessRevenue = totalStatsList.Where(o => o.Status == OrderStatus.ReturnProcess || o.Status == OrderStatus.Return || o.Status == OrderStatus.Refund).Sum(o => o.Total);
+            int totalShippedCount = totalStatsList.Count(o => o.Status == OrderStatus.Shipped);
+            decimal totalShippedRevenue = totalStatsList.Where(o => o.Status == OrderStatus.Shipped).Sum(o => o.Total);
+            int totalPreOrdersCount = totalStatsList.Count(o => o.Status == OrderStatus.PreOrder || o.IsPreOrder);
+            decimal totalPreOrdersRevenue = totalStatsList.Where(o => o.Status == OrderStatus.PreOrder || o.IsPreOrder).Sum(o => o.Total);
+            int incompleteOrdersCount = totalStatsList.Count(o => o.Status == OrderStatus.Cancelled || o.Status == OrderStatus.Hold || o.Status == OrderStatus.Exchange);
+            decimal incompleteOrdersRevenue = totalStatsList.Where(o => o.Status == OrderStatus.Cancelled || o.Status == OrderStatus.Hold || o.Status == OrderStatus.Exchange).Sum(o => o.Total);
+
+            // Fetch catalog metrics
             var totalProducts = await _context.Products.AsNoTracking().CountAsync();
             var totalCustomers = await _context.Customers.AsNoTracking().CountAsync();
-            
-            // Optimized query for sold items with purchase rates
-            var soldItems = await _context.OrderItems
-                .AsNoTracking()
-                .Where(i => validStatuses.Contains(i.Order.Status))
+
+            // Calculate legacy metrics with date range applied for consistency
+            var totalOrders = totalStatsList.Count;
+            var totalRevenue = totalStatsList.Where(o => validStatuses.Contains(o.Status)).Sum(o => o.Total);
+            var deliveredOrders = totalStatsList.Count(o => o.Status == OrderStatus.Delivered);
+            var pendingOrders = totalStatsList.Count(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Processing);
+            var returnedOrders = totalStatsList.Count(o => o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess);
+            var returnValue = totalStatsList.Where(o => o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess).Sum(o => o.Total);
+            var returnRateStr = totalOrders > 0 ? $"{(double)returnedOrders / totalOrders * 100:0.##}%" : "0%";
+
+            // Item-level query for profit/purchase rates
+            var soldItemsQuery = _context.OrderItems.AsNoTracking().Where(i => validStatuses.Contains(i.Order.Status));
+            if (totalRangeStart.HasValue)
+                soldItemsQuery = soldItemsQuery.Where(i => i.Order.CreatedAt >= totalRangeStart.Value);
+            if (totalRangeEnd.HasValue)
+                soldItemsQuery = soldItemsQuery.Where(i => i.Order.CreatedAt <= totalRangeEnd.Value);
+
+            var soldItems = await soldItemsQuery
                 .Select(i => new
                 {
                     i.Quantity,
@@ -65,8 +165,6 @@ public class DashboardService : IDashboardService
                 })
                 .ToListAsync();
 
-            var totalOrders = orderStats?.TotalOrders ?? 0;
-            var totalRevenue = orderStats?.TotalRevenue ?? 0;
             var totalItemsSold = soldItems.Sum(s => s.Quantity);
             var totalPurchaseCost = soldItems.Sum(s => s.Quantity * s.PurchaseRate);
             var avgSellingPrice = totalItemsSold > 0 ? totalRevenue / totalItemsSold : 0;
@@ -77,14 +175,52 @@ public class DashboardService : IDashboardService
                 TotalProducts = totalProducts,
                 TotalCustomers = totalCustomers,
                 TotalRevenue = totalRevenue,
-                DeliveredOrders = orderStats?.DeliveredOrders ?? 0,
-                PendingOrders = orderStats?.PendingOrders ?? 0,
-                ReturnedOrders = 0,
+                DeliveredOrders = deliveredOrders,
+                PendingOrders = pendingOrders,
+                ReturnedOrders = returnedOrders,
                 CustomerQueries = 0,
                 TotalPurchaseCost = totalPurchaseCost,
                 AverageSellingPrice = avgSellingPrice,
-                ReturnValue = 0,
-                ReturnRate = "0%"
+                ReturnValue = returnValue,
+                ReturnRate = returnRateStr,
+
+                // Row 1
+                TodayOrdersCount = todayOrdersCount,
+                TodayOrdersRevenue = todayOrdersRevenue,
+                TodayPendingCount = todayPendingCount,
+                TodayPendingRevenue = todayPendingRevenue,
+                TodayConfirmCount = todayConfirmCount,
+                TodayConfirmRevenue = todayConfirmRevenue,
+                TodayPackagingCount = todayPackagingCount,
+                TodayPackagingRevenue = todayPackagingRevenue,
+                TodayShippedCount = todayShippedCount,
+                TodayShippedRevenue = todayShippedRevenue,
+                TodayPreOrdersCount = todayPreOrdersCount,
+                TodayPreOrdersRevenue = todayPreOrdersRevenue,
+                WapaShopCount = wapaShopCount,
+                WapaShopRevenue = wapaShopRevenue,
+                MirpurShopCount = mirpurShopCount,
+                MirpurShopRevenue = mirpurShopRevenue,
+                PathaoReturnCount = pathaoReturnCount,
+                PathaoReturnRevenue = pathaoReturnRevenue,
+                PathaoDeliveredCount = pathaoDeliveredCount,
+                PathaoDeliveredRevenue = pathaoDeliveredRevenue,
+
+                // Row 2
+                TotalPendingCount = totalPendingCount,
+                TotalPendingRevenue = totalPendingRevenue,
+                TotalConfirmCount = totalConfirmCount,
+                TotalConfirmRevenue = totalConfirmRevenue,
+                TotalPackagingCount = totalPackagingCount,
+                TotalPackagingRevenue = totalPackagingRevenue,
+                TotalReturnProcessCount = totalReturnProcessCount,
+                TotalReturnProcessRevenue = totalReturnProcessRevenue,
+                TotalShippedCount = totalShippedCount,
+                TotalShippedRevenue = totalShippedRevenue,
+                TotalPreOrdersCount = totalPreOrdersCount,
+                TotalPreOrdersRevenue = totalPreOrdersRevenue,
+                IncompleteOrdersCount = incompleteOrdersCount,
+                IncompleteOrdersRevenue = incompleteOrdersRevenue
             };
         }) ?? new DashboardStatsDto();
     }

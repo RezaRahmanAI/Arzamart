@@ -47,6 +47,7 @@
             <th class="px-ds-6 py-ds-4 text-ds-text-muted">Created</th>
             <th class="px-ds-6 py-ds-4 text-ds-text-muted text-center">Status</th>
             @if (currentUserRole === 'SuperAdmin') {
+              <th class="px-ds-6 py-ds-4 text-ds-text-muted text-center">Password</th>
               <th class="px-ds-6 py-ds-4 text-ds-text-muted text-right">Actions</th>
             }
           </tr>
@@ -93,6 +94,28 @@
                 </div>
               </td>
               @if (currentUserRole === 'SuperAdmin') {
+                <td class="px-ds-6 py-ds-4">
+                  <div class="flex items-center justify-center gap-ds-2">
+                    @if (passwordLoading.has(admin.id)) {
+                      <app-icon name="Loader2" size="14" className="animate-spin text-ds-text-muted"></app-icon>
+                    } @else if (revealedPasswords.has(admin.id) && admin.plainPassword) {
+                      <span class="text-ds-text font-mono text-xs select-all">{{ admin.plainPassword }}</span>
+                      <button (click)="copyPassword(admin.plainPassword)" title="Copy Password"
+                              class="size-7 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-success hover:border-ds-success transition-colors flex items-center justify-center">
+                          <app-icon name="Copy" size="12"></app-icon>
+                      </button>
+                      <button (click)="togglePasswordVisibility(admin)" title="Hide Password"
+                              class="size-7 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center">
+                          <app-icon name="EyeOff" size="12"></app-icon>
+                      </button>
+                    } @else {
+                      <button (click)="togglePasswordVisibility(admin)" title="Show Password"
+                              class="size-7 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center">
+                          <app-icon name="Eye" size="12"></app-icon>
+                      </button>
+                    }
+                  </div>
+                </td>
                 <td class="px-ds-6 py-ds-4 text-right">
                   <div class="flex items-center justify-end gap-ds-2">
                       <button (click)="openEditModal(admin)" title="Edit"
@@ -205,6 +228,7 @@
                       <div class="relative">
                           <select formControlName="role" class="form-input !h-10 sm:!h-11 !px-3 sm:!px-ds-4 appearance-none cursor-pointer text-sm">
                               <option value="Staff">Staff (Limited Access)</option>
+                              <option value="Admin">Administrator (Elevated Access)</option>
                               <option value="SuperAdmin">Super Admin (Full Access)</option>
                           </select>
                           <app-icon name="ChevronDown" size="12" class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
@@ -329,6 +353,7 @@
                       <div class="relative">
                           <select formControlName="role" class="form-input !h-10 sm:!h-11 !px-3 sm:!px-ds-4 appearance-none cursor-pointer text-sm">
                               <option value="Staff">Staff (Limited Access)</option>
+                              <option value="Admin">Administrator (Elevated Access)</option>
                               <option value="SuperAdmin">Super Admin (Full Access)</option>
                           </select>
                           <app-icon name="ChevronDown" size="12" class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>

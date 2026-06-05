@@ -11,6 +11,44 @@ export interface DashboardStats {
   returnRate: string;
   totalProducts: number;
   totalCustomers: number;
+
+  // Row 1
+  todayOrdersCount: number;
+  todayOrdersRevenue: number;
+  todayPendingCount: number;
+  todayPendingRevenue: number;
+  todayConfirmCount: number;
+  todayConfirmRevenue: number;
+  todayPackagingCount: number;
+  todayPackagingRevenue: number;
+  todayShippedCount: number;
+  todayShippedRevenue: number;
+  todayPreOrdersCount: number;
+  todayPreOrdersRevenue: number;
+  wapaShopCount: number;
+  wapaShopRevenue: number;
+  mirpurShopCount: number;
+  mirpurShopRevenue: number;
+  pathaoReturnCount: number;
+  pathaoReturnRevenue: number;
+  pathaoDeliveredCount: number;
+  pathaoDeliveredRevenue: number;
+
+  // Row 2
+  totalPendingCount: number;
+  totalPendingRevenue: number;
+  totalConfirmCount: number;
+  totalConfirmRevenue: number;
+  totalPackagingCount: number;
+  totalPackagingRevenue: number;
+  totalReturnProcessCount: number;
+  totalReturnProcessRevenue: number;
+  totalShippedCount: number;
+  totalShippedRevenue: number;
+  totalPreOrdersCount: number;
+  totalPreOrdersRevenue: number;
+  incompleteOrdersCount: number;
+  incompleteOrdersRevenue: number;
 }
 
 export interface OrderItem {

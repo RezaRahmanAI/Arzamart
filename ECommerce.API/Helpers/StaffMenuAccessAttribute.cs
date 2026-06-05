@@ -2,6 +2,7 @@ using ECommerce.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Linq;
 using System.Security.Claims;
 
 namespace ECommerce.API.Helpers;
@@ -34,12 +35,53 @@ public class StaffMenuAccessFilter : IAsyncAuthorizationFilter
         }
 
         // If the user is SuperAdmin or Admin, they have full access.
-        if (userPrincipal.IsInRole("SuperAdmin") || userPrincipal.IsInRole("Admin"))
+        if (userPrincipal.IsInRole("SuperAdmin") || userPrincipal.IsInRole("Admin") || userPrincipal.IsInRole("Super Admin"))
         {
             return;
         }
 
-        // If they are Staff, check their AllowedMenus
+        // Check if there are permissions in the token claims
+        var permissions = userPrincipal.FindAll("permissions").Select(c => c.Value).ToList();
+        if (permissions.Any())
+        {
+            // If the user has a "is_super_admin" claim set to "true"
+            var isSuperAdminClaim = userPrincipal.FindFirst("is_super_admin")?.Value;
+            if (isSuperAdminClaim == "true" || isSuperAdminClaim == "True")
+            {
+                return; // Access granted
+            }
+
+            // Dashboard is allowed for all authenticated staff
+            if (_menuKey.Equals("dashboard", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return; // Access granted
+            }
+
+            // Map _menuKey to the permission prefix
+            string prefix = _menuKey.ToLower() switch
+            {
+                "products" => "inventory:",
+                "orders" => "sales:",
+                "banners" => "sales:",
+                "reviews" => "sales:",
+                "customers" => "hr:",
+                "analytics" => "reports:",
+                "settings" => "settings:",
+                "navigation" => "settings:",
+                "pages" => "settings:",
+                "order-sources" => "settings:",
+                "security" => "settings:",
+                "users" => "staff-management:",
+                _ => _menuKey.ToLower() + ":"
+            };
+
+            if (permissions.Any(p => p.StartsWith(prefix, System.StringComparison.OrdinalIgnoreCase)))
+            {
+                return; // Access granted
+            }
+        }
+
+        // If they are Staff, check their AllowedMenus (fallback for legacy ApplicationUser)
         if (userPrincipal.IsInRole("Staff"))
         {
             var userId = userPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);

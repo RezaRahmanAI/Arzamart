@@ -105,7 +105,7 @@
                 <!-- Search Results Dropdown -->
                 <div *ngIf="searchResults.length > 0" class="absolute z-[100] left-0 right-0 top-full mt-1 bg-ds-surface border border-ds-border rounded-sm shadow-2xl py-2 max-h-64 overflow-y-auto animate-in fade-in slide-in-from-top-1">
                   <div 
-                    *ngFor="let p of searchResults" 
+                    *ngFor="let p of searchResults; trackBy: trackBySearchResult" 
                     (click)="selectComboProduct(p); searchInput.value = ''"
                     class="px-ds-4 py-ds-3 hover:bg-ds-bg cursor-pointer border-b border-ds-border last:border-0 group/result"
                   >
@@ -129,16 +129,16 @@
                 <h3 class="text-ds-text-muted">Selected Products</h3>
                 <div class="flex items-center gap-2">
                   <span class="text-ds-text-muted">Total:</span>
-                  <span  [ngClass]="{'text-ds-accent': getTotalComboQuantity() === form.get('bundleSize')?.value, 'text-red-400': getTotalComboQuantity() !== form.get('bundleSize')?.value}">
-                    {{ getTotalComboQuantity() }} / {{ form.get('bundleSize')?.value }}
+                  <span  [ngClass]="{'text-ds-accent': comboQuantityMatches, 'text-red-400': !comboQuantityMatches}">
+                    {{ totalComboQuantity }} / {{ form.get('bundleSize')?.value }}
                   </span>
-                  <app-icon *ngIf="getTotalComboQuantity() === form.get('bundleSize')?.value" name="CheckCircle2" size="12" className="text-ds-accent"></app-icon>
-                  <app-icon *ngIf="getTotalComboQuantity() !== form.get('bundleSize')?.value" name="AlertCircle" size="12" className="text-red-400"></app-icon>
+                  <app-icon *ngIf="comboQuantityMatches" name="CheckCircle2" size="12" className="text-ds-accent"></app-icon>
+                  <app-icon *ngIf="!comboQuantityMatches" name="AlertCircle" size="12" className="text-red-400"></app-icon>
                 </div>
               </div>
               <div 
                 class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm flex items-center gap-ds-4 group"
-                *ngFor="let item of comboItemsArray.controls; let i = index"
+                *ngFor="let item of comboItemsArray.controls; let i = index; trackBy: trackByComboItem"
                 [formGroupName]="i"
               >
                 <div class="flex-1 min-w-0">
@@ -156,7 +156,7 @@
                             formControlName="productVariantId"
                             (change)="onComboVariantChange(i)"
                           >
-                            <option *ngFor="let v of getVariantsForItem(item.get('productId')?.value)" [value]="v.id">
+                            <option *ngFor="let v of getVariantsForItem(item.get('productId')?.value); trackBy: trackByVariantOption" [value]="v.id">
                               {{ v.size || v.sku || 'Variant ' + v.id }}
                             </option>
                           </select>
@@ -281,7 +281,7 @@
         <div class="space-y-ds-3" formArrayName="sizes">
           <div
             class="bg-ds-bg/30 border border-ds-border p-ds-6 rounded-sm relative group"
-            *ngFor="let size of sizesArray.controls; let sizeIndex = index"
+            *ngFor="let size of sizesArray.controls; let sizeIndex = index; trackBy: trackBySize"
             [formGroupName]="sizeIndex"
           >
             <button
@@ -316,7 +316,7 @@
                     class="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-ds-surface border border-ds-border rounded-sm shadow-2xl py-1 animate-in fade-in slide-in-from-top-1 duration-base"
                   >
                     <div
-                      *ngFor="let sz of getFilteredSizes()"
+                      *ngFor="let sz of getFilteredSizes(); trackBy: trackByIndex"
                       (click)="selectSize(sizeIndex, sz, $event)"
                       class="px-ds-4 py-ds-2 text-ds-text-muted hover:text-ds-text hover:bg-ds-bg cursor-pointer flex justify-between items-center transition-colors"
                     >
@@ -442,7 +442,7 @@
                   loading="lazy"
                   [alt]="media.get('alt')?.value || 'Product media'"
                   class="h-full w-full object-cover transition-all duration-base"
-                  [src]="imageUrlService.getImageUrl(getMediaUrl(media))"
+                  [src]="imageUrlService.getImageUrl(media.get('url')?.value || '')"
                 />
                 <div *ngIf="media.get('type')?.value === 'video'" class="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
                   <app-icon name="PlayCircle" size="32" className="text-white opacity-80"></app-icon>
@@ -588,7 +588,7 @@
             <span class="text-ds-text-muted">Category</span>
             <select class="form-input !h-11 appearance-none cursor-pointer" formControlName="category">
               <option value="" disabled>Choose category</option>
-              <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+              <option *ngFor="let cat of categories; trackBy: trackByCategory" [value]="cat.id">{{ cat.name }}</option>
             </select>
           </label>
 
@@ -596,7 +596,7 @@
             <span class="text-ds-text-muted">Subcategory</span>
             <select class="form-input !h-11 appearance-none cursor-pointer" formControlName="subCategory">
               <option value="">None</option>
-              <option *ngFor="let sub of filteredSubCategories" [value]="sub.id">{{ sub.name }}</option>
+              <option *ngFor="let sub of filteredSubCategories; trackBy: trackBySubCategory" [value]="sub.id">{{ sub.name }}</option>
             </select>
           </label>
 
@@ -604,7 +604,7 @@
             <span class="text-ds-text-muted">Collection</span>
             <select class="form-input !h-11 appearance-none cursor-pointer" formControlName="collection">
               <option value="">Standalone</option>
-              <option *ngFor="let col of filteredCollections" [value]="col.id">{{ col.name }}</option>
+              <option *ngFor="let col of filteredCollections; trackBy: trackByCollection" [value]="col.id">{{ col.name }}</option>
             </select>
           </label>
 
@@ -612,7 +612,7 @@
             <span class="text-ds-text-muted">Product Group (Related)</span>
             <select class="form-input !h-11 appearance-none cursor-pointer" formControlName="productGroupId">
               <option [value]="null">No Group</option>
-              <option *ngFor="let grp of productGroups" [value]="grp.id">{{ grp.name }}</option>
+              <option *ngFor="let grp of productGroups; trackBy: trackByProductGroup" [value]="grp.id">{{ grp.name }}</option>
             </select>
           </label>
 

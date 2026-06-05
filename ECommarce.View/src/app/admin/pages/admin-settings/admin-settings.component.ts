@@ -1,7 +1,9 @@
 import { NgIf, NgClass, NgFor } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   ViewChild,
   inject,
@@ -12,6 +14,8 @@ import {
   Validators,
 } from "@angular/forms";
 import { RouterModule } from "@angular/router";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 import {
   AdminSettings,
@@ -30,8 +34,10 @@ import { NotificationService } from "../../../core/services/notification.service
   imports: [NgIf, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, NgFor],
   templateUrl: "./admin-settings.component.html",
   styleUrl: "./admin-settings.component.css",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminSettingsComponent implements OnInit {
+export class AdminSettingsComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   private formBuilder = inject(NonNullableFormBuilder);
   private settingsService = inject(SettingsService);
   readonly authService = inject(AuthService);
@@ -102,7 +108,7 @@ export class AdminSettingsComponent implements OnInit {
   protected date = new Date();
 
   ngOnInit(): void {
-    this.settingsService.getSettings().subscribe((settings) => {
+    this.settingsService.getSettings().pipe(takeUntil(this.destroy$)).subscribe((settings) => {
       this.lastSettings = settings;
       this.shippingZones = settings.shippingZones || [];
       this.deliveryMethods = settings.deliveryMethods || [];
@@ -197,7 +203,7 @@ export class AdminSettingsComponent implements OnInit {
     this.saveMessage = "";
     this.saveError = "";
 
-    this.settingsService.saveSettings(payload).subscribe({
+    this.settingsService.saveSettings(payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (settings) => {
         this.isSaving = false;
         this.notification.success("Settings saved successfully!");
@@ -272,7 +278,7 @@ export class AdminSettingsComponent implements OnInit {
 
     this.logoError = "";
 
-    this.settingsService.uploadLogo(file).subscribe({
+    this.settingsService.uploadLogo(file).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         if (this.lastSettings) {
           this.lastSettings.logoUrl = res.url;
@@ -308,7 +314,7 @@ export class AdminSettingsComponent implements OnInit {
 
     this.sizeGuideError = "";
 
-    this.settingsService.uploadLogo(file).subscribe({
+    this.settingsService.uploadLogo(file).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         if (this.lastSettings) {
           this.lastSettings.sizeGuideImageUrl = res.url;
@@ -379,6 +385,7 @@ export class AdminSettingsComponent implements OnInit {
     if (this.editingZoneId) {
       this.settingsService
         .updateShippingZone(this.editingZoneId, updatedZone)
+        .pipe(takeUntil(this.destroy$))
         .subscribe((zone) => {
           this.isSaving = false;
           this.shippingZones = this.shippingZones.map((item) =>
@@ -391,7 +398,7 @@ export class AdminSettingsComponent implements OnInit {
       return;
     }
 
-    this.settingsService.createShippingZone(updatedZone).subscribe((zone) => {
+    this.settingsService.createShippingZone(updatedZone).pipe(takeUntil(this.destroy$)).subscribe((zone) => {
       this.isSaving = false;
       this.shippingZones = [...this.shippingZones, zone];
       this.zoneForm.reset({ id: 0, name: "", region: "", rates: "" });
@@ -411,7 +418,7 @@ export class AdminSettingsComponent implements OnInit {
       return;
     }
 
-    this.settingsService.deleteShippingZone(zone.id).subscribe((success) => {
+    this.settingsService.deleteShippingZone(zone.id).pipe(takeUntil(this.destroy$)).subscribe((success) => {
       if (!success) {
         return;
       }
@@ -470,6 +477,7 @@ export class AdminSettingsComponent implements OnInit {
     if (this.editingDeliveryId) {
       this.settingsService
         .updateDeliveryMethod(this.editingDeliveryId, payload)
+        .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
           this.isSaving = false;
           this.deliveryMethods = this.deliveryMethods.map((m) =>
@@ -482,6 +490,7 @@ export class AdminSettingsComponent implements OnInit {
     } else {
       this.settingsService
         .createDeliveryMethod(payload)
+        .pipe(takeUntil(this.destroy$))
         .subscribe((newMethod) => {
           this.isSaving = false;
           this.deliveryMethods = [...this.deliveryMethods, newMethod];
@@ -507,7 +516,7 @@ export class AdminSettingsComponent implements OnInit {
       return;
     }
 
-    this.settingsService.deleteDeliveryMethod(method.id).subscribe(() => {
+    this.settingsService.deleteDeliveryMethod(method.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.deliveryMethods = this.deliveryMethods.filter(
         (m) => m.id !== method.id,
       );
@@ -520,6 +529,11 @@ export class AdminSettingsComponent implements OnInit {
     }
 
     return "px-2 py-1 bg-gray-100 text-text-secondary text-xs rounded-md font-medium";
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
 

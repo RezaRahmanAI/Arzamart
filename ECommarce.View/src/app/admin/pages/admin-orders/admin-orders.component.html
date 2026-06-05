@@ -79,7 +79,7 @@
         <div *ngIf="statusMenuOpen" class="absolute left-0 right-0 mt-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl z-[100] p-1 animate-in fade-in slide-in-from-top-1 duration-base">
           <p class="px-ds-3 py-2 text-ds-text-muted border-b border-ds-border mb-1">Filter by status</p>
           <div class="max-h-64 overflow-y-auto">
-            <button *ngFor="let status of statusOptions" 
+            <button *ngFor="let status of statusOptions; trackBy: trackByStatusOption" 
                     (click)="setStatusFilter(status, $event)" 
                     class="w-full px-ds-3 py-2.5 text-left rounded-sm transition-colors flex items-center justify-between"
                     [class.bg-ds-text]="selectedStatus === status"
@@ -127,7 +127,7 @@
           <!-- Shortcuts -->
           <div class="w-full md:w-1/3 bg-ds-bg/50 p-ds-4 border-b md:border-b-0 md:border-r border-ds-border space-y-1">
             <p class="px-ds-3 py-2 text-ds-text-muted mb-2">Shortcuts</p>
-            <button *ngFor="let range of dateRanges" 
+            <button *ngFor="let range of dateRanges; trackBy: trackByDateRange" 
                     (click)="setDateRange(range, $event)" 
                     class="w-full px-ds-3 py-2 text-left rounded-sm transition-colors flex items-center justify-between"
                     [class.bg-ds-text]="selectedDateRange === range"
@@ -171,7 +171,7 @@
           <div class="flex items-center gap-2">
             <app-icon [name]="selectedSourcePageId ? 'Globe' : (selectedSocialMediaSourceId ? 'Share2' : 'Layers')" size="14" className="text-ds-text-muted"></app-icon>
             <span class="truncate">
-              {{ getSelectedSourceLabel() }}
+              {{ selectedSourceLabel }}
             </span>
           </div>
           <app-icon name="ChevronDown" size="12" className="text-ds-text-muted" [className]="sourceMenuOpen ? 'rotate-180' : ''"></app-icon>
@@ -190,7 +190,7 @@
             </button>
 
             <div class="px-ds-3 py-1.5 text-ds-text-muted bg-ds-bg/50 my-1">Pages</div>
-            <button *ngFor="let page of sourcePages" 
+            <button *ngFor="let page of sourcePages; trackBy: trackBySourcePage" 
                     (click)="setSourcePageFilter(page.id); sourceMenuOpen = false" 
                     class="w-full px-ds-3 py-2 text-left rounded-sm transition-colors flex items-center gap-3"
                     [class.bg-ds-text]="selectedSourcePageId === page.id"
@@ -202,7 +202,7 @@
             </button>
 
             <div class="px-ds-3 py-1.5 text-ds-text-muted bg-ds-bg/50 my-1">Social Media</div>
-            <button *ngFor="let source of socialMediaSources" 
+            <button *ngFor="let source of socialMediaSources; trackBy: trackBySocialMediaSource" 
                     (click)="setSocialMediaFilter(source.id); sourceMenuOpen = false" 
                     class="w-full px-ds-3 py-2 text-left rounded-sm transition-colors flex items-center gap-3"
                     [class.bg-ds-text]="selectedSocialMediaSourceId === source.id"
@@ -261,7 +261,7 @@
             </td>
             <td class="px-ds-4 py-ds-4 min-w-[200px]">
               <div class="flex flex-col gap-1">
-                <div *ngFor="let item of order.items" class="flex items-center gap-2 group/item">
+                <div *ngFor="let item of order.items; trackBy: trackByOrderItem" class="flex items-center gap-2 group/item">
                   <div class="size-1 rounded-full bg-ds-border"></div>
                   <div class="flex items-center gap-2 min-w-0">
                     <span class="text-ds-text truncate max-w-[160px]">
@@ -308,7 +308,7 @@
                     <div *ngIf="statusUpdateOrderId === order.id" 
                          class="absolute left-0 mt-2 w-[400px] bg-ds-surface border border-ds-border rounded-sm shadow-2xl z-[200] p-1 animate-in fade-in slide-in-from-top-1 duration-base">
                       <div class="grid grid-cols-3 gap-1">
-                        <ng-container *ngFor="let status of updateStatusOptions">
+                        <ng-container *ngFor="let status of updateStatusOptions; trackBy: trackByStatusOption">
                             <div (click)="updateOrderStatus(order.id, status, $event)" 
                                     class="px-3 py-2 text-left rounded-sm transition-colors flex items-center gap-2 group cursor-pointer"
                                     [ngClass]="{
@@ -421,7 +421,7 @@
         </button>
       </div>
       <div class="p-ds-8 max-h-[500px] overflow-y-auto space-y-ds-4 custom-scrollbar">
-        <div *ngFor="let log of trackingOrder.logs" class="p-ds-4 bg-ds-bg border border-ds-border rounded-sm flex items-start gap-ds-4">
+        <div *ngFor="let log of trackingOrder.logs; trackBy: trackByLogIndex" class="p-ds-4 bg-ds-bg border border-ds-border rounded-sm flex items-start gap-ds-4">
           <div class="size-2 mt-1.5 rounded-full shrink-0" [ngStyle]="{ backgroundColor: getStatusColor(log.statusTo) }"></div>
           <div>
             <p class="text-ds-text">{{ log.statusTo }}</p>
@@ -476,7 +476,7 @@
         <div class="space-y-4">
           <p class="text-ds-text-muted border-b border-ds-border pb-2">All Notes</p>
           <div class="max-h-[300px] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
-            <div *ngFor="let note of notesOrder.notes" class="p-ds-4 bg-ds-bg/50 border border-ds-border rounded-sm relative group">
+            <div *ngFor="let note of notesOrder.notes; trackBy: trackByNoteId" class="p-ds-4 bg-ds-bg/50 border border-ds-border rounded-sm relative group">
               <p class="text-ds-text">{{ note.content }}</p>
               <div class="mt-2 flex items-center justify-between">
                 <span class="text-ds-text-muted">{{ note.createdAt | date: 'MMM d, h:mm a' }}</span>

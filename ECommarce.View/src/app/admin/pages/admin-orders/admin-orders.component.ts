@@ -1,5 +1,6 @@
 import { NgIf, NgClass, NgStyle, DatePipe, NgFor } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   HostListener,
   OnDestroy,
@@ -13,6 +14,9 @@ import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
 import {
   Order,
   OrderDetail,
+  OrderItem,
+  OrderLog,
+  OrderNote,
   OrderStatus,
   OrdersQueryParams,
   OrderStats,
@@ -31,6 +35,7 @@ import { NotificationService } from "../../../core/services/notification.service
   standalone: true,
   imports: [NgIf, NgClass, NgStyle, DatePipe, ReactiveFormsModule, FormsModule, RouterModule, PriceDisplayComponent, AppIconComponent, AdminOrderInvoiceComponent, NgFor],
   templateUrl: "./admin-orders.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminOrdersComponent implements OnInit, OnDestroy {
   private ordersService = inject(OrdersService);
@@ -73,90 +78,64 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   updateStatusOptions = this.statusOptions.filter((s): s is OrderStatus => s !== 'All' && s !== 'All Statuses' as any);
 
+  private static readonly STATUS_CLASSES: Record<string, string> = {
+    Pending: "border-amber-500 bg-amber-50/50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-200",
+    Confirmed: "border-emerald-500 bg-emerald-50/50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200",
+    Processing: "border-yellow-500 bg-yellow-50/50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-200",
+    Packed: "border-indigo-500 bg-indigo-50/50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-200",
+    Shipped: "border-blue-500 bg-blue-50/50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-200",
+    Delivered: "border-accent bg-accent/10 text-primary dark:bg-accent/20 dark:text-accent",
+    Cancelled: "border-red-500 bg-red-50/50 text-red-700 dark:bg-red-900/20 dark:text-red-200",
+    Refund: "border-red-500 bg-red-50/50 text-red-700 dark:bg-red-900/20 dark:text-red-200",
+    Hold: "border-gray-500 bg-gray-50/50 text-gray-700 dark:bg-gray-900/20 dark:text-gray-200",
+    PreOrder: "border-violet-500 bg-violet-50/50 text-violet-700 dark:bg-violet-900/20 dark:text-violet-200",
+  };
+
+  private static readonly STATUS_COLORS: Record<string, string> = {
+    Pending: "#f59e0b", Confirmed: "#10b981", Processing: "#eab308",
+    Packed: "#6366f1", Shipped: "#3b82f6", Delivered: "#0d4c5e",
+    Cancelled: "#ef4444", Hold: "#6b7280", PreOrder: "#8b5cf6",
+    Return: "#ec4899", ReturnProcess: "#ec4899", Exchange: "#8b5cf6",
+    Refund: "#f43f5e",
+  };
+
+  private static readonly STATUS_ICONS: Record<string, string> = {
+    Pending: "Clock", Confirmed: "CheckCircle", Processing: "RotateCw",
+    Packed: "Package", Shipped: "Truck", Delivered: "CheckCircle",
+    Cancelled: "XCircle", Hold: "AlertTriangle", Refund: "RotateCcw",
+    PreOrder: "ArrowRightCircle", Return: "AlertCircle", ReturnProcess: "AlertCircle",
+  };
+
+  private static readonly NEXT_STATUS: Record<string, OrderStatus> = {
+    Pending: "Confirmed", Confirmed: "Processing", Processing: "Packed",
+    Packed: "Shipped", Shipped: "Delivered",
+  };
+
+  private static readonly NEXT_STATUS_LABELS: Record<string, string> = {
+    Confirmed: "Confirm Order", Processing: "Mark as Processing",
+    Packed: "Mark as Packed", Shipped: "Mark as Shipped",
+    Delivered: "Mark as Delivered",
+  };
+
   statusClass(status: string): string {
-    switch (status) {
-      case "Pending":
-        return "border-amber-500 bg-amber-50/50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-200";
-      case "Confirmed":
-        return "border-emerald-500 bg-emerald-50/50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200";
-      case "Processing":
-        return "border-yellow-500 bg-yellow-50/50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-200";
-      case "Packed":
-        return "border-indigo-500 bg-indigo-50/50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-200";
-      case "Shipped":
-        return "border-blue-500 bg-blue-50/50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-200";
-      case "Delivered":
-        return "border-accent bg-accent/10 text-primary dark:bg-accent/20 dark:text-accent";
-      case "Cancelled":
-      case "Refund":
-        return "border-red-500 bg-red-50/50 text-red-700 dark:bg-red-900/20 dark:text-red-200";
-      case "Hold":
-        return "border-gray-500 bg-gray-50/50 text-gray-700 dark:bg-gray-900/20 dark:text-gray-200";
-      case "PreOrder":
-        return "border-violet-500 bg-violet-50/50 text-violet-700 dark:bg-violet-900/20 dark:text-violet-200";
-      default:
-        return "border-gray-300 bg-gray-50 text-gray-700";
-    }
+    return AdminOrdersComponent.STATUS_CLASSES[status] || "border-gray-300 bg-gray-50 text-gray-700";
   }
 
   getStatusColor(status: string): string {
-    switch (status) {
-      case "Pending": return "#f59e0b";
-      case "Confirmed": return "#10b981";
-      case "Processing": return "#eab308";
-      case "Packed": return "#6366f1";
-      case "Shipped": return "#3b82f6";
-      case "Delivered": return "#0d4c5e";
-      case "Cancelled": return "#ef4444";
-      case "Hold": return "#6b7280";
-      case "PreOrder": return "#8b5cf6";
-      case "Return":
-      case "ReturnProcess":
-        return "#ec4899";
-      case "Exchange":
-        return "#8b5cf6";
-      case "Refund":
-        return "#f43f5e";
-      default: return "#94a3b8";
-    }
+    return AdminOrdersComponent.STATUS_COLORS[status] || "#94a3b8";
   }
 
   getStatusIconName(status: string): string {
-    switch (status) {
-      case "Pending": return "Clock";
-      case "Confirmed": return "CheckCircle";
-      case "Processing": return "RotateCw";
-      case "Packed": return "Package";
-      case "Shipped": return "Truck";
-      case "Delivered": return "CheckCircle";
-      case "Cancelled": return "XCircle";
-      case "Hold": return "AlertTriangle";
-      case "Refund": return "RotateCcw";
-      case "PreOrder": return "ArrowRightCircle";
-      case "Return":
-      case "ReturnProcess":
-        return "AlertCircle";
-      default: return "Package";
-    }
+    return AdminOrdersComponent.STATUS_ICONS[status] || "Package";
   }
 
   getNextStatus(status: string): OrderStatus | null {
-    if (status === "Pending") return "Confirmed";
-    if (status === "Confirmed") return "Processing";
-    if (status === "Processing") return "Packed";
-    if (status === "Packed") return "Shipped";
-    if (status === "Shipped") return "Delivered";
-    return null;
+    return AdminOrdersComponent.NEXT_STATUS[status] || null;
   }
 
   nextStatusLabel(order: Order): string | null {
     const nextStatus = this.getNextStatus(order.status);
-    if (!nextStatus) return null;
-    if (nextStatus === "Confirmed") return "Confirm Order";
-    if (nextStatus === "Processing") return "Mark as Processing";
-    if (nextStatus === "Packed") return "Mark as Packed";
-    if (nextStatus === "Shipped") return "Mark as Shipped";
-    return "Mark as Delivered";
+    return nextStatus ? (AdminOrdersComponent.NEXT_STATUS_LABELS[nextStatus] || null) : null;
   }
 
   dateRanges: OrdersQueryParams["dateRange"][] = [
@@ -249,21 +228,21 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.sourceService.getAllSocialMediaSources().subscribe(sources => this.socialMediaSources = sources);
   }
 
-  setSourcePageFilter(id: any): void {
+  setSourcePageFilter(id: string | number | null): void {
     const value = id === 'null' || id === null ? null : Number(id);
     this.selectedSourcePageId = value;
     this.page = 1;
     this.loadOrders();
   }
 
-  setSocialMediaFilter(id: any): void {
+  setSocialMediaFilter(id: string | number | null): void {
     const value = id === 'null' || id === null ? null : Number(id);
     this.selectedSocialMediaSourceId = value;
     this.page = 1;
     this.loadOrders();
   }
 
-  setOrderTypeFilter(type: any): void {
+  setOrderTypeFilter(type: 'All' | 'PreOrder' | 'Website' | 'Manual'): void {
     this.selectedOrderType = type;
     this.page = 1;
     this.loadOrders();
@@ -366,7 +345,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     return this.selectedDateRange;
   }
 
-  getSelectedSourceLabel(): string {
+  get selectedSourceLabel(): string {
     if (this.selectedSourcePageId) {
       const page = this.sourcePages.find(p => p.id === this.selectedSourcePageId);
       return page ? page.name : 'Page';
@@ -583,6 +562,34 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   trackByOrderId(_: number, order: Order): number {
     return order.id;
+  }
+
+  trackByStatusOption(_: number, status: string): string {
+    return status;
+  }
+
+  trackByDateRange(_: number, range: string): string {
+    return range;
+  }
+
+  trackBySourcePage(_: number, page: SourcePage): number {
+    return page.id;
+  }
+
+  trackBySocialMediaSource(_: number, source: SocialMediaSource): number {
+    return source.id;
+  }
+
+  trackByLogIndex(_: number, log: OrderLog): number {
+    return log.id;
+  }
+
+  trackByNoteId(_: number, note: OrderNote): string {
+    return note.createdAt;
+  }
+
+  trackByOrderItem(_: number, item: OrderItem): string {
+    return `${item.productId}-${item.size || ''}`;
   }
 
   get paginationStart(): number {

@@ -1,7 +1,7 @@
 import { Injectable, inject } from "@angular/core";
-import { BehaviorSubject, Observable, map, tap } from "rxjs";
+import { BehaviorSubject, Observable, map, tap, throwError } from "rxjs";
 
-import { MOCK_ORDERS } from "../data/mock-orders";
+
 import { CartItem, CartSummary } from "../models/cart";
 import { CheckoutState } from "../models/checkout";
 import { Order, OrderItem, OrderStatus } from "../models/order";
@@ -41,6 +41,9 @@ export class OrderService {
   }
 
   placeOrder(payload: PlaceOrderPayload): Observable<Order> {
+    if (!payload.cartItems || payload.cartItems.length === 0) {
+      return throwError(() => new Error("Cannot place order with empty cart"));
+    }
     const items: OrderItem[] = payload.cartItems.map((item) => ({
       productId: Number(item.productId),
       productName: item.name,
@@ -93,9 +96,9 @@ export class OrderService {
       orderNumber: response.orderNumber || `ORD-${response.id}`,
       status: OrderStatus.Confirmed,
       items,
-      customerName: response.name,
-      customerPhone: response.phone,
-      shippingAddress: response.address,
+      customerName: response.customerName,
+      customerPhone: response.customerPhone,
+      shippingAddress: response.shippingAddress,
       subTotal,
       shippingCost,
       tax,
@@ -113,11 +116,11 @@ export class OrderService {
       try {
         return JSON.parse(stored) as Order[];
       } catch {
-        return [...MOCK_ORDERS];
+        return [];
       }
     }
 
-    return [...MOCK_ORDERS];
+    return [];
   }
 
   private persistOrders(): void {
@@ -137,9 +140,9 @@ export class OrderService {
       orderNumber: response.orderNumber || `ORD-${response.id}`,
       status: OrderStatus.Confirmed,
       items,
-      customerName: response.name,
-      customerPhone: response.phone,
-      shippingAddress: response.address,
+      customerName: response.customerName,
+      customerPhone: response.customerPhone,
+      shippingAddress: response.shippingAddress,
       subTotal: response.subTotal || summary.subtotal,
       shippingCost: response.shippingCost ?? summary.shipping,
       tax: response.tax ?? summary.tax,

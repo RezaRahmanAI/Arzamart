@@ -1,5 +1,4 @@
-<div class="site-container-admin mx-auto flex flex-col gap-ds-4">
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-4 items-start">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-4 items-start -mt-ds-4 md:-mt-ds-8 lg:-mt-ds-10">
     <div class="lg:col-span-7 order-1 lg:order-2 flex flex-col gap-ds-4">
       <div class="flex gap-ds-3">
         <div class="relative flex-1 group">
@@ -28,7 +27,7 @@
         <div class="overflow-y-auto flex-1 p-ds-4 bg-ds-bg/20">
             <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-ds-4">
                 <div 
-                  *ngFor="let product of products()" 
+                  *ngFor="let product of products(); trackBy: trackByProductId" 
                   class="bg-ds-surface border border-ds-border rounded-sm p-ds-3 shadow-sm hover:shadow-md transition-all group relative flex flex-col hover:border-ds-text"
                 >
                   <div class="absolute top-2 left-2 z-10">
@@ -62,7 +61,7 @@
                   </div>
 
                   <div class="flex flex-wrap gap-1 mt-auto pt-ds-3 border-t border-ds-border/50">
-                    <ng-container *ngFor="let variant of product.variants">
+                    <ng-container *ngFor="let variant of product.variants; trackBy: trackByVariantId">
                       <button 
                         *ngIf="variant.size"
                         (click)="addToCart(product, variant.size); $event.stopPropagation()"
@@ -113,7 +112,7 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-ds-border/50">
-              <tr *ngFor="let item of cart()" class="hover:bg-ds-bg transition-colors">
+              <tr *ngFor="let item of cart(); trackBy: trackByCartItem" class="hover:bg-ds-bg transition-colors">
                 <td class="px-ds-4 py-1.5 min-w-[120px]">
                   <p class="text-ds-text">{{ item.product.name }}</p>
                 </td>
@@ -209,14 +208,14 @@
                <div class="relative group">
                   <select formControlName="sourcePageId" class="form-input !h-8 appearance-none cursor-pointer">
                     <option [value]="null">Source Page</option>
-                    <option *ngFor="let page of sourcePages" [value]="page.id">{{ page.name }}</option>
+                    <option *ngFor="let page of sourcePages; trackBy: trackBySourcePage" [value]="page.id">{{ page.name }}</option>
                   </select>
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                </div>
                <div class="relative group">
                   <select formControlName="socialMediaSourceId" class="form-input !h-8 appearance-none cursor-pointer">
                     <option [value]="null">Social Source</option>
-                    <option *ngFor="let source of socialMediaSources" [value]="source.id">{{ source.name }}</option>
+                    <option *ngFor="let source of socialMediaSources; trackBy: trackBySocialMediaSource" [value]="source.id">{{ source.name }}</option>
                   </select>
                   <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                </div>
@@ -229,7 +228,7 @@
                   <div *ngIf="isCityDropdownOpen" class="absolute bottom-full left-0 z-[100] w-full mb-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-base" (click)="$event.stopPropagation()">
                      <input type="text" class="w-full px-4 py-2 bg-ds-bg border-b border-ds-border outline-none" placeholder="Search cities..." (input)="filterCities($event)" [value]="citySearch" />
                      <ul class="max-h-48 overflow-y-auto py-1">
-                       <li *ngFor="let city of filteredCities" (click)="selectCity(city)" class="px-4 py-2 hover:bg-ds-bg cursor-pointer transition-colors">{{ city }}</li>
+                       <li *ngFor="let city of filteredCities; trackBy: trackByCity" (click)="selectCity(city)" class="px-4 py-2 hover:bg-ds-bg cursor-pointer transition-colors">{{ city }}</li>
                      </ul>
                   </div>
                </div>
@@ -239,7 +238,7 @@
                   <div *ngIf="isAreaDropdownOpen" class="absolute bottom-full left-0 z-[100] w-full mb-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-base" (click)="$event.stopPropagation()">
                       <input type="text" class="w-full px-4 py-2 bg-ds-bg border-b border-ds-border outline-none" placeholder="Search areas..." (input)="filterAreas($event)" [value]="areaSearch" />
                       <ul class="max-h-48 overflow-y-auto py-1">
-                        <li *ngFor="let area of filteredAreas" (click)="selectArea(area)" class="px-4 py-2 hover:bg-ds-bg cursor-pointer transition-colors">{{ area }}</li>
+                         <li *ngFor="let area of filteredAreas; trackBy: trackByArea" (click)="selectArea(area)" class="px-4 py-2 hover:bg-ds-bg cursor-pointer transition-colors">{{ area }}</li>
                       </ul>
                   </div>
                </div>
@@ -248,7 +247,7 @@
             <div class="relative group">
               <select formControlName="deliveryMethodId" class="form-input !h-8 appearance-none cursor-pointer">
                 <option [value]="null">Delivery Method</option>
-                <option *ngFor="let method of deliveryMethods" [value]="method.id">{{ method.name }} — ৳{{ method.cost }}</option>
+                <option *ngFor="let method of deliveryMethods; trackBy: trackByDeliveryMethod" [value]="method.id">{{ method.name }} — ৳{{ method.cost }}</option>
               </select>
               <app-icon name="ChevronDown" size="10" className="absolute right-3 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
             </div>
@@ -310,7 +309,7 @@
             <label class="block text-ds-text-muted mb-ds-4">Select Size</label>
             <div class="flex flex-wrap gap-ds-3">
               <button 
-                *ngFor="let variant of selectedProduct()?.variants"
+                *ngFor="let variant of selectedProduct()?.variants; trackBy: trackByVariantId"
                 (click)="selectedSize.set(variant.size || null)"
                 class="flex flex-col items-center justify-center min-w-[90px] px-ds-6 py-ds-3 rounded-sm transition-all border"
                 [ngClass]="selectedSize() === variant.size ? 'bg-ds-text text-ds-surface border-ds-text shadow-xl' : 'bg-ds-surface text-ds-text-muted border-ds-border hover:border-ds-text hover:text-ds-text'"
@@ -355,7 +354,7 @@
         
         <div class="bg-ds-bg/30 rounded-sm p-ds-6 mb-ds-10 max-h-64 overflow-y-auto border border-ds-border">
           <ul class="space-y-ds-3">
-            <li *ngFor="let item of outOfStockItems()" class="flex justify-between items-start gap-ds-4 p-ds-4 bg-ds-surface rounded-sm border border-red-500/20 shadow-sm">
+            <li *ngFor="let item of outOfStockItems(); trackBy: trackByOutOfStockItem" class="flex justify-between items-start gap-ds-4 p-ds-4 bg-ds-surface rounded-sm border border-red-500/20 shadow-sm">
               <div class="flex-1 min-w-0 text-left">
                 <p class="text-ds-text" [title]="item.name">{{ item.name }}</p>
                 <p *ngIf="item.size" class="text-ds-text-muted mt-1">Size: {{ item.size }}</p>
@@ -385,4 +384,3 @@
       </div>
     </div>
   </div>
-</div>

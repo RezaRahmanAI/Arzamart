@@ -17,11 +17,14 @@ export const staffGuard: CanActivateFn = (route, state) => {
         return router.createUrlTree(['/login']);
       }
 
-      if (user.role === 'SuperAdmin' || user.role === 'Admin') {
+      const role = user.role;
+      const isSystemAdmin = role === 'SuperAdmin' || role === 'Super Admin' || role === 'Admin';
+
+      if (isSystemAdmin) {
         return true;
       }
 
-      if (user.role === 'Staff') {
+      if (role && role !== 'Customer') {
         const requiredMenu = route.data['menuKey'];
         if (!requiredMenu) {
           // If no menuKey is specified, we assume it's allowed (e.g. dashboard, profile, logout)

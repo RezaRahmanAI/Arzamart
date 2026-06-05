@@ -79,11 +79,12 @@ export class AuthService {
 
   isAdmin() {
     const role = this.userSubject.value?.role;
-    return role === "Admin" || role === "SuperAdmin";
+    return role === "Admin" || role === "SuperAdmin" || role === "Super Admin" || role === "Manager" || role === "Viewer";
   }
 
   isSuperAdmin() {
-    return this.userSubject.value?.role === "SuperAdmin";
+    const role = this.userSubject.value?.role;
+    return role === "SuperAdmin" || role === "Super Admin";
   }
 
   isAuthenticated() {
@@ -99,8 +100,89 @@ export class AuthService {
     return this.userSubject.value?.role;
   }
 
-  adminLogin(email: string, password: string): Observable<User | null> {
-    return this.login(email, password);
+  adminLogin(emailOrUsername: string, password: string): Observable<User | null> {
+    const payload = { username: emailOrUsername, password };
+    return this.api.post<any>("/staff/auth/login", payload).pipe(
+      tap((response) => {
+        if (response.success && response.data) {
+          const rawUser = response.data.user;
+          
+          // Map permissions to old menu keys for compatibility
+          const allowedMenus: string[] = [];
+          const permissions: string[] = rawUser.permissions || [];
+
+          if (rawUser.isSuperAdmin) {
+            allowedMenus.push("dashboard", "products", "orders", "customers", "analytics", "settings", "banners", "navigation", "pages", "reviews", "order-sources", "security", "users");
+          } else {
+            if (permissions.some(p => p.startsWith("inventory:"))) allowedMenus.push("products");
+            if (permissions.some(p => p.startsWith("sales:"))) {
+              allowedMenus.push("orders");
+              allowedMenus.push("banners");
+              allowedMenus.push("reviews");
+            }
+            if (permissions.some(p => p.startsWith("hr:"))) allowedMenus.push("customers");
+            if (permissions.some(p => p.startsWith("reports:"))) allowedMenus.push("analytics");
+            if (permissions.some(p => p.startsWith("settings:"))) {
+              allowedMenus.push("settings");
+              allowedMenus.push("navigation");
+              allowedMenus.push("pages");
+              allowedMenus.push("order-sources");
+              allowedMenus.push("security");
+            }
+            if (permissions.some(p => p.startsWith("staff-management:"))) allowedMenus.push("users");
+          }
+
+          const user: User = {
+            id: rawUser.id,
+            fullName: rawUser.fullName,
+            userName: rawUser.username,
+            email: rawUser.email,
+            role: rawUser.role,
+            allowedMenus: allowedMenus
+          };
+          this.setSession(user, response.data.accessToken);
+          localStorage.setItem("arza_refresh_token", response.data.refreshToken);
+        }
+      }),
+      map((response) => {
+        if (response.success && response.data) {
+          const rawUser = response.data.user;
+          const allowedMenus: string[] = [];
+          const permissions: string[] = rawUser.permissions || [];
+
+          if (rawUser.isSuperAdmin) {
+            allowedMenus.push("dashboard", "products", "orders", "customers", "analytics", "settings", "banners", "navigation", "pages", "reviews", "order-sources", "security", "users");
+          } else {
+            if (permissions.some(p => p.startsWith("inventory:"))) allowedMenus.push("products");
+            if (permissions.some(p => p.startsWith("sales:"))) {
+              allowedMenus.push("orders");
+              allowedMenus.push("banners");
+              allowedMenus.push("reviews");
+            }
+            if (permissions.some(p => p.startsWith("hr:"))) allowedMenus.push("customers");
+            if (permissions.some(p => p.startsWith("reports:"))) allowedMenus.push("analytics");
+            if (permissions.some(p => p.startsWith("settings:"))) {
+              allowedMenus.push("settings");
+              allowedMenus.push("navigation");
+              allowedMenus.push("pages");
+              allowedMenus.push("order-sources");
+              allowedMenus.push("security");
+            }
+            if (permissions.some(p => p.startsWith("staff-management:"))) allowedMenus.push("users");
+          }
+
+          return {
+            id: rawUser.id,
+            fullName: rawUser.fullName,
+            userName: rawUser.username,
+            email: rawUser.email,
+            role: rawUser.role,
+            allowedMenus: allowedMenus
+          };
+        }
+        return null;
+      })
+    );
   }
 
   customerPhoneLogin(phone: string): Observable<User | null> {

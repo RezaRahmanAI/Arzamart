@@ -1,7 +1,8 @@
-import { Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, inject } from "@angular/core";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { NgIf } from '@angular/common';
-import { filter } from "rxjs";
+import { Subject, filter } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 import { AdminHeaderComponent } from "../admin-header/admin-header.component";
 import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
@@ -18,16 +19,23 @@ import { SidebarService } from "../../services/sidebar.service";
   ],
   templateUrl: "./admin-layout.component.html",
   styleUrl: "../../admin-styles.css",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminLayoutComponent {
+export class AdminLayoutComponent implements OnDestroy {
+  private destroy$ = new Subject<void>();
   protected sidebarService = inject(SidebarService);
   private router = inject(Router);
 
   constructor() {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd), takeUntil(this.destroy$))
       .subscribe(() => {
         this.sidebarService.close();
       });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

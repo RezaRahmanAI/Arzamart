@@ -20,7 +20,8 @@ import { Product } from "../../../../core/models/product";
 import { CartService } from "../../../../core/services/cart.service";
 import { OrderService } from "../../../../core/services/order.service";
 import { CartItem, CartSummary } from "../../../../core/models/cart";
-import { SiteSettingsService } from "../../../../core/services/site-settings.service";
+import { Order } from "../../../../core/models/order";
+import { SiteSettingsService, SiteSettings } from "../../../../core/services/site-settings.service";
 import { CheckoutService } from "../../../../core/services/checkout.service";
 import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
@@ -69,7 +70,7 @@ export class LandingPageComponent implements OnInit {
   private readonly userPersistence = inject(UserPersistenceService);
   private readonly notification = inject(NotificationService);
 
-  brandName$ = this.siteSettingsService.getSettings().pipe(map((s: any) => s.websiteName));
+  brandName$ = this.siteSettingsService.getSettings().pipe(map((s: SiteSettings) => s.websiteName));
 
   product: Product | null = null;
   isLoading = false;
@@ -80,6 +81,7 @@ export class LandingPageComponent implements OnInit {
   deliveryMethods: DeliveryMethod[] = [];
   selectedMethod: DeliveryMethod | null = null;
   showAutofillPrompt = false;
+  userSelectedDeliveryMethod = false;
 
   readonly checkoutForm = this.formBuilder.nonNullable.group({
     fullName: ["", [Validators.required, Validators.minLength(2)]],
@@ -119,7 +121,9 @@ export class LandingPageComponent implements OnInit {
         this.areas = BANGLADESH_LOCATIONS[details.city] || [];
         this.filteredAreas = [...this.areas];
         this.citySearch = details.city;
-        this.updateDeliveryMethod(details.city, details.area || "");
+        if (!this.userSelectedDeliveryMethod) {
+          this.updateDeliveryMethod(details.city, details.area || "");
+        }
       }
 
       this.checkoutForm.patchValue({
@@ -217,7 +221,9 @@ export class LandingPageComponent implements OnInit {
             this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
             this.filteredAreas = [...this.areas];
             this.citySearch = customer.city;
-            this.updateDeliveryMethod(customer.city, customer.area || "");
+            if (!this.userSelectedDeliveryMethod) {
+              this.updateDeliveryMethod(customer.city, customer.area || "");
+            }
           }
 
           this.checkoutForm.patchValue(
@@ -287,6 +293,11 @@ export class LandingPageComponent implements OnInit {
     }
   }
 
+
+  selectDeliveryMethod(id: number): void {
+    this.userSelectedDeliveryMethod = true;
+    this.checkoutForm.patchValue({ deliveryMethodId: id });
+  }
 
   private updateDeliveryMethod(city: string, area: string): void {
     const outskirts = ["keraniganj", "savar", "ashulia", "asulia", "dohar"];
@@ -483,10 +494,13 @@ export class LandingPageComponent implements OnInit {
 
     if (
       this.checkoutForm.invalid ||
-      (isSizeRequired && !formRaw.selectedSize)
+      (isSizeRequired && !formRaw.selectedSize) ||
+      !formRaw.quantity || formRaw.quantity < 1
     ) {
       if (isSizeRequired && !formRaw.selectedSize) {
         this.errorMessage = "Please select a size.";
+      } else if (!formRaw.quantity || formRaw.quantity < 1) {
+        this.errorMessage = "Please select a valid quantity.";
       }
       this.checkoutForm.markAllAsTouched();
       return;
@@ -542,7 +556,7 @@ export class LandingPageComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     )
     .subscribe({
-      next: (order: any) => {
+      next: (order: Order) => {
         this.isOrdering = false;
         if (order?.id) {
           // Save user details for next time

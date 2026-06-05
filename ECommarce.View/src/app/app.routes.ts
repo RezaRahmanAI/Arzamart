@@ -1,6 +1,7 @@
-import { Routes } from "@angular/router";
+import { inject } from "@angular/core";
+import { Router, Routes } from "@angular/router";
 import { authGuard } from "./core/guards/auth.guard";
-import { AdminGuard } from "./admin/guards/admin.guard";
+import { AuthService } from "./core/services/auth.service";
 
 export const appRoutes: Routes = [
   {
@@ -166,7 +167,16 @@ export const appRoutes: Routes = [
   {
     path: "admin",
     loadChildren: () => import("./admin/admin.routes").then((m) => m.ADMIN_ROUTES),
-    canActivate: [AdminGuard],
+    canActivate: [
+      () => {
+        const authService = inject(AuthService);
+        const router = inject(Router);
+        if (authService.isAuthenticated() && authService.isAdmin()) {
+          return true;
+        }
+        return router.createUrlTree(["/login"]);
+      },
+    ],
   },
   {
     path: "category/:slug",

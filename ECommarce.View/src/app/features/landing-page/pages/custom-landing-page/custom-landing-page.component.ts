@@ -5,7 +5,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angu
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../../environments/environment";
-import { Product } from "../../../../core/models/product";
+import { Product, ProductVariant } from "../../../../core/models/product";
 import { CustomLandingPageConfig } from "../../../../admin/services/custom-landing-page.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
@@ -28,6 +28,7 @@ import { sortProductSizes } from "../../../../core/constants/product.constants";
 import { ReviewService } from "../../../../core/services/review.service";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
+import { Order } from "../../../../core/models/order";
 import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
 import { QuickAddModalComponent } from "../../../../shared/components/quick-add-modal/quick-add-modal.component";
 import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
@@ -234,12 +235,13 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
-  private timerInterval: any;
+  private timerInterval: ReturnType<typeof setInterval> | undefined;
   selectedImage: string = "";
   slideProgress = 0;
-  private autoSlideInterval: any;
-  private watchingInterval: any;
+  private autoSlideInterval: ReturnType<typeof setInterval> | undefined;
+  private watchingInterval: ReturnType<typeof setInterval> | undefined;
   showAutofillPrompt = false;
+  userSelectedDeliveryMethod = false;
   selectedQuickProduct: Product | null = null;
   showQuickAdd = false;
 
@@ -345,14 +347,16 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         ),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((customer: any) => {
+      .subscribe((customer) => {
         if (customer) {
           this.didAutofill = true;
           if (customer.city) {
             this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
             this.filteredAreas = [...this.areas];
             this.citySearch = customer.city;
-            this.updateDeliveryMethod(customer.city, customer.area || "");
+            if (!this.userSelectedDeliveryMethod) {
+              this.updateDeliveryMethod(customer.city, customer.area || "");
+            }
           }
           this.orderForm.patchValue({
             fullName: customer.name,
@@ -399,7 +403,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.areas = BANGLADESH_LOCATIONS[details.city] || [];
         this.filteredAreas = [...this.areas];
         this.citySearch = details.city;
-        this.updateDeliveryMethod(details.city, details.area || "");
+        if (!this.userSelectedDeliveryMethod) {
+          this.updateDeliveryMethod(details.city, details.area || "");
+        }
       }
       this.orderForm.patchValue({
         fullName: details.fullName,
@@ -593,7 +599,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   // Helper for old components that might still use uniqueSizes
   getUniqueSizes(product: Product): string[] {
     if (!product.variants) return [];
-    const sizes = Array.from(new Set(product.variants.map((v: any) => v.size).filter(Boolean))) as string[];
+    const sizes = Array.from(new Set(product.variants.map((v) => v.size).filter(Boolean))) as string[];
     return sortProductSizes(sizes);
   }
 
@@ -658,15 +664,15 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         fullName: form.fullName, 
         phone: form.phone, 
         address: form.address, 
-        city: method?.name || "", 
-        area: "", 
+        city: form.city, 
+        area: form.area, 
         deliveryMethodId: form.deliveryMethodId 
       },
       cartItems: cartItems,
       summary,
       deliveryMethodId: form.deliveryMethodId
     }).subscribe({
-      next: (order: any) => {
+      next: (order: Order) => {
         this.isOrdering = false;
         if (order?.id) {
           this.userPersistence.saveUserDetails({ fullName: form.fullName, phone: form.phone, address: form.address, city: form.city, area: form.area });
@@ -695,7 +701,10 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     const current = this.orderForm.get("quantity")?.value || 1;
     this.orderForm.patchValue({ quantity: Math.max(1, current + delta) });
   }
-  selectDeliveryMethod(id: number): void { this.orderForm.patchValue({ deliveryMethodId: id }); }
+  selectDeliveryMethod(id: number): void {
+    this.userSelectedDeliveryMethod = true;
+    this.orderForm.patchValue({ deliveryMethodId: id });
+  }
 
   toggleCityDropdown(): void {
     this.isCityDropdownOpen = !this.isCityDropdownOpen;
@@ -788,7 +797,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  formatSizes(variants: any[] | undefined): string {
+  formatSizes(variants: ProductVariant[] | undefined): string {
     if (!variants) return "";
     return Array.from(new Set(variants.map(v => v.size).filter(Boolean))).join(", ");
   }
@@ -800,9 +809,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   onQuickAddConfirm(selection: { size?: string; quantity: number }): void {
     if (this.selectedQuickProduct) {
-      const queryParams: any = {};
-      if (selection.size) queryParams.qSize = selection.size;
-      if (selection.quantity > 1) queryParams.qQty = selection.quantity;
+      const queryParams: Record<string, string> = {};
+      if (selection.size) queryParams["qSize"] = selection.size;
+      if (selection.quantity > 1) queryParams["qQty"] = String(selection.quantity);
       this.showQuickAdd = false;
       void this.router.navigate(['/clp', this.selectedQuickProduct.slug], { queryParams, queryParamsHandling: 'merge' }).then(() => this.scrollToOrder());
     } else this.showQuickAdd = false;

@@ -1,180 +1,346 @@
-<div class="space-y-ds-10" *ngIf="stats$ | async as stats; else loadingStats">
-  <!-- Quick Navigation -->
-  <div class="flex flex-wrap gap-ds-4">
-    <div class="flex flex-wrap gap-ds-3">
-      <a routerLink="/admin/orders/pre-order" class="group bg-ds-surface border border-ds-border p-ds-4 rounded-sm hover:border-ds-text transition-all flex items-center gap-ds-5 cursor-pointer overflow-hidden relative">
-        <div class="size-11 rounded-sm bg-ds-bg flex items-center justify-center shrink-0 border border-ds-border group-hover:border-ds-text transition-colors">
-          <app-icon name="PackagePlus" size="20" className="text-ds-text"></app-icon>
-        </div>
-        <div>
-          <h4 class="text-ds-text">Pre-order</h4>
-          <p class="text-ds-text-muted mt-1">Manual Entry</p>
-        </div>
-      </a>
+<div class="space-y-ds-8">
+  <!-- Date Filter Bar -->
+  <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-ds-4">
+    <div class="flex flex-wrap items-center gap-ds-2">
+      <button 
+        (click)="setRange('today')" 
+        [class]="activeFilterRange === 'today' ? 'px-ds-3 py-1.5 text-ds-xs rounded-sm bg-ds-accent text-ds-hero-text font-semibold' : 'px-ds-3 py-1.5 text-ds-xs rounded-sm bg-ds-bg border border-ds-border text-ds-text hover:border-ds-text transition-all font-medium'"
+      >Today</button>
+      <button 
+        (click)="setRange('yesterday')" 
+        [class]="activeFilterRange === 'yesterday' ? 'px-ds-3 py-1.5 text-ds-xs rounded-sm bg-ds-accent text-ds-hero-text font-semibold' : 'px-ds-3 py-1.5 text-ds-xs rounded-sm bg-ds-bg border border-ds-border text-ds-text hover:border-ds-text transition-all font-medium'"
+      >Yesterday</button>
+      <button 
+        (click)="setRange('week')" 
+        [class]="activeFilterRange === 'week' ? 'px-ds-3 py-1.5 text-ds-xs rounded-sm bg-ds-accent text-ds-hero-text font-semibold' : 'px-ds-3 py-1.5 text-ds-xs rounded-sm bg-ds-bg border border-ds-border text-ds-text hover:border-ds-text transition-all font-medium'"
+      >7 Days</button>
+      <button 
+        (click)="setRange('month')" 
+        [class]="activeFilterRange === 'month' ? 'px-ds-3 py-1.5 text-ds-xs rounded-sm bg-ds-accent text-ds-hero-text font-semibold' : 'px-ds-3 py-1.5 text-ds-xs rounded-sm bg-ds-bg border border-ds-border text-ds-text hover:border-ds-text transition-all font-medium'"
+      >30 Days</button>
+      <button 
+        (click)="setRange('all')" 
+        [class]="activeFilterRange === 'all' ? 'px-ds-3 py-1.5 text-ds-xs rounded-sm bg-ds-accent text-ds-hero-text font-semibold' : 'px-ds-3 py-1.5 text-ds-xs rounded-sm bg-ds-bg border border-ds-border text-ds-text hover:border-ds-text transition-all font-medium'"
+      >All Time</button>
+    </div>
 
-      <!-- Manage Catalog -->
-      <a routerLink="/admin/products" class="group bg-ds-surface border border-ds-border p-ds-4 rounded-sm hover:border-ds-text transition-all flex items-center gap-ds-5 cursor-pointer overflow-hidden relative">
-        <div class="size-11 rounded-sm bg-ds-bg flex items-center justify-center shrink-0 border border-ds-border group-hover:border-ds-text transition-colors">
-          <app-icon name="PlusCircle" size="20" className="text-ds-text"></app-icon>
-        </div>
-        <div>
-          <h4 class="text-ds-text">Inventory</h4>
-          <p class="text-ds-text-muted mt-1">Add Product</p>
-        </div>
-      </a>
+    <div class="flex items-center gap-ds-3 flex-wrap">
+      <div class="flex items-center gap-ds-2">
+        <span class="text-ds-xs text-ds-text-muted font-medium">From:</span>
+        <input 
+          type="date" 
+          [(ngModel)]="startDate" 
+          (change)="applyFilter()"
+          class="bg-ds-bg border border-ds-border text-ds-text text-ds-xs px-2 py-1 rounded-sm focus:border-ds-accent outline-none"
+        />
+      </div>
+      <div class="flex items-center gap-ds-2">
+        <span class="text-ds-xs text-ds-text-muted font-medium">To:</span>
+        <input 
+          type="date" 
+          [(ngModel)]="endDate" 
+          (change)="applyFilter()"
+          class="bg-ds-bg border border-ds-border text-ds-text text-ds-xs px-2 py-1 rounded-sm focus:border-ds-accent outline-none"
+        />
+      </div>
+      <button 
+        (click)="triggerRefresh()" 
+        class="p-2 bg-ds-bg border border-ds-border text-ds-text rounded-sm hover:border-ds-text transition-all flex items-center justify-center cursor-pointer"
+        title="Refresh Stats"
+      >
+        <app-icon name="RefreshCw" size="14"></app-icon>
+      </button>
     </div>
   </div>
 
-  <!-- Row 1: Primary Financial & Volume Stats -->
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-ds-4">
-    <!-- Total Revenue Card -->
-    <div class="group bg-ds-surface border border-ds-border p-ds-6 rounded-sm hover:border-ds-text transition-all overflow-hidden relative">
-      <div class="relative flex flex-col gap-ds-4">
-        <div class="flex items-center justify-between">
-          <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
-            <app-icon name="CreditCard" size="24"></app-icon>
+  <div *ngIf="stats$ | async as stats; else loadingStats" class="space-y-ds-8">
+    
+    <!-- Today's Orders / Date Filtered Statistics Section -->
+    <div class="space-y-ds-4">
+      <div class="flex justify-between items-center border-b border-ds-border pb-ds-3">
+        <div class="flex items-center gap-ds-3">
+          <app-icon name="Calendar" size="18" className="text-ds-text"></app-icon>
+          <h3 class="text-ds-text font-bold uppercase tracking-wider text-ds-xs mb-0">
+            {{ activeFilterRange === 'all' ? 'Today\'s Orders' : (activeFilterRange === 'custom' ? 'Filtered Orders' : activeFilterRange.toUpperCase() + '\'s Orders') }}
+          </h3>
+        </div>
+        <div class="text-ds-xs text-ds-text-muted font-semibold">
+          {{ startDate && endDate ? (startDate + ' to ' + endDate) : 'Today' }}
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-ds-3">
+        
+        <!-- 1. Today's Orders (Blue) -->
+        <div class="bg-blue-600 border border-blue-700 p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-blue-200 block font-semibold leading-none mb-1">Orders</span>
+            <div class="text-ds-xl font-bold leading-none">{{ stats.todayOrdersCount }}</div>
+            <app-price-display [amount]="stats.todayOrdersRevenue" size="sm" class="text-blue-100 block"></app-price-display>
           </div>
-          <span class="text-ds-text-muted border border-ds-border px-ds-2 py-1">Revenue</span>
-        </div>
-        <div>
-          <app-price-display
-            class="text-ds-text"
-            [amount]="stats.totalRevenue"
-            size="lg"
-          ></app-price-display>
-          <p class="text-ds-text-muted mt-1">Gross Earnings</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Total Orders Card -->
-    <div class="group bg-ds-surface border border-ds-border p-ds-6 rounded-sm hover:border-ds-text transition-all overflow-hidden relative">
-      <div class="relative flex flex-col gap-ds-4">
-        <div class="flex items-center justify-between">
-          <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
-            <app-icon name="Receipt" size="24"></app-icon>
+          <div class="text-blue-200 opacity-20 size-9 flex items-center justify-center shrink-0">
+            <app-icon name="ShoppingCart" size="24"></app-icon>
           </div>
-          <span class="text-ds-text-muted border border-ds-border px-ds-2 py-1">Volumes</span>
         </div>
-        <div>
-          <span class="text-ds-text">{{ stats.totalOrders }}</span>
-          <p class="text-ds-text-muted mt-1">Lifetime Orders</p>
-        </div>
-      </div>
-    </div>
 
-    <!-- Delivered Orders Card -->
-    <div class="group bg-ds-surface border border-ds-border p-ds-6 rounded-sm hover:border-ds-text transition-all overflow-hidden relative">
-      <div class="relative flex flex-col gap-ds-4">
-        <div class="flex items-center justify-between">
-          <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
-            <app-icon name="Truck" size="24"></app-icon>
+        <!-- 2. Today's Pending -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Pending</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayPendingCount }}</div>
+            <app-price-display [amount]="stats.todayPendingRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <span class="text-ds-text-muted border border-ds-border px-ds-2 py-1">Success</span>
-        </div>
-        <div>
-          <span class="text-ds-text">{{ stats.deliveredOrders }}</span>
-          <p class="text-ds-text-muted mt-1">Shipped</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Daily Traffic Card -->
-    <div class="group bg-ds-surface border border-ds-border p-ds-6 rounded-sm hover:border-ds-text transition-all overflow-hidden relative" *ngIf="dailyTraffic$ | async as traffic">
-      <div class="relative flex flex-col gap-ds-4">
-        <div class="flex items-center justify-between">
-          <div class="size-10 flex items-center justify-center text-ds-text-muted opacity-40">
-            <app-icon name="Eye" size="24"></app-icon>
+          <div class="text-yellow-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="Clock" size="16"></app-icon>
           </div>
-          <span class="text-ds-text-muted border border-ds-border px-ds-2 py-1">Live</span>
         </div>
-        <div>
-          <span class="text-ds-text">{{ traffic.uniqueVisitors }}</span>
-          <p class="text-ds-text-muted mt-1">{{ traffic.pageViews }} Views Today</p>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Middle Row: Operational Status Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-ds-4">
-    <!-- Pending Orders Card -->
-    <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
-      <div class="flex items-center gap-ds-5">
-        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0">
-          <app-icon name="Clock" size="20" className="text-ds-text-muted"></app-icon>
+        <!-- 3. Today's Confirm -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Confirm</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayConfirmCount }}</div>
+            <app-price-display [amount]="stats.todayConfirmRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-green-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="CheckCircle" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- 4. Today's Packaging -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Packaging</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayPackagingCount }}</div>
+            <app-price-display [amount]="stats.todayPackagingRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-purple-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="ShoppingBag" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- 5. Wapa Shop -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Wapa Shop</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.wapaShopCount }}</div>
+            <app-price-display [amount]="stats.wapaShopRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-blue-400 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="Store" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- 6. Mirpur Shop -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Mirpur Shop</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.mirpurShopCount }}</div>
+            <app-price-display [amount]="stats.mirpurShopRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-emerald-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="Store" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- 7. Today's Shipped -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Shipped</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayShippedCount }}</div>
+            <app-price-display [amount]="stats.todayShippedRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-indigo-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="Truck" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- 8. Pathao Return (Red) -->
+        <div class="bg-red-800 border border-red-900 p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-red-200 block font-semibold leading-none mb-1">Pathao Return</span>
+            <div class="text-ds-xl font-bold leading-none">{{ stats.pathaoReturnCount }}</div>
+            <app-price-display [amount]="stats.pathaoReturnRevenue" size="sm" class="text-red-100 block"></app-price-display>
+          </div>
+          <div class="text-yellow-400 opacity-80 size-8 bg-red-900/50 border border-red-700 rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="RotateCcw" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- 9. Pathao Delivered (Green) -->
+        <div class="bg-emerald-800 border border-emerald-900 p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-emerald-200 block font-semibold leading-none mb-1">Pathao Delivered</span>
+            <div class="text-ds-xl font-bold leading-none">{{ stats.pathaoDeliveredCount }}</div>
+            <app-price-display [amount]="stats.pathaoDeliveredRevenue" size="sm" class="text-emerald-100 block"></app-price-display>
+          </div>
+          <div class="text-yellow-400 opacity-80 size-8 bg-emerald-900/50 border border-emerald-700 rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="CheckCircle" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- 10. Today's Pre Orders -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Pre Orders</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayPreOrdersCount }}</div>
+            <app-price-display [amount]="stats.todayPreOrdersRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-red-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="Clock" size="16"></app-icon>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Total Statistics Section -->
+    <div class="space-y-ds-4">
+      <div class="flex items-center gap-ds-3 border-b border-ds-border pb-ds-3">
+        <app-icon name="Activity" size="18" className="text-ds-text"></app-icon>
+        <h3 class="text-ds-text font-bold uppercase tracking-wider text-ds-xs mb-0">Total Statistics</h3>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-ds-3">
+        
+        <!-- Total Pending -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Pending</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalPendingCount }}</div>
+            <app-price-display [amount]="stats.totalPendingRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-yellow-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="Clock" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- Total Confirm -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Confirm</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalConfirmCount }}</div>
+            <app-price-display [amount]="stats.totalConfirmRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-green-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="CheckCircle" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- Total Packaging -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Packaging</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalPackagingCount }}</div>
+            <app-price-display [amount]="stats.totalPackagingRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-purple-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="ShoppingBag" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- Total Return Process -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Return Process</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalReturnProcessCount }}</div>
+            <app-price-display [amount]="stats.totalReturnProcessRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-red-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="RotateCcw" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- Total Shipped -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Shipped</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalShippedCount }}</div>
+            <app-price-display [amount]="stats.totalShippedRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-indigo-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="Truck" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- Total Pre Orders -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Pre Orders</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalPreOrdersCount }}</div>
+            <app-price-display [amount]="stats.totalPreOrdersRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-red-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="Clock" size="16"></app-icon>
+          </div>
+        </div>
+
+        <!-- Incomplete Order -->
+        <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
+          <div class="space-y-1">
+            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Incomplete Order</span>
+            <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.incompleteOrdersCount }}</div>
+            <app-price-display [amount]="stats.incompleteOrdersRevenue" size="sm" class="text-ds-text block"></app-price-display>
+          </div>
+          <div class="text-yellow-600 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+            <app-icon name="Activity" size="16"></app-icon>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Original Middle Row (Catalog Size, Audience, etc.) kept for catalog info -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-ds-4 border-t border-ds-border pt-ds-6">
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm flex items-center gap-ds-5">
+        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0 text-ds-text-muted">
+          <app-icon name="Package" size="20"></app-icon>
         </div>
         <div>
-          <h4 class="text-ds-text-muted">Attention</h4>
-          <span class="text-ds-text">{{ stats.pendingOrders }}</span>
-          <p class="text-ds-accent mt-0.5">Pending Action</p>
+          <h4 class="text-ds-text-muted text-xs uppercase tracking-wider mb-0">Catalog Size</h4>
+          <span class="text-ds-text font-bold text-ds-xl block mt-1">{{ stats.totalProducts }}</span>
+          <p class="text-ds-text-sec text-xs mt-0.5 mb-0">Active Storefront Items</p>
+        </div>
+      </div>
+
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm flex items-center gap-ds-5">
+        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0 text-ds-text-muted">
+          <app-icon name="Users" size="20"></app-icon>
+        </div>
+        <div>
+          <h4 class="text-ds-text-muted text-xs uppercase tracking-wider mb-0">Audience Base</h4>
+          <span class="text-ds-text font-bold text-ds-xl block mt-1">{{ stats.totalCustomers }}</span>
+          <p class="text-ds-text-sec text-xs mt-0.5 mb-0">Registered Customers</p>
+        </div>
+      </div>
+
+      <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm flex items-center gap-ds-5" *ngIf="dailyTraffic$ | async as traffic">
+        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0 text-ds-text-muted">
+          <app-icon name="Eye" size="20"></app-icon>
+        </div>
+        <div>
+          <h4 class="text-ds-text-muted text-xs uppercase tracking-wider mb-0">Live Traffic</h4>
+          <span class="text-ds-text font-bold text-ds-xl block mt-1">{{ traffic.uniqueVisitors }}</span>
+          <p class="text-ds-text-sec text-xs mt-0.5 mb-0">{{ traffic.pageViews }} Views Today</p>
         </div>
       </div>
     </div>
 
-    <!-- Catalog Size Card -->
-    <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
-      <div class="flex items-center gap-ds-5">
-        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0">
-          <app-icon name="Package" size="20" className="text-ds-text-muted"></app-icon>
-        </div>
-        <div>
-          <h4 class="text-ds-text-muted">Catalog</h4>
-          <span class="text-ds-text">{{ stats.totalProducts }}</span>
-          <p class="text-ds-text-sec mt-0.5">Active Items</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Customer Base Card -->
-    <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
-      <div class="flex items-center gap-ds-5">
-        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0">
-          <app-icon name="Users" size="20" className="text-ds-text-muted"></app-icon>
-        </div>
-        <div>
-          <h4 class="text-ds-text-muted">Audience</h4>
-          <span class="text-ds-text">{{ stats.totalCustomers }}</span>
-          <p class="text-ds-text-sec mt-0.5">Users</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Returns Card -->
-    <div class="bg-ds-surface border border-ds-border p-ds-5 rounded-sm">
-      <div class="flex items-center gap-ds-5">
-        <div class="size-11 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center shrink-0">
-          <app-icon name="RotateCcw" size="20" className="text-ds-text-muted"></app-icon>
-        </div>
-        <div>
-          <h4 class="text-ds-text-muted">Returns</h4>
-          <span class="text-ds-text">{{ stats.returnedOrders }}</span>
-          <p class="text-red-500 mt-0.5">{{ stats.returnRate }} Rate</p>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
-
 <ng-template #loadingStats>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-ds-8">
-    <div *ngFor="let i of [1,2,3,4,5,6,7,8]" class="bg-ds-surface border border-ds-border p-ds-8 rounded-sm animate-pulse">
-      <div class="flex items-center gap-ds-5 mb-ds-8">
-        <div class="w-14 h-14 bg-ds-bg border border-ds-border rounded-sm"></div>
-        <div class="flex-1 space-y-ds-3">
-          <div class="w-20 h-2 bg-ds-bg rounded-sm"></div>
-          <div class="w-12 h-1.5 bg-ds-bg rounded-sm"></div>
-        </div>
-      </div>
-      <div class="w-24 h-8 bg-ds-bg rounded-sm mb-ds-3"></div>
-      <div class="w-32 h-2 bg-ds-bg rounded-sm"></div>
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-ds-3">
+    <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm animate-pulse flex flex-col justify-between h-22">
+      <div class="w-16 h-3 bg-ds-bg rounded-sm"></div>
+      <div class="w-12 h-5 bg-ds-bg rounded-sm"></div>
+      <div class="w-20 h-3 bg-ds-bg rounded-sm"></div>
     </div>
   </div>
 </ng-template>
 
-<footer class="mt-ds-32 mb-ds-12 text-center" *ngIf="settings$ | async as settings">
-  <p class="text-ds-text-muted">
+<footer class="mt-ds-16 mb-ds-8 text-center" *ngIf="settings$ | async as settings">
+  <p class="text-ds-text-muted text-xs">
     © {{ date.getFullYear() }} {{ settings.websiteName || "Arza" }} • Admin Navigation Console
   </p>
 </footer>

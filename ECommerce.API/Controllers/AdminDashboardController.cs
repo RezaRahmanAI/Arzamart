@@ -19,9 +19,9 @@ public class AdminDashboardController : ControllerBase
     }
 
     [HttpGet("stats")]
-    public async Task<ActionResult<DashboardStatsDto>> GetStats()
+    public async Task<ActionResult<DashboardStatsDto>> GetStats([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
     {
-        var stats = await _dashboardService.GetDashboardStatsAsync();
+        var stats = await _dashboardService.GetDashboardStatsAsync(startDate, endDate);
         return Ok(stats);
     }
 
@@ -60,5 +60,3 @@ public class AdminDashboardController : ControllerBase
         return Ok(data);
     }
 }
-
-

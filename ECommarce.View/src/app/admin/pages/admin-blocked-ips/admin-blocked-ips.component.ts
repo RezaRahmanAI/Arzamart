@@ -1,5 +1,5 @@
 import { NgIf, DatePipe, NgFor } from '@angular/common';
-import { Component, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -11,15 +11,19 @@ import {
   BlockedIp,
 } from "../../services/admin-security.service";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-admin-blocked-ips",
   standalone: true,
   imports: [NgIf, DatePipe, ReactiveFormsModule, FormsModule, AppIconComponent, NgFor],
   templateUrl: "./admin-blocked-ips.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminBlockedIpsComponent implements OnInit {
+export class AdminBlockedIpsComponent implements OnInit, OnDestroy {
 
+  private destroy$ = new Subject<void>();
   private securityService = inject(AdminSecurityService);
   private fb = inject(FormBuilder);
 
@@ -45,7 +49,7 @@ export class AdminBlockedIpsComponent implements OnInit {
 
   loadBlockedIps(): void {
     this.isLoading = true;
-    this.securityService.getBlockedIps().subscribe({
+    this.securityService.getBlockedIps().pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         this.blockedIps = data;
         this.isLoading = false;
@@ -65,7 +69,7 @@ export class AdminBlockedIpsComponent implements OnInit {
         reason: formValue.reason || undefined,
       };
 
-      this.securityService.blockIp(data).subscribe({
+      this.securityService.blockIp(data).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.loadBlockedIps();
           this.blockForm.reset();
@@ -79,7 +83,7 @@ export class AdminBlockedIpsComponent implements OnInit {
 
   unblockIp(id: number): void {
     if (confirm("Are you sure you want to unblock this IP?")) {
-      this.securityService.unblockIp(id).subscribe({
+      this.securityService.unblockIp(id).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.loadBlockedIps();
         },
@@ -88,5 +92,10 @@ export class AdminBlockedIpsComponent implements OnInit {
         },
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

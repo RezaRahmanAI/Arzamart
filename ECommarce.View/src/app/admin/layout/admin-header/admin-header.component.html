@@ -93,21 +93,7 @@
               <app-icon name="Eye" size="16" className="text-ds-text-muted group-hover:text-ds-text"></app-icon>
               <span>View Live Marketplace</span>
             </a>
-            
-
-            <!-- Admin-only Management -->
             <ng-container *ngIf="authService.isSuperAdmin()">
-              <div class="h-px bg-ds-border mx-ds-2 my-1"></div>
-              
-              <a
-                routerLink="/admin/users"
-                (click)="isProfileDropdownOpen = false"
-                class="flex items-center gap-ds-3 px-ds-4 py-ds-3 rounded-sm text-ds-text-sec hover:text-ds-text hover:bg-ds-bg transition-all duration-base group"
-              >
-                <app-icon name="Users" size="16" className="text-ds-text-muted group-hover:text-ds-text"></app-icon>
-                <span>Staff Management</span>
-              </a>
-
               <a
                 routerLink="/admin/settings"
                 (click)="isProfileDropdownOpen = false"

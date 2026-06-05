@@ -566,7 +566,7 @@
                             [id]="'method-' + method.id"
                             class="hidden"
                           />
-                          <label [for]="'method-' + method.id" class="absolute inset-0 z-10 cursor-pointer"></label>
+                          <label [for]="'method-' + method.id" (click)="selectDeliveryMethod(method.id)" class="absolute inset-0 z-10 cursor-pointer"></label>
 
                           <div class="flex items-center gap-4">
                             <div

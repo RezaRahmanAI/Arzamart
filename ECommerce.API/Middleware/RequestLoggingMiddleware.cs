@@ -30,9 +30,9 @@ public class RequestLoggingMiddleware
             if (statusCode < 500)
             {
                 _logger.LogInformation(
-                    "HTTP {Method} {Path} responded {StatusCode} in {ElapsedMilliseconds}ms",
+                    "HTTP {Method} {PathAndQuery} responded {StatusCode} in {ElapsedMilliseconds}ms",
                     request.Method,
-                    request.Path,
+                    request.Path + request.QueryString,
                     statusCode,
                     sw.ElapsedMilliseconds);
             }
@@ -41,9 +41,9 @@ public class RequestLoggingMiddleware
         {
             sw.Stop();
             _logger.LogError(
-                "HTTP {Method} {Path} failed in {ElapsedMilliseconds}ms",
+                "HTTP {Method} {PathAndQuery} failed in {ElapsedMilliseconds}ms",
                 request.Method,
-                request.Path,
+                request.Path + request.QueryString,
                 sw.ElapsedMilliseconds);
             throw; // Re-throw to be caught by ExceptionMiddleware
         }

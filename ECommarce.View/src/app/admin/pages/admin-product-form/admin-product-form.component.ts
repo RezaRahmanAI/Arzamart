@@ -1,6 +1,6 @@
 import { AuthService } from '../../../core/services/auth.service';
 import { NgIf, NgClass, CurrencyPipe, NgFor } from '@angular/common';
-import { Component, OnDestroy, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, inject } from "@angular/core";
 import {
   AbstractControl,
   FormArray,
@@ -10,8 +10,8 @@ import {
   Validators,
 } from "@angular/forms";
 import { Router, RouterModule, ActivatedRoute } from "@angular/router";
-import { combineLatest } from "rxjs";
-import { switchMap } from "rxjs/operators";
+import { combineLatest, Subject } from "rxjs";
+import { switchMap, takeUntil } from "rxjs/operators";
 
 import {
   ProductCreatePayload,
@@ -53,6 +53,7 @@ interface MediaFormValue {
     '(document:click)': 'onDocumentClick($event)'
   },
   templateUrl: "./admin-product-form.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminProductFormComponent {
   protected authService = inject(AuthService);
@@ -157,6 +158,8 @@ export class AdminProductFormComponent {
     {},
   );
 
+  private destroy$ = new Subject<void>();
+
   ProductType = ProductType; // For template access
   isLoading = false;
   isSubmitting = false;
@@ -168,7 +171,9 @@ export class AdminProductFormComponent {
   }
 
   private setupProductTypeListener(): void {
-    this.form.get("productType")?.valueChanges.subscribe((type) => {
+    this.form.get("productType")?.valueChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe((type) => {
       const typeNum = Number(type);
       if (typeNum === ProductType.Combo && this.comboItemsArray.length === 0) {
       }
@@ -264,7 +269,7 @@ export class AdminProductFormComponent {
   }
 
   setupCascadingSelects(): void {
-    this.form.get("category")?.valueChanges.subscribe((categoryId) => {
+    this.form.get("category")?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((categoryId) => {
       if (!categoryId) {
         this.filteredSubCategories = [];
         this.filteredCollections = [];
@@ -292,7 +297,7 @@ export class AdminProductFormComponent {
       }
     });
 
-    this.form.get("subCategory")?.valueChanges.subscribe((subCategoryId) => {
+    this.form.get("subCategory")?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((subCategoryId) => {
       if (!subCategoryId) {
         this.filteredCollections = [];
         this.form.patchValue({ collection: "" }, { emitEvent: false });
@@ -315,6 +320,8 @@ export class AdminProductFormComponent {
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.mediaItemsArray.controls.forEach((control) => {
       const value = control.value as MediaFormValue;
       if (value.source === "file") {
@@ -322,10 +329,6 @@ export class AdminProductFormComponent {
       }
     });
     this.mediaFileMap.clear();
-  }
-
-  getMediaUrl(media: AbstractControl): string {
-    return media.get('url')?.value || '';
   }
 
   get mediaItemsArray(): FormArray {
@@ -499,8 +502,12 @@ export class AdminProductFormComponent {
     });
   }
 
-  getTotalComboQuantity(): number {
+  get totalComboQuantity(): number {
     return this.comboItemsArray.controls.reduce((acc, control) => acc + (control.get('quantity')?.value || 0), 0);
+  }
+
+  get comboQuantityMatches(): boolean {
+    return this.totalComboQuantity === Number(this.form.get('bundleSize')?.value);
   }
 
   addSize(): void {
@@ -790,6 +797,38 @@ export class AdminProductFormComponent {
   }
 
   trackByIndex(index: number): number {
+    return index;
+  }
+
+  trackByCategory(_: number, cat: Category): number {
+    return cat.id;
+  }
+
+  trackBySubCategory(_: number, sub: SubCategory): number {
+    return sub.id;
+  }
+
+  trackByCollection(_: number, col: Collection): number {
+    return col.id;
+  }
+
+  trackByProductGroup(_: number, grp: any): number {
+    return grp.id;
+  }
+
+  trackByComboItem(index: number): number {
+    return index;
+  }
+
+  trackBySearchResult(_: number, p: any): number {
+    return p.id;
+  }
+
+  trackByVariantOption(_: number, v: any): string {
+    return v.id || v.size || '';
+  }
+
+  trackBySize(index: number): number {
     return index;
   }
 
