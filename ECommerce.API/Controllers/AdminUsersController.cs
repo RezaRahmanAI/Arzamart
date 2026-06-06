@@ -92,8 +92,8 @@ public class AdminUsersController : ControllerBase
         }
 
         var role = string.IsNullOrWhiteSpace(dto.Role) ? "Staff" : dto.Role;
-        if (role != "Admin" && role != "Staff")
-            return BadRequest(new { message = "Invalid role. Only Admin and Staff roles can be created." });
+        if (role != "Admin" && role != "Staff" && role != "SuperAdmin")
+            return BadRequest(new { message = "Invalid role. Only Admin, Staff, and SuperAdmin roles can be created." });
 
         var encryptedPassword = _passwordProtector.Encrypt(dto.Password);
 
@@ -108,7 +108,8 @@ public class AdminUsersController : ControllerBase
             CreatedAt = DateTime.UtcNow,
             EmailConfirmed = !string.IsNullOrWhiteSpace(dto.Email),
             AllowedMenus = role == "Staff" ? (dto.AllowedMenus ?? new List<string>()) : new List<string>(),
-            PasswordEncrypted = encryptedPassword
+            PasswordEncrypted = encryptedPassword,
+            ForceChangePassword = true
         };
 
         var result = await _userManager.CreateAsync(user, dto.Password);
@@ -165,8 +166,8 @@ public class AdminUsersController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(dto.Role) && dto.Role != user.Role)
         {
-            if (dto.Role != "Admin" && dto.Role != "Staff")
-                return BadRequest(new { message = "Invalid role. Only Admin and Staff roles are allowed." });
+            if (dto.Role != "Admin" && dto.Role != "Staff" && dto.Role != "SuperAdmin")
+                return BadRequest(new { message = "Invalid role. Only Admin, Staff, and SuperAdmin roles are allowed." });
 
             var currentRoles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, currentRoles);
@@ -199,6 +200,12 @@ public class AdminUsersController : ControllerBase
             user.AllowedMenus = new List<string>();
         }
 
+        if (dto.ForceChangePassword.HasValue && dto.ForceChangePassword.Value != user.ForceChangePassword)
+        {
+            user.ForceChangePassword = dto.ForceChangePassword.Value;
+            changes.Add($"ForceChangePassword: {(!dto.ForceChangePassword.Value ? "disabled" : "enabled")}");
+        }
+
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
             return BadRequest(new { message = string.Join(", ", result.Errors.Select(e => e.Description)) });
@@ -214,6 +221,7 @@ public class AdminUsersController : ControllerBase
                 return BadRequest(new { message = "Profile updated, but password reset failed: " + string.Join(", ", passwordResult.Errors.Select(e => e.Description)) });
 
             user.PasswordEncrypted = _passwordProtector.Encrypt(dto.Password);
+            user.ForceChangePassword = true;
             await _userManager.UpdateAsync(user);
             changes.Add("Password changed");
         }
@@ -243,6 +251,7 @@ public class AdminUsersController : ControllerBase
             return BadRequest(new { message = string.Join(", ", result.Errors.Select(e => e.Description)) });
 
         user.PasswordEncrypted = _passwordProtector.Encrypt(dto.NewPassword);
+        user.ForceChangePassword = true;
         await _userManager.UpdateAsync(user);
 
         await LogActivityAsync(user.Id, "PasswordReset", "Password was reset by SuperAdmin");
@@ -324,6 +333,7 @@ public class CreateAdminUserDto
     public string? Phone { get; set; }
     public string? Role { get; set; }
     public List<string>? AllowedMenus { get; set; }
+    public bool ForceChangePassword { get; set; } = true;
 }
 
 public class UpdateAdminUserDto
@@ -335,6 +345,7 @@ public class UpdateAdminUserDto
     public string? Phone { get; set; }
     public string? Password { get; set; }
     public List<string>? AllowedMenus { get; set; }
+    public bool? ForceChangePassword { get; set; }
 }
 
 public class ResetPasswordDto

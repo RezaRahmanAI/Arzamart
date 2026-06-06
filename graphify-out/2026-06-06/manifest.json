@@ -1,0 +1,2557 @@
+{
+  "C:\\Projects\\Arza\\DbTest\\DbTest.csproj": {
+    "mtime": 1777703041.1994634,
+    "ast_hash": "ab17318f9006036d2fcd5b32282dc774",
+    "semantic_hash": "ab17318f9006036d2fcd5b32282dc774"
+  },
+  "C:\\Projects\\Arza\\DbTest\\Program.cs": {
+    "mtime": 1780627562.5251915,
+    "ast_hash": "8de5c5015a5d200abc3001a84cec7513",
+    "semantic_hash": "8de5c5015a5d200abc3001a84cec7513"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\angular.json": {
+    "mtime": 1778390306.408473,
+    "ast_hash": "bd0eac39009d1da205bf8a9dd9fdc9e5",
+    "semantic_hash": "bd0eac39009d1da205bf8a9dd9fdc9e5"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\ngsw-config.json": {
+    "mtime": 1776497370.904483,
+    "ast_hash": "08ebf0546e1f890d267b77c9c4c66035",
+    "semantic_hash": "08ebf0546e1f890d267b77c9c4c66035"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\package.json": {
+    "mtime": 1779038019.4510484,
+    "ast_hash": "b4c6b4651b15648e6cd74724de58096d",
+    "semantic_hash": "b4c6b4651b15648e6cd74724de58096d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\postcss.config.js": {
+    "mtime": 1768986704.7477255,
+    "ast_hash": "9a248c780e4c76f85b0f492f63a3d417",
+    "semantic_hash": "9a248c780e4c76f85b0f492f63a3d417"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\proxy.conf.json": {
+    "mtime": 1773396022.5687459,
+    "ast_hash": "c443b04d0fc26b0a5a4573a78e0082a1",
+    "semantic_hash": "c443b04d0fc26b0a5a4573a78e0082a1"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\admin.routes.ts": {
+    "mtime": 1780627284.1353805,
+    "ast_hash": "6318dfa8ba541db1e57fd0bd755cb807",
+    "semantic_hash": "6318dfa8ba541db1e57fd0bd755cb807"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\guards\\admin.guard.ts": {
+    "mtime": 1775832087.0135558,
+    "ast_hash": "16cbed8a5fe7d9911017a55aa6e0401d",
+    "semantic_hash": "16cbed8a5fe7d9911017a55aa6e0401d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\guards\\staff.guard.ts": {
+    "mtime": 1780628084.1312718,
+    "ast_hash": "42036e545043c85dda0cc9716e4959c5",
+    "semantic_hash": "42036e545043c85dda0cc9716e4959c5"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\layout\\admin-header\\admin-header.component.ts": {
+    "mtime": 1778390046.7046375,
+    "ast_hash": "f1b02541af3c03b1e29b78c5647916e1",
+    "semantic_hash": "f1b02541af3c03b1e29b78c5647916e1"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\layout\\admin-layout\\admin-layout.component.ts": {
+    "mtime": 1780595675.9700813,
+    "ast_hash": "c6641be340cf27abf6d77e6900fd6a29",
+    "semantic_hash": "c6641be340cf27abf6d77e6900fd6a29"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\layout\\admin-sidebar\\admin-sidebar.component.ts": {
+    "mtime": 1780627271.0955932,
+    "ast_hash": "8c0aed192d8a00b36053b9433d1dc263",
+    "semantic_hash": "8c0aed192d8a00b36053b9433d1dc263"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\models\\admin-dashboard.models.ts": {
+    "mtime": 1779529157.645372,
+    "ast_hash": "a8dd55a3c9de90973804dc247cf455e5",
+    "semantic_hash": "a8dd55a3c9de90973804dc247cf455e5"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\models\\banners.models.ts": {
+    "mtime": 1774528429.070319,
+    "ast_hash": "bd1c43baaa49d759d9679523230851f3",
+    "semantic_hash": "bd1c43baaa49d759d9679523230851f3"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\models\\categories.models.ts": {
+    "mtime": 1777241222.722438,
+    "ast_hash": "ead502863cb08e8f57240e982b912538",
+    "semantic_hash": "ead502863cb08e8f57240e982b912538"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\models\\navigation.models.ts": {
+    "mtime": 1771174448.0589883,
+    "ast_hash": "f5dcc9a5deb8d91a2f44458054f8a249",
+    "semantic_hash": "f5dcc9a5deb8d91a2f44458054f8a249"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\models\\orders.models.ts": {
+    "mtime": 1780593967.6441433,
+    "ast_hash": "72eb4b918d2ef9c20ad57c89f7f1b602",
+    "semantic_hash": "72eb4b918d2ef9c20ad57c89f7f1b602"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\models\\pages.models.ts": {
+    "mtime": 1771174390.0570352,
+    "ast_hash": "52ddf194aaa725dad0293bd2ff56980a",
+    "semantic_hash": "52ddf194aaa725dad0293bd2ff56980a"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\models\\products.models.ts": {
+    "mtime": 1778038081.175923,
+    "ast_hash": "b4eb75caa07d5599f1652f702c18bfe9",
+    "semantic_hash": "b4eb75caa07d5599f1652f702c18bfe9"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\models\\reviews.models.ts": {
+    "mtime": 1779071115.8491523,
+    "ast_hash": "33fa9ca448807eacc37be659698c749f",
+    "semantic_hash": "33fa9ca448807eacc37be659698c749f"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\models\\settings.models.ts": {
+    "mtime": 1772780268.0252707,
+    "ast_hash": "e1e4ae1abc5ca9a5a27bb4fc88afd3a9",
+    "semantic_hash": "e1e4ae1abc5ca9a5a27bb4fc88afd3a9"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-analytics\\admin-analytics.component.ts": {
+    "mtime": 1778390131.838597,
+    "ast_hash": "795d9e6fc900f9eb7e59dd013f61cb3a",
+    "semantic_hash": "795d9e6fc900f9eb7e59dd013f61cb3a"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-banners\\admin-banners.component.ts": {
+    "mtime": 1778390131.839633,
+    "ast_hash": "56f5dbd5397dd947210ab9e71f7d5e6f",
+    "semantic_hash": "56f5dbd5397dd947210ab9e71f7d5e6f"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-blocked-ips\\admin-blocked-ips.component.ts": {
+    "mtime": 1780595664.9020119,
+    "ast_hash": "fa0aafd2e4e645ec4b6915f462d04309",
+    "semantic_hash": "fa0aafd2e4e645ec4b6915f462d04309"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-category-management\\admin-category-management.component.ts": {
+    "mtime": 1778390046.7170331,
+    "ast_hash": "5a9a6993862c48084f10ce11d2454139",
+    "semantic_hash": "5a9a6993862c48084f10ce11d2454139"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-customer-history\\admin-customer-history.component.ts": {
+    "mtime": 1778390131.8419795,
+    "ast_hash": "4afd3cef0f28a20c5e231a37ece41f52",
+    "semantic_hash": "4afd3cef0f28a20c5e231a37ece41f52"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-customers\\admin-customers.component.ts": {
+    "mtime": 1780595636.9932594,
+    "ast_hash": "e5e61be8164e759cf89f427e80523808",
+    "semantic_hash": "e5e61be8164e759cf89f427e80523808"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-inventory\\admin-inventory.component.ts": {
+    "mtime": 1778390131.8440833,
+    "ast_hash": "98c7789f742eb24b82ea2f7b4749044c",
+    "semantic_hash": "98c7789f742eb24b82ea2f7b4749044c"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-logout\\admin-logout.component.ts": {
+    "mtime": 1768986704.7517278,
+    "ast_hash": "9f175f1a31778d48d57891a16f77113d",
+    "semantic_hash": "9f175f1a31778d48d57891a16f77113d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-manual-order\\admin-manual-order.component.ts": {
+    "mtime": 1780595319.2578683,
+    "ast_hash": "1ae6b8552f35cb8db4abd5f34fed5625",
+    "semantic_hash": "1ae6b8552f35cb8db4abd5f34fed5625"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-navigation-management\\admin-navigation-management.component.ts": {
+    "mtime": 1778390131.8461955,
+    "ast_hash": "9752609afda50f5c0112d8eec822bc79",
+    "semantic_hash": "9752609afda50f5c0112d8eec822bc79"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-order-details\\admin-order-details.component.ts": {
+    "mtime": 1779038134.179034,
+    "ast_hash": "e74004470138cd439595676bd4f77761",
+    "semantic_hash": "e74004470138cd439595676bd4f77761"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-orders\\admin-orders.component.ts": {
+    "mtime": 1780595837.7956936,
+    "ast_hash": "6939f7c454953c7ff81fc59a61f9c655",
+    "semantic_hash": "6939f7c454953c7ff81fc59a61f9c655"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-orders\\components\\admin-order-invoice\\admin-order-invoice.component.ts": {
+    "mtime": 1778390131.8489053,
+    "ast_hash": "f654825a3da7653bedfa10bb26dec367",
+    "semantic_hash": "f654825a3da7653bedfa10bb26dec367"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-pages\\admin-pages.component.ts": {
+    "mtime": 1778390131.8497226,
+    "ast_hash": "a99cc96aad68158f56e7cd0c2bc0b962",
+    "semantic_hash": "a99cc96aad68158f56e7cd0c2bc0b962"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-placeholder\\admin-placeholder.component.ts": {
+    "mtime": 1778390046.731561,
+    "ast_hash": "1ccad9acf68836382366f446abca8d15",
+    "semantic_hash": "1ccad9acf68836382366f446abca8d15"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-product-form\\admin-product-form.component.ts": {
+    "mtime": 1780595436.7511146,
+    "ast_hash": "be11d29b0c4e6d318bc22482e8772c41",
+    "semantic_hash": "be11d29b0c4e6d318bc22482e8772c41"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-product-group-management\\admin-product-group-management.component.ts": {
+    "mtime": 1778390131.8518891,
+    "ast_hash": "28446e746429a43d41f08bc0c8ada494",
+    "semantic_hash": "28446e746429a43d41f08bc0c8ada494"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-products\\admin-products.component.ts": {
+    "mtime": 1778390131.8529167,
+    "ast_hash": "58f879e29286bc6f83678c1b91ffa77b",
+    "semantic_hash": "58f879e29286bc6f83678c1b91ffa77b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-profile\\admin-profile.component.ts": {
+    "mtime": 1780595742.9076612,
+    "ast_hash": "39e9354fa3b16bdfaae39713bac1d3f7",
+    "semantic_hash": "39e9354fa3b16bdfaae39713bac1d3f7"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-reviews\\admin-reviews.component.ts": {
+    "mtime": 1779071368.2645202,
+    "ast_hash": "8159002192e622077ef45057070fede5",
+    "semantic_hash": "8159002192e622077ef45057070fede5"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-settings\\admin-settings.component.ts": {
+    "mtime": 1780595529.4929545,
+    "ast_hash": "25e7f2681b7ca101fbc2284cb3f27102",
+    "semantic_hash": "25e7f2681b7ca101fbc2284cb3f27102"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-source-management\\admin-source-management.component.ts": {
+    "mtime": 1778390131.8561234,
+    "ast_hash": "c19c9195cadb74028489e9edcb53a8e1",
+    "semantic_hash": "c19c9195cadb74028489e9edcb53a8e1"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-sub-category-management\\admin-sub-category-management.component.ts": {
+    "mtime": 1778390046.7395484,
+    "ast_hash": "0ee9ccc6b7167806a9f810dcb19ea3f4",
+    "semantic_hash": "0ee9ccc6b7167806a9f810dcb19ea3f4"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-user-management\\admin-user-management.component.ts": {
+    "mtime": 1780623801.8322725,
+    "ast_hash": "a9db6f6aca3e28f81319d62250f10388",
+    "semantic_hash": "a9db6f6aca3e28f81319d62250f10388"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\dashboard-overview\\dashboard-overview.component.ts": {
+    "mtime": 1779529182.547704,
+    "ast_hash": "885b1787814889096c98ba0f9f1f53af",
+    "semantic_hash": "885b1787814889096c98ba0f9f1f53af"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\admin-analytics.service.ts": {
+    "mtime": 1771594475.0642693,
+    "ast_hash": "8ac723b5dd9394e6cf44a99496c08c87",
+    "semantic_hash": "8ac723b5dd9394e6cf44a99496c08c87"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\admin-banners.service.ts": {
+    "mtime": 1777182342.1889822,
+    "ast_hash": "29b257b623532a5ad9a122e983b702d1",
+    "semantic_hash": "29b257b623532a5ad9a122e983b702d1"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\admin-customers.service.ts": {
+    "mtime": 1772084362.0236115,
+    "ast_hash": "24b3ea56299b8f841378dbf5be2f512e",
+    "semantic_hash": "24b3ea56299b8f841378dbf5be2f512e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\admin-dashboard.service.ts": {
+    "mtime": 1779529165.0848787,
+    "ast_hash": "637cee8427f54af24fdba79ab2007821",
+    "semantic_hash": "637cee8427f54af24fdba79ab2007821"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\admin-navigation.service.ts": {
+    "mtime": 1771769682.371889,
+    "ast_hash": "4258d7eeead03e8481e67ff57a6893c9",
+    "semantic_hash": "4258d7eeead03e8481e67ff57a6893c9"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\admin-pages.service.ts": {
+    "mtime": 1771769676.5042727,
+    "ast_hash": "8ffc3a46f618740b6fd259e1634bb0ac",
+    "semantic_hash": "8ffc3a46f618740b6fd259e1634bb0ac"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\admin-reviews.service.ts": {
+    "mtime": 1779071124.3917418,
+    "ast_hash": "db84860f937b51053db2711c725b8865",
+    "semantic_hash": "db84860f937b51053db2711c725b8865"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\admin-security.service.ts": {
+    "mtime": 1771594425.3786156,
+    "ast_hash": "4945b2acf91c3d16680eaba9bfeb884d",
+    "semantic_hash": "4945b2acf91c3d16680eaba9bfeb884d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\admin-users.service.ts": {
+    "mtime": 1780622686.7782056,
+    "ast_hash": "95cb3cc6953b8a3e534d41c873551a2e",
+    "semantic_hash": "95cb3cc6953b8a3e534d41c873551a2e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\categories.service.ts": {
+    "mtime": 1775927911.8405805,
+    "ast_hash": "ad016da71371b8b24e9b9cb5b02cad6f",
+    "semantic_hash": "ad016da71371b8b24e9b9cb5b02cad6f"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\custom-landing-page.service.ts": {
+    "mtime": 1778729961.7740889,
+    "ast_hash": "4ebcc5111264053d4f92ef7c34e17117",
+    "semantic_hash": "4ebcc5111264053d4f92ef7c34e17117"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\inventory.service.ts": {
+    "mtime": 1777501368.8111534,
+    "ast_hash": "f5cc59f3223eb30a9dc8dabc423a101b",
+    "semantic_hash": "f5cc59f3223eb30a9dc8dabc423a101b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\orders.service.ts": {
+    "mtime": 1776974433.513764,
+    "ast_hash": "94cbafbcb0901e648723602f4e5396d9",
+    "semantic_hash": "94cbafbcb0901e648723602f4e5396d9"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\product-groups.service.ts": {
+    "mtime": 1777900941.252854,
+    "ast_hash": "b7f5bb15cc4fb718229150708ab8646f",
+    "semantic_hash": "b7f5bb15cc4fb718229150708ab8646f"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\products.service.ts": {
+    "mtime": 1778002329.7041516,
+    "ast_hash": "ee981ff259d7e8b4a5cd979a89b1d4d5",
+    "semantic_hash": "ee981ff259d7e8b4a5cd979a89b1d4d5"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\profile.service.ts": {
+    "mtime": 1775830514.1653447,
+    "ast_hash": "487cc3c956bbf53138eb5b868bcc0a86",
+    "semantic_hash": "487cc3c956bbf53138eb5b868bcc0a86"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\settings.service.ts": {
+    "mtime": 1777182357.4164028,
+    "ast_hash": "3d9babfad74b872196e2063b73cb882b",
+    "semantic_hash": "3d9babfad74b872196e2063b73cb882b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\sidebar.service.ts": {
+    "mtime": 1771754900.2197757,
+    "ast_hash": "b54dae586ad2cbc6a4ece5dc7cc74e3d",
+    "semantic_hash": "b54dae586ad2cbc6a4ece5dc7cc74e3d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\sub-categories.service.ts": {
+    "mtime": 1777182347.6704326,
+    "ast_hash": "3acb93c484de003a8e6ee2d2f349ef23",
+    "semantic_hash": "3acb93c484de003a8e6ee2d2f349ef23"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\app.component.ts": {
+    "mtime": 1779037974.9564898,
+    "ast_hash": "c03699ab7c0d772295c33ee2f75bd879",
+    "semantic_hash": "c03699ab7c0d772295c33ee2f75bd879"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\app.routes.ts": {
+    "mtime": 1780157287.445709,
+    "ast_hash": "f716fd469ebf2001ae3b454e8aaa5ff9",
+    "semantic_hash": "f716fd469ebf2001ae3b454e8aaa5ff9"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\config\\api.config.ts": {
+    "mtime": 1768986704.756729,
+    "ast_hash": "567bca7d940299edd4e8fec437ee214c",
+    "semantic_hash": "567bca7d940299edd4e8fec437ee214c"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\constants\\category.constants.ts": {
+    "mtime": 1776600390.6254654,
+    "ast_hash": "2451cd2083c76c925c5912598cdfc6c7",
+    "semantic_hash": "2451cd2083c76c925c5912598cdfc6c7"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\constants\\product.constants.ts": {
+    "mtime": 1776957487.9000497,
+    "ast_hash": "014501e316887cde04b3655a4c2ed275",
+    "semantic_hash": "014501e316887cde04b3655a4c2ed275"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\data\\mock-testimonials.ts": {
+    "mtime": 1778387506.7814343,
+    "ast_hash": "925675f59d1a06bc80f51441e39f5d29",
+    "semantic_hash": "925675f59d1a06bc80f51441e39f5d29"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\guards\\auth.guard.ts": {
+    "mtime": 1773069865.2109013,
+    "ast_hash": "5aceb0b5d344a1682cc38f268369f8d2",
+    "semantic_hash": "5aceb0b5d344a1682cc38f268369f8d2"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\guards\\role.guard.ts": {
+    "mtime": 1772153961.7660515,
+    "ast_hash": "be24ae1c54f232e4321fe58e7da9fd72",
+    "semantic_hash": "be24ae1c54f232e4321fe58e7da9fd72"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\http\\global-error.interceptor.ts": {
+    "mtime": 1772808570.042266,
+    "ast_hash": "017a60e596df1e5c8bc9745c9effa5d4",
+    "semantic_hash": "017a60e596df1e5c8bc9745c9effa5d4"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\http\\http-client.ts": {
+    "mtime": 1772344262.9883854,
+    "ast_hash": "cb9610cb8c5ec65db4af3005f0874a21",
+    "semantic_hash": "cb9610cb8c5ec65db4af3005f0874a21"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\interceptors\\jwt.interceptor.ts": {
+    "mtime": 1777438182.8309243,
+    "ast_hash": "eb0ff16f677582911eeef4cb065c36cc",
+    "semantic_hash": "eb0ff16f677582911eeef4cb065c36cc"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\interceptors\\loading.interceptor.ts": {
+    "mtime": 1776616396.3930862,
+    "ast_hash": "26ce1797272d21036f9f2e95420d6f1d",
+    "semantic_hash": "26ce1797272d21036f9f2e95420d6f1d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\cart-dto.model.ts": {
+    "mtime": 1776390864.4266868,
+    "ast_hash": "700a734b219a4d16e46ade59e22c06bf",
+    "semantic_hash": "700a734b219a4d16e46ade59e22c06bf"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\cart.ts": {
+    "mtime": 1776390858.247898,
+    "ast_hash": "36b97f2331e34631b00c39af29c243b4",
+    "semantic_hash": "36b97f2331e34631b00c39af29c243b4"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\category.ts": {
+    "mtime": 1774843624.9653468,
+    "ast_hash": "2e1a736fca5c035f100e617430473e87",
+    "semantic_hash": "2e1a736fca5c035f100e617430473e87"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\checkout.ts": {
+    "mtime": 1773479754.567196,
+    "ast_hash": "2183a5e4b4eab359d76825a3cfe0e829",
+    "semantic_hash": "2183a5e4b4eab359d76825a3cfe0e829"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\entities.ts": {
+    "mtime": 1778317091.7579088,
+    "ast_hash": "75c95010cd86f766a6c4011fff62fe1f",
+    "semantic_hash": "75c95010cd86f766a6c4011fff62fe1f"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\home-data.ts": {
+    "mtime": 1772286166.8365254,
+    "ast_hash": "6c7a1e4810a7e50da35fdde9fca074c4",
+    "semantic_hash": "6c7a1e4810a7e50da35fdde9fca074c4"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\order-source.ts": {
+    "mtime": 1776404390.1759474,
+    "ast_hash": "7e11a6f6a84acf9c6d2ae56d4cbb9cb7",
+    "semantic_hash": "7e11a6f6a84acf9c6d2ae56d4cbb9cb7"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\order.ts": {
+    "mtime": 1776400649.1050096,
+    "ast_hash": "5d10dc181b7d5783d46d360089abf820",
+    "semantic_hash": "5d10dc181b7d5783d46d360089abf820"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\pagination.ts": {
+    "mtime": 1774843626.978813,
+    "ast_hash": "cac1e955ee5bfe09c0e88a44e4a49062",
+    "semantic_hash": "cac1e955ee5bfe09c0e88a44e4a49062"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\product.ts": {
+    "mtime": 1778038076.3485777,
+    "ast_hash": "dca8e1e9ea906e680baa5632ab38bd9a",
+    "semantic_hash": "dca8e1e9ea906e680baa5632ab38bd9a"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\review.ts": {
+    "mtime": 1779071168.627273,
+    "ast_hash": "6e05337087fa94dab3b3d5cf7d822796",
+    "semantic_hash": "6e05337087fa94dab3b3d5cf7d822796"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\testimonial.ts": {
+    "mtime": 1768986704.7597275,
+    "ast_hash": "18b125805774efaac87343cf0ce702e8",
+    "semantic_hash": "18b125805774efaac87343cf0ce702e8"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\models\\user.ts": {
+    "mtime": 1768986704.7597275,
+    "ast_hash": "37e1e2085e116e4f4d657450245c1d2a",
+    "semantic_hash": "37e1e2085e116e4f4d657450245c1d2a"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\analytics.service.ts": {
+    "mtime": 1771768951.860141,
+    "ast_hash": "20e27431ea58a05c8b8b0e6e19ae803d",
+    "semantic_hash": "20e27431ea58a05c8b8b0e6e19ae803d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\auth.service.ts": {
+    "mtime": 1780628081.950825,
+    "ast_hash": "06efb689dd6d543ffecc90b641349435",
+    "semantic_hash": "06efb689dd6d543ffecc90b641349435"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\banner.service.ts": {
+    "mtime": 1776662560.0140543,
+    "ast_hash": "be32d43192b94fd182da6e3fad446cef",
+    "semantic_hash": "be32d43192b94fd182da6e3fad446cef"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\cart.service.ts": {
+    "mtime": 1780157077.0579987,
+    "ast_hash": "fee83dab18d5fa2ff956fc5b48b2d909",
+    "semantic_hash": "fee83dab18d5fa2ff956fc5b48b2d909"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\category.service.ts": {
+    "mtime": 1779037939.2924256,
+    "ast_hash": "fcd2ce8c169d75168fb9e472d1cdd2db",
+    "semantic_hash": "fcd2ce8c169d75168fb9e472d1cdd2db"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\checkout.service.ts": {
+    "mtime": 1779035016.320845,
+    "ast_hash": "bb2021ed3b03b9e79c001e89367685e0",
+    "semantic_hash": "bb2021ed3b03b9e79c001e89367685e0"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\customer-order-api.service.ts": {
+    "mtime": 1780585994.0290875,
+    "ast_hash": "400cc7f3845675cf8a78a1bd0da666a7",
+    "semantic_hash": "400cc7f3845675cf8a78a1bd0da666a7"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\customer-profile.service.ts": {
+    "mtime": 1776400678.261739,
+    "ast_hash": "5313064c34b89596273cf9e7d5f4ede6",
+    "semantic_hash": "5313064c34b89596273cf9e7d5f4ede6"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\image-url.service.ts": {
+    "mtime": 1778387506.784607,
+    "ast_hash": "798826772e1c48f1184c63b833b1f1e0",
+    "semantic_hash": "798826772e1c48f1184c63b833b1f1e0"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\loading.service.ts": {
+    "mtime": 1776616363.145682,
+    "ast_hash": "f49b4abc166407a172d8e00311340006",
+    "semantic_hash": "f49b4abc166407a172d8e00311340006"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\logger.service.ts": {
+    "mtime": 1771472213.097809,
+    "ast_hash": "37dfafd07a69e398d9e1a8b72eee44ec",
+    "semantic_hash": "37dfafd07a69e398d9e1a8b72eee44ec"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\navigation.service.ts": {
+    "mtime": 1776688455.6057172,
+    "ast_hash": "a7edd0f9b7dff5101b1f97fb4f2ef586",
+    "semantic_hash": "a7edd0f9b7dff5101b1f97fb4f2ef586"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\notification.service.ts": {
+    "mtime": 1771426992.742111,
+    "ast_hash": "e8368a6e817cd7804afb85aeb46175da",
+    "semantic_hash": "e8368a6e817cd7804afb85aeb46175da"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\order.service.ts": {
+    "mtime": 1780586685.323709,
+    "ast_hash": "198fcf13a55663bcfaa8e10843ece616",
+    "semantic_hash": "198fcf13a55663bcfaa8e10843ece616"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\product.service.ts": {
+    "mtime": 1779036149.1117358,
+    "ast_hash": "f13113baf7a0d5724d8b9c2f548cc306",
+    "semantic_hash": "f13113baf7a0d5724d8b9c2f548cc306"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\review.service.ts": {
+    "mtime": 1771594544.8989456,
+    "ast_hash": "2f20f3b42414208881cfa6064d54f9e0",
+    "semantic_hash": "2f20f3b42414208881cfa6064d54f9e0"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\site-settings.service.ts": {
+    "mtime": 1776688455.6067622,
+    "ast_hash": "8819104cc10622eb499b90d9dbb9bf58",
+    "semantic_hash": "8819104cc10622eb499b90d9dbb9bf58"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\source-management.service.ts": {
+    "mtime": 1776669197.1506007,
+    "ast_hash": "ddfda1f1699bfda3e51de57dc5888573",
+    "semantic_hash": "ddfda1f1699bfda3e51de57dc5888573"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\testimonial.service.ts": {
+    "mtime": 1768986704.7617276,
+    "ast_hash": "ba40d6591d9f333fd184a2c0db40d400",
+    "semantic_hash": "ba40d6591d9f333fd184a2c0db40d400"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\user-persistence.service.ts": {
+    "mtime": 1776660242.1899714,
+    "ast_hash": "8721c7a4ddeb9882f8fb5c5195a5b404",
+    "semantic_hash": "8721c7a4ddeb9882f8fb5c5195a5b404"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\services\\user.service.ts": {
+    "mtime": 1773081623.2063627,
+    "ast_hash": "04ce96d958cc2a895f33d4b13c598046",
+    "semantic_hash": "04ce96d958cc2a895f33d4b13c598046"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\utils\\bangladesh-locations.ts": {
+    "mtime": 1779010430.264811,
+    "ast_hash": "2cb09ebece0a62efbb6fc3e814ac608b",
+    "semantic_hash": "2cb09ebece0a62efbb6fc3e814ac608b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\utils\\bangladesh-locations.utf8.ts": {
+    "mtime": 1779010435.7057633,
+    "ast_hash": "901ff099884cc49cf87406aa95d39fcc",
+    "semantic_hash": "901ff099884cc49cf87406aa95d39fcc"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\core\\utils\\location-matcher.ts": {
+    "mtime": 1779010444.581234,
+    "ast_hash": "8c71ad8411457d61ae07a563d9577251",
+    "semantic_hash": "8c71ad8411457d61ae07a563d9577251"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\accessories\\pages\\accessories-page\\accessories-page.component.ts": {
+    "mtime": 1776510148.7861578,
+    "ast_hash": "cad3379c598db1614a89a057d7d6d966",
+    "semantic_hash": "cad3379c598db1614a89a057d7d6d966"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\account\\pages\\account-page\\account-page.component.ts": {
+    "mtime": 1776505838.6643598,
+    "ast_hash": "9a8d63d921eb8a6105c0657c3c19f3e6",
+    "semantic_hash": "9a8d63d921eb8a6105c0657c3c19f3e6"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\cart\\pages\\cart-page\\cart-page.component.ts": {
+    "mtime": 1776510111.677254,
+    "ast_hash": "56c35d2eb13a1f7fd7601f1715631914",
+    "semantic_hash": "56c35d2eb13a1f7fd7601f1715631914"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\checkout\\pages\\checkout-page\\checkout-page.component.ts": {
+    "mtime": 1779034287.3154662,
+    "ast_hash": "aa3a4ffb8808d010f1b1edeb617992cb",
+    "semantic_hash": "aa3a4ffb8808d010f1b1edeb617992cb"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\children\\pages\\children-products-page\\children-products-page.component.ts": {
+    "mtime": 1778390046.748218,
+    "ast_hash": "5931f846cca86373fc3ba79d43268d41",
+    "semantic_hash": "5931f846cca86373fc3ba79d43268d41"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\customer-profile\\pages\\profile-page\\profile-page.component.ts": {
+    "mtime": 1780595794.970544,
+    "ast_hash": "6739fdafb76ce1c8bb4246fdbe5e156a",
+    "semantic_hash": "6739fdafb76ce1c8bb4246fdbe5e156a"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\campaign-spotlight\\campaign-spotlight.component.ts": {
+    "mtime": 1778390046.7503686,
+    "ast_hash": "2460c87b00013e63fe172bf6313b7d69",
+    "semantic_hash": "2460c87b00013e63fe172bf6313b7d69"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\category-grid\\category-grid.component.ts": {
+    "mtime": 1778390131.8691213,
+    "ast_hash": "b54b1c427905e25988027dfa96f94839",
+    "semantic_hash": "b54b1c427905e25988027dfa96f94839"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\category-section\\category-section.component.ts": {
+    "mtime": 1778390131.8708615,
+    "ast_hash": "fda31c9227b91ef9a6f05e7bf4a42475",
+    "semantic_hash": "fda31c9227b91ef9a6f05e7bf4a42475"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\featured-products\\featured-products.component.ts": {
+    "mtime": 1778390046.7530797,
+    "ast_hash": "1bfe5ef8dce4366758ed44ab3cdef926",
+    "semantic_hash": "1bfe5ef8dce4366758ed44ab3cdef926"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\hero\\hero.component.ts": {
+    "mtime": 1779037936.6840382,
+    "ast_hash": "7c4be51753e788f5520696d8e86e4b72",
+    "semantic_hash": "7c4be51753e788f5520696d8e86e4b72"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\new-arrivals\\new-arrivals.component.ts": {
+    "mtime": 1778390131.8719068,
+    "ast_hash": "b9e5934e00ac22ccee452297c504f446",
+    "semantic_hash": "b9e5934e00ac22ccee452297c504f446"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\newsletter\\newsletter.component.ts": {
+    "mtime": 1778390046.756349,
+    "ast_hash": "17d42a1c0dc9a07b6b70676330924c46",
+    "semantic_hash": "17d42a1c0dc9a07b6b70676330924c46"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\promo-banner\\promo-banner.component.ts": {
+    "mtime": 1778390046.7569356,
+    "ast_hash": "da1b8d273076a265bab34ccae0da0127",
+    "semantic_hash": "da1b8d273076a265bab34ccae0da0127"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\testimonials\\testimonials.component.ts": {
+    "mtime": 1778390131.87297,
+    "ast_hash": "f6b39956e652ed9a14c8e6e8d9c8592b",
+    "semantic_hash": "f6b39956e652ed9a14c8e6e8d9c8592b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\why-choose-us\\why-choose-us.component.ts": {
+    "mtime": 1778390046.7585351,
+    "ast_hash": "ba70127c368a6610f84fbfdfa8bf59be",
+    "semantic_hash": "ba70127c368a6610f84fbfdfa8bf59be"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\pages\\home-page\\home-page.component.ts": {
+    "mtime": 1776688455.6072862,
+    "ast_hash": "ec715922c53d0a1b03a696173e1dfe1d",
+    "semantic_hash": "ec715922c53d0a1b03a696173e1dfe1d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\landing-page\\pages\\custom-landing-page\\custom-landing-page.component.ts": {
+    "mtime": 1780594273.146311,
+    "ast_hash": "9f5c7cbfb05376a021238c78be74188e",
+    "semantic_hash": "9f5c7cbfb05376a021238c78be74188e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\landing-page\\pages\\landing-page\\landing-page.component.ts": {
+    "mtime": 1780594177.13335,
+    "ast_hash": "cf705031bcfe7fd31f31b553a3d1e14b",
+    "semantic_hash": "cf705031bcfe7fd31f31b553a3d1e14b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\login\\pages\\login-page\\login.page.ts": {
+    "mtime": 1776509802.1199481,
+    "ast_hash": "a0351d423f7fea2e07661bee168cf367",
+    "semantic_hash": "a0351d423f7fea2e07661bee168cf367"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\components\\breadcrumbs\\breadcrumbs.component.ts": {
+    "mtime": 1778390046.760142,
+    "ast_hash": "7b2a5f66dc675836b63775dfdbac5a24",
+    "semantic_hash": "7b2a5f66dc675836b63775dfdbac5a24"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\components\\category-chips\\category-chips.component.ts": {
+    "mtime": 1778390131.8761294,
+    "ast_hash": "4964e0d1c608be7f00120693c3a95082",
+    "semantic_hash": "4964e0d1c608be7f00120693c3a95082"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\components\\filters-sortbar\\filters-sortbar.component.ts": {
+    "mtime": 1776509765.85415,
+    "ast_hash": "01a5e6e2a09254e103d9393b42905628",
+    "semantic_hash": "01a5e6e2a09254e103d9393b42905628"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\components\\pagination\\pagination.component.ts": {
+    "mtime": 1776509750.66674,
+    "ast_hash": "5204db8ba149cec3a2a426d2a5bb896e",
+    "semantic_hash": "5204db8ba149cec3a2a426d2a5bb896e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\components\\product-grid\\product-grid.component.ts": {
+    "mtime": 1776505742.12517,
+    "ast_hash": "3830d781421b0b49e1e116fdc6be55d7",
+    "semantic_hash": "3830d781421b0b49e1e116fdc6be55d7"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\pages\\men-products-page\\men-products-page.component.ts": {
+    "mtime": 1778390046.7611768,
+    "ast_hash": "5ea6e12032392c7d69c4d996aaf468fc",
+    "semantic_hash": "5ea6e12032392c7d69c4d996aaf468fc"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\offers\\pages\\offer-details-page\\offer-details-page.component.ts": {
+    "mtime": 1778387506.8096373,
+    "ast_hash": "2e5aa0f0edfef99141a5dcd45a27d4f4",
+    "semantic_hash": "2e5aa0f0edfef99141a5dcd45a27d4f4"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\order-confirmation\\pages\\order-confirmation-page\\order-confirmation-page.component.ts": {
+    "mtime": 1778387506.810686,
+    "ast_hash": "aa1678952f3689d989f8b551d651a17c",
+    "semantic_hash": "aa1678952f3689d989f8b551d651a17c"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\orders\\pages\\orders-page\\orders-page.component.ts": {
+    "mtime": 1776505595.1045923,
+    "ast_hash": "d1d0634ac9ece8d43e4e76b03cc73978",
+    "semantic_hash": "d1d0634ac9ece8d43e4e76b03cc73978"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\placeholder\\placeholder.component.ts": {
+    "mtime": 1778390046.762713,
+    "ast_hash": "724f95e1f8957ed194baf409b7fbe67f",
+    "semantic_hash": "724f95e1f8957ed194baf409b7fbe67f"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\product-details\\pages\\product-details-page\\product-details-page.component.ts": {
+    "mtime": 1779038102.7886431,
+    "ast_hash": "54719939118ff9e863bf67628b7defba",
+    "semantic_hash": "54719939118ff9e863bf67628b7defba"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\products\\pages\\product-gallery\\product-gallery.component.ts": {
+    "mtime": 1779037967.0032175,
+    "ast_hash": "d2fbd3257cfa4678e3bfa9aceeb4804e",
+    "semantic_hash": "d2fbd3257cfa4678e3bfa9aceeb4804e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\components\\breadcrumbs\\breadcrumbs.component.ts": {
+    "mtime": 1778390046.7647207,
+    "ast_hash": "39f063efc0bd74a911aca07c58d89540",
+    "semantic_hash": "39f063efc0bd74a911aca07c58d89540"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\components\\pagination\\pagination.component.ts": {
+    "mtime": 1776509570.684995,
+    "ast_hash": "17afeb6560157598abf8a2e5ebd78c9c",
+    "semantic_hash": "17afeb6560157598abf8a2e5ebd78c9c"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\components\\product-grid\\product-grid.component.ts": {
+    "mtime": 1776505761.4826264,
+    "ast_hash": "2101986ed1f9f0e8aaf549d581b625f5",
+    "semantic_hash": "2101986ed1f9f0e8aaf549d581b625f5"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\components\\sidebar-filters\\sidebar-filters.component.ts": {
+    "mtime": 1778390131.8803084,
+    "ast_hash": "7cddc9c8c968dfdb9eb30166d8d86e1a",
+    "semantic_hash": "7cddc9c8c968dfdb9eb30166d8d86e1a"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\components\\toolbar\\toolbar.component.ts": {
+    "mtime": 1776509549.0154786,
+    "ast_hash": "d4315f12d9e9417a195aa8dc4b63d1da",
+    "semantic_hash": "d4315f12d9e9417a195aa8dc4b63d1da"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\pages\\women-products-page\\women-products-page.component.ts": {
+    "mtime": 1778390046.7681255,
+    "ast_hash": "4c7542a459f4d890c24244a8e04d8c5e",
+    "semantic_hash": "4c7542a459f4d890c24244a8e04d8c5e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\interceptors\\admin-cache.interceptor.ts": {
+    "mtime": 1776669174.3115823,
+    "ast_hash": "07f2a8d02d61c0bf8b4f7d5c169c2bc8",
+    "semantic_hash": "07f2a8d02d61c0bf8b4f7d5c169c2bc8"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\interceptors\\cache.interceptor.ts": {
+    "mtime": 1776671752.5618815,
+    "ast_hash": "eff3a2d131d0b088d455318453cc94a0",
+    "semantic_hash": "eff3a2d131d0b088d455318453cc94a0"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\layout\\footer\\footer.component.ts": {
+    "mtime": 1779037827.6664302,
+    "ast_hash": "046b1252091ffaa81b082f5cee6057bd",
+    "semantic_hash": "046b1252091ffaa81b082f5cee6057bd"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\layout\\navbar\\navbar.component.ts": {
+    "mtime": 1779037838.957889,
+    "ast_hash": "12d3f2fd47209ee52fea637cfadf0b29",
+    "semantic_hash": "12d3f2fd47209ee52fea637cfadf0b29"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\pages\\about\\about.component.ts": {
+    "mtime": 1778390131.8819,
+    "ast_hash": "81baec3a5f31c862d72a3073ae0694de",
+    "semantic_hash": "81baec3a5f31c862d72a3073ae0694de"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\pages\\contact\\contact.component.ts": {
+    "mtime": 1780595599.0132682,
+    "ast_hash": "ca2f79209252091b5f1f1966a5364dad",
+    "semantic_hash": "ca2f79209252091b5f1f1966a5364dad"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\pages\\contact\\contact.service.ts": {
+    "mtime": 1768986704.777327,
+    "ast_hash": "b9b21529da575395d7a49c76ce5f14a4",
+    "semantic_hash": "b9b21529da575395d7a49c76ce5f14a4"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\services\\cart.service.ts": {
+    "mtime": 1773483838.8042321,
+    "ast_hash": "2ebbb38d7ee0d05d740431e15e9489ab",
+    "semantic_hash": "2ebbb38d7ee0d05d740431e15e9489ab"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\app-icon\\app-icon.component.ts": {
+    "mtime": 1778895441.374803,
+    "ast_hash": "130b8500dff7f84fcda1623743dfbf5e",
+    "semantic_hash": "130b8500dff7f84fcda1623743dfbf5e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\badge\\badge.component.ts": {
+    "mtime": 1776506261.7102437,
+    "ast_hash": "953790c061c8ca3bf70517c546e803a9",
+    "semantic_hash": "953790c061c8ca3bf70517c546e803a9"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\contact-fab\\contact-fab.component.ts": {
+    "mtime": 1780157121.9352312,
+    "ast_hash": "88fc376eeeb310687c4780510537c500",
+    "semantic_hash": "88fc376eeeb310687c4780510537c500"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\icon-button\\icon-button.component.ts": {
+    "mtime": 1776509609.85443,
+    "ast_hash": "0fc7f9f1ca7637e14480d014b624d797",
+    "semantic_hash": "0fc7f9f1ca7637e14480d014b624d797"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\loading-spinner\\loading-spinner.component.ts": {
+    "mtime": 1778325157.592156,
+    "ast_hash": "7aa6a46fe11008149a2f83ac664b8c9b",
+    "semantic_hash": "7aa6a46fe11008149a2f83ac664b8c9b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\price-display\\price-display.component.ts": {
+    "mtime": 1776506408.8064399,
+    "ast_hash": "3120a174e9ae315e9fa68952888c98ee",
+    "semantic_hash": "3120a174e9ae315e9fa68952888c98ee"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\product-card\\product-card.component.ts": {
+    "mtime": 1780595780.0831883,
+    "ast_hash": "e7478d2e5929b928ed768a6aa8431f22",
+    "semantic_hash": "e7478d2e5929b928ed768a6aa8431f22"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\quick-add-modal\\quick-add-modal.component.ts": {
+    "mtime": 1779025752.1692169,
+    "ast_hash": "5d51cd1b40424d9a1af3dadbcc536202",
+    "semantic_hash": "5d51cd1b40424d9a1af3dadbcc536202"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\section-header\\section-header.component.ts": {
+    "mtime": 1776509595.8270636,
+    "ast_hash": "9edf8b62ea88758e9407e9c8e0012251",
+    "semantic_hash": "9edf8b62ea88758e9407e9c8e0012251"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\size-guide\\size-guide.component.ts": {
+    "mtime": 1778387506.8298652,
+    "ast_hash": "f75d279351f4dcebe2303bad35335abf",
+    "semantic_hash": "f75d279351f4dcebe2303bad35335abf"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\toast\\toast.component.ts": {
+    "mtime": 1780595770.3372707,
+    "ast_hash": "207ea9aa77b89251ab9e0ea14d37905e",
+    "semantic_hash": "207ea9aa77b89251ab9e0ea14d37905e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\pipes\\bdt-to-usd.pipe.ts": {
+    "mtime": 1768986704.779326,
+    "ast_hash": "9926a4473ee58cb28dc7c9b33f40ef8b",
+    "semantic_hash": "9926a4473ee58cb28dc7c9b33f40ef8b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\pipes\\safe-html.pipe.ts": {
+    "mtime": 1772779342.525092,
+    "ast_hash": "ffa254374154c00a2a69326d9221fd08",
+    "semantic_hash": "ffa254374154c00a2a69326d9221fd08"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\environments\\environment.production.ts": {
+    "mtime": 1775229304.3406982,
+    "ast_hash": "d4af23ee77b03f7562cc181cdc1a8ef4",
+    "semantic_hash": "d4af23ee77b03f7562cc181cdc1a8ef4"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\environments\\environment.ts": {
+    "mtime": 1780623523.6472273,
+    "ast_hash": "24d38d84826d18d71341369fbfefa76e",
+    "semantic_hash": "24d38d84826d18d71341369fbfefa76e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\main.ts": {
+    "mtime": 1779037976.2976792,
+    "ast_hash": "896bce44ea9fdc8489a92e36261f3bdd",
+    "semantic_hash": "896bce44ea9fdc8489a92e36261f3bdd"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\tailwind.config.js": {
+    "mtime": 1779041946.5753772,
+    "ast_hash": "9fe9b2548d2d44327a831a49674ef990",
+    "semantic_hash": "9fe9b2548d2d44327a831a49674ef990"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\tsconfig.app.json": {
+    "mtime": 1768986704.779326,
+    "ast_hash": "dfd3a9f21385832ccb3960be90f22a46",
+    "semantic_hash": "dfd3a9f21385832ccb3960be90f22a46"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\tsconfig.json": {
+    "mtime": 1768986704.7803264,
+    "ast_hash": "7b4f658ba0540437ea0d235a0a3f9f48",
+    "semantic_hash": "7b4f658ba0540437ea0d235a0a3f9f48"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Contracts\\Auth\\AuthRequests.cs": {
+    "mtime": 1778474595.0139475,
+    "ast_hash": "56cbe000cd1ab8ea94974a9c38b997cf",
+    "semantic_hash": "56cbe000cd1ab8ea94974a9c38b997cf"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminAnalyticsController.cs": {
+    "mtime": 1778317071.672715,
+    "ast_hash": "835e8f828fb42eb3887c1b0fe6a55be8",
+    "semantic_hash": "835e8f828fb42eb3887c1b0fe6a55be8"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminBannersController.cs": {
+    "mtime": 1778317071.704394,
+    "ast_hash": "abab0da9ecae0e497caf18b03a253bc0",
+    "semantic_hash": "abab0da9ecae0e497caf18b03a253bc0"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminCacheController.cs": {
+    "mtime": 1776533959.3457084,
+    "ast_hash": "7e1695b46825b887ee0bb061ae9110ef",
+    "semantic_hash": "7e1695b46825b887ee0bb061ae9110ef"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminCategoryController.cs": {
+    "mtime": 1778317071.7018642,
+    "ast_hash": "6998c23642f3602f14d5278eabc559c7",
+    "semantic_hash": "6998c23642f3602f14d5278eabc559c7"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminCustomLandingPageController.cs": {
+    "mtime": 1778317071.7003584,
+    "ast_hash": "1d8b9772e353ec159f89175a87bcd712",
+    "semantic_hash": "1d8b9772e353ec159f89175a87bcd712"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminCustomersController.cs": {
+    "mtime": 1778317071.707563,
+    "ast_hash": "92b2d444220edd02908419640e4a95fd",
+    "semantic_hash": "92b2d444220edd02908419640e4a95fd"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminDashboardController.cs": {
+    "mtime": 1779529150.4857025,
+    "ast_hash": "4ca1ecbbc76f77349387f1c4fed2b5fd",
+    "semantic_hash": "4ca1ecbbc76f77349387f1c4fed2b5fd"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminNavigationController.cs": {
+    "mtime": 1778317071.6835208,
+    "ast_hash": "489c01544ffd44276de7aa64f178cdc2",
+    "semantic_hash": "489c01544ffd44276de7aa64f178cdc2"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminOrdersController.cs": {
+    "mtime": 1779037305.1946056,
+    "ast_hash": "109dc2b1ddbf0cb973ce8d91e68dc643",
+    "semantic_hash": "109dc2b1ddbf0cb973ce8d91e68dc643"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminPagesController.cs": {
+    "mtime": 1778317071.695132,
+    "ast_hash": "c766d7601f36ed4674336f95391b6ecf",
+    "semantic_hash": "c766d7601f36ed4674336f95391b6ecf"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminProductGroupsController.cs": {
+    "mtime": 1778317071.686522,
+    "ast_hash": "79b6691f4aa22722814c44f693473217",
+    "semantic_hash": "79b6691f4aa22722814c44f693473217"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminProductsController.cs": {
+    "mtime": 1779037995.995919,
+    "ast_hash": "64c34ad91543a525588cc221f474539c",
+    "semantic_hash": "64c34ad91543a525588cc221f474539c"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminReviewsController.cs": {
+    "mtime": 1779071057.4448159,
+    "ast_hash": "07396974e7a80eddb42a2d853afd1c41",
+    "semantic_hash": "07396974e7a80eddb42a2d853afd1c41"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminSecurityController.cs": {
+    "mtime": 1778317071.6753347,
+    "ast_hash": "8d35f7eefb28d3c12c57a4e2253482f4",
+    "semantic_hash": "8d35f7eefb28d3c12c57a4e2253482f4"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminSettingsController.cs": {
+    "mtime": 1778317071.6686451,
+    "ast_hash": "19e16940a9c82410cdf7d570ba1d68bb",
+    "semantic_hash": "19e16940a9c82410cdf7d570ba1d68bb"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminSocialMediaSourcesController.cs": {
+    "mtime": 1778317071.6890554,
+    "ast_hash": "07826fa9a7c828751e3a9c866adb75da",
+    "semantic_hash": "07826fa9a7c828751e3a9c866adb75da"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminSourcePagesController.cs": {
+    "mtime": 1778317071.681007,
+    "ast_hash": "ee0ec212b825bf788cf5159fce1c3d6e",
+    "semantic_hash": "ee0ec212b825bf788cf5159fce1c3d6e"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminSubCategoryController.cs": {
+    "mtime": 1778317071.697837,
+    "ast_hash": "1f8ce7c4f5e03e56d6baae9f28791527",
+    "semantic_hash": "1f8ce7c4f5e03e56d6baae9f28791527"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AdminUsersController.cs": {
+    "mtime": 1780626348.870761,
+    "ast_hash": "ddf11cd1dcde1545c5f204dd83221214",
+    "semantic_hash": "ddf11cd1dcde1545c5f204dd83221214"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AnalyticsController.cs": {
+    "mtime": 1771432793.9715953,
+    "ast_hash": "687974530220079c1d5eeff9c443682f",
+    "semantic_hash": "687974530220079c1d5eeff9c443682f"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AuthController.cs": {
+    "mtime": 1780626413.3679004,
+    "ast_hash": "078afde4c7c049726cc5165765fc3eff",
+    "semantic_hash": "078afde4c7c049726cc5165765fc3eff"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\BannersController.cs": {
+    "mtime": 1776497326.867459,
+    "ast_hash": "7df7f1b456be8fcff2b8e6f3e1db092c",
+    "semantic_hash": "7df7f1b456be8fcff2b8e6f3e1db092c"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\BaseApiController.cs": {
+    "mtime": 1771162089.392652,
+    "ast_hash": "3309184a7c025b44c94924111bad55ed",
+    "semantic_hash": "3309184a7c025b44c94924111bad55ed"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\CartController.cs": {
+    "mtime": 1779040031.126697,
+    "ast_hash": "200b9e8a345c2c7d0a1e935b2baaf7ae",
+    "semantic_hash": "200b9e8a345c2c7d0a1e935b2baaf7ae"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\CategoriesController.cs": {
+    "mtime": 1777241469.3008075,
+    "ast_hash": "50513b6688817f35571d43f9f8360262",
+    "semantic_hash": "50513b6688817f35571d43f9f8360262"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\CustomLandingPageController.cs": {
+    "mtime": 1778865721.6715207,
+    "ast_hash": "ddfb0bbd73b056d8fdd66c7a31956441",
+    "semantic_hash": "ddfb0bbd73b056d8fdd66c7a31956441"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\CustomersController.cs": {
+    "mtime": 1779037287.3790548,
+    "ast_hash": "ead7967a838c7fb9175a2086ddf4cd67",
+    "semantic_hash": "ead7967a838c7fb9175a2086ddf4cd67"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\HomeController.cs": {
+    "mtime": 1778041049.4403214,
+    "ast_hash": "c77b63c03b61d1ab51d1a2f15095572b",
+    "semantic_hash": "c77b63c03b61d1ab51d1a2f15095572b"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\NavigationController.cs": {
+    "mtime": 1776497315.5576992,
+    "ast_hash": "62ace1bd869d47893dcc11fc94663821",
+    "semantic_hash": "62ace1bd869d47893dcc11fc94663821"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\OrdersController.cs": {
+    "mtime": 1779037982.2684414,
+    "ast_hash": "d7b31db567cf2716ad17cc2c41627f1c",
+    "semantic_hash": "d7b31db567cf2716ad17cc2c41627f1c"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\ProductsController.cs": {
+    "mtime": 1778865013.205683,
+    "ast_hash": "6322fb4e3d1e69bf7227e58d5c01cc1d",
+    "semantic_hash": "6322fb4e3d1e69bf7227e58d5c01cc1d"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\ProfileController.cs": {
+    "mtime": 1776442795.8652577,
+    "ast_hash": "b9515e6c248567389e74736606ea7d53",
+    "semantic_hash": "b9515e6c248567389e74736606ea7d53"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\ReviewsController.cs": {
+    "mtime": 1771334867.2839751,
+    "ast_hash": "ab90b88d239063046ab73d39c6c828c1",
+    "semantic_hash": "ab90b88d239063046ab73d39c6c828c1"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\SiteSettingsController.cs": {
+    "mtime": 1776497321.3651283,
+    "ast_hash": "1c734c42a2fc0cee4db0b0ea4150cdd6",
+    "semantic_hash": "1c734c42a2fc0cee4db0b0ea4150cdd6"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\ECommerce.API.csproj": {
+    "mtime": 1773484987.5143404,
+    "ast_hash": "3500c364e8d103eca780b6ffa873d2fd",
+    "semantic_hash": "3500c364e8d103eca780b6ffa873d2fd"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Extensions\\FileStorageExtensions.cs": {
+    "mtime": 1772216765.9339745,
+    "ast_hash": "43e4cad8427e9c5f25a39cab13e159e5",
+    "semantic_hash": "43e4cad8427e9c5f25a39cab13e159e5"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Extensions\\MiddlewareExtensions.cs": {
+    "mtime": 1773068869.6327872,
+    "ast_hash": "8d9b1b2d84b13295404d3c8ff7b09a40",
+    "semantic_hash": "8d9b1b2d84b13295404d3c8ff7b09a40"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Extensions\\ServiceExtensions.cs": {
+    "mtime": 1780627763.3490415,
+    "ast_hash": "afc644d8764cc092b2c262a271246f37",
+    "semantic_hash": "afc644d8764cc092b2c262a271246f37"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Helpers\\MappingProfiles.cs": {
+    "mtime": 1778039908.2331824,
+    "ast_hash": "0d1631636e7d43de7a80e6a7755e8287",
+    "semantic_hash": "0d1631636e7d43de7a80e6a7755e8287"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Helpers\\PathHelper.cs": {
+    "mtime": 1777434003.002454,
+    "ast_hash": "958aa3e6eb33d97cb4113792e0c9a904",
+    "semantic_hash": "958aa3e6eb33d97cb4113792e0c9a904"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Helpers\\StaffMenuAccessAttribute.cs": {
+    "mtime": 1778317025.7717772,
+    "ast_hash": "c9150c29aaea24218e9c5ff05e7fd0fb",
+    "semantic_hash": "c9150c29aaea24218e9c5ff05e7fd0fb"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\GlobalExceptionMiddleware.cs": {
+    "mtime": 1773410470.9480264,
+    "ast_hash": "7b779e22ae15d202bf853652cc047611",
+    "semantic_hash": "7b779e22ae15d202bf853652cc047611"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\IpBlockingMiddleware.cs": {
+    "mtime": 1772204435.6894176,
+    "ast_hash": "5b643b059781cc76e5d8a795d0c73add",
+    "semantic_hash": "5b643b059781cc76e5d8a795d0c73add"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\RequestLoggingMiddleware.cs": {
+    "mtime": 1772209395.3313751,
+    "ast_hash": "3f5474b0b5b6c96a5bf167b05b0e24b2",
+    "semantic_hash": "3f5474b0b5b6c96a5bf167b05b0e24b2"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\RevokedTokenMiddleware.cs": {
+    "mtime": 1773068869.6327872,
+    "ast_hash": "62252c28eafc3b820f159c141575e89f",
+    "semantic_hash": "62252c28eafc3b820f159c141575e89f"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\StaffDeleteRestrictionMiddleware.cs": {
+    "mtime": 1778317043.443808,
+    "ast_hash": "d77ea50d577e2ceef626cc371384e050",
+    "semantic_hash": "d77ea50d577e2ceef626cc371384e050"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\SuspiciousUserBlockingMiddleware.cs": {
+    "mtime": 1775018078.3453026,
+    "ast_hash": "cfe1ff3b250dcf5b4182d6aff77ad001",
+    "semantic_hash": "cfe1ff3b250dcf5b4182d6aff77ad001"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\TimingMiddleware.cs": {
+    "mtime": 1773410468.9377015,
+    "ast_hash": "be72b28c726e1548b1e151219efb51ed",
+    "semantic_hash": "be72b28c726e1548b1e151219efb51ed"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\VisitorTrackingMiddleware.cs": {
+    "mtime": 1771969652.9803038,
+    "ast_hash": "f868aa79ef50d5650799b12b343106c9",
+    "semantic_hash": "f868aa79ef50d5650799b12b343106c9"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Program.cs": {
+    "mtime": 1780627189.2536187,
+    "ast_hash": "64107c43999a8ad8d08c54295d03a423",
+    "semantic_hash": "64107c43999a8ad8d08c54295d03a423"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Properties\\launchSettings.json": {
+    "mtime": 1773068869.6327872,
+    "ast_hash": "6e1681f4c4994e49357b828c68486411",
+    "semantic_hash": "6e1681f4c4994e49357b828c68486411"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\TestMap.cs": {
+    "mtime": 1773484798.137643,
+    "ast_hash": "69017e67dcebbe1ec03ddb0d9ed38888",
+    "semantic_hash": "69017e67dcebbe1ec03ddb0d9ed38888"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\appsettings.Production.json": {
+    "mtime": 1779029774.0016909,
+    "ast_hash": "647495d7dcd993ed5bacf294aabe5ecb",
+    "semantic_hash": "647495d7dcd993ed5bacf294aabe5ecb"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\appsettings.json": {
+    "mtime": 1779029772.571887,
+    "ast_hash": "175e7f0a85a3453ca168c701f00b9e81",
+    "semantic_hash": "175e7f0a85a3453ca168c701f00b9e81"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\sync_migrations.sql": {
+    "mtime": 1773410797.822875,
+    "ast_hash": "ac5e1737c0761474932e9434176b6a71",
+    "semantic_hash": "ac5e1737c0761474932e9434176b6a71"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Constants\\Constants.cs": {
+    "mtime": 1769940757.856658,
+    "ast_hash": "0d18476e9de01bbc913e414e36f22c17",
+    "semantic_hash": "0d18476e9de01bbc913e414e36f22c17"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\ApiResponse.cs": {
+    "mtime": 1769940833.381363,
+    "ast_hash": "1d9a893d79e81d35350f8326097a78ca",
+    "semantic_hash": "1d9a893d79e81d35350f8326097a78ca"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\AuthDtos.cs": {
+    "mtime": 1778316955.7474117,
+    "ast_hash": "abc6d30390001206cf381a885b818983",
+    "semantic_hash": "abc6d30390001206cf381a885b818983"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\CartDto.cs": {
+    "mtime": 1776390720.0748496,
+    "ast_hash": "aa306ad0734f0f3de450df6f59c721d3",
+    "semantic_hash": "aa306ad0734f0f3de450df6f59c721d3"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\CategoryDto.cs": {
+    "mtime": 1777241217.9418986,
+    "ast_hash": "957c9b44aaf043f33f8e6f112e7c9f20",
+    "semantic_hash": "957c9b44aaf043f33f8e6f112e7c9f20"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\CollectionDto.cs": {
+    "mtime": 1771246615.1202655,
+    "ast_hash": "1bea81d1c5150bc6160cddbdda3f835b",
+    "semantic_hash": "1bea81d1c5150bc6160cddbdda3f835b"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\CustomLandingPageDtos.cs": {
+    "mtime": 1778864998.8663828,
+    "ast_hash": "74d6325f464e27453bda730d779fe50e",
+    "semantic_hash": "74d6325f464e27453bda730d779fe50e"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\CustomerDto.cs": {
+    "mtime": 1777500153.6758654,
+    "ast_hash": "a46e1f14aacbec4b6ec5c93fbbdab230",
+    "semantic_hash": "a46e1f14aacbec4b6ec5c93fbbdab230"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\CustomerGrowthDto.cs": {
+    "mtime": 1769929016.8340912,
+    "ast_hash": "1a78eb4e4c96e0f41bb8dd16a6e8d010",
+    "semantic_hash": "1a78eb4e4c96e0f41bb8dd16a6e8d010"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\DashboardDtos.cs": {
+    "mtime": 1779529103.2624078,
+    "ast_hash": "af7007322e00f53f481ef6674c893782",
+    "semantic_hash": "af7007322e00f53f481ef6674c893782"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\DeliveryMethodDto.cs": {
+    "mtime": 1771435839.5098307,
+    "ast_hash": "6d22d12c87c9b794a0b0b98454ca5813",
+    "semantic_hash": "6d22d12c87c9b794a0b0b98454ca5813"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\HeroBannerDto.cs": {
+    "mtime": 1774972767.60695,
+    "ast_hash": "ce1ffaad82b21f0129c9f15bf0e7587b",
+    "semantic_hash": "ce1ffaad82b21f0129c9f15bf0e7587b"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\HomePageDto.cs": {
+    "mtime": 1772286170.7744927,
+    "ast_hash": "3e04fcce1aacda35060c88c3d60d5f68",
+    "semantic_hash": "3e04fcce1aacda35060c88c3d60d5f68"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\InventoryDtos.cs": {
+    "mtime": 1777501355.9392805,
+    "ast_hash": "db14332c0fb2f7fddc81f16da50e2151",
+    "semantic_hash": "db14332c0fb2f7fddc81f16da50e2151"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\MegaMenuDto.cs": {
+    "mtime": 1774972777.1500554,
+    "ast_hash": "8c5458e454ceb436b259195d2228d1ed",
+    "semantic_hash": "8c5458e454ceb436b259195d2228d1ed"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\NavigationMenuDto.cs": {
+    "mtime": 1774972771.8067784,
+    "ast_hash": "3be345f0100024b4791449de64700032",
+    "semantic_hash": "3be345f0100024b4791449de64700032"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\OrderDtos.cs": {
+    "mtime": 1777139048.7551906,
+    "ast_hash": "4ce67350e2ceda22ca3871354dc41658",
+    "semantic_hash": "4ce67350e2ceda22ca3871354dc41658"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\OrderSourceDtos.cs": {
+    "mtime": 1776404262.7596488,
+    "ast_hash": "30302d486f2e8d6b96aa70988aeae4b4",
+    "semantic_hash": "30302d486f2e8d6b96aa70988aeae4b4"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\OrderStatsDto.cs": {
+    "mtime": 1776672740.4352353,
+    "ast_hash": "09dc58df111ee58a3093552c17df0492",
+    "semantic_hash": "09dc58df111ee58a3093552c17df0492"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\PageDto.cs": {
+    "mtime": 1774972761.8826432,
+    "ast_hash": "d44723129caf3ddce2805fa1ab30aadf",
+    "semantic_hash": "d44723129caf3ddce2805fa1ab30aadf"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\PaginationDto.cs": {
+    "mtime": 1771755796.7455301,
+    "ast_hash": "e14c11aa369412a3dedadb5262b4a8ac",
+    "semantic_hash": "e14c11aa369412a3dedadb5262b4a8ac"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\ProductDto.cs": {
+    "mtime": 1778038006.357758,
+    "ast_hash": "61164aafdf1efcdf17ac67b8ddf8b9f4",
+    "semantic_hash": "61164aafdf1efcdf17ac67b8ddf8b9f4"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\ProductDtos.cs": {
+    "mtime": 1778946926.161499,
+    "ast_hash": "6b62009918483b8ea11726a9d7925473",
+    "semantic_hash": "6b62009918483b8ea11726a9d7925473"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\ReviewDtos.cs": {
+    "mtime": 1779071279.5209465,
+    "ast_hash": "2ee414bb6f3fea819367a86d830771f5",
+    "semantic_hash": "2ee414bb6f3fea819367a86d830771f5"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\SalesDataDto.cs": {
+    "mtime": 1769929012.826382,
+    "ast_hash": "d222f520e4cdfef5d3fafe3e3f2566bc",
+    "semantic_hash": "d222f520e4cdfef5d3fafe3e3f2566bc"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\SiteSettingsDto.cs": {
+    "mtime": 1772779936.7689326,
+    "ast_hash": "20af5f72fc16d9037a4aaaaf3aa2ccf9",
+    "semantic_hash": "20af5f72fc16d9037a4aaaaf3aa2ccf9"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\DTOs\\StatusDistributionDto.cs": {
+    "mtime": 1769929014.8439324,
+    "ast_hash": "3040008071eddeeb28063bf196f2f311",
+    "semantic_hash": "3040008071eddeeb28063bf196f2f311"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\ECommerce.Core.csproj": {
+    "mtime": 1778002261.9993646,
+    "ast_hash": "617679f0dee64b0f82dda0f6cbe42075",
+    "semantic_hash": "617679f0dee64b0f82dda0f6cbe42075"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\ApplicationUser.cs": {
+    "mtime": 1780622589.5696719,
+    "ast_hash": "e0365e3be320f76e903467d619c65f84",
+    "semantic_hash": "e0365e3be320f76e903467d619c65f84"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\BaseEntity.cs": {
+    "mtime": 1769777304.3115823,
+    "ast_hash": "8bd8fc8d5fdf8a7deb8d63030f93ad33",
+    "semantic_hash": "8bd8fc8d5fdf8a7deb8d63030f93ad33"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\BlockedIp.cs": {
+    "mtime": 1771435035.0267928,
+    "ast_hash": "76579b3b3545cc292a583d94811b5841",
+    "semantic_hash": "76579b3b3545cc292a583d94811b5841"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\Cart.cs": {
+    "mtime": 1772156117.889173,
+    "ast_hash": "e1044852dbcc5f1aa3bec21127f44611",
+    "semantic_hash": "e1044852dbcc5f1aa3bec21127f44611"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\CartItem.cs": {
+    "mtime": 1776390661.4971933,
+    "ast_hash": "b2cfe84b077a1a2e435f965ec10af0e8",
+    "semantic_hash": "b2cfe84b077a1a2e435f965ec10af0e8"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\Category.cs": {
+    "mtime": 1777241202.9592052,
+    "ast_hash": "1f098fd5763951b0412f40518a3f33b6",
+    "semantic_hash": "1f098fd5763951b0412f40518a3f33b6"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\Collection.cs": {
+    "mtime": 1774972696.2738261,
+    "ast_hash": "9f3bbc4e99f919d2387e17fedc2756cd",
+    "semantic_hash": "9f3bbc4e99f919d2387e17fedc2756cd"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\ComboItem.cs": {
+    "mtime": 1777899626.1008346,
+    "ast_hash": "92251f1fffdbd600cc84a23c752673b0",
+    "semantic_hash": "92251f1fffdbd600cc84a23c752673b0"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\CustomLandingPageConfig.cs": {
+    "mtime": 1778321226.0045273,
+    "ast_hash": "a16b35efedf07393181b9c0d222b9528",
+    "semantic_hash": "a16b35efedf07393181b9c0d222b9528"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\Customer.cs": {
+    "mtime": 1777500147.6647966,
+    "ast_hash": "a0b86712504e9bad66f21ce77ca7a66f",
+    "semantic_hash": "a0b86712504e9bad66f21ce77ca7a66f"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\DailyTraffic.cs": {
+    "mtime": 1771432761.3275466,
+    "ast_hash": "d023df21ca7739ad8a83d095a2b5f7f4",
+    "semantic_hash": "d023df21ca7739ad8a83d095a2b5f7f4"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\DeliveryMethod.cs": {
+    "mtime": 1771435825.5703733,
+    "ast_hash": "d604448580ff192ff2ec215f578a425d",
+    "semantic_hash": "d604448580ff192ff2ec215f578a425d"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\HeroBanner.cs": {
+    "mtime": 1774972701.1439764,
+    "ast_hash": "00995f37b71cf74fa05b3a9a503afa02",
+    "semantic_hash": "00995f37b71cf74fa05b3a9a503afa02"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\NavigationMenu.cs": {
+    "mtime": 1776650427.6847553,
+    "ast_hash": "89cde9e547d282cfd4b4311766e26fc9",
+    "semantic_hash": "89cde9e547d282cfd4b4311766e26fc9"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\Order.cs": {
+    "mtime": 1777136647.880998,
+    "ast_hash": "7b8336edc27a4a2bcc03b009ac55eedb",
+    "semantic_hash": "7b8336edc27a4a2bcc03b009ac55eedb"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\Page.cs": {
+    "mtime": 1774972699.8027294,
+    "ast_hash": "05214239bfbec25228521186b73f44e3",
+    "semantic_hash": "05214239bfbec25228521186b73f44e3"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\Product.cs": {
+    "mtime": 1778037989.3097324,
+    "ast_hash": "50ea1713fce57eb22ed3bc508ad9cb84",
+    "semantic_hash": "50ea1713fce57eb22ed3bc508ad9cb84"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\ProductGroup.cs": {
+    "mtime": 1777900715.214732,
+    "ast_hash": "2ee855e05e1c2737d802151910404aa1",
+    "semantic_hash": "2ee855e05e1c2737d802151910404aa1"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\ProductImage.cs": {
+    "mtime": 1776390622.2956865,
+    "ast_hash": "63d60a3a0a519cd9dcb29c5c1fd63127",
+    "semantic_hash": "63d60a3a0a519cd9dcb29c5c1fd63127"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\ProductVariant.cs": {
+    "mtime": 1776390649.935316,
+    "ast_hash": "0802c5716ef1697585ba18a4aeaa93f3",
+    "semantic_hash": "0802c5716ef1697585ba18a4aeaa93f3"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\Review.cs": {
+    "mtime": 1779071270.0756233,
+    "ast_hash": "8445e71c0882f09552606a2bee89869d",
+    "semantic_hash": "8445e71c0882f09552606a2bee89869d"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\SiteSetting.cs": {
+    "mtime": 1775229174.412039,
+    "ast_hash": "72223f4f2940c98809a7d101687e955a",
+    "semantic_hash": "72223f4f2940c98809a7d101687e955a"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\SocialMediaSource.cs": {
+    "mtime": 1776404229.2594976,
+    "ast_hash": "9fc70437377d7e096d6fae64a8a6aeb6",
+    "semantic_hash": "9fc70437377d7e096d6fae64a8a6aeb6"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\SourcePage.cs": {
+    "mtime": 1776404223.8169951,
+    "ast_hash": "0d40004d3035398c6f6a982765ca2171",
+    "semantic_hash": "0d40004d3035398c6f6a982765ca2171"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\SubCategory.cs": {
+    "mtime": 1777240424.4749522,
+    "ast_hash": "abde9c9b862ad605a81f0115e64657c0",
+    "semantic_hash": "abde9c9b862ad605a81f0115e64657c0"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\UserToken.cs": {
+    "mtime": 1772170860.6905873,
+    "ast_hash": "0f225ccf1eb43b5882ce69ea6dae243e",
+    "semantic_hash": "0f225ccf1eb43b5882ce69ea6dae243e"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Enums\\BannerType.cs": {
+    "mtime": 1774528311.522237,
+    "ast_hash": "972d447711cf76ad7f3d255fca7433f2",
+    "semantic_hash": "972d447711cf76ad7f3d255fca7433f2"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Enums\\ProductType.cs": {
+    "mtime": 1777899620.2156982,
+    "ast_hash": "8a0238fbd930145458067e3f2d0eb162",
+    "semantic_hash": "8a0238fbd930145458067e3f2d0eb162"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\IAuthService.cs": {
+    "mtime": 1773068869.6398659,
+    "ast_hash": "397e8406b504afeb5d1050244f88457d",
+    "semantic_hash": "397e8406b504afeb5d1050244f88457d"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\ICacheService.cs": {
+    "mtime": 1775024884.1653893,
+    "ast_hash": "b6be14b7c5d08dbec3eba04854836fca",
+    "semantic_hash": "b6be14b7c5d08dbec3eba04854836fca"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\IDashboardService.cs": {
+    "mtime": 1779529111.051775,
+    "ast_hash": "b0312576cca1e79aaec8e6833804b8ac",
+    "semantic_hash": "b0312576cca1e79aaec8e6833804b8ac"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\IGenericRepository.cs": {
+    "mtime": 1776956486.722396,
+    "ast_hash": "007c5db37f43630d1ad391bc8811a1a3",
+    "semantic_hash": "007c5db37f43630d1ad391bc8811a1a3"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\IJwtTokenService.cs": {
+    "mtime": 1773068869.6398659,
+    "ast_hash": "a1ec45007374398f1c1680ac4405ffae",
+    "semantic_hash": "a1ec45007374398f1c1680ac4405ffae"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\INavigationService.cs": {
+    "mtime": 1771160166.261544,
+    "ast_hash": "0ac41140c1b7507a2dd054ad86ef9d52",
+    "semantic_hash": "0ac41140c1b7507a2dd054ad86ef9d52"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\IOrderService.cs": {
+    "mtime": 1779037996.8190835,
+    "ast_hash": "63b1723160d80caaaa130f534f225bb0",
+    "semantic_hash": "63b1723160d80caaaa130f534f225bb0"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\IProductService.cs": {
+    "mtime": 1776956581.2190337,
+    "ast_hash": "47129d412f5ee5a57d80209a83b8bb03",
+    "semantic_hash": "47129d412f5ee5a57d80209a83b8bb03"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\IReviewService.cs": {
+    "mtime": 1771305678.5224888,
+    "ast_hash": "b3db7405b8a6f03cda7ce0013be5a831",
+    "semantic_hash": "b3db7405b8a6f03cda7ce0013be5a831"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\ISpecification.cs": {
+    "mtime": 1774972905.8831024,
+    "ast_hash": "f8f09e01408c9f599a92580984daa2ab",
+    "semantic_hash": "f8f09e01408c9f599a92580984daa2ab"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\ITokenService.cs": {
+    "mtime": 1771563095.463115,
+    "ast_hash": "1c868b0118dd6343d241ea217e9be61f",
+    "semantic_hash": "1c868b0118dd6343d241ea217e9be61f"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Interfaces\\IUnitOfWork.cs": {
+    "mtime": 1778388156.1273832,
+    "ast_hash": "3749f817878c914af783447ab712003e",
+    "semantic_hash": "3749f817878c914af783447ab712003e"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Specifications\\BaseSpecification.cs": {
+    "mtime": 1774972708.262719,
+    "ast_hash": "a13c029c6856124c835e927204778d86",
+    "semantic_hash": "a13c029c6856124c835e927204778d86"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Specifications\\HeroBannerSpecification.cs": {
+    "mtime": 1771341887.4979534,
+    "ast_hash": "47c33322abbbbf3d044a36e91e744b67",
+    "semantic_hash": "47c33322abbbbf3d044a36e91e744b67"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Specifications\\OrdersWithFiltersForAdminSpecification.cs": {
+    "mtime": 1776974404.853852,
+    "ast_hash": "39635ce2d4f20e0619f7c4aeda6e0f95",
+    "semantic_hash": "39635ce2d4f20e0619f7c4aeda6e0f95"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Specifications\\ProductsWithCategoriesSpecification.cs": {
+    "mtime": 1778780467.1975071,
+    "ast_hash": "e1bfa80810e032322dad33a763afff00",
+    "semantic_hash": "e1bfa80810e032322dad33a763afff00"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Specifications\\ReviewSpecification.cs": {
+    "mtime": 1774972908.4680161,
+    "ast_hash": "1b9616352295ad546a682cd32c81eb77",
+    "semantic_hash": "1b9616352295ad546a682cd32c81eb77"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Data\\ApplicationDbContext.cs": {
+    "mtime": 1780627092.8665185,
+    "ast_hash": "a48f83d936d97653a312628c0cad4fa7",
+    "semantic_hash": "a48f83d936d97653a312628c0cad4fa7"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Data\\DataSeeder.cs": {
+    "mtime": 1778322190.8045008,
+    "ast_hash": "3b42ebf5b864df3474da9b152dbfb5c3",
+    "semantic_hash": "3b42ebf5b864df3474da9b152dbfb5c3"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Data\\GenericRepository.cs": {
+    "mtime": 1776956516.812559,
+    "ast_hash": "35206f1cc5387cba616a534eac928eaf",
+    "semantic_hash": "35206f1cc5387cba616a534eac928eaf"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Data\\SpecificationEvaluator.cs": {
+    "mtime": 1775791810.1893563,
+    "ast_hash": "355c9b62544dc7f178fd15a8cb708d5a",
+    "semantic_hash": "355c9b62544dc7f178fd15a8cb708d5a"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Data\\UnitOfWork.cs": {
+    "mtime": 1778388228.964934,
+    "ast_hash": "b458f7b7a7467ab5beab2741d6bfcce7",
+    "semantic_hash": "b458f7b7a7467ab5beab2741d6bfcce7"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\ECommerce.Infrastructure.csproj": {
+    "mtime": 1777703812.3136754,
+    "ast_hash": "39ea29750efe74f120f7fbca1b977a3c",
+    "semantic_hash": "39ea29750efe74f120f7fbca1b977a3c"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Helpers_bak\\MappingProfiles.cs": {
+    "mtime": 1771307475.9383628,
+    "ast_hash": "adcff670592013d1d789e23665d2e99f",
+    "semantic_hash": "adcff670592013d1d789e23665d2e99f"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260420020313_InitialCreate.Designer.cs": {
+    "mtime": 1776650593.7336082,
+    "ast_hash": "261549323821222d401ceb2b3b928df3",
+    "semantic_hash": "261549323821222d401ceb2b3b928df3"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260420020313_InitialCreate.cs": {
+    "mtime": 1776650593.7336082,
+    "ast_hash": "fe946082b464b2bec698283f1a045529",
+    "semantic_hash": "fe946082b464b2bec698283f1a045529"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260424040013_UpdateOrderSchema.Designer.cs": {
+    "mtime": 1777003214.0204592,
+    "ast_hash": "9253df1a3a439e13d700bc6afcef6946",
+    "semantic_hash": "9253df1a3a439e13d700bc6afcef6946"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260424040013_UpdateOrderSchema.cs": {
+    "mtime": 1777003214.0168939,
+    "ast_hash": "a27b7e0dea38dcfc9930b54cfc12c490",
+    "semantic_hash": "a27b7e0dea38dcfc9930b54cfc12c490"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260426101634_AddDiscountAndAdvancePaymentToOrder.Designer.cs": {
+    "mtime": 1777198594.8561928,
+    "ast_hash": "0e249e80aef81025503e41f8046995c7",
+    "semantic_hash": "0e249e80aef81025503e41f8046995c7"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260426101634_AddDiscountAndAdvancePaymentToOrder.cs": {
+    "mtime": 1777198594.8561928,
+    "ast_hash": "2ddaee676e9288689dedc112a362f5c1",
+    "semantic_hash": "2ddaee676e9288689dedc112a362f5c1"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260426221209_FinalizeDynamicCategories.Designer.cs": {
+    "mtime": 1777241530.0072777,
+    "ast_hash": "119cffa044dc5242f230bb298e6441f4",
+    "semantic_hash": "119cffa044dc5242f230bb298e6441f4"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260426221209_FinalizeDynamicCategories.cs": {
+    "mtime": 1777241560.1233823,
+    "ast_hash": "666d5d8631abb82a3a179910e8a57d81",
+    "semantic_hash": "666d5d8631abb82a3a179910e8a57d81"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260429073927_AddClpFields.Designer.cs": {
+    "mtime": 1777448367.9339938,
+    "ast_hash": "6ce09d483ba311ba68bcef2012675489",
+    "semantic_hash": "6ce09d483ba311ba68bcef2012675489"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260429073927_AddClpFields.cs": {
+    "mtime": 1777448367.9317825,
+    "ast_hash": "49146cc63fa2484e4e62c1f3023ed4c7",
+    "semantic_hash": "49146cc63fa2484e4e62c1f3023ed4c7"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260429220404_AddCustomerCityAndArea.Designer.cs": {
+    "mtime": 1777500244.4723904,
+    "ast_hash": "e146ed44951c4133f7b655686b7d6795",
+    "semantic_hash": "e146ed44951c4133f7b655686b7d6795"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260429220404_AddCustomerCityAndArea.cs": {
+    "mtime": 1777500244.4605906,
+    "ast_hash": "12e7dcab52e5ffbfd4559d8c95b71b7e",
+    "semantic_hash": "12e7dcab52e5ffbfd4559d8c95b71b7e"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260430060159_AddMarqueeToCLP.Designer.cs": {
+    "mtime": 1777528919.5577853,
+    "ast_hash": "48b727e146dc9ae06a18d82b51c10267",
+    "semantic_hash": "48b727e146dc9ae06a18d82b51c10267"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260430060159_AddMarqueeToCLP.cs": {
+    "mtime": 1777528919.5577853,
+    "ast_hash": "0e7fa407c9f5968f04979de2aba9668b",
+    "semantic_hash": "0e7fa407c9f5968f04979de2aba9668b"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260430075235_AddPromoTextToCLP.Designer.cs": {
+    "mtime": 1777535555.7775836,
+    "ast_hash": "d805e532d929ffe8f8748e1ac5258c36",
+    "semantic_hash": "d805e532d929ffe8f8748e1ac5258c36"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260430075235_AddPromoTextToCLP.cs": {
+    "mtime": 1777535555.774923,
+    "ast_hash": "1717c466b3b5637aa1b405b6676c5354",
+    "semantic_hash": "1717c466b3b5637aa1b405b6676c5354"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260430122953_AddFreeShippingThresholdToCLP.Designer.cs": {
+    "mtime": 1777552193.0774872,
+    "ast_hash": "d3316e716235388e49c5e1e87eea2ac2",
+    "semantic_hash": "d3316e716235388e49c5e1e87eea2ac2"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260430122953_AddFreeShippingThresholdToCLP.cs": {
+    "mtime": 1777552193.0774872,
+    "ast_hash": "3f6a448888760df3c677bdf5463b0ef9",
+    "semantic_hash": "3f6a448888760df3c677bdf5463b0ef9"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260504131948_AddProductGroupFeature.Designer.cs": {
+    "mtime": 1777900788.2671087,
+    "ast_hash": "9dd884b1df5bbb37e58437461eca7cbf",
+    "semantic_hash": "9dd884b1df5bbb37e58437461eca7cbf"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260504131948_AddProductGroupFeature.cs": {
+    "mtime": 1777900788.266225,
+    "ast_hash": "83895c8abf68aff40b307b3e28a7a8ca",
+    "semantic_hash": "83895c8abf68aff40b307b3e28a7a8ca"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260506032938_AddBundleSizeToProduct.Designer.cs": {
+    "mtime": 1778038178.2983477,
+    "ast_hash": "c7eb6309dfcd055a0b7e105b5eda40a4",
+    "semantic_hash": "c7eb6309dfcd055a0b7e105b5eda40a4"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260506032938_AddBundleSizeToProduct.cs": {
+    "mtime": 1778038178.2983477,
+    "ast_hash": "1bd2992291185906b0c948639226f852",
+    "semantic_hash": "1bd2992291185906b0c948639226f852"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260509085516_AddStaffAllowedMenus.Designer.cs": {
+    "mtime": 1778316916.9271698,
+    "ast_hash": "98fd5d0b534b8bba7de281885b861588",
+    "semantic_hash": "98fd5d0b534b8bba7de281885b861588"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260509085516_AddStaffAllowedMenus.cs": {
+    "mtime": 1778316916.926163,
+    "ast_hash": "53e67615875fd6942899ce5b0a174ebe",
+    "semantic_hash": "53e67615875fd6942899ce5b0a174ebe"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260509100734_AddSectionsJsonToLandingPageConfig.Designer.cs": {
+    "mtime": 1778321254.622735,
+    "ast_hash": "2b6170c3db6d3bdcfddf0722782b07e2",
+    "semantic_hash": "2b6170c3db6d3bdcfddf0722782b07e2"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260509100734_AddSectionsJsonToLandingPageConfig.cs": {
+    "mtime": 1778321254.6221814,
+    "ast_hash": "23c05080a3f192870eeae5add2130d07",
+    "semantic_hash": "23c05080a3f192870eeae5add2130d07"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260514064247_CleanUpReviewSchema.Designer.cs": {
+    "mtime": 1778740967.9725797,
+    "ast_hash": "b70eaddb5f416c05818d3fb01ec5ae80",
+    "semantic_hash": "b70eaddb5f416c05818d3fb01ec5ae80"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260514064247_CleanUpReviewSchema.cs": {
+    "mtime": 1778740967.9725797,
+    "ast_hash": "57e37427c9f133705d2106097d1e9ad0",
+    "semantic_hash": "57e37427c9f133705d2106097d1e9ad0"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260518022437_AddScreenshotUrlToReview.Designer.cs": {
+    "mtime": 1779071077.739752,
+    "ast_hash": "363dc1f7f08a91db29432ba561e77804",
+    "semantic_hash": "363dc1f7f08a91db29432ba561e77804"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260518022437_AddScreenshotUrlToReview.cs": {
+    "mtime": 1779071077.7375448,
+    "ast_hash": "fcd3a55d6b187aedabb061a2c3796b80",
+    "semantic_hash": "fcd3a55d6b187aedabb061a2c3796b80"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260518022828_MakeCommentOptionalInReview.Designer.cs": {
+    "mtime": 1779071309.2180407,
+    "ast_hash": "fb4dfbb7b71311a845c22210ab6a4f6a",
+    "semantic_hash": "fb4dfbb7b71311a845c22210ab6a4f6a"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260518022828_MakeCommentOptionalInReview.cs": {
+    "mtime": 1779071309.2025094,
+    "ast_hash": "52215b21c0e17118b96a300685683d3b",
+    "semantic_hash": "52215b21c0e17118b96a300685683d3b"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\ApplicationDbContextModelSnapshot.cs": {
+    "mtime": 1780627110.6904116,
+    "ast_hash": "7173f9de74b1266beea4dec9871f2c6a",
+    "semantic_hash": "7173f9de74b1266beea4dec9871f2c6a"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations_bak\\20260218142921_i.Designer.cs": {
+    "mtime": 1771424961.225071,
+    "ast_hash": "a6cf4ee02869b55585e6adf2b86a9856",
+    "semantic_hash": "a6cf4ee02869b55585e6adf2b86a9856"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations_bak\\20260218142921_i.cs": {
+    "mtime": 1771424961.2244537,
+    "ast_hash": "e0a6f72abbbafcbd1a96d39e64eaa2a8",
+    "semantic_hash": "e0a6f72abbbafcbd1a96d39e64eaa2a8"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations_bak\\20260218170348_AddAnalyticsAndPixels.Designer.cs": {
+    "mtime": 1771434228.8857477,
+    "ast_hash": "60489011bd840a5051a34fb49a70a300",
+    "semantic_hash": "60489011bd840a5051a34fb49a70a300"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations_bak\\20260218170348_AddAnalyticsAndPixels.cs": {
+    "mtime": 1771434228.8857477,
+    "ast_hash": "a0acabca70b83d48f4add35faf5f0cf4",
+    "semantic_hash": "a0acabca70b83d48f4add35faf5f0cf4"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations_bak\\20260218172025_AddSecurityFeatures.Designer.cs": {
+    "mtime": 1771435225.0884964,
+    "ast_hash": "0ac83c35b1aed68dd1f608a1531f4f68",
+    "semantic_hash": "0ac83c35b1aed68dd1f608a1531f4f68"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations_bak\\20260218172025_AddSecurityFeatures.cs": {
+    "mtime": 1771435225.087993,
+    "ast_hash": "fa731ea1493a74883ae3d02ec119825f",
+    "semantic_hash": "fa731ea1493a74883ae3d02ec119825f"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations_bak\\20260218173101_AddDeliveryMethods.Designer.cs": {
+    "mtime": 1771435861.7647448,
+    "ast_hash": "8fc49804a444673496f15ae5ebd27c18",
+    "semantic_hash": "8fc49804a444673496f15ae5ebd27c18"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations_bak\\20260218173101_AddDeliveryMethods.cs": {
+    "mtime": 1771435861.7647448,
+    "ast_hash": "a8c8fc8b3e1b9329c5338ff0755e316c",
+    "semantic_hash": "a8c8fc8b3e1b9329c5338ff0755e316c"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations_bak\\20260218173330_LinkOrderToDeliveryMethod.Designer.cs": {
+    "mtime": 1771436010.4323518,
+    "ast_hash": "0352ea1912b2288ae0097afb18b3d608",
+    "semantic_hash": "0352ea1912b2288ae0097afb18b3d608"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations_bak\\20260218173330_LinkOrderToDeliveryMethod.cs": {
+    "mtime": 1771436010.4323518,
+    "ast_hash": "80ab1812e69057dd0bfb5480f67bfa68",
+    "semantic_hash": "80ab1812e69057dd0bfb5480f67bfa68"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\AuthService.cs": {
+    "mtime": 1773082328.0386944,
+    "ast_hash": "22f65a3bef7a79b624797f397cd025cf",
+    "semantic_hash": "22f65a3bef7a79b624797f397cd025cf"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\CacheService.cs": {
+    "mtime": 1777398162.3191125,
+    "ast_hash": "08f32ba6fc22246933ec853ee88e1a8d",
+    "semantic_hash": "08f32ba6fc22246933ec853ee88e1a8d"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\CustomerService.cs": {
+    "mtime": 1777500159.5885575,
+    "ast_hash": "6c76fa046bc25cdec4e535867799bc6e",
+    "semantic_hash": "6c76fa046bc25cdec4e535867799bc6e"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\DashboardService.cs": {
+    "mtime": 1779529172.7498875,
+    "ast_hash": "a229428ff1e5a18554bd387695c2dbbf",
+    "semantic_hash": "a229428ff1e5a18554bd387695c2dbbf"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\JwtTokenService.cs": {
+    "mtime": 1773068869.6398659,
+    "ast_hash": "86118bdcf32ecb551d6b47c2b9d5d6e1",
+    "semantic_hash": "86118bdcf32ecb551d6b47c2b9d5d6e1"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\NavigationService.cs": {
+    "mtime": 1777241448.0885897,
+    "ast_hash": "b9c2c15ef7e0fe74cfbf35e5907d6888",
+    "semantic_hash": "b9c2c15ef7e0fe74cfbf35e5907d6888"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\OrderService.cs": {
+    "mtime": 1779037998.7041366,
+    "ast_hash": "ff82b4064eb4858c853c067651a6deab",
+    "semantic_hash": "ff82b4064eb4858c853c067651a6deab"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\ProductService.cs": {
+    "mtime": 1778946937.6542118,
+    "ast_hash": "ca4b556bb8b22cbf9bce540b7ebf1362",
+    "semantic_hash": "ca4b556bb8b22cbf9bce540b7ebf1362"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\ReviewService.cs": {
+    "mtime": 1771478002.0721262,
+    "ast_hash": "8fa2fa7221dc6ccf1194f4097888cc31",
+    "semantic_hash": "8fa2fa7221dc6ccf1194f4097888cc31"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\TokenService.cs": {
+    "mtime": 1771563628.1411283,
+    "ast_hash": "29f2dd7b09509b83147cffdc1792f925",
+    "semantic_hash": "29f2dd7b09509b83147cffdc1792f925"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Test.cs": {
+    "mtime": 1771476342.4570715,
+    "ast_hash": "464cee80e56c0d90609b7a594155bd2b",
+    "semantic_hash": "464cee80e56c0d90609b7a594155bd2b"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\errors.json": {
+    "mtime": 1772738288.3664024,
+    "ast_hash": "b9f9dc2129f48943aaa63774bf9bd48a",
+    "semantic_hash": "b9f9dc2129f48943aaa63774bf9bd48a"
+  },
+  "C:\\Projects\\Arza\\ECommerce.sln": {
+    "mtime": 1773022947.779163,
+    "ast_hash": "447fb68f2895ce4e5f894dd0ca4b4f10",
+    "semantic_hash": "447fb68f2895ce4e5f894dd0ca4b4f10"
+  },
+  "C:\\Projects\\Arza\\add_dummy_products.sql": {
+    "mtime": 1773081218.7365012,
+    "ast_hash": "562c4764ca6425d2a3b8b71e7e242c30",
+    "semantic_hash": "562c4764ca6425d2a3b8b71e7e242c30"
+  },
+  "C:\\Projects\\Arza\\add_dummy_products_v2.sql": {
+    "mtime": 1773166902.2739003,
+    "ast_hash": "5f72a6a2c56470d0b89515470661d1a2",
+    "semantic_hash": "5f72a6a2c56470d0b89515470661d1a2"
+  },
+  "C:\\Projects\\Arza\\arza_full_db.sql": {
+    "mtime": 1776614314.9247324,
+    "ast_hash": "a2f8baac3e565fe78d42ed8c9b6d7005",
+    "semantic_hash": "a2f8baac3e565fe78d42ed8c9b6d7005"
+  },
+  "C:\\Projects\\Arza\\full_initial.sql": {
+    "mtime": 1772184535.642156,
+    "ast_hash": "5d0f17df8a4512533893c03de7aa679c",
+    "semantic_hash": "5d0f17df8a4512533893c03de7aa679c"
+  },
+  "C:\\Projects\\Arza\\full_initial_utf8.sql": {
+    "mtime": 1772184546.2719805,
+    "ast_hash": "d0095878c952b7361852839dafc82ef1",
+    "semantic_hash": "d0095878c952b7361852839dafc82ef1"
+  },
+  "C:\\Projects\\Arza\\get_versions.cs": {
+    "mtime": 1777703772.4944541,
+    "ast_hash": "0bc78c3ed64da795357e545344dc43c0",
+    "semantic_hash": "0bc78c3ed64da795357e545344dc43c0"
+  },
+  "C:\\Projects\\Arza\\home_data.json": {
+    "mtime": 1772638675.858044,
+    "ast_hash": "97c328bd8e32b793e02a92c50dbcc8f4",
+    "semantic_hash": "97c328bd8e32b793e02a92c50dbcc8f4"
+  },
+  "C:\\Projects\\Arza\\migration.sql": {
+    "mtime": 1772184326.5232925,
+    "ast_hash": "5d0f17df8a4512533893c03de7aa679c",
+    "semantic_hash": "5d0f17df8a4512533893c03de7aa679c"
+  },
+  "C:\\Projects\\Arza\\migration_utf8.sql": {
+    "mtime": 1772184368.484788,
+    "ast_hash": "d0095878c952b7361852839dafc82ef1",
+    "semantic_hash": "d0095878c952b7361852839dafc82ef1"
+  },
+  "C:\\Projects\\Arza\\package.json": {
+    "mtime": 1778304471.8507025,
+    "ast_hash": "1dac99fd9a9b0cddce7716e6323c76d3",
+    "semantic_hash": "1dac99fd9a9b0cddce7716e6323c76d3"
+  },
+  "C:\\Projects\\Arza\\publish_backend.ps1": {
+    "mtime": 1771597081.7308605,
+    "ast_hash": "0292df4149c17c6cd8fd0795837bdd09",
+    "semantic_hash": "0292df4149c17c6cd8fd0795837bdd09"
+  },
+  "C:\\Projects\\Arza\\query.sql": {
+    "mtime": 1777702967.775829,
+    "ast_hash": "5193e0802829250561ab529bbd93984d",
+    "semantic_hash": "5193e0802829250561ab529bbd93984d"
+  },
+  "C:\\Projects\\Arza\\test_db.cs": {
+    "mtime": 1777703154.243814,
+    "ast_hash": "8d2f3339b8193b7d360d4920984198c0",
+    "semantic_hash": "8d2f3339b8193b7d360d4920984198c0"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\README.md": {
+    "mtime": 1768986704.7447274,
+    "ast_hash": "a2101ee9b3b3ef4012df772d50d717d3",
+    "semantic_hash": "a2101ee9b3b3ef4012df772d50d717d3"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\SETUP_NOTES.md": {
+    "mtime": 1768986704.7447274,
+    "ast_hash": "ad6ab7d76f7336707640a4f0ed685375",
+    "semantic_hash": "ad6ab7d76f7336707640a4f0ed685375"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\layout\\admin-header\\admin-header.component.html": {
+    "mtime": 1779037396.757799,
+    "ast_hash": "a4756b1cfd26ccd505cf467c8254855b",
+    "semantic_hash": "a4756b1cfd26ccd505cf467c8254855b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\layout\\admin-layout\\admin-layout.component.html": {
+    "mtime": 1778386382.0168085,
+    "ast_hash": "018f0cb76b7c87e6e3527ee4746d4b0b",
+    "semantic_hash": "018f0cb76b7c87e6e3527ee4746d4b0b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\layout\\admin-sidebar\\admin-sidebar.component.html": {
+    "mtime": 1780627277.5551374,
+    "ast_hash": "54f46dddd4e8d53ec136bfc9d6130654",
+    "semantic_hash": "54f46dddd4e8d53ec136bfc9d6130654"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-analytics\\admin-analytics.component.html": {
+    "mtime": 1778781381.9542608,
+    "ast_hash": "d6628a426db1ec5aa28d2ccb0f9e2015",
+    "semantic_hash": "d6628a426db1ec5aa28d2ccb0f9e2015"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-banners\\admin-banners.component.html": {
+    "mtime": 1779507223.305876,
+    "ast_hash": "3537bd3c76d00a202169151181896bbf",
+    "semantic_hash": "3537bd3c76d00a202169151181896bbf"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-blocked-ips\\admin-blocked-ips.component.html": {
+    "mtime": 1779507575.4998884,
+    "ast_hash": "d233836dc0b77d4c670f3133d6abff56",
+    "semantic_hash": "d233836dc0b77d4c670f3133d6abff56"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-category-management\\admin-category-management.component.html": {
+    "mtime": 1779507266.445814,
+    "ast_hash": "b04869316e2fa5d9cc54a0764b95b7b1",
+    "semantic_hash": "b04869316e2fa5d9cc54a0764b95b7b1"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-customer-history\\admin-customer-history.component.html": {
+    "mtime": 1778387506.7423484,
+    "ast_hash": "1c6ca7c230174bd0f7dea13b92aa1a20",
+    "semantic_hash": "1c6ca7c230174bd0f7dea13b92aa1a20"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-customers\\admin-customers.component.html": {
+    "mtime": 1778387506.743431,
+    "ast_hash": "31799c9f105b5e6a0fe49ae073402b7d",
+    "semantic_hash": "31799c9f105b5e6a0fe49ae073402b7d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-inventory\\admin-inventory.component.html": {
+    "mtime": 1779507628.8897433,
+    "ast_hash": "92ecd9b7ec5e36118c022b822e5e0fc7",
+    "semantic_hash": "92ecd9b7ec5e36118c022b822e5e0fc7"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-manual-order\\admin-manual-order.component.html": {
+    "mtime": 1780595330.8421247,
+    "ast_hash": "6dc7b5b2354ba6d040a51d0ccc749527",
+    "semantic_hash": "6dc7b5b2354ba6d040a51d0ccc749527"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-navigation-management\\admin-navigation-management.component.html": {
+    "mtime": 1779507359.9834456,
+    "ast_hash": "47632be5d737c4dde1ff0371ebd39af9",
+    "semantic_hash": "47632be5d737c4dde1ff0371ebd39af9"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-order-details\\admin-order-details.component.html": {
+    "mtime": 1778387506.7515335,
+    "ast_hash": "395c48e6b0fa0631c97aba8ba7db5cfc",
+    "semantic_hash": "395c48e6b0fa0631c97aba8ba7db5cfc"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-orders\\admin-orders.component.html": {
+    "mtime": 1780595378.8260844,
+    "ast_hash": "5d6ac0b340a785180e73e535082f1fd3",
+    "semantic_hash": "5d6ac0b340a785180e73e535082f1fd3"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-orders\\components\\admin-order-invoice\\admin-order-invoice.component.html": {
+    "mtime": 1779037409.297161,
+    "ast_hash": "f8945296302aff497d3b119270c5784c",
+    "semantic_hash": "f8945296302aff497d3b119270c5784c"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-pages\\admin-pages.component.html": {
+    "mtime": 1779507332.3072438,
+    "ast_hash": "66c46cc82294345c0dc033fc86651524",
+    "semantic_hash": "66c46cc82294345c0dc033fc86651524"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-placeholder\\admin-placeholder.component.html": {
+    "mtime": 1778387506.7573874,
+    "ast_hash": "4c35d20ef1d33d75bd598a340bae7564",
+    "semantic_hash": "4c35d20ef1d33d75bd598a340bae7564"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-product-form\\admin-product-form.component.html": {
+    "mtime": 1780595426.3390663,
+    "ast_hash": "6b77a939915eb733ab0321e937950cc1",
+    "semantic_hash": "6b77a939915eb733ab0321e937950cc1"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-product-group-management\\admin-product-group-management.component.html": {
+    "mtime": 1779507584.089552,
+    "ast_hash": "fd4b3c64f0c27e080c8fb83e5eae8371",
+    "semantic_hash": "fd4b3c64f0c27e080c8fb83e5eae8371"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-products\\admin-products.component.html": {
+    "mtime": 1779037377.5715408,
+    "ast_hash": "a6452fcba8bcd349f714e0cbdbc54c08",
+    "semantic_hash": "a6452fcba8bcd349f714e0cbdbc54c08"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-profile\\admin-profile.component.html": {
+    "mtime": 1779507298.0494728,
+    "ast_hash": "0704400e8e840f809cd0ab72feeaf402",
+    "semantic_hash": "0704400e8e840f809cd0ab72feeaf402"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-reviews\\admin-reviews.component.html": {
+    "mtime": 1779507317.924479,
+    "ast_hash": "56b767de215faeca490d31bd6c23dcc0",
+    "semantic_hash": "56b767de215faeca490d31bd6c23dcc0"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-settings\\admin-settings.component.html": {
+    "mtime": 1779507226.5670333,
+    "ast_hash": "126b8af59de90f4f4389a99f39a138cd",
+    "semantic_hash": "126b8af59de90f4f4389a99f39a138cd"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-source-management\\admin-source-management.component.html": {
+    "mtime": 1779507555.3015974,
+    "ast_hash": "87a35bc9dfceb853d331bcb9f15972dc",
+    "semantic_hash": "87a35bc9dfceb853d331bcb9f15972dc"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-sub-category-management\\admin-sub-category-management.component.html": {
+    "mtime": 1779507284.9114537,
+    "ast_hash": "645093a1ee14d1d32d1deb1c95788bbc",
+    "semantic_hash": "645093a1ee14d1d32d1deb1c95788bbc"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-user-management\\admin-user-management.component.html": {
+    "mtime": 1779507222.1940033,
+    "ast_hash": "d24d0a18e165fef51b0ffb749fa707eb",
+    "semantic_hash": "d24d0a18e165fef51b0ffb749fa707eb"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\dashboard-overview\\dashboard-overview.component.html": {
+    "mtime": 1779529202.4440453,
+    "ast_hash": "1863c816641df22b0a0e2f926dd39c80",
+    "semantic_hash": "1863c816641df22b0a0e2f926dd39c80"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\app.component.html": {
+    "mtime": 1778896379.0360484,
+    "ast_hash": "af3617f6a92981bb24dbbd5666dcf58d",
+    "semantic_hash": "af3617f6a92981bb24dbbd5666dcf58d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\accessories\\pages\\accessories-page\\accessories-page.component.html": {
+    "mtime": 1780287072.8756747,
+    "ast_hash": "4a69799b406abed3af9003f746a62117",
+    "semantic_hash": "4a69799b406abed3af9003f746a62117"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\account\\pages\\account-page\\account-page.component.html": {
+    "mtime": 1778387506.788342,
+    "ast_hash": "042492ba2c8943c639d071c20a2743b6",
+    "semantic_hash": "042492ba2c8943c639d071c20a2743b6"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\cart\\pages\\cart-page\\cart-page.component.html": {
+    "mtime": 1779037379.0853348,
+    "ast_hash": "0232cf0975af63d01eb40114671941c8",
+    "semantic_hash": "0232cf0975af63d01eb40114671941c8"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\checkout\\pages\\checkout-page\\checkout-page.component.html": {
+    "mtime": 1780594383.8842158,
+    "ast_hash": "07ed5680fa3b177c9f8efe605f1d7441",
+    "semantic_hash": "07ed5680fa3b177c9f8efe605f1d7441"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\children\\pages\\children-products-page\\children-products-page.component.html": {
+    "mtime": 1780287076.5478868,
+    "ast_hash": "5823a3b9efd00ac4e7e4393c76db1fab",
+    "semantic_hash": "5823a3b9efd00ac4e7e4393c76db1fab"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\customer-profile\\pages\\profile-page\\profile-page.component.html": {
+    "mtime": 1779037400.7165287,
+    "ast_hash": "279dd2d213b00513aa8ce149a0b53940",
+    "semantic_hash": "279dd2d213b00513aa8ce149a0b53940"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\campaign-spotlight\\campaign-spotlight.component.html": {
+    "mtime": 1778387535.5109715,
+    "ast_hash": "e6e4b7955ae87d4482be7adb73e40a88",
+    "semantic_hash": "e6e4b7955ae87d4482be7adb73e40a88"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\category-grid\\category-grid.component.html": {
+    "mtime": 1778387535.5120227,
+    "ast_hash": "eede1ed2e7aa11f55937df16419c6b27",
+    "semantic_hash": "eede1ed2e7aa11f55937df16419c6b27"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\category-section\\category-section.component.html": {
+    "mtime": 1778387535.5131307,
+    "ast_hash": "e26f188b3946a6c6d43c78043ecbd4eb",
+    "semantic_hash": "e26f188b3946a6c6d43c78043ecbd4eb"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\featured-products\\featured-products.component.html": {
+    "mtime": 1778387506.795233,
+    "ast_hash": "4833b67c664c1f1d058b7ae747d7a387",
+    "semantic_hash": "4833b67c664c1f1d058b7ae747d7a387"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\hero\\hero.component.html": {
+    "mtime": 1779030207.7013497,
+    "ast_hash": "e3eb00def81dd96d24ddb33c74c95edc",
+    "semantic_hash": "e3eb00def81dd96d24ddb33c74c95edc"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\new-arrivals\\new-arrivals.component.html": {
+    "mtime": 1778387535.5153444,
+    "ast_hash": "674b904f1e7d0ed1d51418d09714f79a",
+    "semantic_hash": "674b904f1e7d0ed1d51418d09714f79a"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\newsletter\\newsletter.component.html": {
+    "mtime": 1778387535.5164702,
+    "ast_hash": "e7a6aba5932fa0849c6567b30fc4f5a7",
+    "semantic_hash": "e7a6aba5932fa0849c6567b30fc4f5a7"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\promo-banner\\promo-banner.component.html": {
+    "mtime": 1778387535.517059,
+    "ast_hash": "d62b5e62ee6ee66c6d34ad06b87301cc",
+    "semantic_hash": "d62b5e62ee6ee66c6d34ad06b87301cc"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\testimonials\\testimonials.component.html": {
+    "mtime": 1779037395.6556244,
+    "ast_hash": "a2aaeffa62e8902fdf6ba531c2ffade3",
+    "semantic_hash": "a2aaeffa62e8902fdf6ba531c2ffade3"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\components\\why-choose-us\\why-choose-us.component.html": {
+    "mtime": 1778387535.5187435,
+    "ast_hash": "535618bccb33b56750a5f4f09c5de569",
+    "semantic_hash": "535618bccb33b56750a5f4f09c5de569"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\home\\pages\\home-page\\home-page.component.html": {
+    "mtime": 1779038736.1732779,
+    "ast_hash": "9beb0da0a5e816a8c67eae562e2557cd",
+    "semantic_hash": "9beb0da0a5e816a8c67eae562e2557cd"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\landing-page\\pages\\custom-landing-page\\custom-landing-page.component.html": {
+    "mtime": 1779336316.6588435,
+    "ast_hash": "e2cd497008e5b5e651b0c2ec47d1ec5b",
+    "semantic_hash": "e2cd497008e5b5e651b0c2ec47d1ec5b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\landing-page\\pages\\landing-page\\landing-page.component.html": {
+    "mtime": 1780586774.146531,
+    "ast_hash": "e8d3ebd7fdfe378de4c7c5d4f7310a23",
+    "semantic_hash": "e8d3ebd7fdfe378de4c7c5d4f7310a23"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\login\\pages\\login-page\\login.page.html": {
+    "mtime": 1778387506.8049402,
+    "ast_hash": "e2fd0c3d608084de7cecfb9902d2f272",
+    "semantic_hash": "e2fd0c3d608084de7cecfb9902d2f272"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\components\\breadcrumbs\\breadcrumbs.component.html": {
+    "mtime": 1778387506.8054855,
+    "ast_hash": "d0838bec668316bbde4b3e8290063db0",
+    "semantic_hash": "d0838bec668316bbde4b3e8290063db0"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\components\\category-chips\\category-chips.component.html": {
+    "mtime": 1778387506.8059993,
+    "ast_hash": "da8ddaf37501fe1b4829939a946919e6",
+    "semantic_hash": "da8ddaf37501fe1b4829939a946919e6"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\components\\filters-sortbar\\filters-sortbar.component.html": {
+    "mtime": 1778387506.8070378,
+    "ast_hash": "2cd84f773d2a3999c19949ff698667ee",
+    "semantic_hash": "2cd84f773d2a3999c19949ff698667ee"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\components\\pagination\\pagination.component.html": {
+    "mtime": 1778387506.8075607,
+    "ast_hash": "1a0993991b0bf082a8df9ecf346014c3",
+    "semantic_hash": "1a0993991b0bf082a8df9ecf346014c3"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\components\\product-grid\\product-grid.component.html": {
+    "mtime": 1778386382.1276336,
+    "ast_hash": "af2806626961010d094d238f50aaf829",
+    "semantic_hash": "af2806626961010d094d238f50aaf829"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\men\\pages\\men-products-page\\men-products-page.component.html": {
+    "mtime": 1780287069.7693434,
+    "ast_hash": "e80d83465f2c750fa166fcfe544c383c",
+    "semantic_hash": "e80d83465f2c750fa166fcfe544c383c"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\offers\\pages\\offer-details-page\\offer-details-page.component.html": {
+    "mtime": 1779037399.5711193,
+    "ast_hash": "e8da372e2522ae1b0167d8977b0f318e",
+    "semantic_hash": "e8da372e2522ae1b0167d8977b0f318e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\order-confirmation\\pages\\order-confirmation-page\\order-confirmation-page.component.html": {
+    "mtime": 1779336306.5441308,
+    "ast_hash": "f28d51a0daff8b444188b3b1397f2d27",
+    "semantic_hash": "f28d51a0daff8b444188b3b1397f2d27"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\orders\\pages\\orders-page\\orders-page.component.html": {
+    "mtime": 1778387506.811692,
+    "ast_hash": "2242bbf9944c6099713b40e876c0349e",
+    "semantic_hash": "2242bbf9944c6099713b40e876c0349e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\placeholder\\placeholder.component.html": {
+    "mtime": 1778387506.811692,
+    "ast_hash": "e493cf8b507b72b1957247b72c2d04f7",
+    "semantic_hash": "e493cf8b507b72b1957247b72c2d04f7"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\product-details\\pages\\product-details-page\\product-details-page.component.html": {
+    "mtime": 1779037384.1552494,
+    "ast_hash": "7214af0bce6d293c1491a2f072f5c246",
+    "semantic_hash": "7214af0bce6d293c1491a2f072f5c246"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\products\\pages\\product-gallery\\product-gallery.component.html": {
+    "mtime": 1780287142.4780278,
+    "ast_hash": "c93415a0ef7d1ecdbc1a8027b491cc62",
+    "semantic_hash": "c93415a0ef7d1ecdbc1a8027b491cc62"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\components\\breadcrumbs\\breadcrumbs.component.html": {
+    "mtime": 1778387506.8150015,
+    "ast_hash": "758939ec0c617d73b2f0ca2a98335816",
+    "semantic_hash": "758939ec0c617d73b2f0ca2a98335816"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\components\\pagination\\pagination.component.html": {
+    "mtime": 1778387506.817056,
+    "ast_hash": "cd19179005dec184ea2f426f524b2d64",
+    "semantic_hash": "cd19179005dec184ea2f426f524b2d64"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\components\\product-grid\\product-grid.component.html": {
+    "mtime": 1778386382.145964,
+    "ast_hash": "af2806626961010d094d238f50aaf829",
+    "semantic_hash": "af2806626961010d094d238f50aaf829"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\components\\sidebar-filters\\sidebar-filters.component.html": {
+    "mtime": 1778387506.8180614,
+    "ast_hash": "0b7bae1b34f4b08f07aef0912536d046",
+    "semantic_hash": "0b7bae1b34f4b08f07aef0912536d046"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\components\\toolbar\\toolbar.component.html": {
+    "mtime": 1778387506.8180614,
+    "ast_hash": "d88027561c7905887e7e40e2323b00c0",
+    "semantic_hash": "d88027561c7905887e7e40e2323b00c0"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\features\\women\\pages\\women-products-page\\women-products-page.component.html": {
+    "mtime": 1780287065.4965696,
+    "ast_hash": "b5ee92540b9b4bc5bf1eae6e77bb32d6",
+    "semantic_hash": "b5ee92540b9b4bc5bf1eae6e77bb32d6"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\layout\\footer\\footer.component.html": {
+    "mtime": 1779037397.5719035,
+    "ast_hash": "17e2ab9f4552e3c54dc17800de02fec8",
+    "semantic_hash": "17e2ab9f4552e3c54dc17800de02fec8"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\layout\\navbar\\navbar.component.html": {
+    "mtime": 1779079400.4221408,
+    "ast_hash": "e55ec240520c1fb58daabf43221b7a5d",
+    "semantic_hash": "e55ec240520c1fb58daabf43221b7a5d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\pages\\about\\about.component.html": {
+    "mtime": 1778387535.5353327,
+    "ast_hash": "dd2b869c9bf4c77e85ce9d74fd2ee31a",
+    "semantic_hash": "dd2b869c9bf4c77e85ce9d74fd2ee31a"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\pages\\contact\\contact.component.html": {
+    "mtime": 1778387535.536173,
+    "ast_hash": "fd478d635bb73db40f648409c5be366b",
+    "semantic_hash": "fd478d635bb73db40f648409c5be366b"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\badge\\badge.component.html": {
+    "mtime": 1778387506.8261833,
+    "ast_hash": "c2c81fca3eeed65686149b997ec64d22",
+    "semantic_hash": "c2c81fca3eeed65686149b997ec64d22"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\icon-button\\icon-button.component.html": {
+    "mtime": 1778386382.1608005,
+    "ast_hash": "452aa0765ca952709b71eeaaa640d981",
+    "semantic_hash": "452aa0765ca952709b71eeaaa640d981"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\price-display\\price-display.component.html": {
+    "mtime": 1779037417.6158626,
+    "ast_hash": "f023245a5847b00b177f54b529763c1d",
+    "semantic_hash": "f023245a5847b00b177f54b529763c1d"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\product-card\\product-card.component.html": {
+    "mtime": 1778945777.1568718,
+    "ast_hash": "b7c8c631590f0633da6e3cdad79ba421",
+    "semantic_hash": "b7c8c631590f0633da6e3cdad79ba421"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\section-header\\section-header.component.html": {
+    "mtime": 1778387535.542451,
+    "ast_hash": "5a9afcecff063662ffdd4b636a122860",
+    "semantic_hash": "5a9afcecff063662ffdd4b636a122860"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\index.html": {
+    "mtime": 1779037313.4392319,
+    "ast_hash": "54f4d7981e53984acc15a302ecc6aa34",
+    "semantic_hash": "54f4d7981e53984acc15a302ecc6aa34"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\wwwroot\\placeholder.txt": {
+    "mtime": 1772218395.6206925,
+    "ast_hash": "4bcb219f5428e7d0c7dbc5af8dcf3ea4",
+    "semantic_hash": "4bcb219f5428e7d0c7dbc5af8dcf3ea4"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\build_error.txt": {
+    "mtime": 1772154227.589552,
+    "ast_hash": "40820cfd3fde55eee4ad5a42e6a0257d",
+    "semantic_hash": "40820cfd3fde55eee4ad5a42e6a0257d"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\error_log.txt": {
+    "mtime": 1772154300.447718,
+    "ast_hash": "1a54f9b866df6deb6741f96e53247a93",
+    "semantic_hash": "1a54f9b866df6deb6741f96e53247a93"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\errors.txt": {
+    "mtime": 1772154422.8603816,
+    "ast_hash": "77966a9c5afa1fd955bf736bef4098ea",
+    "semantic_hash": "77966a9c5afa1fd955bf736bef4098ea"
+  },
+  "C:\\Projects\\Arza\\LICENSE.txt": {
+    "mtime": 1772205387.9856262,
+    "ast_hash": "02d4ea62d9fb26520eee03e3923515ce",
+    "semantic_hash": "02d4ea62d9fb26520eee03e3923515ce"
+  },
+  "C:\\Projects\\Arza\\README.md": {
+    "mtime": 1771187254.4594483,
+    "ast_hash": "177640f9affcbc9dcda8f62550b2d296",
+    "semantic_hash": "177640f9affcbc9dcda8f62550b2d296"
+  },
+  "C:\\Projects\\Arza\\publish_command.txt": {
+    "mtime": 1771595145.8211434,
+    "ast_hash": "66e18fb926e53d81b6a8fb34d807f39c",
+    "semantic_hash": "66e18fb926e53d81b6a8fb34d807f39c"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\assets\\images\\placeholder.png": {
+    "mtime": 1769938755.573089,
+    "ast_hash": "a3137a937c9f67684fad207f7b8ed9e1",
+    "semantic_hash": "a3137a937c9f67684fad207f7b8ed9e1"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\assets\\logo.png": {
+    "mtime": 1772044738.947792,
+    "ast_hash": "62931c8b87d59a85d456fca30cc6e919",
+    "semantic_hash": "62931c8b87d59a85d456fca30cc6e919"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\assets\\logo.svg": {
+    "mtime": 1772045789.1738129,
+    "ast_hash": "7150ad3d105cd171f637eb1532ef5ae1",
+    "semantic_hash": "7150ad3d105cd171f637eb1532ef5ae1"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\assets\\taka.svg": {
+    "mtime": 1768986704.779326,
+    "ast_hash": "f1937dbcd6a4f83f06fafff261798125",
+    "semantic_hash": "f1937dbcd6a4f83f06fafff261798125"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\wwwroot\\assets\\images\\banners\\new-arrivals.jpg": {
+    "mtime": 1774876373.7837546,
+    "ast_hash": "50eaed79d14d4751f1875b1ec9fbf6e8",
+    "semantic_hash": "50eaed79d14d4751f1875b1ec9fbf6e8"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\wwwroot\\assets\\images\\banners\\summer.jpg": {
+    "mtime": 1774876346.2552114,
+    "ast_hash": "32015dbc944eb4a6d75bc64286cc6e55",
+    "semantic_hash": "32015dbc944eb4a6d75bc64286cc6e55"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\role-management\\role-management.component.ts": {
+    "mtime": 1780627305.3210526,
+    "ast_hash": "cbb6f9cf15e64beb0ff87222227c00bf",
+    "semantic_hash": "cbb6f9cf15e64beb0ff87222227c00bf"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\staff-audit-log\\staff-audit-log.component.ts": {
+    "mtime": 1780627328.158933,
+    "ast_hash": "16c900b0b44e3f40c9313a3726ffbaec",
+    "semantic_hash": "16c900b0b44e3f40c9313a3726ffbaec"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\staff-management\\staff-management.component.ts": {
+    "mtime": 1780627315.6600263,
+    "ast_hash": "a86cec7e177d209d761706fe2471ab2a",
+    "semantic_hash": "a86cec7e177d209d761706fe2471ab2a"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\staff.service.ts": {
+    "mtime": 1780627357.8086934,
+    "ast_hash": "ed07be30b0cfc193640033ec82341678",
+    "semantic_hash": "ed07be30b0cfc193640033ec82341678"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\StaffAuditLogController.cs": {
+    "mtime": 1780627418.9154918,
+    "ast_hash": "168d249c9308d70d0753f628c8d080f6",
+    "semantic_hash": "168d249c9308d70d0753f628c8d080f6"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\StaffAuthController.cs": {
+    "mtime": 1780627197.3439434,
+    "ast_hash": "5e6344171fd2438e6fd0fb54db295a85",
+    "semantic_hash": "5e6344171fd2438e6fd0fb54db295a85"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\StaffModulesController.cs": {
+    "mtime": 1780627213.1037366,
+    "ast_hash": "8b0cc2c2f0d74a14a11ce4d796c32bd5",
+    "semantic_hash": "8b0cc2c2f0d74a14a11ce4d796c32bd5"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\StaffRolesController.cs": {
+    "mtime": 1780627209.4357498,
+    "ast_hash": "80318863c5d6055fdfd3426f586ed9b6",
+    "semantic_hash": "80318863c5d6055fdfd3426f586ed9b6"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\StaffUsersController.cs": {
+    "mtime": 1780627232.7910116,
+    "ast_hash": "46423791650c0f6a8f9401290c9ad62e",
+    "semantic_hash": "46423791650c0f6a8f9401290c9ad62e"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Helpers\\PasswordProtector.cs": {
+    "mtime": 1780622601.53888,
+    "ast_hash": "d83784c6d302c858336e16955d121d7e",
+    "semantic_hash": "d83784c6d302c858336e16955d121d7e"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\CustomForbiddenMiddleware.cs": {
+    "mtime": 1780627178.3750196,
+    "ast_hash": "b2b7b20e5bc9a6b126517441357221c5",
+    "semantic_hash": "b2b7b20e5bc9a6b126517441357221c5"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\PermissionHandler.cs": {
+    "mtime": 1780627168.4177046,
+    "ast_hash": "a4be07fcd9cd81c400cd038f3a580559",
+    "semantic_hash": "a4be07fcd9cd81c400cd038f3a580559"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\PermissionPolicyProvider.cs": {
+    "mtime": 1780627171.4169407,
+    "ast_hash": "c93ec87b0d7f0f677bcefae0ce9790ca",
+    "semantic_hash": "c93ec87b0d7f0f677bcefae0ce9790ca"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\PermissionRequirement.cs": {
+    "mtime": 1780627165.0531049,
+    "ast_hash": "e73a8711d993b0d6b82b16247a72476f",
+    "semantic_hash": "e73a8711d993b0d6b82b16247a72476f"
+  },
+  "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\RequirePermissionAttribute.cs": {
+    "mtime": 1780627173.9314318,
+    "ast_hash": "f92aea7887c89873d5bb4f7094832440",
+    "semantic_hash": "f92aea7887c89873d5bb4f7094832440"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\AdminActivityLog.cs": {
+    "mtime": 1780626348.695789,
+    "ast_hash": "331512a879d8b78033e0c37ccc69a4d8",
+    "semantic_hash": "331512a879d8b78033e0c37ccc69a4d8"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\StaffAuditLog.cs": {
+    "mtime": 1780627085.907304,
+    "ast_hash": "233a9220e31e8a21d1087cef973bb8a8",
+    "semantic_hash": "233a9220e31e8a21d1087cef973bb8a8"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\StaffModule.cs": {
+    "mtime": 1780627074.1727777,
+    "ast_hash": "334e07a6e9393628be38f84d6df4ac42",
+    "semantic_hash": "334e07a6e9393628be38f84d6df4ac42"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\StaffPermission.cs": {
+    "mtime": 1780627076.9151535,
+    "ast_hash": "0917ea353db73e91fc862abbd70486bd",
+    "semantic_hash": "0917ea353db73e91fc862abbd70486bd"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\StaffRole.cs": {
+    "mtime": 1780627071.288668,
+    "ast_hash": "d8c35be6b0c6fa69209ba523c1ce5e7c",
+    "semantic_hash": "d8c35be6b0c6fa69209ba523c1ce5e7c"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\StaffRolePermission.cs": {
+    "mtime": 1780627079.428168,
+    "ast_hash": "e4ab46239281aa214ed6bc985963d715",
+    "semantic_hash": "e4ab46239281aa214ed6bc985963d715"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Core\\Entities\\StaffUser.cs": {
+    "mtime": 1780627082.7805724,
+    "ast_hash": "aaa79f21256ad019e5f9b875d452f38b",
+    "semantic_hash": "aaa79f21256ad019e5f9b875d452f38b"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Data\\StaffDataSeeder.cs": {
+    "mtime": 1780627155.6826222,
+    "ast_hash": "5f2e7320fa2b427036308d242c64512e",
+    "semantic_hash": "5f2e7320fa2b427036308d242c64512e"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260605012754_AddPasswordEncryptedColumn.Designer.cs": {
+    "mtime": 1780622874.7467644,
+    "ast_hash": "0db2857161cac7b1db26fb73a7c86059",
+    "semantic_hash": "0db2857161cac7b1db26fb73a7c86059"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260605012754_AddPasswordEncryptedColumn.cs": {
+    "mtime": 1780622874.7457638,
+    "ast_hash": "e573d009185fbf891530ba4ac0455a96",
+    "semantic_hash": "e573d009185fbf891530ba4ac0455a96"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260605022824_AddAdminActivityLog.Designer.cs": {
+    "mtime": 1780626504.4599924,
+    "ast_hash": "093086ae7167c7598f436c940625a6c5",
+    "semantic_hash": "093086ae7167c7598f436c940625a6c5"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260605022824_AddAdminActivityLog.cs": {
+    "mtime": 1780626504.458994,
+    "ast_hash": "ce67373b57cf88863c203f4827e494bd",
+    "semantic_hash": "ce67373b57cf88863c203f4827e494bd"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260605023830_AddStaffRBAC.Designer.cs": {
+    "mtime": 1780627110.6891084,
+    "ast_hash": "e330bec5709cf3f6c5b8cdc84aea81b2",
+    "semantic_hash": "e330bec5709cf3f6c5b8cdc84aea81b2"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Migrations\\20260605023830_AddStaffRBAC.cs": {
+    "mtime": 1780627110.6891084,
+    "ast_hash": "2d31930e8797b51f58b5db356bca6985",
+    "semantic_hash": "2d31930e8797b51f58b5db356bca6985"
+  },
+  "C:\\Projects\\Arza\\ECommerce.Infrastructure\\Services\\PasswordEncryption.cs": {
+    "mtime": 1780627151.0782743,
+    "ast_hash": "4bc54c3e1f0b39bc4eb8a61112ea136e",
+    "semantic_hash": "4bc54c3e1f0b39bc4eb8a61112ea136e"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\role-management\\role-management.component.html": {
+    "mtime": 1780627310.951501,
+    "ast_hash": "1bf845c92886a45df5e3dabf9d03948a",
+    "semantic_hash": "1bf845c92886a45df5e3dabf9d03948a"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\staff-audit-log\\staff-audit-log.component.html": {
+    "mtime": 1780627332.9292085,
+    "ast_hash": "2b9b301378900f89599b353de6ffb5fa",
+    "semantic_hash": "2b9b301378900f89599b353de6ffb5fa"
+  },
+  "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\staff-management\\staff-management.component.html": {
+    "mtime": 1780627362.3728352,
+    "ast_hash": "4a915e738599c5d74c0dee20988e54c4",
+    "semantic_hash": "4a915e738599c5d74c0dee20988e54c4"
+  },
+  "C:\\Projects\\Arza\\ECommarve.View\\src\\app\\admin\\pages\\admin-user-management\\admin-user-management.component.html": {
+    "mtime": 1780622769.6891716,
+    "ast_hash": "6ef25adb54450a54b8c848ba94a6eb4a",
+    "semantic_hash": "6ef25adb54450a54b8c848ba94a6eb4a"
+  },
+  "C:\\Projects\\Arza\\prompt_extracted.txt": {
+    "mtime": 1780626556.8930254,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  }
+}

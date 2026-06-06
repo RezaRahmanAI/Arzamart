@@ -5,9 +5,9 @@
     "semantic_hash": "ab17318f9006036d2fcd5b32282dc774"
   },
   "C:\\Projects\\Arza\\DbTest\\Program.cs": {
-    "mtime": 1780627562.5251915,
-    "ast_hash": "8de5c5015a5d200abc3001a84cec7513",
-    "semantic_hash": "8de5c5015a5d200abc3001a84cec7513"
+    "mtime": 1780638241.279898,
+    "ast_hash": "6b7f752e475c97c032c86eb7934e1ee0",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarce.View\\angular.json": {
     "mtime": 1778390306.408473,
@@ -225,9 +225,9 @@
     "semantic_hash": "0ee9ccc6b7167806a9f810dcb19ea3f4"
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-user-management\\admin-user-management.component.ts": {
-    "mtime": 1780623801.8322725,
-    "ast_hash": "a9db6f6aca3e28f81319d62250f10388",
-    "semantic_hash": "a9db6f6aca3e28f81319d62250f10388"
+    "mtime": 1780630479.7365577,
+    "ast_hash": "b8fcf8ca29b6c5764e9cab26747f5a39",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\dashboard-overview\\dashboard-overview.component.ts": {
     "mtime": 1779529182.547704,
@@ -805,9 +805,9 @@
     "semantic_hash": "2ebbb38d7ee0d05d740431e15e9489ab"
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\app-icon\\app-icon.component.ts": {
-    "mtime": 1778895441.374803,
-    "ast_hash": "130b8500dff7f84fcda1623743dfbf5e",
-    "semantic_hash": "130b8500dff7f84fcda1623743dfbf5e"
+    "mtime": 1780637384.9187386,
+    "ast_hash": "864d7fdb6a72c2334686a8100a462642",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\shared\\components\\badge\\badge.component.ts": {
     "mtime": 1776506261.7102437,
@@ -875,7 +875,7 @@
     "semantic_hash": "d4af23ee77b03f7562cc181cdc1a8ef4"
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\environments\\environment.ts": {
-    "mtime": 1780623523.6472273,
+    "mtime": 1780631456.8104253,
     "ast_hash": "24d38d84826d18d71341369fbfefa76e",
     "semantic_hash": "24d38d84826d18d71341369fbfefa76e"
   },
@@ -885,9 +885,9 @@
     "semantic_hash": "896bce44ea9fdc8489a92e36261f3bdd"
   },
   "C:\\Projects\\Arza\\ECommarce.View\\tailwind.config.js": {
-    "mtime": 1779041946.5753772,
-    "ast_hash": "9fe9b2548d2d44327a831a49674ef990",
-    "semantic_hash": "9fe9b2548d2d44327a831a49674ef990"
+    "mtime": 1780654102.000503,
+    "ast_hash": "da2018f5a7ea2d12e1449e12813304d8",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarce.View\\tsconfig.app.json": {
     "mtime": 1768986704.779326,
@@ -1005,9 +1005,9 @@
     "semantic_hash": "687974530220079c1d5eeff9c443682f"
   },
   "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\AuthController.cs": {
-    "mtime": 1780626413.3679004,
-    "ast_hash": "078afde4c7c049726cc5165765fc3eff",
-    "semantic_hash": "078afde4c7c049726cc5165765fc3eff"
+    "mtime": 1780637135.0833762,
+    "ast_hash": "e35e244f2c4196089e584454e84ac15a",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\BannersController.cs": {
     "mtime": 1776497326.867459,
@@ -1105,9 +1105,9 @@
     "semantic_hash": "958aa3e6eb33d97cb4113792e0c9a904"
   },
   "C:\\Projects\\Arza\\ECommerce.API\\Helpers\\StaffMenuAccessAttribute.cs": {
-    "mtime": 1778317025.7717772,
-    "ast_hash": "c9150c29aaea24218e9c5ff05e7fd0fb",
-    "semantic_hash": "c9150c29aaea24218e9c5ff05e7fd0fb"
+    "mtime": 1780633821.9139843,
+    "ast_hash": "b761de12695a615108a6733553f9ace8",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\GlobalExceptionMiddleware.cs": {
     "mtime": 1773410470.9480264,
@@ -1120,9 +1120,9 @@
     "semantic_hash": "5b643b059781cc76e5d8a795d0c73add"
   },
   "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\RequestLoggingMiddleware.cs": {
-    "mtime": 1772209395.3313751,
-    "ast_hash": "3f5474b0b5b6c96a5bf167b05b0e24b2",
-    "semantic_hash": "3f5474b0b5b6c96a5bf167b05b0e24b2"
+    "mtime": 1780637806.8131068,
+    "ast_hash": "e844b990c5633e209b9a69a9b3628472",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommerce.API\\Middleware\\RevokedTokenMiddleware.cs": {
     "mtime": 1773068869.6327872,
@@ -1155,9 +1155,9 @@
     "semantic_hash": "64107c43999a8ad8d08c54295d03a423"
   },
   "C:\\Projects\\Arza\\ECommerce.API\\Properties\\launchSettings.json": {
-    "mtime": 1773068869.6327872,
-    "ast_hash": "6e1681f4c4994e49357b828c68486411",
-    "semantic_hash": "6e1681f4c4994e49357b828c68486411"
+    "mtime": 1780634069.0359716,
+    "ast_hash": "b24ef489c47df75def56f6f10bba4c2f",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommerce.API\\TestMap.cs": {
     "mtime": 1773484798.137643,
@@ -1935,19 +1935,19 @@
     "semantic_hash": "ad6ab7d76f7336707640a4f0ed685375"
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\layout\\admin-header\\admin-header.component.html": {
-    "mtime": 1779037396.757799,
-    "ast_hash": "a4756b1cfd26ccd505cf467c8254855b",
-    "semantic_hash": "a4756b1cfd26ccd505cf467c8254855b"
+    "mtime": 1780654775.7441123,
+    "ast_hash": "f40083943151f7af13177819154f2a7e",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\layout\\admin-layout\\admin-layout.component.html": {
-    "mtime": 1778386382.0168085,
-    "ast_hash": "018f0cb76b7c87e6e3527ee4746d4b0b",
-    "semantic_hash": "018f0cb76b7c87e6e3527ee4746d4b0b"
+    "mtime": 1780654808.0460126,
+    "ast_hash": "2143524ad0785e06987333bf14c0ed29",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\layout\\admin-sidebar\\admin-sidebar.component.html": {
-    "mtime": 1780627277.5551374,
-    "ast_hash": "54f46dddd4e8d53ec136bfc9d6130654",
-    "semantic_hash": "54f46dddd4e8d53ec136bfc9d6130654"
+    "mtime": 1780654114.942678,
+    "ast_hash": "e4f22c09d0357253a5ed909c547e1dfb",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-analytics\\admin-analytics.component.html": {
     "mtime": 1778781381.9542608,
@@ -2060,14 +2060,14 @@
     "semantic_hash": "645093a1ee14d1d32d1deb1c95788bbc"
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\admin-user-management\\admin-user-management.component.html": {
-    "mtime": 1779507222.1940033,
-    "ast_hash": "d24d0a18e165fef51b0ffb749fa707eb",
-    "semantic_hash": "d24d0a18e165fef51b0ffb749fa707eb"
+    "mtime": 1780630470.1873589,
+    "ast_hash": "ffd29ac582fd10f3faa074a46739f4be",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\dashboard-overview\\dashboard-overview.component.html": {
-    "mtime": 1779529202.4440453,
-    "ast_hash": "1863c816641df22b0a0e2f926dd39c80",
-    "semantic_hash": "1863c816641df22b0a0e2f926dd39c80"
+    "mtime": 1780654802.5158157,
+    "ast_hash": "703df14bf05ecb59bf4f549d92df6a8c",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\app.component.html": {
     "mtime": 1778896379.0360484,
@@ -2390,14 +2390,14 @@
     "semantic_hash": "16c900b0b44e3f40c9313a3726ffbaec"
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\staff-management\\staff-management.component.ts": {
-    "mtime": 1780627315.6600263,
-    "ast_hash": "a86cec7e177d209d761706fe2471ab2a",
-    "semantic_hash": "a86cec7e177d209d761706fe2471ab2a"
+    "mtime": 1780638286.4801698,
+    "ast_hash": "06daba887becd197d80172c3b23b4412",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\services\\staff.service.ts": {
-    "mtime": 1780627357.8086934,
-    "ast_hash": "ed07be30b0cfc193640033ec82341678",
-    "semantic_hash": "ed07be30b0cfc193640033ec82341678"
+    "mtime": 1780638281.6848798,
+    "ast_hash": "a9a68d9497152a300edf62962891dfbb",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\StaffAuditLogController.cs": {
     "mtime": 1780627418.9154918,
@@ -2405,9 +2405,9 @@
     "semantic_hash": "168d249c9308d70d0753f628c8d080f6"
   },
   "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\StaffAuthController.cs": {
-    "mtime": 1780627197.3439434,
-    "ast_hash": "5e6344171fd2438e6fd0fb54db295a85",
-    "semantic_hash": "5e6344171fd2438e6fd0fb54db295a85"
+    "mtime": 1780633818.8293362,
+    "ast_hash": "3bd9dcb34b3706cb0d1f0068cd1da779",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommerce.API\\Controllers\\StaffModulesController.cs": {
     "mtime": 1780627213.1037366,
@@ -2540,9 +2540,9 @@
     "semantic_hash": "2b9b301378900f89599b353de6ffb5fa"
   },
   "C:\\Projects\\Arza\\ECommarce.View\\src\\app\\admin\\pages\\staff-management\\staff-management.component.html": {
-    "mtime": 1780627362.3728352,
-    "ast_hash": "4a915e738599c5d74c0dee20988e54c4",
-    "semantic_hash": "4a915e738599c5d74c0dee20988e54c4"
+    "mtime": 1780637395.3606577,
+    "ast_hash": "75ef480994f466e80fd1147229457461",
+    "semantic_hash": ""
   },
   "C:\\Projects\\Arza\\ECommarve.View\\src\\app\\admin\\pages\\admin-user-management\\admin-user-management.component.html": {
     "mtime": 1780622769.6891716,
@@ -2553,5 +2553,15 @@
     "mtime": 1780626556.8930254,
     "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "C:\\Projects\\Arza\\scratch\\test_api.ps1": {
+    "mtime": 1780637999.9618604,
+    "ast_hash": "394ff22b0c779306efb0dc787918aa0f",
+    "semantic_hash": ""
+  },
+  "C:\\Projects\\Arza\\scratch\\test_roles.js": {
+    "mtime": 1780637068.978903,
+    "ast_hash": "9da9c88cc7623de4167336b91609286e",
+    "semantic_hash": ""
   }
 }

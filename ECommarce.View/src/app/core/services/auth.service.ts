@@ -42,7 +42,12 @@ export class AuthService {
   login(identifier: string, password: string, rememberMe = true): Observable<User | null> {
     const payload: LoginPayload = { identifier, password, rememberMe };
     return this.api.post<AuthResponse>("/auth/login", payload).pipe(
-      tap((response) => this.setSession(response.user, response.token)),
+      tap((response) => {
+        this.setSession(response.user, response.token);
+        if (response.refreshToken) {
+          localStorage.setItem("arza_refresh_token", response.refreshToken);
+        }
+      }),
       map((response) => response.user),
     );
   }
@@ -53,6 +58,26 @@ export class AuthService {
       error: () => this.clearSession(),
     });
     this.clearSession();
+  }
+
+  refreshToken(): Observable<User | null> {
+    const refreshToken = localStorage.getItem("arza_refresh_token");
+    if (!refreshToken) {
+      return of(null);
+    }
+    return this.api.post<AuthResponse>("/auth/refresh", { refreshToken }).pipe(
+      tap((response) => {
+        this.setSession(response.user, response.token);
+        if (response.refreshToken) {
+          localStorage.setItem("arza_refresh_token", response.refreshToken);
+        }
+      }),
+      map((response) => response.user),
+    );
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<{ message: string }> {
+    return this.api.post<{ message: string }>("/auth/change-password", { currentPassword, newPassword });
   }
 
   setSession(user: User, token: string) {
@@ -101,83 +126,33 @@ export class AuthService {
   }
 
   adminLogin(emailOrUsername: string, password: string): Observable<User | null> {
-    const payload = { username: emailOrUsername, password };
-    return this.api.post<any>("/staff/auth/login", payload).pipe(
+    const payload = { identifier: emailOrUsername, password, rememberMe: true };
+    return this.api.post<any>("/auth/login", payload).pipe(
       tap((response) => {
-        if (response.success && response.data) {
-          const rawUser = response.data.user;
-          
-          // Map permissions to old menu keys for compatibility
-          const allowedMenus: string[] = [];
-          const permissions: string[] = rawUser.permissions || [];
-
-          if (rawUser.isSuperAdmin) {
-            allowedMenus.push("dashboard", "products", "orders", "customers", "analytics", "settings", "banners", "navigation", "pages", "reviews", "order-sources", "security", "users");
-          } else {
-            if (permissions.some(p => p.startsWith("inventory:"))) allowedMenus.push("products");
-            if (permissions.some(p => p.startsWith("sales:"))) {
-              allowedMenus.push("orders");
-              allowedMenus.push("banners");
-              allowedMenus.push("reviews");
-            }
-            if (permissions.some(p => p.startsWith("hr:"))) allowedMenus.push("customers");
-            if (permissions.some(p => p.startsWith("reports:"))) allowedMenus.push("analytics");
-            if (permissions.some(p => p.startsWith("settings:"))) {
-              allowedMenus.push("settings");
-              allowedMenus.push("navigation");
-              allowedMenus.push("pages");
-              allowedMenus.push("order-sources");
-              allowedMenus.push("security");
-            }
-            if (permissions.some(p => p.startsWith("staff-management:"))) allowedMenus.push("users");
-          }
-
+        if (response.token && response.user) {
+          const rawUser = response.user;
           const user: User = {
             id: rawUser.id,
             fullName: rawUser.fullName,
-            userName: rawUser.username,
+            userName: rawUser.userName,
             email: rawUser.email,
             role: rawUser.role,
-            allowedMenus: allowedMenus
+            allowedMenus: rawUser.allowedMenus || []
           };
-          this.setSession(user, response.data.accessToken);
-          localStorage.setItem("arza_refresh_token", response.data.refreshToken);
+          this.setSession(user, response.token);
+          localStorage.setItem("arza_refresh_token", response.refreshToken);
         }
       }),
       map((response) => {
-        if (response.success && response.data) {
-          const rawUser = response.data.user;
-          const allowedMenus: string[] = [];
-          const permissions: string[] = rawUser.permissions || [];
-
-          if (rawUser.isSuperAdmin) {
-            allowedMenus.push("dashboard", "products", "orders", "customers", "analytics", "settings", "banners", "navigation", "pages", "reviews", "order-sources", "security", "users");
-          } else {
-            if (permissions.some(p => p.startsWith("inventory:"))) allowedMenus.push("products");
-            if (permissions.some(p => p.startsWith("sales:"))) {
-              allowedMenus.push("orders");
-              allowedMenus.push("banners");
-              allowedMenus.push("reviews");
-            }
-            if (permissions.some(p => p.startsWith("hr:"))) allowedMenus.push("customers");
-            if (permissions.some(p => p.startsWith("reports:"))) allowedMenus.push("analytics");
-            if (permissions.some(p => p.startsWith("settings:"))) {
-              allowedMenus.push("settings");
-              allowedMenus.push("navigation");
-              allowedMenus.push("pages");
-              allowedMenus.push("order-sources");
-              allowedMenus.push("security");
-            }
-            if (permissions.some(p => p.startsWith("staff-management:"))) allowedMenus.push("users");
-          }
-
+        if (response.token && response.user) {
+          const rawUser = response.user;
           return {
             id: rawUser.id,
             fullName: rawUser.fullName,
-            userName: rawUser.username,
+            userName: rawUser.userName,
             email: rawUser.email,
             role: rawUser.role,
-            allowedMenus: allowedMenus
+            allowedMenus: rawUser.allowedMenus || []
           };
         }
         return null;

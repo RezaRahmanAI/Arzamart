@@ -44,119 +44,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ProductGroup> ProductGroups { get; set; }
     public DbSet<AdminActivityLog> AdminActivityLogs { get; set; }
 
-    public DbSet<StaffUser> StaffUsers { get; set; }
-    public DbSet<StaffRole> StaffRoles { get; set; }
-    public DbSet<StaffModule> StaffModules { get; set; }
-    public DbSet<StaffPermission> StaffPermissions { get; set; }
-    public DbSet<StaffRolePermission> StaffRolePermissions { get; set; }
-    public DbSet<StaffAuditLog> StaffAuditLogs { get; set; }
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.HasDefaultSchema("dbo");
         base.OnModelCreating(builder);
 
-        // Staff RBAC configurations
-        builder.Entity<StaffUser>(entity =>
-        {
-            entity.ToTable("staff_users");
-            entity.HasKey(u => u.Id);
-            entity.Property(u => u.FullName).IsRequired().HasMaxLength(150);
-            entity.Property(u => u.Email).IsRequired().HasMaxLength(200);
-            entity.Property(u => u.Username).IsRequired().HasMaxLength(100);
-            entity.Property(u => u.PasswordHash).IsRequired();
-            entity.Property(u => u.PasswordPlainEncrypted).IsRequired();
-            entity.Property(u => u.IsActive).HasDefaultValue(true);
-            entity.Property(u => u.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-            entity.Property(u => u.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
-            
-            entity.HasIndex(u => u.Email).IsUnique();
-            entity.HasIndex(u => u.Username).IsUnique();
-
-            entity.HasOne(u => u.Role)
-                .WithMany(r => r.StaffUsers)
-                .HasForeignKey(u => u.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(u => u.Creator)
-                .WithMany()
-                .HasForeignKey(u => u.CreatedBy)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Global query filter for soft delete
-            entity.HasQueryFilter(u => u.DeletedAt == null);
-        });
-
-        builder.Entity<StaffRole>(entity =>
-        {
-            entity.ToTable("roles");
-            entity.HasKey(r => r.Id);
-            entity.Property(r => r.Name).IsRequired().HasMaxLength(100);
-            entity.Property(r => r.IsSystemRole).HasDefaultValue(false);
-            entity.Property(r => r.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-
-            entity.HasIndex(r => r.Name).IsUnique();
-        });
-
-        builder.Entity<StaffModule>(entity =>
-        {
-            entity.ToTable("modules");
-            entity.HasKey(m => m.Id);
-            entity.Property(m => m.Name).IsRequired().HasMaxLength(100);
-            entity.Property(m => m.Slug).IsRequired().HasMaxLength(100);
-
-            entity.HasIndex(m => m.Name).IsUnique();
-            entity.HasIndex(m => m.Slug).IsUnique();
-        });
-
-        builder.Entity<StaffPermission>(entity =>
-        {
-            entity.ToTable("permissions");
-            entity.HasKey(p => p.Id);
-            entity.Property(p => p.Action).IsRequired().HasMaxLength(50);
-
-            entity.HasIndex(p => new { p.ModuleId, p.Action }).IsUnique();
-
-            entity.HasOne(p => p.Module)
-                .WithMany(m => m.Permissions)
-                .HasForeignKey(p => p.ModuleId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        builder.Entity<StaffRolePermission>(entity =>
-        {
-            entity.ToTable("role_permissions");
-            entity.HasKey(rp => new { rp.RoleId, rp.PermissionId });
-
-            entity.HasOne(rp => rp.Role)
-                .WithMany(r => r.RolePermissions)
-                .HasForeignKey(rp => rp.RoleId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne(rp => rp.Permission)
-                .WithMany(p => p.RolePermissions)
-                .HasForeignKey(rp => rp.PermissionId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        builder.Entity<StaffAuditLog>(entity =>
-        {
-            entity.ToTable("staff_audit_log");
-            entity.HasKey(al => al.Id);
-            entity.Property(al => al.Action).IsRequired().HasMaxLength(100);
-            entity.Property(al => al.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-
-            entity.HasOne(al => al.Actor)
-                .WithMany()
-                .HasForeignKey(al => al.ActorId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(al => al.TargetStaff)
-                .WithMany()
-                .HasForeignKey(al => al.TargetStaffId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
-        
         // Global Query Filters for Soft Delete & Active Status
         builder.Entity<Product>().HasQueryFilter(p => p.IsActive);
 
@@ -401,6 +293,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(u => u.IsSuspicious).HasDefaultValue(false);
             entity.Property(u => u.IsActive).HasDefaultValue(true);
             entity.Property(u => u.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.Property(u => u.ForceChangePassword).HasDefaultValue(false);
         });
 
         builder.Entity<CustomLandingPageConfig>(entity =>

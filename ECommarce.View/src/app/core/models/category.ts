@@ -1,12 +1,42 @@
 export interface Category {
-  id: number | string;
+  id: number;
   name: string;
   slug: string;
-  description?: string;
-  imageUrl: string;
-  href?: string;
-  displayOrder?: number;
-  isActive?: boolean;
-  productCount?: number;
+  parentId?: number | null;
+  imageUrl?: string;
+  isActive: boolean;
+  productCount: number;
+  displayOrder: number;
+  metaTitle?: string;
+  metaDescription?: string;
   subCategories?: Category[];
+}
+
+export interface SubCategory {
+  id: number;
+  name: string;
+  slug: string;
+  categoryId: number;
+  isActive: boolean;
+  imageUrl?: string;
+  displayOrder?: number;
+  collections?: Collection[];
+}
+
+export interface Collection {
+  id: number;
+  name: string;
+  slug: string;
+  subCategoryId: number;
+  isActive: boolean;
+}
+
+export interface CategoryNode {
+  category: Category;
+  children: CategoryNode[];
+}
+
+export interface ReorderPayload {
+  parentId: number | null;
+  orderedIds: number[];
 }

@@ -8,13 +8,15 @@ public class ApplicationUser : IdentityUser
 {
     public string? FullName { get; set; }
     public string? Phone { get; set; }
-    public string Role { get; set; } = "Customer"; // Customer or Admin
+    public string Role { get; set; } = "Customer"; // Customer, Staff, Admin, SuperAdmin
     public bool IsSuspicious { get; set; } = false;
 
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public string? PasswordEncrypted { get; set; }
+
+    public bool ForceChangePassword { get; set; } = false;
 
     // JWT columns
     public string? PasswordSalt { get; set; }
@@ -31,4 +33,7 @@ public class ApplicationUser : IdentityUser
         get => string.IsNullOrEmpty(AllowedMenusJson) ? new List<string>() : System.Text.Json.JsonSerializer.Deserialize<List<string>>(AllowedMenusJson) ?? new List<string>();
         set => AllowedMenusJson = System.Text.Json.JsonSerializer.Serialize(value);
     }
+
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public bool IsSuperAdmin => Role == "SuperAdmin";
 }

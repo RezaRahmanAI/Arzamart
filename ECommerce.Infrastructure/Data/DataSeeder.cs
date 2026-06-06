@@ -62,7 +62,9 @@ public static class DataSeeder
                 EmailConfirmed = true,
                 Role = "SuperAdmin",
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                PasswordEncrypted = "encrypted", // Will be set after password hash
+                ForceChangePassword = false
             };
 
             // This will correctly hash the password "Arzamart@321" using Identity's PasswordHasher

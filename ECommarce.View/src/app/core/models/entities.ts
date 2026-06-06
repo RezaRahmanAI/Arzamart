@@ -12,7 +12,9 @@ export interface User {
 
 export interface AuthResponse {
   token: string;
+  refreshToken?: string;
   user: User;
+  forceChangePassword?: boolean;
 }
 
 export interface LoginPayload {

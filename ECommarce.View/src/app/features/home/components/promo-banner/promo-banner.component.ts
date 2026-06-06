@@ -1,7 +1,7 @@
 import { NgIf, AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { BannerService, HeroBanner } from "../../../../core/services/banner.service";
+import { BannerService, Banner } from "../../../../core/services/banner.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { map } from "rxjs";
 
@@ -16,7 +16,7 @@ export class PromoBannerComponent implements OnInit {
   imageUrlService = inject(ImageUrlService);
 
   promoBanner$ = this.bannerService.getActiveBanners().pipe(
-    map((banners: HeroBanner[]) => banners.find(b => b.type === 'Promo'))
+    map((banners: Banner[]) => banners.find(b => b.type === 'Promo'))
   );
 
   ngOnInit(): void {}

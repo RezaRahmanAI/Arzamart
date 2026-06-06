@@ -5,6 +5,7 @@ using System.Text;
 using ECommerce.API.Contracts.Auth;
 using ECommerce.Core.Entities;
 using ECommerce.Infrastructure.Data;
+using ECommerce.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +21,14 @@ public class AuthController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ApplicationDbContext _context;
+    private readonly PasswordProtector _passwordProtector;
 
-    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager, ApplicationDbContext context, PasswordProtector passwordProtector)
     {
         _configuration = configuration;
         _userManager = userManager;
         _context = context;
+        _passwordProtector = passwordProtector;
     }
 
     [HttpPost("login")]
@@ -45,13 +48,17 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid credentials.");
         }
 
+        if (!user.IsActive)
+        {
+            return Unauthorized("Account is deactivated.");
+        }
+
         var result = await _userManager.CheckPasswordAsync(user, request.Password);
         if (!result)
         {
             return Unauthorized("Invalid credentials.");
         }
 
-        // Fetch all roles
         var roles = await _userManager.GetRolesAsync(user);
         if (!roles.Any() && !string.IsNullOrEmpty(user.Role))
         {
@@ -62,10 +69,16 @@ public class AuthController : ControllerBase
             roles = new List<string> { "Customer" };
         }
 
-        var token = GenerateToken(user, roles);
         var primaryRole = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? "Customer");
+        var isSuperAdmin = primaryRole == "SuperAdmin";
 
-        // Log admin/staff login activity
+        var accessToken = GenerateAccessToken(user, roles, isSuperAdmin);
+        var refreshToken = GenerateRefreshToken();
+
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+        await _userManager.UpdateAsync(user);
+
         if (primaryRole == "SuperAdmin" || primaryRole == "Admin" || primaryRole == "Staff")
         {
             var loginLog = new AdminActivityLog
@@ -81,12 +94,65 @@ public class AuthController : ControllerBase
             await _context.SaveChangesAsync();
         }
 
-        return Ok(new AuthResponse(token, ToSummary(user, primaryRole)));
+        var userSummary = ToSummary(user, primaryRole);
+        var response = new AuthResponse(accessToken, userSummary);
+        
+        return Ok(new { 
+            token = accessToken, 
+            refreshToken = refreshToken,
+            user = userSummary,
+            forceChangePassword = user.ForceChangePassword
+        });
+    }
+
+    [HttpPost("refresh")]
+    public async Task<ActionResult> Refresh([FromBody] RefreshRequest request, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request.RefreshToken))
+        {
+            return BadRequest("Refresh token is required.");
+        }
+
+        var user = await _userManager.Users
+            .FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshToken, cancellationToken);
+
+        if (user == null || !user.IsActive || user.RefreshTokenExpiry == null || user.RefreshTokenExpiry.Value < DateTime.UtcNow)
+        {
+            return Unauthorized("Session expired or invalid refresh token.");
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+        if (!roles.Any() && !string.IsNullOrEmpty(user.Role))
+        {
+            roles = new List<string> { user.Role };
+        }
+        if (!roles.Any())
+        {
+            roles = new List<string> { "Customer" };
+        }
+
+        var primaryRole = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? "Customer");
+        var isSuperAdmin = primaryRole == "SuperAdmin";
+
+        var newAccessToken = GenerateAccessToken(user, roles, isSuperAdmin);
+        var newRefreshToken = GenerateRefreshToken();
+
+        user.RefreshToken = newRefreshToken;
+        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+        await _userManager.UpdateAsync(user);
+
+        var userSummary = ToSummary(user, primaryRole);
+        return Ok(new { 
+            token = newAccessToken, 
+            refreshToken = newRefreshToken,
+            user = userSummary,
+            forceChangePassword = user.ForceChangePassword
+        });
     }
 
     [Authorize]
     [HttpGet("me")]
-    public async Task<ActionResult<UserSummary>> Me(CancellationToken cancellationToken)
+    public async Task<ActionResult> Me(CancellationToken cancellationToken)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null)
@@ -97,66 +163,6 @@ public class AuthController : ControllerBase
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
         {
-            // Try searching in StaffUser
-            if (Guid.TryParse(userId, out var staffUserId))
-            {
-                var staffUser = await _context.StaffUsers
-                    .Include(u => u.Role)
-                    .ThenInclude(r => r.RolePermissions)
-                    .ThenInclude(rp => rp.Permission)
-                    .ThenInclude(p => p.Module)
-                    .FirstOrDefaultAsync(u => u.Id == staffUserId, cancellationToken);
-
-                if (staffUser != null)
-                {
-                    // Map permissions to allowed menus
-                    var allowedMenus = new List<string>();
-                    var roleName = staffUser.Role.Name;
-                    
-                    if (roleName == "Super Admin")
-                    {
-                        allowedMenus.AddRange(new[] { "dashboard", "products", "orders", "customers", "analytics", "settings", "banners", "navigation", "pages", "reviews", "order-sources", "security", "users" });
-                    }
-                    else
-                    {
-                        var permissions = staffUser.Role.RolePermissions
-                            .Select(rp => $"{rp.Permission.Module.Slug}:{rp.Permission.Action}")
-                            .ToList();
-                            
-                        if (permissions.Any(p => p.StartsWith("inventory:"))) allowedMenus.Add("products");
-                        if (permissions.Any(p => p.StartsWith("sales:")))
-                        {
-                            allowedMenus.Add("orders");
-                            allowedMenus.Add("banners");
-                            allowedMenus.Add("reviews");
-                        }
-                        if (permissions.Any(p => p.StartsWith("hr:"))) allowedMenus.Add("customers");
-                        if (permissions.Any(p => p.StartsWith("reports:"))) allowedMenus.Add("analytics");
-                        if (permissions.Any(p => p.StartsWith("settings:")))
-                        {
-                            allowedMenus.Add("settings");
-                            allowedMenus.Add("navigation");
-                            allowedMenus.Add("pages");
-                            allowedMenus.Add("order-sources");
-                            allowedMenus.Add("security");
-                        }
-                        if (permissions.Any(p => p.StartsWith("staff-management:"))) allowedMenus.Add("users");
-                    }
-
-                    var summary = new UserSummary(
-                        staffUser.Id.ToString(),
-                        staffUser.FullName,
-                        staffUser.Email,
-                        roleName,
-                        null,
-                        staffUser.Username,
-                        allowedMenus
-                    );
-
-                    return Ok(summary);
-                }
-            }
-
             return Unauthorized();
         }
 
@@ -166,17 +172,52 @@ public class AuthController : ControllerBase
         return Ok(ToSummary(user, role));
     }
 
+    [Authorize]
     [HttpPost("logout")]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
-        return Ok();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId != null)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                user.RefreshToken = null;
+                user.RefreshTokenExpiry = null;
+                await _userManager.UpdateAsync(user);
+            }
+        }
+        return Ok(new { message = "Logged out successfully" });
     }
 
-    private string GenerateToken(ApplicationUser user, IList<string> roles)
+    [HttpPost("change-password")]
+    [Authorize]
+    public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null) return Unauthorized();
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null) return Unauthorized();
+
+        var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+        if (!result.Succeeded)
+        {
+            return BadRequest(new { message = string.Join(", ", result.Errors.Select(e => e.Description)) });
+        }
+
+        user.ForceChangePassword = false;
+        user.PasswordEncrypted = _passwordProtector.Encrypt(request.NewPassword);
+        await _userManager.UpdateAsync(user);
+
+        return Ok(new { message = "Password changed successfully" });
+    }
+
+    private string GenerateAccessToken(ApplicationUser user, IList<string> roles, bool isSuperAdmin)
     {
         var key = _configuration["Token:Key"] ?? "development_key_arzamart_123456789";
-        var issuer = _configuration["Token:Issuer"] ?? "Arza Mart";
-        var audience = _configuration["Token:Audience"] ?? "Arza Mart Users";
+        var issuer = _configuration["Token:Issuer"] ?? "https://api.arzamart.com";
+        var audience = _configuration["Token:Audience"] ?? "https://arzamart.com";
         var keyBytes = Encoding.UTF8.GetBytes(key);
         if (keyBytes.Length < 32)
         {
@@ -193,7 +234,9 @@ public class AuthController : ControllerBase
         {
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.Email, email),
-            new(ClaimTypes.Name, displayName)
+            new(ClaimTypes.Name, displayName),
+            new("is_super_admin", isSuperAdmin.ToString().ToLower()),
+            new("force_change_password", user.ForceChangePassword.ToString().ToLower())
         };
 
         foreach (var role in roles)
@@ -205,10 +248,18 @@ public class AuthController : ControllerBase
             issuer: issuer,
             audience: audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddDays(7),
+            expires: DateTime.UtcNow.AddHours(1),
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
     }
 
     private static UserSummary ToSummary(ApplicationUser user, string role)
@@ -224,3 +275,6 @@ public class AuthController : ControllerBase
     }
 }
 
+public record RefreshRequest(string RefreshToken);
+
+public record ChangePasswordRequest(string CurrentPassword, string NewPassword);

@@ -111,9 +111,6 @@ try
         
         // Ensure static categories exist (this method has internal check to skip if already present)
         await DataSeeder.SeedAsync(userManager, roleManager, context);
-
-        // Seed Staff RBAC tables
-        await StaffDataSeeder.SeedAsync(context, builder.Configuration);
     }
 
     app.Run();
