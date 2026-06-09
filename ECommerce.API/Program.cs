@@ -81,6 +81,9 @@ try
         OnPrepareResponse = ctx => ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000,immutable")
     });
 
+    // Serve uploads from ExternalMediaPath (if configured) or wwwroot/uploads
+    app.ConfigureExternalMedia(app.Configuration, app.Environment);
+
     app.UseRouting();
 
     app.UseCors("DefaultPolicy");
