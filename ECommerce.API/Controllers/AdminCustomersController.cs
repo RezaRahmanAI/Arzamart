@@ -1,5 +1,5 @@
 using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Services;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +11,9 @@ namespace ECommerce.API.Controllers;
 [ECommerce.API.Helpers.StaffMenuAccess("customers")]
 public class AdminCustomersController : ControllerBase
 {
-    private readonly CustomerService _customerService;
+    private readonly ICustomerService _customerService;
 
-    public AdminCustomersController(CustomerService customerService)
+    public AdminCustomersController(ICustomerService customerService)
     {
         _customerService = customerService;
     }

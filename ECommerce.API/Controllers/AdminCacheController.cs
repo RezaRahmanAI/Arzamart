@@ -1,3 +1,4 @@
+using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -57,9 +58,4 @@ public class AdminCacheController : ControllerBase
 
         return Ok(new { message = "Cache evicted successfully", tags = request.Tags });
     }
-}
-
-public class EvictCacheRequest
-{
-    public List<string> Tags { get; set; } = new();
 }

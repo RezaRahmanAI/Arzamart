@@ -1,4 +1,5 @@
 using ECommerce.API.Helpers;
+using ECommerce.Core.Constants;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using ECommerce.Infrastructure.Data;
@@ -66,14 +67,14 @@ public static class ServiceExtensions
         services.AddOutputCache(options =>
         {
             options.AddPolicy("DefaultPolicy", builder => 
-                builder.Expire(TimeSpan.FromMinutes(5)));
+                builder.Expire(CacheDurations.DefaultOutputCache));
             
             options.AddPolicy("Products", builder =>
-                builder.Expire(TimeSpan.FromMinutes(10))
+                builder.Expire(CacheDurations.ProductsCache)
                        .Tag("products"));
 
             options.AddPolicy("Categories", builder =>
-                builder.Expire(TimeSpan.FromMinutes(5))
+                builder.Expire(CacheDurations.CategoriesCache)
                        .Tag("categories"));
         });
 
@@ -84,18 +85,18 @@ public static class ServiceExtensions
         {
             options.AddFixedWindowLimiter("fixed", limiterOptions =>
             {
-                limiterOptions.PermitLimit = 100;
-                limiterOptions.Window = TimeSpan.FromMinutes(1);
+                limiterOptions.PermitLimit = RateLimits.FixedWindowPermitLimit;
+                limiterOptions.Window = RateLimits.FixedWindowDuration;
                 limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                limiterOptions.QueueLimit = 20;
+                limiterOptions.QueueLimit = RateLimits.FixedWindowQueueLimit;
             });
             options.AddSlidingWindowLimiter("sliding", limiterOptions =>
             {
-                limiterOptions.PermitLimit = 50;
-                limiterOptions.Window = TimeSpan.FromSeconds(10);
-                limiterOptions.SegmentsPerWindow = 5;
+                limiterOptions.PermitLimit = RateLimits.SlidingWindowPermitLimit;
+                limiterOptions.Window = RateLimits.SlidingWindowDuration;
+                limiterOptions.SegmentsPerWindow = RateLimits.SlidingWindowSegments;
                 limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                limiterOptions.QueueLimit = 10;
+                limiterOptions.QueueLimit = RateLimits.SlidingWindowQueueLimit;
             });
         });
 
@@ -106,11 +107,15 @@ public static class ServiceExtensions
         services.AddAutoMapper(cfg => cfg.AddMaps(typeof(MappingProfiles).Assembly, typeof(OrderService).Assembly));
 
         // 6. Business Services
+        services.AddScoped<IOrderNumberGenerator, OrderNumberGenerator>();
+        services.AddScoped<IOrderStockService, OrderStockService>();
+        services.AddScoped<IOrderStatusService, OrderStatusService>();
         services.AddScoped<IOrderService, OrderService>();
-        services.AddScoped<CustomerService>();
+        services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<INavigationService, NavigationService>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IProductQueryService, ProductQueryService>();
         services.AddScoped<IReviewService, ReviewService>();
         services.AddScoped<PasswordProtector>();
 
@@ -198,7 +203,7 @@ public static class ServiceExtensions
                 ValidAudience = config["Token:Audience"] ?? "Arza Mart Users",
                 ValidateAudience = true,
                 ValidateLifetime = true,
-                ClockSkew = TimeSpan.FromMinutes(5)
+                ClockSkew = TimeSpan.FromMinutes(AppConstants.JwtClockSkewMinutes)
             };
         });
 

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ECommerce.Core.Entities;
+using ECommerce.Core.Interfaces;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Services;
 
-public class CustomerService
+public class CustomerService : ICustomerService
 {
     private readonly ApplicationDbContext _context;
 
