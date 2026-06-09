@@ -1,9 +1,7 @@
 using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Data;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.OutputCaching;
 using ECommerce.API.Helpers;
@@ -16,15 +14,15 @@ namespace ECommerce.API.Controllers;
 [ECommerce.API.Helpers.StaffMenuAccess("banners")]
 public class AdminBannersController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IAdminBannerService _bannerService;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
     private readonly IMemoryCache _cache;
     private readonly IOutputCacheStore _cacheStore;
 
-    public AdminBannersController(ApplicationDbContext context, IWebHostEnvironment environment, IConfiguration config, IMemoryCache cache, IOutputCacheStore cacheStore)
+    public AdminBannersController(IAdminBannerService bannerService, IWebHostEnvironment environment, IConfiguration config, IMemoryCache cache, IOutputCacheStore cacheStore)
     {
-        _context = context;
+        _bannerService = bannerService;
         _environment = environment;
         _config = config;
         _cache = cache;
@@ -34,138 +32,70 @@ public class AdminBannersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<HeroBannerDto>>> GetAllBanners()
     {
-        var banners = await _context.HeroBanners
-            .AsNoTracking()
-            .OrderBy(b => b.DisplayOrder)
-            .Select(b => new HeroBannerDto
-            {
-                Id = b.Id,
-                Title = b.Title ?? "",
-                Subtitle = b.Subtitle ?? "",
-                ImageUrl = b.ImageUrl,
-                MobileImageUrl = b.MobileImageUrl ?? "",
-                LinkUrl = b.LinkUrl ?? "",
-                ButtonText = b.ButtonText ?? "",
-                DisplayOrder = b.DisplayOrder,
-                Type = b.Type
-            })
-            .ToListAsync();
-
-        return Ok(banners);
+        return Ok(await _bannerService.GetAllAsync());
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<HeroBannerDto>> GetBannerById(int id)
     {
-        var banner = await _context.HeroBanners.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-        if (banner == null) return NotFound();
-
-        return Ok(new HeroBannerDto
-        {
-            Id = banner.Id,
-            Title = banner.Title ?? "",
-            Subtitle = banner.Subtitle ?? "",
-            ImageUrl = banner.ImageUrl,
-            MobileImageUrl = banner.MobileImageUrl ?? "",
-            LinkUrl = banner.LinkUrl ?? "",
-            ButtonText = banner.ButtonText ?? "",
-            DisplayOrder = banner.DisplayOrder,
-            Type = banner.Type
-        });
+        var result = await _bannerService.GetByIdAsync(id);
+        if (result == null) return NotFound();
+        return Ok(result);
     }
 
     [HttpPost]
     public async Task<ActionResult<HeroBannerDto>> CreateBanner([FromBody] CreateHeroBannerDto dto)
     {
-        var banner = new HeroBanner
-        {
-            Title = dto.Title,
-            Subtitle = dto.Subtitle,
-            ImageUrl = dto.ImageUrl,
-            MobileImageUrl = dto.MobileImageUrl,
-            LinkUrl = dto.LinkUrl,
-            ButtonText = dto.ButtonText,
-            DisplayOrder = dto.DisplayOrder,
-            IsActive = dto.IsActive,
-            Type = dto.Type
-        };
-
-        _context.HeroBanners.Add(banner);
-        await _context.SaveChangesAsync();
+        var result = await _bannerService.CreateAsync(dto);
 
         _cache.Remove("home_banners");
         _cache.Remove("banners_active");
         await _cacheStore.EvictByTagAsync("home", default);
 
-        return CreatedAtAction(nameof(GetBannerById), new { id = banner.Id }, new HeroBannerDto
-        {
-            Id = banner.Id,
-            Title = banner.Title ?? "",
-            Subtitle = banner.Subtitle ?? "",
-            ImageUrl = banner.ImageUrl,
-            MobileImageUrl = banner.MobileImageUrl ?? "",
-            LinkUrl = banner.LinkUrl ?? "",
-            ButtonText = banner.ButtonText ?? "",
-            DisplayOrder = banner.DisplayOrder,
-            Type = banner.Type
-        });
+        return CreatedAtAction(nameof(GetBannerById), new { id = result.Id }, result);
     }
 
     [HttpPost("{id}")]
     public async Task<ActionResult<HeroBannerDto>> UpdateBanner(int id, [FromBody] CreateHeroBannerDto dto)
     {
-        var banner = await _context.HeroBanners.FindAsync(id);
-        if (banner == null) return NotFound();
-
-        banner.Title = dto.Title;
-        banner.Subtitle = dto.Subtitle;
-        banner.ImageUrl = dto.ImageUrl;
-        banner.MobileImageUrl = dto.MobileImageUrl;
-        banner.LinkUrl = dto.LinkUrl;
-        banner.ButtonText = dto.ButtonText;
-        banner.DisplayOrder = dto.DisplayOrder;
-        banner.IsActive = dto.IsActive;
-        banner.Type = dto.Type;
-        banner.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync();
-        _cache.Remove("home_banners");
-        _cache.Remove("banners_active");
-        await _cacheStore.EvictByTagAsync("home", default);
-
-        return Ok(new HeroBannerDto
+        try
         {
-            Id = banner.Id,
-            Title = banner.Title ?? "",
-            Subtitle = banner.Subtitle ?? "",
-            ImageUrl = banner.ImageUrl,
-            MobileImageUrl = banner.MobileImageUrl ?? "",
-            LinkUrl = banner.LinkUrl ?? "",
-            ButtonText = banner.ButtonText ?? "",
-            DisplayOrder = banner.DisplayOrder,
-            Type = banner.Type
-        });
+            var result = await _bannerService.UpdateAsync(id, dto);
+
+            _cache.Remove("home_banners");
+            _cache.Remove("banners_active");
+            await _cacheStore.EvictByTagAsync("home", default);
+
+            return Ok(result);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
-    [HttpPost("{id}/delete")]
+    [HttpDelete("{id}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteBanner(int id)
     {
-        var banner = await _context.HeroBanners.FindAsync(id);
-        if (banner == null) return NotFound();
+        try
+        {
+            await _bannerService.DeleteAsync(id);
 
-        _context.HeroBanners.Remove(banner);
-        await _context.SaveChangesAsync();
+            _cache.Remove("home_banners");
+            _cache.Remove("banners_active");
+            await _cacheStore.EvictByTagAsync("home", default);
 
-        _cache.Remove("home_banners");
-        _cache.Remove("banners_active");
-        await _cacheStore.EvictByTagAsync("home", default);
-
-        return NoContent();
+            return NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("image")]
-    public async Task<ActionResult<object>> UploadImage([FromForm] IFormFile file)
+    public async Task<ActionResult<UploadResultDto>> UploadImage([FromForm] IFormFile file)
     {
         if (file == null || file.Length == 0)
             return BadRequest("No file uploaded");
@@ -181,7 +111,6 @@ public class AdminBannersController : ControllerBase
             await file.CopyToAsync(stream);
         }
 
-        return Ok(new { url = $"/uploads/banners/{fileName}" });
+        return Ok(new UploadResultDto { Url = $"/uploads/banners/{fileName}" });
     }
 }
-

@@ -23,192 +23,192 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: "products",
         loadComponent: () =>
-          import("./pages/admin-products/admin-products.component").then(
-            (m) => m.AdminProductsComponent,
+          import("./pages/products/products.component").then(
+            (m) => m.ProductsComponent,
           ),
         data: { title: "Products", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "products/categories",
         loadComponent: () =>
-          import("./pages/admin-category-management/admin-category-management.component").then(
-            (m) => m.AdminCategoryManagementComponent,
+          import("./pages/category-management/category-management.component").then(
+            (m) => m.CategoryManagementComponent,
           ),
         data: { title: "Main Collections Management", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "products/sub-categories",
         loadComponent: () =>
-          import("./pages/admin-sub-category-management/admin-sub-category-management.component").then(
-            (m) => m.AdminSubCategoryManagementComponent,
+          import("./pages/sub-category-management/sub-category-management.component").then(
+            (m) => m.SubCategoryManagementComponent,
           ),
         data: { title: "Sub Category Management", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "products/groups",
         loadComponent: () =>
-          import("./pages/admin-product-group-management/admin-product-group-management.component").then(
-            (m) => m.AdminProductGroupManagementComponent,
+          import("./pages/product-group-management/product-group-management.component").then(
+            (m) => m.ProductGroupManagementComponent,
           ),
         data: { title: "Product Group Management", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "inventory",
         loadComponent: () =>
-          import("./pages/admin-inventory/admin-inventory.component").then(
-            (m) => m.AdminInventoryComponent,
+          import("./pages/inventory/inventory.component").then(
+            (m) => m.InventoryComponent,
           ),
         data: { title: "Inventory Management", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "products/create",
         loadComponent: () =>
-          import("./pages/admin-product-form/admin-product-form.component").then(
-            (m) => m.AdminProductFormComponent,
+          import("./pages/product-form/product-form.component").then(
+            (m) => m.ProductFormComponent,
           ),
         data: { title: "Add Product", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "products/:id/edit",
         loadComponent: () =>
-          import("./pages/admin-product-form/admin-product-form.component").then(
-            (m) => m.AdminProductFormComponent,
+          import("./pages/product-form/product-form.component").then(
+            (m) => m.ProductFormComponent,
           ),
         data: { title: "Edit Product", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
         path: "orders",
         loadComponent: () =>
-          import("./pages/admin-orders/admin-orders.component").then(
-            (m) => m.AdminOrdersComponent,
+          import("./pages/orders/orders.component").then(
+            (m) => m.OrdersComponent,
           ),
         data: { title: "Order Management", menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/create",
         loadComponent: () =>
-          import("./pages/admin-manual-order/admin-manual-order.component").then(
-            (m) => m.AdminManualOrderComponent,
+          import("./pages/manual-order/manual-order.component").then(
+            (m) => m.ManualOrderComponent,
           ),
         data: { title: "Manual Order", menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/pre-order",
         loadComponent: () =>
-          import("./pages/admin-manual-order/admin-manual-order.component").then(
-            (m) => m.AdminManualOrderComponent,
+          import("./pages/manual-order/manual-order.component").then(
+            (m) => m.ManualOrderComponent,
           ),
         data: { title: "Create Pre-order", menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/pre-orders",
         loadComponent: () =>
-          import("./pages/admin-orders/admin-orders.component").then(
-            (m) => m.AdminOrdersComponent,
+          import("./pages/orders/orders.component").then(
+            (m) => m.OrdersComponent,
           ),
         data: { title: "Pre-order Management", preOrderOnly: true, menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/website",
         loadComponent: () =>
-          import("./pages/admin-orders/admin-orders.component").then(
-            (m) => m.AdminOrdersComponent,
+          import("./pages/orders/orders.component").then(
+            (m) => m.OrdersComponent,
           ),
         data: { title: "Website Orders", websiteOnly: true, menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/:id",
         loadComponent: () =>
-          import("./pages/admin-order-details/admin-order-details.component").then(
-            (m) => m.AdminOrderDetailsComponent,
+          import("./pages/order-details/order-details.component").then(
+            (m) => m.OrderDetailsComponent,
           ),
         data: { title: "Order Details", menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "orders/:id/edit",
         loadComponent: () =>
-          import("./pages/admin-manual-order/admin-manual-order.component").then(
-            (m) => m.AdminManualOrderComponent,
+          import("./pages/manual-order/manual-order.component").then(
+            (m) => m.ManualOrderComponent,
           ),
         data: { title: "Edit Order", menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
         path: "customers",
         loadComponent: () =>
-          import("./pages/admin-customers/admin-customers.component").then(
-            (m) => m.AdminCustomersComponent,
+          import("./pages/customers/customers.component").then(
+            (m) => m.CustomersComponent,
           ),
         data: { title: "Customers", description: "Customer management", menuKey: "customers" }, canActivate: [staffGuard],
       },
       {
         path: "customers/:phone/history",
         loadComponent: () =>
-          import("./pages/admin-customer-history/admin-customer-history.component").then(
-            (m) => m.AdminCustomerHistoryComponent,
+          import("./pages/customer-history/customer-history.component").then(
+            (m) => m.CustomerHistoryComponent,
           ),
         data: { title: "Customer History", menuKey: "customers" }, canActivate: [staffGuard],
       },
       {
         path: "analytics",
         loadComponent: () =>
-          import("./pages/admin-analytics/admin-analytics.component").then(
-            (m) => m.AdminAnalyticsComponent,
+          import("./pages/analytics/analytics.component").then(
+            (m) => m.AnalyticsComponent,
           ),
         data: { title: "Analytics", description: "Performance reports", menuKey: "analytics" }, canActivate: [staffGuard],
       },
       {
         path: "settings",
         loadComponent: () =>
-          import("./pages/admin-settings/admin-settings.component").then(
-            (m) => m.AdminSettingsComponent,
+          import("./pages/settings/settings.component").then(
+            (m) => m.SettingsComponent,
           ),
         data: { title: "Settings", menuKey: "settings" }, canActivate: [staffGuard],
       },
       {
         path: "banners",
         loadComponent: () =>
-          import("./pages/admin-banners/admin-banners.component").then(
-            (m) => m.AdminBannersComponent,
+          import("./pages/banners/banners.component").then(
+            (m) => m.BannersComponent,
           ),
         data: { title: "Banners", menuKey: "banners" }, canActivate: [staffGuard],
       },
       {
         path: "navigation",
         loadComponent: () =>
-          import("./pages/admin-navigation-management/admin-navigation-management.component").then(
-            (m) => m.AdminNavigationManagementComponent,
+          import("./pages/navigation-management/navigation-management.component").then(
+            (m) => m.NavigationManagementComponent,
           ),
         data: { title: "Navigation Management", menuKey: "navigation" }, canActivate: [staffGuard],
       },
       {
         path: "pages",
         loadComponent: () =>
-          import("./pages/admin-pages/admin-pages.component").then(
-            (m) => m.AdminPagesComponent,
+          import("./pages/pages/pages.component").then(
+            (m) => m.PagesComponent,
           ),
         data: { title: "Content Pages", menuKey: "pages" }, canActivate: [staffGuard],
       },
       {
         path: "reviews",
         loadComponent: () =>
-          import("./pages/admin-reviews/admin-reviews.component").then(
-            (m) => m.AdminReviewsComponent,
+          import("./pages/reviews/reviews.component").then(
+            (m) => m.ReviewsComponent,
           ),
         data: { title: "Reviews Management", menuKey: "reviews" }, canActivate: [staffGuard],
       },
       {
         path: "order-sources",
         loadComponent: () =>
-          import("./pages/admin-source-management/admin-source-management.component").then(
-            (m) => m.AdminSourceManagementComponent,
+          import("./pages/source-management/source-management.component").then(
+            (m) => m.SourceManagementComponent,
           ),
         data: { title: "Order Source Management", menuKey: "order-sources" }, canActivate: [staffGuard],
       },
       {
         path: "security",
         loadComponent: () =>
-          import("./pages/admin-blocked-ips/admin-blocked-ips.component").then(
-            (m) => m.AdminBlockedIpsComponent,
+          import("./pages/blocked-ips/blocked-ips.component").then(
+            (m) => m.BlockedIpsComponent,
           ),
         data: { title: "Security & IP Blocking", menuKey: "security" }, canActivate: [staffGuard],
       },
@@ -239,16 +239,16 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: "profile",
         loadComponent: () =>
-          import("./pages/admin-profile/admin-profile.component").then(
-            (m) => m.AdminProfileComponent,
+          import("./pages/profile/profile.component").then(
+            (m) => m.ProfileComponent,
           ),
         data: { title: "My Profile" },
       },
       {
         path: "logout",
         loadComponent: () =>
-          import("./pages/admin-logout/admin-logout.component").then(
-            (m) => m.AdminLogoutComponent,
+          import("./pages/logout/logout.component").then(
+            (m) => m.LogoutComponent,
           ),
         data: { title: "Logging out" },
       },

@@ -1,7 +1,8 @@
 using ECommerce.API.Helpers;
 using ECommerce.Core.DTOs;
+using ECommerce.Core.DTOs.Admin;
 using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Data;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +18,14 @@ namespace ECommerce.API.Controllers;
 public class AdminUsersController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ApplicationDbContext _context;
     private readonly PasswordProtector _passwordProtector;
+    private readonly IActivityLogService _activityLogService;
 
-    public AdminUsersController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, PasswordProtector passwordProtector)
+    public AdminUsersController(UserManager<ApplicationUser> userManager, PasswordProtector passwordProtector, IActivityLogService activityLogService)
     {
         _userManager = userManager;
-        _context = context;
         _passwordProtector = passwordProtector;
+        _activityLogService = activityLogService;
     }
 
     private string? GetCurrentUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -32,36 +33,26 @@ public class AdminUsersController : ControllerBase
 
     private async Task LogActivityAsync(string userId, string action, string? details = null)
     {
-        var log = new AdminActivityLog
-        {
-            UserId = userId,
-            Action = action,
-            Details = details,
-            IpAddress = GetClientIp(),
-            PerformedByUserId = GetCurrentUserId(),
-            CreatedAt = DateTime.UtcNow
-        };
-        _context.AdminActivityLogs.Add(log);
-        await _context.SaveChangesAsync();
+        await _activityLogService.LogAsync(userId, action, details, GetClientIp(), GetCurrentUserId());
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<object>>> GetAdminUsers()
+    public async Task<ActionResult<IEnumerable<AdminUserItemDto>>> GetAdminUsers()
     {
         var users = await _userManager.Users
             .Where(u => u.Role == "Admin" || u.Role == "SuperAdmin" || u.Role == "Staff")
-            .Select(u => new
+            .Select(u => new AdminUserItemDto
             {
-                u.Id,
-                u.FullName,
-                u.Email,
-                u.UserName,
-                u.Phone,
-                u.Role,
-                u.IsActive,
-                u.CreatedAt,
+                Id = u.Id,
+                FullName = u.FullName,
+                Email = u.Email,
+                UserName = u.UserName,
+                Phone = u.Phone,
+                Role = u.Role,
+                IsActive = u.IsActive,
+                CreatedAt = u.CreatedAt,
                 AllowedMenus = u.AllowedMenusJson != null
-                    ? System.Text.Json.JsonSerializer.Deserialize<List<string>>(u.AllowedMenusJson, (System.Text.Json.JsonSerializerOptions?)null)
+                    ? System.Text.Json.JsonSerializer.Deserialize<List<string>>(u.AllowedMenusJson, (System.Text.Json.JsonSerializerOptions?)null) ?? new List<string>()
                     : new List<string>()
             })
             .OrderByDescending(u => u.Role == "SuperAdmin" ? 3 : u.Role == "Admin" ? 2 : 1)
@@ -123,17 +114,17 @@ public class AdminUsersController : ControllerBase
         return Ok(new
         {
             message = "Staff account created successfully",
-            user = new
+            user = new AdminUserItemDto
             {
-                user.Id,
-                user.UserName,
-                user.FullName,
-                user.Email,
-                user.Phone,
-                user.Role,
-                user.IsActive,
-                user.CreatedAt,
-                user.AllowedMenus
+                Id = user.Id,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email,
+                Phone = user.Phone,
+                Role = user.Role,
+                IsActive = user.IsActive,
+                CreatedAt = user.CreatedAt,
+                AllowedMenus = user.AllowedMenus
             }
         });
     }
@@ -296,7 +287,7 @@ public class AdminUsersController : ControllerBase
 
         await LogActivityAsync(user.Id, "StatusChanged", $"Account {(user.IsActive ? "activated" : "deactivated")}");
 
-        return Ok(new { message = $"User {(user.IsActive ? "activated" : "deactivated")} successfully", isActive = user.IsActive });
+        return Ok(new UserStatusChangeResultDto { Message = $"User {(user.IsActive ? "activated" : "deactivated")} successfully", IsActive = user.IsActive });
     }
 
     [HttpGet("{id}/activity-log")]
@@ -306,21 +297,17 @@ public class AdminUsersController : ControllerBase
         var user = await _userManager.FindByIdAsync(id);
         if (user == null) return NotFound(new { message = "User not found" });
 
-        var logs = await _context.AdminActivityLogs
-            .Where(l => l.UserId == id)
-            .OrderByDescending(l => l.CreatedAt)
-            .Take(50)
-            .Select(l => new
-            {
-                l.Id,
-                l.Action,
-                l.Details,
-                l.IpAddress,
-                l.CreatedAt,
-                PerformedByName = l.PerformedBy != null ? l.PerformedBy.FullName : null
-            })
-            .ToListAsync();
+        var logs = await _activityLogService.GetRecentLogsAsync(id);
+        var result = logs.Select(l => new AdminActivityLogEntryDto
+        {
+            Id = l.Id,
+            Action = l.Action,
+            Details = l.Details,
+            IpAddress = l.IpAddress,
+            CreatedAt = l.CreatedAt,
+            PerformedByName = l.PerformedBy?.FullName
+        }).ToList();
 
-        return Ok(logs);
+        return Ok(result);
     }
 }

@@ -1,49 +1,44 @@
-# Graph Report - Arza  (2026-06-06)
+# Graph Report - .  (2026-06-08)
 
 ## Corpus Check
-- 420 files · ~272,490 words
+- 170 files · ~262,878 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3691 nodes · 6222 edges · 351 communities (227 shown, 124 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 36 edges (avg confidence: 0.84)
+- 4558 nodes · 7708 edges · 360 communities (241 shown, 119 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 81 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
-## Graph Freshness
-- Built from commit: `042f204e`
-- Run `git rev-parse HEAD` and compare to check if the graph is stale.
-- Run `graphify update .` after code changes (no API cost).
-
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Admin Pages & Components|Admin Pages & Components]]
-- [[_COMMUNITY_Services & Utilities Layer|Services & Utilities Layer]]
-- [[_COMMUNITY_Order Management Workflow|Order Management Workflow]]
-- [[_COMMUNITY_Reviews & Landing Pages|Reviews & Landing Pages]]
-- [[_COMMUNITY_Product Form & Categorization|Product Form & Categorization]]
-- [[_COMMUNITY_Order List & Filtering|Order List & Filtering]]
-- [[_COMMUNITY_Admin Layout & Design System|Admin Layout & Design System]]
-- [[_COMMUNITY_Cart & Checkout Flow|Cart & Checkout Flow]]
-- [[_COMMUNITY_Product Display & Gallery|Product Display & Gallery]]
-- [[_COMMUNITY_Navigation & Site Footer|Navigation & Site Footer]]
-- [[_COMMUNITY_Community 10|Community 10]]
-- [[_COMMUNITY_Order Details & History|Order Details & History]]
-- [[_COMMUNITY_Community 13|Community 13]]
-- [[_COMMUNITY_Feature Pages & UI Concepts|Feature Pages & UI Concepts]]
-- [[_COMMUNITY_Analytics Dashboard|Analytics Dashboard]]
-- [[_COMMUNITY_Platform Architecture|Platform Architecture]]
-- [[_COMMUNITY_Order Tracking|Order Tracking]]
-- [[_COMMUNITY_Community 18|Community 18]]
-- [[_COMMUNITY_Community 19|Community 19]]
-- [[_COMMUNITY_Product Combo & Payload|Product Combo & Payload]]
-- [[_COMMUNITY_Build & Configuration|Build & Configuration]]
-- [[_COMMUNITY_Community 22|Community 22]]
-- [[_COMMUNITY_Community 23|Community 23]]
-- [[_COMMUNITY_Community 24|Community 24]]
-- [[_COMMUNITY_Community 25|Community 25]]
-- [[_COMMUNITY_Community 26|Community 26]]
-- [[_COMMUNITY_Community 27|Community 27]]
-- [[_COMMUNITY_Community 28|Community 28]]
-- [[_COMMUNITY_Community 29|Community 29]]
+- [[_COMMUNITY_SubCategory & Category Management|SubCategory & Category Management]]
+- [[_COMMUNITY_Product Form & Bundle Editor|Product Form & Bundle Editor]]
+- [[_COMMUNITY_Product CRUD & Listing|Product CRUD & Listing]]
+- [[_COMMUNITY_Orders List & Filtering|Orders List & Filtering]]
+- [[_COMMUNITY_Order Details & Invoice|Order Details & Invoice]]
+- [[_COMMUNITY_Customer Management|Customer Management]]
+- [[_COMMUNITY_Home & Product Gallery Pages|Home & Product Gallery Pages]]
+- [[_COMMUNITY_Offer & Promo Pages|Offer & Promo Pages]]
+- [[_COMMUNITY_Custom Landing Page Builder|Custom Landing Page Builder]]
+- [[_COMMUNITY_Service Interfaces & Contracts|Service Interfaces & Contracts]]
+- [[_COMMUNITY_Authentication & Authorization|Authentication & Authorization]]
+- [[_COMMUNITY_Cart & Checkout|Cart & Checkout]]
+- [[_COMMUNITY_Analytics & Reporting|Analytics & Reporting]]
+- [[_COMMUNITY_Admin Security & IP Blocking|Admin Security & IP Blocking]]
+- [[_COMMUNITY_Inventory & Stock Management|Inventory & Stock Management]]
+- [[_COMMUNITY_Review & Rating System|Review & Rating System]]
+- [[_COMMUNITY_Navigation & Menu Management|Navigation & Menu Management]]
+- [[_COMMUNITY_Banner & Promo Management|Banner & Promo Management]]
+- [[_COMMUNITY_User & Staff Management|User & Staff Management]]
+- [[_COMMUNITY_Settings & Configuration|Settings & Configuration]]
+- [[_COMMUNITY_Cache Management & Eviction|Cache Management & Eviction]]
+- [[_COMMUNITY_Blog & Static Pages|Blog & Static Pages]]
+- [[_COMMUNITY_Social Media & Source Pages|Social Media & Source Pages]]
+- [[_COMMUNITY_Specifications & Data Filtering|Specifications & Data Filtering]]
+- [[_COMMUNITY_Dashboard & Statistics|Dashboard & Statistics]]
+- [[_COMMUNITY_Middleware & Request Pipeline|Middleware & Request Pipeline]]
+- [[_COMMUNITY_Order Domain Model & State|Order Domain Model & State]]
+- [[_COMMUNITY_Domain Exceptions & Validation|Domain Exceptions & Validation]]
+- [[_COMMUNITY_Database & Migration Layer|Database & Migration Layer]]
 - [[_COMMUNITY_Community 30|Community 30]]
 - [[_COMMUNITY_Community 31|Community 31]]
 - [[_COMMUNITY_Community 32|Community 32]]
@@ -85,7 +80,6 @@
 - [[_COMMUNITY_Community 68|Community 68]]
 - [[_COMMUNITY_Community 69|Community 69]]
 - [[_COMMUNITY_Community 70|Community 70]]
-- [[_COMMUNITY_Community 71|Community 71]]
 - [[_COMMUNITY_Community 72|Community 72]]
 - [[_COMMUNITY_Community 73|Community 73]]
 - [[_COMMUNITY_Community 74|Community 74]]
@@ -192,6 +186,7 @@
 - [[_COMMUNITY_Community 175|Community 175]]
 - [[_COMMUNITY_Community 176|Community 176]]
 - [[_COMMUNITY_Community 177|Community 177]]
+- [[_COMMUNITY_Community 178|Community 178]]
 - [[_COMMUNITY_Community 179|Community 179]]
 - [[_COMMUNITY_Community 180|Community 180]]
 - [[_COMMUNITY_Community 181|Community 181]]
@@ -211,8 +206,6 @@
 - [[_COMMUNITY_Community 195|Community 195]]
 - [[_COMMUNITY_Community 196|Community 196]]
 - [[_COMMUNITY_Community 197|Community 197]]
-- [[_COMMUNITY_Community 198|Community 198]]
-- [[_COMMUNITY_Community 199|Community 199]]
 - [[_COMMUNITY_Community 200|Community 200]]
 - [[_COMMUNITY_Community 201|Community 201]]
 - [[_COMMUNITY_Community 202|Community 202]]
@@ -252,6 +245,7 @@
 - [[_COMMUNITY_Community 236|Community 236]]
 - [[_COMMUNITY_Community 237|Community 237]]
 - [[_COMMUNITY_Community 238|Community 238]]
+- [[_COMMUNITY_Community 239|Community 239]]
 - [[_COMMUNITY_Community 240|Community 240]]
 - [[_COMMUNITY_Community 241|Community 241]]
 - [[_COMMUNITY_Community 242|Community 242]]
@@ -264,7 +258,6 @@
 - [[_COMMUNITY_Community 249|Community 249]]
 - [[_COMMUNITY_Community 250|Community 250]]
 - [[_COMMUNITY_Community 251|Community 251]]
-- [[_COMMUNITY_Community 252|Community 252]]
 - [[_COMMUNITY_Community 253|Community 253]]
 - [[_COMMUNITY_Community 254|Community 254]]
 - [[_COMMUNITY_Community 255|Community 255]]
@@ -284,7 +277,6 @@
 - [[_COMMUNITY_Community 269|Community 269]]
 - [[_COMMUNITY_Community 270|Community 270]]
 - [[_COMMUNITY_Community 271|Community 271]]
-- [[_COMMUNITY_Community 272|Community 272]]
 - [[_COMMUNITY_Community 273|Community 273]]
 - [[_COMMUNITY_Community 274|Community 274]]
 - [[_COMMUNITY_Community 275|Community 275]]
@@ -294,8 +286,6 @@
 - [[_COMMUNITY_Community 279|Community 279]]
 - [[_COMMUNITY_Community 280|Community 280]]
 - [[_COMMUNITY_Community 281|Community 281]]
-- [[_COMMUNITY_Community 282|Community 282]]
-- [[_COMMUNITY_Community 283|Community 283]]
 - [[_COMMUNITY_Community 284|Community 284]]
 - [[_COMMUNITY_Community 285|Community 285]]
 - [[_COMMUNITY_Community 286|Community 286]]
@@ -303,24 +293,13 @@
 - [[_COMMUNITY_Community 288|Community 288]]
 - [[_COMMUNITY_Community 289|Community 289]]
 - [[_COMMUNITY_Community 290|Community 290]]
-- [[_COMMUNITY_Community 291|Community 291]]
-- [[_COMMUNITY_Community 292|Community 292]]
 - [[_COMMUNITY_Community 293|Community 293]]
 - [[_COMMUNITY_Community 294|Community 294]]
 - [[_COMMUNITY_Community 295|Community 295]]
 - [[_COMMUNITY_Community 296|Community 296]]
 - [[_COMMUNITY_Community 297|Community 297]]
 - [[_COMMUNITY_Community 298|Community 298]]
-- [[_COMMUNITY_Community 299|Community 299]]
-- [[_COMMUNITY_Community 300|Community 300]]
-- [[_COMMUNITY_Community 301|Community 301]]
-- [[_COMMUNITY_Community 302|Community 302]]
-- [[_COMMUNITY_Community 303|Community 303]]
-- [[_COMMUNITY_Community 304|Community 304]]
-- [[_COMMUNITY_Community 305|Community 305]]
-- [[_COMMUNITY_Community 306|Community 306]]
 - [[_COMMUNITY_Community 307|Community 307]]
-- [[_COMMUNITY_Community 308|Community 308]]
 - [[_COMMUNITY_Community 309|Community 309]]
 - [[_COMMUNITY_Community 310|Community 310]]
 - [[_COMMUNITY_Community 311|Community 311]]
@@ -354,672 +333,788 @@
 - [[_COMMUNITY_Community 339|Community 339]]
 - [[_COMMUNITY_Community 340|Community 340]]
 - [[_COMMUNITY_Community 341|Community 341]]
+- [[_COMMUNITY_Community 342|Community 342]]
+- [[_COMMUNITY_Community 343|Community 343]]
+- [[_COMMUNITY_Community 344|Community 344]]
+- [[_COMMUNITY_Community 345|Community 345]]
+- [[_COMMUNITY_Community 346|Community 346]]
+- [[_COMMUNITY_Community 347|Community 347]]
+- [[_COMMUNITY_Community 348|Community 348]]
+- [[_COMMUNITY_Community 349|Community 349]]
+- [[_COMMUNITY_Community 350|Community 350]]
+- [[_COMMUNITY_Community 351|Community 351]]
+- [[_COMMUNITY_Community 352|Community 352]]
+- [[_COMMUNITY_Community 354|Community 354]]
+- [[_COMMUNITY_Community 355|Community 355]]
+- [[_COMMUNITY_Community 356|Community 356]]
+- [[_COMMUNITY_Community 358|Community 358]]
+- [[_COMMUNITY_Community 359|Community 359]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `Product` - 84 edges
-2. `AdminOrdersComponent` - 67 edges
-3. `AdminProductFormComponent` - 66 edges
-4. `CustomLandingPageComponent` - 65 edges
-5. `AppIconComponent` - 57 edges
-6. `AuthService` - 54 edges
-7. `ImageUrlService` - 47 edges
-8. `AdminManualOrderComponent` - 42 edges
-9. `ProductService` - 39 edges
-10. `ProductDetailsPageComponent` - 36 edges
+1. `Product` - 68 edges
+2. `AdminProduct` - 43 edges
+3. `ApiHttpClient` - 39 edges
+4. `AdminProduct` - 38 edges
+5. `Order` - 37 edges
+6. `Order` - 27 edges
+7. `Fact` - 26 edges
+8. `Admin Category Management Page` - 24 edges
+9. `Admin Sidebar Component` - 23 edges
+10. `Fact` - 21 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Staff Management Component` --semantically_similar_to--> `Admin User Management Component`  [INFERRED] [semantically similar]
-  ECommarce.View/src/app/admin/pages/staff-management/staff-management.component.html → ECommarve.View/src/app/admin/pages/admin-user-management/admin-user-management.component.html
 - `Admin Category Management Page` --references--> `Category`  [EXTRACTED]
   src/app/admin/pages/admin-category-management/admin-category-management.component.html → ECommarce.View/src/app/admin/models/categories.models.ts
-- `Admin User Management Component` --references--> `AdminUser`  [EXTRACTED]
-  ECommarve.View/src/app/admin/pages/admin-user-management/admin-user-management.component.html → ECommarce.View/src/app/admin/services/admin-users.service.ts
-- `Role Management Component` --shares_data_with--> `Admin User Management Component`  [INFERRED]
-  ECommarce.View/src/app/admin/pages/role-management/role-management.component.html → ECommarve.View/src/app/admin/pages/admin-user-management/admin-user-management.component.html
-- `Admin Product Form Component` --references--> `Category`  [EXTRACTED]
-  ECommarce.View/src/app/admin/pages/admin-product-form/admin-product-form.component.html → ECommarce.View/src/app/admin/models/categories.models.ts
+- `ECommerce.Infrastructure Project` --references--> `net8.0`  [EXTRACTED]
+  README.md → ECommerce.Infrastructure/ECommerce.Infrastructure.csproj
+- `ECommerce.Infrastructure Project` --references--> `Microsoft.NET.Sdk`  [EXTRACTED]
+  README.md → ECommerce.Core.Tests/ECommerce.Core.Tests.csproj
+- `Arza E-Commerce README` --semantically_similar_to--> `ECommerce View README`  [INFERRED] [semantically similar]
+  README.md → ECommerce.View/README.md
+- `Admin Order Invoice Component` --references--> `OrderDetail`  [EXTRACTED]
+  ECommarce.View/src/app/admin/pages/admin-orders/admin-orders.component.html → ECommarce.View/src/app/admin/models/orders.models.ts
 
 ## Import Cycles
 - None detected.
 
 ## Hyperedges (group relationships)
-- **Admin Order Management Workflow** — admin_manual_order_admin_manual_order_component_page, admin_orders_admin_orders_component_page, layout_admin_sidebar_component_page [INFERRED 0.85]
-- **Admin Staff & Security System** — role_management_role_management_component_page, staff_management_staff_management_component_page, staff_audit_log_staff_audit_log_component_page, admin_user_management_admin_user_management_component_page [INFERRED 0.85]
-- **Shared Admin Service Layer** — layout_admin_sidebar_component_imageurlservice, admin_product_form_admin_product_form_component_authservice, layout_admin_sidebar_component_sidebarservice [INFERRED 0.85]
+- **Admin Controllers with Staff Menu Access** — controllers_adminbannerscontroller_adminbannerscontroller, controllers_admincategorycontroller_admincategorycontroller, controllers_admincustomlandingpagecontroller_admincustomlandingpagecontroller, controllers_admincustomerscontroller_admincustomerscontroller, controllers_adminnavigationcontroller_adminnavigationcontroller, controllers_adminorderscontroller_adminorderscontroller, controllers_adminpagescontroller_adminpagescontroller, controllers_adminproductcatalogcontroller_adminproductcatalogcontroller, controllers_adminproductgroupscontroller_adminproductgroupscontroller, controllers_adminproductinventorycontroller_adminproductinventorycontroller, controllers_adminproductscontroller_adminproductscontroller, controllers_adminreviewscontroller_adminreviewscontroller, controllers_adminsecuritycontroller_adminsecuritycontroller, controllers_adminsettingscontroller_adminsettingscontroller, controllers_adminsocialmediasourcescontroller_adminsocialmediasourcescontroller, controllers_adminsourcepagescontroller_adminsourcepagescontroller, controllers_adminsubcategorycontroller_adminsubcategorycontroller, controllers_adminuserscontroller_adminuserscontroller, controllers_staffmenuaccesspattern, controllers_staffmenuaccess [EXTRACTED 1.00]
+- **Controllers Sharing HeroBannerDto** — controllers_adminbannerscontroller_adminbannerscontroller, controllers_bannerscontroller_bannerscontroller, controllers_herobannerdto [INFERRED 0.95]
+- **Controllers Using IOutputCacheStore for Tag-Based Eviction** — controllers_adminbannerscontroller_adminbannerscontroller, controllers_admincategorycontroller_admincategorycontroller, controllers_adminnavigationcontroller_adminnavigationcontroller, controllers_adminorderscontroller_adminorderscontroller, controllers_adminpagescontroller_adminpagescontroller, controllers_adminproductinventorycontroller_adminproductinventorycontroller, controllers_adminproductscontroller_adminproductscontroller, controllers_adminsettingscontroller_adminsettingscontroller, controllers_adminsubcategorycontroller_adminsubcategorycontroller, controllers_ioutputcachestore, controllers_cacheevictionpattern [EXTRACTED 1.00]
 
-## Communities (351 total, 124 thin omitted)
+## Communities (360 total, 119 thin omitted)
 
-### Community 0 - "Admin Pages & Components"
-Cohesion: 0.22
-Nodes (17): Dashboard Overview Component (HTML), Accessories Feature Module, App Icon Component, Design System Tokens, Home Brand Sections, Home Category Navigation, Image URL Service, Price Display Component (+9 more)
+### Community 0 - "SubCategory & Category Management"
+Cohesion: 0.05
+Nodes (27): FlatSubCategory, CATEGORIES, ActionResult, ApplicationDbContext, Authorize, DisableRequestSizeLimit, HttpDelete, HttpGet (+19 more)
 
-### Community 2 - "Order Management Workflow"
-Cohesion: 0.10
-Nodes (6): AdminManualOrderComponent, Manual Order Cart Management, City/Area Selection Dropdown, Order Form Model, OrderPayload, Pre-Order Warning Modal
-
-### Community 3 - "Reviews & Landing Pages"
-Cohesion: 0.09
-Nodes (3): CustomLandingPageComponent, LandingSection, SafeHtmlPipe
-
-### Community 4 - "Product Form & Categorization"
-Cohesion: 0.13
-Nodes (17): Sidebar Access Control, Image URL Service, Admin Sidebar Component, Router Link Navigation System, Role Management Component, Permission Module Definitions, RBAC Permission Matrix, Role CRUD Operations (+9 more)
-
-### Community 5 - "Order List & Filtering"
-Cohesion: 0.08
-Nodes (6): AdminOrdersComponent, Order Notes Management Modal, Order Multi-Filter System, Order List Pagination, Order Status Workflow, Order History Tracking Modal
-
-### Community 6 - "Admin Layout & Design System"
-Cohesion: 0.08
-Nodes (30): Admin Header (app-admin-header), Admin Layout Composition (Sidebar + Header + Router-Outlet), Admin Sidebar (app-admin-sidebar), Dark DS-Prefixed Design Token System, Icon Component (app-icon), Image URL Service (imageUrlService), Sidebar Toggle Service (sidebarService), Order Invoice Component (app-admin-order-invoice) (+22 more)
-
-### Community 7 - "Cart & Checkout Flow"
-Cohesion: 0.18
-Nodes (9): CartSummary, Order, OrderItem, OrderStatus, OrderConfirmationPageComponent, OrdersPageComponent, CustomerOrderRequest, CustomerOrderResponse (+1 more)
-
-### Community 8 - "Product Display & Gallery"
-Cohesion: 0.29
-Nodes (8): Children Feature Module, Home Feature Module, Home Hero Carousel, Home Product Showcases, Product Card Component, Children Products Page Component (HTML), Featured Products Component (HTML), New Arrivals Component (HTML)
-
-### Community 9 - "Navigation & Site Footer"
-Cohesion: 0.16
-Nodes (16): breadcrumbs_men-breadcrumbs_component_html_menBreadcrumbs, breadcrumbs_women-breadcrumbs_component_html_womenBreadcrumbs, concept_product_listing_browsing, concept_site_footer_navigation, filters-sortbar_men-filters-sortbar_component_html_menFiltersSortbar, footer_footer_component_html_footer, home_home-page_component_html_homePage, men-products-page_men-products-page_component_html_menProductsPage (+8 more)
-
-### Community 12 - "Order Details & History"
-Cohesion: 0.11
-Nodes (10): AdminOrderDetailsComponent, AdminOrderInvoiceComponent, Admin Order Invoice Component, OrderDetail, OrderItem, OrderLog, OrderNote, OrderStats (+2 more)
-
-### Community 14 - "Feature Pages & UI Concepts"
-Cohesion: 0.43
-Nodes (7): concept_autofill_system, concept_city_area_dropdown, concept_image_gallery_viewer, concept_order_form_system, landing-page_landing-page_component_html_landingPage, offer-details-page_offer-details-page_component_html_offerDetails, product-details-page_product-details-page_component_html_productDetailsPage
-
-### Community 15 - "Analytics Dashboard"
-Cohesion: 0.18
-Nodes (6): AdminAnalyticsComponent, AdminAnalyticsService, CustomerGrowth, SalesData, StatusDistribution, TopProduct
-
-### Community 16 - "Platform Architecture"
-Cohesion: 0.40
-Nodes (5): Angular Frontend Application, Backend API README Reference, .NET 8 Backend API, Ecommarce E-Commerce Platform, Base API URL Environment Configuration
-
-### Community 17 - "Order Tracking"
-Cohesion: 1.00
-Nodes (3): concept_order_tracking, order-confirmation_orders-page_component_html_orderConfirmationPage, orders_orders-page_component_html_ordersPage
-
-### Community 18 - "Community 18"
+### Community 1 - "Product Form & Bundle Editor"
 Cohesion: 0.04
-Nodes (48): build, deploy, serve, builder, configurations, defaultConfiguration, options, cli (+40 more)
+Nodes (8): Product Categorization System, Combo Bundle Management, Product Reactive Form Model, Media Upload Drag-Drop System, MediaFormValue, Rich Text Description Editor, Size Variant Management, Collection
 
-### Community 20 - "Product Combo & Payload"
-Cohesion: 0.31
-Nodes (10): MediaFormValue, ComboItem, ProductImage, ProductType, ProductCreatePayload, ProductStatus, ProductUpdatePayload, ProductVariantEdit (+2 more)
+### Community 2 - "Product CRUD & Listing"
+Cohesion: 0.04
+Nodes (3): ProductFormComponent, ProductType, MediaFormValue
 
-### Community 21 - "Build & Configuration"
-Cohesion: 0.67
-Nodes (3): Angular Routing with provideRouter, Font and Material Symbol Imports in styles.css, Tailwind CSS with PostCSS Setup
+### Community 4 - "Order Details & Invoice"
+Cohesion: 0.05
+Nodes (9): Order Notes Management Modal, Order Multi-Filter System, Order List Pagination, Order Status Workflow, Order History Tracking Modal, OrderNote, OrderLog, OrdersQueryParams (+1 more)
 
-### Community 22 - "Community 22"
+### Community 5 - "Customer Management"
+Cohesion: 0.06
+Nodes (29): CustomersComponent, CustomersService, Customer, CustomerDto, CustomerProfileRequest, CustomerDto, CustomerProfileRequest, ActionResult (+21 more)
+
+### Community 6 - "Home & Product Gallery Pages"
+Cohesion: 0.07
+Nodes (16): CoreValue, ProcessStep, Accessories Feature Module, App Icon Component, Children Feature Module, Design System Tokens, Home Brand Sections, Home Category Navigation (+8 more)
+
+### Community 7 - "Offer & Promo Pages"
+Cohesion: 0.05
+Nodes (10): OfferDetails, OFFERS, CustomerLookupResponse, OrderItemRequest, MatchedLocation, UserDetails, AREA_TRANSLATIONS, CITY_TRANSLATIONS (+2 more)
+
+### Community 9 - "Service Interfaces & Contracts"
+Cohesion: 0.07
+Nodes (25): CategoryCreateDto, CategoryDto, CategoryUpdateDto, List, Task, List, SubCategoryCreateDto, SubCategoryDto (+17 more)
+
+### Community 10 - "Authentication & Authorization"
+Cohesion: 0.07
+Nodes (14): AddToCartDto, CartDto, Task, ICartService, ICartService, CartItem, CartSummary, AddToCartDto (+6 more)
+
+### Community 11 - "Cart & Checkout"
+Cohesion: 0.07
+Nodes (29): AddNoteDto, AdminCustomerListItemDto, PagedResponseDto, ActionResult, HttpGet, HttpPost, IActionResult, ICustomerService (+21 more)
+
+### Community 13 - "Admin Security & IP Blocking"
+Cohesion: 0.06
+Nodes (4): Product Card Component, PRODUCT_SIZE_ORDER, sortProductSizes(), ProductVariantsDto
+
+### Community 14 - "Inventory & Stock Management"
+Cohesion: 0.06
+Nodes (9): UserManagementComponent, AdminUser, Permission Module Definitions, RBAC Permission Matrix, Role CRUD Operations, Super Admin Auto-Permission Protection, ModuleDto, ModulePermissionDto (+1 more)
+
+### Community 15 - "Review & Rating System"
+Cohesion: 0.08
+Nodes (10): Order, OrderDetail, OrderLog, OrderNote, OrdersQueryParams, OrderStats, OrderDetail, OrderStatus (+2 more)
+
+### Community 16 - "Navigation & Menu Management"
+Cohesion: 0.06
+Nodes (42): City/Area Cascading Dropdown Pattern, Dashboard Stat Card Grid Pattern, Expandable Audit Log Row Pattern, Admin Layout Shell, Mobile Backdrop Overlay, Router Outlet, Cart Table, Manual Order Page (+34 more)
+
+### Community 17 - "Banner & Promo Management"
+Cohesion: 0.06
+Nodes (6): BANGLADESH_LOCATIONS, ManualOrderComponent, OrderApiService, CartItem, OrderPayload, matchLocationFromAddress
+
+### Community 18 - "User & Staff Management"
 Cohesion: 0.15
-Nodes (3): AdminBannersComponent, AdminBanner, BannerCreatePayload
+Nodes (19): AddToCartDto, Cart, CartDto, ActionResult, ApplicationDbContext, HttpDelete, HttpGet, HttpPost (+11 more)
 
-### Community 24 - "Community 24"
-Cohesion: 0.14
-Nodes (5): AdminCustomersComponent, AdminCustomersService, Customer, CustomersQueryParams, CustomersResponse
+### Community 19 - "Settings & Configuration"
+Cohesion: 0.07
+Nodes (9): IConfiguration, IJwtTokenService, IMemoryCache, IUnitOfWork, UserManager, ECommerce.Core.Interfaces, LoginPayload, User (+1 more)
 
-### Community 25 - "Community 25"
-Cohesion: 0.12
-Nodes (4): AdminInventoryComponent, InventoryService, ProductInventoryDto, VariantInventoryDto
+### Community 20 - "Cache Management & Eviction"
+Cohesion: 0.07
+Nodes (14): List, PageCreateDto, PageDto, Task, IUnitOfWork, List, PageCreateDto, PageDto (+6 more)
 
-### Community 26 - "Community 26"
-Cohesion: 0.19
-Nodes (3): AdminNavigationManagementComponent, AdminNavigationMenu, NavigationMenuCreatePayload
+### Community 21 - "Blog & Static Pages"
+Cohesion: 0.08
+Nodes (19): IWebHostEnvironment, IConfiguration, HttpContext, ILogger, RequestDelegate, Task, Task, ILogger (+11 more)
 
-### Community 27 - "Community 27"
-Cohesion: 0.18
-Nodes (3): AdminPagesComponent, AdminPage, PageCreatePayload
+### Community 22 - "Social Media & Source Pages"
+Cohesion: 0.11
+Nodes (20): DateTime, ICustomerService, IOrderStockService, Items, IUnitOfWork, Order, OrderCreateDto, OrderDto (+12 more)
 
-### Community 28 - "Community 28"
-Cohesion: 0.20
-Nodes (4): AdminProfileComponent, ProfileService, UpdateProfileRequest, UserProfile
+### Community 23 - "Specifications & Data Filtering"
+Cohesion: 0.06
+Nodes (4): InquiryTopic, SocialLink, ContactPayload, SiteSettings
+
+### Community 24 - "Dashboard & Statistics"
+Cohesion: 0.06
+Nodes (38): build, deploy, serve, builder, configurations, defaultConfiguration, options, cli (+30 more)
+
+### Community 25 - "Middleware & Request Pipeline"
+Cohesion: 0.10
+Nodes (4): Dictionary, Fact, Fact, Order
+
+### Community 26 - "Order Domain Model & State"
+Cohesion: 0.08
+Nodes (20): BlockedIp, ActionResult, ApplicationDbContext, Authorize, HttpDelete, HttpGet, HttpPost, IActionResult (+12 more)
+
+### Community 27 - "Domain Exceptions & Validation"
+Cohesion: 0.09
+Nodes (12): AdminBanner, CreateHeroBannerDto, HeroBannerDto, List, Task, CreateHeroBannerDto, HeroBannerDto, IUnitOfWork (+4 more)
+
+### Community 28 - "Database & Migration Layer"
+Cohesion: 0.07
+Nodes (10): AppIconComponent, CustomerHistoryComponent, OrderDetail, OrderDetailsComponent, OrderInvoiceComponent, OrderStatus, OrdersQueryParams, OrdersService (+2 more)
 
 ### Community 30 - "Community 30"
 Cohesion: 0.09
-Nodes (26): Exception, HttpContext, ILogger, IWebHostEnvironment, RequestDelegate, Task, CustomerService, DateTime (+18 more)
+Nodes (7): Admin Order Invoice Component, MigrationBuilder, ModelBuilder, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations, AdminSettings, ShippingZone
 
 ### Community 31 - "Community 31"
-Cohesion: 0.09
-Nodes (25): AdminProductsController, ActionResult, ApplicationDbContext, Authorize, DisableRequestSizeLimit, HttpGet, HttpPost, ICacheService (+17 more)
+Cohesion: 0.06
+Nodes (19): BaseEntity, BlockedIp, Cart, CartItem, Category, Collection, Customer, Order (+11 more)
 
 ### Community 32 - "Community 32"
-Cohesion: 0.09
-Nodes (23): AuthResponseDto, LoginDto, LoginResponseDto, RefreshToken, Response, Task, UserDto, AuthResponseDto (+15 more)
+Cohesion: 0.10
+Nodes (27): Expression, Func, T, DateTime, Expression, Func, Order, Product (+19 more)
 
 ### Community 33 - "Community 33"
-Cohesion: 0.06
-Nodes (33): ECommerce.API, net8.0, AutoMapper (16.1.1), Microsoft.AspNetCore.Identity.EntityFrameworkCore (8.0.12), Microsoft.Data.SqlClient (5.2.2), Microsoft.EntityFrameworkCore.SqlServer (8.0.12), ECommerce.Core, net8.0 (+25 more)
+Cohesion: 0.08
+Nodes (5): Role-Grouped Staff Hierarchy View, Staff Menu Access Control Checklist, Password Reveal Toggle System, AdminUser, CreateAdminRequest
 
 ### Community 34 - "Community 34"
-Cohesion: 0.15
-Nodes (19): CreateStaffRequest, ResetPasswordRequest, StaffUsersController, ToggleStatusRequest, UpdateStaffRequest, CreateStaffRequest, ApplicationDbContext, Guid (+11 more)
-
-### Community 35 - "Community 35"
-Cohesion: 0.09
-Nodes (11): environment, AdminReview, AdminReviewsService, LogLevel, NotificationService, ToastMessage, ApiResponse, ModuleDto (+3 more)
+Cohesion: 0.10
+Nodes (4): ORDERS_MODULE, OrderTableComponent, Fact, OrderItem
 
 ### Community 36 - "Community 36"
-Cohesion: 0.50
-Nodes (3): AboutComponent, CoreValue, ProcessStep
+Cohesion: 0.07
+Nodes (4): Manual Order Cart Management, City/Area Selection Dropdown, OrderPayload, Pre-Order Warning Modal
 
 ### Community 37 - "Community 37"
-Cohesion: 0.09
-Nodes (5): AdminHeaderComponent, AdminLayoutComponent, AdminNavItem, AdminSidebarComponent, SidebarService
+Cohesion: 0.10
+Nodes (19): ConcurrentDictionary, HttpPost, IActionResult, IOutputCacheStore, Task, Func, T, Task (+11 more)
 
 ### Community 38 - "Community 38"
-Cohesion: 0.13
-Nodes (19): CategoryCreateDto, CategoryUpdateDto, AdminCategoryController, ActionResult, ApplicationDbContext, CategoryDto, DisableRequestSizeLimit, HttpDelete (+11 more)
-
-### Community 39 - "Community 39"
 Cohesion: 0.07
-Nodes (11): ADMIN_ROUTES, AdminLogoutComponent, appRoutes, AdminGuard, authGuard(), staffGuard(), AuthResponse, LoginPayload (+3 more)
+Nodes (7): ADMIN_ROUTES, AdminSettings, AuthService, LogoutComponent, SettingsComponent, admin.routes.ts, staffGuard
 
 ### Community 40 - "Community 40"
-Cohesion: 0.21
-Nodes (14): AddToCartDto, Cart, CartDto, CartController, ActionResult, ApplicationDbContext, HttpGet, HttpPost (+6 more)
+Cohesion: 0.07
+Nodes (9): Notification Bell, Page Title Display, Profile Dropdown Menu, Search Input Control, AdminNavItem, Sidebar Access Control, Image URL Service, Admin Sidebar Component (+1 more)
 
 ### Community 41 - "Community 41"
+Cohesion: 0.10
+Nodes (5): ProductService, ICacheService, IMapper, IUnitOfWork, ProductImage
+
+### Community 42 - "Community 42"
+Cohesion: 0.15
+Nodes (5): CartItem, AdminProduct, ProductsQueryParams, AdminProduct, ProductsQueryParams
+
+### Community 43 - "Community 43"
 Cohesion: 0.14
-Nodes (18): AdminSubCategoryController, ActionResult, ApplicationDbContext, Authorize, DisableRequestSizeLimit, HttpGet, HttpPost, ICacheService (+10 more)
+Nodes (21): AdminAuthResponseDto, UserSummaryDto, CancellationToken, ChangePasswordDto, ChangePasswordRequest, UserManager&lt;ApplicationUser&gt;, PasswordProtector, ActionResult (+13 more)
+
+### Community 44 - "Community 44"
+Cohesion: 0.12
+Nodes (19): Admin Staff Menu Access Pattern, UploadResultDto, CreateHeroBannerDto, CreateHeroBannerDto, ActionResult, Authorize, HttpDelete, HttpGet (+11 more)
 
 ### Community 46 - "Community 46"
+Cohesion: 0.14
+Nodes (5): UsersService, CreateAdminRequest, Address, PaymentMethod, UserProfile
+
+### Community 47 - "Community 47"
+Cohesion: 0.09
+Nodes (9): MenBreadcrumbsComponent, MenCategoryChipsComponent, MenFiltersSortbarComponent, MenPaginationComponent, WomenPaginationComponent, MenProductGridComponent, CategoryCount, WomenSidebarFiltersComponent (+1 more)
+
+### Community 48 - "Community 48"
 Cohesion: 0.15
-Nodes (9): AppComponent, API_CONFIG, ApiConfig, globalErrorInterceptor(), adminCacheInterceptor(), jwtInterceptor(), loadingInterceptor(), LoadingService (+1 more)
+Nodes (18): CategoryUpdateDto, ReorderCategoriesDto, ActionResult, CategoryDto, DisableRequestSizeLimit, HttpDelete, HttpGet, HttpPost (+10 more)
+
+### Community 49 - "Community 49"
+Cohesion: 0.13
+Nodes (20): DeliveryMethodDto, DeliveryMethodDto, SiteSettingsDto, ActionResult, AllowAnonymous, ApplicationDbContext, Authorize, HttpDelete (+12 more)
+
+### Community 50 - "Community 50"
+Cohesion: 0.08
+Nodes (7): AdminReview, CRUD_MULTI_MODAL, CRUD_SIMPLE, DESTROY_PATTERN_SUBJECT, PlaceholderComponent, ProductsService, ReviewsComponent
 
 ### Community 52 - "Community 52"
-Cohesion: 0.07
-Nodes (11): AccessoriesPageComponent, MenBreadcrumbsComponent, MenCategoryChipsComponent, ChildrenProductsPageComponent, MenFiltersSortbarComponent, MenProductsPageComponent, HomeData, Pagination (+3 more)
+Cohesion: 0.21
+Nodes (15): CreateStaffRequest, ApplicationDbContext, Guid, HttpDelete, HttpGet, HttpPost, HttpPut, IActionResult (+7 more)
 
 ### Community 54 - "Community 54"
-Cohesion: 0.16
-Nodes (16): AdminUsersController, CreateAdminUserDto, ResetPasswordDto, UpdateAdminUserDto, CreateAdminUserDto, ActionResult, ApplicationDbContext, Authorize (+8 more)
+Cohesion: 0.20
+Nodes (16): ActionResult, DateTime, HttpGet, List, Task, DashboardStatsDto, DateTime, List (+8 more)
 
-### Community 58 - "Community 58"
-Cohesion: 0.07
-Nodes (26): AllowedHosts, AllowedOrigins, Auth, CookieDomain, ConnectionStrings, DefaultConnection, Default, Override (+18 more)
-
-### Community 60 - "Community 60"
-Cohesion: 0.10
-Nodes (16): Expression, Func, T, DateTime, Expression, Func, Order, Product (+8 more)
-
-### Community 61 - "Community 61"
-Cohesion: 0.16
-Nodes (16): AddNoteDto, AddNoteDto, AdminOrdersController, UpdateOrderStatusDto, ActionResult, DateTime, HttpGet, HttpPost (+8 more)
-
-### Community 63 - "Community 63"
-Cohesion: 0.15
-Nodes (18): AdminSettingsController, DeliveryMethodDto, ActionResult, AllowAnonymous, ApplicationDbContext, Authorize, DeliveryMethod, HttpGet (+10 more)
-
-### Community 64 - "Community 64"
-Cohesion: 0.19
-Nodes (5): ContactComponent, InquiryTopic, SocialLink, ContactPayload, ContactService
-
-### Community 65 - "Community 65"
-Cohesion: 0.10
-Nodes (19): BaseApiController, NavigationController, ReviewsController, CreateReviewDto, HttpGet, IActionResult, IMemoryCache, INavigationService (+11 more)
-
-### Community 69 - "Community 69"
-Cohesion: 0.22
-Nodes (3): CartService, Cart, CartItem
-
-### Community 70 - "Community 70"
+### Community 55 - "Community 55"
 Cohesion: 0.08
 Nodes (24): angularCompilerOptions, enableI18nLegacyMessageIdFormat, strictInjectionParameters, strictInputAccessModifiers, strictTemplates, compileOnSave, compilerOptions, baseUrl (+16 more)
 
-### Community 71 - "Community 71"
-Cohesion: 0.06
-Nodes (14): CategorySectionComponent, ContactFabComponent, FooterComponent, HomePageComponent, LoadingSpinnerComponent, NavbarComponent, NewsletterComponent, MegaMenuCollection (+6 more)
+### Community 56 - "Community 56"
+Cohesion: 0.11
+Nodes (5): StaffUser, Password View-Reset-Generate System, Staff Account CRUD, Staff Status Toggle, StaffUser
+
+### Community 58 - "Community 58"
+Cohesion: 0.17
+Nodes (11): List, SourcePageCreateDto, SourcePageDto, Task, IUnitOfWork, List, SourcePageCreateDto, SourcePageDto (+3 more)
+
+### Community 60 - "Community 60"
+Cohesion: 0.12
+Nodes (4): ProfileComponent, ProfileService, UpdateProfileRequest, UserProfile
+
+### Community 62 - "Community 62"
+Cohesion: 0.13
+Nodes (22): class:ECommerce.Core.Domain.Orders.Order, class:ECommerce.Core.Domain.Orders.OrderItem, class:ECommerce.Core.Domain.Orders.OrderStatusLog, class:ECommerce.Core.Domain.Orders.OrderStatusTransitions, class:ECommerce.Core.Entities.AdminActivityLog, class:ECommerce.Core.Entities.ApplicationUser, class:ECommerce.Core.Entities.BaseEntity, class:ECommerce.Core.Entities.BlockedIp (+14 more)
+
+### Community 63 - "Community 63"
+Cohesion: 0.13
+Nodes (6): IEnumerable, List, OrderItem, OrderStatus, Order, PaymentStatus
+
+### Community 64 - "Community 64"
+Cohesion: 0.09
+Nodes (13): ClaimsPrincipal, ClaimsPrincipal, IConfiguration, IUnitOfWork, SymmetricSecurityKey, ApplicationUser, IConfiguration, SymmetricSecurityKey (+5 more)
+
+### Community 65 - "Community 65"
+Cohesion: 0.24
+Nodes (12): AdminUserItemDto, AdminUserItemDto, Authorize, CreateAdminUserDto, ActionResult, ApplicationDbContext, HttpGet, HttpPost (+4 more)
+
+### Community 66 - "Community 66"
+Cohesion: 0.17
+Nodes (12): ActionResult, AdminProductListResultDto, HttpGet, List, ProductCreateDto, ProductDto, ProductUpdateDto, Task (+4 more)
+
+### Community 67 - "Community 67"
+Cohesion: 0.15
+Nodes (11): ProductListDto, AdminProductListResultDto, ImageUrls, MainImageUrl, ProductCreateDto, ProductDto, ProductSearchResultDto, ProductUpdateDto (+3 more)
+
+### Community 68 - "Community 68"
+Cohesion: 0.14
+Nodes (10): AdminProductListResultDto, ImageUrls, List, MainImageUrl, Product, ProductCreateDto, ProductSearchResultDto, ProductUpdateDto (+2 more)
+
+### Community 69 - "Community 69"
+Cohesion: 0.17
+Nodes (13): InventoryService, HttpPost, List, ProductInventoryDto, Task, UpdateInventoryDto, IUnitOfWork, List (+5 more)
+
+### Community 70 - "Community 70"
+Cohesion: 0.12
+Nodes (12): NavigationService, MegaMenuCategoryDto, MegaMenuCollectionDto, MegaMenuSubCategoryDto, Task, ApplicationDbContext, ICacheService, string (+4 more)
 
 ### Community 72 - "Community 72"
-Cohesion: 0.08
-Nodes (24): AllowedHosts, AllowedOrigins, Auth, CookieDomain, ConnectionStrings, DefaultConnection, Default, Override (+16 more)
+Cohesion: 0.21
+Nodes (13): NavigationMenuCreateDto, NavigationMenuDto, ActionResult, Authorize, HttpDelete, HttpGet, HttpPost, IEnumerable (+5 more)
 
 ### Community 73 - "Community 73"
-Cohesion: 0.17
-Nodes (15): CreateRoleRequest, StaffRolesController, UpdatePermissionsRequest, UpdateRoleRequest, CreateRoleRequest, ApplicationDbContext, Guid, HttpDelete (+7 more)
+Cohesion: 0.24
+Nodes (11): CreateRoleRequest, ApplicationDbContext, Guid, HttpDelete, HttpGet, HttpPost, HttpPut, IActionResult (+3 more)
+
+### Community 74 - "Community 74"
+Cohesion: 0.25
+Nodes (8): ApplicationDbContext, IConfigurationProvider, IQueryable, IReadOnlyList, ISpecification, T, Task, TResult
+
+### Community 76 - "Community 76"
+Cohesion: 0.16
+Nodes (10): ProductCreatePayload, ProductPayload, ProductStatus, ProductUpdatePayload, RelatedProduct, ProductCreatePayload, ProductStatus, ProductUpdatePayload (+2 more)
 
 ### Community 77 - "Community 77"
+Cohesion: 0.21
+Nodes (11): ActionResult, HttpDelete, HttpGet, HttpPost, IGenericRepository, IMapper, IReadOnlyList, IUnitOfWork (+3 more)
+
+### Community 78 - "Community 78"
+Cohesion: 0.16
+Nodes (9): DateTime, IReadOnlyList, Items, OrderCreateDto, OrderDto, OrderStatsDto, PaginationDto, Task (+1 more)
+
+### Community 79 - "Community 79"
+Cohesion: 0.18
+Nodes (7): IUnitOfWork, List, NavigationMenuCreateDto, NavigationMenuDto, Task, NavigationMenu, NavigationMenu
+
+### Community 80 - "Community 80"
 Cohesion: 0.12
-Nodes (11): CacheEntry, clearPersistentCache(), EXCLUDED_PATTERNS, getPersistentCache(), getTTL(), httpCacheInterceptor(), inMemoryCache, invalidateHttpCache() (+3 more)
+Nodes (4): AdminPage, PagesComponent, PagesService, StaticPage
 
 ### Community 81 - "Community 81"
-Cohesion: 0.15
-Nodes (10): DashboardOverviewComponent, CategorySales, CustomerGrowth, DailyTraffic, DashboardStats, OrderItem, PopularProduct, SalesData (+2 more)
+Cohesion: 0.13
+Nodes (9): DashboardOverviewComponent, DashboardService, DashboardStats, SiteSettingsService, DashboardStatsDto, DateTime, IMemoryCache, string (+1 more)
 
 ### Community 82 - "Community 82"
-Cohesion: 0.21
-Nodes (10): GenericRepository, ApplicationDbContext, IConfigurationProvider, IQueryable, IReadOnlyList, ISpecification, T, Task (+2 more)
+Cohesion: 0.24
+Nodes (11): Admin Order Source Controllers, ActionResult, AllowAnonymous, ApplicationDbContext, Authorize, HttpDelete, HttpGet, HttpPost (+3 more)
+
+### Community 83 - "Community 83"
+Cohesion: 0.22
+Nodes (10): ApplicationDbContext, Authorize, Guid, HttpPost, IActionResult, IConfiguration, List, Task (+2 more)
 
 ### Community 84 - "Community 84"
-Cohesion: 0.13
-Nodes (16): AuthResponse, CancellationToken, AuthController, ActionResult, ApplicationDbContext, ApplicationUser, Authorize, HttpGet (+8 more)
+Cohesion: 0.19
+Nodes (10): CustomerGrowthDto, DashboardStatsDto, DailyTrafficDto, Task, ECommerce.Core.Entities, DailyTraffic, CategorySales, SalesData (+2 more)
 
 ### Community 85 - "Community 85"
-Cohesion: 0.17
-Nodes (15): AdminBannersController, CreateHeroBannerDto, ActionResult, ApplicationDbContext, Authorize, HeroBannerDto, HttpGet, HttpPost (+7 more)
+Cohesion: 0.23
+Nodes (11): IOutputCacheStore, ActionResult, Authorize, HttpDelete, HttpGet, HttpPost, IOutputCacheStore, List (+3 more)
 
 ### Community 86 - "Community 86"
-Cohesion: 0.16
-Nodes (14): StaffAuthController, StaffLoginRequest, StaffRefreshRequest, ApplicationDbContext, Authorize, Guid, HttpPost, IActionResult (+6 more)
+Cohesion: 0.23
+Nodes (10): ActionResult, AllowAnonymous, ApplicationDbContext, Authorize, HttpDelete, HttpGet, HttpPost, List (+2 more)
 
 ### Community 87 - "Community 87"
-Cohesion: 0.17
-Nodes (11): ICacheService, IMapper, IUnitOfWork, List, Product, ProductCreateDto, ProductDto, ProductUpdateDto (+3 more)
+Cohesion: 0.15
+Nodes (15): ECommerce.API.Controllers, IEnumerable, ActionResult, ApplicationDbContext, DeliveryMethod, HttpGet, IEnumerable, IMemoryCache (+7 more)
 
 ### Community 88 - "Community 88"
-Cohesion: 0.21
-Nodes (4): AddToCartDto, CartItemDto, UpdateCartItemDto, AnalyticsService
+Cohesion: 0.26
+Nodes (7): IReadOnlyList, T, Task, TResult, IGenericRepository, ISpecification, ISpecification
+
+### Community 89 - "Community 89"
+Cohesion: 0.20
+Nodes (4): CategoriesService, Category, CategoryNode, ReorderPayload
 
 ### Community 90 - "Community 90"
-Cohesion: 0.18
-Nodes (10): DateTime, IReadOnlyList, Items, OrderCreateDto, OrderDto, OrderStatsDto, PaginationDto, Task (+2 more)
+Cohesion: 0.13
+Nodes (12): AuthorizationFilterContext, AuthorizationHandler, StaffMenuAccess, Task, UserManager, Task, IAsyncAuthorizationFilter, IAuthorizationRequirement (+4 more)
 
 ### Community 91 - "Community 91"
-Cohesion: 0.14
-Nodes (14): ApplicationDbContext, CustomerGrowthDto, DashboardStatsDto, DateTime, IMemoryCache, List, PopularProductDto, RecentOrderDto (+6 more)
+Cohesion: 0.16
+Nodes (16): breadcrumbs_men-breadcrumbs_component_html_menBreadcrumbs, breadcrumbs_women-breadcrumbs_component_html_womenBreadcrumbs, concept_product_listing_browsing, concept_site_footer_navigation, filters-sortbar_men-filters-sortbar_component_html_menFiltersSortbar, footer_footer_component_html_footer, home_home-page_component_html_homePage, men-products-page_men-products-page_component_html_menProductsPage (+8 more)
 
 ### Community 92 - "Community 92"
-Cohesion: 0.22
-Nodes (4): Category, CategoryNode, ReorderPayload, CategoriesService
+Cohesion: 0.20
+Nodes (11): Tag-Based Output Cache Eviction Pattern, ActionResult, Authorize, HttpGet, HttpPost, ICacheService, IOutputCacheStore, List (+3 more)
 
 ### Community 93 - "Community 93"
-Cohesion: 0.20
-Nodes (13): AdminDashboardController, ActionResult, CustomerGrowthDto, DashboardStatsDto, DateTime, HttpGet, IDashboardService, List (+5 more)
+Cohesion: 0.13
+Nodes (11): ApplicationDbContext, Authorize, HttpDelete, ICacheService, IConfiguration, IOutputCacheStore, IProductService, IUnitOfWork (+3 more)
 
 ### Community 94 - "Community 94"
-Cohesion: 0.12
-Nodes (7): CheckoutState, ShippingMethod, CheckoutService, CustomerProfile, CustomerProfileRequest, CustomerProfileService, PlaceOrderPayload
+Cohesion: 0.17
+Nodes (14): ActionResult, HttpGet, IGenericRepository, IMapper, IMemoryCache, IProductService, OutputCache, PaginationDto (+6 more)
 
 ### Community 95 - "Community 95"
-Cohesion: 0.21
-Nodes (13): AdminNavigationController, ActionResult, ApplicationDbContext, Authorize, HttpGet, HttpPost, IEnumerable, IOutputCacheStore (+5 more)
+Cohesion: 0.17
+Nodes (9): ApplicationDbContext, Func, IConfigurationProvider, IGenericRepository, Task, TEntity, Hashtable, IDbContextTransaction (+1 more)
 
 ### Community 96 - "Community 96"
-Cohesion: 0.19
-Nodes (12): AdminProductGroupsController, ActionResult, HttpDelete, HttpGet, HttpPost, HttpPut, IGenericRepository, IMapper (+4 more)
+Cohesion: 0.14
+Nodes (11): DeliveryMethod, List, SiteSettingsDto, Task, DeliveryMethod, IUnitOfWork, List, SiteSettingsDto (+3 more)
 
 ### Community 97 - "Community 97"
-Cohesion: 0.11
-Nodes (19): ASPNETCORE_ENVIRONMENT, applicationUrl, commandName, dotnetRunMessages, environmentVariables, hotReloadEnabled, launchBrowser, launchUrl (+11 more)
-
-### Community 98 - "Community 98"
 Cohesion: 0.23
-Nodes (7): IQueryable, IReadOnlyList, ISpecification, T, Task, TResult, IGenericRepository
-
-### Community 99 - "Community 99"
-Cohesion: 0.17
-Nodes (5): SocialMediaSource, SocialMediaSourceCreate, SourcePage, SourcePageCreate, SourceManagementService
-
-### Community 100 - "Community 100"
-Cohesion: 0.24
-Nodes (11): AdminSocialMediaSourcesController, ActionResult, AllowAnonymous, ApplicationDbContext, Authorize, HttpGet, HttpPost, List (+3 more)
-
-### Community 101 - "Community 101"
-Cohesion: 0.24
-Nodes (11): AdminSourcePagesController, ActionResult, AllowAnonymous, ApplicationDbContext, Authorize, HttpGet, HttpPost, List (+3 more)
-
-### Community 102 - "Community 102"
-Cohesion: 0.14
-Nodes (10): UnitOfWork, ApplicationDbContext, Func, IConfigurationProvider, IGenericRepository, Task, TEntity, Hashtable (+2 more)
+Nodes (11): ICacheService, IMapper, IReadOnlyList, IUnitOfWork, List, PaginationDto, ProductDto, ProductListDto (+3 more)
 
 ### Community 103 - "Community 103"
 Cohesion: 0.23
-Nodes (11): AdminPagesController, ActionResult, ApplicationDbContext, Authorize, HttpGet, HttpPost, IOutputCacheStore, List (+3 more)
+Nodes (9): CacheEntry, clearPersistentCache(), EXCLUDED_PATTERNS, getPersistentCache(), getTTL(), httpCacheInterceptor(), invalidateHttpCache(), saveToPersistentCache() (+1 more)
 
 ### Community 104 - "Community 104"
-Cohesion: 0.15
-Nodes (3): FeaturedProductsComponent, Product, NewArrivalsComponent
+Cohesion: 0.14
+Nodes (9): DataSeeder, ApplicationUser, ApplicationDbContext, Task, UserManager, IdentityRole, IdentityUser, IList (+1 more)
 
 ### Community 105 - "Community 105"
-Cohesion: 0.12
-Nodes (17): dependencies, @angular/animations, @angular/cdk, @angular/common, @angular/compiler, @angular/core, @angular/forms, @angular/platform-browser (+9 more)
+Cohesion: 0.13
+Nodes (15): dependencies, @angular/animations, @angular/cdk, @angular/common, @angular/core, @angular/forms, @angular/platform-browser, @angular/router (+7 more)
 
 ### Community 106 - "Community 106"
-Cohesion: 0.11
-Nodes (4): CartItem, AdminProduct, ProductsQueryParams, ProductsService
+Cohesion: 0.13
+Nodes (14): ECommerce.Infrastructure Project, net8.0, AutoMapper (15.1.3), Microsoft.AspNetCore.Identity.EntityFrameworkCore (8.0.12), Microsoft.EntityFrameworkCore.SqlServer (8.0.12), Test, BCrypt.Net-Next (4.1.0), Microsoft.AspNetCore.WebUtilities (8.0.12) (+6 more)
 
-### Community 107 - "Community 107"
+### Community 108 - "Community 108"
+Cohesion: 0.20
+Nodes (6): ReviewsService, CreateReviewDto, IUnitOfWork, IReviewService, AdminReview, Review
+
+### Community 109 - "Community 109"
 Cohesion: 0.18
-Nodes (10): CustomerGrowthDto, DashboardStatsDto, DateTime, List, PopularProductDto, RecentOrderDto, SalesDataDto, StatusDistributionDto (+2 more)
+Nodes (4): SocialMediaSource, SourceManagementComponent, SourceManagementService, SourcePage
 
 ### Community 110 - "Community 110"
-Cohesion: 0.28
-Nodes (4): CreateReview, Review, ReviewService, TestimonialsComponent
-
-### Community 111 - "Community 111"
-Cohesion: 0.11
-Nodes (3): AdminReviewsComponent, AdminReview, ReviewUpdatePayload
+Cohesion: 0.16
+Nodes (14): Admin Banners Page, Admin Blocked IPs Page, Admin Customers Page, Admin Inventory Page, Admin Navigation Management Page, Admin Static Pages Page, Admin Placeholder Page, Admin Product Form Page (+6 more)
 
 ### Community 112 - "Community 112"
-Cohesion: 0.52
-Nodes (3): MOCK_TESTIMONIALS, Testimonial, TestimonialService
+Cohesion: 0.21
+Nodes (14): Angular 18 Frontend, Angular CDK, Arza E-Commerce Platform, Chart.js Dashboards, ECommerce.API Project, ECommerce.Core Project, ECommerce.Core.Tests Project, ECommerce.View Project (+6 more)
 
 ### Community 113 - "Community 113"
-Cohesion: 0.13
-Nodes (5): AccountPageComponent, Address, PaymentMethod, UserProfile, UserService
+Cohesion: 0.16
+Nodes (13): dynamic, CreateOrder, ActionResult, ApplicationDbContext, HttpGet, HttpPost, ICustomerService, IOrderService (+5 more)
 
 ### Community 114 - "Community 114"
-Cohesion: 0.20
-Nodes (10): ConcurrentDictionary, Func, IMemoryCache, JsonSerializerOptions, T, Task, TimeSpan, ICacheService (+2 more)
+Cohesion: 0.16
+Nodes (13): author, bugs, url, description, homepage, keywords, license, main (+5 more)
 
 ### Community 115 - "Community 115"
-Cohesion: 0.12
-Nodes (12): ControllerBase, AnalyticsController, ECommerce.API.Controllers, StaffModulesController, ApplicationDbContext, HttpGet, IActionResult, Task (+4 more)
+Cohesion: 0.18
+Nodes (6): IUnitOfWork, List, ReviewDto, ReviewUpdateDto, Task, AdminReview
 
-### Community 116 - "Community 116"
-Cohesion: 0.17
-Nodes (13): ProductsController, ActionResult, HttpGet, IGenericRepository, IMapper, IMemoryCache, IProductService, OutputCache (+5 more)
+### Community 118 - "Community 118"
+Cohesion: 0.21
+Nodes (4): AnalyticsComponent, ImageUrlService, ReportsService, SalesData
+
+### Community 121 - "Community 121"
+Cohesion: 0.24
+Nodes (5): DeliveryMethod, DeliveryMethodDto, SiteSettingsDto, Task, IAdminSettingsService
+
+### Community 122 - "Community 122"
+Cohesion: 0.19
+Nodes (10): Admin Product Area Controllers, LandingPageData, CustomLandingPageConfigDto, CustomLandingPageConfigUpdateDto, ActionResult, HttpGet, HttpPost, IMapper (+2 more)
+
+### Community 123 - "Community 123"
+Cohesion: 0.22
+Nodes (9): ActionResult, ApplicationDbContext, Authorize, HttpDelete, HttpGet, HttpPost, List, Task (+1 more)
 
 ### Community 124 - "Community 124"
-Cohesion: 0.13
-Nodes (7): WomenBreadcrumbsComponent, WomenPaginationComponent, WomenProductGridComponent, CategoryCount, WomenSidebarFiltersComponent, WomenToolbarComponent, WomenProductsPageComponent
+Cohesion: 0.26
+Nodes (8): CreateReviewDto, ReviewUpdateDto, ActionResult, HttpGet, HttpPost, IEnumerable, IMapper, Task
 
 ### Community 125 - "Community 125"
-Cohesion: 0.14
-Nodes (11): AppIconComponent, PRODUCT_SIZE_ORDER, sortProductSizes(), Slide, IconButtonComponent, RelatedProduct, BdtToUsdPipe, PriceDisplayComponent (+3 more)
+Cohesion: 0.17
+Nodes (12): AllowedHosts, AllowedOrigins, Auth, CookieDomain, ConnectionStrings, DefaultConnection, DefaultConnection, Redis (+4 more)
 
-### Community 132 - "Community 132"
-Cohesion: 0.25
-Nodes (10): AdminAnalyticsController, ActionResult, CustomerGrowthDto, HttpGet, IDashboardService, List, PopularProductDto, SalesDataDto (+2 more)
+### Community 126 - "Community 126"
+Cohesion: 0.15
+Nodes (13): ECommerce.API, net8.0, AutoMapper (16.1.1), Microsoft.AspNetCore.Identity.EntityFrameworkCore (8.0.12), Microsoft.EntityFrameworkCore.SqlServer (8.0.12), Microsoft.AspNetCore.Authentication.JwtBearer (8.0.12), Microsoft.AspNetCore.OutputCaching.StackExchangeRedis (8.0.10), Microsoft.EntityFrameworkCore.Design (8.0.12) (+5 more)
+
+### Community 127 - "Community 127"
+Cohesion: 0.18
+Nodes (9): AdminActivityLog, List, Task, AdminActivityLog, IUnitOfWork, List, Task, IActivityLogService (+1 more)
+
+### Community 128 - "Community 128"
+Cohesion: 0.26
+Nodes (6): DeliveryMethod, DeliveryMethodDto, IUnitOfWork, List, SiteSettingsDto, Task
+
+### Community 129 - "Community 129"
+Cohesion: 0.28
+Nodes (7): IUnitOfWork, Order, OrderDto, OrderStatus, Task, IOrderStockService, Product
 
 ### Community 134 - "Community 134"
-Cohesion: 0.10
-Nodes (6): ApiHttpClient, Banner, AdminNavigationService, NavigationMenuItem, AdminPagesService, StaticPage
+Cohesion: 0.20
+Nodes (7): AutoMapper, CustomLandingPageConfigDto, CustomLandingPageConfigUpdateDto, IMapper, IUnitOfWork, Task, Profile
 
 ### Community 135 - "Community 135"
-Cohesion: 0.19
-Nodes (11): CustomersController, CustomerDto, CustomerProfileRequest, ActionResult, CustomerService, HttpGet, HttpPost, IOrderService (+3 more)
+Cohesion: 0.17
+Nodes (10): HeroBanner, HeroBannerDto, ActionResult, HeroBannerDto, HttpGet, IMemoryCache, List, ResponseCache (+2 more)
 
 ### Community 136 - "Community 136"
-Cohesion: 0.18
-Nodes (12): ECommerce.API.Controllers, SiteSettingsController, ActionResult, ApplicationDbContext, DeliveryMethod, HttpGet, IEnumerable, IMemoryCache (+4 more)
+Cohesion: 0.17
+Nodes (11): IMemoryCache, HomePageDto, ActionResult, HttpGet, IGenericRepository, IMapper, IProductService, OutputCache (+3 more)
 
 ### Community 137 - "Community 137"
-Cohesion: 0.20
-Nodes (14): Admin Reviews Component (HTML), Admin Settings Component (HTML), Role-Grouped Staff Hierarchy View, Staff Menu Access Control Checklist, Admin User Management Component, Password Reveal Toggle System, Admin Module, Admin Reviews Management (+6 more)
+Cohesion: 0.24
+Nodes (6): LoginDto, LoginResponseDto, RefreshToken, Response, Task, UserDto
 
 ### Community 138 - "Community 138"
-Cohesion: 0.21
-Nodes (10): BlockedIp, AdminSecurityController, ActionResult, ApplicationDbContext, Authorize, HttpGet, HttpPost, IActionResult (+2 more)
+Cohesion: 0.17
+Nodes (8): CustomLandingPageDataDto, Task, CustomLandingPageDataDto, IMapper, IUnitOfWork, Task, ICustomLandingPageService, ICustomLandingPageService
 
 ### Community 139 - "Community 139"
-Cohesion: 0.20
-Nodes (10): ChangePasswordDto, ChangePasswordDto, ProfileController, UpdateProfileDto, ActionResult, HttpGet, HttpPost, Task (+2 more)
+Cohesion: 0.27
+Nodes (6): Order, OrderDto, OrderStatus, Product, Task, IOrderStockService
 
 ### Community 140 - "Community 140"
-Cohesion: 0.21
-Nodes (10): AdminReviewsController, ActionResult, ApplicationDbContext, Authorize, HttpGet, HttpPost, List, ReviewDto (+2 more)
-
-### Community 141 - "Community 141"
-Cohesion: 0.16
-Nodes (11): OrdersController, dynamic, ActionResult, ApplicationDbContext, HttpGet, HttpPost, IOrderService, OrderCreateDto (+3 more)
-
-### Community 142 - "Community 142"
-Cohesion: 0.27
-Nodes (7): Customer, ApplicationDbContext, Items, List, Task, Total, CustomerService
-
-### Community 143 - "Community 143"
-Cohesion: 0.15
-Nodes (12): author, bugs, url, description, homepage, keywords, license, main (+4 more)
-
-### Community 144 - "Community 144"
-Cohesion: 0.21
+Cohesion: 0.23
 Nodes (6): Func, IGenericRepository, Task, TEntity, IDisposable, IUnitOfWork
 
+### Community 142 - "Community 142"
+Cohesion: 0.33
+Nodes (5): IUnitOfWork, List, SocialMediaSourceCreateDto, SocialMediaSourceDto, Task
+
+### Community 143 - "Community 143"
+Cohesion: 0.26
+Nodes (6): LoginDto, LoginResponseDto, RefreshToken, Response, Task, UserDto
+
+### Community 144 - "Community 144"
+Cohesion: 0.26
+Nodes (11): ASPNETCORE_ENVIRONMENT, commandName, dotnetRunMessages, environmentVariables, hotReloadEnabled, launchBrowser, launchUrl, profiles (+3 more)
+
+### Community 145 - "Community 145"
+Cohesion: 0.24
+Nodes (10): ActionResult, HttpGet, HttpPost, Task, UserManager, GetProfile, UpdateProfile, ProfileResponseDto (+2 more)
+
+### Community 146 - "Community 146"
+Cohesion: 0.18
+Nodes (11): @angular/compiler, devDependencies, @angular/cli, angular-cli-ghpages, @angular-devkit/build-angular, autoprefixer, postcss, prettier (+3 more)
+
 ### Community 147 - "Community 147"
-Cohesion: 0.28
-Nodes (6): IEnumerable, IUnitOfWork, Review, Task, IReviewService, ReviewService
+Cohesion: 0.33
+Nodes (6): List, NavigationMenuCreateDto, NavigationMenuDto, Task, IAdminNavigationService, IAdminNavigationService
+
+### Community 148 - "Community 148"
+Cohesion: 0.38
+Nodes (5): List, SocialMediaSourceCreateDto, SocialMediaSourceDto, Task, IAdminSocialMediaSourceService
 
 ### Community 149 - "Community 149"
-Cohesion: 0.32
-Nodes (3): PromoBannerComponent, BannerService, HeroBanner
+Cohesion: 0.18
+Nodes (9): CategoryDto, List, Task, CategoryDto, IUnitOfWork, List, Task, IPublicCategoryService (+1 more)
 
 ### Community 150 - "Community 150"
-Cohesion: 0.17
-Nodes (10): Product Categorization System, Combo Bundle Management, Product Reactive Form Model, Media Upload Drag-Drop System, Admin Product Form Component, Rich Text Description Editor, Size Variant Management, FlatSubCategory (+2 more)
-
-### Community 151 - "Community 151"
-Cohesion: 0.21
-Nodes (9): AdminCustomLandingPageController, CustomLandingPageConfigDto, CustomLandingPageConfigUpdateDto, ActionResult, ApplicationDbContext, HttpGet, HttpPost, IMapper (+1 more)
-
-### Community 152 - "Community 152"
-Cohesion: 0.17
-Nodes (10): HomeController, ActionResult, HttpGet, IGenericRepository, IMapper, IMemoryCache, IProductService, OutputCache (+2 more)
-
-### Community 153 - "Community 153"
-Cohesion: 0.17
-Nodes (12): devDependencies, @angular/cli, angular-cli-ghpages, @angular/compiler-cli, @angular-devkit/build-angular, autoprefixer, postcss, prettier (+4 more)
+Cohesion: 0.20
+Nodes (7): MigrationBuilder, ModelBuilder, Migration, AddDiscountAndAdvancePaymentToOrder, AddDiscountAndAdvancePaymentToOrder, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
 
 ### Community 154 - "Community 154"
-Cohesion: 0.28
-Nodes (4): CategoryGridComponent, CATEGORIES, Category, CategoryService
+Cohesion: 0.24
+Nodes (4): CustomerLookupResponse, CustomerOrderRequest, OrderItemRequest, OrderPayloadInput
 
 ### Community 155 - "Community 155"
-Cohesion: 0.33
-Nodes (3): LandingPageData, CustomLandingPageConfig, CustomLandingPageService
-
-### Community 156 - "Community 156"
-Cohesion: 0.27
-Nodes (6): List, ProductCreateDto, ProductDto, ProductUpdateDto, Task, IProductService
+Cohesion: 0.24
+Nodes (3): BlockedIpsComponent, SecurityService, BlockedIp
 
 ### Community 157 - "Community 157"
-Cohesion: 0.17
-Nodes (8): ApplicationUser, ApplicationUser, IConfiguration, SymmetricSecurityKey, ECommerce.Core.Interfaces, ITokenService, ECommerce.Infrastructure.Services, TokenService
+Cohesion: 0.33
+Nodes (9): ActionResult, ApplicationDbContext, CategoryDto, HttpGet, ICacheService, List, Task, GetCategories (+1 more)
 
 ### Community 158 - "Community 158"
-Cohesion: 0.17
-Nodes (7): ClaimsPrincipal, IConfiguration, IUnitOfWork, SymmetricSecurityKey, IJwtTokenService, ECommerce.Infrastructure.Services, JwtTokenService
+Cohesion: 0.20
+Nodes (9): ComboItemDto, ProductCreateDto, ProductMediaDto, ProductMediaImageDto, ProductMetaDto, ProductRatingsDto, ProductSizeDto, ProductUpdateDto (+1 more)
+
+### Community 159 - "Community 159"
+Cohesion: 0.20
+Nodes (7): ApplicationDbContext, HttpContext, IApplicationBuilder, ILogger, RequestDelegate, Task, SuspiciousUserBlockingExtensions
 
 ### Community 160 - "Community 160"
-Cohesion: 0.25
-Nodes (7): AdminCustomersController, ActionResult, CustomerService, HttpGet, HttpPost, IActionResult, Task
-
-### Community 161 - "Community 161"
-Cohesion: 0.18
-Nodes (9): BannersController, ActionResult, HeroBannerDto, HttpGet, IGenericRepository, IMemoryCache, List, ResponseCache (+1 more)
-
-### Community 163 - "Community 163"
-Cohesion: 0.29
-Nodes (8): CategoriesController, ActionResult, ApplicationDbContext, CategoryDto, HttpGet, ICacheService, List, Task
-
-### Community 164 - "Community 164"
-Cohesion: 0.18
-Nodes (10): ComboItemDto, ProductCreateDto, ProductMediaDto, ProductMediaImageDto, ProductMetaDto, ProductRatingsDto, ProductSizeDto, ProductUpdateDto (+2 more)
-
-### Community 165 - "Community 165"
-Cohesion: 0.36
-Nodes (4): IConfiguration, IWebHostEnvironment, ServiceExtensions, IServiceCollection
-
-### Community 166 - "Community 166"
-Cohesion: 0.18
-Nodes (8): ApplicationDbContext, HttpContext, IApplicationBuilder, ILogger, RequestDelegate, Task, SuspiciousUserBlockingExtensions, SuspiciousUserBlockingMiddleware
-
-### Community 168 - "Community 168"
-Cohesion: 0.31
-Nodes (5): Func, T, Task, TimeSpan, ICacheService
-
-### Community 169 - "Community 169"
-Cohesion: 0.36
+Cohesion: 0.42
 Nodes (4): IEnumerable, Review, Task, IReviewService
 
+### Community 161 - "Community 161"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, ECommerce.Infrastructure.Migrations, InitialCreate, ECommerce.Infrastructure.Migrations, InitialCreate
+
+### Community 162 - "Community 162"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, ECommerce.Infrastructure.Migrations, FinalizeDynamicCategories, ECommerce.Infrastructure.Migrations, FinalizeDynamicCategories
+
+### Community 163 - "Community 163"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, AddCustomerCityAndArea, AddCustomerCityAndArea, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
+
+### Community 164 - "Community 164"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, AddPromoTextToCLP, AddPromoTextToCLP, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
+
+### Community 165 - "Community 165"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, AddProductGroupFeature, AddProductGroupFeature, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
+
+### Community 166 - "Community 166"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, AddBundleSizeToProduct, AddBundleSizeToProduct, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
+
+### Community 167 - "Community 167"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, AddSectionsJsonToLandingPageConfig, AddSectionsJsonToLandingPageConfig, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
+
+### Community 168 - "Community 168"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, CleanUpReviewSchema, CleanUpReviewSchema, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
+
+### Community 169 - "Community 169"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, AddScreenshotUrlToReview, AddScreenshotUrlToReview, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
+
+### Community 170 - "Community 170"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, ECommerce.Infrastructure.Migrations, MakeCommentOptionalInReview, ECommerce.Infrastructure.Migrations, MakeCommentOptionalInReview
+
 ### Community 171 - "Community 171"
-Cohesion: 0.20
-Nodes (8): AuthorizationFilterContext, string, Task, UserManager, StaffMenuAccessAttribute, StaffMenuAccessFilter, IAsyncAuthorizationFilter, TypeFilterAttribute
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, AddPasswordEncryptedColumn, AddPasswordEncryptedColumn, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
 
 ### Community 172 - "Community 172"
-Cohesion: 0.29
-Nodes (10): Account Feature Module, Cart Feature Module, Checkout Feature Module, Customer Phone Login, Customer Profile Feature Module, Order Workflow States, Shop Flow, Account Page Component (HTML) (+2 more)
+Cohesion: 0.22
+Nodes (6): ModelBuilder, MigrationBuilder, AddForceChangePasswordAndRemoveStaffTables, AddForceChangePasswordAndRemoveStaffTables, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
 
 ### Community 173 - "Community 173"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, AddAnalyticsAndPixels, AddAnalyticsAndPixels, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
+
+### Community 174 - "Community 174"
+Cohesion: 0.22
+Nodes (6): MigrationBuilder, ModelBuilder, ECommerce.Infrastructure.Migrations, LinkOrderToDeliveryMethod, ECommerce.Infrastructure.Migrations, LinkOrderToDeliveryMethod
+
+### Community 175 - "Community 175"
 Cohesion: 0.20
-Nodes (8): AdminCacheController, EvictCacheRequest, HttpPost, IActionResult, ICacheService, IOutputCacheStore, Task, EvictCacheRequest
+Nodes (3): DailyTrafficDto, IUnitOfWork, Task
 
 ### Community 177 - "Community 177"
-Cohesion: 0.14
-Nodes (12): OfferDetails, OFFERS, CustomerLookupResponse, CustomerOrderApiService, OrderItemRequest, UserDetails, UserPersistenceService, BANGLADESH_LOCATIONS (+4 more)
+Cohesion: 0.36
+Nodes (7): Exception, InsufficientStockException, InvalidOrderItemException, InvalidOrderPricingException, InvalidOrderStatusTransitionException, OrderCannotBeModifiedException, OrderNotFoundException
+
+### Community 178 - "Community 178"
+Cohesion: 0.44
+Nodes (5): ActionResult, HttpGet, IProductService, List, Task
+
+### Community 179 - "Community 179"
+Cohesion: 0.22
+Nodes (7): ECommerce.API.Controllers, ApplicationDbContext, HttpGet, IActionResult, Task, IAnalyticsService, IAnalyticsService
+
+### Community 180 - "Community 180"
+Cohesion: 0.22
+Nodes (6): HttpGet, IActionResult, IMemoryCache, OutputCache, ResponseCache, Task
+
+### Community 181 - "Community 181"
+Cohesion: 0.25
+Nodes (7): Microsoft.Data.SqlClient (7.0.1), net10.0, coverlet.collector (6.0.4), Microsoft.NET.Test.Sdk (17.14.1), xunit (2.9.3), xunit.runner.visualstudio (3.1.4), Microsoft.NET.Sdk
+
+### Community 182 - "Community 182"
+Cohesion: 0.22
+Nodes (8): AllowedHosts, AllowedOrigins, Auth, CookieDomain, Token, Audience, Issuer, Key
+
+### Community 183 - "Community 183"
+Cohesion: 0.31
+Nodes (6): List, ReviewDto, ReviewUpdateDto, Task, IAdminReviewService, IAdminReviewService
 
 ### Community 184 - "Community 184"
-Cohesion: 0.22
-Nodes (7): CustomLandingPageController, CustomLandingPageDataDto, ActionResult, ApplicationDbContext, HttpGet, IMapper, Task
-
-### Community 185 - "Community 185"
-Cohesion: 0.22
-Nodes (7): StaffAuditLogController, ApplicationDbContext, DateTime, Guid, HttpGet, IActionResult, Task
+Cohesion: 0.25
+Nodes (4): MigrationBuilder, ModelBuilder, ECommerce.Infrastructure.Migrations, ECommerce.Infrastructure.Migrations
 
 ### Community 186 - "Community 186"
-Cohesion: 0.22
-Nodes (7): DataSeeder, ApplicationDbContext, ApplicationUser, Task, UserManager, IdentityRole, RoleManager
+Cohesion: 0.29
+Nodes (8): Admin Header (app-admin-header), Admin Layout Composition (Sidebar + Header + Router-Outlet), Admin Sidebar (app-admin-sidebar), Dark DS-Prefixed Design Token System, Icon Component (app-icon), Image URL Service (imageUrlService), Sidebar Toggle Service (sidebarService), Admin Analytics Page
 
 ### Community 187 - "Community 187"
-Cohesion: 0.22
-Nodes (7): HttpContext, ILogger, RequestDelegate, Task, IServiceProvider, ECommerce.API.Middleware, VisitorTrackingMiddleware
+Cohesion: 0.29
+Nodes (8): Order Invoice Component (app-admin-order-invoice), Admin Customer History Page, Admin Manual Order Page, Admin Order Details Page, Admin Orders List Page, Admin Products Catalog Page, Order Status Workflow (Processing→Shipped→Delivered/Cancelled/Refund), Price Display Component (app-price-display)
 
 ### Community 188 - "Community 188"
-Cohesion: 0.22
-Nodes (7): ApplicationDbContext, ICacheService, MegaMenuDto, string, Task, INavigationService, NavigationService
+Cohesion: 0.36
+Nodes (8): Account Feature Module, Cart Feature Module, Checkout Feature Module, Customer Phone Login, Customer Profile Feature Module, Order Workflow States, Shop Flow, Customer Profile Page Component (HTML)
+
+### Community 189 - "Community 189"
+Cohesion: 0.54
+Nodes (4): ActionResult, HttpGet, List, Task
+
+### Community 190 - "Community 190"
+Cohesion: 0.25
+Nodes (7): CustomLandingPageDataDto, ActionResult, ApplicationDbContext, HttpGet, IMapper, Task, GetData
 
 ### Community 191 - "Community 191"
 Cohesion: 0.25
-Nodes (7): CategoryCreateDto, CategoryDto, CategoryUpdateDto, ReorderCategoriesDto, SubCategoryCreateDto, SubCategoryDto, SubCategoryUpdateDto
+Nodes (6): ApplicationDbContext, DateTime, Guid, HttpGet, IActionResult, Task
 
 ### Community 192 - "Community 192"
-Cohesion: 0.39
-Nodes (4): IApplicationBuilder, IConfiguration, IWebHostEnvironment, FileStorageExtensions
+Cohesion: 0.25
+Nodes (8): Default, Override, Microsoft, Microsoft.AspNetCore.Hosting.Diagnostics, Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker, Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor, System, MinimumLevel
 
 ### Community 193 - "Community 193"
 Cohesion: 0.25
-Nodes (6): HttpContext, ILogger, RequestDelegate, Task, IServiceScopeFactory, IpBlockingMiddleware
+Nodes (6): HttpContext, ILogger, RequestDelegate, Task, IServiceProvider, ECommerce.API.Middleware
 
 ### Community 194 - "Community 194"
-Cohesion: 0.25
-Nodes (6): HttpContext, IMemoryCache, RequestDelegate, Task, ECommerce.API.Middleware, RevokedTokenMiddleware
+Cohesion: 0.36
+Nodes (3): IEnumerable, Review, Task
 
 ### Community 195 - "Community 195"
-Cohesion: 0.25
-Nodes (3): ClaimsPrincipal, ECommerce.Core.Interfaces, IJwtTokenService
+Cohesion: 0.32
+Nodes (8): Dashboard, AnalyticsReport, CategorySales, CustomerGrowth, DashboardStats, SalesData, StatusDistribution, TopProduct
 
 ### Community 196 - "Community 196"
 Cohesion: 0.25
 Nodes (5): http, https, loginOptions, loginPayload, req
 
-### Community 197 - "Community 197"
-Cohesion: 0.33
-Nodes (5): AuthorizationHandler, AuthorizationHandlerContext, Task, PermissionHandler, PermissionRequirement
-
-### Community 198 - "Community 198"
-Cohesion: 0.33
-Nodes (6): AuthResponseDto, CustomerLoginDto, LoginDto, LoginResponseDto, RegisterDto, UserDto
-
-### Community 199 - "Community 199"
-Cohesion: 0.29
-Nodes (7): scripts, build, format, lint, start, test, typecheck
-
 ### Community 200 - "Community 200"
-Cohesion: 0.29
-Nodes (6): compilerOptions, outDir, types, extends, files, include
+Cohesion: 0.33
+Nodes (6): AuthResponse, CustomerLoginDto, LoginDto, LoginResponseDto, RegisterDto, UserDto
 
 ### Community 201 - "Community 201"
-Cohesion: 0.38
-Nodes (3): IApplicationBuilder, IWebHostEnvironment, MiddlewareExtensions
+Cohesion: 0.29
+Nodes (6): CategoryCreateDto, CategoryCreateDto, CategoryDto, CategoryUpdateDto, SubCategoryDto, SubCategoryUpdateDto
 
 ### Community 202 - "Community 202"
-Cohesion: 0.29
-Nodes (5): HttpContext, ILogger, RequestDelegate, Task, RequestLoggingMiddleware
+Cohesion: 0.43
+Nodes (7): concept_autofill_system, concept_city_area_dropdown, concept_image_gallery_viewer, concept_order_form_system, landing-page_landing-page_component_html_landingPage, offer-details-page_offer-details-page_component_html_offerDetails, product-details-page_product-details-page_component_html_productDetailsPage
 
 ### Community 203 - "Community 203"
 Cohesion: 0.29
-Nodes (5): HttpContext, ILogger, RequestDelegate, Task, TimingMiddleware
+Nodes (5): ControllerBase, ApplicationDbContext, HttpGet, IActionResult, Task
 
 ### Community 204 - "Community 204"
-Cohesion: 0.33
-Nodes (4): MigrationBuilder, Migration, ECommerce.Infrastructure.Migrations, InitialCreate
+Cohesion: 0.29
+Nodes (7): scripts, build, format, lint, start, test, typecheck
 
 ### Community 205 - "Community 205"
-Cohesion: 0.43
-Nodes (5): BaseEntity, Order, OrderItem, OrderLog, OrderNote
+Cohesion: 0.29
+Nodes (6): compilerOptions, outDir, types, extends, files, include
 
 ### Community 206 - "Community 206"
-Cohesion: 0.33
-Nodes (4): AuthorizationPolicy, DefaultAuthorizationPolicyProvider, Task, PermissionPolicyProvider
+Cohesion: 0.29
+Nodes (7): Serilog, Enrich, Properties, Using, WriteTo, Properties, applicationUrl
 
 ### Community 207 - "Community 207"
-Cohesion: 0.33
-Nodes (4): ApplicationDbContext, ApplicationUser, ModelBuilder, IdentityDbContext
+Cohesion: 0.48
+Nodes (3): IApplicationBuilder, IConfiguration, IWebHostEnvironment
 
 ### Community 208 - "Community 208"
-Cohesion: 0.33
-Nodes (4): SpecificationEvaluator, IQueryable, ISpecification, T
-
-### Community 209 - "Community 209"
-Cohesion: 0.33
-Nodes (4): StaffDataSeeder, ApplicationDbContext, IConfiguration, Task
+Cohesion: 0.29
+Nodes (5): HttpContext, IMemoryCache, RequestDelegate, Task, ECommerce.API.Middleware
 
 ### Community 210 - "Community 210"
-Cohesion: 0.40
-Nodes (3): ApiResponse, List, T
-
-### Community 211 - "Community 211"
-Cohesion: 0.33
-Nodes (5): OrderCreateDto, OrderDto, OrderItemDto, OrderLogDto, OrderNoteDto
-
-### Community 212 - "Community 212"
-Cohesion: 0.53
-Nodes (3): IConfiguration, IWebHostEnvironment, PathHelper
+Cohesion: 0.29
+Nodes (4): ProductCatalogItemDto, ProductSearchResultDto, AdminProductListResultDto, ProductSearchVariantDto
 
 ### Community 213 - "Community 213"
 Cohesion: 0.33
-Nodes (4): HttpContext, RequestDelegate, Task, CustomForbiddenMiddleware
+Nodes (5): ApplicationDbContext, ApplicationDbContext, ApplicationUser, IdentityDbContext, ModelBuilder
 
 ### Community 214 - "Community 214"
 Cohesion: 0.33
-Nodes (4): HttpContext, RequestDelegate, Task, StaffDeleteRestrictionMiddleware
+Nodes (6): ASP.NET Core Identity (JWT Auth), ASP.NET Core Web API, .NET 8 Backend, Entity Framework Core, Redis Caching, SQL Server
 
 ### Community 215 - "Community 215"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, ECommerce.Infrastructure.Migrations, UpdateOrderSchema
+Cohesion: 0.33
+Nodes (4): IQueryable, IQueryable, ISpecification, T
 
 ### Community 216 - "Community 216"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddDiscountAndAdvancePaymentToOrder, ECommerce.Infrastructure.Migrations
+Cohesion: 0.33
+Nodes (5): OrderCreateDto, OrderDto, OrderItemDto, OrderLogDto, OrderNoteDto
 
 ### Community 217 - "Community 217"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, ECommerce.Infrastructure.Migrations, FinalizeDynamicCategories
+Cohesion: 0.33
+Nodes (6): Default, Serilog, Enrich, MinimumLevel, Using, WriteTo
 
 ### Community 218 - "Community 218"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddClpFields, ECommerce.Infrastructure.Migrations
+Cohesion: 0.33
+Nodes (6): Override, Microsoft, Microsoft.AspNetCore.Hosting.Diagnostics, Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker, Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor, System
 
 ### Community 219 - "Community 219"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddCustomerCityAndArea, ECommerce.Infrastructure.Migrations
+Cohesion: 0.33
+Nodes (4): HttpContext, ILogger, RequestDelegate, Task
 
 ### Community 220 - "Community 220"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddMarqueeToCLP, ECommerce.Infrastructure.Migrations
+Cohesion: 0.47
+Nodes (4): CustomLandingPageConfigDto, CustomLandingPageConfigUpdateDto, Task, IAdminCustomLandingPageService
 
 ### Community 221 - "Community 221"
 Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddPromoTextToCLP, ECommerce.Infrastructure.Migrations
+Nodes (3): MigrationBuilder, ECommerce.Infrastructure.Migrations, UpdateOrderSchema
 
 ### Community 222 - "Community 222"
 Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddFreeShippingThresholdToCLP, ECommerce.Infrastructure.Migrations
+Nodes (3): MigrationBuilder, AddClpFields, ECommerce.Infrastructure.Migrations
 
 ### Community 223 - "Community 223"
 Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddProductGroupFeature, ECommerce.Infrastructure.Migrations
+Nodes (3): MigrationBuilder, AddMarqueeToCLP, ECommerce.Infrastructure.Migrations
 
 ### Community 224 - "Community 224"
 Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddBundleSizeToProduct, ECommerce.Infrastructure.Migrations
+Nodes (3): MigrationBuilder, AddFreeShippingThresholdToCLP, ECommerce.Infrastructure.Migrations
 
 ### Community 225 - "Community 225"
 Cohesion: 0.40
@@ -1027,247 +1122,167 @@ Nodes (3): MigrationBuilder, AddStaffAllowedMenus, ECommerce.Infrastructure.Migr
 
 ### Community 226 - "Community 226"
 Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddSectionsJsonToLandingPageConfig, ECommerce.Infrastructure.Migrations
+Nodes (3): MigrationBuilder, AddStaffRBAC, ECommerce.Infrastructure.Migrations
 
 ### Community 227 - "Community 227"
 Cohesion: 0.40
-Nodes (3): MigrationBuilder, CleanUpReviewSchema, ECommerce.Infrastructure.Migrations
+Nodes (3): MigrationBuilder, ECommerce.Infrastructure.Migrations, i
 
 ### Community 228 - "Community 228"
 Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddScreenshotUrlToReview, ECommerce.Infrastructure.Migrations
-
-### Community 229 - "Community 229"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, ECommerce.Infrastructure.Migrations, MakeCommentOptionalInReview
+Nodes (3): MigrationBuilder, AddSecurityFeatures, ECommerce.Infrastructure.Migrations
 
 ### Community 230 - "Community 230"
 Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddPasswordEncryptedColumn, ECommerce.Infrastructure.Migrations
+Nodes (3): AuthorizationPolicy, DefaultAuthorizationPolicyProvider, Task
 
 ### Community 231 - "Community 231"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddAdminActivityLog, ECommerce.Infrastructure.Migrations
+Cohesion: 0.50
+Nodes (5): Admin Module, Admin Reviews Management, Admin Store Settings, Admin Staff Management, Dashboard Analytics
 
 ### Community 232 - "Community 232"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddStaffRBAC, ECommerce.Infrastructure.Migrations
-
-### Community 233 - "Community 233"
-Cohesion: 0.33
-Nodes (4): ModelBuilder, ApplicationDbContextModelSnapshot, ECommerce.Infrastructure.Migrations, ModelSnapshot
-
-### Community 234 - "Community 234"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, ECommerce.Infrastructure.Migrations, i
-
-### Community 235 - "Community 235"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddAnalyticsAndPixels, ECommerce.Infrastructure.Migrations
-
-### Community 236 - "Community 236"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddSecurityFeatures, ECommerce.Infrastructure.Migrations
-
-### Community 237 - "Community 237"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, AddDeliveryMethods, ECommerce.Infrastructure.Migrations
-
-### Community 238 - "Community 238"
-Cohesion: 0.40
-Nodes (3): MigrationBuilder, ECommerce.Infrastructure.Migrations, LinkOrderToDeliveryMethod
-
-### Community 240 - "Community 240"
 Cohesion: 0.60
 Nodes (4): ProductGender, ProductStatus, UserRoles, string
 
-### Community 241 - "Community 241"
+### Community 233 - "Community 233"
+Cohesion: 0.40
+Nodes (3): ApplicationDbContext, IConfiguration, Task
+
+### Community 235 - "Community 235"
 Cohesion: 0.40
 Nodes (4): AddToCartDto, CartDto, CartItemDto, UpdateCartItemDto
 
-### Community 242 - "Community 242"
-Cohesion: 0.40
-Nodes (4): MegaMenuCategoryDto, MegaMenuCollectionDto, MegaMenuDto, MegaMenuSubCategoryDto
-
-### Community 243 - "Community 243"
-Cohesion: 0.40
-Nodes (4): SocialMediaSourceCreateDto, SocialMediaSourceDto, SourcePageCreateDto, SourcePageDto
-
-### Community 244 - "Community 244"
-Cohesion: 0.40
-Nodes (4): ProductDto, ProductImageDto, ProductListDto, ProductVariantDto
-
-### Community 245 - "Community 245"
+### Community 236 - "Community 236"
 Cohesion: 0.40
 Nodes (4): assetGroups, dataGroups, index, $schema
 
-### Community 246 - "Community 246"
+### Community 237 - "Community 237"
 Cohesion: 0.40
-Nodes (3): MegaMenuDto, Task, INavigationService
+Nodes (3): HttpContext, RequestDelegate, Task
 
-### Community 247 - "Community 247"
+### Community 238 - "Community 238"
 Cohesion: 0.40
-Nodes (3): ModelBuilder, ECommerce.Infrastructure.Migrations, InitialCreate
+Nodes (3): HttpContext, RequestDelegate, Task
 
-### Community 248 - "Community 248"
+### Community 239 - "Community 239"
 Cohesion: 0.40
 Nodes (3): ModelBuilder, ECommerce.Infrastructure.Migrations, UpdateOrderSchema
 
-### Community 249 - "Community 249"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, AddDiscountAndAdvancePaymentToOrder, ECommerce.Infrastructure.Migrations
-
-### Community 250 - "Community 250"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, ECommerce.Infrastructure.Migrations, FinalizeDynamicCategories
-
-### Community 251 - "Community 251"
+### Community 240 - "Community 240"
 Cohesion: 0.40
 Nodes (3): ModelBuilder, AddClpFields, ECommerce.Infrastructure.Migrations
 
-### Community 252 - "Community 252"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, AddCustomerCityAndArea, ECommerce.Infrastructure.Migrations
-
-### Community 253 - "Community 253"
+### Community 241 - "Community 241"
 Cohesion: 0.40
 Nodes (3): ModelBuilder, AddMarqueeToCLP, ECommerce.Infrastructure.Migrations
 
-### Community 254 - "Community 254"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, AddPromoTextToCLP, ECommerce.Infrastructure.Migrations
-
-### Community 255 - "Community 255"
+### Community 242 - "Community 242"
 Cohesion: 0.40
 Nodes (3): ModelBuilder, AddFreeShippingThresholdToCLP, ECommerce.Infrastructure.Migrations
 
-### Community 256 - "Community 256"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, AddProductGroupFeature, ECommerce.Infrastructure.Migrations
-
-### Community 257 - "Community 257"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, AddBundleSizeToProduct, ECommerce.Infrastructure.Migrations
-
-### Community 258 - "Community 258"
+### Community 243 - "Community 243"
 Cohesion: 0.40
 Nodes (3): ModelBuilder, AddStaffAllowedMenus, ECommerce.Infrastructure.Migrations
 
-### Community 259 - "Community 259"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, AddSectionsJsonToLandingPageConfig, ECommerce.Infrastructure.Migrations
-
-### Community 260 - "Community 260"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, CleanUpReviewSchema, ECommerce.Infrastructure.Migrations
-
-### Community 261 - "Community 261"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, AddScreenshotUrlToReview, ECommerce.Infrastructure.Migrations
-
-### Community 262 - "Community 262"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, ECommerce.Infrastructure.Migrations, MakeCommentOptionalInReview
-
-### Community 263 - "Community 263"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, AddPasswordEncryptedColumn, ECommerce.Infrastructure.Migrations
-
-### Community 264 - "Community 264"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, AddAdminActivityLog, ECommerce.Infrastructure.Migrations
-
-### Community 265 - "Community 265"
+### Community 244 - "Community 244"
 Cohesion: 0.40
 Nodes (3): ModelBuilder, AddStaffRBAC, ECommerce.Infrastructure.Migrations
 
-### Community 266 - "Community 266"
+### Community 245 - "Community 245"
+Cohesion: 0.40
+Nodes (3): ModelBuilder, ECommerce.Infrastructure.Migrations, ModelSnapshot
+
+### Community 246 - "Community 246"
 Cohesion: 0.40
 Nodes (3): ModelBuilder, ECommerce.Infrastructure.Migrations, i
 
-### Community 267 - "Community 267"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, AddAnalyticsAndPixels, ECommerce.Infrastructure.Migrations
-
-### Community 268 - "Community 268"
+### Community 247 - "Community 247"
 Cohesion: 0.40
 Nodes (3): ModelBuilder, AddSecurityFeatures, ECommerce.Infrastructure.Migrations
 
-### Community 269 - "Community 269"
+### Community 248 - "Community 248"
 Cohesion: 0.40
-Nodes (3): ModelBuilder, AddDeliveryMethods, ECommerce.Infrastructure.Migrations
+Nodes (3): PasswordProtector, IDataProtector, PasswordProtector
 
-### Community 270 - "Community 270"
-Cohesion: 0.40
-Nodes (3): ModelBuilder, ECommerce.Infrastructure.Migrations, LinkOrderToDeliveryMethod
-
-### Community 271 - "Community 271"
-Cohesion: 0.40
-Nodes (3): MappingProfiles, MappingProfiles, Profile
-
-### Community 273 - "Community 273"
+### Community 249 - "Community 249"
 Cohesion: 0.40
 Nodes (4): banners, categories, featuredProducts, newArrivals
 
-### Community 274 - "Community 274"
-Cohesion: 0.50
-Nodes (3): Microsoft.Data.SqlClient (7.0.1), Microsoft.NET.Sdk, net10.0
+### Community 250 - "Community 250"
+Cohesion: 0.40
+Nodes (5): Angular Frontend Application, Backend API README Reference, .NET 8 Backend API, Ecommarce E-Commerce Platform, Base API URL Environment Configuration
 
-### Community 275 - "Community 275"
+### Community 251 - "Community 251"
 Cohesion: 0.50
-Nodes (3): CollectionCreateDto, CollectionDto, CollectionUpdateDto
+Nodes (3): DisableRequestSizeLimit, IFormFile, RequestFormLimits
 
-### Community 276 - "Community 276"
+### Community 253 - "Community 253"
+Cohesion: 0.50
+Nodes (3): CreateAdminUserDto, ResetPasswordDto, UpdateAdminUserDto
+
+### Community 254 - "Community 254"
 Cohesion: 0.50
 Nodes (3): CustomLandingPageConfigDto, CustomLandingPageConfigUpdateDto, CustomLandingPageDataDto
 
-### Community 277 - "Community 277"
-Cohesion: 0.50
-Nodes (3): DashboardStatsDto, PopularProductDto, RecentOrderDto
-
-### Community 278 - "Community 278"
+### Community 255 - "Community 255"
 Cohesion: 0.50
 Nodes (3): ProductInventoryDto, UpdateInventoryDto, VariantInventoryDto
 
-### Community 279 - "Community 279"
+### Community 256 - "Community 256"
 Cohesion: 0.50
-Nodes (3): CreateReviewDto, ReviewDto, ReviewUpdateDto
+Nodes (3): SocialMediaSourceDto, SourcePageCreateDto, SourcePageDto
 
-### Community 280 - "Community 280"
+### Community 257 - "Community 257"
 Cohesion: 0.50
 Nodes (3): Ecommarce, Environment configuration, Structure
 
-### Community 281 - "Community 281"
+### Community 258 - "Community 258"
+Cohesion: 0.50
+Nodes (3): ECommerce.Core, net8.0, Microsoft.Extensions.Identity.Stores (8.0.12)
+
+### Community 259 - "Community 259"
+Cohesion: 0.50
+Nodes (3): OrderStatus, InlineData, Theory
+
+### Community 260 - "Community 260"
 Cohesion: 0.50
 Nodes (3): runs, $schema, version
 
-### Community 290 - "Community 290"
+### Community 262 - "Community 262"
+Cohesion: 1.00
+Nodes (3): concept_order_tracking, order-confirmation_orders-page_component_html_orderConfirmationPage, orders_orders-page_component_html_ordersPage
+
+### Community 268 - "Community 268"
 Cohesion: 0.67
 Nodes (3): engines, node, npm
 
-### Community 291 - "Community 291"
+### Community 270 - "Community 270"
 Cohesion: 0.67
-Nodes (3): repository, type, url
+Nodes (3): Category, CategoryNode, ReorderPayload
+
+### Community 273 - "Community 273"
+Cohesion: 0.67
+Nodes (3): Angular Routing with provideRouter, Font and Material Symbol Imports in styles.css, Tailwind CSS with PostCSS Setup
 
 ## Knowledge Gaps
-- **900 isolated node(s):** `net10.0`, `Microsoft.Data.SqlClient (7.0.1)`, `Microsoft.NET.Sdk`, `$schema`, `version` (+895 more)
+- **931 isolated node(s):** `$schema`, `version`, `projectType`, `root`, `sourceRoot` (+926 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **124 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **119 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Product` connect `Community 104` to `Admin Pages & Components`, `Services & Utilities Layer`, `Community 128`, `Reviews & Landing Pages`, `Product Display & Gallery`, `Community 11`, `Product Combo & Payload`, `Community 154`, `Community 155`, `Community 176`, `Community 52`, `Community 182`, `Community 189`, `Community 68`, `Community 79`, `Community 88`, `Community 106`, `Community 108`, `Community 124`, `Community 125`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
-- **Why does `AppIconComponent` connect `Community 125` to `Services & Utilities Layer`, `Order Management Workflow`, `Reviews & Landing Pages`, `Order List & Filtering`, `Community 134`, `Cart & Checkout Flow`, `Order Details & History`, `Analytics Dashboard`, `Community 145`, `Product Combo & Payload`, `Community 24`, `Community 154`, `Community 28`, `Community 35`, `Community 36`, `Community 37`, `Community 39`, `Community 177`, `Community 52`, `Community 64`, `Community 71`, `Community 110`, `Community 124`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `AuthService` connect `Community 39` to `Community 35`, `Reviews & Landing Pages`, `Community 37`, `Community 134`, `Community 71`, `Cart & Checkout Flow`, `Product Form & Categorization`, `Community 113`, `Community 177`, `Product Combo & Payload`, `Community 150`, `Community 28`, `Community 125`?**
-  _High betweenness centrality (0.021) - this node is a cross-community bridge._
-- **What connects `net10.0`, `Microsoft.Data.SqlClient (7.0.1)`, `Microsoft.NET.Sdk` to the rest of the system?**
-  _910 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Services & Utilities Layer` be split into smaller, more focused modules?**
-  _Cohesion score 0.12605042016806722 - nodes in this community are weakly interconnected._
-- **Should `Order Management Workflow` be split into smaller, more focused modules?**
-  _Cohesion score 0.09743589743589744 - nodes in this community are weakly interconnected._
-- **Should `Reviews & Landing Pages` be split into smaller, more focused modules?**
-  _Cohesion score 0.08776595744680851 - nodes in this community are weakly interconnected._
+- **Why does `AutoMapper` connect `Community 134` to `Community 97`, `Community 136`, `Community 41`, `Community 138`, `Community 77`, `Community 214`, `Social Media & Source Pages`, `Community 94`?**
+  _High betweenness centrality (0.081) - this node is a cross-community bridge._
+- **Why does `ApiHttpClient` connect `Community 229` to `SubCategory & Category Management`, `Customer Management`, `Offer & Promo Pages`, `Authentication & Authorization`, `Review & Rating System`, `Settings & Configuration`, `Cache Management & Eviction`, `Social Media & Source Pages`, `Specifications & Data Filtering`, `Order Domain Model & State`, `Community 155`, `Community 154`, `Community 30`, `Community 33`, `Community 41`, `Community 46`, `Community 176`, `Community 185`, `Community 60`, `Community 69`, `Community 70`, `Community 197`, `Community 198`, `Community 79`, `Community 80`, `Community 81`, `Community 211`, `Community 84`, `Community 89`, `Community 108`, `Community 115`, `Community 118`, `Community 119`?**
+  _High betweenness centrality (0.078) - this node is a cross-community bridge._
+- **Why does `.NET 8 Backend` connect `Community 214` to `Community 112`, `Blog & Static Pages`, `Community 134`?**
+  _High betweenness centrality (0.053) - this node is a cross-community bridge._
+- **What connects `$schema`, `version`, `projectType` to the rest of the system?**
+  _945 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `SubCategory & Category Management` be split into smaller, more focused modules?**
+  _Cohesion score 0.05223880597014925 - nodes in this community are weakly interconnected._
+- **Should `Product Form & Bundle Editor` be split into smaller, more focused modules?**
+  _Cohesion score 0.044034818228366614 - nodes in this community are weakly interconnected._
+- **Should `Product CRUD & Listing` be split into smaller, more focused modules?**
+  _Cohesion score 0.0449497620306716 - nodes in this community are weakly interconnected._

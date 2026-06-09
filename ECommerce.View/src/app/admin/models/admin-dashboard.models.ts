@@ -51,7 +51,7 @@ export interface DashboardStats {
   incompleteOrdersRevenue: number;
 }
 
-export interface OrderItem {
+export interface RecentOrder {
   id: number;
   orderNumber: string;
   customerName: string;

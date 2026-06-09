@@ -1,3 +1,4 @@
+using ECommerce.Core.Constants;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -28,7 +29,7 @@ public class NavigationController : BaseApiController
         }
 
         var menu = await _navigationService.GetMegaMenuAsync();
-        _cache.Set(cacheKey, menu, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
+        _cache.Set(cacheKey, menu, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = CacheDurations.Medium });
         return Ok(menu);
     }
 }

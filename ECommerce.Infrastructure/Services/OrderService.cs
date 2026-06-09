@@ -7,7 +7,7 @@ using ECommerce.Core.Constants;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.Core.Specifications;
+using ECommerce.Infrastructure.Specifications;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Core.Enums;
@@ -41,7 +41,7 @@ public class OrderService : IOrderService
 
     public async Task<OrderDto> CreateOrderAsync(OrderCreateDto orderDto)
     {
-        var items = new List<OrderItem>();
+        var items = new List<ECommerce.Core.Domain.Orders.OrderItem>();
         
         // 1. Bulk Fetch Products to fix N+1 query issue
         var productIds = orderDto.Items.Select(i => i.ProductId).Distinct().ToList();
@@ -84,7 +84,7 @@ public class OrderService : IOrderService
 
                 // 1 & 2. Deduct from stock ONLY if NOT a pre-order AND status is a "Deducted" status
                 // Note: Since CreateOrderAsync usually defaults to Pending or PreOrder, stock will NOT be deducted here by default.
-                if (!finalIsPreOrder && _stockService.ShouldDeductStock(finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending))
+                if (!finalIsPreOrder && _stockService.ShouldDeductStock(finalIsPreOrder ? ECommerce.Core.Domain.Orders.OrderStatus.PreOrder : ECommerce.Core.Domain.Orders.OrderStatus.Pending))
                 {
                     await _stockService.ProcessProductStockAdjustmentAsync(product, itemDto.Quantity, itemDto.Size, returnToStock: false);
                 }
@@ -121,15 +121,7 @@ public class OrderService : IOrderService
                 // Image fallback
                 var itemImageUrl = product.ImageUrl;
 
-                var orderItem = new OrderItem
-                {
-                    ProductId = product.Id,
-                    ProductName = product.Name,
-                    UnitPrice = unitPrice,
-                    Quantity = itemDto.Quantity,
-                    Size = itemDto.Size,
-                    ImageUrl = itemImageUrl
-                };
+                var orderItem = ECommerce.Core.Domain.Orders.OrderItem.Create(product.Id, product.Name, itemDto.Quantity, unitPrice, itemDto.Size, itemImageUrl);
                 
                 items.Add(orderItem);
             }
@@ -178,7 +170,7 @@ public class OrderService : IOrderService
                 Tax = 0,
                 ShippingCost = shippingCost,
                 DeliveryMethodId = orderDto.DeliveryMethodId,
-                Status = finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending,
+                Status = finalIsPreOrder ? ECommerce.Core.Domain.Orders.OrderStatus.PreOrder : ECommerce.Core.Domain.Orders.OrderStatus.Pending,
                 IsPreOrder = finalIsPreOrder,
                 SourcePageId = orderDto.SourcePageId,
                 SocialMediaSourceId = orderDto.SocialMediaSourceId,
@@ -227,12 +219,10 @@ public class OrderService : IOrderService
         }
 
         // 2. Clear existing items from DB (we will recreate them)
-        foreach(var item in order.Items.ToList()) {
-             _unitOfWork.Repository<OrderItem>().Delete(item);
-        }
+        order.Items.Clear();
 
         // 3. Process New Items and Deduct Stock
-        var newItems = new List<OrderItem>();
+        var newItems = new List<ECommerce.Core.Domain.Orders.OrderItem>();
         var productIds = orderDto.Items.Select(i => i.ProductId).Distinct().ToList();
         var products = await _unitOfWork.Repository<Product>().ListAsync(new ProductsWithCategoriesSpecification(productIds), track: true);
         var productDict = products.ToDictionary(p => p.Id);
@@ -246,14 +236,7 @@ public class OrderService : IOrderService
                 await _stockService.ProcessProductStockAdjustmentAsync(product, itemDto.Quantity, itemDto.Size, returnToStock: false);
             }
 
-            newItems.Add(new OrderItem {
-                ProductId = product.Id,
-                ProductName = product.Name,
-                UnitPrice = itemDto.UnitPrice ?? 0,
-                Quantity = itemDto.Quantity,
-                Size = itemDto.Size,
-                ImageUrl = itemDto.ImageUrl ?? product.ImageUrl
-            });
+            newItems.Add(ECommerce.Core.Domain.Orders.OrderItem.Create(product.Id, product.Name, itemDto.Quantity, itemDto.UnitPrice ?? 0, itemDto.Size, itemDto.ImageUrl ?? product.ImageUrl));
         }
 
         // 4. Update Order Head
@@ -262,7 +245,8 @@ public class OrderService : IOrderService
         order.ShippingAddress = orderDto.Address;
         order.City = orderDto.City;
         order.Area = orderDto.Area;
-        order.Items = newItems;
+        order.Items.Clear();
+        foreach (var ni in newItems) order.Items.Add(ni);
         order.IsPreOrder = orderDto.IsPreOrder;
         order.DeliveryMethodId = orderDto.DeliveryMethodId;
         order.SourcePageId = orderDto.SourcePageId;
@@ -436,9 +420,9 @@ public class OrderService : IOrderService
             .Select(g => new OrderStatsDto
             {
                 TotalOrders = g.Count(),
-                Processing = g.Count(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Pending),
+                Processing = g.Count(o => o.Status == ECommerce.Core.Domain.Orders.OrderStatus.Processing || o.Status == ECommerce.Core.Domain.Orders.OrderStatus.Pending),
                 TotalRevenue = g.Sum(o => o.Total),
-                RefundRequests = g.Count(o => o.Status == OrderStatus.Refund)
+                RefundRequests = g.Count(o => o.Status == ECommerce.Core.Domain.Orders.OrderStatus.Refund)
             })
             .FirstOrDefaultAsync();
 
@@ -477,5 +461,31 @@ public class OrderService : IOrderService
 
         _unitOfWork.Repository<Order>().Update(order);
         return await _unitOfWork.Complete() > 0;
+    }
+
+    public async Task ClearCartAsync(string? userId, string? sessionId)
+    {
+        Cart? cart = null;
+        if (!string.IsNullOrEmpty(userId))
+        {
+            cart = await _unitOfWork.Repository<Cart>().GetQueryable()
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+        }
+        else if (!string.IsNullOrEmpty(sessionId))
+        {
+            cart = await _unitOfWork.Repository<Cart>().GetQueryable()
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.SessionId == sessionId && c.UserId == null);
+        }
+
+        if (cart != null && cart.Items.Any())
+        {
+            foreach (var item in cart.Items.ToList())
+            {
+                _unitOfWork.Repository<CartItem>().Delete(item);
+            }
+            await _unitOfWork.Complete();
+        }
     }
 }

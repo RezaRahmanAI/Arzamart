@@ -1,9 +1,7 @@
 using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Data;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,25 +11,17 @@ namespace ECommerce.API.Controllers;
 [ECommerce.API.Helpers.StaffMenuAccess("order-sources")]
 public class AdminSocialMediaSourcesController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IAdminSocialMediaSourceService _socialMediaSourceService;
 
-    public AdminSocialMediaSourcesController(ApplicationDbContext context)
+    public AdminSocialMediaSourcesController(IAdminSocialMediaSourceService socialMediaSourceService)
     {
-        _context = context;
+        _socialMediaSourceService = socialMediaSourceService;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<SocialMediaSourceDto>>> GetAll()
     {
-        var items = await _context.SocialMediaSources
-            .Select(p => new SocialMediaSourceDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                IsActive = p.IsActive
-            })
-            .ToListAsync();
-
+        var items = await _socialMediaSourceService.GetAllAsync();
         return Ok(items);
     }
 
@@ -39,84 +29,51 @@ public class AdminSocialMediaSourcesController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<List<SocialMediaSourceDto>>> GetActive()
     {
-        var items = await _context.SocialMediaSources
-            .Where(p => p.IsActive)
-            .Select(p => new SocialMediaSourceDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                IsActive = p.IsActive
-            })
-            .ToListAsync();
-
+        var items = await _socialMediaSourceService.GetActiveAsync();
         return Ok(items);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<SocialMediaSourceDto>> GetById(int id)
     {
-        var item = await _context.SocialMediaSources.FindAsync(id);
+        var item = await _socialMediaSourceService.GetByIdAsync(id);
         if (item == null) return NotFound();
-
-        return Ok(new SocialMediaSourceDto
-        {
-            Id = item.Id,
-            Name = item.Name,
-            IsActive = item.IsActive
-        });
+        return Ok(item);
     }
 
     [HttpPost]
     public async Task<ActionResult<SocialMediaSourceDto>> Create([FromBody] SocialMediaSourceCreateDto dto)
     {
-        var item = new SocialMediaSource
-        {
-            Name = dto.Name,
-            IsActive = dto.IsActive
-        };
-
-        _context.SocialMediaSources.Add(item);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetById), new { id = item.Id }, new SocialMediaSourceDto
-        {
-            Id = item.Id,
-            Name = item.Name,
-            IsActive = item.IsActive
-        });
+        var result = await _socialMediaSourceService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
     [HttpPost("{id}")]
     public async Task<ActionResult<SocialMediaSourceDto>> Update(int id, [FromBody] SocialMediaSourceCreateDto dto)
     {
-        var item = await _context.SocialMediaSources.FindAsync(id);
-        if (item == null) return NotFound();
-
-        item.Name = dto.Name;
-        item.IsActive = dto.IsActive;
-        item.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync();
-
-        return Ok(new SocialMediaSourceDto
+        try
         {
-            Id = item.Id,
-            Name = item.Name,
-            IsActive = item.IsActive
-        });
+            var result = await _socialMediaSourceService.UpdateAsync(id, dto);
+            return Ok(result);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
-    [HttpPost("{id}/delete")]
+    [HttpDelete("{id}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> Delete(int id)
     {
-        var item = await _context.SocialMediaSources.FindAsync(id);
-        if (item == null) return NotFound();
-
-        _context.SocialMediaSources.Remove(item);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        try
+        {
+            await _socialMediaSourceService.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 }
-

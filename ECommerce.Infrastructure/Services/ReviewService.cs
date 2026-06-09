@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.Core.Specifications;
+using ECommerce.Infrastructure.Specifications;
 
 namespace ECommerce.Infrastructure.Services;
 

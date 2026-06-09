@@ -146,7 +146,7 @@ export const appRoutes: Routes = [
   {
     path: "profile",
     loadComponent: () =>
-      import("./features/customer-profile/pages/profile-page/profile-page.component").then(
+      import("./features/account/pages/profile-page/profile-page.component").then(
         (m) => m.ProfilePageComponent,
       ),
   },

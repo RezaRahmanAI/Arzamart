@@ -1,6 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
+import { X_REFRESH } from "../utils/cache.utils";
 
 export interface VariantInventoryDto {
   variantId: number;
@@ -34,7 +35,7 @@ export class InventoryService {
   private readonly baseUrl = "/admin/products/inventory";
 
   getInventory(): Observable<ProductInventoryDto[]> {
-    return this.api.get<ProductInventoryDto[]>(this.baseUrl);
+    return this.api.get<ProductInventoryDto[]>(this.baseUrl, { headers: X_REFRESH });
   }
 
   updateStock(productId: number, data: { quantity: number; price?: number; compareAtPrice?: number; purchaseRate?: number }): Observable<any> {

@@ -7,6 +7,7 @@ import {
   ReorderPayload,
 } from "../models/categories.models";
 import { ApiHttpClient } from "../../core/http/http-client";
+import { X_REFRESH } from "../utils/cache.utils";
 
 @Injectable({
   providedIn: "root",
@@ -15,11 +16,11 @@ export class CategoriesService {
   private readonly api = inject(ApiHttpClient);
 
   getAll(): Observable<Category[]> {
-    return this.api.get<Category[]>("/admin/categories");
+    return this.api.get<Category[]>("/admin/categories", { headers: X_REFRESH });
   }
 
   getById(id: number): Observable<Category> {
-    return this.api.get<Category>(`/admin/categories/${id}`);
+    return this.api.get<Category>(`/admin/categories/${id}`, { headers: X_REFRESH });
   }
 
   create(payload: any): Observable<Category> {
@@ -47,6 +48,6 @@ export class CategoriesService {
   }
 
   getTree(): Observable<CategoryNode[]> {
-    return this.api.get<CategoryNode[]>("/admin/categories/tree");
+    return this.api.get<CategoryNode[]>("/admin/categories/tree", { headers: X_REFRESH });
   }
 }

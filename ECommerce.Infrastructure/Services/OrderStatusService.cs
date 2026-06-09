@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.Core.Specifications;
+using ECommerce.Infrastructure.Specifications;
 using ECommerce.Infrastructure.Data;
 
 namespace ECommerce.Infrastructure.Services;
@@ -28,7 +28,7 @@ public class OrderStatusService : IOrderStatusService
 
         if (order == null) return false;
 
-        if (Enum.TryParse<OrderStatus>(status, true, out var newStatus))
+        if (Enum.TryParse<ECommerce.Core.Domain.Orders.OrderStatus>(status, true, out var newStatus))
         {
             var oldStatus = order.Status;
 
@@ -44,7 +44,7 @@ public class OrderStatusService : IOrderStatusService
                 await _stockService.AdjustStockOnStatusChangeAsync(order, returnToStock: false);
             }
 
-            if (newStatus == OrderStatus.PreOrder)
+            if (newStatus == ECommerce.Core.Domain.Orders.OrderStatus.PreOrder)
             {
                 order.IsPreOrder = true;
             }

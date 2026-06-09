@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ECommerce.Core.Domain.Orders;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
@@ -147,11 +148,14 @@ public class DashboardService : IDashboardService
             var returnRateStr = totalOrders > 0 ? $"{(double)returnedOrders / totalOrders * 100:0.##}%" : "0%";
 
             // Item-level query for profit/purchase rates
-            var soldItemsQuery = _context.OrderItems.AsNoTracking().Where(i => validStatuses.Contains(i.Order.Status));
+            var soldItemsQuery = _context.OrderItems.AsNoTracking()
+                .Where(i => _context.Orders.Any(o => o.Id == i.OrderId && validStatuses.Contains(o.Status)));
             if (totalRangeStart.HasValue)
-                soldItemsQuery = soldItemsQuery.Where(i => i.Order.CreatedAt >= totalRangeStart.Value);
+                soldItemsQuery = soldItemsQuery
+                    .Where(i => _context.Orders.Any(o => o.Id == i.OrderId && o.CreatedAt >= totalRangeStart.Value));
             if (totalRangeEnd.HasValue)
-                soldItemsQuery = soldItemsQuery.Where(i => i.Order.CreatedAt <= totalRangeEnd.Value);
+                soldItemsQuery = soldItemsQuery
+                    .Where(i => _context.Orders.Any(o => o.Id == i.OrderId && o.CreatedAt <= totalRangeEnd.Value));
 
             var soldItems = await soldItemsQuery
                 .Select(i => new
@@ -233,7 +237,7 @@ public class DashboardService : IDashboardService
         // Get top 5 sold product IDs directly from DB
         var topProductIds = await _context.OrderItems
             .AsNoTracking()
-            .Where(i => validStatuses.Contains(i.Order.Status))
+            .Where(i => _context.Orders.Any(o => o.Id == i.OrderId && validStatuses.Contains(o.Status)))
             .GroupBy(i => i.ProductId)
             .OrderByDescending(g => g.Sum(i => i.Quantity))
             .Take(5)

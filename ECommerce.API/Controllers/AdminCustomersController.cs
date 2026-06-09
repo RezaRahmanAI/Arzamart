@@ -1,3 +1,5 @@
+using ECommerce.Core.DTOs;
+using ECommerce.Core.DTOs.Admin;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -19,25 +21,25 @@ public class AdminCustomersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<object>> GetCustomers(
+    public async Task<ActionResult<PagedResponseDto<AdminCustomerListItemDto>>> GetCustomers(
         [FromQuery] string? searchTerm,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
         var (items, total) = await _customerService.GetCustomersAsync(searchTerm, page, pageSize);
 
-        return Ok(new
+        return Ok(new PagedResponseDto<AdminCustomerListItemDto>
         {
-            items = items.Select(c => new
+            Items = items.Select(c => new AdminCustomerListItemDto
             {
-                c.Id,
-                c.Name,
-                c.Phone,
-                c.Address,
-                c.CreatedAt,
-                c.UpdatedAt
-            }),
-            total
+                Id = c.Id,
+                Name = c.Name,
+                Phone = c.Phone,
+                Address = c.Address,
+                CreatedAt = c.CreatedAt,
+                UpdatedAt = c.UpdatedAt
+            }).ToList(),
+            Total = total
         });
     }
     [HttpPost("{id}/flag")]

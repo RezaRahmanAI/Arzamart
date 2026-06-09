@@ -23,7 +23,7 @@ import { CartItem, CartSummary } from "../../../../core/models/cart";
 import { Order } from "../../../../core/models/order";
 import { SiteSettingsService, SiteSettings } from "../../../../core/services/site-settings.service";
 import { CheckoutService } from "../../../../core/services/checkout.service";
-import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
+import { OrderApiService, CustomerLookupResponse } from "../../../../core/services/order-api.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { SettingsService } from "../../../../admin/services/settings.service";
 import { DeliveryMethod } from "../../../../admin/models/settings.models";
@@ -62,7 +62,7 @@ export class LandingPageComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
-  private readonly customerOrderApi = inject(CustomerOrderApiService);
+  private readonly orderApi = inject(OrderApiService);
   private readonly settingsService = inject(SettingsService);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly siteSettingsService = inject(SiteSettingsService);
@@ -206,7 +206,7 @@ export class LandingPageComponent implements OnInit {
         distinctUntilChanged(),
         filter((value) => value.length >= 7),
         switchMap((phone) =>
-          this.customerOrderApi
+          this.orderApi
             .lookupCustomer(phone)
             .pipe(catchError(() => of(null))),
         ),

@@ -16,7 +16,6 @@ public static class MiddlewareExtensions
         app.UseMiddleware<RequestLoggingMiddleware>();
 
         // 3. Security & Access
-        app.UseMiddleware<IpBlockingMiddleware>();
         app.UseMiddleware<VisitorTrackingMiddleware>();
 
         return app;
@@ -44,7 +43,6 @@ public static class MiddlewareExtensions
         app.UseCors("DefaultPolicy");
 
         app.UseAuthentication();
-        app.UseMiddleware<RevokedTokenMiddleware>();
         app.UseAuthorization();
 
         app.UseResponseCaching();

@@ -17,7 +17,7 @@ import {
   DailyTraffic,
 } from "../../models/admin-dashboard.models";
 
-import { AdminDashboardService } from "../../services/admin-dashboard.service";
+import { DashboardService } from "../../services/dashboard.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { SiteSettingsService } from "../../../core/services/site-settings.service";
@@ -30,7 +30,7 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
   templateUrl: "./dashboard-overview.component.html",
 })
 export class DashboardOverviewComponent {
-  private adminDashboardService = inject(AdminDashboardService);
+  private adminDashboardService = inject(DashboardService);
   private settingsService = inject(SiteSettingsService);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly destroyRef = inject(DestroyRef);

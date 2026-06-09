@@ -1,22 +1,23 @@
 export interface Category {
-  id: number;
+  id: string;
   name: string;
   slug: string;
-  parentId?: number | null;
+  href?: string;
+  parentId?: string | null;
   imageUrl?: string;
   isActive: boolean;
-  productCount: number;
-  displayOrder: number;
+  productCount?: number;
+  displayOrder?: number;
   metaTitle?: string;
   metaDescription?: string;
   subCategories?: Category[];
 }
 
 export interface SubCategory {
-  id: number;
+  id: string;
   name: string;
   slug: string;
-  categoryId: number;
+  categoryId: string;
   isActive: boolean;
   imageUrl?: string;
   displayOrder?: number;
@@ -24,10 +25,10 @@ export interface SubCategory {
 }
 
 export interface Collection {
-  id: number;
+  id: string;
   name: string;
   slug: string;
-  subCategoryId: number;
+  subCategoryId: string;
   isActive: boolean;
 }
 

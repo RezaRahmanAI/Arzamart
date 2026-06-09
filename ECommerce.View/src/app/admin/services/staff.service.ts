@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { API_CONFIG, ApiConfig } from "../../core/config/api.config";
 
@@ -97,11 +97,12 @@ export class StaffService {
         httpParams = httpParams.set("pageSize", params.pageSize.toString());
       }
     }
-    return this.http.get<ApiResponse<PaginatedResponse<StaffUserDto>>>(this.buildUrl("/staff/users"), { params: httpParams });
+    const refreshHeaders = new HttpHeaders().set("X-Refresh", "true");
+    return this.http.get<ApiResponse<PaginatedResponse<StaffUserDto>>>(this.buildUrl("/staff/users"), { params: httpParams, headers: refreshHeaders });
   }
 
   getStaffUser(id: string): Observable<ApiResponse<StaffUserDto>> {
-    return this.http.get<ApiResponse<StaffUserDto>>(this.buildUrl(`/staff/users/${id}`));
+    return this.http.get<ApiResponse<StaffUserDto>>(this.buildUrl(`/staff/users/${id}`), { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
   createStaff(data: any): Observable<ApiResponse<{ id: string }>> {
@@ -121,7 +122,7 @@ export class StaffService {
   }
 
   viewPassword(id: string): Observable<ApiResponse<{ password: string }>> {
-    return this.http.get<ApiResponse<{ password: string }>>(this.buildUrl(`/staff/users/${id}/password`));
+    return this.http.get<ApiResponse<{ password: string }>>(this.buildUrl(`/staff/users/${id}/password`), { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
   resetPassword(id: string, newPassword: string): Observable<ApiResponse<any>> {
@@ -130,7 +131,7 @@ export class StaffService {
 
   // Roles
   getRoles(): Observable<ApiResponse<RoleDto[]>> {
-    return this.http.get<ApiResponse<RoleDto[]>>(this.buildUrl("/staff/roles"));
+    return this.http.get<ApiResponse<RoleDto[]>>(this.buildUrl("/staff/roles"), { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
   createRole(data: { name: string; description?: string }): Observable<ApiResponse<{ id: string }>> {
@@ -146,7 +147,7 @@ export class StaffService {
   }
 
   getRolePermissions(roleId: string): Observable<ApiResponse<string[]>> {
-    return this.http.get<ApiResponse<string[]>>(this.buildUrl(`/staff/roles/${roleId}/permissions`));
+    return this.http.get<ApiResponse<string[]>>(this.buildUrl(`/staff/roles/${roleId}/permissions`), { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
   updateRolePermissions(roleId: string, permissionIds: string[]): Observable<ApiResponse<any>> {
@@ -155,7 +156,7 @@ export class StaffService {
 
   // Modules (Read-only)
   getModules(): Observable<ApiResponse<ModuleDto[]>> {
-    return this.http.get<ApiResponse<ModuleDto[]>>(this.buildUrl("/staff/modules"));
+    return this.http.get<ApiResponse<ModuleDto[]>>(this.buildUrl("/staff/modules"), { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
   // Audit Logs
@@ -181,7 +182,7 @@ export class StaffService {
         httpParams = httpParams.set("pageSize", params.pageSize.toString());
       }
     }
-    return this.http.get<ApiResponse<PaginatedResponse<AuditLogDto>>>(this.buildUrl("/staff/audit-log"), { params: httpParams });
+    return this.http.get<ApiResponse<PaginatedResponse<AuditLogDto>>>(this.buildUrl("/staff/audit-log"), { params: httpParams, headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 }
 

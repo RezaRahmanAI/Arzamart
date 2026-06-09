@@ -3,7 +3,7 @@ using ECommerce.Core.Constants;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.Core.Specifications;
+using ECommerce.Infrastructure.Specifications;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -47,7 +47,7 @@ public class HomeController : ControllerBase
         // 1. Banners (home_banners)
         var banners = await _cache.GetOrCreateAsync("home_banners", async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(30);
+            entry.SlidingExpiration = CacheDurations.Long;
             var items = await _bannerRepo.ListAsync(new HeroBannerSpecification(isActive: true));
             return items.Select(b => new HeroBannerDto
             {
@@ -66,7 +66,7 @@ public class HomeController : ControllerBase
         // 2. New Arrivals (home_new_arrivals)
         var newArrivals = await _cache.GetOrCreateAsync("home_new_arrivals", async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(10);
+            entry.SlidingExpiration = CacheDurations.Medium;
             var items = await _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
                 sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
                 categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
@@ -77,7 +77,7 @@ public class HomeController : ControllerBase
         // 3. Featured Products (home_featured_products)
         var featuredProducts = await _cache.GetOrCreateAsync("home_featured_products", async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(10);
+            entry.SlidingExpiration = CacheDurations.Medium;
             var items = await _productRepo.ListAsync(new ProductsWithCategoriesSpecification(
                 sort: "id_desc", categoryId: null, subCategoryId: null, collectionId: null,
                 categorySlug: null, subCategorySlug: null, collectionSlug: null, search: null,
@@ -88,7 +88,7 @@ public class HomeController : ControllerBase
         // 4. Categories (home_categories)
         var categories = await _cache.GetOrCreateAsync("home_categories", async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromHours(1);
+            entry.SlidingExpiration = CacheDurations.Extended;
             var items = await _categoryRepo.ListAsync(new BaseSpecification<Category>(c => c.IsActive));
             return _mapper.Map<IReadOnlyList<Category>, IReadOnlyList<CategoryDto>>(items);
         });

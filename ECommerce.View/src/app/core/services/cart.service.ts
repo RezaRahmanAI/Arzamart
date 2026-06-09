@@ -24,6 +24,7 @@ import {
 } from "../models/cart-dto.model";
 import { NotificationService } from "./notification.service";
 import { ApiHttpClient } from "../http/http-client";
+import { AppConstants } from "../constants/app.constants";
 
 @Injectable({
   providedIn: "root",
@@ -34,7 +35,7 @@ export class CartService {
   private readonly taxRate = 0;
   private readonly sessionIdKey = "cart_session_id";
   private readonly sessionTimeKey = "cart_session_timestamp";
-  private readonly sessionExpiryDays = 7;
+  private readonly sessionExpiryDays = AppConstants.GuestSessionExpiryDays;
   private readonly apiUrl = `/Cart`;
 
   private readonly settingsService = inject(SiteSettingsService);

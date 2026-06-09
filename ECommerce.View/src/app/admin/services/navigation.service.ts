@@ -1,0 +1,45 @@
+import { Injectable, inject } from "@angular/core";
+import { Observable } from "rxjs";
+import { ApiHttpClient } from "../../core/http/http-client";
+import { X_REFRESH } from "../utils/cache.utils";
+
+export interface NavigationMenuItem {
+  id: number;
+  name: string;
+  link: string;
+  parentMenuId?: number | null;
+  displayOrder: number;
+  isActive: boolean;
+  childMenus?: NavigationMenuItem[];
+}
+
+@Injectable({
+  providedIn: "root",
+})
+export class NavigationService {
+  private readonly api = inject(ApiHttpClient);
+  private readonly baseUrl = "/admin/navigation";
+
+  getAll(): Observable<NavigationMenuItem[]> {
+    return this.api.get<NavigationMenuItem[]>(this.baseUrl, { headers: X_REFRESH });
+  }
+
+  getById(id: number): Observable<NavigationMenuItem> {
+    return this.api.get<NavigationMenuItem>(`${this.baseUrl}/${id}`, { headers: X_REFRESH });
+  }
+
+  create(menu: Partial<NavigationMenuItem>): Observable<NavigationMenuItem> {
+    return this.api.post<NavigationMenuItem>(this.baseUrl, menu);
+  }
+
+  update(
+    id: number,
+    menu: Partial<NavigationMenuItem>,
+  ): Observable<NavigationMenuItem> {
+    return this.api.post<NavigationMenuItem>(`${this.baseUrl}/${id}`, menu);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.api.delete<void>(`${this.baseUrl}/${id}`);
+  }
+}

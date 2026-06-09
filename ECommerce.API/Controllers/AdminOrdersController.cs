@@ -25,7 +25,7 @@ public class AdminOrdersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<object>> GetOrders(
+    public async Task<ActionResult<PagedResponseDto<OrderDto>>> GetOrders(
         [FromQuery] string? searchTerm,
         [FromQuery] string? status,
         [FromQuery] string? dateRange,
@@ -44,7 +44,7 @@ public class AdminOrdersController : ControllerBase
     {
         var (items, total) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, page, pageSize, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber);
         // Ensure properties are lowercase to match frontend expectations if JSON serialization doesn't do it automatically
-        return Ok(new { items, total });
+        return Ok(new PagedResponseDto<OrderDto> { Items = items, Total = total });
     }
 
     [HttpGet("filtered")]

@@ -1,14 +1,10 @@
 import { Injectable, inject } from "@angular/core";
 import { BehaviorSubject, Observable, map, tap, throwError } from "rxjs";
 
-
 import { CartItem, CartSummary } from "../models/cart";
 import { CheckoutState } from "../models/checkout";
 import { Order, OrderItem, OrderStatus } from "../models/order";
-import {
-  CustomerOrderApiService,
-  CustomerOrderResponse,
-} from "./customer-order-api.service";
+import { OrderApiService, OrderItemRequest, CustomerOrderRequest, CustomerOrderResponse } from "./order-api.service";
 import { CartService } from "./cart.service";
 
 interface PlaceOrderPayload {
@@ -16,13 +12,18 @@ interface PlaceOrderPayload {
   cartItems: CartItem[];
   summary: CartSummary;
   deliveryMethodId?: number;
+  isPreOrder?: boolean;
+  sourcePageId?: number | null;
+  socialMediaSourceId?: number | null;
+  discount?: number;
+  advancePayment?: number;
+  adminNote?: string;
+  customerNote?: string;
 }
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable({ providedIn: "root" })
 export class OrderService {
-  private readonly customerOrderApi = inject(CustomerOrderApiService);
+  private readonly orderApi = inject(OrderApiService);
   private readonly cartService = inject(CartService);
   private readonly storageKey = "orders";
   private readonly ordersSubject = new BehaviorSubject<Order[]>(
@@ -44,6 +45,7 @@ export class OrderService {
     if (!payload.cartItems || payload.cartItems.length === 0) {
       return throwError(() => new Error("Cannot place order with empty cart"));
     }
+
     const items: OrderItem[] = payload.cartItems.map((item) => ({
       productId: Number(item.productId),
       productName: item.name,
@@ -54,83 +56,39 @@ export class OrderService {
       totalPrice: item.price * item.quantity,
     }));
 
-    return this.customerOrderApi
-      .placeOrder({
-        name: payload.state.fullName,
-        phone: payload.state.phone,
-        address: payload.state.address,
-        city: payload.state.city ?? "",
-        area: payload.state.area ?? "",
-        deliveryMethodId: payload.deliveryMethodId,
-        itemsCount: payload.summary.itemsCount,
-        total: payload.summary.total,
-        items: items.map((i) => ({
-          productId: i.productId,
-          quantity: i.quantity,
-          size: i.size,
-        })),
-      })
-      .pipe(
-        map((response) => this.buildOrder(response, items, payload.summary)),
-        tap((order) => {
-          this.addOrderToHistory(order);
-        }),
-      );
-  }
+    const apiItems: OrderItemRequest[] = payload.cartItems.map((item) => ({
+      productId: Number(item.productId),
+      quantity: item.quantity,
+      color: item.color,
+      size: item.size,
+    }));
 
-  addOrderToHistory(order: Order): void {
-    const currentOrders = this.ordersSubject.getValue();
-    this.ordersSubject.next([order, ...currentOrders]);
-    this.persistOrders();
-  }
-
-  buildAndSaveOrder(
-    response: CustomerOrderResponse,
-    items: OrderItem[],
-    subTotal: number,
-    shippingCost: number,
-    tax: number,
-  ): Order {
-    const order: Order = {
-      id: response.id,
-      orderNumber: response.orderNumber || `ORD-${response.id}`,
-      status: OrderStatus.Confirmed,
-      items,
-      customerName: response.customerName,
-      customerPhone: response.customerPhone,
-      shippingAddress: response.shippingAddress,
-      subTotal,
-      shippingCost,
-      tax,
-      total: response.total,
-      itemsCount: response.itemsCount,
-      createdAt: response.createdAt,
+    const request: CustomerOrderRequest = {
+      name: payload.state.fullName,
+      phone: payload.state.phone,
+      address: payload.state.address,
+      city: payload.state.city ?? "",
+      area: payload.state.area ?? "",
+      deliveryMethodId: payload.deliveryMethodId ?? payload.state.deliveryMethodId,
+      itemsCount: payload.summary.itemsCount,
+      total: payload.summary.total,
+      items: apiItems,
+      isPreOrder: payload.isPreOrder ?? false,
+      sourcePageId: payload.sourcePageId ?? null,
+      socialMediaSourceId: payload.socialMediaSourceId ?? null,
+      discount: payload.discount ?? 0,
+      advancePayment: payload.advancePayment ?? 0,
+      adminNote: payload.adminNote,
+      customerNote: payload.customerNote,
     };
-    this.addOrderToHistory(order);
-    return order;
-  }
 
-  private loadOrders(): Order[] {
-    const stored = localStorage.getItem(this.storageKey);
-    if (stored) {
-      try {
-        return JSON.parse(stored) as Order[];
-      } catch {
-        return [];
-      }
-    }
-
-    return [];
-  }
-
-  private persistOrders(): void {
-    localStorage.setItem(
-      this.storageKey,
-      JSON.stringify(this.ordersSubject.getValue()),
+    return this.orderApi.placeOrder(request).pipe(
+      map((response) => this.mapResponseToOrder(response, items, payload.summary)),
+      tap((order) => this.addOrderToHistory(order)),
     );
   }
 
-  private buildOrder(
+  private mapResponseToOrder(
     response: CustomerOrderResponse,
     items: OrderItem[],
     summary: CartSummary,
@@ -143,12 +101,62 @@ export class OrderService {
       customerName: response.customerName,
       customerPhone: response.customerPhone,
       shippingAddress: response.shippingAddress,
-      subTotal: response.subTotal || summary.subtotal,
+      subTotal: response.subTotal ?? summary.subtotal,
       shippingCost: response.shippingCost ?? summary.shipping,
       tax: response.tax ?? summary.tax,
-      total: response.total || summary.total,
-      itemsCount: response.itemsCount || summary.itemsCount,
-      createdAt: response.createdAt || new Date().toISOString(),
+      total: response.total ?? summary.total,
+      itemsCount: response.itemsCount ?? summary.itemsCount,
+      createdAt: response.createdAt ?? new Date().toISOString(),
     };
+  }
+
+  addOrderToHistory(order: Order): void {
+    const currentOrders = this.ordersSubject.getValue();
+    this.ordersSubject.next([order, ...currentOrders]);
+    this.persistOrders();
+  }
+
+  buildAndSaveOrder(
+    response: CustomerOrderResponse,
+    items: OrderItem[],
+    total: number,
+    shippingCost: number,
+    tax: number,
+  ): void {
+    const order: Order = {
+      id: response.id,
+      orderNumber: response.orderNumber || `ORD-${response.id}`,
+      status: OrderStatus.Confirmed,
+      items,
+      customerName: response.customerName,
+      customerPhone: response.customerPhone,
+      shippingAddress: response.shippingAddress,
+      subTotal: response.subTotal ?? total,
+      shippingCost: response.shippingCost ?? shippingCost,
+      tax: response.tax ?? tax,
+      total: response.total ?? total,
+      itemsCount: response.itemsCount ?? items.length,
+      createdAt: response.createdAt ?? new Date().toISOString(),
+    };
+    this.addOrderToHistory(order);
+  }
+
+  private loadOrders(): Order[] {
+    const stored = localStorage.getItem(this.storageKey);
+    if (stored) {
+      try {
+        return JSON.parse(stored) as Order[];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
+
+  private persistOrders(): void {
+    localStorage.setItem(
+      this.storageKey,
+      JSON.stringify(this.ordersSubject.getValue()),
+    );
   }
 }

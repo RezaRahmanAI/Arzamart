@@ -21,9 +21,9 @@ import { globalErrorInterceptor } from "./app/core/http/global-error.interceptor
 import { environment } from "./environments/environment";
 import { jwtInterceptor } from "./app/core/interceptors/jwt.interceptor";
 import { loadingInterceptor } from "./app/core/interceptors/loading.interceptor";
-import { httpCacheInterceptor } from "./app/interceptors/cache.interceptor";
-import { adminCacheInterceptor } from "./app/interceptors/admin-cache.interceptor";
+import { httpCacheInterceptor } from "./app/core/interceptors/cache.interceptor";
 
+import { adminCacheInterceptor } from "./app/core/interceptors/admin-cache.interceptor";
 bootstrapApplication(AppComponent, {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true, runCoalescing: true }),

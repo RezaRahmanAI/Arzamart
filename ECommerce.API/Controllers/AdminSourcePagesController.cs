@@ -1,9 +1,7 @@
 using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Data;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,110 +11,69 @@ namespace ECommerce.API.Controllers;
 [ECommerce.API.Helpers.StaffMenuAccess("order-sources")]
 public class AdminSourcePagesController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IAdminSourcePageService _sourcePageService;
 
-    public AdminSourcePagesController(ApplicationDbContext context)
+    public AdminSourcePagesController(IAdminSourcePageService sourcePageService)
     {
-        _context = context;
+        _sourcePageService = sourcePageService;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<SourcePageDto>>> GetAll()
     {
-        var items = await _context.SourcePages
-            .Select(p => new SourcePageDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                IsActive = p.IsActive
-            })
-            .ToListAsync();
-
+        var items = await _sourcePageService.GetAllAsync();
         return Ok(items);
     }
 
     [HttpGet("active")]
-    [AllowAnonymous] // Or allow for authorized users who can create orders
+    [AllowAnonymous]
     public async Task<ActionResult<List<SourcePageDto>>> GetActive()
     {
-        var items = await _context.SourcePages
-            .Where(p => p.IsActive)
-            .Select(p => new SourcePageDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                IsActive = p.IsActive
-            })
-            .ToListAsync();
-
+        var items = await _sourcePageService.GetActiveAsync();
         return Ok(items);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<SourcePageDto>> GetById(int id)
     {
-        var item = await _context.SourcePages.FindAsync(id);
+        var item = await _sourcePageService.GetByIdAsync(id);
         if (item == null) return NotFound();
-
-        return Ok(new SourcePageDto
-        {
-            Id = item.Id,
-            Name = item.Name,
-            IsActive = item.IsActive
-        });
+        return Ok(item);
     }
 
     [HttpPost]
     public async Task<ActionResult<SourcePageDto>> Create([FromBody] SourcePageCreateDto dto)
     {
-        var item = new SourcePage
-        {
-            Name = dto.Name,
-            IsActive = dto.IsActive
-        };
-
-        _context.SourcePages.Add(item);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetById), new { id = item.Id }, new SourcePageDto
-        {
-            Id = item.Id,
-            Name = item.Name,
-            IsActive = item.IsActive
-        });
+        var result = await _sourcePageService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
     [HttpPost("{id}")]
     public async Task<ActionResult<SourcePageDto>> Update(int id, [FromBody] SourcePageCreateDto dto)
     {
-        var item = await _context.SourcePages.FindAsync(id);
-        if (item == null) return NotFound();
-
-        item.Name = dto.Name;
-        item.IsActive = dto.IsActive;
-        item.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync();
-
-        return Ok(new SourcePageDto
+        try
         {
-            Id = item.Id,
-            Name = item.Name,
-            IsActive = item.IsActive
-        });
+            var result = await _sourcePageService.UpdateAsync(id, dto);
+            return Ok(result);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
-    [HttpPost("{id}/delete")]
+    [HttpDelete("{id}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> Delete(int id)
     {
-        var item = await _context.SourcePages.FindAsync(id);
-        if (item == null) return NotFound();
-
-        _context.SourcePages.Remove(item);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        try
+        {
+            await _sourcePageService.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 }
-

@@ -1,12 +1,9 @@
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using ECommerce.Infrastructure.Data;
+using ECommerce.Core.Constants;
+using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
+using ECommerce.Core.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
@@ -15,35 +12,30 @@ namespace ECommerce.API.Controllers
     [Microsoft.AspNetCore.OutputCaching.OutputCache(Tags = new[] { "config" })]
     public class SiteSettingsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IPublicSiteSettingsService _publicSiteSettingsService;
         private readonly IMemoryCache _cache;
 
-        public SiteSettingsController(ApplicationDbContext context, IMemoryCache cache)
+        public SiteSettingsController(IPublicSiteSettingsService publicSiteSettingsService, IMemoryCache cache)
         {
-            _context = context;
+            _publicSiteSettingsService = publicSiteSettingsService;
             _cache = cache;
         }
 
         [HttpGet]
         [Microsoft.AspNetCore.OutputCaching.OutputCache(Duration = 3600)]
         [ResponseCache(Duration = 600)]
-        public async Task<ActionResult<SiteSetting>> GetSettings()
+        public async Task<ActionResult<SiteSettingsDto>> GetSettings()
         {
             const string cacheKey = "site_settings";
 
-            if (_cache.TryGetValue(cacheKey, out SiteSetting? cached) && cached != null)
+            if (_cache.TryGetValue(cacheKey, out SiteSettingsDto? cached) && cached != null)
             {
                 return Ok(cached);
             }
 
-            var settings = await _context.SiteSettings.AsNoTracking().FirstOrDefaultAsync();
-            
-            if (settings == null)
-            {
-                settings = new SiteSetting();
-            }
+            var settings = await _publicSiteSettingsService.GetSettingsAsync();
 
-            _cache.Set(cacheKey, settings, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60) });
+            _cache.Set(cacheKey, settings, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = CacheDurations.Extended });
             return Ok(settings);
         }
 
@@ -59,12 +51,9 @@ namespace ECommerce.API.Controllers
                 return Ok(cached);
             }
 
-            var methods = await _context.DeliveryMethods
-                .AsNoTracking()
-                .Where(m => m.IsActive)
-                .ToListAsync();
+            var methods = await _publicSiteSettingsService.GetActiveDeliveryMethodsAsync();
 
-            _cache.Set(cacheKey, methods, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60) });
+            _cache.Set(cacheKey, methods, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = CacheDurations.Extended });
             return Ok(methods);
         }
     }

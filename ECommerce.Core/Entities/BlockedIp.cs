@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ECommerce.Core.Entities;
 
-public class BlockedIp
+public class BlockedIp : BaseEntity
 {
-    public int Id { get; set; }
     
     [Required]
     [MaxLength(50)]

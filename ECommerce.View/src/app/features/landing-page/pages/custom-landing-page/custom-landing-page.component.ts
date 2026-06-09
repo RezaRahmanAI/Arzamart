@@ -19,7 +19,7 @@ import { ProductService } from "../../../../core/services/product.service";
 import { of, combineLatest, forkJoin } from "rxjs";
 import { map, catchError, debounceTime, distinctUntilChanged, filter, switchMap, tap } from "rxjs/operators";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
-import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
+import { OrderApiService, CustomerLookupResponse } from "../../../../core/services/order-api.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DestroyRef } from "@angular/core";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
@@ -69,7 +69,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private readonly siteSettingsService = inject(SiteSettingsService);
   private readonly settingsService = inject(SettingsService);
   private readonly productService = inject(ProductService);
-  private readonly customerOrderApi = inject(CustomerOrderApiService);
+  private readonly orderApi = inject(OrderApiService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly userPersistence = inject(UserPersistenceService);
   private readonly notification = inject(NotificationService);
@@ -343,7 +343,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         filter((value) => value.length >= 7),
         switchMap((phone) =>
-          this.customerOrderApi.lookupCustomer(phone).pipe(catchError(() => of(null))),
+          this.orderApi.lookupCustomer(phone).pipe(catchError(() => of(null))),
         ),
         takeUntilDestroyed(this.destroyRef),
       )

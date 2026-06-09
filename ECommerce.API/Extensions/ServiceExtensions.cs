@@ -117,6 +117,24 @@ public static class ServiceExtensions
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductQueryService, ProductQueryService>();
         services.AddScoped<IReviewService, ReviewService>();
+        services.AddScoped<ICartService, CartService>();
+        services.AddScoped<ICategoryAdminService, CategoryAdminService>();
+        services.AddScoped<ISubCategoryAdminService, SubCategoryAdminService>();
+        services.AddScoped<IAdminSettingsService, AdminSettingsService>();
+        services.AddScoped<IAdminBannerService, AdminBannerService>();
+        services.AddScoped<IAdminPageService, AdminPageService>();
+        services.AddScoped<IAdminNavigationService, AdminNavigationService>();
+        services.AddScoped<IAdminReviewService, AdminReviewService>();
+        services.AddScoped<IAdminSecurityService, AdminSecurityService>();
+        services.AddScoped<IAdminSourcePageService, AdminSourcePageService>();
+        services.AddScoped<IAdminSocialMediaSourceService, AdminSocialMediaSourceService>();
+        services.AddScoped<IAdminCustomLandingPageService, AdminCustomLandingPageService>();
+        services.AddScoped<IInventoryService, InventoryService>();
+        services.AddScoped<IActivityLogService, ActivityLogService>();
+        services.AddScoped<ICustomLandingPageService, CustomLandingPageService>();
+        services.AddScoped<IPublicCategoryService, PublicCategoryService>();
+        services.AddScoped<IPublicSiteSettingsService, PublicSiteSettingsService>();
+        services.AddScoped<IAnalyticsService, AnalyticsService>();
         services.AddScoped<PasswordProtector>();
 
         return services;

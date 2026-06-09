@@ -29,7 +29,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Page> Pages { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<ECommerce.Core.Domain.Orders.OrderItem> OrderItems { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<SiteSetting> SiteSettings { get; set; }
     public DbSet<DailyTraffic> DailyTraffics { get; set; }
@@ -61,7 +61,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         // Required relation filters to avoid warnings when main entities are filtered out
         builder.Entity<CartItem>().HasQueryFilter(ci => ci.Product!.IsActive);
-        builder.Entity<OrderItem>().HasQueryFilter(oi => oi.Product!.IsActive);
+
         builder.Entity<ProductImage>().HasQueryFilter(pi => pi.Product!.IsActive);
         builder.Entity<ProductVariant>().HasQueryFilter(pv => pv.Product!.IsActive);
         builder.Entity<Review>().HasQueryFilter(r => r.Product!.IsActive);
@@ -195,7 +195,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(o => o.Total).HasColumnType("decimal(18,2)");
             
             entity.HasMany(o => o.Items)
-                  .WithOne(i => i.Order)
+                  .WithOne()
                   .HasForeignKey(i => i.OrderId)
                   .OnDelete(DeleteBehavior.Cascade);
 
@@ -219,14 +219,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .OnDelete(DeleteBehavior.Restrict);
         });
 
-        builder.Entity<OrderItem>(entity =>
+        builder.Entity<ECommerce.Core.Domain.Orders.OrderItem>(entity =>
         {
             entity.Property(i => i.UnitPrice).HasColumnType("decimal(18,2)");
-            
-            entity.HasOne(i => i.Product)
-                  .WithMany()
-                  .HasForeignKey(i => i.ProductId)
-                  .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasIndex(i => i.ProductId);
             entity.HasIndex(i => i.OrderId);

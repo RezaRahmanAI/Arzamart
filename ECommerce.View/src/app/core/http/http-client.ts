@@ -56,9 +56,23 @@ export class ApiHttpClient {
       withCredentials?: boolean;
     } = {},
   ) {
-    // Forcing POST instead of PUT because some production environments block PUT/PATCH
-    // and cause CORS issues. The backend is already configured to accept POST for updates.
-    return this.http.post<T>(this.buildUrl(path), body, {
+    return this.http.put<T>(this.buildUrl(path), body, {
+      withCredentials: false,
+      ...options,
+    });
+  }
+
+  patch<T>(
+    path: string,
+    body: unknown,
+    options: {
+      params?: any;
+      headers?: HttpHeaders;
+      context?: HttpContext;
+      withCredentials?: boolean;
+    } = {},
+  ) {
+    return this.http.patch<T>(this.buildUrl(path), body, {
       withCredentials: false,
       ...options,
     });
@@ -73,10 +87,7 @@ export class ApiHttpClient {
       withCredentials?: boolean;
     } = {},
   ) {
-    // Append /delete to distinguish from update (PUT) when using POST
-    const deletePath = path.endsWith("/") ? `${path}delete` : `${path}/delete`;
-
-    return this.http.post<T>(this.buildUrl(deletePath), null, {
+    return this.http.delete<T>(this.buildUrl(path), {
       withCredentials: false,
       ...options,
     });

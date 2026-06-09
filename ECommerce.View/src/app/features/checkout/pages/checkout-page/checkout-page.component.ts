@@ -20,7 +20,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { CartService } from "../../../../core/services/cart.service";
 import { CheckoutService } from "../../../../core/services/checkout.service";
 import { CartItem } from "../../../../core/models/cart";
-import { CustomerOrderApiService } from "../../../../core/services/customer-order-api.service";
+import { OrderApiService, CustomerLookupResponse } from "../../../../core/services/order-api.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { AuthService } from "../../../../core/services/auth.service";
@@ -60,7 +60,7 @@ export class CheckoutPageComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
-  private readonly customerOrderApi = inject(CustomerOrderApiService);
+  private readonly orderApi = inject(OrderApiService);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly analyticsService = inject(AnalyticsService);
   private readonly settingsService = inject(SettingsService);
@@ -218,7 +218,7 @@ export class CheckoutPageComponent {
         }),
         filter((value) => value.length >= 7),
         switchMap((phone) =>
-          this.customerOrderApi
+          this.orderApi
             .lookupCustomer(phone)
             .pipe(catchError(() => of(null))),
         ),

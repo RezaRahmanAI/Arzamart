@@ -1,5 +1,6 @@
 using AutoMapper;
 using ECommerce.Core.Constants;
+using ECommerce.Core.Domain.Orders;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Enums;
@@ -121,7 +122,7 @@ public class MappingProfiles : Profile
         CreateMap<SubCategory, SubCategoryDto>();
         CreateMap<Collection, CollectionDto>();
         
-        CreateMap<Order, OrderDto>()
+        CreateMap<ECommerce.Core.Entities.Order, OrderDto>()
             .ForMember(d => d.ItemsCount, o => o.MapFrom(s => s.Items.Sum(i => i.Quantity)))
             .ForMember(d => d.Items, o => o.MapFrom(s => s.Items))
             .ForMember(d => d.Logs, o => o.MapFrom(s => s.Logs.OrderByDescending(l => l.CreatedAt)))

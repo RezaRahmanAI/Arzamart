@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerce.Core.Entities;
 
-public class AdminActivityLog
+public class AdminActivityLog : BaseEntity
 {
-    [Key]
-    public int Id { get; set; }
     
     [Required]
     public string UserId { get; set; } = string.Empty;
@@ -29,6 +27,4 @@ public class AdminActivityLog
     
     [ForeignKey(nameof(PerformedByUserId))]
     public virtual ApplicationUser? PerformedBy { get; set; }
-    
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

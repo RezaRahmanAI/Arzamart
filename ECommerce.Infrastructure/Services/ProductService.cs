@@ -6,10 +6,11 @@ using AutoMapper;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.Core.Specifications;
+using ECommerce.Infrastructure.Specifications;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Core.Enums;
+using ECommerce.Core.DTOs.Products;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
@@ -36,6 +37,7 @@ public class ProductService : IProductService
         {
             var spec = new ProductsWithCategoriesSpecification(slug);
             var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
+            if (product == null) return null;
             var dto = _mapper.Map<Product, ProductDto>(product);
             return dto;
         }, TimeSpan.FromMinutes(60));
@@ -52,9 +54,115 @@ public class ProductService : IProductService
                 ? await _unitOfWork.Repository<Product>().GetEntityWithSpecIgnoreFiltersAsync(spec)
                 : await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
                 
+            if (product == null) return null;
             var dto = _mapper.Map<Product, ProductDto>(product);
             return dto;
         }, TimeSpan.FromMinutes(60));
+    }
+
+    public async Task<AdminProductListResultDto> GetAdminProductsAsync(string? searchTerm, string? category, string? statusTab, string? stockStatus, int page, int pageSize)
+    {
+        var query = _unitOfWork.Repository<Product>().GetQueryable()
+            .IgnoreQueryFilters()
+            .AsNoTracking();
+
+        if (!string.IsNullOrEmpty(searchTerm))
+            query = query.Where(p => p.Name.Contains(searchTerm) || (p.Sku ?? "").Contains(searchTerm));
+
+        if (!string.IsNullOrEmpty(category) && category != "all")
+        {
+            var dbCat = await _unitOfWork.Repository<Category>().GetQueryable()
+                .FirstOrDefaultAsync(c => c.Name.ToLower() == category.ToLower());
+            if (dbCat != null)
+                query = query.Where(p => p.CategoryId == dbCat.Id);
+        }
+
+        if (!string.IsNullOrEmpty(statusTab) && statusTab != "all")
+        {
+            bool isActive = statusTab.ToLower() == "active";
+            query = query.Where(p => p.IsActive == isActive);
+        }
+
+        if (!string.IsNullOrEmpty(stockStatus) && stockStatus != "all")
+        {
+            if (stockStatus.ToLower() == "instock")
+                query = query.Where(p => p.StockQuantity > 0);
+            else if (stockStatus.ToLower() == "outofstock")
+                query = query.Where(p => p.StockQuantity <= 0);
+        }
+
+        var total = await query.CountAsync();
+        var rawProducts = await query
+            .Include(p => p.Category)
+            .Include(p => p.SubCategory)
+            .Include(p => p.Images)
+            .Include(p => p.Variants)
+            .AsSplitQuery()
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        var products = rawProducts.Select(p => new AdminProductListItemDto
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Description = p.Description,
+            ShortDescription = p.ShortDescription,
+            Sku = p.Sku,
+            Price = p.Variants.FirstOrDefault()?.Price ?? 0,
+            SalePrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
+            PurchaseRate = p.Variants.FirstOrDefault()?.PurchaseRate,
+            StockQuantity = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
+            IsNew = p.IsNew,
+            IsFeatured = p.IsFeatured,
+            Status = p.IsActive ? "Active" : "Draft",
+            ImageUrl = p.ImageUrl,
+            Category = p.Category?.Name ?? "",
+            SubCategory = p.SubCategory?.Name ?? "",
+            CategoryId = p.CategoryId,
+            MediaUrls = p.Images.Select(i => i.Url).ToList(),
+            Images = p.Images.Select(i => new ProductImageDto { ImageUrl = i.Url }).ToList(),
+            Variants = p.Variants.Select(v => new ProductVariantDto { Id = v.Id, Size = v.Size, StockQuantity = v.StockQuantity, Price = v.Price }).ToList(),
+            Tier = p.Tier,
+            Tags = p.Tags,
+            SortOrder = p.SortOrder,
+            CreatedAt = p.CreatedAt,
+            Slug = p.Slug
+        }).ToList();
+
+        return new AdminProductListResultDto { Items = products, Total = total };
+    }
+
+    public async Task<(bool Success, string? MainImageUrl, List<string> ImageUrls)> DeleteProductAsync(int id)
+    {
+        var product = await _unitOfWork.Repository<Product>().GetQueryable()
+            .IgnoreQueryFilters()
+            .Include(p => p.Images)
+            .Include(p => p.Variants)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+            return (false, null, new List<string>());
+
+        var mainImageUrl = product.ImageUrl;
+        var imageUrls = product.Images.Select(i => i.Url).ToList();
+
+        var clpConfig = await _unitOfWork.Repository<CustomLandingPageConfig>().GetQueryable()
+            .FirstOrDefaultAsync(c => c.ProductId == id);
+        if (clpConfig != null)
+            _unitOfWork.Repository<CustomLandingPageConfig>().Delete(clpConfig);
+
+        try
+        {
+            _unitOfWork.Repository<Product>().Delete(product);
+            await _unitOfWork.Complete();
+            return (true, mainImageUrl, imageUrls);
+        }
+        catch
+        {
+            return (false, null, new List<string>());
+        }
     }
 
     public async Task<ProductDto?> CreateProductAsync(ProductCreateDto dto)
@@ -379,9 +487,69 @@ public class ProductService : IProductService
         return string.IsNullOrEmpty(slug) ? Guid.NewGuid().ToString().Substring(0, 8) : slug;
     }
 
+    public async Task<List<ProductSearchResultDto>> SearchProductsForComboAsync(string? q)
+    {
+        if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
+            return new List<ProductSearchResultDto>();
+
+        var searchTerm = q.Trim().ToLower();
+
+        var products = await _unitOfWork.Repository<Product>()
+            .GetQueryable()
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(p => p.Name.ToLower().Contains(searchTerm)
+                     || (p.Sku != null && p.Sku.ToLower().Contains(searchTerm)))
+            .Include(p => p.Variants)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(15)
+            .ToListAsync();
+
+        return products.Select(p => new ProductSearchResultDto
+        {
+            Id = p.Id,
+            Name = p.Name,
+            ImageUrl = p.ImageUrl,
+            Sku = p.Sku,
+            Price = p.Variants.Any(v => v.Price > 0)
+                ? p.Variants.Where(v => v.Price > 0).Min(v => v.Price) ?? 0
+                : 0,
+            Variants = p.Variants.Select(v => new ProductSearchVariantDto
+            {
+                Id = v.Id,
+                Size = v.Size,
+                StockQuantity = v.StockQuantity,
+                Price = v.Price ?? 0
+            }).ToList()
+        }).ToList();
+    }
+
+    public async Task<List<ProductCatalogItemDto>> GetProductCatalogAsync()
+    {
+        return await _unitOfWork.Repository<Product>()
+            .GetQueryable()
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Include(p => p.Variants)
+            .OrderByDescending(p => p.CreatedAt)
+            .Select(p => new ProductCatalogItemDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Sku = p.Sku,
+                ImageUrl = p.ImageUrl,
+                Price = p.Variants.Any() ? p.Variants.Min(v => v.Price) ?? 0 : 0,
+                IsActive = p.IsActive,
+                Status = p.IsActive ? "Active" : "Draft",
+                StockQuantity = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
+                Slug = p.Slug
+            })
+            .ToListAsync();
+    }
+
     public async Task<List<string>> GetAvailableSizesAsync()
     {
-        return await _cache.GetOrCreateAsync("product:sizes", async () => 
+        return (await _cache.GetOrCreateAsync("product:sizes", async () => 
         {
             var sizes = await _unitOfWork.Repository<ProductVariant>()
                 .GetQueryable()
@@ -400,6 +568,6 @@ public class ProductService : IProductService
                 var index = sizeOrder.IndexOf(s.ToLower());
                 return index == -1 ? 999 : index;
             }).ThenBy(s => s).ToList();
-        }, TimeSpan.FromHours(24));
+        }, TimeSpan.FromHours(24)))!;
     }
 }

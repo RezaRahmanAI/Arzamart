@@ -20,7 +20,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult> GetProfile()
+    public async Task<ActionResult<ProfileResponseDto>> GetProfile()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _userManager.FindByIdAsync(userId!);
@@ -28,13 +28,13 @@ public class ProfileController : ControllerBase
 
         var roles = await _userManager.GetRolesAsync(user);
 
-        return Ok(new
+        return Ok(new ProfileResponseDto
         {
-            user.Id,
-            user.UserName,
-            user.Email,
-            user.FullName,
-            user.Phone,
+            Id = user.Id,
+            UserName = user.UserName,
+            Email = user.Email,
+            FullName = user.FullName,
+            Phone = user.Phone,
             Role = roles.FirstOrDefault() ?? user.Role
         });
     }

@@ -1,11 +1,6 @@
 using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.Infrastructure.Data;
-using ECommerce.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace ECommerce.API.Controllers;
 
@@ -14,12 +9,12 @@ namespace ECommerce.API.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
-    private readonly ApplicationDbContext _context;
+    private readonly ICustomerService _customerService;
 
-    public OrdersController(IOrderService orderService, ApplicationDbContext context)
+    public OrdersController(IOrderService orderService, ICustomerService customerService)
     {
         _orderService = orderService;
-        _context = context;
+        _customerService = customerService;
     }
 
     [HttpPost]
@@ -40,8 +35,7 @@ public class OrdersController : ControllerBase
             return BadRequest(new { message = "Phone number is required" });
         }
 
-        // Check if customer is suspicious
-        var customer = await _context.Customers.AsNoTracking().FirstOrDefaultAsync(c => c.Phone == orderDto.Phone);
+        var customer = await _customerService.GetCustomerByPhoneAsync(orderDto.Phone);
         if (customer != null && customer.IsSuspicious)
         {
             return StatusCode(403, new { success = false, message = "Your account has been suspended. Please contact support." });
@@ -57,7 +51,6 @@ public class OrdersController : ControllerBase
             return BadRequest(new { message = "Order must contain at least one item" });
         }
 
-        // Fix: Treat 0 as null for DeliveryMethodId to avoid FK violation
         if (orderDto.DeliveryMethodId == 0)
         {
             orderDto.DeliveryMethodId = null;
@@ -67,27 +60,9 @@ public class OrdersController : ControllerBase
         {
             var order = await _orderService.CreateOrderAsync(orderDto);
 
-            // Clear cart after successful order
             var sessionId = Request.Headers["X-Session-Id"].ToString();
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-            Cart? cart = null;
-            if (!string.IsNullOrEmpty(userId))
-            {
-                cart = await _context.Carts.Include(c => c.Items)
-                    .FirstOrDefaultAsync(c => c.UserId == userId);
-            }
-            else if (!string.IsNullOrEmpty(sessionId))
-            {
-                cart = await _context.Carts.Include(c => c.Items)
-                    .FirstOrDefaultAsync(c => c.SessionId == sessionId && c.UserId == null);
-            }
-
-            if (cart != null && cart.Items.Any())
-            {
-                _context.CartItems.RemoveRange(cart.Items);
-                await _context.SaveChangesAsync();
-            }
+            await _orderService.ClearCartAsync(userId, sessionId);
 
             return Ok(order);
         }

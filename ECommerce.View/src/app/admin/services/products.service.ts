@@ -12,6 +12,7 @@ import {
   ProductsQueryParams,
 } from "../../core/models/product";
 import { ApiHttpClient } from "../../core/http/http-client";
+import { X_REFRESH } from "../utils/cache.utils";
 
 @Injectable({ providedIn: "root" })
 export class ProductsService {
@@ -52,6 +53,7 @@ export class ProductsService {
       "/admin/products",
       {
         params: queryParams,
+        headers: X_REFRESH,
       },
     );
   }
@@ -67,6 +69,7 @@ export class ProductsService {
     });
     return this.api.get<Product[]>("/admin/products/filtered", {
       params: queryParams,
+      headers: X_REFRESH,
     });
   }
 
@@ -99,7 +102,7 @@ export class ProductsService {
   }
 
   getProductById(productId: number): Observable<Product> {
-    return this.api.get<Product>(`/admin/products/${productId}`);
+    return this.api.get<Product>(`/admin/products/${productId}`, { headers: X_REFRESH });
   }
 
   updateProduct(
@@ -134,7 +137,7 @@ export class ProductsService {
   }
 
   getAvailableSizes(): Observable<string[]> {
-    return this.api.get<string[]>("/admin/products/available-sizes");
+    return this.api.get<string[]>("/admin/products/available-sizes", { headers: X_REFRESH });
   }
 
   /**
@@ -146,7 +149,7 @@ export class ProductsService {
       return of([]);
     }
     const params = new HttpParams().set('q', term);
-    return this.api.get<any[]>('/admin/products/search', { params });
+    return this.api.get<any[]>('/admin/products/search', { params, headers: X_REFRESH });
   }
 
   removeProductMedia(productId: number, mediaUrl: string): Observable<boolean> {
@@ -170,7 +173,7 @@ export class ProductsService {
 
   private loadCatalog(): void {
     this.catalogLoading = true;
-    this.api.get<Product[]>("/admin/products/catalog").subscribe({
+    this.api.get<Product[]>("/admin/products/catalog", { headers: X_REFRESH }).subscribe({
       next: (products) => {
         this.catalogLoaded = true;
         this.catalogSubject.next(products);

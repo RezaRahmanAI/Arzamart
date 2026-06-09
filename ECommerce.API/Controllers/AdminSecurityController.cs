@@ -1,9 +1,7 @@
 using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Data;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,17 +11,17 @@ namespace ECommerce.API.Controllers;
 [ApiController]
 public class AdminSecurityController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IAdminSecurityService _securityService;
 
-    public AdminSecurityController(ApplicationDbContext context)
+    public AdminSecurityController(IAdminSecurityService securityService)
     {
-        _context = context;
+        _securityService = securityService;
     }
 
     [HttpGet("blocked-ips")]
     public async Task<ActionResult<IEnumerable<BlockedIp>>> GetBlockedIps()
     {
-        return await _context.BlockedIps.OrderByDescending(b => b.BlockedAt).ToListAsync();
+        return await _securityService.GetBlockedIpsAsync();
     }
 
     [Authorize(Roles = "SuperAdmin")]
@@ -35,35 +33,32 @@ public class AdminSecurityController : ControllerBase
             return BadRequest("IP Address is required.");
         }
 
-        var existing = await _context.BlockedIps.FirstOrDefaultAsync(b => b.IpAddress == ipToBlock.IpAddress);
-        if (existing != null)
+        try
         {
-            return BadRequest("IP Address is already blocked.");
+            ipToBlock.BlockedAt = DateTime.UtcNow;
+            ipToBlock.BlockedBy = User.Identity?.Name ?? "Admin";
+
+            var result = await _securityService.BlockIpAsync(ipToBlock);
+            return CreatedAtAction(nameof(GetBlockedIps), new { id = result.Id }, result);
         }
-
-        ipToBlock.BlockedAt = DateTime.UtcNow;
-        ipToBlock.BlockedBy = User.Identity?.Name ?? "Admin";
-
-        _context.BlockedIps.Add(ipToBlock);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetBlockedIps), new { id = ipToBlock.Id }, ipToBlock);
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [Authorize(Roles = "SuperAdmin")]
-    [HttpPost("unblock-ip/{id}/delete")]
+    [HttpDelete("unblock-ip/{id}")]
     public async Task<IActionResult> UnblockIp(int id)
     {
-        var blockedIp = await _context.BlockedIps.FindAsync(id);
-        if (blockedIp == null)
+        try
+        {
+            await _securityService.UnblockIpAsync(id);
+            return NoContent();
+        }
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
-
-        _context.BlockedIps.Remove(blockedIp);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
     }
 }
-

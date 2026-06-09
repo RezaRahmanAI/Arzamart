@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ECommerce.Infrastructure.Data;
-using ECommerce.Core.Entities;
 using ECommerce.Core.DTOs;
+using ECommerce.Core.Interfaces;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
+using AppConstants = ECommerce.Core.Constants;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,32 +12,42 @@ namespace ECommerce.API.Controllers;
 [Route("api/[controller]")]
 public class CartController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ICartService _cartService;
     private readonly ILogger<CartController> _logger;
-    private readonly Microsoft.Extensions.Caching.Memory.IMemoryCache _cache;
+    private readonly IMemoryCache _cache;
 
-    public CartController(ApplicationDbContext context, ILogger<CartController> logger, Microsoft.Extensions.Caching.Memory.IMemoryCache cache)
+    public CartController(ICartService cartService, ILogger<CartController> logger, IMemoryCache cache)
     {
-        _context = context;
+        _cartService = cartService;
         _logger = logger;
         _cache = cache;
     }
 
     private string? GetUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    
+
     private string? GetSessionId()
     {
         var headers = Request.Headers;
         if (headers.TryGetValue("X-Session-Id", out var sessionId))
         {
             var val = sessionId.ToString().Trim();
-            // Sanitize against common invalid string literals from bad localStorage states
             if (!string.IsNullOrEmpty(val) && val != "null" && val != "undefined" && val.Length >= 10)
             {
                 return val;
             }
         }
-        return null; 
+        return null;
+    }
+
+    private string GetCacheKey()
+    {
+        var userId = GetUserId();
+        if (!string.IsNullOrEmpty(userId)) return $"cart_{userId}";
+
+        var sessionId = GetSessionId();
+        if (!string.IsNullOrEmpty(sessionId)) return $"cart_{sessionId}";
+
+        return string.Empty;
     }
 
     [HttpGet]
@@ -51,12 +60,11 @@ public class CartController : ControllerBase
             return Ok(cachedCart);
         }
 
-        var cart = await GetOrCreateCartAsync();
-        var dto = MapToDto(cart);
+        var dto = await _cartService.GetCartAsync(GetUserId(), GetSessionId());
 
         if (!string.IsNullOrEmpty(cacheKey))
         {
-            _cache.Set(cacheKey, dto, TimeSpan.FromMinutes(10));
+            _cache.Set(cacheKey, dto, AppConstants.CacheDurations.Medium);
         }
 
         return Ok(dto);
@@ -65,118 +73,73 @@ public class CartController : ControllerBase
     [HttpPost("items")]
     public async Task<ActionResult> AddItem(AddToCartDto dto)
     {
-        var cart = await GetOrCreateCartAsync();
-        
-        // Background validation and save
-        var product = await _context.Products.AsNoTracking().AnyAsync(p => p.Id == dto.ProductId && p.IsActive);
-        if (!product) return NotFound("Product not found");
-
-        var existingItem = cart.Items.FirstOrDefault(i => 
-            i.ProductId == dto.ProductId && 
-            i.Size == dto.Size);
-
-        if (existingItem != null)
+        try
         {
-            existingItem.Quantity += dto.Quantity;
-        }
-        else
-        {
-            cart.Items.Add(new CartItem
+            var cartDto = await _cartService.AddItemAsync(GetUserId(), GetSessionId(), dto);
+
+            var cacheKey = GetCacheKey();
+            if (!string.IsNullOrEmpty(cacheKey))
             {
-                ProductId = dto.ProductId,
-                Size = dto.Size ?? string.Empty,
-                Quantity = dto.Quantity
-            });
+                _cache.Set(cacheKey, cartDto, AppConstants.CacheDurations.Medium);
+            }
+
+            return Ok(cartDto);
         }
-
-        await _context.SaveChangesAsync();
-        
-        // Invalidate cache
-        var cacheKey = GetCacheKey();
-        if (!string.IsNullOrEmpty(cacheKey)) _cache.Remove(cacheKey);
-
-        // Return full cart to avoid extra refresh calls on frontend
-        var updatedCart = await GetCartQuery(cart.Id).FirstAsync();
-        var cartDto = MapToDto(updatedCart);
-        
-        // Also update cache for subsequent GETs
-        if (!string.IsNullOrEmpty(cacheKey))
+        catch (KeyNotFoundException ex)
         {
-            _cache.Set(cacheKey, cartDto, TimeSpan.FromMinutes(10));
+            return NotFound(ex.Message);
         }
-
-        return Ok(cartDto);
     }
 
     [HttpPost("items/{id}")]
     public async Task<ActionResult<CartDto>> UpdateItem(int id, UpdateCartItemDto dto)
     {
-        // Faster lookup: directly fetch the item and its cart
-        var item = await _context.CartItems
-            .AsNoTracking()
-            .Include(i => i.Cart)
-            .FirstOrDefaultAsync(i => i.Id == id);
-        
-        if (item == null) return NotFound();
+        try
+        {
+            var cartDto = await _cartService.UpdateItemAsync(id, GetUserId(), GetSessionId(), dto.Quantity);
 
-        var userId = GetUserId();
-        var sessionId = GetSessionId();
-        
-        if (!string.IsNullOrEmpty(userId))
-        {
-            if (item.Cart?.UserId != userId) return Unauthorized();
-        }
-        else if (!string.IsNullOrEmpty(sessionId))
-        {
-            if (item.Cart?.SessionId != sessionId) return Unauthorized();
-        }
-        else return Unauthorized();
+            var cacheKey = GetCacheKey();
+            if (!string.IsNullOrEmpty(cacheKey))
+            {
+                _cache.Set(cacheKey, cartDto, AppConstants.CacheDurations.Medium);
+            }
 
-        if (dto.Quantity <= 0)
-        {
-           _context.CartItems.Remove(item);
+            return Ok(cartDto);
         }
-        else
+        catch (KeyNotFoundException)
         {
-            item.Quantity = dto.Quantity;
+            return NotFound();
         }
-
-        await _context.SaveChangesAsync();
-        
-        // Return refreshed cart
-        var cart = await GetCartQuery(item.CartId).FirstAsync();
-        return Ok(MapToDto(cart));
+        catch (UnauthorizedAccessException)
+        {
+            return Unauthorized();
+        }
     }
 
-    [HttpPost("items/{id}/delete")]
+    [HttpDelete("items/{id}")]
     public async Task<ActionResult<CartDto>> RemoveItem(int id)
     {
         _logger.LogInformation("Processing DELETE request for cart item {id}", id);
-        
-        var cart = await GetOrCreateCartAsync();
-        var item = cart.Items.FirstOrDefault(i => i.Id == id);
-        
-        if (item != null)
+
+        var cartDto = await _cartService.RemoveItemAsync(id, GetUserId(), GetSessionId());
+
+        var cacheKey = GetCacheKey();
+        if (!string.IsNullOrEmpty(cacheKey))
         {
-            _logger.LogInformation("Found item {id} in cart {cartId}. Removing...", id, cart.Id);
-            cart.Items.Remove(item);
-            await _context.SaveChangesAsync();
-        }
-        else
-        {
-            _logger.LogWarning("Item {id} not found in cart {cartId}", id, cart.Id);
+            _cache.Set(cacheKey, cartDto, AppConstants.CacheDurations.Medium);
         }
 
-        cart = await GetCartQuery(cart.Id).FirstAsync();
-        return Ok(MapToDto(cart));
+        return Ok(cartDto);
     }
 
-    [HttpPost("delete")]
+    [HttpDelete]
     public async Task<ActionResult> ClearCart()
     {
-        var cart = await GetOrCreateCartAsync();
-        _context.CartItems.RemoveRange(cart.Items);
-        await _context.SaveChangesAsync();
+        await _cartService.ClearCartAsync(GetUserId(), GetSessionId());
+
+        var cacheKey = GetCacheKey();
+        if (!string.IsNullOrEmpty(cacheKey)) _cache.Remove(cacheKey);
+
         return NoContent();
     }
 
@@ -188,165 +151,14 @@ public class CartController : ControllerBase
         var userId = GetUserId();
         if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-        var guestCart = await _context.Carts
-            .Include(c => c.Items)
-            .FirstOrDefaultAsync(c => c.SessionId == sessionId && string.IsNullOrEmpty(c.UserId));
-
-        var userCart = await GetOrCreateCartAsync();
-
-        if (guestCart != null && guestCart.Items.Any())
-        {
-            foreach (var item in guestCart.Items)
-            {
-                var existingItem = userCart.Items.FirstOrDefault(i => 
-                    i.ProductId == item.ProductId && 
-                    i.Size == item.Size);
-
-                if (existingItem != null)
-                {
-                    existingItem.Quantity += item.Quantity;
-                }
-                else
-                {
-                    userCart.Items.Add(new CartItem
-                    {
-                        ProductId = item.ProductId,
-                        Size = item.Size,
-                        Quantity = item.Quantity
-                    });
-                }
-            }
-
-            _context.Carts.Remove(guestCart);
-            await _context.SaveChangesAsync();
-        }
-
-        userCart = await GetCartQuery(userCart.Id).FirstAsync();
-        return Ok(MapToDto(userCart));
-    }
-
-    private string GetCacheKey()
-    {
-        var userId = GetUserId();
-        if (!string.IsNullOrEmpty(userId)) return $"cart_{userId}";
-        
-        var sessionId = GetSessionId();
-        if (!string.IsNullOrEmpty(sessionId)) return $"cart_{sessionId}";
-        
-        return string.Empty;
-    }
-
-    private async Task<Cart> GetOrCreateCartAsync()
-    {
-        var userId = GetUserId();
-        var sessionId = GetSessionId();
+        var cartDto = await _cartService.MergeGuestCartAsync(sessionId, userId);
 
         var cacheKey = GetCacheKey();
-        
-        Cart? cart = null;
-
-        if (!string.IsNullOrEmpty(userId))
+        if (!string.IsNullOrEmpty(cacheKey))
         {
-            cart = await GetCartQuery().FirstOrDefaultAsync(c => c.UserId == userId);
-        }
-        else if (!string.IsNullOrEmpty(sessionId))
-        {
-            cart = await GetCartQuery().FirstOrDefaultAsync(c => c.SessionId == sessionId && c.UserId == null);
+            _cache.Set(cacheKey, cartDto, AppConstants.CacheDurations.Medium);
         }
 
-        if (cart == null)
-        {
-            var finalSessionId = sessionId;
-            if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(finalSessionId))
-            {
-                finalSessionId = Guid.NewGuid().ToString();
-            }
-
-            cart = new Cart
-            {
-                UserId = userId,
-                SessionId = string.IsNullOrEmpty(userId) ? finalSessionId : null,
-                Items = new List<CartItem>()
-            };
-            
-            _context.Carts.Add(cart);
-            await _context.SaveChangesAsync();
-        }
-
-        return cart;
-    }
-
-    private IQueryable<Cart> GetCartQuery(int? id = null)
-    {
-        var query = _context.Carts.AsQueryable();
-
-        if (id.HasValue)
-        {
-            query = query.Where(c => c.Id == id.Value);
-        }
-
-        // Only include complex relations if we are fetching a specific cart or for merging
-        return query.Include(c => c.Items)
-                .ThenInclude(i => i.Product!)
-                    .ThenInclude(p => p!.Images)
-                .Include(c => c.Items)
-                .ThenInclude(i => i.Product!)
-                    .ThenInclude(p => p!.Variants);
-    }
-
-    private CartDto MapToDto(Cart cart)
-    {
-        var dto = new CartDto
-        {
-            Id = cart.Id,
-            UserId = cart.UserId,
-            GuestId = cart.GuestId,
-            SessionId = cart.SessionId,
-            Items = cart.Items.Select(i => 
-            {
-                var normalizedSize = (i.Size ?? "").Trim().ToLower();
-                var variant = i.Product?.Variants?.FirstOrDefault(v => 
-                    v.Size != null && v.Size.Trim().ToLower() == normalizedSize);
-                
-                decimal price = 0;
-                decimal? salePrice = null;
-
-                if (variant != null && (variant.Price ?? 0) > 0)
-                {
-                    price = variant.Price ?? 0;
-                    salePrice = variant.CompareAtPrice;
-                }
-                else
-                {
-                    // Fallback: Get min variant price
-                    var validVariants = i.Product?.Variants?.Where(v => (v.Price ?? 0) > 0).ToList();
-                    if (validVariants != null && validVariants.Any())
-                    {
-                        var minVariant = validVariants.OrderBy(v => v.Price).First();
-                        price = minVariant.Price ?? 0;
-                        salePrice = minVariant.CompareAtPrice;
-                    }
-                }
-
-                return new CartItemDto
-                {
-                    Id = i.Id,
-                    ProductId = i.ProductId,
-                    ProductName = i.Product?.Name ?? "Unknown",
-                    ProductSlug = i.Product?.Slug ?? "",
-                    ImageUrl = i.Product?.Images?.FirstOrDefault(img => img.IsMain)?.Url ?? "",
-                    Price = price,
-                    SalePrice = salePrice,
-                    Quantity = i.Quantity,
-                    Size = i.Size ?? string.Empty,
-                    AvailableStock = variant?.StockQuantity ?? 0
-                };
-            }).ToList()
-        };
-
-        dto.Subtotal = dto.Items.Sum(i => i.Price * i.Quantity);
-        dto.TotalItems = dto.Items.Sum(i => i.Quantity);
-
-        return dto;
+        return Ok(cartDto);
     }
 }

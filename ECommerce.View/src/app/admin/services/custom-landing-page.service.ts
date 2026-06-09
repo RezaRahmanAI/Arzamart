@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
@@ -43,7 +43,7 @@ export class CustomLandingPageService {
   private readonly apiUrl = `${environment.apiBaseUrl}/admin/custom-landing-page`;
 
   getConfig(productId: number): Observable<CustomLandingPageConfig> {
-    return this.http.get<CustomLandingPageConfig>(`${this.apiUrl}/${productId}`);
+    return this.http.get<CustomLandingPageConfig>(`${this.apiUrl}/${productId}`, { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
   saveConfig(config: CustomLandingPageConfig): Observable<CustomLandingPageConfig> {

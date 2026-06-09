@@ -1,9 +1,7 @@
 using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Data;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace ECommerce.API.Controllers;
@@ -14,113 +12,66 @@ namespace ECommerce.API.Controllers;
 [ECommerce.API.Helpers.StaffMenuAccess("navigation")]
 public class AdminNavigationController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IAdminNavigationService _navigationService;
     private readonly IOutputCacheStore _cacheStore;
 
-    public AdminNavigationController(ApplicationDbContext context, IOutputCacheStore cacheStore)
+    public AdminNavigationController(IAdminNavigationService navigationService, IOutputCacheStore cacheStore)
     {
-        _context = context;
+        _navigationService = navigationService;
         _cacheStore = cacheStore;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<NavigationMenuDto>>> GetAllMenus()
     {
-        var menus = await _context.NavigationMenus
-            .AsNoTracking()
-            .Include(m => m.ChildMenus)
-            .Where(m => m.ParentMenuId == null)
-            .OrderBy(m => m.DisplayOrder)
-            .ToListAsync();
-
-        return Ok(MapToDto(menus));
+        var menus = await _navigationService.GetAllAsync();
+        return Ok(menus);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<NavigationMenuDto>> GetMenuById(int id)
     {
-        var menu = await _context.NavigationMenus
-            .AsNoTracking()
-            .Include(m => m.ChildMenus)
-            .FirstOrDefaultAsync(m => m.Id == id);
-
+        var menu = await _navigationService.GetByIdAsync(id);
         if (menu == null) return NotFound();
-
-        return Ok(MapToDto(menu));
+        return Ok(menu);
     }
 
     [HttpPost]
     public async Task<ActionResult<NavigationMenuDto>> CreateMenu([FromBody] NavigationMenuCreateDto dto)
     {
-        var menu = new NavigationMenu
-        {
-            Title = dto.Name,
-            Url = dto.Link,
-            ParentMenuId = dto.ParentMenuId,
-            DisplayOrder = dto.DisplayOrder,
-            IsActive = dto.IsActive
-        };
-
-        _context.NavigationMenus.Add(menu);
-        await _context.SaveChangesAsync();
-
+        var result = await _navigationService.CreateAsync(dto);
         await _cacheStore.EvictByTagAsync("config", default);
-
-        return CreatedAtAction(nameof(GetMenuById), new { id = menu.Id }, MapToDto(menu));
+        return CreatedAtAction(nameof(GetMenuById), new { id = result.Id }, result);
     }
 
     [HttpPost("{id}")]
     public async Task<ActionResult<NavigationMenuDto>> UpdateMenu(int id, [FromBody] NavigationMenuCreateDto dto)
     {
-        var menu = await _context.NavigationMenus.FindAsync(id);
-        if (menu == null) return NotFound();
-
-        menu.Title = dto.Name;
-        menu.Url = dto.Link;
-        menu.ParentMenuId = dto.ParentMenuId;
-        menu.DisplayOrder = dto.DisplayOrder;
-        menu.IsActive = dto.IsActive;
-        menu.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync();
-
-        await _cacheStore.EvictByTagAsync("config", default);
-
-        return Ok(MapToDto(menu));
+        try
+        {
+            var result = await _navigationService.UpdateAsync(id, dto);
+            await _cacheStore.EvictByTagAsync("config", default);
+            return Ok(result);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
-    [HttpPost("{id}/delete")]
+    [HttpDelete("{id}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteMenu(int id)
     {
-        var menu = await _context.NavigationMenus.FindAsync(id);
-        if (menu == null) return NotFound();
-
-        _context.NavigationMenus.Remove(menu);
-        await _context.SaveChangesAsync();
-
-        await _cacheStore.EvictByTagAsync("config", default);
-
-        return NoContent();
-    }
-
-    private List<NavigationMenuDto> MapToDto(IEnumerable<NavigationMenu> menus)
-    {
-        return menus.Select(m => MapToDto(m)).ToList();
-    }
-
-    private NavigationMenuDto MapToDto(NavigationMenu menu)
-    {
-        return new NavigationMenuDto
+        try
         {
-            Id = menu.Id,
-            Name = menu.Title ?? string.Empty,
-            Link = menu.Url ?? string.Empty,
-            ParentMenuId = menu.ParentMenuId,
-            DisplayOrder = menu.DisplayOrder,
-            IsActive = menu.IsActive,
-            ChildMenus = menu.ChildMenus != null ? MapToDto(menu.ChildMenus.OrderBy(c => c.DisplayOrder)) : new List<NavigationMenuDto>()
-        };
+            await _navigationService.DeleteAsync(id);
+            await _cacheStore.EvictByTagAsync("config", default);
+            return NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 }
-

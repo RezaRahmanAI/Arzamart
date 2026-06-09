@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.Core.Specifications;
+using ECommerce.Infrastructure.Specifications;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Core.Enums;
@@ -21,15 +21,15 @@ public class OrderStockService : IOrderStockService
         _unitOfWork = unitOfWork;
     }
 
-    public bool ShouldDeductStock(OrderStatus status)
+    public bool ShouldDeductStock(ECommerce.Core.Domain.Orders.OrderStatus status)
     {
         return status switch
         {
-            OrderStatus.Confirmed => true,
-            OrderStatus.Processing => true,
-            OrderStatus.Packed => true,
-            OrderStatus.Shipped => true,
-            OrderStatus.Delivered => true,
+            ECommerce.Core.Domain.Orders.OrderStatus.Confirmed => true,
+            ECommerce.Core.Domain.Orders.OrderStatus.Processing => true,
+            ECommerce.Core.Domain.Orders.OrderStatus.Packed => true,
+            ECommerce.Core.Domain.Orders.OrderStatus.Shipped => true,
+            ECommerce.Core.Domain.Orders.OrderStatus.Delivered => true,
             _ => false
         };
     }

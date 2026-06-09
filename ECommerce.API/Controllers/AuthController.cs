@@ -3,9 +3,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using ECommerce.API.Contracts.Auth;
+using ECommerce.Core.DTOs.Auth;
 using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Data;
 using ECommerce.API.Helpers;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,19 +21,19 @@ public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ApplicationDbContext _context;
     private readonly PasswordProtector _passwordProtector;
+    private readonly IActivityLogService _activityLogService;
 
-    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager, ApplicationDbContext context, PasswordProtector passwordProtector)
+    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager, PasswordProtector passwordProtector, IActivityLogService activityLogService)
     {
         _configuration = configuration;
         _userManager = userManager;
-        _context = context;
         _passwordProtector = passwordProtector;
+        _activityLogService = activityLogService;
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<AuthResponse>> Login(LoginRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<AdminAuthResponseDto>> Login(LoginRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Identifier) || string.IsNullOrWhiteSpace(request.Password))
         {
@@ -81,27 +82,22 @@ public class AuthController : ControllerBase
 
         if (primaryRole == "SuperAdmin" || primaryRole == "Admin" || primaryRole == "Staff")
         {
-            var loginLog = new AdminActivityLog
-            {
-                UserId = user.Id,
-                Action = "Login",
-                Details = $"Logged in as {primaryRole}",
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
-                PerformedByUserId = user.Id,
-                CreatedAt = DateTime.UtcNow
-            };
-            _context.AdminActivityLogs.Add(loginLog);
-            await _context.SaveChangesAsync();
+            await _activityLogService.LogAsync(
+                user.Id,
+                "Login",
+                $"Logged in as {primaryRole}",
+                HttpContext.Connection.RemoteIpAddress?.ToString(),
+                user.Id);
         }
 
         var userSummary = ToSummary(user, primaryRole);
-        var response = new AuthResponse(accessToken, userSummary);
-        
-        return Ok(new { 
-            token = accessToken, 
-            refreshToken = refreshToken,
-            user = userSummary,
-            forceChangePassword = user.ForceChangePassword
+
+        return Ok(new AdminAuthResponseDto
+        {
+            Token = accessToken,
+            RefreshToken = refreshToken,
+            User = userSummary,
+            ForceChangePassword = user.ForceChangePassword
         });
     }
 
@@ -142,11 +138,12 @@ public class AuthController : ControllerBase
         await _userManager.UpdateAsync(user);
 
         var userSummary = ToSummary(user, primaryRole);
-        return Ok(new { 
-            token = newAccessToken, 
-            refreshToken = newRefreshToken,
-            user = userSummary,
-            forceChangePassword = user.ForceChangePassword
+        return Ok(new AdminAuthResponseDto
+        {
+            Token = newAccessToken,
+            RefreshToken = newRefreshToken,
+            User = userSummary,
+            ForceChangePassword = user.ForceChangePassword
         });
     }
 
@@ -262,16 +259,18 @@ public class AuthController : ControllerBase
         return Convert.ToBase64String(randomNumber);
     }
 
-    private static UserSummary ToSummary(ApplicationUser user, string role)
+    private static UserSummaryDto ToSummary(ApplicationUser user, string role)
     {
-        return new UserSummary(
-            user.Id,
-            user.FullName ?? user.UserName ?? "User",
-            user.Email ?? string.Empty,
-            role,
-            user.Phone,
-            user.UserName,
-            user.AllowedMenus);
+        return new UserSummaryDto
+        {
+            Id = user.Id,
+            Name = user.FullName ?? user.UserName ?? "User",
+            Email = user.Email ?? string.Empty,
+            Role = role,
+            Phone = user.Phone,
+            Username = user.UserName,
+            AllowedMenus = user.AllowedMenus
+        };
     }
 }
 

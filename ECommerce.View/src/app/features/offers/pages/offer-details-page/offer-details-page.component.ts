@@ -9,7 +9,7 @@ import { OrderItem } from "../../../../core/models/order";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { CustomerProfileService } from "../../../../core/services/customer-profile.service";
 
-import { CustomerOrderApiService, CustomerLookupResponse } from "../../../../core/services/customer-order-api.service";
+import { OrderApiService, CustomerLookupResponse } from "../../../../core/services/order-api.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
@@ -61,7 +61,7 @@ export class OfferDetailsPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
-  private readonly customerOrderApi = inject(CustomerOrderApiService);
+  private readonly orderApi = inject(OrderApiService);
   private readonly orderService = inject(OrderService);
   private readonly destroyRef = inject(DestroyRef);
   readonly imageUrlService = inject(ImageUrlService);
@@ -123,7 +123,7 @@ export class OfferDetailsPageComponent {
         distinctUntilChanged(),
         filter((value) => value.length >= 7),
         switchMap((phone) =>
-          this.customerOrderApi
+          this.orderApi
             .lookupCustomer(phone)
             .pipe(catchError(() => of(null))),
         ),
@@ -281,7 +281,7 @@ export class OfferDetailsPageComponent {
     const quantity = this.orderForm.controls.quantity.value ?? 1;
     const size = this.orderForm.controls.size.value ?? "";
 
-    this.customerOrderApi
+    this.orderApi
       .placeOrder({
         name: this.orderForm.controls.fullName.value,
         phone: this.orderForm.controls.phone.value,

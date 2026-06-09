@@ -1,5 +1,6 @@
 using ECommerce.API.Extensions;
 using ECommerce.API.Middleware;
+using ECommerce.Core.Constants;
 using ECommerce.Core.Entities;
 using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
@@ -40,13 +41,13 @@ try
     // ── 2. Server Configuration ───────────────────────────────────────
     builder.WebHost.ConfigureKestrel(serverOptions =>
     {
-        serverOptions.Limits.MaxRequestBodySize = 104857600; // 100 MB
+        serverOptions.Limits.MaxRequestBodySize = AppConstants.MaxRequestBodySize;
     });
 
     builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(x =>
     {
         x.ValueLengthLimit = int.MaxValue;
-        x.MultipartBodyLengthLimit = 104857600; // 100 MB
+        x.MultipartBodyLengthLimit = AppConstants.MaxRequestBodySize;
     });
 
     // ── 3. Services Registration ─────────────────────────────────────
@@ -92,8 +93,8 @@ try
     app.UseAuthorization();
     app.UseMiddleware<StaffDeleteRestrictionMiddleware>();
 
-    // Block suspicious users
-    app.UseSuspiciousUserBlocking();
+    // Unified security: IP blocking, revoked tokens, suspicious users
+    app.UseMiddleware<ECommerce.API.Middleware.SecurityMiddleware>();
 
     app.UseResponseCaching();
     app.UseOutputCache();
