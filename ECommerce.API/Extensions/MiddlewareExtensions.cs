@@ -24,12 +24,6 @@ public static class MiddlewareExtensions
     public static IApplicationBuilder UseAppPipeline(this IApplicationBuilder app, IWebHostEnvironment env)
     {
         // Order is critical in the pipeline
-        
-        if (env.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
 
         app.UseHttpsRedirection();
         app.UseResponseCompression();

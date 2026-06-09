@@ -8,7 +8,6 @@ import {
   DeliveryMethod,
 } from "../models/settings.models";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 @Injectable({ providedIn: "root" })
 export class SettingsService {
@@ -18,7 +17,7 @@ export class SettingsService {
 
   getSettings(): Observable<AdminSettings> {
     return this.api
-      .get<AdminSettings>("/admin/settings", { headers: X_REFRESH })
+      .get<AdminSettings>("/admin/settings")
       .pipe(tap((settings) => this.settingsSubject.next(settings)));
   }
 
@@ -51,11 +50,11 @@ export class SettingsService {
 
   // Delivery Methods API
   getDeliveryMethods(): Observable<DeliveryMethod[]> {
-    return this.api.get<DeliveryMethod[]>("/admin/settings/delivery-methods", { headers: X_REFRESH });
+    return this.api.get<DeliveryMethod[]>("/admin/settings/delivery-methods");
   }
 
   getPublicDeliveryMethods(): Observable<DeliveryMethod[]> {
-    return this.api.get<DeliveryMethod[]>("/sitesettings/delivery-methods", { headers: X_REFRESH });
+    return this.api.get<DeliveryMethod[]>("/sitesettings/delivery-methods");
   }
 
   createDeliveryMethod(

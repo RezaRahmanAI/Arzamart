@@ -4,52 +4,41 @@ using System.Threading.Tasks;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
+using ECommerce.Infrastructure.Cache;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Services;
 
 public class PublicSiteSettingsService : IPublicSiteSettingsService
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly AppCache _cache;
 
-    public PublicSiteSettingsService(IUnitOfWork unitOfWork)
+    public PublicSiteSettingsService(AppCache cache)
     {
-        _unitOfWork = unitOfWork;
+        _cache = cache;
     }
 
-    public async Task<SiteSettingsDto> GetSettingsAsync()
+    public Task<SiteSettingsDto> GetSettingsAsync()
     {
-        var setting = await _unitOfWork.Repository<SiteSetting>().GetQueryable()
-            .FirstOrDefaultAsync();
-
-        if (setting == null)
-            return new SiteSettingsDto();
-
-        return new SiteSettingsDto
-        {
-            WebsiteName = setting.WebsiteName,
-            LogoUrl = setting.LogoUrl,
-            ContactEmail = setting.ContactEmail,
-            ContactPhone = setting.ContactPhone,
-            Address = setting.Address,
-            FacebookUrl = setting.FacebookUrl,
-            InstagramUrl = setting.InstagramUrl,
-            TwitterUrl = setting.TwitterUrl,
-            YoutubeUrl = setting.YoutubeUrl,
-            WhatsAppNumber = setting.WhatsAppNumber,
-            Currency = setting.Currency,
-            FreeShippingThreshold = setting.FreeShippingThreshold,
-            ShippingCharge = setting.ShippingCharge,
-            FacebookPixelId = setting.FacebookPixelId,
-            GoogleTagId = setting.GoogleTagId,
-            SizeGuideImageUrl = setting.SizeGuideImageUrl
-        };
+        _cache.SiteSettings.TryGetValue("settings", out var settings);
+        return Task.FromResult(settings ?? new SiteSettingsDto());
     }
 
-    public async Task<List<DeliveryMethod>> GetActiveDeliveryMethodsAsync()
+    public Task<List<DeliveryMethod>> GetActiveDeliveryMethodsAsync()
     {
-        return await _unitOfWork.Repository<DeliveryMethod>().GetQueryable()
+        _cache.SiteSettings.TryGetValue("settings", out var settings);
+        var methods = settings?.DeliveryMethods?
             .Where(dm => dm.IsActive)
-            .ToListAsync();
+            .Select(dm => new DeliveryMethod
+            {
+                Id = dm.Id,
+                Name = dm.Name,
+                Cost = dm.Cost,
+                EstimatedDays = dm.EstimatedDays,
+                IsActive = dm.IsActive
+            })
+            .ToList() ?? new List<DeliveryMethod>();
+
+        return Task.FromResult(methods);
     }
 }

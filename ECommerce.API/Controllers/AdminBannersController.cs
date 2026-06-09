@@ -2,8 +2,6 @@ using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.AspNetCore.OutputCaching;
 using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
@@ -17,16 +15,12 @@ public class AdminBannersController : ControllerBase
     private readonly IAdminBannerService _bannerService;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
-    private readonly IMemoryCache _cache;
-    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminBannersController(IAdminBannerService bannerService, IWebHostEnvironment environment, IConfiguration config, IMemoryCache cache, IOutputCacheStore cacheStore)
+    public AdminBannersController(IAdminBannerService bannerService, IWebHostEnvironment environment, IConfiguration config)
     {
         _bannerService = bannerService;
         _environment = environment;
         _config = config;
-        _cache = cache;
-        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -47,11 +41,6 @@ public class AdminBannersController : ControllerBase
     public async Task<ActionResult<HeroBannerDto>> CreateBanner([FromBody] CreateHeroBannerDto dto)
     {
         var result = await _bannerService.CreateAsync(dto);
-
-        _cache.Remove("home_banners");
-        _cache.Remove("banners_active");
-        await _cacheStore.EvictByTagAsync("home", default);
-
         return CreatedAtAction(nameof(GetBannerById), new { id = result.Id }, result);
     }
 
@@ -61,11 +50,6 @@ public class AdminBannersController : ControllerBase
         try
         {
             var result = await _bannerService.UpdateAsync(id, dto);
-
-            _cache.Remove("home_banners");
-            _cache.Remove("banners_active");
-            await _cacheStore.EvictByTagAsync("home", default);
-
             return Ok(result);
         }
         catch (InvalidOperationException)
@@ -81,11 +65,6 @@ public class AdminBannersController : ControllerBase
         try
         {
             await _bannerService.DeleteAsync(id);
-
-            _cache.Remove("home_banners");
-            _cache.Remove("banners_active");
-            await _cacheStore.EvictByTagAsync("home", default);
-
             return NoContent();
         }
         catch (InvalidOperationException)
@@ -95,7 +74,7 @@ public class AdminBannersController : ControllerBase
     }
 
     [HttpPost("image")]
-    public async Task<ActionResult<UploadResultDto>> UploadImage([FromForm] IFormFile file)
+    public async Task<ActionResult<UploadResultDto>> UploadImage(IFormFile file)
     {
         if (file == null || file.Length == 0)
             return BadRequest("No file uploaded");

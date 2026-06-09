@@ -42,102 +42,112 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-ds-border/50">
-          <ng-container *ngFor="let product of filteredProducts">
-            <tr class="hover:bg-ds-bg transition-colors group">
-              <td class="px-ds-6 py-ds-4">
-                <div class="flex items-center gap-ds-4">
-                  <div class="size-10 rounded-sm overflow-hidden bg-ds-bg border border-ds-border flex-shrink-0 transition-all duration-500">
-                    <img 
-                      *ngIf="product.imageUrl"
-                      loading="lazy" [src]="imageUrlService.getImageUrl(product.imageUrl)" 
-                      class="w-full h-full object-cover"
-                    >
+          <ng-container *ngIf="!isLoading; else loading">
+            <ng-container *ngFor="let product of filteredProducts">
+              <tr class="hover:bg-ds-bg transition-colors group">
+                <td class="px-ds-6 py-ds-4">
+                  <div class="flex items-center gap-ds-4">
+                    <div class="size-10 rounded-sm overflow-hidden bg-ds-bg border border-ds-border flex-shrink-0 transition-all duration-500">
+                      <img 
+                        *ngIf="product.imageUrl"
+                        loading="lazy" [src]="imageUrlService.getImageUrl(product.imageUrl)" 
+                        class="w-full h-full object-cover"
+                      >
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-ds-text truncate max-w-[180px]">{{ product.productName }}</span>
+                      <span class="text-ds-text-muted mt-0.5">Product</span>
+                    </div>
                   </div>
-                  <div class="flex flex-col">
-                    <span class="text-ds-text truncate max-w-[180px]">{{ product.productName }}</span>
-                    <span class="text-ds-text-muted mt-0.5">Product</span>
+                </td>
+                <td class="px-ds-6 py-ds-4 text-ds-text-muted">{{ product.productSku }}</td>
+                <td class="px-ds-6 py-ds-4 text-center">
+                  <span class="inline-flex items-center justify-center px-ds-3 py-1 rounded-sm border"
+                        [ngClass]="{
+                          'bg-ds-bg text-ds-success border-ds-success/20': product.totalStock > 10,
+                          'bg-ds-bg text-orange-500 border-orange-500/20': product.totalStock > 0 && product.totalStock <= 10,
+                          'bg-ds-bg text-red-500 border-red-500/20': product.totalStock === 0
+                        }">
+                    {{ product.totalStock }}
+                  </span>
+                </td>
+                <td class="px-ds-6 py-ds-4">
+                  <div class="flex flex-col gap-1">
+                    <div class="flex justify-between items-center bg-ds-bg/50 px-2 py-0.5 rounded-sm border border-ds-border/50">
+                      <span class="text-ds-text-muted">Price</span>
+                      <span class="text-ds-text">৳{{ product.price || 0 }}</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-ds-bg/50 px-2 py-0.5 rounded-sm border border-ds-border/50">
+                      <span class="text-ds-text-muted">Buying Cost</span>
+                      <span class="text-ds-text-muted">৳{{ product.purchaseRate || 0 }}</span>
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td class="px-ds-6 py-ds-4 text-ds-text-muted">{{ product.productSku }}</td>
-              <td class="px-ds-6 py-ds-4 text-center">
-                <span class="inline-flex items-center justify-center px-ds-3 py-1 rounded-sm border"
-                      [ngClass]="{
-                        'bg-ds-bg text-ds-success border-ds-success/20': product.totalStock > 10,
-                        'bg-ds-bg text-orange-500 border-orange-500/20': product.totalStock > 0 && product.totalStock <= 10,
-                        'bg-ds-bg text-red-500 border-red-500/20': product.totalStock === 0
-                      }">
-                  {{ product.totalStock }}
-                </span>
-              </td>
-              <td class="px-ds-6 py-ds-4">
-                <div class="flex flex-col gap-1">
-                  <div class="flex justify-between items-center bg-ds-bg/50 px-2 py-0.5 rounded-sm border border-ds-border/50">
-                    <span class="text-ds-text-muted">Price</span>
-                    <span class="text-ds-text">৳{{ product.price || 0 }}</span>
+                </td>
+                <td class="px-ds-6 py-ds-4">
+                  <div *ngIf="product.variants && product.variants.length > 0" class="flex flex-wrap gap-1.5 max-w-[200px]">
+                    <div *ngFor="let variant of product.variants" 
+                         class="px-2 py-0.5 bg-ds-bg border border-ds-border rounded-sm flex items-center gap-2"
+                         [title]="variant.sku">
+                      <span class="text-ds-text">{{ variant.size || 'STD' }}</span>
+                      <span class="text-ds-text-muted">[{{ variant.stockQuantity }}]</span>
+                    </div>
                   </div>
-                  <div class="flex justify-between items-center bg-ds-bg/50 px-2 py-0.5 rounded-sm border border-ds-border/50">
-                    <span class="text-ds-text-muted">Buying Cost</span>
-                    <span class="text-ds-text-muted">৳{{ product.purchaseRate || 0 }}</span>
-                  </div>
-                </div>
-              </td>
-              <td class="px-ds-6 py-ds-4">
-                <div *ngIf="product.variants && product.variants.length > 0" class="flex flex-wrap gap-1.5 max-w-[200px]">
-                  <div *ngFor="let variant of product.variants" 
-                       class="px-2 py-0.5 bg-ds-bg border border-ds-border rounded-sm flex items-center gap-2"
-                       [title]="variant.sku">
-                    <span class="text-ds-text">{{ variant.size || 'STD' }}</span>
-                    <span class="text-ds-text-muted">[{{ variant.stockQuantity }}]</span>
-                  </div>
-                </div>
-                <span *ngIf="!product.variants || product.variants.length === 0" class="text-ds-text-muted">No Variants</span>
-              </td>
-              <td class="px-ds-6 py-ds-4 text-right">
-                <div class="flex items-center justify-end gap-2 ml-auto">
-                  <!-- Landing Page Links -->
-                  <div class="flex items-center gap-1 bg-ds-bg/50 p-1 rounded-sm border border-ds-border">
-                    <a
-                      class="h-7 px-ds-2 flex items-center justify-center text-ds-text-muted hover:text-ds-text hover:bg-ds-surface transition-all rounded-sm border border-transparent hover:border-ds-border"
-                      [routerLink]="['/lp', product.productSlug]"
-                      target="_blank"
-                      title="Open Regular LP"
-                    >
-                      Open LP
-                    </a>
-                    <div class="w-px h-3 bg-ds-border"></div>
-                    <a
-                      class="h-7 px-ds-2 flex items-center justify-center text-ds-text-muted hover:text-ds-text hover:bg-ds-surface transition-all rounded-sm border border-transparent hover:border-ds-border"
-                      [routerLink]="['/clp', product.productSlug]"
-                      target="_blank"
-                      title="Open Custom LP"
-                    >
-                      Open CLP
-                    </a>
-                    <div class="w-px h-3 bg-ds-border"></div>
-                    <a
-                      class="size-7 flex items-center justify-center text-ds-text-muted hover:text-ds-text transition-colors rounded-sm hover:bg-ds-surface"
-                      [routerLink]="['/admin/products', product.productId, 'custom-lp']"
-                      title="Edit CLP Settings"
-                    >
-                      <app-icon name="Settings2" size="12"></app-icon>
-                    </a>
-                  </div>
+                  <span *ngIf="!product.variants || product.variants.length === 0" class="text-ds-text-muted">No Variants</span>
+                </td>
+                <td class="px-ds-6 py-ds-4 text-right">
+                  <div class="flex items-center justify-end gap-2 ml-auto">
+                    <!-- Landing Page Links -->
+                    <div class="flex items-center gap-1 bg-ds-bg/50 p-1 rounded-sm border border-ds-border">
+                      <a
+                        class="h-7 px-ds-2 flex items-center justify-center text-ds-text-muted hover:text-ds-text hover:bg-ds-surface transition-all rounded-sm border border-transparent hover:border-ds-border"
+                        [routerLink]="['/lp', product.productSlug]"
+                        target="_blank"
+                        title="Open Regular LP"
+                      >
+                        Open LP
+                      </a>
+                      <div class="w-px h-3 bg-ds-border"></div>
+                      <a
+                        class="h-7 px-ds-2 flex items-center justify-center text-ds-text-muted hover:text-ds-text hover:bg-ds-surface transition-all rounded-sm border border-transparent hover:border-ds-border"
+                        [routerLink]="['/clp', product.productSlug]"
+                        target="_blank"
+                        title="Open Custom LP"
+                      >
+                        Open CLP
+                      </a>
+                      <div class="w-px h-3 bg-ds-border"></div>
+                      <a
+                        class="size-7 flex items-center justify-center text-ds-text-muted hover:text-ds-text transition-colors rounded-sm hover:bg-ds-surface"
+                        [routerLink]="['/admin/products', product.productId, 'custom-lp']"
+                        title="Edit CLP Settings"
+                      >
+                        <app-icon name="Settings2" size="12"></app-icon>
+                      </a>
+                    </div>
 
-                  <button (click)="openStockModal(product)" 
-                          class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center">
-                    <app-icon name="Edit3" size="14"></app-icon>
-                  </button>
-                </div>
+                    <button (click)="openStockModal(product)" 
+                            class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center">
+                      <app-icon name="Edit3" size="14"></app-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </ng-container>
+          <ng-template #loading>
+            <tr>
+              <td colspan="6" class="px-ds-6 py-ds-24 text-center">
+                <app-icon name="Loader2" size="32" className="animate-spin text-ds-text-muted mx-auto"></app-icon>
+                <p class="text-ds-text-muted mt-ds-4 animate-pulse">Loading inventory...</p>
               </td>
             </tr>
-          </ng-container>
+          </ng-template>
         </tbody>
       </table>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="filteredProducts.length === 0" class="flex flex-col items-center justify-center py-ds-24 text-ds-text-muted/40">
+    <div *ngIf="!isLoading && filteredProducts.length === 0" class="flex flex-col items-center justify-center py-ds-24 text-ds-text-muted/40">
       <app-icon name="PackageX" size="48" className="mb-ds-4 opacity-10"></app-icon>
       <p >No products found.</p>
     </div>

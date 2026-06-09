@@ -2,7 +2,6 @@ using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,12 +12,10 @@ namespace ECommerce.API.Controllers;
 public class AdminPagesController : ControllerBase
 {
     private readonly IAdminPageService _pageService;
-    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminPagesController(IAdminPageService pageService, IOutputCacheStore cacheStore)
+    public AdminPagesController(IAdminPageService pageService)
     {
         _pageService = pageService;
-        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -39,7 +36,6 @@ public class AdminPagesController : ControllerBase
     public async Task<ActionResult<PageDto>> CreatePage([FromBody] PageCreateDto dto)
     {
         var result = await _pageService.CreateAsync(dto);
-        await _cacheStore.EvictByTagAsync("content", default);
         return CreatedAtAction(nameof(GetPageById), new { id = result.Id }, result);
     }
 
@@ -49,7 +45,6 @@ public class AdminPagesController : ControllerBase
         try
         {
             var result = await _pageService.UpdateAsync(id, dto);
-            await _cacheStore.EvictByTagAsync("content", default);
             return Ok(result);
         }
         catch (InvalidOperationException)
@@ -65,7 +60,6 @@ public class AdminPagesController : ControllerBase
         try
         {
             await _pageService.DeleteAsync(id);
-            await _cacheStore.EvictByTagAsync("content", default);
             return NoContent();
         }
         catch (InvalidOperationException)

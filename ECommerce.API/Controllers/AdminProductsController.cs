@@ -3,7 +3,6 @@ using ECommerce.Core.DTOs.Products;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
@@ -17,16 +16,12 @@ public class AdminProductsController : ControllerBase
     private readonly IWebHostEnvironment _environment;
     private readonly IProductService _productService;
     private readonly IConfiguration _config;
-    private readonly ICacheService _cache;
-    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminProductsController(IWebHostEnvironment environment, IProductService productService, IConfiguration config, ICacheService cache, IOutputCacheStore cacheStore)
+    public AdminProductsController(IWebHostEnvironment environment, IProductService productService, IConfiguration config)
     {
         _environment = environment;
         _productService = productService;
         _config = config;
-        _cache = cache;
-        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -92,10 +87,6 @@ public class AdminProductsController : ControllerBase
             var result = await _productService.CreateProductAsync(dto);
             if (result == null) return BadRequest(new { message = "Error creating product" });
 
-            await _cache.RemoveAsync("home_new_arrivals");
-            await _cache.RemoveAsync("home_featured_products");
-            await _cacheStore.EvictByTagAsync("catalog", default);
-
             return CreatedAtAction(nameof(GetProductById), new { id = result.Id }, result);
         }
         catch (KeyNotFoundException ex)
@@ -118,10 +109,6 @@ public class AdminProductsController : ControllerBase
             Console.WriteLine($"[ADMIN_DEBUG] Updating Product {id}: {dto.Name}, Type: {dto.ProductType}");
             var result = await _productService.UpdateProductAsync(id, dto, ignoreFilters: true);
             if (result == null) return BadRequest(new { message = "Error updating product" });
-
-            await _cache.RemoveAsync("home_new_arrivals");
-            await _cache.RemoveAsync("home_featured_products");
-            await _cacheStore.EvictByTagAsync("catalog", default);
 
             return Ok(result);
         }
@@ -151,10 +138,6 @@ public class AdminProductsController : ControllerBase
 
         foreach (var url in imageUrls)
             DeleteImageFile(url);
-
-        await _cache.RemoveAsync("home_new_arrivals");
-        await _cache.RemoveAsync("home_featured_products");
-        await _cacheStore.EvictByTagAsync("catalog", default);
 
         return Ok(true);
     }

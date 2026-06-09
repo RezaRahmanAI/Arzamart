@@ -21,102 +21,110 @@
 
   <!-- Reviews List -->
   <div class="flex flex-col gap-ds-4">
-    <div
-      *ngFor="let review of reviews"
-      class="bg-ds-surface p-ds-6 rounded-sm border border-ds-border flex flex-col md:flex-row gap-ds-8 hover:bg-ds-bg/30 transition-colors group"
-    >
-      <div class="flex-shrink-0 flex items-start gap-ds-4">
-        <div
-          class="size-12 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center overflow-hidden transition-all duration-700"
-        >
-          <img
-            *ngIf="review.userAvatar"
-            loading="lazy" [src]="getImageUrl(review.userAvatar)"
-            class="w-full h-full object-cover"
-          />
-          <app-icon
-            *ngIf="!review.userAvatar"
-            name="User"
-            size="20"
-            className="text-ds-text-muted/30"
-          ></app-icon>
+    <ng-container *ngIf="!isLoading; else loading">
+      <div
+        *ngFor="let review of reviews"
+        class="bg-ds-surface p-ds-6 rounded-sm border border-ds-border flex flex-col md:flex-row gap-ds-8 hover:bg-ds-bg/30 transition-colors group"
+      >
+        <div class="flex-shrink-0 flex items-start gap-ds-4">
+          <div
+            class="size-12 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center overflow-hidden transition-all duration-700"
+          >
+            <img
+              *ngIf="review.userAvatar"
+              loading="lazy" [src]="getImageUrl(review.userAvatar)"
+              class="w-full h-full object-cover"
+            />
+            <app-icon
+              *ngIf="!review.userAvatar"
+              name="User"
+              size="20"
+              className="text-ds-text-muted/30"
+            ></app-icon>
+          </div>
+          <div>
+            <h3 class="text-ds-text">{{ review.userName }}</h3>
+            <div class="flex items-center gap-ds-3 text-ds-text-muted mt-1">
+              <span>{{ review.createdAt | date: "MMM dd, yyyy" }}</span>
+              <span
+                *ngIf="review.isVerifiedPurchase"
+                class="text-ds-success border border-ds-success/20 px-1.5 py-0.5 rounded-sm"
+              >
+                Verified
+              </span>
+            </div>
+          </div>
         </div>
-        <div>
-          <h3 class="text-ds-text">{{ review.userName }}</h3>
-          <div class="flex items-center gap-ds-3 text-ds-text-muted mt-1">
-            <span>{{ review.createdAt | date: "MMM dd, yyyy" }}</span>
-            <span
-              *ngIf="review.isVerifiedPurchase"
-              class="text-ds-success border border-ds-success/20 px-1.5 py-0.5 rounded-sm"
-            >
-              Verified
+
+        <div class="flex-grow flex flex-col gap-ds-3">
+          <div class="flex items-center gap-1">
+            <app-icon
+              *ngFor="let s of getStars(review.rating)"
+              name="Star"
+              size="14"
+              className="text-ds-text fill-ds-text"
+            ></app-icon>
+            <app-icon
+              *ngFor="let s of [1, 2, 3, 4, 5].slice(review.rating)"
+              name="Star"
+              size="14"
+              className="text-ds-text-muted/20"
+            ></app-icon>
+          </div>
+          <p class="text-ds-text border-l-2 border-ds-border pl-ds-4 py-1">
+            "{{ review.comment }}"
+          </p>
+          <div *ngIf="review.screenshotUrl" class="mt-ds-3">
+            <a [href]="getImageUrl(review.screenshotUrl)" target="_blank" class="inline-block border border-ds-border rounded-sm overflow-hidden bg-ds-bg max-w-[200px] hover:border-ds-text/30 transition-all">
+              <img [src]="getImageUrl(review.screenshotUrl)" class="max-h-24 w-auto object-contain" alt="Review Screenshot">
+            </a>
+          </div>
+          <div
+            class="flex items-center gap-ds-6 text-ds-text-muted pt-ds-3 border-t border-ds-border/50"
+          >
+            <span class="flex items-center gap-ds-2">
+              <app-icon name="Package" size="12"></app-icon>
+              {{ review.productName }}
+            </span>
+            <span class="flex items-center gap-ds-2">
+              <app-icon name="ThumbsUp" size="12"></app-icon>
+              {{ review.likes }} likes
             </span>
           </div>
         </div>
-      </div>
 
-      <div class="flex-grow flex flex-col gap-ds-3">
-        <div class="flex items-center gap-1">
-          <app-icon
-            *ngFor="let s of getStars(review.rating)"
-            name="Star"
-            size="14"
-            className="text-ds-text fill-ds-text"
-          ></app-icon>
-          <app-icon
-            *ngFor="let s of [1, 2, 3, 4, 5].slice(review.rating)"
-            name="Star"
-            size="14"
-            className="text-ds-text-muted/20"
-          ></app-icon>
-        </div>
-        <p class="text-ds-text border-l-2 border-ds-border pl-ds-4 py-1">
-          "{{ review.comment }}"
-        </p>
-        <div *ngIf="review.screenshotUrl" class="mt-ds-3">
-          <a [href]="getImageUrl(review.screenshotUrl)" target="_blank" class="inline-block border border-ds-border rounded-sm overflow-hidden bg-ds-bg max-w-[200px] hover:border-ds-text/30 transition-all">
-            <img [src]="getImageUrl(review.screenshotUrl)" class="max-h-24 w-auto object-contain" alt="Review Screenshot">
-          </a>
-        </div>
         <div
-          class="flex items-center gap-ds-6 text-ds-text-muted pt-ds-3 border-t border-ds-border/50"
+          class="flex md:flex-col gap-ds-2 justify-center border-l border-ds-border/50 md:pl-ds-6 opacity-0 group-hover:opacity-100 transition-opacity"
         >
-          <span class="flex items-center gap-ds-2">
-            <app-icon name="Package" size="12"></app-icon>
-            {{ review.productName }}
-          </span>
-          <span class="flex items-center gap-ds-2">
-            <app-icon name="ThumbsUp" size="12"></app-icon>
-            {{ review.likes }} likes
-          </span>
+          <button
+            (click)="openEditModal(review)"
+            class="size-9 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors"
+            title="Edit Entry"
+           *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
+            <app-icon name="Edit3" size="16"></app-icon>
+          </button>
+          <button
+            *ngIf="authService.isSuperAdmin()"
+            (click)="deleteReview(review.id)"
+            class="size-9 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors"
+            title="Delete"
+          >
+            <app-icon name="Trash2" size="16"></app-icon>
+          </button>
         </div>
       </div>
-
-      <div
-        class="flex md:flex-col gap-ds-2 justify-center border-l border-ds-border/50 md:pl-ds-6 opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        <button
-          (click)="openEditModal(review)"
-          class="size-9 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors"
-          title="Edit Entry"
-         *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
-          <app-icon name="Edit3" size="16"></app-icon>
-        </button>
-        <button
-          *ngIf="authService.isSuperAdmin()"
-          (click)="deleteReview(review.id)"
-          class="size-9 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors"
-          title="Delete"
-        >
-          <app-icon name="Trash2" size="16"></app-icon>
-        </button>
+    </ng-container>
+    <ng-template #loading>
+      <div class="py-ds-24 text-center bg-ds-surface border border-ds-border rounded-sm">
+        <app-icon name="Loader2" size="32" className="animate-spin text-ds-text-muted mx-auto"></app-icon>
+        <p class="text-ds-text-muted mt-ds-4 animate-pulse">Loading reviews...</p>
       </div>
-    </div>
+    </ng-template>
   </div>
 
   <!-- Empty State -->
   <div
-    *ngIf="reviews.length === 0"
+    *ngIf="!isLoading && reviews.length === 0"
     class="py-ds-24 text-center bg-ds-bg/30 rounded-sm border border-ds-border border-dashed"
   >
     <app-icon

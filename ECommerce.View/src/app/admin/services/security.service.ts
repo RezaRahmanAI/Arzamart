@@ -1,7 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 export interface BlockedIp {
   id: number;
@@ -19,7 +18,7 @@ export class SecurityService {
   private readonly baseUrl = "/admin/security";
 
   getBlockedIps(): Observable<BlockedIp[]> {
-    return this.api.get<BlockedIp[]>(`${this.baseUrl}/blocked-ips`, { headers: X_REFRESH });
+    return this.api.get<BlockedIp[]>(`${this.baseUrl}/blocked-ips`);
   }
 
   blockIp(blockedIp: Partial<BlockedIp>): Observable<BlockedIp> {

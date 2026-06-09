@@ -54,6 +54,24 @@ export class ProductService {
     shareReplay(1)
   );
 
+  readonly heroData$ = this.refreshSubject.pipe(
+    switchMap(() => this.withTransfer("hero_data",
+      this.api.get<any[]>("/home/hero").pipe(
+        catchError(() => of([]))
+      )
+    )),
+    shareReplay(1)
+  );
+
+  readonly newArrivalsData$ = this.refreshSubject.pipe(
+    switchMap(() => this.withTransfer("new_arrivals_data",
+      this.api.get<Product[]>("/home/products").pipe(
+        catchError(() => of([]))
+      )
+    )),
+    shareReplay(1)
+  );
+
   readonly featuredProducts$ = this.refreshSubject.pipe(
     switchMap(() => this.api.get<Pagination<Product>>(this.baseUrl, {
       params: { isFeatured: true, pageSize: 12 }
@@ -97,6 +115,14 @@ export class ProductService {
 
   getHomeData(context?: HttpContext): Observable<HomeData> {
     return this.homeData$;
+  }
+
+  getHeroData(context?: HttpContext): Observable<any[]> {
+    return this.heroData$;
+  }
+
+  getNewArrivalsData(context?: HttpContext): Observable<Product[]> {
+    return this.newArrivalsData$;
   }
 
   getProducts(

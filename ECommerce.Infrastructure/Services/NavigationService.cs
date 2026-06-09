@@ -6,72 +6,30 @@ using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using ECommerce.Core.Constants;
+using ECommerce.Infrastructure.Cache;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace ECommerce.Infrastructure.Services;
 
 public class NavigationService : INavigationService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly ICacheService _cache;
-    private const string MegaMenuCacheKey = "nav:mega-menu";
+    private readonly AppCache _cache;
 
-    public NavigationService(ApplicationDbContext context, ICacheService cache)
+    public NavigationService(AppCache cache)
     {
-        _context = context;
         _cache = cache;
     }
 
-    public async Task<MegaMenuDto> GetMegaMenuAsync()
+    public Task<MegaMenuDto> GetMegaMenuAsync()
     {
-        return await _cache.GetOrCreateAsync(MegaMenuCacheKey, async () =>
+        _cache.NavigationMenus.TryGetValue("main", out var categories);
+
+        var menuDto = new MegaMenuDto
         {
-            // 1. Get Active Categories from DB
-            var dbCategories = await _context.Categories
-                .AsNoTracking()
-                .Where(c => c.IsActive)
-                .OrderBy(c => c.DisplayOrder)
-                .ToListAsync();
+            Categories = categories ?? new List<MegaMenuCategoryDto>()
+        };
 
-            // 2. Get All Active SubCategories with their Collections from DB
-            var dbSubCategories = await _context.SubCategories
-                .AsNoTracking()
-                .Include(sc => sc.Collections)
-                .Where(sc => sc.IsActive)
-                .OrderBy(sc => sc.DisplayOrder)
-                .ToListAsync();
-
-            var menuDto = new MegaMenuDto
-            {
-                Categories = dbCategories.Select(c => new MegaMenuCategoryDto
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Slug = c.Slug,
-                    Icon = c.ImageUrl, 
-                    SubCategories = dbSubCategories
-                        .Where(sc => sc.CategoryId == c.Id)
-                        .Select(sc => new MegaMenuSubCategoryDto
-                        {
-                            Id = sc.Id,
-                            Name = sc.Name,
-                            Slug = sc.Slug,
-                            Collections = sc.Collections
-                                .Where(col => col.IsActive)
-                                .OrderBy(col => col.DisplayOrder)
-                                .Select(col => new MegaMenuCollectionDto
-                                {
-                                    Id = col.Id,
-                                    Name = col.Name,
-                                    Slug = col.Slug
-                                })
-                        })
-                })
-            };
-
-            return menuDto;
-        }) ?? new MegaMenuDto();
+        return Task.FromResult(menuDto);
     }
 }

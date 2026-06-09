@@ -1,5 +1,5 @@
 import { NgIf, NgTemplateOutlet, NgFor } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { AdminNavigationMenu } from "../../models/navigation.models";
@@ -18,10 +18,12 @@ export class NavigationManagementComponent implements OnInit, OnDestroy {
   private navService = inject(NavigationService);
   private fb = inject(FormBuilder);
   readonly authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
 
   menus: AdminNavigationMenu[] = [];
   flatMenus: AdminNavigationMenu[] = [];
+  isLoading = false;
   isModalOpen = false;
   isEditing = false;
   selectedMenuId: number | null = null;
@@ -45,12 +47,23 @@ export class NavigationManagementComponent implements OnInit, OnDestroy {
   }
 
   loadMenus(): void {
+    this.isLoading = true;
+    this.cdr.markForCheck();
     this.navService
       .getAll()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((menus) => {
-        this.menus = menus;
-        this.flatMenus = this.flattenMenus(menus);
+      .subscribe({
+        next: (menus) => {
+          this.menus = menus;
+          this.flatMenus = this.flattenMenus(menus);
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error(err);
+          this.cdr.markForCheck();
+        }
       });
   }
 

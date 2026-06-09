@@ -1,5 +1,5 @@
 import { NgIf, NgClass, NgFor } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { AdminPage } from "../../models/pages.models";
@@ -18,9 +18,11 @@ export class PagesComponent implements OnInit, OnDestroy {
   private pagesService = inject(PagesService);
   private fb = inject(FormBuilder);
   readonly authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
 
   pages: AdminPage[] = [];
+  isLoading = false;
   isModalOpen = false;
   isEditing = false;
   selectedPageId: number | null = null;
@@ -54,11 +56,22 @@ export class PagesComponent implements OnInit, OnDestroy {
   }
 
   loadPages(): void {
+    this.isLoading = true;
+    this.cdr.markForCheck();
     this.pagesService
       .getAll()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((pages) => {
-        this.pages = pages;
+      .subscribe({
+        next: (pages) => {
+          this.pages = pages;
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error(err);
+          this.cdr.markForCheck();
+        }
       });
   }
 

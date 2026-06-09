@@ -22,9 +22,17 @@
     </div>
 
     <div class="p-ds-6">
-      <ng-container
-        *ngTemplateOutlet="menuTree; context: { $implicit: menus, depth: 0 }"
-      ></ng-container>
+      <ng-container *ngIf="!isLoading; else loading">
+        <ng-container
+          *ngTemplateOutlet="menuTree; context: { $implicit: menus, depth: 0 }"
+        ></ng-container>
+      </ng-container>
+      <ng-template #loading>
+        <div class="py-ds-12 text-center">
+          <app-icon name="Loader2" size="32" className="animate-spin text-ds-text-muted mx-auto"></app-icon>
+          <p class="text-ds-text-muted mt-ds-3 animate-pulse">Loading menu structure...</p>
+        </div>
+      </ng-template>
     </div>
 
     <!-- Recursive Template -->
@@ -88,7 +96,7 @@
     </ng-template>
 
     <!-- Empty State -->
-    <div *ngIf="menus.length === 0" class="py-ds-24 text-center">
+    <div *ngIf="!isLoading && menus.length === 0" class="py-ds-24 text-center">
       <app-icon
         name="Map"
         size="64"

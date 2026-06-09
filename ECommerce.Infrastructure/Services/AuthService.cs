@@ -6,7 +6,6 @@ using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Services
@@ -17,20 +16,17 @@ namespace ECommerce.Infrastructure.Services
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _config;
-        private readonly IMemoryCache _cache;
 
         public AuthService(
             UserManager<ApplicationUser> userManager,
             IJwtTokenService jwtTokenService,
             IUnitOfWork unitOfWork,
-            IConfiguration config,
-            IMemoryCache cache)
+            IConfiguration config)
         {
             _userManager = userManager;
             _jwtTokenService = jwtTokenService;
             _unitOfWork = unitOfWork;
             _config = config;
-            _cache = cache;
         }
 
         public async Task<(LoginResponseDto Response, string RefreshToken)> LoginAsync(LoginDto loginDto, string deviceInfo, string ipAddress)

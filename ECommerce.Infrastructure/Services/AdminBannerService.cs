@@ -5,17 +5,24 @@ using System.Threading.Tasks;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
+using ECommerce.Infrastructure.Cache;
+using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ECommerce.Infrastructure.Services;
 
 public class AdminBannerService : IAdminBannerService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly AppCache _cache;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public AdminBannerService(IUnitOfWork unitOfWork)
+    public AdminBannerService(IUnitOfWork unitOfWork, AppCache cache, IServiceScopeFactory scopeFactory)
     {
         _unitOfWork = unitOfWork;
+        _cache = cache;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task<List<HeroBannerDto>> GetAllAsync()
@@ -80,6 +87,9 @@ public class AdminBannerService : IAdminBannerService
         _unitOfWork.Repository<HeroBanner>().Add(banner);
         await _unitOfWork.Complete();
 
+        _cache.Banners[banner.Id] = banner;
+        RebuildHomePageCache();
+
         return new HeroBannerDto
         {
             Id = banner.Id,
@@ -116,6 +126,9 @@ public class AdminBannerService : IAdminBannerService
 
         await _unitOfWork.Complete();
 
+        _cache.Banners[id] = banner;
+        RebuildHomePageCache();
+
         return new HeroBannerDto
         {
             Id = banner.Id,
@@ -141,5 +154,91 @@ public class AdminBannerService : IAdminBannerService
 
         _unitOfWork.Repository<HeroBanner>().Delete(banner);
         await _unitOfWork.Complete();
+
+        _cache.Banners.TryRemove(id, out _);
+        RebuildHomePageCache();
+    }
+
+    private void RebuildHomePageCache()
+    {
+        var banners = _cache.Banners.Values
+            .Where(b => b.IsActive)
+            .OrderBy(b => b.DisplayOrder)
+            .Select(b => new HeroBannerDto
+            {
+                Id = b.Id,
+                Title = b.Title ?? "",
+                Subtitle = b.Subtitle ?? "",
+                ImageUrl = b.ImageUrl,
+                MobileImageUrl = b.MobileImageUrl ?? "",
+                LinkUrl = b.LinkUrl ?? "",
+                ButtonText = b.ButtonText ?? "",
+                DisplayOrder = b.DisplayOrder,
+                Type = b.Type
+            })
+            .ToList();
+
+        var categories = _cache.Categories.Values
+            .Where(c => c.IsActive)
+            .OrderBy(c => c.DisplayOrder)
+            .Take(10)
+            .Select(c => new CategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Slug = c.Slug,
+                ImageUrl = c.ImageUrl,
+                DisplayOrder = c.DisplayOrder,
+                IsActive = c.IsActive
+            })
+            .ToList();
+
+        var featuredProducts = _cache.Products.Values
+            .Where(p => p.IsActive && p.IsFeatured)
+            .OrderBy(p => p.SortOrder)
+            .Take(12)
+            .Select(p => new ProductListDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Slug = p.Slug,
+                ImageUrl = p.ImageUrl ?? "",
+                Price = p.Variants.FirstOrDefault()?.Price ?? 0,
+                CompareAtPrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
+                IsFeatured = p.IsFeatured,
+                IsActive = p.IsActive,
+                IsNew = p.IsNew,
+                CategoryName = p.Category?.Name ?? "",
+                SortOrder = p.SortOrder
+            })
+            .ToList();
+
+        var newArrivals = _cache.Products.Values
+            .Where(p => p.IsActive)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(12)
+            .Select(p => new ProductListDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Slug = p.Slug,
+                ImageUrl = p.ImageUrl ?? "",
+                Price = p.Variants.FirstOrDefault()?.Price ?? 0,
+                CompareAtPrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
+                IsFeatured = p.IsFeatured,
+                IsActive = p.IsActive,
+                IsNew = p.IsNew,
+                CategoryName = p.Category?.Name ?? "",
+                SortOrder = p.SortOrder
+            })
+            .ToList();
+
+        _cache.HomePageData["homepage"] = new HomePageDto
+        {
+            Banners = banners,
+            Categories = categories,
+            FeaturedProducts = featuredProducts,
+            NewArrivals = newArrivals
+        };
     }
 }

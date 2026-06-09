@@ -135,7 +135,7 @@ import { SiteSettingsService } from "../../../core/services/site-settings.servic
 export class ContactFabComponent implements OnInit {
   private settingsService = inject(SiteSettingsService);
 
-  isOpen = false;
+  isOpen = true;
   contactPhone = "";
   whatsAppNumber = "";
   messengerUrl = "";

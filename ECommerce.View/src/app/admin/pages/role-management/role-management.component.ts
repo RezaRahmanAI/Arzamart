@@ -86,6 +86,7 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.notification.error("Failed to load permissions for role.");
+        this.cdr.markForCheck();
       }
     });
   }
@@ -202,6 +203,7 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.notification.error(err.error?.message || "Failed to delete role.");
+          this.cdr.markForCheck();
         }
       });
     }

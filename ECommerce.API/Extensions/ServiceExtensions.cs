@@ -2,6 +2,7 @@ using ECommerce.API.Helpers;
 using ECommerce.Core.Constants;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
+using ECommerce.Infrastructure.Cache;
 using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
@@ -44,39 +45,10 @@ public static class ServiceExtensions
         services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest); // Fastest is often better for shared hosting CPU
         services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 
-        // 3. Caching
-        services.AddMemoryCache();
-        
-        var redisConn = config["Redis:ConnectionString"];
-        Console.WriteLine($"[DEBUG] Redis Connection String from Config: '{redisConn}'");
-        if (string.IsNullOrEmpty(redisConn) || redisConn.Equals("Disabled", StringComparison.OrdinalIgnoreCase))
-        {
-            services.AddDistributedMemoryCache();
-        }
-        else
-        {
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConn;
-                options.InstanceName = "Arzamart_";
-            });
-        }
-
-        services.AddSingleton<ICacheService, CacheService>();
-
-        services.AddOutputCache(options =>
-        {
-            options.AddPolicy("DefaultPolicy", builder => 
-                builder.Expire(CacheDurations.DefaultOutputCache));
-            
-            options.AddPolicy("Products", builder =>
-                builder.Expire(CacheDurations.ProductsCache)
-                       .Tag("products"));
-
-            options.AddPolicy("Categories", builder =>
-                builder.Expire(CacheDurations.CategoriesCache)
-                       .Tag("categories"));
-        });
+        // 3. Caching (AppCache singleton + warmup)
+        services.AddMemoryCache(); // DashboardService (15s stats), CartController (per-user session), SecurityMiddleware (JWT revocation)
+        services.AddSingleton<AppCache>();
+        services.AddHostedService<CacheWarmupService>();
 
         services.AddResponseCaching();
 
@@ -280,9 +252,6 @@ public static class ServiceExtensions
 
     public static IServiceCollection AddSwaggerServices(this IServiceCollection services, IWebHostEnvironment env)
     {
-        // Swagger middleware is enabled in Program.cs for all environments.
-        // Registering these services unconditionally prevents startup failure
-        // in production when `/swagger` is requested.
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 

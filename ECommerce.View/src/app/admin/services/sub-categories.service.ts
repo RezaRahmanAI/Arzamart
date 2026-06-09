@@ -1,7 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable, map } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 export interface SubCategory {
   id: number;
@@ -21,11 +20,11 @@ export class SubCategoriesService {
   private readonly api = inject(ApiHttpClient);
 
   getAll(): Observable<SubCategory[]> {
-    return this.api.get<SubCategory[]>("/admin/subcategories", { headers: X_REFRESH });
+    return this.api.get<SubCategory[]>("/admin/subcategories");
   }
 
   getById(id: number): Observable<SubCategory> {
-    return this.api.get<SubCategory>(`/admin/subcategories/${id}`, { headers: X_REFRESH });
+    return this.api.get<SubCategory>(`/admin/subcategories/${id}`);
   }
 
   create(payload: Partial<SubCategory>): Observable<SubCategory> {

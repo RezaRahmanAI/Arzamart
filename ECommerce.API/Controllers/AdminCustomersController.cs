@@ -36,6 +36,7 @@ public class AdminCustomersController : ControllerBase
                 Name = c.Name,
                 Phone = c.Phone,
                 Address = c.Address,
+                IsSuspicious = c.IsSuspicious,
                 CreatedAt = c.CreatedAt,
                 UpdatedAt = c.UpdatedAt
             }).ToList(),

@@ -123,16 +123,23 @@ export class ProductsComponent implements OnInit, OnDestroy {
     if (!confirmed) {
       return;
     }
-    this.productsService.deleteProduct(product.id).subscribe((success) => {
-      if (!success) {
-        return;
+    this.productsService.deleteProduct(product.id).subscribe({
+      next: (success) => {
+        if (!success) {
+          this.cdr.markForCheck();
+          return;
+        }
+        this.selectedProductIds.delete(product.id);
+        
+        this.products = this.products.filter(p => p.id !== product.id);
+        this.totalResults--;
+        
+        this.loadProducts();
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.cdr.markForCheck();
       }
-      this.selectedProductIds.delete(product.id);
-      
-      this.products = this.products.filter(p => p.id !== product.id);
-      this.totalResults--;
-      
-      this.loadProducts();
     });
   }
 

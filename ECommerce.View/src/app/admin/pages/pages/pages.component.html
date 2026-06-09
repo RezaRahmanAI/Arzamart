@@ -29,50 +29,60 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-ds-border/50">
-          <tr
-            *ngFor="let page of pages"
-            class="hover:bg-ds-bg/50 transition-colors group"
-          >
-            <td class="px-ds-8 py-ds-5">
-              <span class="text-ds-text">{{ page.title }}</span>
-            </td>
-            <td class="px-ds-8 py-ds-5">
-              <span class="text-ds-text-muted">/{{ page.slug }}</span>
-            </td>
-            <td class="px-ds-8 py-ds-5">
-              <span
-                class="px-ds-3 py-1 rounded-sm border transition-all"
-                [ngClass]="page.isActive ? 'bg-ds-success/10 text-ds-success border-ds-success/20' : 'bg-ds-bg text-ds-text-muted border-ds-border'"
-              >
-                {{ page.isActive ? "Active" : "Inactive" }}
-              </span>
-            </td>
-            <td class="px-ds-8 py-ds-5 text-right">
-              <div class="flex justify-end gap-ds-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button
-                  (click)="openEditModal(page)"
-                  class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors"
-                  title="Edit"
+          <ng-container *ngIf="!isLoading; else loading">
+            <tr
+              *ngFor="let page of pages"
+              class="hover:bg-ds-bg/50 transition-colors group"
+            >
+              <td class="px-ds-8 py-ds-5">
+                <span class="text-ds-text">{{ page.title }}</span>
+              </td>
+              <td class="px-ds-8 py-ds-5">
+                <span class="text-ds-text-muted">/{{ page.slug }}</span>
+              </td>
+              <td class="px-ds-8 py-ds-5">
+                <span
+                  class="px-ds-3 py-1 rounded-sm border transition-all"
+                  [ngClass]="page.isActive ? 'bg-ds-success/10 text-ds-success border-ds-success/20' : 'bg-ds-bg text-ds-text-muted border-ds-border'"
                 >
-                  <app-icon name="Edit3" size="14"></app-icon>
-                </button>
-                <button
-                  *ngIf="authService.isSuperAdmin()"
-                  (click)="deletePage(page.id)"
-                  class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors"
-                  title="Delete"
-                >
-                  <app-icon name="Trash2" size="14"></app-icon>
-                </button>
-              </div>
-            </td>
-          </tr>
+                  {{ page.isActive ? "Active" : "Inactive" }}
+                </span>
+              </td>
+              <td class="px-ds-8 py-ds-5 text-right">
+                <div class="flex justify-end gap-ds-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button
+                    (click)="openEditModal(page)"
+                    class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors"
+                    title="Edit"
+                  >
+                    <app-icon name="Edit3" size="14"></app-icon>
+                  </button>
+                  <button
+                    *ngIf="authService.isSuperAdmin()"
+                    (click)="deletePage(page.id)"
+                    class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors"
+                    title="Delete"
+                  >
+                    <app-icon name="Trash2" size="14"></app-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-template #loading>
+            <tr>
+              <td colspan="4" class="px-ds-8 py-ds-24 text-center">
+                <app-icon name="Loader2" size="32" className="animate-spin text-ds-text-muted mx-auto"></app-icon>
+                <p class="text-ds-text-muted mt-ds-4 animate-pulse">Loading pages...</p>
+              </td>
+            </tr>
+          </ng-template>
         </tbody>
       </table>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="pages.length === 0" class="py-ds-32 text-center">
+    <div *ngIf="!isLoading && pages.length === 0" class="py-ds-32 text-center">
       <app-icon name="FileText" size="64" className="mx-auto mb-ds-6 text-ds-text-muted opacity-10"></app-icon>
       <h3 class="text-ds-text-muted">No pages found</h3>
       <p class="text-ds-text-muted/60 mt-2">

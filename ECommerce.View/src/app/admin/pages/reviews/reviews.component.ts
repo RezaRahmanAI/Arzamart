@@ -1,5 +1,5 @@
 import { NgIf, NgClass, DatePipe, NgFor } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, HostListener } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject, HostListener } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { AdminReview } from "../../models/reviews.models";
@@ -25,10 +25,12 @@ export class ReviewsComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   readonly authService = inject(AuthService);
   private notification = inject(NotificationService);
+  private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
 
   reviews: AdminReview[] = [];
   products: AdminProduct[] = [];
+  isLoading = false;
   isModalOpen = false;
   modalMode: 'create' | 'edit' = 'create';
   selectedReviewId: number | null = null;
@@ -78,11 +80,22 @@ export class ReviewsComponent implements OnInit, OnDestroy {
   }
 
   loadReviews(): void {
+    this.isLoading = true;
+    this.cdr.markForCheck();
     this.reviewsService
       .getAll()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((reviews) => {
-        this.reviews = reviews;
+      .subscribe({
+        next: (reviews) => {
+          this.reviews = reviews;
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error(err);
+          this.cdr.markForCheck();
+        }
       });
   }
 

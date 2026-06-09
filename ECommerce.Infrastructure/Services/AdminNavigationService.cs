@@ -5,17 +5,24 @@ using System.Threading.Tasks;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
+using ECommerce.Infrastructure.Cache;
+using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ECommerce.Infrastructure.Services;
 
 public class AdminNavigationService : IAdminNavigationService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly AppCache _cache;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public AdminNavigationService(IUnitOfWork unitOfWork)
+    public AdminNavigationService(IUnitOfWork unitOfWork, AppCache cache, IServiceScopeFactory scopeFactory)
     {
         _unitOfWork = unitOfWork;
+        _cache = cache;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task<List<NavigationMenuDto>> GetAllAsync()
@@ -57,6 +64,9 @@ public class AdminNavigationService : IAdminNavigationService
         await _unitOfWork.Complete();
 
         entity.ChildMenus = new List<NavigationMenu>();
+
+        RebuildNavigationCache();
+
         return MapToDto(entity);
     }
 
@@ -79,6 +89,8 @@ public class AdminNavigationService : IAdminNavigationService
 
         await _unitOfWork.Complete();
 
+        RebuildNavigationCache();
+
         return MapToDto(entity);
     }
 
@@ -93,6 +105,42 @@ public class AdminNavigationService : IAdminNavigationService
 
         _unitOfWork.Repository<NavigationMenu>().Delete(entity);
         await _unitOfWork.Complete();
+
+        RebuildNavigationCache();
+    }
+
+    private void RebuildNavigationCache()
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        var items = db.NavigationMenus
+            .AsNoTracking()
+            .Include(n => n.ChildMenus)
+            .OrderBy(n => n.DisplayOrder)
+            .ToList();
+
+        var megaMenuItems = items
+            .Where(n => n.ParentMenuId == null)
+            .Select(n => new MegaMenuCategoryDto
+            {
+                Id = n.Id,
+                Name = n.Title ?? "",
+                Slug = n.Url ?? "",
+                Icon = n.Icon,
+                SubCategories = n.ChildMenus?
+                    .Where(c => c.IsActive)
+                    .OrderBy(c => c.DisplayOrder)
+                    .Select(c => new MegaMenuSubCategoryDto
+                    {
+                        Id = c.Id,
+                        Name = c.Title ?? "",
+                        Slug = c.Url ?? "",
+                        Collections = new List<MegaMenuCollectionDto>()
+                    }).ToList() ?? new List<MegaMenuSubCategoryDto>()
+            }).ToList();
+
+        _cache.NavigationMenus["main"] = megaMenuItems;
     }
 
     private NavigationMenuDto MapToDto(NavigationMenu menu)

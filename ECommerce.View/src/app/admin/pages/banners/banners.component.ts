@@ -1,5 +1,5 @@
 import { NgIf, NgFor } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { AdminBanner } from "../../models/banners.models";
@@ -22,9 +22,11 @@ export class BannersComponent implements OnInit, OnDestroy {
   readonly authService = inject(AuthService);
   private productService = inject(ProductService);
   private publicBannerService = inject(BannerService);
+  private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
 
   banners: AdminBanner[] = [];
+  isLoading = false;
   isModalOpen = false;
   isEditing = false;
   selectedBannerId: number | null = null;
@@ -60,11 +62,22 @@ export class BannersComponent implements OnInit, OnDestroy {
   }
 
   loadBanners(): void {
+    this.isLoading = true;
+    this.cdr.markForCheck();
     this.publicBannerService
       .getAllAdmin()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((banners) => {
-        this.banners = banners;
+      .subscribe({
+        next: (banners) => {
+          this.banners = banners;
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error(err);
+          this.cdr.markForCheck();
+        }
       });
   }
 

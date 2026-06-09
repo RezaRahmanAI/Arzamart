@@ -1,5 +1,5 @@
 import { NgIf, NgClass, NgFor } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { SourceManagementService } from "../../../core/services/source-management.service";
@@ -12,12 +12,14 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
   standalone: true,
   imports: [NgIf, NgClass, ReactiveFormsModule, AppIconComponent, NgFor],
   templateUrl: "./source-management.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SourceManagementComponent implements OnInit, OnDestroy {
   private sourceService = inject(SourceManagementService);
   private fb = inject(FormBuilder);
   readonly authService = inject(AuthService);
   private destroy$ = new Subject<void>();
+  private cdr = inject(ChangeDetectorRef);
 
   activeTab: "pages" | "social" = "pages";
   sourcePages: SourcePage[] = [];
@@ -45,6 +47,7 @@ export class SourceManagementComponent implements OnInit, OnDestroy {
 
   loadData(): void {
     this.isLoading = true;
+    this.cdr.markForCheck();
     if (this.activeTab === "pages") {
       this.sourceService.getAllSourcePages()
         .pipe(takeUntil(this.destroy$))
@@ -52,8 +55,12 @@ export class SourceManagementComponent implements OnInit, OnDestroy {
           next: (pages) => {
             this.sourcePages = pages;
             this.isLoading = false;
+            this.cdr.markForCheck();
           },
-          error: () => this.isLoading = false
+          error: () => {
+            this.isLoading = false;
+            this.cdr.markForCheck();
+          }
         });
     } else {
       this.sourceService.getAllSocialMediaSources()
@@ -62,8 +69,12 @@ export class SourceManagementComponent implements OnInit, OnDestroy {
           next: (sources) => {
             this.socialMediaSources = sources;
             this.isLoading = false;
+            this.cdr.markForCheck();
           },
-          error: () => this.isLoading = false
+          error: () => {
+            this.isLoading = false;
+            this.cdr.markForCheck();
+          }
         });
     }
   }
@@ -106,30 +117,43 @@ export class SourceManagementComponent implements OnInit, OnDestroy {
     }
 
     this.isSubmitting = true;
+    this.cdr.markForCheck();
     const formData: any = this.sourceForm.value;
 
     if (this.activeTab === "pages") {
       if (this.isEditing && this.selectedId) {
         this.sourceService.updateSourcePage(this.selectedId, formData).subscribe({
           next: () => this.handleSuccess(),
-          error: () => (this.isSubmitting = false),
+          error: () => {
+            this.isSubmitting = false;
+            this.cdr.markForCheck();
+          },
         });
       } else {
         this.sourceService.createSourcePage(formData).subscribe({
           next: () => this.handleSuccess(),
-          error: () => (this.isSubmitting = false),
+          error: () => {
+            this.isSubmitting = false;
+            this.cdr.markForCheck();
+          },
         });
       }
     } else {
       if (this.isEditing && this.selectedId) {
         this.sourceService.updateSocialMediaSource(this.selectedId, formData).subscribe({
           next: () => this.handleSuccess(),
-          error: () => (this.isSubmitting = false),
+          error: () => {
+            this.isSubmitting = false;
+            this.cdr.markForCheck();
+          },
         });
       } else {
         this.sourceService.createSocialMediaSource(formData).subscribe({
           next: () => this.handleSuccess(),
-          error: () => (this.isSubmitting = false),
+          error: () => {
+            this.isSubmitting = false;
+            this.cdr.markForCheck();
+          },
         });
       }
     }
@@ -144,9 +168,15 @@ export class SourceManagementComponent implements OnInit, OnDestroy {
   deleteItem(id: number): void {
     if (confirm(`Are you sure you want to delete this ${this.activeTab === "pages" ? "page" : "social media source"}?`)) {
       if (this.activeTab === "pages") {
-        this.sourceService.deleteSourcePage(id).subscribe(() => this.loadData());
+        this.sourceService.deleteSourcePage(id).subscribe({
+          next: () => this.loadData(),
+          error: () => this.cdr.markForCheck()
+        });
       } else {
-        this.sourceService.deleteSocialMediaSource(id).subscribe(() => this.loadData());
+        this.sourceService.deleteSocialMediaSource(id).subscribe({
+          next: () => this.loadData(),
+          error: () => this.cdr.markForCheck()
+        });
       }
     }
   }

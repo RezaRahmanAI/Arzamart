@@ -1,4 +1,84 @@
-﻿/* Quill Editor Customizations for Arza Admin */
+﻿/* ═══════════════════════════════════════════════════════
+   ADMIN LAPTOP SCALE — compact fonts for 1024-1439px
+   Reduces root font-size so all rem-based tokens scale down
+   ═══════════════════════════════════════════════════════ */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  html {
+    font-size: 13px !important;
+  }
+
+  /* Scale down spacing tokens proportionally */
+  :root {
+    --space-1:  0.2rem;
+    --space-2:  0.375rem;
+    --space-3:  0.5rem;
+    --space-4:  0.7rem;
+    --space-5:  0.9rem;
+    --space-6:  1rem;
+    --space-8:  1.3rem;
+    --space-10: 1.75rem;
+    --space-12: 2rem;
+    --space-16: 2.75rem;
+    --space-20: 3.25rem;
+    --space-24: 3.75rem;
+  }
+
+  /* Scale admin header */
+  header { height: auto !important; }
+
+  /* Scale sidebar brand text */
+  aside h1 { font-size: 1rem !important; }
+
+  /* Compact admin table */
+  .site-container-admin td,
+  .site-container-admin th {
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  /* Compact admin headings */
+  .site-container-admin h2 { font-size: clamp(14px, 2vw, 17px); }
+  .site-container-admin h3 { font-size: clamp(13px, 1.8vw, 16px); }
+  .site-container-admin h4 { font-size: clamp(12px, 1.5vw, 14px); }
+
+  /* Compact admin paragraphs & spans */
+  .site-container-admin p,
+  .site-container-admin span,
+  .site-container-admin label {
+    font-size: 0.75rem;
+  }
+
+  /* Compact admin buttons */
+  .site-container-admin .btn {
+    font-size: 0.8rem;
+    padding: 8px 16px;
+    min-height: 36px;
+  }
+
+  /* Compact form inputs */
+  .site-container-admin .form-input,
+  .site-container-admin input,
+  .site-container-admin select,
+  .site-container-admin textarea {
+    font-size: 0.8rem;
+    padding: 8px 10px;
+    min-height: 36px;
+  }
+
+  /* Compact badges/tags */
+  .site-container-admin .badge { font-size: 9px; padding: 2px 6px; }
+
+  /* Compact pagination */
+  .site-container-admin nav button {
+    height: 30px;
+    min-width: 30px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   Quill Editor Customizations for Arza Admin
+   ═══════════════════════════════════════════════════════ */
 .arza-quill-wrapper {
   background: white;
   border-radius: 12px;

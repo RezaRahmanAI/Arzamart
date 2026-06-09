@@ -1,6 +1,7 @@
 import { NgIf, NgClass, NgFor } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -42,6 +43,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private settingsService = inject(SettingsService);
   readonly authService = inject(AuthService);
   private notification = inject(NotificationService);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild("fileUpload") fileUpload?: ElementRef<HTMLInputElement>;
 
@@ -102,50 +104,63 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   copiedKey = false;
   imageUrlService = inject(ImageUrlService);
+  isLoading = true;
 
   private lastSettings: AdminSettings | null = null;
   protected Math = Math;
   protected date = new Date();
 
   ngOnInit(): void {
-    this.settingsService.getSettings().pipe(takeUntil(this.destroy$)).subscribe((settings) => {
-      this.lastSettings = settings;
-      this.shippingZones = settings.shippingZones || [];
-      this.deliveryMethods = settings.deliveryMethods || [];
-      this.stripePublishableKey = settings.stripePublishableKey || "";
+    this.isLoading = true;
+    this.cdr.markForCheck();
+    this.settingsService.getSettings().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (settings) => {
+        this.lastSettings = settings;
+        this.shippingZones = settings.shippingZones || [];
+        this.deliveryMethods = settings.deliveryMethods || [];
+        this.stripePublishableKey = settings.stripePublishableKey || "";
 
-      if (settings.logoUrl) {
-        this.logoPreviewUrl = this.imageUrlService.getImageUrl(
-          settings.logoUrl,
-        );
+        if (settings.logoUrl) {
+          this.logoPreviewUrl = this.imageUrlService.getImageUrl(
+            settings.logoUrl,
+          );
+        }
+
+        if (settings.sizeGuideImageUrl) {
+          this.sizeGuidePreviewUrl = this.imageUrlService.getImageUrl(
+            settings.sizeGuideImageUrl,
+          );
+        }
+
+        this.settingsForm.patchValue({
+          websiteName: settings.websiteName,
+          contactEmail: settings.contactEmail,
+          contactPhone: settings.contactPhone,
+          address: settings.address,
+          facebookUrl: settings.facebookUrl,
+          instagramUrl: settings.instagramUrl,
+          twitterUrl: settings.twitterUrl,
+          youtubeUrl: settings.youtubeUrl,
+          whatsAppNumber: settings.whatsAppNumber,
+          currency: settings.currency,
+          description: settings.description,
+          freeShippingThreshold: settings.freeShippingThreshold,
+          facebookPixelId: settings.facebookPixelId,
+          googleTagId: settings.googleTagId,
+          payments: {
+            stripeEnabled: settings.stripeEnabled || false,
+            paypalEnabled: settings.paypalEnabled || false,
+          },
+        });
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.notification.error("Failed to load settings.");
+        console.error(err);
+        this.cdr.markForCheck();
       }
-
-      if (settings.sizeGuideImageUrl) {
-        this.sizeGuidePreviewUrl = this.imageUrlService.getImageUrl(
-          settings.sizeGuideImageUrl,
-        );
-      }
-
-      this.settingsForm.patchValue({
-        websiteName: settings.websiteName,
-        contactEmail: settings.contactEmail,
-        contactPhone: settings.contactPhone,
-        address: settings.address,
-        facebookUrl: settings.facebookUrl,
-        instagramUrl: settings.instagramUrl,
-        twitterUrl: settings.twitterUrl,
-        youtubeUrl: settings.youtubeUrl,
-        whatsAppNumber: settings.whatsAppNumber,
-        currency: settings.currency,
-        description: settings.description,
-        freeShippingThreshold: settings.freeShippingThreshold,
-        facebookPixelId: settings.facebookPixelId,
-        googleTagId: settings.googleTagId,
-        payments: {
-          stripeEnabled: settings.stripeEnabled || false,
-          paypalEnabled: settings.paypalEnabled || false,
-        },
-      });
     });
   }
 
@@ -202,6 +217,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.isSaving = true;
     this.saveMessage = "";
     this.saveError = "";
+    this.cdr.markForCheck();
 
     this.settingsService.saveSettings(payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (settings) => {
@@ -210,13 +226,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.lastSettings = settings;
         this.shippingZones = settings.shippingZones || [];
         this.deliveryMethods = settings.deliveryMethods || [];
-        setTimeout(() => (this.saveMessage = ""), 3000);
+        setTimeout(() => {
+          this.saveMessage = "";
+          this.cdr.markForCheck();
+        }, 3000);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.isSaving = false;
         this.notification.error("Failed to save settings. Please try again.");
         console.error("Save settings failed", err);
-        setTimeout(() => (this.saveError = ""), 5000);
+        setTimeout(() => {
+          this.saveError = "";
+          this.cdr.markForCheck();
+        }, 5000);
+        this.cdr.markForCheck();
       },
     });
   }
@@ -284,10 +308,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.lastSettings.logoUrl = res.url;
         }
         this.logoPreviewUrl = this.imageUrlService.getImageUrl(res.url);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error("Logo upload failed", err);
         this.logoError = "Failed to upload logo.";
+        this.cdr.markForCheck();
       },
     });
   }
@@ -320,10 +346,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.lastSettings.sizeGuideImageUrl = res.url;
         }
         this.sizeGuidePreviewUrl = this.imageUrlService.getImageUrl(res.url);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error("Size Guide upload failed", err);
         this.sizeGuideError = "Failed to upload Size Guide.";
+        this.cdr.markForCheck();
       },
     });
   }
@@ -394,6 +422,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.zoneForm.reset({ id: 0, name: "", region: "", rates: "" });
           this.showZoneForm = false;
           this.editingZoneId = null;
+          this.cdr.markForCheck();
         });
       return;
     }
@@ -404,6 +433,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.zoneForm.reset({ id: 0, name: "", region: "", rates: "" });
       this.showZoneForm = false;
       this.editingZoneId = null;
+      this.cdr.markForCheck();
     });
   }
 
@@ -425,6 +455,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.shippingZones = this.shippingZones.filter(
         (item) => item.id !== zone.id,
       );
+      this.cdr.markForCheck();
     });
   }
 
@@ -486,6 +517,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
               : m,
           );
           this.closeDeliveryForm();
+          this.cdr.markForCheck();
         });
     } else {
       this.settingsService
@@ -495,6 +527,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.isSaving = false;
           this.deliveryMethods = [...this.deliveryMethods, newMethod];
           this.closeDeliveryForm();
+          this.cdr.markForCheck();
         });
     }
   }
@@ -520,6 +553,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.deliveryMethods = this.deliveryMethods.filter(
         (m) => m.id !== method.id,
       );
+      this.cdr.markForCheck();
     });
   }
 

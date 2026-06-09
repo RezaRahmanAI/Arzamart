@@ -1,7 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 export interface AdminUser {
   id: string;
@@ -31,11 +30,11 @@ export class UsersService {
   private readonly api = inject(ApiHttpClient);
 
   getAdmins(): Observable<AdminUser[]> {
-    return this.api.get<AdminUser[]>("/admin/users", { headers: X_REFRESH });
+    return this.api.get<AdminUser[]>("/admin/users");
   }
 
   getPassword(userId: string): Observable<{ password: string; message?: string }> {
-    return this.api.get<{ password: string; message?: string }>(`/admin/users/${userId}/password`, { headers: X_REFRESH });
+    return this.api.get<{ password: string; message?: string }>(`/admin/users/${userId}/password`);
   }
 
   createAdmin(request: CreateAdminRequest): Observable<AdminUser> {

@@ -1,6 +1,6 @@
 import { AuthService } from '../../../core/services/auth.service';
 import { NgIf, NgClass, NgFor } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, ViewChild, ElementRef } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject, ViewChild, ElementRef } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from "rxjs";
@@ -18,13 +18,14 @@ import { ImageUrlService } from "../../../core/services/image-url.service";
   imports: [NgIf, NgClass, ReactiveFormsModule, RouterModule, AppIconComponent, NgFor],
   templateUrl: "./product-group-management.component.html",
 })
-export class ProductGroupManagementComponent {
+export class ProductGroupManagementComponent implements OnInit, OnDestroy {
   protected authService = inject(AuthService);
   private groupsService = inject(ProductGroupsService);
   private productService = inject(ProductService);
   private formBuilder = inject(FormBuilder);
   private notification = inject(NotificationService);
   public readonly imageUrlService = inject(ImageUrlService);
+  private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
 
   @ViewChild('productSearchInput') productSearchInput!: ElementRef<HTMLInputElement>;
@@ -35,6 +36,8 @@ export class ProductGroupManagementComponent {
   
   productSearchResults: Product[] = [];
   
+  isLoading = false;
+  isLoadingProducts = false;
   selectedId: number | null = null;
   mode: "create" | "edit" = "create";
   isSaving = false;
@@ -66,14 +69,20 @@ export class ProductGroupManagementComponent {
   }
 
   loadGroups(): void {
+    this.isLoading = true;
+    this.cdr.markForCheck();
     this.groupsService.getAll().subscribe({
       next: (groups) => {
         this.allGroups = groups;
         this.filteredGroups = [...groups];
+        this.isLoading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.notification.error("Failed to load product groups.");
         console.error(err);
+        this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -103,12 +112,18 @@ export class ProductGroupManagementComponent {
   }
 
   loadGroupProducts(id: number): void {
+    this.isLoadingProducts = true;
+    this.cdr.markForCheck();
     this.groupsService.getById(id).subscribe({
       next: (group) => {
         this.currentGroupProducts = group.products || [];
+        this.isLoadingProducts = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.notification.error("Failed to load group products.");
+        this.isLoadingProducts = false;
+        this.cdr.markForCheck();
       }
     });
   }

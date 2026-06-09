@@ -23,7 +23,7 @@ public class AdminProductMediaController : ControllerBase
     [HttpPost("upload-media")]
     [DisableRequestSizeLimit]
     [RequestFormLimits(MultipartBodyLengthLimit = FileUpload.MaxFileSize)]
-    public async Task<ActionResult<List<string>>> UploadProductMedia([FromForm] List<IFormFile> files)
+    public async Task<ActionResult<List<string>>> UploadProductMedia(List<IFormFile> files)
     {
         try 
         {

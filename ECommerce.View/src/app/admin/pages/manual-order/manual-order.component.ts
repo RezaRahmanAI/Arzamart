@@ -1,5 +1,5 @@
 import { NgIf, NgClass, NgFor } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, inject, signal } from "@angular/core";
 import {
   FormControl,
   FormGroup,
@@ -80,6 +80,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
   private settingsService = inject(SettingsService);
   public imageUrlService = inject(ImageUrlService);
   private sourceService = inject(SourceManagementService);
+  private cdr = inject(ChangeDetectorRef);
 
 
 
@@ -153,6 +154,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
         this.sourcePages = pages;
         this.socialMediaSources = sources;
         this.deliveryMethods = methods;
+        this.cdr.markForCheck();
         
         // If we are in edit mode, wait until sources are loaded before loading the order
         this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
@@ -160,15 +162,18 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
             this.isEditMode = true;
             this.orderId = +params["id"];
             this.loadOrderForEdit(this.orderId);
+            this.cdr.markForCheck();
           } else if (methods.length > 0) {
             // Set default delivery method for new orders
             this.orderForm.patchValue({ deliveryMethodId: methods[0].id });
+            this.cdr.markForCheck();
           }
         });
       },
       error: (err) => {
         console.error("Error loading sources:", err);
         this.notification.error("Failed to load order settings.");
+        this.cdr.markForCheck();
       }
     });
 
@@ -181,9 +186,11 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
         switchMap((term) => {
           if (!term || term.trim().length === 0) {
             this.isLoadingProducts = false;
+            this.cdr.markForCheck();
             return of({ items: [], total: 0 });
           }
           this.isLoadingProducts = true;
+          this.cdr.markForCheck();
           return this.productsService.getProducts({
             searchTerm: term || "",
             category: "all",
@@ -199,6 +206,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         this.products.set(res.items);
         this.isLoadingProducts = false;
+        this.cdr.markForCheck();
       });
 
     // Customer lookup by phone
@@ -223,6 +231,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
             area: customer.area || "",
           }, { emitEvent: false });
           this.notification.info("Existing customer details loaded.");
+          this.cdr.markForCheck();
         }
       });
 
@@ -236,6 +245,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
       .subscribe((address) => {
         if (!address || address.length < 3) return;
         this.intelligentLocationMatch(address);
+        this.cdr.markForCheck();
       });
 
     // Initial state: ensure products list is empty
@@ -608,6 +618,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
     this.showPreOrderWarningModal.set(false);
     this.pendingOrderPayload = null;
     this.isSubmitting = false;
+    this.cdr.markForCheck();
   }
 
   private executeOrder(payload: OrderPayload) {
@@ -624,12 +635,14 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
         const message = (err as any).error?.message || `Failed to ${this.isEditMode ? 'update' : 'create'} order.`;
         this.notification.error(message);
         this.isSubmitting = false;
+        this.cdr.markForCheck();
       }
     });
   }
 
   private loadOrderForEdit(id: number) {
     this.isLoading = true;
+    this.cdr.markForCheck();
     this.ordersService.getOrderById(id).subscribe({
       next: (order) => {
         this.orderForm.patchValue({
@@ -687,6 +700,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
                 }
                 return c;
               }));
+              this.cdr.markForCheck();
             }
           });
         });
@@ -699,11 +713,13 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
           if (method) this.orderForm.patchValue({ deliveryMethodId: method.id });
         }
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
       error: (err: Error) => {
         console.error("Error loading order:", err);
         this.notification.error("Failed to load order for editing");
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }

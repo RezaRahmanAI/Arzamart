@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { ProfileService, UserProfile, UpdateProfileRequest } from "../../services/profile.service";
@@ -21,8 +21,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private readonly profileService = inject(ProfileService);
   private readonly authService = inject(AuthService);
   private readonly notification = inject(NotificationService);
-
-
+  private readonly cdr = inject(ChangeDetectorRef);
 
   isLoading = true;
   isSubmitting = false;
@@ -49,6 +48,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   loadProfile(): void {
     this.isLoading = true;
+    this.cdr.markForCheck();
     this.profileService.getProfile().pipe(takeUntil(this.destroy$)).subscribe({
       next: (profile) => {
         this.userProfile = profile;
@@ -59,8 +59,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
           phone: profile.phone
         });
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
-      error: () => (this.isLoading = false)
+      error: () => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -76,6 +80,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
 
     this.isSubmitting = true;
+    this.cdr.markForCheck();
     const updateData: UpdateProfileRequest = {
       fullName: this.profileForm.value.fullName ?? undefined,
       userName: this.profileForm.value.userName ?? undefined,
@@ -95,10 +100,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
             email: this.profileForm.get('email')?.value || undefined
         });
         this.profileForm.get('currentPassword')?.reset();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.isSubmitting = false;
         this.notification.error(err.error?.message || "Failed to update profile");
+        this.cdr.markForCheck();
       }
     });
   }
@@ -112,6 +119,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
 
     this.isPasswordSubmitting = true;
+    this.cdr.markForCheck();
     this.profileService.changePassword({
       currentPassword: this.passwordForm.value.currentPassword!,
       newPassword: this.passwordForm.value.newPassword!
@@ -120,10 +128,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.isPasswordSubmitting = false;
         this.notification.success(res.message || "Password changed successfully!");
         this.passwordForm.reset();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.isPasswordSubmitting = false;
         this.notification.error(err.error?.message || "Failed to change password");
+        this.cdr.markForCheck();
       }
     });
   }

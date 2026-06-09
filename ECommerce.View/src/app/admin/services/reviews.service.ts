@@ -1,7 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable, map } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 export interface AdminReview {
   id: number;
@@ -25,7 +24,7 @@ export class ReviewsService {
   private readonly baseUrl = "/admin/reviews";
 
   getAll(): Observable<AdminReview[]> {
-    return this.api.get<any[]>(this.baseUrl, { headers: X_REFRESH }).pipe(
+    return this.api.get<any[]>(this.baseUrl).pipe(
       map(reviews => reviews.map(r => ({
         ...r,
         userName: r.customerName,

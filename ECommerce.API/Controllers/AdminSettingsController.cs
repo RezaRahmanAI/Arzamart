@@ -3,8 +3,6 @@ using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.AspNetCore.OutputCaching;
 
 namespace ECommerce.API.Controllers;
 
@@ -17,16 +15,12 @@ public class AdminSettingsController : ControllerBase
     private readonly IAdminSettingsService _settingsService;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
-    private readonly IMemoryCache _cache;
-    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminSettingsController(IAdminSettingsService settingsService, IWebHostEnvironment environment, IConfiguration config, IMemoryCache cache, IOutputCacheStore cacheStore)
+    public AdminSettingsController(IAdminSettingsService settingsService, IWebHostEnvironment environment, IConfiguration config)
     {
         _settingsService = settingsService;
         _environment = environment;
         _config = config;
-        _cache = cache;
-        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -42,11 +36,6 @@ public class AdminSettingsController : ControllerBase
     public async Task<ActionResult<SiteSettingsDto>> UpdateSettings([FromBody] SiteSettingsDto dto)
     {
         var result = await _settingsService.UpdateSettingsAsync(dto);
-
-        _cache.Remove("site_settings");
-        _cache.Remove("delivery_methods_active");
-        await _cacheStore.EvictByTagAsync("config", default);
-
         return Ok(result);
     }
 
@@ -84,7 +73,6 @@ public class AdminSettingsController : ControllerBase
     public async Task<ActionResult<DeliveryMethod>> CreateDeliveryMethod([FromBody] DeliveryMethodDto dto)
     {
         var method = await _settingsService.CreateDeliveryMethodAsync(dto);
-        _cache.Remove("delivery_methods_active");
         return CreatedAtAction(nameof(GetDeliveryMethods), new { id = method.Id }, method);
     }
 
@@ -95,7 +83,6 @@ public class AdminSettingsController : ControllerBase
         try
         {
             await _settingsService.UpdateDeliveryMethodAsync(id, dto);
-            _cache.Remove("delivery_methods_active");
             return NoContent();
         }
         catch (InvalidOperationException)
@@ -111,7 +98,6 @@ public class AdminSettingsController : ControllerBase
         try
         {
             await _settingsService.DeleteDeliveryMethodAsync(id);
-            _cache.Remove("delivery_methods_active");
             return NoContent();
         }
         catch (InvalidOperationException)

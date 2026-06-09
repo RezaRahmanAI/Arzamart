@@ -234,7 +234,6 @@
           <tr class="bg-ds-bg/50 border-b border-ds-border text-ds-text-muted">
 
             <th class="px-ds-4 py-ds-4">Order No.</th>
-            <th class="px-ds-4 py-ds-4">Products</th>
             <th class="px-ds-4 py-ds-4">Fulfillment</th>
             <th class="px-ds-4 py-ds-4">Customer</th>
             <th class="px-ds-4 py-ds-4">Status</th>
@@ -259,19 +258,7 @@
                 <span class="text-ds-text-muted">{{ order.createdAt | date: 'MMM d, h:mm a' }}</span>
               </div>
             </td>
-            <td class="px-ds-4 py-ds-4 min-w-[200px]">
-              <div class="flex flex-col gap-1">
-                <div *ngFor="let item of order.items; trackBy: trackByOrderItem" class="flex items-center gap-2 group/item">
-                  <div class="size-1 rounded-full bg-ds-border"></div>
-                  <div class="flex items-center gap-2 min-w-0">
-                    <span class="text-ds-text truncate max-w-[160px]">
-                      {{ item.productName }}
-                    </span>
-                    <span class="text-ds-text-muted border border-ds-border px-1 rounded-sm">{{ item.size || '-' }}</span>
-                  </div>
-                </div>
-              </div>
-            </td>
+
             <td class="px-ds-4 py-ds-4">
               <div class="flex flex-col gap-1">
                 <span *ngIf="order.isPreOrder" class="inline-flex items-center px-2 py-0.5 rounded-sm bg-ds-accent text-white w-fit">
@@ -325,7 +312,6 @@
             </td>
             <td class="px-ds-4 py-ds-4 text-center">
                 <app-price-display [amount]="order.total" [className]="'text-ds-sm text-ds-text tracking-tight'" size="sm"></app-price-display>
-                <div class="text-ds-text-muted mt-0.5">{{ order.itemsCount }} items</div>
             </td>
             <td class="px-ds-4 py-ds-4">
               <div *ngIf="order.sourcePageName" class="flex items-center gap-1.5 text-ds-text-sec">

@@ -86,6 +86,7 @@ export interface RelatedProduct {
 export interface AdminProduct extends Product {
   status?: ProductStatus;
   statusActive?: boolean;
+  category?: string;
 }
 
 export type ProductStatus = "Active" | "Draft" | "Archived" | "Out of Stock";

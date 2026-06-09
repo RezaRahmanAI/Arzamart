@@ -5,17 +5,24 @@ using System.Threading.Tasks;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
+using ECommerce.Infrastructure.Cache;
+using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ECommerce.Infrastructure.Services;
 
 public class AdminSettingsService : IAdminSettingsService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly AppCache _cache;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public AdminSettingsService(IUnitOfWork unitOfWork)
+    public AdminSettingsService(IUnitOfWork unitOfWork, AppCache cache, IServiceScopeFactory scopeFactory)
     {
         _unitOfWork = unitOfWork;
+        _cache = cache;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task<SiteSettingsDto> GetSettingsAsync()
@@ -91,6 +98,8 @@ public class AdminSettingsService : IAdminSettingsService
 
         await _unitOfWork.Complete();
 
+        RebuildSettingsCache();
+
         return dto;
     }
 
@@ -115,6 +124,8 @@ public class AdminSettingsService : IAdminSettingsService
         _unitOfWork.Repository<DeliveryMethod>().Add(method);
         await _unitOfWork.Complete();
 
+        RebuildSettingsCache();
+
         return method;
     }
 
@@ -134,6 +145,8 @@ public class AdminSettingsService : IAdminSettingsService
         method.UpdatedAt = DateTime.UtcNow;
 
         await _unitOfWork.Complete();
+
+        RebuildSettingsCache();
     }
 
     public async Task DeleteDeliveryMethodAsync(int id)
@@ -147,5 +160,45 @@ public class AdminSettingsService : IAdminSettingsService
 
         _unitOfWork.Repository<DeliveryMethod>().Delete(method);
         await _unitOfWork.Complete();
+
+        RebuildSettingsCache();
+    }
+
+    private void RebuildSettingsCache()
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        var settings = db.SiteSettings
+            .AsNoTracking()
+            .FirstOrDefault();
+
+        var deliveryMethods = db.DeliveryMethods
+            .AsNoTracking()
+            .ToList();
+
+        if (settings != null)
+        {
+            _cache.SiteSettings["settings"] = new SiteSettingsDto
+            {
+                WebsiteName = settings.WebsiteName,
+                LogoUrl = settings.LogoUrl,
+                ContactEmail = settings.ContactEmail,
+                ContactPhone = settings.ContactPhone,
+                Address = settings.Address,
+                FacebookUrl = settings.FacebookUrl,
+                InstagramUrl = settings.InstagramUrl,
+                TwitterUrl = settings.TwitterUrl,
+                YoutubeUrl = settings.YoutubeUrl,
+                WhatsAppNumber = settings.WhatsAppNumber,
+                Currency = settings.Currency,
+                FreeShippingThreshold = settings.FreeShippingThreshold,
+                ShippingCharge = settings.ShippingCharge,
+                FacebookPixelId = settings.FacebookPixelId,
+                GoogleTagId = settings.GoogleTagId,
+                SizeGuideImageUrl = settings.SizeGuideImageUrl,
+                DeliveryMethods = deliveryMethods
+            };
+        }
     }
 }

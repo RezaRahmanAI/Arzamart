@@ -2,7 +2,6 @@ using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,12 +12,10 @@ namespace ECommerce.API.Controllers;
 public class AdminNavigationController : ControllerBase
 {
     private readonly IAdminNavigationService _navigationService;
-    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminNavigationController(IAdminNavigationService navigationService, IOutputCacheStore cacheStore)
+    public AdminNavigationController(IAdminNavigationService navigationService)
     {
         _navigationService = navigationService;
-        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -40,7 +37,6 @@ public class AdminNavigationController : ControllerBase
     public async Task<ActionResult<NavigationMenuDto>> CreateMenu([FromBody] NavigationMenuCreateDto dto)
     {
         var result = await _navigationService.CreateAsync(dto);
-        await _cacheStore.EvictByTagAsync("config", default);
         return CreatedAtAction(nameof(GetMenuById), new { id = result.Id }, result);
     }
 
@@ -50,7 +46,6 @@ public class AdminNavigationController : ControllerBase
         try
         {
             var result = await _navigationService.UpdateAsync(id, dto);
-            await _cacheStore.EvictByTagAsync("config", default);
             return Ok(result);
         }
         catch (InvalidOperationException)
@@ -66,7 +61,6 @@ public class AdminNavigationController : ControllerBase
         try
         {
             await _navigationService.DeleteAsync(id);
-            await _cacheStore.EvictByTagAsync("config", default);
             return NoContent();
         }
         catch (InvalidOperationException)

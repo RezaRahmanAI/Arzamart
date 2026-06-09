@@ -43,26 +43,34 @@
         </div>
 
         <div class="space-y-1 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
-          <div
-            *ngFor="let group of filteredGroups"
-            (click)="editGroup(group)"
-            class="px-ds-4 py-ds-3 rounded-sm border cursor-pointer transition-all flex items-center justify-between group/item mb-1"
-            [ngClass]="selectedId === group.id ? 'bg-ds-bg border-ds-border shadow-sm' : 'bg-transparent border-transparent hover:bg-ds-bg/50'"
-          >
-            <div class="flex flex-col">
-              <span class="text-ds-text group-hover/item:text-ds-accent transition-colors">{{ group.name }}</span>
-              <span class="text-ds-text-muted mt-0.5">ID: {{ group.id }}</span>
+          <ng-container *ngIf="!isLoading; else loadingGroups">
+            <div
+              *ngFor="let group of filteredGroups"
+              (click)="editGroup(group)"
+              class="px-ds-4 py-ds-3 rounded-sm border cursor-pointer transition-all flex items-center justify-between group/item mb-1"
+              [ngClass]="selectedId === group.id ? 'bg-ds-bg border-ds-border shadow-sm' : 'bg-transparent border-transparent hover:bg-ds-bg/50'"
+            >
+              <div class="flex flex-col">
+                <span class="text-ds-text group-hover/item:text-ds-accent transition-colors">{{ group.name }}</span>
+                <span class="text-ds-text-muted mt-0.5">ID: {{ group.id }}</span>
+              </div>
+              <app-icon
+                name="ChevronRight"
+                size="14"
+                [className]="selectedId === group.id ? 'text-ds-accent' : 'text-ds-text-muted opacity-0 group-hover/item:opacity-100'"
+              ></app-icon>
             </div>
-            <app-icon
-              name="ChevronRight"
-              size="14"
-              [className]="selectedId === group.id ? 'text-ds-accent' : 'text-ds-text-muted opacity-0 group-hover/item:opacity-100'"
-            ></app-icon>
-          </div>
 
-          <div *ngIf="filteredGroups.length === 0" class="py-ds-10 text-center border border-dashed border-ds-border rounded-sm bg-ds-bg/10">
-            <p class="text-ds-text-muted">No groups found</p>
-          </div>
+            <div *ngIf="filteredGroups.length === 0" class="py-ds-10 text-center border border-dashed border-ds-border rounded-sm bg-ds-bg/10">
+              <p class="text-ds-text-muted">No groups found</p>
+            </div>
+          </ng-container>
+          <ng-template #loadingGroups>
+            <div class="py-ds-16 text-center">
+              <app-icon name="Loader2" size="24" className="animate-spin text-ds-text-muted mx-auto"></app-icon>
+              <p class="text-ds-text-muted mt-ds-2 animate-pulse">Loading groups...</p>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>
@@ -178,35 +186,43 @@
 
         <!-- Current Products List -->
         <div class="space-y-ds-2">
-          <div 
-            *ngFor="let p of currentGroupProducts; let i = index" 
-            class="bg-ds-bg/30 border border-ds-border p-ds-3 rounded-sm flex items-center gap-ds-4 group/item hover:border-ds-accent/30 transition-colors"
-          >
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-ds-3">
-                <div class="size-10 bg-ds-bg border border-ds-border rounded-sm overflow-hidden flex-shrink-0">
-                  <img loading="lazy" [src]="getImageUrl(p.imageUrl)" class="w-full h-full object-cover" />
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-ds-text truncate">{{ p.name }}</span>
-                  <span class="text-ds-text-muted mt-0.5">{{ p.categoryName || 'Uncategorized' }}</span>
+          <ng-container *ngIf="!isLoadingProducts; else loadingProducts">
+            <div 
+              *ngFor="let p of currentGroupProducts; let i = index" 
+              class="bg-ds-bg/30 border border-ds-border p-ds-3 rounded-sm flex items-center gap-ds-4 group/item hover:border-ds-accent/30 transition-colors"
+            >
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-ds-3">
+                  <div class="size-10 bg-ds-bg border border-ds-border rounded-sm overflow-hidden flex-shrink-0">
+                    <img loading="lazy" [src]="getImageUrl(p.imageUrl)" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-ds-text truncate">{{ p.name }}</span>
+                    <span class="text-ds-text-muted mt-0.5">{{ p.categoryName || 'Uncategorized' }}</span>
+                  </div>
                 </div>
               </div>
+              <button 
+                (click)="removeProductFromGroup(p)"
+                class="text-red-500 hover:text-red-700 p-2 transition-colors opacity-0 group-hover/item:opacity-100"
+                title="Remove from Group"
+              >
+                <app-icon name="X" size="14"></app-icon>
+              </button>
             </div>
-            <button 
-              (click)="removeProductFromGroup(p)"
-              class="text-red-500 hover:text-red-700 p-2 transition-colors opacity-0 group-hover/item:opacity-100"
-              title="Remove from Group"
-            >
-              <app-icon name="X" size="14"></app-icon>
-            </button>
-          </div>
 
-          <div *ngIf="currentGroupProducts.length === 0" class="py-ds-12 text-center border border-dashed border-ds-border rounded-sm bg-ds-bg/10">
-            <app-icon name="Link2" size="24" className="mx-auto text-ds-text-muted opacity-20 mb-ds-3"></app-icon>
-            <p class="text-ds-text-muted">No products assigned yet</p>
-            <p class="text-ds-text-muted/60 mt-1">Use the search above to link entries</p>
-          </div>
+            <div *ngIf="currentGroupProducts.length === 0" class="py-ds-12 text-center border border-dashed border-ds-border rounded-sm bg-ds-bg/10">
+              <app-icon name="Link2" size="24" className="mx-auto text-ds-text-muted opacity-20 mb-ds-3"></app-icon>
+              <p class="text-ds-text-muted">No products assigned yet</p>
+              <p class="text-ds-text-muted/60 mt-1">Use the search above to link entries</p>
+            </div>
+          </ng-container>
+          <ng-template #loadingProducts>
+            <div class="py-ds-8 text-center">
+              <app-icon name="Loader2" size="20" className="animate-spin text-ds-text-muted mx-auto"></app-icon>
+              <p class="text-ds-text-muted mt-ds-2 animate-pulse text-sm">Loading products...</p>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>

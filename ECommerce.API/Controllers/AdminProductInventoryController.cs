@@ -2,7 +2,6 @@ using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,14 +12,10 @@ namespace ECommerce.API.Controllers;
 public class AdminProductInventoryController : ControllerBase
 {
     private readonly IInventoryService _inventoryService;
-    private readonly ICacheService _cache;
-    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminProductInventoryController(IInventoryService inventoryService, ICacheService cache, IOutputCacheStore cacheStore)
+    public AdminProductInventoryController(IInventoryService inventoryService)
     {
         _inventoryService = inventoryService;
-        _cache = cache;
-        _cacheStore = cacheStore;
     }
 
     [HttpGet("inventory")]
@@ -42,10 +37,6 @@ public class AdminProductInventoryController : ControllerBase
             return NotFound(new { message = ex.Message });
         }
 
-        await _cache.RemoveAsync("home_new_arrivals");
-        await _cache.RemoveAsync("home_featured_products");
-        await _cacheStore.EvictByTagAsync("catalog", default);
-
         return Ok(new { message = "Stock updated successfully" });
     }
 
@@ -61,10 +52,6 @@ public class AdminProductInventoryController : ControllerBase
             return NotFound(new { message = ex.Message });
         }
 
-        await _cache.RemoveAsync("home_new_arrivals");
-        await _cache.RemoveAsync("home_featured_products");
-        await _cacheStore.EvictByTagAsync("catalog", default);
-
         return Ok(new { message = "Stock updated successfully" });
     }
 
@@ -76,7 +63,6 @@ public class AdminProductInventoryController : ControllerBase
 
         if (fixedCount > 0)
         {
-            await _cacheStore.EvictByTagAsync("catalog", default);
             return Ok(new { message = $"Synchronized {fixedCount} products successfully." });
         }
 

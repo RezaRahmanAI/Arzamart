@@ -1,7 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 export interface SalesData {
   date: string;
@@ -39,21 +38,20 @@ export class ReportsService {
   ): Observable<SalesData[]> {
     return this.api.get<SalesData[]>(`${this.baseUrl}/sales`, {
       params: { period } as any,
-      headers: X_REFRESH,
     });
   }
 
   getOrderStatusDistribution(): Observable<StatusDistribution[]> {
     return this.api.get<StatusDistribution[]>(
-      `${this.baseUrl}/orders/distribution`, { headers: X_REFRESH }
+      `${this.baseUrl}/orders/distribution`
     );
   }
 
   getCustomerGrowth(): Observable<CustomerGrowth[]> {
-    return this.api.get<CustomerGrowth[]>(`${this.baseUrl}/customers/growth`, { headers: X_REFRESH });
+    return this.api.get<CustomerGrowth[]>(`${this.baseUrl}/customers/growth`);
   }
 
   getTopProducts(): Observable<TopProduct[]> {
-    return this.api.get<TopProduct[]>(`${this.baseUrl}/products/top`, { headers: X_REFRESH });
+    return this.api.get<TopProduct[]>(`${this.baseUrl}/products/top`);
   }
 }

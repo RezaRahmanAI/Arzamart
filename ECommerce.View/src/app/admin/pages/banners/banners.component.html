@@ -39,57 +39,65 @@
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-ds-6">
-    <div
-      *ngFor="let banner of filteredBanners"
-      class="bg-ds-surface rounded-sm border border-ds-border overflow-hidden group shadow-sm"
-    >
-      <div class="relative h-32 bg-ds-bg overflow-hidden">
-        <img
-          loading="lazy" [src]="getBannerImageUrl(banner.imageUrl)"
-          [alt]="banner.title"
-          class="w-full h-full object-cover transition-all duration-700"
-        />
-        <div
-          class="absolute inset-0 bg-ds-text/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-ds-3 backdrop-blur-sm"
-        >
-          <button
-            (click)="openEditModal(banner)"
-            class="size-10 bg-ds-surface rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center"
+    <ng-container *ngIf="!isLoading; else loading">
+      <div
+        *ngFor="let banner of filteredBanners"
+        class="bg-ds-surface rounded-sm border border-ds-border overflow-hidden group shadow-sm"
+      >
+        <div class="relative h-32 bg-ds-bg overflow-hidden">
+          <img
+            loading="lazy" [src]="getBannerImageUrl(banner.imageUrl)"
+            [alt]="banner.title"
+            class="w-full h-full object-cover transition-all duration-700"
+          />
+          <div
+            class="absolute inset-0 bg-ds-text/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-ds-3 backdrop-blur-sm"
           >
-            <app-icon name="Edit3" size="16"></app-icon>
-          </button>
-          <button
-            *ngIf="authService.isSuperAdmin()"
-            (click)="deleteBanner(banner.id)"
-            class="size-10 bg-ds-surface rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center"
-          >
-            <app-icon name="Trash2" size="16"></app-icon>
-          </button>
+            <button
+              (click)="openEditModal(banner)"
+              class="size-10 bg-ds-surface rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center"
+            >
+              <app-icon name="Edit3" size="16"></app-icon>
+            </button>
+            <button
+              *ngIf="authService.isSuperAdmin()"
+              (click)="deleteBanner(banner.id)"
+              class="size-10 bg-ds-surface rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center"
+            >
+              <app-icon name="Trash2" size="16"></app-icon>
+            </button>
+          </div>
+          <div class="absolute top-2 right-2 flex flex-col gap-1.5 items-end">
+            <span class="bg-ds-text text-ds-surface px-2 py-0.5 rounded-sm">SEQ #{{ banner.displayOrder }}</span>
+            <span *ngIf="banner.isActive" class="bg-ds-success text-ds-surface px-2 py-0.5 rounded-sm">Live</span>
+            <span class="bg-ds-surface text-ds-text px-2 py-0.5 rounded-sm border border-ds-border">{{ banner.type || 'HERO' }}</span>
+          </div>
         </div>
-        <div class="absolute top-2 right-2 flex flex-col gap-1.5 items-end">
-          <span class="bg-ds-text text-ds-surface px-2 py-0.5 rounded-sm">SEQ #{{ banner.displayOrder }}</span>
-          <span *ngIf="banner.isActive" class="bg-ds-success text-ds-surface px-2 py-0.5 rounded-sm">Live</span>
-          <span class="bg-ds-surface text-ds-text px-2 py-0.5 rounded-sm border border-ds-border">{{ banner.type || 'HERO' }}</span>
+        <div class="p-ds-4 bg-ds-surface">
+          <h3 class="text-ds-text mb-1 line-clamp-1">
+            {{ banner.title || "UNTITLED" }}
+          </h3>
+          <p class="text-ds-text-muted line-clamp-1 mb-3">
+            {{ banner.subtitle }}
+          </p>
+          <div class="flex items-center gap-ds-2 pt-ds-3 border-t border-ds-border/50">
+            <app-icon name="Link" size="10" className="text-ds-text-muted/40"></app-icon>
+            <span class="text-ds-text-muted truncate">{{ banner.linkUrl || "No link set" }}</span>
+          </div>
         </div>
       </div>
-      <div class="p-ds-4 bg-ds-surface">
-        <h3 class="text-ds-text mb-1 line-clamp-1">
-          {{ banner.title || "UNTITLED" }}
-        </h3>
-        <p class="text-ds-text-muted line-clamp-1 mb-3">
-          {{ banner.subtitle }}
-        </p>
-        <div class="flex items-center gap-ds-2 pt-ds-3 border-t border-ds-border/50">
-          <app-icon name="Link" size="10" className="text-ds-text-muted/40"></app-icon>
-          <span class="text-ds-text-muted truncate">{{ banner.linkUrl || "No link set" }}</span>
-        </div>
+    </ng-container>
+    <ng-template #loading>
+      <div class="col-span-full py-ds-24 text-center">
+        <app-icon name="Loader2" size="32" className="animate-spin text-ds-text-muted mx-auto"></app-icon>
+        <p class="text-ds-text-muted mt-ds-4 animate-pulse">Loading banners...</p>
       </div>
-    </div>
+    </ng-template>
   </div>
 
   <!-- Empty State -->
   <div
-    *ngIf="banners.length === 0"
+    *ngIf="!isLoading && banners.length === 0"
     class="flex flex-col items-center justify-center py-ds-24 bg-ds-bg/30 rounded-sm border border-ds-border border-dashed"
   >
     <app-icon

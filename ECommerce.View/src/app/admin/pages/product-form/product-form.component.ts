@@ -1,6 +1,6 @@
 import { AuthService } from '../../../core/services/auth.service';
 import { NgIf, NgClass, CurrencyPipe, NgFor } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, inject } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, inject } from "@angular/core";
 import {
   AbstractControl,
   FormArray,
@@ -59,6 +59,7 @@ export class ProductFormComponent {
   protected authService = inject(AuthService);
 
   private formBuilder = inject(FormBuilder);
+  private cdr = inject(ChangeDetectorRef);
   private productsService = inject(ProductsService);
   private categoriesService = inject(CategoriesService);
   private subCategoriesService = inject(SubCategoriesService);
@@ -186,6 +187,7 @@ export class ProductFormComponent {
 
   private loadInitialData(): void {
     this.isLoading = true;
+    this.cdr.markForCheck();
     
     combineLatest([
       this.categoriesService.getAll(),
@@ -197,6 +199,7 @@ export class ProductFormComponent {
         this.subCategories = subCategories;
         this.productGroups = groups;
         this.loadAvailableSizes();
+        this.cdr.markForCheck();
         return this.route.paramMap;
       })
     ).subscribe({
@@ -209,6 +212,7 @@ export class ProductFormComponent {
             this.productId = parsedId;
             this.pageTitle = "Edit Product";
             this.loadProduct(parsedId);
+            this.cdr.markForCheck();
           } else {
             this.handleCreateMode();
           }
@@ -220,6 +224,7 @@ export class ProductFormComponent {
         console.error("Error loading initial data:", err);
         this.isLoading = false;
         this.notification.error("Failed to load initial data.");
+        this.cdr.markForCheck();
       }
     });
   }
@@ -236,6 +241,7 @@ export class ProductFormComponent {
     this.categoriesService.getAll().subscribe((categories) => {
       this.categories = categories;
       this.loadAvailableSizes();
+      this.cdr.markForCheck();
     });
   }
 
@@ -245,6 +251,7 @@ export class ProductFormComponent {
         this.dynamicSizes = sizes;
         const combined = new Set([...this.standardSizes, ...this.dynamicSizes]);
         this.allAvailableSizes = Array.from(combined).sort();
+        this.cdr.markForCheck();
       },
       error: (err) => console.error("Error loading available sizes:", err),
     });
@@ -345,6 +352,7 @@ export class ProductFormComponent {
 
   loadProduct(productId: number): void {
     this.isLoading = true;
+    this.cdr.markForCheck();
     this.productsService
       .getProductById(productId)
       .subscribe({
@@ -493,10 +501,12 @@ export class ProductFormComponent {
         });
         
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error("Error loading product:", err);  
         this.isLoading = false;
+        this.cdr.markForCheck();
         this.notification.error("Failed to load product details.");
       }
     });
@@ -537,13 +547,16 @@ export class ProductFormComponent {
     }
 
     this.isSearching = true;
+    this.cdr.markForCheck();
     this.productsService.searchProductsForCombo(term).subscribe({
       next: (results) => {
         this.searchResults = results;
         this.isSearching = false;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.isSearching = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -661,10 +674,14 @@ export class ProductFormComponent {
             if (urls && urls.length > 0) {
               if (target === 'sizeChart') {
                 this.form.get('meta.sizeChartUrl')?.setValue(urls[0]);
+                this.cdr.markForCheck();
               }
             }
           },
-          error: (err) => this.notification.error("Failed to upload image")
+          error: (err) => {
+            this.notification.error("Failed to upload image");
+            this.cdr.markForCheck();
+          }
         });
       }
     };
@@ -760,6 +777,7 @@ export class ProductFormComponent {
     const files = this.getSelectedFiles();
 
     this.isSubmitting = true;
+    this.cdr.markForCheck();
     this.productsService
       .uploadProductMedia(files)
       .pipe(
@@ -792,6 +810,7 @@ export class ProductFormComponent {
             error?.message ||
             `Failed to ${action} product. Please try again.`;
           this.notification.error(`Error: ${errorMessage}`);
+          this.cdr.markForCheck();
         },
       });
   }

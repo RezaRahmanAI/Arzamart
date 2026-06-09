@@ -1,9 +1,8 @@
 using ECommerce.Core.Constants;
-using ECommerce.Core.Interfaces;
 using ECommerce.Core.DTOs;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
@@ -17,16 +16,12 @@ public class AdminSubCategoryController : ControllerBase
     private readonly ISubCategoryAdminService _subCategoryService;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
-    private readonly ICacheService _cache;
-    private readonly IOutputCacheStore _cacheStore;
 
-    public AdminSubCategoryController(ISubCategoryAdminService subCategoryService, IWebHostEnvironment environment, IConfiguration config, ICacheService cache, IOutputCacheStore cacheStore)
+    public AdminSubCategoryController(ISubCategoryAdminService subCategoryService, IWebHostEnvironment environment, IConfiguration config)
     {
         _subCategoryService = subCategoryService;
         _environment = environment;
         _config = config;
-        _cache = cache;
-        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -52,8 +47,6 @@ public class AdminSubCategoryController : ControllerBase
         try
         {
             var result = await _subCategoryService.CreateAsync(dto);
-            await InvalidateSubCategoryCacheAsync();
-            await _cacheStore.EvictByTagAsync("catalog", default);
             return CreatedAtAction(nameof(GetSubCategoryById), new { id = result.Id }, result);
         }
         catch (InvalidOperationException ex)
@@ -71,8 +64,6 @@ public class AdminSubCategoryController : ControllerBase
         try
         {
             var result = await _subCategoryService.UpdateAsync(id, dto);
-            await InvalidateSubCategoryCacheAsync();
-            await _cacheStore.EvictByTagAsync("catalog", default);
             return Ok(result);
         }
         catch (InvalidOperationException ex)
@@ -88,8 +79,6 @@ public class AdminSubCategoryController : ControllerBase
         try
         {
             await _subCategoryService.DeleteAsync(id);
-            await InvalidateSubCategoryCacheAsync();
-            await _cacheStore.EvictByTagAsync("catalog", default);
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -101,7 +90,7 @@ public class AdminSubCategoryController : ControllerBase
     [HttpPost("upload-image")]
     [DisableRequestSizeLimit]
     [RequestFormLimits(MultipartBodyLengthLimit = FileUpload.MaxFileSize)]
-    public async Task<ActionResult<UploadResultDto>> UploadImage([FromForm] IFormFile file)
+    public async Task<ActionResult<UploadResultDto>> UploadImage(IFormFile file)
     {
         try
         {
@@ -129,12 +118,5 @@ public class AdminSubCategoryController : ControllerBase
         {
             return StatusCode(500, new { message = "An error occurred during subcategory image upload: " + ex.Message });
         }
-    }
-
-    private async Task InvalidateSubCategoryCacheAsync()
-    {
-        await _cache.RemoveAsync("nav:mega-menu");
-        await _cache.RemoveByPrefixAsync("product:list");
-        await _cacheStore.EvictByTagAsync("categories", default);
     }
 }

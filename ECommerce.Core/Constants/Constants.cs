@@ -82,20 +82,6 @@ public static class CacheDurations
     /// </summary>
     public static readonly TimeSpan Extended = TimeSpan.FromMinutes(60);
 
-    /// <summary>
-    /// Default output cache policy duration
-    /// </summary>
-    public static readonly TimeSpan DefaultOutputCache = TimeSpan.FromMinutes(5);
-
-    /// <summary>
-    /// Products cache policy duration
-    /// </summary>
-    public static readonly TimeSpan ProductsCache = TimeSpan.FromMinutes(10);
-
-    /// <summary>
-    /// Categories cache policy duration
-    /// </summary>
-    public static readonly TimeSpan CategoriesCache = TimeSpan.FromMinutes(5);
 }
 
 /// <summary>

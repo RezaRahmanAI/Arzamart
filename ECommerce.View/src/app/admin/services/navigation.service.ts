@@ -1,7 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 export interface NavigationMenuItem {
   id: number;
@@ -21,11 +20,11 @@ export class NavigationService {
   private readonly baseUrl = "/admin/navigation";
 
   getAll(): Observable<NavigationMenuItem[]> {
-    return this.api.get<NavigationMenuItem[]>(this.baseUrl, { headers: X_REFRESH });
+    return this.api.get<NavigationMenuItem[]>(this.baseUrl);
   }
 
   getById(id: number): Observable<NavigationMenuItem> {
-    return this.api.get<NavigationMenuItem>(`${this.baseUrl}/${id}`, { headers: X_REFRESH });
+    return this.api.get<NavigationMenuItem>(`${this.baseUrl}/${id}`);
   }
 
   create(menu: Partial<NavigationMenuItem>): Observable<NavigationMenuItem> {

@@ -1,44 +1,32 @@
-using AutoMapper;
-using ECommerce.Core.Constants;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.Infrastructure.Specifications;
 using ECommerce.Infrastructure.Services;
+using ECommerce.Infrastructure.Specifications;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
 
 namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Microsoft.AspNetCore.OutputCaching.OutputCache(Tags = new[] { "catalog" })]
 public class ProductsController : ControllerBase
 {
     private readonly IProductQueryService _productQueryService;
     private readonly IProductService _productService;
     private readonly IGenericRepository<Category> _categoriesRepo;
-    private readonly IMapper _mapper;
-    private readonly IMemoryCache _cache;
 
     public ProductsController(
         IProductQueryService productQueryService,
         IProductService productService,
-        IGenericRepository<Category> categoriesRepo,
-        IMapper mapper,
-        IMemoryCache cache)
+        IGenericRepository<Category> categoriesRepo)
     {
         _productQueryService = productQueryService;
         _productService = productService;
         _categoriesRepo = categoriesRepo;
-        _mapper = mapper;
-        _cache = cache;
     }
 
     [HttpGet]
-    [ResponseCache(Duration = 300, VaryByQueryKeys = new[] { "*" })]
-    [Microsoft.AspNetCore.OutputCaching.OutputCache(PolicyName = "Products")]
     public async Task<ActionResult<PaginationDto<ProductListDto>>> GetProducts(
         [FromQuery] string? sort, 
         [FromQuery] int? categoryId, 
@@ -100,8 +88,6 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{slug}")]
-    [ResponseCache(Duration = 300, VaryByQueryKeys = new[] { "slug" })]
-    [Microsoft.AspNetCore.OutputCaching.OutputCache(PolicyName = "Products")]
     public async Task<ActionResult<ProductDto>> GetProduct(string slug)
     {
         var product = await _productQueryService.GetProductBySlugAsync(slug);

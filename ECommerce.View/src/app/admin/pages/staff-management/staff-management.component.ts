@@ -166,6 +166,7 @@ export class StaffManagementComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.notification.error(err.error?.message || "Failed to update status.");
+        this.cdr.markForCheck();
       }
     });
   }
@@ -249,6 +250,7 @@ export class StaffManagementComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.notification.error(err.error?.message || "Failed to delete account.");
+          this.cdr.detectChanges();
         }
       });
     }

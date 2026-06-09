@@ -31,7 +31,7 @@ public class SecurityMiddleware
         // 2. Revoked Token Check (after auth)
         if (context.User.Identity?.IsAuthenticated == true)
         {
-            if (IsTokenRevoked(context))
+            if (await IsTokenRevokedAsync(context))
                 return;
 
             // 3. Suspicious User Check
@@ -72,7 +72,7 @@ public class SecurityMiddleware
         return false;
     }
 
-    private bool IsTokenRevoked(HttpContext context)
+    private async Task<bool> IsTokenRevokedAsync(HttpContext context)
     {
         var jti = context.User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
         if (string.IsNullOrEmpty(jti))
@@ -81,7 +81,7 @@ public class SecurityMiddleware
         if (_cache.TryGetValue($"revoked_jti:{jti}", out _))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            context.Response.WriteAsJsonAsync(new { error = "TOKEN_REVOKED", message = "Token has been invalidated" }).Wait();
+            await context.Response.WriteAsJsonAsync(new { error = "TOKEN_REVOKED", message = "Token has been invalidated" });
             return true;
         }
 

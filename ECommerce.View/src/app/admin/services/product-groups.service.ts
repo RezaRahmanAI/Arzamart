@@ -2,7 +2,6 @@ import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
 import { Product } from "../../core/models/product";
-import { X_REFRESH } from "../utils/cache.utils";
 
 export interface ProductGroup {
   id: number;
@@ -19,11 +18,11 @@ export class ProductGroupsService {
   private readonly baseUrl = "/admin/product-groups";
 
   getAll(): Observable<ProductGroup[]> {
-    return this.api.get<ProductGroup[]>(this.baseUrl, { headers: X_REFRESH });
+    return this.api.get<ProductGroup[]>(this.baseUrl);
   }
 
   getById(id: number): Observable<ProductGroup> {
-    return this.api.get<ProductGroup>(`${this.baseUrl}/${id}`, { headers: X_REFRESH });
+    return this.api.get<ProductGroup>(`${this.baseUrl}/${id}`);
   }
 
   create(group: Partial<ProductGroup>): Observable<ProductGroup> {

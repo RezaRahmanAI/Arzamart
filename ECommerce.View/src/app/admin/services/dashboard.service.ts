@@ -13,7 +13,6 @@ import {
 } from "../models/admin-dashboard.models";
 
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 @Injectable({
   providedIn: "root",
@@ -26,42 +25,42 @@ export class DashboardService {
     if (startDate && endDate) {
       url += `?startDate=${startDate}&endDate=${endDate}`;
     }
-    return this.api.get<DashboardStats>(url, { headers: X_REFRESH });
+    return this.api.get<DashboardStats>(url);
   }
 
   getRecentOrders(): Observable<RecentOrder[]> {
-    return this.api.get<RecentOrder[]>("/admin/dashboard/orders/recent", { headers: X_REFRESH });
+    return this.api.get<RecentOrder[]>("/admin/dashboard/orders/recent");
   }
 
   getPopularProducts(): Observable<PopularProduct[]> {
-    return this.api.get<PopularProduct[]>("/admin/dashboard/products/popular", { headers: X_REFRESH });
+    return this.api.get<PopularProduct[]>("/admin/dashboard/products/popular");
   }
 
   getSalesAnalytics(period: string = "month"): Observable<SalesData[]> {
     return this.api.get<SalesData[]>(
-      `/admin/dashboard/analytics/sales?period=${period}`, { headers: X_REFRESH }
+      `/admin/dashboard/analytics/sales?period=${period}`
     );
   }
 
   getOrderDistribution(): Observable<StatusDistribution[]> {
     return this.api.get<StatusDistribution[]>(
-      "/admin/dashboard/analytics/order-distribution", { headers: X_REFRESH }
+      "/admin/dashboard/analytics/order-distribution"
     );
   }
 
   getCustomerGrowth(): Observable<CustomerGrowth[]> {
     return this.api.get<CustomerGrowth[]>(
-      "/admin/dashboard/analytics/customer-growth", { headers: X_REFRESH }
+      "/admin/dashboard/analytics/customer-growth"
     );
   }
 
   getDailyTraffic(): Observable<DailyTraffic> {
-    return this.api.get<DailyTraffic>("/analytics/daily", { headers: X_REFRESH });
+    return this.api.get<DailyTraffic>("/analytics/daily");
   }
 
   getSalesByCategory(): Observable<CategorySales[]> {
     return this.api.get<CategorySales[]>(
-      "/admin/dashboard/analytics/sales-by-category", { headers: X_REFRESH }
+      "/admin/dashboard/analytics/sales-by-category"
     );
   }
 }

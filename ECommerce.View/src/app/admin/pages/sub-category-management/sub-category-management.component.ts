@@ -43,6 +43,7 @@ export class SubCategoryManagementComponent implements OnInit, OnDestroy {
   filteredSubCategories: FlatSubCategory[] = [];
   parentCategories: Category[] = [];
   
+  isLoading = false;
   selectedId: number | null = null;
   mode: "create" | "edit" = "create";
   filterTerm = "";
@@ -88,24 +89,41 @@ export class SubCategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   loadData(): void {
+    this.isLoading = true;
+    this.cdr.markForCheck();
     // Get static parent categories
-    this.categoryService.getAll().subscribe((categories) => {
-      this.parentCategories = categories;
-      this.cdr.markForCheck();
-      
-      // Get all sub-categories from DB
-      this.subCategoryService.getAll().subscribe((subs) => {
-        this.allSubCategories = subs.map(sub => {
-          const parent = this.parentCategories.find(pc => pc.id === sub.categoryId);
-          return {
-            ...sub,
-            parentName: parent?.name || "Unknown"
-          };
-        }).sort((a, b) => a.parentName.localeCompare(b.parentName) || a.name.localeCompare(b.name));
-        
-        this.applyFilter();
+    this.categoryService.getAll().subscribe({
+      next: (categories) => {
+        this.parentCategories = categories;
         this.cdr.markForCheck();
-      });
+        
+        // Get all sub-categories from DB
+        this.subCategoryService.getAll().subscribe({
+          next: (subs) => {
+            this.allSubCategories = subs.map(sub => {
+              const parent = this.parentCategories.find(pc => pc.id === sub.categoryId);
+              return {
+                ...sub,
+                parentName: parent?.name || "Unknown"
+              };
+            }).sort((a, b) => a.parentName.localeCompare(b.parentName) || a.name.localeCompare(b.name));
+            
+            this.applyFilter();
+            this.isLoading = false;
+            this.cdr.markForCheck();
+          },
+          error: (err) => {
+            this.isLoading = false;
+            this.notification.error("Failed to load subcategories.");
+            this.cdr.markForCheck();
+          }
+        });
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.notification.error("Failed to load categories.");
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -257,6 +275,7 @@ export class SubCategoryManagementComponent implements OnInit, OnDestroy {
     const reader = new FileReader();
     reader.onload = (e) => {
       this.imagePreviewUrl = e.target?.result as string;
+      this.cdr.markForCheck();
     };
     reader.readAsDataURL(file);
   }

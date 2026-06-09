@@ -30,6 +30,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   products: ProductInventoryDto[] = [];
   filteredProducts: ProductInventoryDto[] = [];
   searchControl = new FormControl("");
+  isLoading = false;
 
   // Modal state
   showStockModal = false;
@@ -62,10 +63,21 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   loadInventory(): void {
-    this.inventoryService.getInventory().subscribe((data) => {
-      this.products = data;
-      this.filterProducts(this.searchControl.value);
-      this.cdr.markForCheck();
+    this.isLoading = true;
+    this.cdr.markForCheck();
+    this.inventoryService.getInventory().subscribe({
+      next: (data) => {
+        this.products = data;
+        this.filterProducts(this.searchControl.value);
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.notification.error("Failed to load inventory.");
+        console.error(err);
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -114,6 +126,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.variantPriceValues = [];
     this.variantComparePriceValues = [];
     this.variantPurchasePriceValues = [];
+    this.cdr.markForCheck();
   }
 
   adjustStock(amount: number) {

@@ -2,7 +2,6 @@ import { HttpParams } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 export interface Customer {
   id: number;
@@ -47,7 +46,6 @@ export class CustomersService {
 
     return this.api.get<CustomersResponse>(this.baseUrl, {
       params: httpParams,
-      headers: X_REFRESH,
     });
   }
 

@@ -1,0 +1,296 @@
+/* Swagger Dark Theme - Based on Amoenus/SwaggerDark */
+html {
+    box-sizing: border-box;
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    background: #1a1a2e;
+    color: #e0e0e0;
+}
+
+.swagger-ui .topbar {
+    display: none;
+}
+
+.swagger-ui .info {
+    margin: 20px 0;
+}
+
+.swagger-ui .info .title {
+    color: #e0e0e0;
+}
+
+.swagger-ui .info .title small {
+    background: #16213e;
+}
+
+.swagger-ui .scheme-container {
+    background: #16213e;
+    box-shadow: none;
+}
+
+.swagger-ui .opblock-tag {
+    color: #e0e0e0;
+    border-bottom: 1px solid #2d2d5e;
+}
+
+.swagger-ui .opblock-tag:hover {
+    color: #e0e0e0;
+}
+
+.swagger-ui .opblock .opblock-summary {
+    border-color: #2d2d5e;
+}
+
+.swagger-ui .opblock .opblock-summary-method {
+    background: #16213e;
+}
+
+.swagger-ui .opblock .opblock-summary-operation-id,
+.swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .opblock .opblock-summary-description {
+    color: #e0e0e0;
+}
+
+/* GET */
+.swagger-ui .opblock.opblock-get .opblock-summary-method {
+    background: #61affe;
+}
+
+.swagger-ui .opblock.opblock-get {
+    border-color: #61affe;
+    background: rgba(97, 175, 254, 0.05);
+}
+
+/* POST */
+.swagger-ui .opblock.opblock-post .opblock-summary-method {
+    background: #49cc90;
+}
+
+.swagger-ui .opblock.opblock-post {
+    border-color: #49cc90;
+    background: rgba(73, 204, 144, 0.05);
+}
+
+/* PUT */
+.swagger-ui .opblock.opblock-put .opblock-summary-method {
+    background: #fca130;
+}
+
+.swagger-ui .opblock.opblock-put {
+    border-color: #fca130;
+    background: rgba(252, 161, 48, 0.05);
+}
+
+/* DELETE */
+.swagger-ui .opblock.opblock-delete .opblock-summary-method {
+    background: #f93e3e;
+}
+
+.swagger-ui .opblock.opblock-delete {
+    border-color: #f93e3e;
+    background: rgba(249, 62, 62, 0.05);
+}
+
+/* PATCH */
+.swagger-ui .opblock.opblock-patch .opblock-summary-method {
+    background: #50e3c2;
+}
+
+.swagger-ui .opblock.opblock-patch {
+    border-color: #50e3c2;
+    background: rgba(80, 227, 194, 0.05);
+}
+
+/* HEAD */
+.swagger-ui .opblock.opblock-head .opblock-summary-method {
+    background: #9012fe;
+}
+
+.swagger-ui .opblock.opblock-head {
+    border-color: #9012fe;
+    background: rgba(144, 18, 254, 0.05);
+}
+
+/* OPTIONS */
+.swagger-ui .opblock.opblock-options .opblock-summary-method {
+    background: #0d5aa7;
+}
+
+.swagger-ui .opblock.opblock-options {
+    border-color: #0d5aa7;
+    background: rgba(13, 90, 167, 0.05);
+}
+
+.swagger-ui .model-box {
+    background: #16213e;
+}
+
+.swagger-ui .model-title {
+    color: #e0e0e0;
+}
+
+.swagger-ui .model {
+    color: #e0e0e0;
+}
+
+.swagger-ui .model-toggle::after {
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23e0e0e0' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E") no-repeat center;
+}
+
+.swagger-ui .model-toggle.collapsed::after {
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23e0e0e0' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z'/%3E%3C/svg%3E") no-repeat center;
+}
+
+.swagger-ui .parameter__name {
+    color: #e0e0e0;
+}
+
+.swagger-ui .parameter__name.required::after {
+    color: #f93e3e;
+}
+
+.swagger-ui .parameter__type {
+    color: #888;
+}
+
+.swagger-ui .response-col_status {
+    color: #e0e0e0;
+}
+
+.swagger-ui .response-col_links {
+    color: #e0e0e0;
+}
+
+.swagger-ui table thead tr td,
+.swagger-ui table thead tr th {
+    border-color: #2d2d5e;
+    color: #e0e0e0;
+}
+
+.swagger-ui .responses-inner h4,
+.swagger-ui .responses-inner h5 {
+    color: #e0e0e0;
+}
+
+.swagger-ui .response-control-media-type__accept-message {
+    color: #e0e0e0;
+}
+
+.swagger-ui select {
+    background-color: #16213e;
+    color: #e0e0e0;
+    border-color: #2d2d5e;
+}
+
+.swagger-ui textarea,
+.swagger-ui input[type="text"] {
+    background-color: #16213e;
+    color: #e0e0e0;
+    border-color: #2d2d5e;
+}
+
+.swagger-ui .btn {
+    color: #e0e0e0;
+    border-color: #2d2d5e;
+    background: #16213e;
+}
+
+.swagger-ui .btn:hover {
+    background: #2d2d5e;
+}
+
+.swagger-ui .dialog-ux .modal-ux {
+    background: #1a1a2e;
+    border-color: #2d2d5e;
+}
+
+.swagger-ui .dialog-ux .modal-ux-header h3 {
+    color: #e0e0e0;
+}
+
+.swagger-ui .dialog-ux .modal-ux-content p {
+    color: #e0e0e0;
+}
+
+.swagger-ui .markdown p,
+.swagger-ui .markdown li,
+.swagger-ui .markdown a {
+    color: #e0e0e0;
+}
+
+.swagger-ui .renderedMarkdown p,
+.swagger-ui .renderedMarkdown li,
+.swagger-ui .renderedMarkdown a {
+    color: #e0e0e0;
+}
+
+.swagger-ui .highlight-code {
+    background: #16213e;
+    color: #e0e0e0;
+}
+
+.swagger-ui .copy-to-clipboard {
+    background: #16213e;
+}
+
+.swagger-ui .authorization__btn {
+    border-color: #2d2d5e;
+}
+
+.swagger-ui .authorization__btn svg {
+    fill: #e0e0e0;
+}
+
+.swagger-ui .auth-wrapper .dialog-ux {
+    background: #1a1a2e;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4a4a8a;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6a6aaa;
+}
+
+/* Bottom bar */
+.swagger-ui .bottom {
+    background: #16213e;
+    border-top: 1px solid #2d2d5e;
+}
+
+/* Information section */
+.swagger-ui .info .title small.version-stamp {
+    background: #61affe;
+}
+
+/* Arrow icons */
+.swagger-ui .opblock .opblock-summary-description {
+    color: #b0b0b0;
+}
+
+/* Expansion animations */
+.swagger-ui .opblock-body {
+    background: #1a1a2e;
+}

@@ -1,5 +1,5 @@
 import { NgIf, NgFor } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { Subject, debounceTime, distinctUntilChanged } from "rxjs";
@@ -20,6 +20,7 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
 export class CustomersComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private customersService = inject(CustomersService);
+  private cdr = inject(ChangeDetectorRef);
 
   searchControl = new FormControl("", { nonNullable: true });
   customers: Customer[] = [];
@@ -41,6 +42,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   loadCustomers(): void {
     this.isLoading = true;
+    this.cdr.markForCheck();
     this.customersService
       .getCustomers({
         searchTerm: this.searchControl.value,
@@ -53,10 +55,12 @@ export class CustomersComponent implements OnInit, OnDestroy {
           this.customers = data.items;
           this.totalResults = data.total;
           this.isLoading = false;
+          this.cdr.markForCheck();
         },
         error: (err) => {
           console.error("Failed to load customers", err);
           this.isLoading = false;
+          this.cdr.markForCheck();
         },
       });
   }
@@ -105,6 +109,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
     action.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         customer.isSuspicious = !customer.isSuspicious;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error("Failed to toggle suspicious status", err);

@@ -1,7 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 export interface StaticPage {
   id: number;
@@ -21,11 +20,11 @@ export class PagesService {
   private readonly baseUrl = "/admin/pages";
 
   getAll(): Observable<StaticPage[]> {
-    return this.api.get<StaticPage[]>(this.baseUrl, { headers: X_REFRESH });
+    return this.api.get<StaticPage[]>(this.baseUrl);
   }
 
   getById(id: number): Observable<StaticPage> {
-    return this.api.get<StaticPage>(`${this.baseUrl}/${id}`, { headers: X_REFRESH });
+    return this.api.get<StaticPage>(`${this.baseUrl}/${id}`);
   }
 
   create(page: Partial<StaticPage>): Observable<StaticPage> {

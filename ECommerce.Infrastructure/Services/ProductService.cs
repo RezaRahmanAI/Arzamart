@@ -11,8 +11,9 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Core.Enums;
 using ECommerce.Core.DTOs.Products;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
+using ECommerce.Core.Constants;
+using ECommerce.Infrastructure.Cache;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ECommerce.Infrastructure.Services;
 
@@ -20,49 +21,34 @@ public class ProductService : IProductService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly ICacheService _cache;
+    private readonly AppCache _cache;
+    private readonly ApplicationDbContext _db;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public ProductService(IUnitOfWork unitOfWork, IMapper mapper, ICacheService cache)
+    public ProductService(IUnitOfWork unitOfWork, IMapper mapper, AppCache cache, ApplicationDbContext db, IServiceScopeFactory scopeFactory)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _cache = cache;
+        _db = db;
+        _scopeFactory = scopeFactory;
     }
 
-    public async Task<ProductDto?> GetProductBySlugAsync(string slug)
+    public Task<ProductDto?> GetProductBySlugAsync(string slug)
     {
-        var cacheKey = $"product:details:slug:{slug}";
-        
-        return await _cache.GetOrCreateAsync(cacheKey, async () => 
-        {
-            var spec = new ProductsWithCategoriesSpecification(slug);
-            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
-            if (product == null) return null;
-            var dto = _mapper.Map<Product, ProductDto>(product);
-            return dto;
-        }, TimeSpan.FromMinutes(60));
+        var product = _cache.Products.Values.FirstOrDefault(p => p.Slug == slug);
+        return Task.FromResult(product == null ? null : _mapper.Map<ProductDto>(product));
     }
 
-    public async Task<ProductDto?> GetProductByIdAsync(int id, bool ignoreFilters = false)
+    public Task<ProductDto?> GetProductByIdAsync(int id, bool ignoreFilters = false)
     {
-        var cacheKey = $"product:details:id:{id}{(ignoreFilters ? "_ignoreFilters" : "")}";
-        
-        return await _cache.GetOrCreateAsync(cacheKey, async () => 
-        {
-            var spec = new ProductsWithCategoriesSpecification(id);
-            var product = ignoreFilters 
-                ? await _unitOfWork.Repository<Product>().GetEntityWithSpecIgnoreFiltersAsync(spec)
-                : await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
-                
-            if (product == null) return null;
-            var dto = _mapper.Map<Product, ProductDto>(product);
-            return dto;
-        }, TimeSpan.FromMinutes(60));
+        _cache.Products.TryGetValue(id, out var product);
+        return Task.FromResult(product == null ? null : _mapper.Map<ProductDto>(product));
     }
 
     public async Task<AdminProductListResultDto> GetAdminProductsAsync(string? searchTerm, string? category, string? statusTab, string? stockStatus, int page, int pageSize)
     {
-        var query = _unitOfWork.Repository<Product>().GetQueryable()
+        var query = _db.Products
             .IgnoreQueryFilters()
             .AsNoTracking();
 
@@ -71,7 +57,7 @@ public class ProductService : IProductService
 
         if (!string.IsNullOrEmpty(category) && category != "all")
         {
-            var dbCat = await _unitOfWork.Repository<Category>().GetQueryable()
+            var dbCat = await _db.Categories
                 .FirstOrDefaultAsync(c => c.Name.ToLower() == category.ToLower());
             if (dbCat != null)
                 query = query.Where(p => p.CategoryId == dbCat.Id);
@@ -157,6 +143,8 @@ public class ProductService : IProductService
         {
             _unitOfWork.Repository<Product>().Delete(product);
             await _unitOfWork.Complete();
+            _cache.Products.TryRemove(id, out _);
+            RebuildHomePageCache();
             return (true, mainImageUrl, imageUrls);
         }
         catch
@@ -253,11 +241,18 @@ public class ProductService : IProductService
         var result = await _unitOfWork.Complete();
         if (result <= 0) return null!;
 
-        // Invalidate product lists
-        await InvalidateProductCacheAsync(product);
+        var full = await _db.Products
+            .AsNoTracking()
+            .Include(p => p.Images)
+            .Include(p => p.Variants)
+            .Include(p => p.Category)
+            .Include(p => p.SubCategory)
+            .FirstAsync(p => p.Id == product.Id);
 
-        var dtoResult = _mapper.Map<Product, ProductDto>(product);
-        return dtoResult;
+        _cache.Products[full.Id] = full;
+        RebuildHomePageCache();
+
+        return _mapper.Map<ProductDto>(full);
     }
 
     public async Task<ProductDto?> UpdateProductAsync(int id, ProductUpdateDto dto, bool ignoreFilters = false)
@@ -328,8 +323,6 @@ public class ProductService : IProductService
         {
             if (!incomingVariants.Any(iv => iv.Id == existing.Id))
             {
-                // Safety check: Don't delete if referenced by ComboItems or OrderItems
-                // (Though the DB constraint will catch it anyway, this is cleaner)
                 _unitOfWork.Repository<ProductVariant>().Delete(existing);
             }
         }
@@ -415,30 +408,131 @@ public class ProductService : IProductService
         _unitOfWork.Repository<Product>().Update(product);
         await _unitOfWork.Complete();
 
-        // Invalidate Product-specific cache and all lists
-        await InvalidateProductCacheAsync(product, oldSlug);
+        var full = await _db.Products
+            .AsNoTracking()
+            .Include(p => p.Images)
+            .Include(p => p.Variants)
+            .Include(p => p.Category)
+            .Include(p => p.SubCategory)
+            .FirstAsync(p => p.Id == product.Id);
 
-        var dtoResult = _mapper.Map<Product, ProductDto>(product);
-        return dtoResult;
+        _cache.Products[full.Id] = full;
+        RebuildHomePageCache();
+
+        return _mapper.Map<ProductDto>(full);
     }
 
-    private async Task InvalidateProductCacheAsync(Product product, string? oldSlug = null)
+    private void RebuildHomePageCache()
     {
-        // 1. Details Invalidation
-        await _cache.RemoveAsync($"product:details:id:{product.Id}");
-        await _cache.RemoveAsync($"product:details:slug:{product.Slug}");
-        if (!string.IsNullOrEmpty(oldSlug) && oldSlug != product.Slug)
+        var homeDto = new HomePageDto
         {
-            await _cache.RemoveAsync($"product:details:slug:{oldSlug}");
-        }
+            Banners = _mapper.Map<List<HeroBannerDto>>(
+                _cache.Banners.Values.OrderBy(b => b.DisplayOrder).ToList()),
+            Categories = _mapper.Map<List<CategoryDto>>(
+                _cache.Categories.Values.Take(10).ToList()),
+            FeaturedProducts = _mapper.Map<List<ProductListDto>>(
+                _cache.Products.Values
+                    .Where(p => p.IsFeatured && p.IsActive)
+                    .Take(12).ToList()),
+            NewArrivals = _mapper.Map<List<ProductListDto>>(
+                _cache.Products.Values
+                    .Where(p => p.IsActive)
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(12).ToList())
+        };
+        _cache.HomePageData["homepage"] = homeDto;
+    }
 
-        // 2. List Invalidation (Wildcard)
-        await _cache.RemoveByPrefixAsync("product:list");
+    public async Task UpdateProductGroupAsync(int groupId)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var group = await db.ProductGroups
+            .AsNoTracking()
+            .Include(g => g.Products)
+            .FirstOrDefaultAsync(g => g.Id == groupId);
         
-        // 3. Homepage/Section Invalidation
-        await _cache.RemoveAsync("homepage:featured-products");
-        await _cache.RemoveAsync("homepage:new-arrivals");
-        await _cache.RemoveAsync("home_page_data"); // Shared landing page data
+        if (group != null) _cache.ProductGroups[groupId] = group;
+        else _cache.ProductGroups.TryRemove(groupId, out _);
+        RebuildHomePageCache();
+    }
+
+    public async Task<List<ProductSearchResultDto>> SearchProductsForComboAsync(string? q)
+    {
+        if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
+            return new List<ProductSearchResultDto>();
+
+        var searchTerm = q.Trim().ToLower();
+
+        var products = _cache.Products.Values
+            .Where(p => p.Name.ToLower().Contains(searchTerm)
+                     || (p.Sku != null && p.Sku.ToLower().Contains(searchTerm)))
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(15)
+            .ToList();
+
+        return products.Select(p => new ProductSearchResultDto
+        {
+            Id = p.Id,
+            Name = p.Name,
+            ImageUrl = p.ImageUrl,
+            Sku = p.Sku,
+            Price = p.Variants.Any(v => v.Price > 0)
+                ? p.Variants.Where(v => v.Price > 0).Min(v => v.Price) ?? 0
+                : 0,
+            Variants = p.Variants.Select(v => new ProductSearchVariantDto
+            {
+                Id = v.Id,
+                Size = v.Size,
+                StockQuantity = v.StockQuantity,
+                Price = v.Price ?? 0
+            }).ToList()
+        }).ToList();
+    }
+
+    public Task<List<ProductCatalogItemDto>> GetProductCatalogAsync()
+    {
+        var products = _cache.Products.Values
+            .OrderByDescending(p => p.CreatedAt)
+            .ToList();
+
+        var dtos = products.Select(p => new ProductCatalogItemDto
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Sku = p.Sku,
+            ImageUrl = p.ImageUrl,
+            Price = p.Variants.Any() ? p.Variants.Min(v => v.Price) ?? 0 : 0,
+            IsActive = p.IsActive,
+            Status = p.IsActive ? "Active" : "Draft",
+            StockQuantity = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
+            Slug = p.Slug
+        }).ToList();
+
+        return Task.FromResult(dtos);
+    }
+
+    public Task<List<string>> GetAvailableSizesAsync()
+    {
+        var sizes = _cache.Products.Values
+            .SelectMany(p => p.Variants)
+            .Where(v => !string.IsNullOrEmpty(v.Size))
+            .Select(v => v.Size!)
+            .Distinct()
+            .ToList();
+
+        var sizeOrder = new List<string> { 
+            "2", "4", "6", "8", "10", "12", "14", "16",
+            "28", "30", "32", "34", "36", "38", "40", "42", "44",
+            "xs", "s", "m", "l", "xl", "xxl", "2xl", "xxxl", "3xl", "4xl", "5xl" 
+        };
+
+        var ordered = sizes.OrderBy(s => {
+            var index = sizeOrder.IndexOf(s.ToLower());
+            return index == -1 ? 999 : index;
+        }).ThenBy(s => s).ToList();
+
+        return Task.FromResult(ordered);
     }
 
     private async Task<int?> ValidateSubCategoryId(int? subCatId, int catId)
@@ -485,89 +579,5 @@ public class ProductService : IProductService
         if (slug.Length > 150) slug = slug.Substring(0, 150).Trim('-');
         
         return string.IsNullOrEmpty(slug) ? Guid.NewGuid().ToString().Substring(0, 8) : slug;
-    }
-
-    public async Task<List<ProductSearchResultDto>> SearchProductsForComboAsync(string? q)
-    {
-        if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
-            return new List<ProductSearchResultDto>();
-
-        var searchTerm = q.Trim().ToLower();
-
-        var products = await _unitOfWork.Repository<Product>()
-            .GetQueryable()
-            .IgnoreQueryFilters()
-            .AsNoTracking()
-            .Where(p => p.Name.ToLower().Contains(searchTerm)
-                     || (p.Sku != null && p.Sku.ToLower().Contains(searchTerm)))
-            .Include(p => p.Variants)
-            .OrderByDescending(p => p.CreatedAt)
-            .Take(15)
-            .ToListAsync();
-
-        return products.Select(p => new ProductSearchResultDto
-        {
-            Id = p.Id,
-            Name = p.Name,
-            ImageUrl = p.ImageUrl,
-            Sku = p.Sku,
-            Price = p.Variants.Any(v => v.Price > 0)
-                ? p.Variants.Where(v => v.Price > 0).Min(v => v.Price) ?? 0
-                : 0,
-            Variants = p.Variants.Select(v => new ProductSearchVariantDto
-            {
-                Id = v.Id,
-                Size = v.Size,
-                StockQuantity = v.StockQuantity,
-                Price = v.Price ?? 0
-            }).ToList()
-        }).ToList();
-    }
-
-    public async Task<List<ProductCatalogItemDto>> GetProductCatalogAsync()
-    {
-        return await _unitOfWork.Repository<Product>()
-            .GetQueryable()
-            .IgnoreQueryFilters()
-            .AsNoTracking()
-            .Include(p => p.Variants)
-            .OrderByDescending(p => p.CreatedAt)
-            .Select(p => new ProductCatalogItemDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Sku = p.Sku,
-                ImageUrl = p.ImageUrl,
-                Price = p.Variants.Any() ? p.Variants.Min(v => v.Price) ?? 0 : 0,
-                IsActive = p.IsActive,
-                Status = p.IsActive ? "Active" : "Draft",
-                StockQuantity = p.Variants.Any() ? p.Variants.Sum(v => v.StockQuantity) : p.StockQuantity,
-                Slug = p.Slug
-            })
-            .ToListAsync();
-    }
-
-    public async Task<List<string>> GetAvailableSizesAsync()
-    {
-        return (await _cache.GetOrCreateAsync("product:sizes", async () => 
-        {
-            var sizes = await _unitOfWork.Repository<ProductVariant>()
-                .GetQueryable()
-                .Where(v => !string.IsNullOrEmpty(v.Size))
-                .Select(v => v.Size!)
-                .Distinct()
-                .ToListAsync();
-
-            var sizeOrder = new List<string> { 
-                "2", "4", "6", "8", "10", "12", "14", "16",
-                "28", "30", "32", "34", "36", "38", "40", "42", "44",
-                "xs", "s", "m", "l", "xl", "xxl", "2xl", "xxxl", "3xl", "4xl", "5xl" 
-            };
-
-            return sizes.OrderBy(s => {
-                var index = sizeOrder.IndexOf(s.ToLower());
-                return index == -1 ? 999 : index;
-            }).ThenBy(s => s).ToList();
-        }, TimeSpan.FromHours(24)))!;
     }
 }

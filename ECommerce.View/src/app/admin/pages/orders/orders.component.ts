@@ -406,8 +406,12 @@ export class OrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     const nextStatus = this.getNextStatus(order.status);
     if (nextStatus) {
-      this.ordersService.updateStatus(order.id, nextStatus, `Moved to ${nextStatus}`).subscribe(() => {
-        this.loadOrders(false);
+      this.ordersService.updateStatus(order.id, nextStatus, `Moved to ${nextStatus}`).subscribe({
+        next: () => this.loadOrders(false),
+        error: () => {
+          this.notification.error("Failed to update status");
+          this.cdr.markForCheck();
+        }
       });
     }
     this.actionMenuOpenId = null;
@@ -417,8 +421,12 @@ export class OrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     const shouldCancel = window.confirm("Cancel this order?");
     if (shouldCancel) {
-      this.ordersService.updateStatus(order.id, OrderStatus.Cancelled, "Cancelled from index").subscribe(() => {
-        this.loadOrders(false);
+      this.ordersService.updateStatus(order.id, OrderStatus.Cancelled, "Cancelled from index").subscribe({
+        next: () => this.loadOrders(false),
+        error: () => {
+          this.notification.error("Failed to cancel order");
+          this.cdr.markForCheck();
+        }
       });
     }
     this.actionMenuOpenId = null;
@@ -445,6 +453,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   addNote(): void {
     if (!this.notesOrder || !this.newNoteText.trim()) return;
     this.isSavingNote = true;
+    this.cdr.markForCheck();
     
     this.ordersService.addOrderNote(this.notesOrder.id, this.newNoteText.trim()).subscribe({
       next: (updatedOrder) => {
@@ -468,6 +477,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   saveNote(): void {
     if (!this.notesOrder) return;
     this.isSavingNote = true;
+    this.cdr.markForCheck();
     const note = this.adminNoteControl.value || "";
     
     this.ordersService.updateStatus(this.notesOrder.id, this.notesOrder.status, note).subscribe({
@@ -513,8 +523,12 @@ export class OrdersComponent implements OnInit, OnDestroy {
   moveToPreOrder(order: Order, event: Event): void {
     event.stopPropagation();
     if (window.confirm("Move this order to Pre-Order?")) {
-      this.ordersService.updateStatus(order.id, OrderStatus.PreOrder, "Moved to Pre-Order").subscribe(() => {
-        this.loadOrders(false);
+      this.ordersService.updateStatus(order.id, OrderStatus.PreOrder, "Moved to Pre-Order").subscribe({
+        next: () => this.loadOrders(false),
+        error: () => {
+          this.notification.error("Failed to move to pre-order");
+          this.cdr.markForCheck();
+        }
       });
     }
   }
@@ -527,7 +541,10 @@ export class OrdersComponent implements OnInit, OnDestroy {
             this.notification.success("Order transferred to main pool");
             this.loadOrders(false);
         },
-        error: () => this.notification.error("Failed to transfer order")
+        error: () => {
+            this.notification.error("Failed to transfer order");
+            this.cdr.markForCheck();
+        }
       });
     }
   }
@@ -535,6 +552,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   printInvoice(order: Order, event: Event): void {
     event.stopPropagation();
     this.isInvoiceLoading = true;
+    this.cdr.markForCheck();
     this.ordersService.getOrderById(order.id).subscribe({
       next: (details) => {
         this.invoiceOrder = details;

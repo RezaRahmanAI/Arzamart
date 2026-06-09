@@ -11,7 +11,6 @@ public class OrdersWithFiltersForAdminSpecification : BaseSpecification<ECommerc
     public OrdersWithFiltersForAdminSpecification(string? searchTerm, string? status, string? dateRange, bool preOrderOnly = false, bool websiteOnly = false, bool manualOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null, string? customerPhone = null, int? productId = null, string? orderNumber = null) 
         : base(GenerateCriteria(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber))
     {
-        AddInclude(o => o.Items);
         AddInclude(o => o.Logs);
         AddInclude(o => o.Notes);
         AddInclude(o => o.SourcePage!);
@@ -40,12 +39,17 @@ public class OrdersWithFiltersForAdminSpecification : BaseSpecification<ECommerc
             (!socialMediaSourceId.HasValue || o.SocialMediaSourceId == socialMediaSourceId.Value) &&
             (!productId.HasValue || o.Items.Any(item => item.ProductId == productId.Value)) &&
             (
-                (startDate.HasValue && endDate.HasValue) ? (o.CreatedAt >= startDate.Value && o.CreatedAt < endDate.Value.AddDays(1)) :
+                (startDate.HasValue || endDate.HasValue) ? 
+                (
+                    (!startDate.HasValue || o.CreatedAt >= startDate.Value.Date.AddHours(-6)) && 
+                    (!endDate.HasValue || o.CreatedAt < endDate.Value.Date.AddDays(1).AddHours(-6))
+                ) :
                 (string.IsNullOrEmpty(dateRange) || dateRange == "All Time" || 
-                 (dateRange == "Today" && o.CreatedAt >= DateTime.UtcNow.Date) ||
-                 (dateRange == "Yesterday" && o.CreatedAt >= DateTime.UtcNow.Date.AddDays(-1) && o.CreatedAt < DateTime.UtcNow.Date) ||
-                 (dateRange == "Last 7 Days" && o.CreatedAt >= DateTime.UtcNow.AddDays(-7)) ||
-                 (dateRange == "Last 30 Days" && o.CreatedAt >= DateTime.UtcNow.AddDays(-30))
+                 (dateRange == "Today" && o.CreatedAt >= DateTime.UtcNow.AddHours(6).Date.AddHours(-6) && o.CreatedAt < DateTime.UtcNow.AddHours(6).Date.AddDays(1).AddHours(-6)) ||
+                 (dateRange == "Yesterday" && o.CreatedAt >= DateTime.UtcNow.AddHours(6).Date.AddDays(-1).AddHours(-6) && o.CreatedAt < DateTime.UtcNow.AddHours(6).Date.AddHours(-6)) ||
+                 (dateRange == "Last 7 Days" && o.CreatedAt >= DateTime.UtcNow.AddHours(6).Date.AddDays(-7).AddHours(-6) && o.CreatedAt < DateTime.UtcNow.AddHours(6).Date.AddDays(1).AddHours(-6)) ||
+                 (dateRange == "Last 30 Days" && o.CreatedAt >= DateTime.UtcNow.AddHours(6).Date.AddDays(-30).AddHours(-6) && o.CreatedAt < DateTime.UtcNow.AddHours(6).Date.AddDays(1).AddHours(-6)) ||
+                 (dateRange == "This Year" && o.CreatedAt >= new DateTime(DateTime.UtcNow.AddHours(6).Year, 1, 1).AddHours(-6) && o.CreatedAt < new DateTime(DateTime.UtcNow.AddHours(6).Year + 1, 1, 1).AddHours(-6))
                 )
             );
     }

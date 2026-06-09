@@ -10,7 +10,6 @@ import {
   OrderStats,
 } from "../models/orders.models";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 @Injectable({
   providedIn: "root",
@@ -19,7 +18,7 @@ export class OrdersService {
   private readonly api = inject(ApiHttpClient);
 
   getOrderById(id: number): Observable<OrderDetail> {
-    return this.api.get<OrderDetail>(`/admin/orders/${id}`, { headers: X_REFRESH });
+    return this.api.get<OrderDetail>(`/admin/orders/${id}`);
   }
 
   getOrders(
@@ -48,7 +47,6 @@ export class OrdersService {
     const queryParams = new HttpParams({ fromObject });
     return this.api.get<{ items: Order[]; total: number }>("/admin/orders", {
       params: queryParams,
-      headers: forceRefresh ? X_REFRESH : undefined,
     });
   }
 
@@ -74,7 +72,6 @@ export class OrdersService {
 
     return this.api.get<Order[]>("/admin/orders/filtered", {
       params: queryParams,
-      headers: X_REFRESH,
     });
   }
 
@@ -100,7 +97,6 @@ export class OrdersService {
 
     return this.api.get<OrderStats>("/admin/orders/stats", {
       params: queryParams,
-      headers: X_REFRESH,
     });
   }
 

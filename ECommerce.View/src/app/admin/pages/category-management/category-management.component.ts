@@ -36,6 +36,7 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
   allCategories: Category[] = [];
   filteredCategories: Category[] = [];
   
+  isLoading = false;
   selectedId: number | null = null;
   mode: "create" | "edit" = "create";
   filterTerm = "";
@@ -83,13 +84,17 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   loadData(): void {
+    this.isLoading = true;
+    this.cdr.markForCheck();
     this.categoryService.getAll().subscribe({
       next: (categories) => {
         this.allCategories = categories.sort((a, b) => a.displayOrder - b.displayOrder);
         this.applyFilter();
+        this.isLoading = false;
         this.cdr.markForCheck();
       },
       error: (err) => {
+        this.isLoading = false;
         this.notification.error("Failed to load categories.");
         console.error(err);
         this.cdr.markForCheck();
@@ -244,6 +249,7 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
     const reader = new FileReader();
     reader.onload = (e) => {
       this.imagePreviewUrl = e.target?.result as string;
+      this.cdr.markForCheck();
     };
     reader.readAsDataURL(file);
   }

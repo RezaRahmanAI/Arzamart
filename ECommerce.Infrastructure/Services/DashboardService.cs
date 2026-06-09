@@ -35,26 +35,23 @@ public class DashboardService : IDashboardService
             var validStatuses = new[] { OrderStatus.Pending, OrderStatus.Confirmed, OrderStatus.Processing, OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered };
 
             // Determine query date ranges
-            DateTime? todayRangeStart;
-            DateTime? todayRangeEnd;
-            DateTime? totalRangeStart;
-            DateTime? totalRangeEnd;
+            DateTime? todayRangeStart = null;
+            DateTime? todayRangeEnd = null;
+            DateTime? totalRangeStart = null;
+            DateTime? totalRangeEnd = null;
 
-            if (startDate.HasValue && endDate.HasValue)
+            if (startDate.HasValue || endDate.HasValue)
             {
-                todayRangeStart = startDate.Value.Date;
-                todayRangeEnd = endDate.Value.Date.AddDays(1).AddTicks(-1);
-                totalRangeStart = todayRangeStart;
-                totalRangeEnd = todayRangeEnd;
+                if (startDate.HasValue)
+                {
+                    todayRangeStart = startDate.Value.Date.AddHours(-6);
+                }
+                if (endDate.HasValue)
+                {
+                    todayRangeEnd = endDate.Value.Date.AddDays(1).AddHours(-6);
+                }
             }
-            else
-            {
-                // Default: today for Row 1, all-time for Row 2
-                todayRangeStart = DateTime.UtcNow.Date;
-                todayRangeEnd = todayRangeStart.Value.AddDays(1).AddTicks(-1);
-                totalRangeStart = null;
-                totalRangeEnd = null;
-            }
+
 
             // 1. Fetch Today/Filtered Period stats in a single DB trip
             var todayQuery = _context.Orders.AsNoTracking().AsQueryable();
@@ -92,15 +89,15 @@ public class DashboardService : IDashboardService
             int todayPreOrdersCount = todayStats.Count(o => o.Status == OrderStatus.PreOrder || o.IsPreOrder);
             decimal todayPreOrdersRevenue = todayStats.Where(o => o.Status == OrderStatus.PreOrder || o.IsPreOrder).Sum(o => o.Total);
             
-            int wapaShopCount = todayStats.Count(o => o.SourceName.Contains("Wapa") || o.SocialName.Contains("Wapa") || o.DeliveryName.Contains("Wapa"));
-            decimal wapaShopRevenue = todayStats.Where(o => o.SourceName.Contains("Wapa") || o.SocialName.Contains("Wapa") || o.DeliveryName.Contains("Wapa")).Sum(o => o.Total);
-            int mirpurShopCount = todayStats.Count(o => o.SourceName.Contains("Mirpur") || o.SocialName.Contains("Mirpur") || o.DeliveryName.Contains("Mirpur"));
-            decimal mirpurShopRevenue = todayStats.Where(o => o.SourceName.Contains("Mirpur") || o.SocialName.Contains("Mirpur") || o.DeliveryName.Contains("Mirpur")).Sum(o => o.Total);
+            int wapaShopCount = todayStats.Count(o => o.SourceName.Contains("Wapa", StringComparison.OrdinalIgnoreCase) || o.SocialName.Contains("Wapa", StringComparison.OrdinalIgnoreCase) || o.DeliveryName.Contains("Wapa", StringComparison.OrdinalIgnoreCase));
+            decimal wapaShopRevenue = todayStats.Where(o => o.SourceName.Contains("Wapa", StringComparison.OrdinalIgnoreCase) || o.SocialName.Contains("Wapa", StringComparison.OrdinalIgnoreCase) || o.DeliveryName.Contains("Wapa", StringComparison.OrdinalIgnoreCase)).Sum(o => o.Total);
+            int mirpurShopCount = todayStats.Count(o => o.SourceName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase) || o.SocialName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase) || o.DeliveryName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase));
+            decimal mirpurShopRevenue = todayStats.Where(o => o.SourceName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase) || o.SocialName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase) || o.DeliveryName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase)).Sum(o => o.Total);
             
-            int pathaoReturnCount = todayStats.Count(o => (o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess) && o.DeliveryName.Contains("Pathao"));
-            decimal pathaoReturnRevenue = todayStats.Where(o => (o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess) && o.DeliveryName.Contains("Pathao")).Sum(o => o.Total);
-            int pathaoDeliveredCount = todayStats.Count(o => o.Status == OrderStatus.Delivered && o.DeliveryName.Contains("Pathao"));
-            decimal pathaoDeliveredRevenue = todayStats.Where(o => o.Status == OrderStatus.Delivered && o.DeliveryName.Contains("Pathao")).Sum(o => o.Total);
+            int pathaoReturnCount = todayStats.Count(o => (o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess) && o.DeliveryName.Contains("Pathao", StringComparison.OrdinalIgnoreCase));
+            decimal pathaoReturnRevenue = todayStats.Where(o => (o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess) && o.DeliveryName.Contains("Pathao", StringComparison.OrdinalIgnoreCase)).Sum(o => o.Total);
+            int pathaoDeliveredCount = todayStats.Count(o => o.Status == OrderStatus.Delivered && o.DeliveryName.Contains("Pathao", StringComparison.OrdinalIgnoreCase));
+            decimal pathaoDeliveredRevenue = todayStats.Where(o => o.Status == OrderStatus.Delivered && o.DeliveryName.Contains("Pathao", StringComparison.OrdinalIgnoreCase)).Sum(o => o.Total);
 
             // 2. Fetch Total/Lifetime stats
             var totalQuery = _context.Orders.AsNoTracking().AsQueryable();
@@ -158,19 +155,26 @@ public class DashboardService : IDashboardService
                     .Where(i => _context.Orders.Any(o => o.Id == i.OrderId && o.CreatedAt <= totalRangeEnd.Value));
 
             var soldItems = await soldItemsQuery
-                .Select(i => new
-                {
-                    i.Quantity,
-                    PurchaseRate = _context.ProductVariants
-                        .Where(v => v.ProductId == i.ProductId)
-                        .OrderBy(v => v.Id)
-                        .Select(v => (decimal?)v.PurchaseRate)
-                        .FirstOrDefault() ?? 0
-                })
+                .Select(i => new { i.ProductId, i.Quantity })
                 .ToListAsync();
 
+            var distinctProductIds = soldItems.Select(x => x.ProductId).Distinct().ToList();
+
+            var productPurchaseRates = await _context.ProductVariants
+                .AsNoTracking()
+                .Where(v => distinctProductIds.Contains(v.ProductId))
+                .Select(v => new { v.ProductId, v.PurchaseRate, v.Id })
+                .ToListAsync();
+
+            var ratesDict = productPurchaseRates
+                .GroupBy(v => v.ProductId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.OrderBy(v => v.Id).Select(v => v.PurchaseRate).FirstOrDefault() ?? 0
+                );
+
             var totalItemsSold = soldItems.Sum(s => s.Quantity);
-            var totalPurchaseCost = soldItems.Sum(s => s.Quantity * s.PurchaseRate);
+            var totalPurchaseCost = soldItems.Sum(s => s.Quantity * (ratesDict.TryGetValue(s.ProductId, out var r) ? r : 0));
             var avgSellingPrice = totalItemsSold > 0 ? totalRevenue / totalItemsSold : 0;
 
             return new DashboardStatsDto

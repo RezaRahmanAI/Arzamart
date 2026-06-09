@@ -1,5 +1,5 @@
 import { NgIf, DatePipe, NgFor } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -26,6 +26,7 @@ export class BlockedIpsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private securityService = inject(SecurityService);
   private fb = inject(FormBuilder);
+  private cdr = inject(ChangeDetectorRef);
 
   blockedIps: BlockedIp[] = [];
   isLoading = false;
@@ -49,14 +50,17 @@ export class BlockedIpsComponent implements OnInit, OnDestroy {
 
   loadBlockedIps(): void {
     this.isLoading = true;
+    this.cdr.markForCheck();
     this.securityService.getBlockedIps().pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         this.blockedIps = data;
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error("Failed to load blocked IPs", err);
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
     });
   }

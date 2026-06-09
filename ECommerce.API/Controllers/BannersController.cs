@@ -1,38 +1,25 @@
-using ECommerce.Core.Constants;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using ECommerce.Infrastructure.Specifications;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/banners")]
-[Microsoft.AspNetCore.OutputCaching.OutputCache(Tags = new[] { "home" })]
 public class BannersController : ControllerBase
 {
     private readonly IGenericRepository<HeroBanner> _bannerRepo;
-    private readonly IMemoryCache _cache;
 
-    public BannersController(IGenericRepository<HeroBanner> bannerRepo, IMemoryCache cache)
+    public BannersController(IGenericRepository<HeroBanner> bannerRepo)
     {
         _bannerRepo = bannerRepo;
-        _cache = cache;
     }
 
     [HttpGet]
-    [ResponseCache(Duration = 300)]
     public async Task<ActionResult<List<HeroBannerDto>>> GetActiveBanners()
     {
-        const string cacheKey = "banners_active";
-
-        if (_cache.TryGetValue(cacheKey, out List<HeroBannerDto>? cached) && cached != null)
-        {
-            return Ok(cached);
-        }
-
         var spec = new HeroBannerSpecification(isActive: true);
         var banners = await _bannerRepo.ListAsync(spec);
 
@@ -49,7 +36,6 @@ public class BannersController : ControllerBase
             Type = b.Type
         }).ToList();
 
-        _cache.Set(cacheKey, bannerDtos, new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = CacheDurations.Medium });
         return Ok(bannerDtos);
     }
 }

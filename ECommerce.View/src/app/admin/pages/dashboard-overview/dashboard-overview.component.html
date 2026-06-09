@@ -61,11 +61,11 @@
         <div class="flex items-center gap-ds-3">
           <app-icon name="Calendar" size="18" className="text-ds-text"></app-icon>
           <h3 class="text-ds-text font-bold uppercase tracking-wider text-ds-xs mb-0">
-            {{ activeFilterRange === 'all' ? 'Today\'s Orders' : (activeFilterRange === 'custom' ? 'Filtered Orders' : activeFilterRange.toUpperCase() + '\'s Orders') }}
+            {{ activeFilterRange === 'all' ? 'All Time Orders' : (activeFilterRange === 'custom' ? 'Filtered Orders' : activeFilterRange.toUpperCase() + '\'s Orders') }}
           </h3>
         </div>
         <div class="text-ds-xs text-ds-text-muted font-semibold">
-          {{ startDate && endDate ? (startDate + ' to ' + endDate) : 'Today' }}
+          {{ startDate && endDate ? (startDate + ' to ' + endDate) : 'All Time' }}
         </div>
       </div>
 

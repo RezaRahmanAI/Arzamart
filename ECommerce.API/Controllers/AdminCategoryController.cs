@@ -1,9 +1,8 @@
+using ECommerce.Core.Constants;
 using ECommerce.Core.Interfaces;
 using ECommerce.Core.DTOs;
-using ECommerce.Core.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
@@ -17,21 +16,15 @@ public class AdminCategoryController : ControllerBase
     private readonly ICategoryAdminService _categoryService;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _config;
-    private readonly ICacheService _cache;
-    private readonly IOutputCacheStore _cacheStore;
 
     public AdminCategoryController(
         ICategoryAdminService categoryService,
         IWebHostEnvironment environment,
-        IConfiguration config,
-        ICacheService cache,
-        IOutputCacheStore cacheStore)
+        IConfiguration config)
     {
         _categoryService = categoryService;
         _environment = environment;
         _config = config;
-        _cache = cache;
-        _cacheStore = cacheStore;
     }
 
     [HttpGet]
@@ -57,7 +50,6 @@ public class AdminCategoryController : ControllerBase
         try
         {
             var category = await _categoryService.CreateAsync(dto);
-            await InvalidateCacheAsync();
             return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, category);
         }
         catch (InvalidOperationException ex)
@@ -72,7 +64,6 @@ public class AdminCategoryController : ControllerBase
         try
         {
             await _categoryService.UpdateAsync(id, dto);
-            await InvalidateCacheAsync();
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -87,7 +78,6 @@ public class AdminCategoryController : ControllerBase
         try
         {
             await _categoryService.DeleteAsync(id);
-            await InvalidateCacheAsync();
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -102,7 +92,6 @@ public class AdminCategoryController : ControllerBase
         try
         {
             await _categoryService.ReorderAsync(sortedIds);
-            await InvalidateCacheAsync();
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -114,7 +103,7 @@ public class AdminCategoryController : ControllerBase
     [HttpPost("upload-image")]
     [DisableRequestSizeLimit]
     [RequestFormLimits(MultipartBodyLengthLimit = FileUpload.MaxFileSize)]
-    public async Task<ActionResult<UploadResultDto>> UploadImage([FromForm] IFormFile file)
+    public async Task<ActionResult<UploadResultDto>> UploadImage(IFormFile file)
     {
         try
         {
@@ -138,12 +127,5 @@ public class AdminCategoryController : ControllerBase
         {
             return StatusCode(500, new { message = "An error occurred during category image upload: " + ex.Message });
         }
-    }
-
-    private async Task InvalidateCacheAsync()
-    {
-        await _cache.RemoveAsync("nav:mega-menu");
-        await _cacheStore.EvictByTagAsync("categories", default);
-        await _cacheStore.EvictByTagAsync("catalog", default);
     }
 }

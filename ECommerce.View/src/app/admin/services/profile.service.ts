@@ -1,7 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
-import { X_REFRESH } from "../utils/cache.utils";
 
 export interface UserProfile {
   id: string;
@@ -27,7 +26,7 @@ export class ProfileService {
   private readonly api = inject(ApiHttpClient);
 
   getProfile(): Observable<UserProfile> {
-    return this.api.get<UserProfile>("/profile", { headers: X_REFRESH });
+    return this.api.get<UserProfile>("/profile");
   }
 
   updateProfile(data: UpdateProfileRequest): Observable<any> {

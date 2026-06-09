@@ -70,7 +70,12 @@ try
     app.UseAppSecurityMiddleware();
 
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Arza Mart API v1");
+        c.RoutePrefix = "swagger";
+        c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+    });
     
     app.UseHttpsRedirection();
     app.UseResponseCompression();
@@ -100,8 +105,6 @@ try
     app.UseMiddleware<ECommerce.API.Middleware.SecurityMiddleware>();
 
     app.UseResponseCaching();
-    app.UseOutputCache();
-
 
     app.MapControllers();
 
