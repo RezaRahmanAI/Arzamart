@@ -1,10 +1,11 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { DecimalPipe, NgClass } from "@angular/common";
 import { BdtToUsdPipe } from "../../pipes/bdt-to-usd.pipe";
 
 @Component({
   selector: "app-price-display",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DecimalPipe, NgClass, BdtToUsdPipe],
   templateUrl: "./price-display.component.html",
   styleUrl: "./price-display.component.css",

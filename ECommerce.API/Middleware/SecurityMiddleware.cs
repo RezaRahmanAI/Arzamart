@@ -1,7 +1,5 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using ECommerce.Core.Entities;
-using Microsoft.Extensions.Caching.Memory;
+using ECommerce.Infrastructure.Cache;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +10,9 @@ public class SecurityMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<SecurityMiddleware> _logger;
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly IMemoryCache _cache;
+    private readonly AppCache _cache;
 
-    public SecurityMiddleware(RequestDelegate next, ILogger<SecurityMiddleware> logger, IServiceScopeFactory scopeFactory, IMemoryCache cache)
+    public SecurityMiddleware(RequestDelegate next, ILogger<SecurityMiddleware> logger, IServiceScopeFactory scopeFactory, AppCache cache)
     {
         _next = next;
         _logger = logger;
@@ -28,13 +26,9 @@ public class SecurityMiddleware
         if (await IsIpBlockedAsync(context))
             return;
 
-        // 2. Revoked Token Check (after auth)
+        // 2. Suspicious User Check (cached, authenticated users only)
         if (context.User.Identity?.IsAuthenticated == true)
         {
-            if (IsTokenRevoked(context))
-                return;
-
-            // 3. Suspicious User Check (cached)
             if (await IsUserSuspiciousAsync(context))
                 return;
         }
@@ -52,15 +46,16 @@ public class SecurityMiddleware
             return false;
 
         var cacheKey = $"ip_blocked:{ipAddress}";
-        if (_cache.TryGetValue(cacheKey, out bool cachedBlocked))
-            return cachedBlocked;
+        var cached = _cache.GetSecurityFlag(cacheKey);
+        if (cached.HasValue)
+            return cached.Value;
 
         try
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var isBlocked = await dbContext.BlockedIps.AnyAsync(b => b.IpAddress == ipAddress);
-            _cache.Set(cacheKey, isBlocked, TimeSpan.FromSeconds(60));
+            _cache.SetSecurityFlag(cacheKey, isBlocked, TimeSpan.FromSeconds(60));
             if (isBlocked)
             {
                 _logger.LogWarning("Blocked request from IP: {IpAddress}", ipAddress);
@@ -72,25 +67,9 @@ public class SecurityMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, "IP blocking check failed. Continuing request.");
-            _cache.Set(cacheKey, false, TimeSpan.FromSeconds(30));
+            _cache.SetSecurityFlag(cacheKey, false, TimeSpan.FromSeconds(30));
             return false;
         }
-    }
-
-    private bool IsTokenRevoked(HttpContext context)
-    {
-        var jti = context.User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
-        if (string.IsNullOrEmpty(jti))
-            return false;
-
-        if (_cache.TryGetValue($"revoked_jti:{jti}", out _))
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            context.Response.WriteAsJsonAsync(new { error = "TOKEN_REVOKED", message = "Token has been invalidated" }).Wait();
-            return true;
-        }
-
-        return false;
     }
 
     private async Task<bool> IsUserSuspiciousAsync(HttpContext context)
@@ -100,8 +79,9 @@ public class SecurityMiddleware
             return false;
 
         var cacheKey = $"user_suspicious:{userIdClaim.Value}";
-        if (_cache.TryGetValue(cacheKey, out bool cachedSuspicious))
-            return cachedSuspicious;
+        var cached = _cache.GetSecurityFlag(cacheKey);
+        if (cached.HasValue)
+            return cached.Value;
 
         try
         {
@@ -114,7 +94,7 @@ public class SecurityMiddleware
                 isSuspicious = await dbContext.Customers.AnyAsync(c => c.Phone == userIdClaim.Value && c.IsSuspicious);
             }
 
-            _cache.Set(cacheKey, isSuspicious, TimeSpan.FromSeconds(60));
+            _cache.SetSecurityFlag(cacheKey, isSuspicious, TimeSpan.FromSeconds(60));
             if (isSuspicious)
             {
                 _logger.LogWarning("Suspicious user {UserId} blocked from accessing {Path}", userIdClaim.Value, context.Request.Path);
@@ -127,7 +107,7 @@ public class SecurityMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, "Suspicious user check failed. Continuing request.");
-            _cache.Set(cacheKey, false, TimeSpan.FromSeconds(30));
+            _cache.SetSecurityFlag(cacheKey, false, TimeSpan.FromSeconds(30));
             return false;
         }
     }

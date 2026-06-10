@@ -10,5 +10,4 @@ public class OrderLog : BaseEntity
     public string StatusTo { get; set; } = string.Empty;
     public string? ChangedBy { get; set; }
     public string? Note { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

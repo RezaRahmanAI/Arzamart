@@ -50,6 +50,9 @@ public static class ServiceExtensions
         services.AddSingleton<AppCache>();
         services.AddHostedService<CacheWarmupService>();
 
+        services.AddSingleton<ECommerce.Infrastructure.Tracking.VisitorTrackingWorker>();
+        services.AddHostedService(sp => sp.GetRequiredService<ECommerce.Infrastructure.Tracking.VisitorTrackingWorker>());
+
         services.AddResponseCaching();
 
         // 4. Rate Limiting for DDoS protection

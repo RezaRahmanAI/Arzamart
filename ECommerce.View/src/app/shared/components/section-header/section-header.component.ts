@@ -1,10 +1,11 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { AppIconComponent } from "../app-icon/app-icon.component";
 
 @Component({
   selector: "app-section-header",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterModule, AppIconComponent],
   templateUrl: "./section-header.component.html",
   styleUrl: "./section-header.component.css",

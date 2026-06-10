@@ -10,7 +10,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "format": "prettier --write \"**/*.{ts,html,css,scss,md,json}\""
+    "format": "prettier --write \"**/*.{ts,html,css,scss,md,json}\"",
+    "serve:ssr:ecommerce": "node dist/ecommerce/server/server.mjs"
   },
   "repository": {
     "type": "git",
@@ -43,7 +44,10 @@
     "@angular/forms": "^18.2.0",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
+    "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@angular/service-worker": "^18.2.14",
+    "@angular/ssr": "^18.2.21",
     "@tailwindcss/forms": "^0.5.9",
     "chart.js": "^4.5.1",
     "ng2-charts": "^6.0.1",
@@ -57,7 +61,7 @@
     "@angular/cli": "^18.2.0",
     "@angular/compiler-cli": "^18.2.0",
     "@tailwindcss/container-queries": "^0.1.1",
-    "@types/node": "^22.10.1",
+    "@types/node": "^18.18.0",
     "angular-cli-ghpages": "^2.0.3",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",

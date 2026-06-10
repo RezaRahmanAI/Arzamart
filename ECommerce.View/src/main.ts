@@ -1,57 +1,7 @@
-import { bootstrapApplication } from "@angular/platform-browser";
-import {
-  provideRouter,
-  withInMemoryScrolling,
-  withPreloading,
-  PreloadAllModules,
-  withComponentInputBinding,
-} from "@angular/router";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
-import {
-  provideHttpClient,
-  withInterceptors,
-  withFetch,
-} from "@angular/common/http";
-import { provideZoneChangeDetection } from "@angular/core";
-import { DATE_PIPE_DEFAULT_OPTIONS } from "@angular/common";
+import { bootstrapApplication, provideClientHydration } from "@angular/platform-browser";
 import { AppComponent } from "./app/app.component";
-import { appRoutes } from "./app/app.routes";
-import { API_CONFIG } from "./app/core/config/api.config";
-import { globalErrorInterceptor } from "./app/core/http/global-error.interceptor";
-import { environment } from "./environments/environment";
-import { jwtInterceptor } from "./app/core/interceptors/jwt.interceptor";
-import { loadingInterceptor } from "./app/core/interceptors/loading.interceptor";
+import { appConfig } from "./app/app.config";
 
 bootstrapApplication(AppComponent, {
-  providers: [
-    provideZoneChangeDetection({ eventCoalescing: true, runCoalescing: true }),
-    provideRouter(
-      appRoutes,
-      withInMemoryScrolling({
-        scrollPositionRestoration: "enabled",
-        anchorScrolling: "enabled",
-      }),
-      withPreloading(PreloadAllModules),
-      withComponentInputBinding(),
-    ),
-    provideAnimationsAsync(),
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([
-        jwtInterceptor,
-        loadingInterceptor,
-        globalErrorInterceptor,
-      ]),
-    ),
-    {
-      provide: API_CONFIG,
-      useValue: {
-        baseUrl: environment.apiBaseUrl,
-      },
-    },
-    {
-      provide: DATE_PIPE_DEFAULT_OPTIONS,
-      useValue: { timezone: "+0600" },
-    },
-  ],
+  providers: [...appConfig.providers, provideClientHydration()],
 });

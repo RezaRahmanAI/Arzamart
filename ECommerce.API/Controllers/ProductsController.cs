@@ -1,10 +1,8 @@
 using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
-using ECommerce.Core.Interfaces;
+using ECommerce.Infrastructure.Cache;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Infrastructure.Specifications;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,17 +11,14 @@ namespace ECommerce.API.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IProductQueryService _productQueryService;
-    private readonly IProductService _productService;
-    private readonly IGenericRepository<Category> _categoriesRepo;
+    private readonly AppCache _cache;
 
     public ProductsController(
         IProductQueryService productQueryService,
-        IProductService productService,
-        IGenericRepository<Category> categoriesRepo)
+        AppCache cache)
     {
         _productQueryService = productQueryService;
-        _productService = productService;
-        _categoriesRepo = categoriesRepo;
+        _cache = cache;
     }
 
     [HttpGet]
@@ -67,7 +62,7 @@ public class ProductsController : ControllerBase
         // Map categorySlug to categoryId if not provided
         if (!categoryId.HasValue && !string.IsNullOrEmpty(categorySlug))
         {
-            var dbCat = await _categoriesRepo.GetEntityWithSpec(new BaseSpecification<Category>(c => c.Slug == categorySlug));
+            var dbCat = _cache.Categories.Values.FirstOrDefault(c => c.Slug == categorySlug);
             if (dbCat != null)
             {
                 categoryId = dbCat.Id;

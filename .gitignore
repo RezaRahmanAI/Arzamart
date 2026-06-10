@@ -33,3 +33,4 @@ api_errors.txt
 build_errors.txt
 *.tmp
 logs/
+publish.zip

@@ -1,7 +1,5 @@
 using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
-using ECommerce.Core.Interfaces;
-using ECommerce.Infrastructure.Specifications;
+using ECommerce.Infrastructure.Cache;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers;
@@ -10,31 +8,31 @@ namespace ECommerce.API.Controllers;
 [Route("api/banners")]
 public class BannersController : ControllerBase
 {
-    private readonly IGenericRepository<HeroBanner> _bannerRepo;
+    private readonly AppCache _cache;
 
-    public BannersController(IGenericRepository<HeroBanner> bannerRepo)
+    public BannersController(AppCache cache)
     {
-        _bannerRepo = bannerRepo;
+        _cache = cache;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<HeroBannerDto>>> GetActiveBanners()
+    public ActionResult<List<HeroBannerDto>> GetActiveBanners()
     {
-        var spec = new HeroBannerSpecification(isActive: true);
-        var banners = await _bannerRepo.ListAsync(spec);
-
-        var bannerDtos = banners.Select(b => new HeroBannerDto
-        {
-            Id = b.Id,
-            Title = b.Title ?? "",
-            Subtitle = b.Subtitle ?? "",
-            ImageUrl = b.ImageUrl,
-            MobileImageUrl = b.MobileImageUrl ?? "",
-            LinkUrl = b.LinkUrl ?? "",
-            ButtonText = b.ButtonText ?? "",
-            DisplayOrder = b.DisplayOrder,
-            Type = b.Type
-        }).ToList();
+        var bannerDtos = _cache.Banners.Values
+            .Where(b => b.IsActive)
+            .OrderBy(b => b.DisplayOrder)
+            .Select(b => new HeroBannerDto
+            {
+                Id = b.Id,
+                Title = b.Title ?? "",
+                Subtitle = b.Subtitle ?? "",
+                ImageUrl = b.ImageUrl,
+                MobileImageUrl = b.MobileImageUrl ?? "",
+                LinkUrl = b.LinkUrl ?? "",
+                ButtonText = b.ButtonText ?? "",
+                DisplayOrder = b.DisplayOrder,
+                Type = b.Type
+            }).ToList();
 
         return Ok(bannerDtos);
     }

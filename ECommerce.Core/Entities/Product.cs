@@ -51,6 +51,4 @@ public class Product : BaseEntity
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
     public ICollection<ComboItem> ComboItems { get; set; } = new List<ComboItem>();
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; }
 }

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 
@@ -43,4 +45,42 @@ public class AppCache
     // ─── HomePage Composite ───────────────────────────────────────
     /// Key: "homepage" — prebuilt HomePageDto, rebuilt on any dependency change
     public ConcurrentDictionary<string, HomePageDto> HomePageData { get; } = new();
+
+    // ─── Security Flags (TTL-based) ──────────────────────────────
+    public ConcurrentDictionary<string, bool> SecurityFlags { get; } = new();
+    private readonly ConcurrentDictionary<string, DateTime> _securityExpiry = new();
+
+    public void SetSecurityFlag(string key, bool value, TimeSpan ttl)
+    {
+        SecurityFlags[key] = value;
+        _securityExpiry[key] = DateTime.UtcNow.Add(ttl);
+    }
+
+    public bool? GetSecurityFlag(string key)
+    {
+        if (_securityExpiry.TryGetValue(key, out var expiry) && DateTime.UtcNow < expiry)
+            return SecurityFlags.TryGetValue(key, out var val) ? val : null;
+        _securityExpiry.TryRemove(key, out _);
+        SecurityFlags.TryRemove(key, out _);
+        return null;
+    }
+
+    public void ClearSecurityByPrefix(string prefix)
+    {
+        foreach (var key in _securityExpiry.Keys.Where(k => k.StartsWith(prefix)).ToList())
+        {
+            _securityExpiry.TryRemove(key, out _);
+            SecurityFlags.TryRemove(key, out _);
+        }
+    }
+
+    public void CleanExpiredSecurityFlags()
+    {
+        var now = DateTime.UtcNow;
+        foreach (var key in _securityExpiry.Keys.Where(k => _securityExpiry[k] < now).ToList())
+        {
+            _securityExpiry.TryRemove(key, out _);
+            SecurityFlags.TryRemove(key, out _);
+        }
+    }
 }
