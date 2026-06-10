@@ -30,7 +30,7 @@ public class DashboardService : IDashboardService
         return await _cache.GetOrCreateAsync(cacheKey, async entry =>
         {
             entry.Size = 1;
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(15); // Short cache for dynamic filters to remain fresh
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60);
 
             var validStatuses = new[] { OrderStatus.Pending, OrderStatus.Confirmed, OrderStatus.Processing, OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered };
 
@@ -43,120 +43,123 @@ public class DashboardService : IDashboardService
             if (startDate.HasValue || endDate.HasValue)
             {
                 if (startDate.HasValue)
-                {
                     todayRangeStart = startDate.Value.Date.AddHours(-6);
-                }
                 if (endDate.HasValue)
-                {
                     todayRangeEnd = endDate.Value.Date.AddDays(1).AddHours(-6);
-                }
             }
 
-
-            // 1. Fetch Today/Filtered Period stats in a single DB trip
+            // ── 1. TODAY STATUS AGGREGATIONS (single SQL query) ──────────
             var todayQuery = _context.Orders.AsNoTracking().AsQueryable();
             if (todayRangeStart.HasValue)
                 todayQuery = todayQuery.Where(o => o.CreatedAt >= todayRangeStart.Value);
             if (todayRangeEnd.HasValue)
                 todayQuery = todayQuery.Where(o => o.CreatedAt <= todayRangeEnd.Value);
 
-            var todayStats = await todayQuery
-                .Include(o => o.DeliveryMethod)
-                .Include(o => o.SourcePage)
-                .Include(o => o.SocialMediaSource)
-                .Select(o => new
+            var todayStatusAgg = await todayQuery
+                .GroupBy(o => o.Status)
+                .Select(g => new
                 {
-                    o.Total,
-                    o.Status,
-                    o.IsPreOrder,
-                    DeliveryName = o.DeliveryMethod != null ? o.DeliveryMethod.Name : "",
-                    SourceName = o.SourcePage != null ? o.SourcePage.Name : "",
-                    SocialName = o.SocialMediaSource != null ? o.SocialMediaSource.Name : ""
+                    Status = g.Key,
+                    Count = g.Count(),
+                    Revenue = g.Sum(o => o.Total),
+                    PreOrderCount = g.Count(o => o.IsPreOrder),
+                    PreOrderRevenue = g.Sum(o => o.IsPreOrder ? o.Total : 0)
                 })
                 .ToListAsync();
 
-            // Calculate row 1 aggregates in memory
-            int todayOrdersCount = todayStats.Count;
-            decimal todayOrdersRevenue = todayStats.Sum(o => o.Total);
-            int todayPendingCount = todayStats.Count(o => o.Status == OrderStatus.Pending);
-            decimal todayPendingRevenue = todayStats.Where(o => o.Status == OrderStatus.Pending).Sum(o => o.Total);
-            int todayConfirmCount = todayStats.Count(o => o.Status == OrderStatus.Confirmed);
-            decimal todayConfirmRevenue = todayStats.Where(o => o.Status == OrderStatus.Confirmed).Sum(o => o.Total);
-            int todayPackagingCount = todayStats.Count(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Packed);
-            decimal todayPackagingRevenue = todayStats.Where(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Packed).Sum(o => o.Total);
-            int todayShippedCount = todayStats.Count(o => o.Status == OrderStatus.Shipped);
-            decimal todayShippedRevenue = todayStats.Where(o => o.Status == OrderStatus.Shipped).Sum(o => o.Total);
-            int todayPreOrdersCount = todayStats.Count(o => o.Status == OrderStatus.PreOrder || o.IsPreOrder);
-            decimal todayPreOrdersRevenue = todayStats.Where(o => o.Status == OrderStatus.PreOrder || o.IsPreOrder).Sum(o => o.Total);
-            
-            int wapaShopCount = todayStats.Count(o => o.SourceName.Contains("Wapa", StringComparison.OrdinalIgnoreCase) || o.SocialName.Contains("Wapa", StringComparison.OrdinalIgnoreCase) || o.DeliveryName.Contains("Wapa", StringComparison.OrdinalIgnoreCase));
-            decimal wapaShopRevenue = todayStats.Where(o => o.SourceName.Contains("Wapa", StringComparison.OrdinalIgnoreCase) || o.SocialName.Contains("Wapa", StringComparison.OrdinalIgnoreCase) || o.DeliveryName.Contains("Wapa", StringComparison.OrdinalIgnoreCase)).Sum(o => o.Total);
-            int mirpurShopCount = todayStats.Count(o => o.SourceName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase) || o.SocialName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase) || o.DeliveryName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase));
-            decimal mirpurShopRevenue = todayStats.Where(o => o.SourceName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase) || o.SocialName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase) || o.DeliveryName.Contains("Mirpur", StringComparison.OrdinalIgnoreCase)).Sum(o => o.Total);
-            
-            int pathaoReturnCount = todayStats.Count(o => (o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess) && o.DeliveryName.Contains("Pathao", StringComparison.OrdinalIgnoreCase));
-            decimal pathaoReturnRevenue = todayStats.Where(o => (o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess) && o.DeliveryName.Contains("Pathao", StringComparison.OrdinalIgnoreCase)).Sum(o => o.Total);
-            int pathaoDeliveredCount = todayStats.Count(o => o.Status == OrderStatus.Delivered && o.DeliveryName.Contains("Pathao", StringComparison.OrdinalIgnoreCase));
-            decimal pathaoDeliveredRevenue = todayStats.Where(o => o.Status == OrderStatus.Delivered && o.DeliveryName.Contains("Pathao", StringComparison.OrdinalIgnoreCase)).Sum(o => o.Total);
+            int todayOrdersCount = todayStatusAgg.Sum(x => x.Count);
+            decimal todayOrdersRevenue = todayStatusAgg.Sum(x => x.Revenue);
+            int todayPendingCount = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Pending)?.Count ?? 0;
+            decimal todayPendingRevenue = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Pending)?.Revenue ?? 0;
+            int todayConfirmCount = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Confirmed)?.Count ?? 0;
+            decimal todayConfirmRevenue = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Confirmed)?.Revenue ?? 0;
+            int todayPackagingCount = todayStatusAgg.Where(x => x.Status == OrderStatus.Processing || x.Status == OrderStatus.Packed).Sum(x => x.Count);
+            decimal todayPackagingRevenue = todayStatusAgg.Where(x => x.Status == OrderStatus.Processing || x.Status == OrderStatus.Packed).Sum(x => x.Revenue);
+            int todayShippedCount = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Shipped)?.Count ?? 0;
+            decimal todayShippedRevenue = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Shipped)?.Revenue ?? 0;
+            int todayPreOrdersCount = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Count ?? 0
+                                      + todayStatusAgg.Sum(x => x.PreOrderCount);
+            decimal todayPreOrdersRevenue = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Revenue ?? 0
+                                            + todayStatusAgg.Sum(x => x.PreOrderRevenue);
 
-            // 2. Fetch Total/Lifetime stats
+            // ── 1b. TODAY SOURCE MATCHING (single query, process in C#) ─────
+            var todaySourceData = await todayQuery
+                .Select(o => new { o.Status, o.Total, o.IsPreOrder,
+                    DeliveryName = o.DeliveryMethod != null ? o.DeliveryMethod.Name : "",
+                    SourceName = o.SourcePage != null ? o.SourcePage.Name : "",
+                    SocialName = o.SocialMediaSource != null ? o.SocialMediaSource.Name : ""
+                }).ToListAsync();
+
+            var wapaOrders = todaySourceData.Where(o =>
+                o.DeliveryName.Contains("Wapa") || o.SourceName.Contains("Wapa") || o.SocialName.Contains("Wapa"));
+            int wapaShopCount = wapaOrders.Count();
+            decimal wapaShopRevenue = wapaOrders.Sum(o => o.Total);
+
+            var mirpurOrders = todaySourceData.Where(o =>
+                o.DeliveryName.Contains("Mirpur") || o.SourceName.Contains("Mirpur") || o.SocialName.Contains("Mirpur"));
+            int mirpurShopCount = mirpurOrders.Count();
+            decimal mirpurShopRevenue = mirpurOrders.Sum(o => o.Total);
+
+            var pathaoOrders = todaySourceData.Where(o => o.DeliveryName.Contains("Pathao"));
+            int pathaoReturnCount = pathaoOrders.Count(o => o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess);
+            decimal pathaoReturnRevenue = pathaoOrders.Where(o => o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess).Sum(o => o.Total);
+            int pathaoDeliveredCount = pathaoOrders.Count(o => o.Status == OrderStatus.Delivered);
+            decimal pathaoDeliveredRevenue = pathaoOrders.Where(o => o.Status == OrderStatus.Delivered).Sum(o => o.Total);
+
+            // ── 2. TOTAL/LIFETIME STATUS AGGREGATIONS (single SQL query) ──
             var totalQuery = _context.Orders.AsNoTracking().AsQueryable();
             if (totalRangeStart.HasValue)
                 totalQuery = totalQuery.Where(o => o.CreatedAt >= totalRangeStart.Value);
             if (totalRangeEnd.HasValue)
                 totalQuery = totalQuery.Where(o => o.CreatedAt <= totalRangeEnd.Value);
 
-            var totalStatsList = await totalQuery
-                .Select(o => new
+            var totalStatusAgg = await totalQuery
+                .GroupBy(o => o.Status)
+                .Select(g => new
                 {
-                    o.Total,
-                    o.Status,
-                    o.IsPreOrder
+                    Status = g.Key,
+                    Count = g.Count(),
+                    Revenue = g.Sum(o => o.Total),
+                    PreOrderCount = g.Count(o => o.IsPreOrder),
+                    PreOrderRevenue = g.Sum(o => o.IsPreOrder ? o.Total : 0)
                 })
                 .ToListAsync();
 
-            // Calculate row 2 aggregates
-            int totalPendingCount = totalStatsList.Count(o => o.Status == OrderStatus.Pending);
-            decimal totalPendingRevenue = totalStatsList.Where(o => o.Status == OrderStatus.Pending).Sum(o => o.Total);
-            int totalConfirmCount = totalStatsList.Count(o => o.Status == OrderStatus.Confirmed);
-            decimal totalConfirmRevenue = totalStatsList.Where(o => o.Status == OrderStatus.Confirmed).Sum(o => o.Total);
-            int totalPackagingCount = totalStatsList.Count(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Packed);
-            decimal totalPackagingRevenue = totalStatsList.Where(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Packed).Sum(o => o.Total);
-            int totalReturnProcessCount = totalStatsList.Count(o => o.Status == OrderStatus.ReturnProcess || o.Status == OrderStatus.Return || o.Status == OrderStatus.Refund);
-            decimal totalReturnProcessRevenue = totalStatsList.Where(o => o.Status == OrderStatus.ReturnProcess || o.Status == OrderStatus.Return || o.Status == OrderStatus.Refund).Sum(o => o.Total);
-            int totalShippedCount = totalStatsList.Count(o => o.Status == OrderStatus.Shipped);
-            decimal totalShippedRevenue = totalStatsList.Where(o => o.Status == OrderStatus.Shipped).Sum(o => o.Total);
-            int totalPreOrdersCount = totalStatsList.Count(o => o.Status == OrderStatus.PreOrder || o.IsPreOrder);
-            decimal totalPreOrdersRevenue = totalStatsList.Where(o => o.Status == OrderStatus.PreOrder || o.IsPreOrder).Sum(o => o.Total);
-            int incompleteOrdersCount = totalStatsList.Count(o => o.Status == OrderStatus.Cancelled || o.Status == OrderStatus.Hold || o.Status == OrderStatus.Exchange);
-            decimal incompleteOrdersRevenue = totalStatsList.Where(o => o.Status == OrderStatus.Cancelled || o.Status == OrderStatus.Hold || o.Status == OrderStatus.Exchange).Sum(o => o.Total);
+            int totalOrders = totalStatusAgg.Sum(x => x.Count);
+            decimal totalRevenue = totalStatusAgg.Where(x => validStatuses.Contains(x.Status)).Sum(x => x.Revenue);
+            int deliveredOrders = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Delivered)?.Count ?? 0;
+            int pendingOrders = totalStatusAgg.Where(x => x.Status == OrderStatus.Pending || x.Status == OrderStatus.Confirmed || x.Status == OrderStatus.Processing).Sum(x => x.Count);
+            int returnedOrders = totalStatusAgg.Where(x => x.Status == OrderStatus.Return || x.Status == OrderStatus.ReturnProcess).Sum(x => x.Count);
+            decimal returnValue = totalStatusAgg.Where(x => x.Status == OrderStatus.Return || x.Status == OrderStatus.ReturnProcess).Sum(x => x.Revenue);
+            var returnRateStr = totalOrders > 0 ? $"{(double)returnedOrders / totalOrders * 100:0.##}%" : "0%";
 
-            // Fetch catalog metrics
+            int totalPendingCount = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Pending)?.Count ?? 0;
+            decimal totalPendingRevenue = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Pending)?.Revenue ?? 0;
+            int totalConfirmCount = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Confirmed)?.Count ?? 0;
+            decimal totalConfirmRevenue = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Confirmed)?.Revenue ?? 0;
+            int totalPackagingCount = totalStatusAgg.Where(x => x.Status == OrderStatus.Processing || x.Status == OrderStatus.Packed).Sum(x => x.Count);
+            decimal totalPackagingRevenue = totalStatusAgg.Where(x => x.Status == OrderStatus.Processing || x.Status == OrderStatus.Packed).Sum(x => x.Revenue);
+            int totalReturnProcessCount = totalStatusAgg.Where(x => x.Status == OrderStatus.ReturnProcess || x.Status == OrderStatus.Return || x.Status == OrderStatus.Refund).Sum(x => x.Count);
+            decimal totalReturnProcessRevenue = totalStatusAgg.Where(x => x.Status == OrderStatus.ReturnProcess || x.Status == OrderStatus.Return || x.Status == OrderStatus.Refund).Sum(x => x.Revenue);
+            int totalShippedCount = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Shipped)?.Count ?? 0;
+            decimal totalShippedRevenue = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Shipped)?.Revenue ?? 0;
+            int totalPreOrdersCount = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Count ?? 0
+                                      + totalStatusAgg.Sum(x => x.PreOrderCount);
+            decimal totalPreOrdersRevenue = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Revenue ?? 0
+                                            + totalStatusAgg.Sum(x => x.PreOrderRevenue);
+            int incompleteOrdersCount = totalStatusAgg.Where(x => x.Status == OrderStatus.Cancelled || x.Status == OrderStatus.Hold || x.Status == OrderStatus.Exchange).Sum(x => x.Count);
+            decimal incompleteOrdersRevenue = totalStatusAgg.Where(x => x.Status == OrderStatus.Cancelled || x.Status == OrderStatus.Hold || x.Status == OrderStatus.Exchange).Sum(x => x.Revenue);
+
+            // ── 3. CATALOG METRICS ───────────────────────────────────────
             var totalProducts = await _context.Products.AsNoTracking().CountAsync();
             var totalCustomers = await _context.Customers.AsNoTracking().CountAsync();
 
-            // Calculate legacy metrics with date range applied for consistency
-            var totalOrders = totalStatsList.Count;
-            var totalRevenue = totalStatsList.Where(o => validStatuses.Contains(o.Status)).Sum(o => o.Total);
-            var deliveredOrders = totalStatsList.Count(o => o.Status == OrderStatus.Delivered);
-            var pendingOrders = totalStatsList.Count(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Confirmed || o.Status == OrderStatus.Processing);
-            var returnedOrders = totalStatsList.Count(o => o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess);
-            var returnValue = totalStatsList.Where(o => o.Status == OrderStatus.Return || o.Status == OrderStatus.ReturnProcess).Sum(o => o.Total);
-            var returnRateStr = totalOrders > 0 ? $"{(double)returnedOrders / totalOrders * 100:0.##}%" : "0%";
+            // ── 4. SOLD ITEMS (JOIN instead of correlated subqueries) ─────
+            var soldItemsQuery = from i in _context.OrderItems.AsNoTracking()
+                                 join o in totalQuery on i.OrderId equals o.Id
+                                 select new { i.ProductId, i.Quantity };
 
-            // Item-level query for profit/purchase rates
-            var soldItemsQuery = _context.OrderItems.AsNoTracking()
-                .Where(i => _context.Orders.Any(o => o.Id == i.OrderId && validStatuses.Contains(o.Status)));
-            if (totalRangeStart.HasValue)
-                soldItemsQuery = soldItemsQuery
-                    .Where(i => _context.Orders.Any(o => o.Id == i.OrderId && o.CreatedAt >= totalRangeStart.Value));
-            if (totalRangeEnd.HasValue)
-                soldItemsQuery = soldItemsQuery
-                    .Where(i => _context.Orders.Any(o => o.Id == i.OrderId && o.CreatedAt <= totalRangeEnd.Value));
-
-            var soldItems = await soldItemsQuery
-                .Select(i => new { i.ProductId, i.Quantity })
-                .ToListAsync();
+            var soldItems = await soldItemsQuery.ToListAsync();
 
             var distinctProductIds = soldItems.Select(x => x.ProductId).Distinct().ToList();
 

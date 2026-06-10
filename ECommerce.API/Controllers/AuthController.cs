@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerce.API.Controllers;
@@ -23,13 +24,15 @@ public class AuthController : ControllerBase
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly PasswordProtector _passwordProtector;
     private readonly IActivityLogService _activityLogService;
+    private readonly IMemoryCache _cache;
 
-    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager, PasswordProtector passwordProtector, IActivityLogService activityLogService)
+    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager, PasswordProtector passwordProtector, IActivityLogService activityLogService, IMemoryCache cache)
     {
         _configuration = configuration;
         _userManager = userManager;
         _passwordProtector = passwordProtector;
         _activityLogService = activityLogService;
+        _cache = cache;
     }
 
     [HttpPost("login")]
@@ -157,6 +160,10 @@ public class AuthController : ControllerBase
             return Unauthorized();
         }
 
+        var cacheKey = $"auth_me:{userId}";
+        if (_cache.TryGetValue(cacheKey, out UserSummaryDto cached))
+            return Ok(cached);
+
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
         {
@@ -166,7 +173,9 @@ public class AuthController : ControllerBase
         var roles = await _userManager.GetRolesAsync(user);
         var role = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? user.Role ?? "Customer");
 
-        return Ok(ToSummary(user, role));
+        var result = ToSummary(user, role);
+        _cache.Set(cacheKey, result, TimeSpan.FromMinutes(5));
+        return Ok(result);
     }
 
     [Authorize]
@@ -176,6 +185,7 @@ public class AuthController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId != null)
         {
+            _cache.Remove($"auth_me:{userId}");
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {

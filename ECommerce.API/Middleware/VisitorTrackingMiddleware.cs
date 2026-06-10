@@ -50,22 +50,23 @@ namespace ECommerce.API.Middleware
                         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                         var today = DateOnly.FromDateTime(DateTime.UtcNow);
                         
-                        var traffic = await dbContext.DailyTraffics.FirstOrDefaultAsync(t => t.Date == today);
-                        if (traffic == null)
+                        // Atomic increment — no entity load, no row lock contention
+                        var affected = await dbContext.DailyTraffics
+                            .Where(t => t.Date == today)
+                            .ExecuteUpdateAsync(s => s
+                                .SetProperty(t => t.PageViews, t => t.PageViews + 1)
+                                .SetProperty(t => t.UniqueVisitors, t => isNewVisitor ? t.UniqueVisitors + 1 : t.UniqueVisitors));
+
+                        if (affected == 0)
                         {
-                            traffic = new DailyTraffic
+                            dbContext.DailyTraffics.Add(new DailyTraffic
                             {
                                 Date = today,
-                                PageViews = 0,
-                                UniqueVisitors = 0
-                            };
-                            dbContext.DailyTraffics.Add(traffic);
+                                PageViews = 1,
+                                UniqueVisitors = isNewVisitor ? 1 : 0
+                            });
+                            await dbContext.SaveChangesAsync();
                         }
-
-                        traffic.PageViews++;
-                        if (isNewVisitor) traffic.UniqueVisitors++;
-
-                        await dbContext.SaveChangesAsync();
                     }
                     catch (Exception ex)
                     {

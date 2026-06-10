@@ -4,6 +4,7 @@ using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ECommerce.API.Controllers;
 
@@ -11,11 +12,13 @@ public class ReviewsController : BaseApiController
 {
     private readonly IReviewService _reviewService;
     private readonly IMapper _mapper;
+    private readonly IMemoryCache _cache;
 
-    public ReviewsController(IReviewService reviewService, IMapper mapper)
+    public ReviewsController(IReviewService reviewService, IMapper mapper, IMemoryCache cache)
     {
         _reviewService = reviewService;
         _mapper = mapper;
+        _cache = cache;
     }
 
     [HttpGet("products/{productId}")]
@@ -30,8 +33,14 @@ public class ReviewsController : BaseApiController
     {
         try 
         {
+            const string cacheKey = "reviews_featured";
+            if (_cache.TryGetValue(cacheKey, out IEnumerable<ReviewDto> cached))
+                return Ok(cached);
+
             var reviews = await _reviewService.GetFeaturedReviewsAsync();
-            return Ok(_mapper.Map<IEnumerable<ReviewDto>>(reviews));
+            var result = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
+            _cache.Set(cacheKey, result, TimeSpan.FromSeconds(60));
+            return Ok(result);
         }
         catch (Exception ex)
         {

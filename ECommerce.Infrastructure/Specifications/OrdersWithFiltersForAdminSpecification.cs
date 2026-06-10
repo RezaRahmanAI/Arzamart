@@ -11,8 +11,6 @@ public class OrdersWithFiltersForAdminSpecification : BaseSpecification<ECommerc
     public OrdersWithFiltersForAdminSpecification(string? searchTerm, string? status, string? dateRange, bool preOrderOnly = false, bool websiteOnly = false, bool manualOnly = false, DateTime? startDate = null, DateTime? endDate = null, int? sourcePageId = null, int? socialMediaSourceId = null, string? customerPhone = null, int? productId = null, string? orderNumber = null) 
         : base(GenerateCriteria(searchTerm, status, dateRange, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber))
     {
-        AddInclude(o => o.Logs);
-        AddInclude(o => o.Notes);
         AddInclude(o => o.SourcePage!);
         AddInclude(o => o.SocialMediaSource!);
         AddOrderByDescending(o => o.CreatedAt);
@@ -27,6 +25,26 @@ public class OrdersWithFiltersForAdminSpecification : BaseSpecification<ECommerc
                 statusEnum = result;
         }
 
+        var tz = TimeZoneInfo.FindSystemTimeZoneById("Asia/Dhaka");
+        var utcNow = DateTime.UtcNow;
+        var bdNow = TimeZoneInfo.ConvertTimeFromUtc(utcNow, tz);
+        var bdTodayMidnight = bdNow.Date;
+
+        var todayStartUtc = TimeZoneInfo.ConvertTimeToUtc(bdTodayMidnight, tz);
+        var todayEndUtc = TimeZoneInfo.ConvertTimeToUtc(bdTodayMidnight.AddDays(1), tz);
+        var yesterdayStartUtc = TimeZoneInfo.ConvertTimeToUtc(bdTodayMidnight.AddDays(-1), tz);
+        var last7StartUtc = TimeZoneInfo.ConvertTimeToUtc(bdTodayMidnight.AddDays(-7), tz);
+        var last30StartUtc = TimeZoneInfo.ConvertTimeToUtc(bdTodayMidnight.AddDays(-30), tz);
+        var thisYearStartUtc = TimeZoneInfo.ConvertTimeToUtc(new DateTime(bdNow.Year, 1, 1), tz);
+        var nextYearStartUtc = TimeZoneInfo.ConvertTimeToUtc(new DateTime(bdNow.Year + 1, 1, 1), tz);
+
+        DateTime? effectiveStartDate = startDate.HasValue
+            ? TimeZoneInfo.ConvertTimeToUtc(startDate.Value.Date, tz)
+            : null;
+        DateTime? effectiveEndDate = endDate.HasValue
+            ? TimeZoneInfo.ConvertTimeToUtc(endDate.Value.Date.AddDays(1), tz)
+            : null;
+
         return o => 
             (preOrderOnly ? o.IsPreOrder : (status == "All" || !string.IsNullOrEmpty(status) ? true : !o.IsPreOrder)) &&
             (!websiteOnly || (!o.SourcePageId.HasValue && !o.SocialMediaSourceId.HasValue)) &&
@@ -39,17 +57,17 @@ public class OrdersWithFiltersForAdminSpecification : BaseSpecification<ECommerc
             (!socialMediaSourceId.HasValue || o.SocialMediaSourceId == socialMediaSourceId.Value) &&
             (!productId.HasValue || o.Items.Any(item => item.ProductId == productId.Value)) &&
             (
-                (startDate.HasValue || endDate.HasValue) ? 
+                (effectiveStartDate.HasValue || effectiveEndDate.HasValue) ? 
                 (
-                    (!startDate.HasValue || o.CreatedAt >= startDate.Value.Date.AddHours(-6)) && 
-                    (!endDate.HasValue || o.CreatedAt < endDate.Value.Date.AddDays(1).AddHours(-6))
+                    (!effectiveStartDate.HasValue || o.CreatedAt >= effectiveStartDate.Value) && 
+                    (!effectiveEndDate.HasValue || o.CreatedAt < effectiveEndDate.Value)
                 ) :
                 (string.IsNullOrEmpty(dateRange) || dateRange == "All Time" || 
-                 (dateRange == "Today" && o.CreatedAt >= DateTime.UtcNow.AddHours(6).Date.AddHours(-6) && o.CreatedAt < DateTime.UtcNow.AddHours(6).Date.AddDays(1).AddHours(-6)) ||
-                 (dateRange == "Yesterday" && o.CreatedAt >= DateTime.UtcNow.AddHours(6).Date.AddDays(-1).AddHours(-6) && o.CreatedAt < DateTime.UtcNow.AddHours(6).Date.AddHours(-6)) ||
-                 (dateRange == "Last 7 Days" && o.CreatedAt >= DateTime.UtcNow.AddHours(6).Date.AddDays(-7).AddHours(-6) && o.CreatedAt < DateTime.UtcNow.AddHours(6).Date.AddDays(1).AddHours(-6)) ||
-                 (dateRange == "Last 30 Days" && o.CreatedAt >= DateTime.UtcNow.AddHours(6).Date.AddDays(-30).AddHours(-6) && o.CreatedAt < DateTime.UtcNow.AddHours(6).Date.AddDays(1).AddHours(-6)) ||
-                 (dateRange == "This Year" && o.CreatedAt >= new DateTime(DateTime.UtcNow.AddHours(6).Year, 1, 1).AddHours(-6) && o.CreatedAt < new DateTime(DateTime.UtcNow.AddHours(6).Year + 1, 1, 1).AddHours(-6))
+                 (dateRange == "Today" && o.CreatedAt >= todayStartUtc && o.CreatedAt < todayEndUtc) ||
+                 (dateRange == "Yesterday" && o.CreatedAt >= yesterdayStartUtc && o.CreatedAt < todayStartUtc) ||
+                 (dateRange == "Last 7 Days" && o.CreatedAt >= last7StartUtc && o.CreatedAt < todayEndUtc) ||
+                 (dateRange == "Last 30 Days" && o.CreatedAt >= last30StartUtc && o.CreatedAt < todayEndUtc) ||
+                 (dateRange == "This Year" && o.CreatedAt >= thisYearStartUtc && o.CreatedAt < nextYearStartUtc)
                 )
             );
     }

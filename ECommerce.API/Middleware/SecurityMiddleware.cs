@@ -24,17 +24,17 @@ public class SecurityMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // 1. IP Blocking
+        // 1. IP Blocking (cached)
         if (await IsIpBlockedAsync(context))
             return;
 
         // 2. Revoked Token Check (after auth)
         if (context.User.Identity?.IsAuthenticated == true)
         {
-            if (await IsTokenRevokedAsync(context))
+            if (IsTokenRevoked(context))
                 return;
 
-            // 3. Suspicious User Check
+            // 3. Suspicious User Check (cached)
             if (await IsUserSuspiciousAsync(context))
                 return;
         }
@@ -51,28 +51,33 @@ public class SecurityMiddleware
         if (string.IsNullOrEmpty(ipAddress))
             return false;
 
+        var cacheKey = $"ip_blocked:{ipAddress}";
+        if (_cache.TryGetValue(cacheKey, out bool cachedBlocked))
+            return cachedBlocked;
+
         try
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var isBlocked = await dbContext.BlockedIps.AnyAsync(b => b.IpAddress == ipAddress);
+            _cache.Set(cacheKey, isBlocked, TimeSpan.FromSeconds(60));
             if (isBlocked)
             {
                 _logger.LogWarning("Blocked request from IP: {IpAddress}", ipAddress);
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 await context.Response.WriteAsync("Access Denied.");
-                return true;
             }
+            return isBlocked;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "IP blocking check failed. Continuing request.");
+            _cache.Set(cacheKey, false, TimeSpan.FromSeconds(30));
+            return false;
         }
-
-        return false;
     }
 
-    private async Task<bool> IsTokenRevokedAsync(HttpContext context)
+    private bool IsTokenRevoked(HttpContext context)
     {
         var jti = context.User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
         if (string.IsNullOrEmpty(jti))
@@ -81,7 +86,7 @@ public class SecurityMiddleware
         if (_cache.TryGetValue($"revoked_jti:{jti}", out _))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            await context.Response.WriteAsJsonAsync(new { error = "TOKEN_REVOKED", message = "Token has been invalidated" });
+            context.Response.WriteAsJsonAsync(new { error = "TOKEN_REVOKED", message = "Token has been invalidated" }).Wait();
             return true;
         }
 
@@ -94,36 +99,36 @@ public class SecurityMiddleware
         if (userIdClaim == null)
             return false;
 
+        var cacheKey = $"user_suspicious:{userIdClaim.Value}";
+        if (_cache.TryGetValue(cacheKey, out bool cachedSuspicious))
+            return cachedSuspicious;
+
         try
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            var appUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userIdClaim.Value);
-            if (appUser?.IsSuspicious == true)
+            var isSuspicious = await dbContext.Users.AnyAsync(u => u.Id == userIdClaim.Value && u.IsSuspicious);
+            if (!isSuspicious)
             {
-                _logger.LogWarning("Suspicious ApplicationUser {UserId} blocked from accessing {Path}", userIdClaim.Value, context.Request.Path);
-                context.Response.StatusCode = 403;
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsJsonAsync(new { success = false, message = "Your account has been suspended. Please contact support." });
-                return true;
+                isSuspicious = await dbContext.Customers.AnyAsync(c => c.Phone == userIdClaim.Value && c.IsSuspicious);
             }
 
-            var customer = await dbContext.Customers.FirstOrDefaultAsync(c => c.Phone == userIdClaim.Value);
-            if (customer?.IsSuspicious == true)
+            _cache.Set(cacheKey, isSuspicious, TimeSpan.FromSeconds(60));
+            if (isSuspicious)
             {
-                _logger.LogWarning("Suspicious Customer {Phone} blocked from accessing {Path}", userIdClaim.Value, context.Request.Path);
+                _logger.LogWarning("Suspicious user {UserId} blocked from accessing {Path}", userIdClaim.Value, context.Request.Path);
                 context.Response.StatusCode = 403;
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsJsonAsync(new { success = false, message = "Your account has been suspended. Please contact support." });
-                return true;
             }
+            return isSuspicious;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Suspicious user check failed. Continuing request.");
+            _cache.Set(cacheKey, false, TimeSpan.FromSeconds(30));
+            return false;
         }
-
-        return false;
     }
 }
