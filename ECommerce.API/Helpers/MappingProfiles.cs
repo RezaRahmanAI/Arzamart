@@ -156,5 +156,7 @@ public class MappingProfiles : Profile
         CreateMap<ComboItem, ComboItemDto>()
             .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product != null ? s.Product.Name : ""))
             .ForMember(d => d.VariantName, o => o.MapFrom(s => s.ProductVariant != null ? s.ProductVariant.Size : ""));
+
+        CreateMap<HeroBanner, HeroBannerDto>();
     }
 }

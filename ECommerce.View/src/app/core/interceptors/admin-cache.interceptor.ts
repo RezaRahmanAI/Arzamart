@@ -49,14 +49,6 @@ export const adminCacheInterceptor: HttpInterceptorFn = (req, next) => {
       patterns.forEach((p) => invalidateHttpCache(p));
       invalidateHttpCache("/admin/dashboard");
       invalidateHttpCache("/admin/analytics");
-
-      const tags = patterns.length > 0 ? ["catalog"] : [];
-      if (tags.length > 0) {
-        const baseUrl = apiConfig.baseUrl.replace(/\/$/, "");
-        http.post(`${baseUrl}/admin/cache/evict`, { tags }).subscribe({
-          error: () => {},
-        });
-      }
     }),
   );
 };
