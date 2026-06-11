@@ -9,8 +9,6 @@ import { HeroComponent } from "../../components/hero/hero.component";
 import { NewArrivalsComponent } from "../../components/new-arrivals/new-arrivals.component";
 import { WhyChooseUsComponent } from "../../components/why-choose-us/why-choose-us.component";
 import { TestimonialsComponent } from "../../components/testimonials/testimonials.component";
-import { NewsletterComponent } from "../../components/newsletter/newsletter.component";
-
 import { CategorySectionComponent } from "../../components/category-section/category-section.component";
 import { PromoBannerComponent } from "../../components/promo-banner/promo-banner.component";
 

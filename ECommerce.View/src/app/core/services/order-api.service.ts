@@ -59,6 +59,9 @@ export class OrderApiService {
   private readonly api = inject(ApiHttpClient);
 
   lookupCustomer(phone: string): Observable<CustomerLookupResponse | null> {
+    if (!phone || !phone.trim()) {
+      return of(null);
+    }
     const params = new HttpParams().set("phone", phone);
     return this.api
       .get<CustomerLookupResponse>("/customers/lookup", { params })

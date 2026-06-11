@@ -1,4 +1,5 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable, inject, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
 import { HttpParams } from "@angular/common/http";
 import { BehaviorSubject, Observable, map, tap } from "rxjs";
 import { Order, OrderStatus } from "../models/order";
@@ -23,6 +24,7 @@ export interface CustomerProfileRequest {
 })
 export class CustomerProfileService {
   private readonly api = inject(ApiHttpClient);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly baseUrl = "/customers";
   private readonly storageKey = "customer_phone";
 
@@ -32,6 +34,7 @@ export class CustomerProfileService {
   readonly phone$ = this.phoneSubject.asObservable();
 
   getStoredPhone(): string | null {
+    if (!isPlatformBrowser(this.platformId)) return null;
     return localStorage.getItem(this.storageKey);
   }
 

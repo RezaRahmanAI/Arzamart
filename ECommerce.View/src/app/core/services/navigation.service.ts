@@ -1,5 +1,6 @@
-import { Injectable, inject } from "@angular/core";
-import { Observable, shareReplay, map, catchError, of, switchMap, BehaviorSubject } from "rxjs";
+import { Injectable, inject, PLATFORM_ID, TransferState, makeStateKey } from "@angular/core";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
+import { Observable, shareReplay, map, catchError, of, switchMap, BehaviorSubject, tap, startWith } from "rxjs";
 import { ApiHttpClient } from "../http/http-client";
 
 // Interfaces...
@@ -29,19 +30,36 @@ export interface MegaMenuCollection {
 })
 export class NavigationService {
   private readonly api = inject(ApiHttpClient);
-  private readonly baseUrl = "/categories"; // Using categories endpoint for mega menu data
+  private readonly baseUrl = "/categories";
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly transferState = inject(TransferState);
+
+  private readonly MEGA_MENU_KEY = makeStateKey<any[]>("mega_menu_data");
 
   private readonly refreshSubject = new BehaviorSubject<void>(void 0);
-  
-  // Dynamic stream from API
+
   readonly megaMenu$ = this.refreshSubject.pipe(
-    switchMap(() => this.api.get<any[]>(this.baseUrl).pipe(
-      map((response) => response || []),
-      catchError((err) => {
-        console.error("Mega menu failed to load:", err);
-        return of([]);
-      })
-    )),
+    switchMap(() => {
+      const ssrData = this.transferState.get(this.MEGA_MENU_KEY, null);
+      if (ssrData) {
+        if (isPlatformBrowser(this.platformId)) {
+          this.transferState.remove(this.MEGA_MENU_KEY);
+        }
+        return of(ssrData);
+      }
+      return this.api.get<any[]>(this.baseUrl).pipe(
+        tap((data) => {
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(this.MEGA_MENU_KEY, data);
+          }
+        }),
+        catchError((err) => {
+          console.error("Mega menu failed to load:", err);
+          return of([]);
+        })
+      );
+    }),
+    startWith([]),
     shareReplay(1)
   );
 

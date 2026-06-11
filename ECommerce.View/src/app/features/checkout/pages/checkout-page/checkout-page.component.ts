@@ -314,6 +314,9 @@ export class CheckoutPageComponent {
     this.isLoading = true;
     this.errorMessage = "";
     this.persistCheckoutState();
+    
+    const phone = this.checkoutForm.controls.phone.value;
+
     this.checkoutService
       .createOrder()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -323,7 +326,6 @@ export class CheckoutPageComponent {
           if (!orderId) return;
 
           if (!this.authService.isLoggedIn()) {
-            const phone = this.checkoutForm.controls.phone.value;
             this.authService.customerPhoneLogin(phone).subscribe({
               next: () => void this.router.navigate(["/order-confirmation", orderId]),
               error: () => void this.router.navigate(["/order-confirmation", orderId]),

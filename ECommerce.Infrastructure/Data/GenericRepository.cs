@@ -74,9 +74,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await ApplySpecification(spec, evaluateIncludes: false).AsNoTracking().CountAsync();
     }
 
-    public IQueryable<T> GetQueryable()
+    public IQueryable<T> GetQueryable(bool track = false)
     {
-        return _context.Set<T>().AsNoTracking().AsQueryable();
+        var query = _context.Set<T>().AsQueryable();
+        return track ? query : query.AsNoTracking();
     }
     
     public IQueryable<T> GetQueryWithSpec(ISpecification<T> spec)

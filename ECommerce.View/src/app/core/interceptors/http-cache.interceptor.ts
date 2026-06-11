@@ -29,7 +29,8 @@ const EXCLUDED = ["/cart", "/orders", "/auth", "/profile"];
 
 function shouldCache(url: string): boolean {
   if (!url.includes("/api/")) return false;
-  return !EXCLUDED.some((p) => url.includes(p));
+  const lowerUrl = url.toLowerCase();
+  return !EXCLUDED.some((p) => lowerUrl.includes(p));
 }
 
 function getTTL(url: string): number {

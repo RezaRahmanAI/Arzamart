@@ -1,4 +1,5 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable, inject, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
 import {
   BehaviorSubject,
   Observable,
@@ -42,6 +43,7 @@ export class CartService {
   private readonly analyticsService = inject(AnalyticsService);
   private readonly notificationService = inject(NotificationService);
   private readonly api = inject(ApiHttpClient);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private readonly cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
   readonly cartItems$ = this.cartItemsSubject.asObservable();
@@ -67,8 +69,10 @@ export class CartService {
       }
     });
 
-    // Initial load from server
-    this.refreshCartFromServer();
+    // Initial load from server (only in browser — SSR has no session)
+    if (isPlatformBrowser(this.platformId)) {
+      this.refreshCartFromServer();
+    }
 
     // Setup debounced qty updates
     this.qtyUpdateSubject
@@ -102,6 +106,7 @@ export class CartService {
   }
 
   getSessionId(): string {
+    if (!isPlatformBrowser(this.platformId)) return "ssr-placeholder";
     let sessionId = localStorage.getItem(this.sessionIdKey);
     const sessionTimestamp = localStorage.getItem(this.sessionTimeKey);
     const now = Date.now();

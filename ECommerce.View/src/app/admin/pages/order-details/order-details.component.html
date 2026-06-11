@@ -158,9 +158,17 @@
         <p class="text-ds-text-muted whitespace-pre-line">
           {{ order.shippingAddress }}
         </p>
-        <div *ngIf="order.area || order.city" class="pt-ds-2">
-          <span class="px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm text-ds-text">
-            {{ order.area }}{{ order.area && order.city ? ' • ' : '' }}{{ order.city }}
+        <div *ngIf="order.area || order.city" class="pt-ds-2 flex flex-col gap-2">
+          <div class="flex flex-wrap gap-ds-2">
+            <span *ngIf="order.city" class="px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm text-ds-text text-xs font-semibold">
+              Jela: {{ order.city }}
+            </span>
+            <span *ngIf="getDivision(order.city)" class="px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm text-ds-text text-xs font-semibold">
+              Bibag: {{ getDivision(order.city) }}
+            </span>
+          </div>
+          <span *ngIf="order.area" class="text-xs text-ds-text-muted">
+            Thana/Area: {{ order.area }}
           </span>
         </div>
       </div>

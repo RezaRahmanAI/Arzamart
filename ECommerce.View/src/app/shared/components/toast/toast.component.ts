@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { NgClass } from "@angular/common";
 import {
   NotificationService,
@@ -68,6 +68,7 @@ import {
 })
 export class ToastComponent implements OnInit, OnDestroy {
   notificationService = inject(NotificationService);
+  private cdr = inject(ChangeDetectorRef);
   toasts: ToastMessage[] = [];
   private timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
@@ -86,6 +87,7 @@ export class ToastComponent implements OnInit, OnDestroy {
 
   add(toast: ToastMessage) {
     this.toasts.push(toast);
+    this.cdr.markForCheck();
     const id = setTimeout(() => this.remove(toast.id), 3000);
     this.timeoutIds.push(id);
   }

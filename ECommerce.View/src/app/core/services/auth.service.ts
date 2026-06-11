@@ -1,4 +1,5 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable, inject, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
 import { BehaviorSubject, catchError, map, Observable, of, tap } from "rxjs";
 import { ApiHttpClient } from "../http/http-client";
 import { AuthResponse, LoginPayload, User } from "../models/entities";
@@ -15,12 +16,14 @@ export class AuthService {
   private tokenKey = "arza_token";
 
   api = inject(ApiHttpClient);
+  private readonly platformId = inject(PLATFORM_ID);
 
   constructor() {
     this.hydrateSession();
   }
 
   private hydrateSession() {
+    if (!isPlatformBrowser(this.platformId)) return;
     const stored = localStorage.getItem(this.currentUserKey);
     if (stored) {
       try {
@@ -161,6 +164,9 @@ export class AuthService {
   }
 
   customerPhoneLogin(phone: string): Observable<User | null> {
+    if (!phone || !phone.trim()) {
+      return of(null);
+    }
     // For MVP/Guest checkout, we might just "identify" them or do a silent login
     // If backend doesn't have a specific endpoint, we can use a mock or a simple me call
     return this.api.get<User>(`/customers/lookup?phone=${phone}`).pipe(

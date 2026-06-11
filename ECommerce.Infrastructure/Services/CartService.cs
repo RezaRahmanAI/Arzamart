@@ -26,7 +26,7 @@ public class CartService : ICartService
 
     public async Task<CartDto> AddItemAsync(string? userId, string? sessionId, AddToCartDto dto)
     {
-        var cart = await GetOrCreateCartAsync(userId, sessionId);
+        var cart = await GetOrCreateCartAsync(userId, sessionId, track: true);
 
         var productExists = await _unitOfWork.Repository<Product>()
             .GetQueryable()
@@ -63,7 +63,7 @@ public class CartService : ICartService
     public async Task<CartDto> UpdateItemAsync(int itemId, string? userId, string? sessionId, int quantity)
     {
         var item = await _unitOfWork.Repository<CartItem>()
-            .GetQueryable()
+            .GetQueryable(track: true)
             .Include(i => i.Cart)
             .FirstOrDefaultAsync(i => i.Id == itemId);
 
@@ -101,7 +101,7 @@ public class CartService : ICartService
 
     public async Task<CartDto> RemoveItemAsync(int itemId, string? userId, string? sessionId)
     {
-        var cart = await GetOrCreateCartAsync(userId, sessionId);
+        var cart = await GetOrCreateCartAsync(userId, sessionId, track: true);
         var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
 
         if (item != null)
@@ -116,7 +116,7 @@ public class CartService : ICartService
 
     public async Task ClearCartAsync(string? userId, string? sessionId)
     {
-        var cart = await GetOrCreateCartAsync(userId, sessionId);
+        var cart = await GetOrCreateCartAsync(userId, sessionId, track: true);
         var repo = _unitOfWork.Repository<CartItem>();
         foreach (var item in cart.Items.ToList())
         {
@@ -127,10 +127,10 @@ public class CartService : ICartService
 
     public async Task<CartDto> MergeGuestCartAsync(string sessionId, string userId)
     {
-        var guestCart = await GetCartQuery()
+        var guestCart = await GetCartQuery(null, track: true)
             .FirstOrDefaultAsync(c => c.SessionId == sessionId && string.IsNullOrEmpty(c.UserId));
 
-        var userCart = await GetOrCreateCartAsync(userId, null);
+        var userCart = await GetOrCreateCartAsync(userId, null, track: true);
 
         if (guestCart != null && guestCart.Items.Any())
         {
@@ -163,17 +163,17 @@ public class CartService : ICartService
         return MapToDto(userCart);
     }
 
-    private async Task<Cart> GetOrCreateCartAsync(string? userId, string? sessionId)
+    private async Task<Cart> GetOrCreateCartAsync(string? userId, string? sessionId, bool track = false)
     {
         Cart? cart = null;
 
         if (!string.IsNullOrEmpty(userId))
         {
-            cart = await GetCartQuery().FirstOrDefaultAsync(c => c.UserId == userId);
+            cart = await GetCartQuery(null, track).FirstOrDefaultAsync(c => c.UserId == userId);
         }
         else if (!string.IsNullOrEmpty(sessionId))
         {
-            cart = await GetCartQuery().FirstOrDefaultAsync(c => c.SessionId == sessionId && c.UserId == null);
+            cart = await GetCartQuery(null, track).FirstOrDefaultAsync(c => c.SessionId == sessionId && c.UserId == null);
         }
 
         if (cart == null)
@@ -198,9 +198,9 @@ public class CartService : ICartService
         return cart;
     }
 
-    private IQueryable<Cart> GetCartQuery(int? id = null)
+    private IQueryable<Cart> GetCartQuery(int? id = null, bool track = false)
     {
-        var query = _unitOfWork.Repository<Cart>().GetQueryable();
+        var query = _unitOfWork.Repository<Cart>().GetQueryable(track);
 
         if (id.HasValue)
         {

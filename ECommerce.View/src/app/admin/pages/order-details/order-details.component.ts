@@ -133,4 +133,26 @@ export class OrderDetailsComponent implements OnInit {
       }
     });
   }
+
+  getDivision(city: string | null | undefined): string {
+    if (!city) return "";
+    const lookupCity = city.trim();
+    const divisions: Record<string, string[]> = {
+      "Dhaka": ["Dhaka", "Gazipur", "Narayanganj", "Tangail", "Faridpur", "Gopalganj", "Kishoreganj", "Madaripur", "Manikganj", "Munshiganj", "Narsingdi", "Rajbari", "Shariatpur"],
+      "Chittagong": ["Chittagong", "Cox's Bazar", "Bandarban", "Khagrachhari", "Rangamati", "Comilla", "Chandpur", "Feni", "Lakshmipur", "Noakhali", "Brahmanbaria"],
+      "Mymensingh": ["Mymensingh", "Netrokona", "Sherpur", "Jamalpur"],
+      "Sylhet": ["Sylhet", "Habiganj", "Moulvibazar", "Sunamganj"],
+      "Barisal": ["Barisal", "Patuakhali", "Bhola", "Pirojpur", "Jhalokati", "Barguna"],
+      "Khulna": ["Khulna", "Bagerhat", "Satkhira", "Jessore", "Kushtia", "Chuadanga", "Meherpur", "Magura", "Narail", "Jhenaidah"],
+      "Rajshahi": ["Rajshahi", "Bogura", "Joypurhat", "Naogaon", "Natore", "Chapainawabganj", "Pabna", "Sirajganj"],
+      "Rangpur": ["Rangpur", "Dinajpur", "Kurigram", "Lalmonirhat", "Gaibandha", "Nilphamari", "Thakurgaon", "Panchagarh"]
+    };
+
+    for (const [division, cities] of Object.entries(divisions)) {
+      if (cities.some(c => c.toLowerCase() === lookupCity.toLowerCase())) {
+        return division;
+      }
+    }
+    return "";
+  }
 }
