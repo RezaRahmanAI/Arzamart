@@ -24,27 +24,79 @@ if ($LASTEXITCODE -eq 0) {
             }
 
             if ($null -ne $systemWebServer) {
-                # 1. Add request limits if not present
-                if ($null -eq $systemWebServer.security) {
+                # 1. Ensure security/requestFiltering/requestLimits
+                $security = $systemWebServer.security
+                if ($null -eq $security) {
                     $security = $xml.CreateElement("security")
+                    $systemWebServer.AppendChild($security) | Out-Null
+                }
+                $requestFiltering = $security.requestFiltering
+                if ($null -eq $requestFiltering) {
                     $requestFiltering = $xml.CreateElement("requestFiltering")
+                    $security.AppendChild($requestFiltering) | Out-Null
+                }
+                $requestLimits = $requestFiltering.requestLimits
+                if ($null -eq $requestLimits) {
                     $requestLimits = $xml.CreateElement("requestLimits")
                     $requestLimits.SetAttribute("maxAllowedContentLength", "104857600") # 100MB
                     $requestFiltering.AppendChild($requestLimits) | Out-Null
-                    $security.AppendChild($requestFiltering) | Out-Null
-                    $systemWebServer.AppendChild($security) | Out-Null
-                    Write-Host "Added security/requestFiltering/requestLimits." -ForegroundColor Gray
+                    Write-Host "Added requestLimits." -ForegroundColor Gray
                 }
 
-                # 2. Remove WebDAV if not present
-                if ($null -eq $systemWebServer.modules) {
+                # 2. Ensure requestFiltering/verbs for DELETE and PUT
+                $verbs = $requestFiltering.verbs
+                if ($null -eq $verbs) {
+                    $verbs = $xml.CreateElement("verbs")
+                    $requestFiltering.AppendChild($verbs) | Out-Null
+                }
+                
+                # Check for DELETE verb
+                $deleteVerb = $verbs.SelectSingleNode("add[@verb='DELETE']")
+                if ($null -eq $deleteVerb) {
+                    $addDelete = $xml.CreateElement("add")
+                    $addDelete.SetAttribute("verb", "DELETE")
+                    $addDelete.SetAttribute("allowed", "true")
+                    $verbs.AppendChild($addDelete) | Out-Null
+                    Write-Host "Allowed DELETE verb." -ForegroundColor Gray
+                }
+                
+                # Check for PUT verb
+                $putVerb = $verbs.SelectSingleNode("add[@verb='PUT']")
+                if ($null -eq $putVerb) {
+                    $addPut = $xml.CreateElement("add")
+                    $addPut.SetAttribute("verb", "PUT")
+                    $addPut.SetAttribute("allowed", "true")
+                    $verbs.AppendChild($addPut) | Out-Null
+                    Write-Host "Allowed PUT verb." -ForegroundColor Gray
+                }
+
+                # 3. Ensure modules and remove WebDAVModule
+                $modules = $systemWebServer.modules
+                if ($null -eq $modules) {
                     $modules = $xml.CreateElement("modules")
                     $modules.SetAttribute("runAllManagedModulesForAllRequests", "false")
-                    $remove = $xml.CreateElement("remove")
-                    $remove.SetAttribute("name", "WebDAVModule")
-                    $modules.AppendChild($remove) | Out-Null
                     $systemWebServer.AppendChild($modules) | Out-Null
+                }
+                $removeModule = $modules.SelectSingleNode("remove[@name='WebDAVModule']")
+                if ($null -eq $removeModule) {
+                    $removeModule = $xml.CreateElement("remove")
+                    $removeModule.SetAttribute("name", "WebDAVModule")
+                    $modules.PrependChild($removeModule) | Out-Null
                     Write-Host "Added modules/remove WebDAVModule." -ForegroundColor Gray
+                }
+
+                # 4. Ensure handlers and remove WebDAV
+                $handlers = $systemWebServer.handlers
+                if ($null -eq $handlers) {
+                    $handlers = $xml.CreateElement("handlers")
+                    $systemWebServer.AppendChild($handlers) | Out-Null
+                }
+                $removeHandler = $handlers.SelectSingleNode("remove[@name='WebDAV']")
+                if ($null -eq $removeHandler) {
+                    $removeHandler = $xml.CreateElement("remove")
+                    $removeHandler.SetAttribute("name", "WebDAV")
+                    $handlers.PrependChild($removeHandler) | Out-Null
+                    Write-Host "Added handlers/remove WebDAV." -ForegroundColor Gray
                 }
 
                 $xml.Save($fullWebConfigPath)
