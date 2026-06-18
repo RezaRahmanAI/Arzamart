@@ -8,18 +8,11 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   template: `
-    <svg
-      [attr.width]="size"
-      [attr.height]="size"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+    <span
       [class]="className"
-      [innerHTML]="getIconPath()"
-    ></svg>
+      [style.display]="'inline-flex'"
+      [innerHTML]="getIconSvg()"
+    ></span>
   `,
   styles: [`
     :host {
@@ -41,6 +34,7 @@ export class AppIconComponent {
     'ArrowDown': '<path d="m19 12-7 7-7-7"></path><path d="M12 5v14"></path>',
     'ArrowLeft': '<path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path>',
     'ArrowRight': '<path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>',
+    'ArrowRightCircle': '<circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line>',
     'Bell': '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>',
     'Ban': '<circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path>',
     'Bold': '<path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>',
@@ -144,8 +138,9 @@ export class AppIconComponent {
     'Edit3': '<path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>'
   };
 
-  getIconPath(): SafeHtml {
+  getIconSvg(): SafeHtml {
     const path = this.iconPaths[this.name] || '';
-    return this.sanitizer.bypassSecurityTrustHtml(path);
+    const svgHtml = `<svg width="${this.size}" height="${this.size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 100%; height: 100%;">${path}</svg>`;
+    return this.sanitizer.bypassSecurityTrustHtml(svgHtml);
   }
 }

@@ -420,9 +420,11 @@ export class ProductFormComponent {
 
         this.sizesArray.clear();
         const variants = (product as any).variants || (product as any).Variants || [];
+        console.log("[DEBUG] product.id:", product.id);
+        console.log("[DEBUG] variants loaded from API:", JSON.stringify(variants));
 
         if (variants && variants.length > 0) {
-          variants.forEach((v: any) => {
+          variants.forEach((v: any, idx: number) => {
             const sizeGroup = this.formBuilder.group({
               label: [v.size ?? v.Size ?? ""],
               price: [
@@ -444,9 +446,12 @@ export class ProductFormComponent {
               selected: [true],
               id: [v.id ?? v.Id ?? null]
             });
+            console.log(`[DEBUG] mapping variant [${idx}]:`, sizeGroup.value);
             this.sizesArray.push(sizeGroup);
           });
+          console.log("[DEBUG] sizesArray after mapping:", this.sizesArray.value);
         } else {
+          console.log("[DEBUG] variants is empty, pushing default size group");
           this.sizesArray.push(this.createSizeGroup(true));
         }
 
@@ -600,7 +605,7 @@ export class ProductFormComponent {
   }
 
   setSelectedSize(index: number): void {
-    this.ensureSingleSelected(this.sizesArray, "isMain", index);
+    this.ensureSingleSelected(this.sizesArray, "selected", index);
   }
 
   handleFilesSelected(event: Event): void {
@@ -835,8 +840,8 @@ export class ProductFormComponent {
     return grp.id;
   }
 
-  trackByComboItem(index: number): number {
-    return index;
+  trackByComboItem(index: number, control: any): any {
+    return control;
   }
 
   trackBySearchResult(_: number, p: any): number {
@@ -847,8 +852,12 @@ export class ProductFormComponent {
     return v.id || v.size || '';
   }
 
-  trackBySize(index: number): number {
-    return index;
+  trackBySize(index: number, control: any): any {
+    return control;
+  }
+
+  trackByControl(index: number, control: any): any {
+    return control;
   }
 
   private createSizeGroup(selected: boolean): AbstractControl {

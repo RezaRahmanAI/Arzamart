@@ -407,18 +407,28 @@
         </button>
       </div>
       <div class="p-ds-8 max-h-[500px] overflow-y-auto space-y-ds-4 custom-scrollbar">
-        <div *ngFor="let log of trackingOrder.logs; trackBy: trackByLogIndex" class="p-ds-4 bg-ds-bg border border-ds-border rounded-sm flex items-start gap-ds-4">
-          <div class="size-2 mt-1.5 rounded-full shrink-0" [ngStyle]="{ backgroundColor: getStatusColor(log.statusTo) }"></div>
-          <div>
-            <p class="text-ds-text">{{ log.statusTo }}</p>
-            <div class="flex items-center justify-between gap-4 mt-1">
-              <p class="text-ds-text-muted">{{ log.createdAt | date: 'MMM d, y — h:mm a' }}</p>
-              <span class="text-ds-accent">{{ log.changedBy }}</span>
-            </div>
-            <p class="mt-ds-2 text-ds-text-sec" *ngIf="log.note">"{{ log.note }}"</p>
-          </div>
+        <div *ngIf="isTrackingLoading" class="flex flex-col items-center justify-center py-ds-12 gap-ds-3">
+          <app-icon name="Loader2" size="24" className="animate-spin text-ds-text-muted"></app-icon>
+          <p class="text-xs text-ds-text-muted">Loading history logs...</p>
         </div>
+        <ng-container *ngIf="!isTrackingLoading">
+          <div *ngFor="let log of trackingOrder?.logs; trackBy: trackByLogIndex" class="p-ds-4 bg-ds-bg border border-ds-border rounded-sm flex items-start gap-ds-4">
+            <div class="size-2 mt-1.5 rounded-full shrink-0" [ngStyle]="{ backgroundColor: getStatusColor(log.statusTo) }"></div>
+            <div>
+              <p class="text-ds-text">{{ log.statusTo }}</p>
+              <div class="flex items-center justify-between gap-4 mt-1">
+                <p class="text-ds-text-muted">{{ log.createdAt | date: 'MMM d, y — h:mm a' }}</p>
+                <span class="text-ds-accent">{{ log.changedBy }}</span>
+              </div>
+              <p class="mt-ds-2 text-ds-text-sec" *ngIf="log.note">"{{ log.note }}"</p>
+            </div>
+          </div>
+          <div *ngIf="!trackingOrder?.logs || trackingOrder?.logs?.length === 0" class="py-ds-8 text-center text-xs text-ds-text-muted">
+            No history logs available for this order.
+          </div>
+        </ng-container>
       </div>
+
       <div class="p-ds-6 bg-ds-bg border-t border-ds-border flex justify-end">
         <button (click)="isTrackingModalOpen = false" class="btn btn-secondary !h-10 !px-ds-8">Close</button>
       </div>
@@ -462,17 +472,23 @@
         <div class="space-y-4">
           <p class="text-ds-text-muted border-b border-ds-border pb-2">All Notes</p>
           <div class="max-h-[300px] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
-            <div *ngFor="let note of notesOrder.notes; trackBy: trackByNoteId" class="p-ds-4 bg-ds-bg/50 border border-ds-border rounded-sm relative group">
-              <p class="text-ds-text">{{ note.content }}</p>
-              <div class="mt-2 flex items-center justify-between">
-                <span class="text-ds-text-muted">{{ note.createdAt | date: 'MMM d, h:mm a' }}</span>
-                <span class="text-ds-accent">{{ note.adminName }}</span>
+            <div *ngIf="isNotesLoading" class="flex flex-col items-center justify-center py-ds-8 gap-ds-2">
+              <app-icon name="Loader2" size="20" className="animate-spin text-ds-text-muted"></app-icon>
+              <p class="text-xs text-ds-text-muted">Loading notes...</p>
+            </div>
+            <ng-container *ngIf="!isNotesLoading">
+              <div *ngFor="let note of notesOrder?.notes; trackBy: trackByNoteId" class="p-ds-4 bg-ds-bg/50 border border-ds-border rounded-sm relative group">
+                <p class="text-ds-text">{{ note.content }}</p>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="text-ds-text-muted">{{ note.createdAt | date: 'MMM d, h:mm a' }}</span>
+                  <span class="text-ds-accent">{{ note.adminName }}</span>
+                </div>
               </div>
-            </div>
-            
-            <div *ngIf="!notesOrder.notes || notesOrder.notes.length === 0" class="py-ds-8 text-center">
-              <p class="text-ds-text-muted opacity-40">No notes yet.</p>
-            </div>
+              
+              <div *ngIf="!notesOrder?.notes || notesOrder?.notes?.length === 0" class="py-ds-8 text-center">
+                <p class="text-ds-text-muted opacity-40">No notes yet.</p>
+              </div>
+            </ng-container>
           </div>
         </div>
       </div>

@@ -60,6 +60,8 @@ export class CustomerHistoryComponent implements OnInit, OnDestroy {
   notesOrder: Order | null = null;
   isTrackingModalOpen = false;
   isNotesModalOpen = false;
+  isTrackingLoading = false;
+  isNotesLoading = false;
   newNoteText = "";
   isSavingNote = false;
 
@@ -203,6 +205,18 @@ export class CustomerHistoryComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.trackingOrder = order;
     this.isTrackingModalOpen = true;
+    this.isTrackingLoading = true;
+
+    this.ordersService.getOrderById(order.id).subscribe({
+      next: (details) => {
+        this.trackingOrder = details;
+        this.isTrackingLoading = false;
+      },
+      error: () => {
+        this.isTrackingLoading = false;
+        this.notification.error("Failed to load order history logs");
+      }
+    });
   }
 
   openNotes(order: Order, event: Event): void {
@@ -210,6 +224,18 @@ export class CustomerHistoryComponent implements OnInit, OnDestroy {
     this.notesOrder = order;
     this.newNoteText = "";
     this.isNotesModalOpen = true;
+    this.isNotesLoading = true;
+
+    this.ordersService.getOrderById(order.id).subscribe({
+      next: (details) => {
+        this.notesOrder = details;
+        this.isNotesLoading = false;
+      },
+      error: () => {
+        this.isNotesLoading = false;
+        this.notification.error("Failed to load order notes");
+      }
+    });
   }
 
   addNote(): void {

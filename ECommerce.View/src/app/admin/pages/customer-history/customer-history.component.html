@@ -237,23 +237,29 @@
             <app-icon name="X" size="20"></app-icon>
           </button>
         </div>
+
         <div class="flex-1 overflow-y-auto p-ds-8 space-y-ds-6 bg-ds-bg/20">
-          <div *ngFor="let note of notesOrder.notes" class="flex flex-col space-y-ds-2">
-            <div class="flex items-center justify-between px-1 text-ds-text-muted">
-              <span class="text-ds-text">{{ note.adminName }}</span>
-              <span>{{ note.createdAt | date: 'MMM d • h:mm a' }}</span>
-            </div>
-            <div class="bg-ds-surface px-ds-5 py-ds-4 rounded-sm border border-ds-border shadow-sm">
-              <p class="text-ds-text-sec">{{ note.content }}</p>
-            </div>
+          <div *ngIf="isNotesLoading" class="flex flex-col items-center justify-center py-ds-12 gap-ds-3">
+            <app-icon name="Loader2" size="24" className="animate-spin text-ds-text-muted"></app-icon>
+            <p class="text-xs text-ds-text-muted">Loading notes...</p>
           </div>
-          <div *ngIf="!notesOrder.notes?.length" class="h-full flex flex-col items-center justify-center opacity-20">
-            <app-icon name="MessageSquareOff" size="48"></app-icon>
-            <p class="mt-4">Zero Internal Notes</p>
-          </div>
+          <ng-container *ngIf="!isNotesLoading">
+            <div *ngFor="let note of notesOrder?.notes" class="flex flex-col space-y-ds-2">
+              <div class="flex items-center justify-between px-1 text-ds-text-muted">
+                <span class="text-ds-text">{{ note.adminName }}</span>
+                <span>{{ note.createdAt | date: 'MMM d • h:mm a' }}</span>
+              </div>
+              <div class="bg-ds-surface px-ds-5 py-ds-4 rounded-sm border border-ds-border shadow-sm">
+                <p class="text-ds-text-sec">{{ note.content }}</p>
+              </div>
+            </div>
+            <div *ngIf="!notesOrder?.notes?.length" class="h-full flex flex-col items-center justify-center opacity-20">
+              <app-icon name="MessageSquareOff" size="48"></app-icon>
+              <p class="mt-4">Zero Internal Notes</p>
+            </div>
+          </ng-container>
         </div>
-        <div class="p-ds-8 border-t border-ds-border bg-ds-surface">
-          <div class="flex items-start gap-ds-4">
+          <div class="flex items-start gap-ds-4 px-ds-8 py-ds-6 bg-ds-surface border-t border-ds-border">
             <textarea [(ngModel)]="newNoteText" placeholder="ENCODE INTERNAL MEMO..." class="form-input !min-h-[80px] !py-3 !px-4 flex-1"></textarea>
             <button (click)="addNote()" [disabled]="isSavingNote || !newNoteText.trim()" class="size-12 rounded-sm bg-ds-text text-ds-surface flex items-center justify-center hover:opacity-90 disabled:opacity-20 transition-all shadow-xl">
               <app-icon name="Send" size="20"></app-icon>
@@ -274,16 +280,25 @@
         </div>
         <button (click)="isTrackingModalOpen = false" class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm"><app-icon name="X" size="20"></app-icon></button>
       </div>
+
       <div class="p-ds-8 max-h-[500px] overflow-y-auto space-y-ds-4 bg-ds-bg/20">
-        <div *ngFor="let log of trackingOrder.logs; let i = index" class="p-ds-5 bg-ds-surface rounded-sm border border-ds-border group hover:border-ds-text transition-colors">
-          <div class="flex justify-between items-start mb-ds-3">
-            <span class="text-ds-text">{{ log.statusTo }}</span>
-            <span class="text-ds-text-muted">{{ log.createdAt | date: 'dd/MM/yyyy • h:mm a' }}</span>
-          </div>
-          <p class="text-ds-text-sec" *ngIf="log.note">"{{ log.note }}"</p>
-          <p class="text-ds-text-muted mt-ds-4 border-t border-ds-border/50 pt-2">Operator Identity: {{ log.changedBy }}</p>
+        <div *ngIf="isTrackingLoading" class="flex flex-col items-center justify-center py-ds-12 gap-ds-3">
+          <app-icon name="Loader2" size="24" className="animate-spin text-ds-text-muted"></app-icon>
+          <p class="text-xs text-ds-text-muted">Loading history logs...</p>
         </div>
+        <ng-container *ngIf="!isTrackingLoading">
+          <div *ngFor="let log of trackingOrder?.logs; let i = index" class="p-ds-5 bg-ds-surface rounded-sm border border-ds-border group hover:border-ds-text transition-colors">
+            <div class="flex justify-between items-start mb-ds-3">
+              <span class="text-ds-text">{{ log.statusTo }}</span>
+              <span class="text-ds-text-muted">{{ log.createdAt | date: 'dd/MM/yyyy • h:mm a' }}</span>
+            </div>
+            <p class="text-ds-text-sec" *ngIf="log.note">"{{ log.note }}"</p>
+            <p class="text-ds-text-muted mt-ds-4 border-t border-ds-border/50 pt-2">Operator Identity: {{ log.changedBy }}</p>
+          </div>
+          <div *ngIf="!trackingOrder?.logs || trackingOrder?.logs?.length === 0" class="py-ds-8 text-center text-xs text-ds-text-muted text-center opacity-60">
+            No history logs available for this order.
+          </div>
+        </ng-container>
       </div>
-    </div>
   </div>
 </div>

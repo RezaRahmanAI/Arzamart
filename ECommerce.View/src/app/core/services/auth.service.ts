@@ -107,7 +107,7 @@ export class AuthService {
 
   isAdmin() {
     const role = this.userSubject.value?.role;
-    return role === "Admin" || role === "SuperAdmin" || role === "Super Admin" || role === "Manager" || role === "Viewer";
+    return role === "Admin" || role === "SuperAdmin" || role === "Super Admin" || role === "Manager" || role === "Viewer" || role === "Staff";
   }
 
   isSuperAdmin() {

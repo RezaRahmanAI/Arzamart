@@ -53,5 +53,7 @@ export class UsersService {
     return this.api.post(`/admin/users/${userId}/reset-password`, { newPassword });
   }
 
-
+  getActivityLog(userId: string): Observable<any[]> {
+    return this.api.get<any[]>(`/admin/users/${userId}/activity-log`);
+  }
 }

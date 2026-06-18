@@ -182,6 +182,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
   notesOrder: Order | null = null;
   isTrackingModalOpen = false;
   isNotesModalOpen = false;
+  isTrackingLoading = false;
+  isNotesLoading = false;
   adminNoteControl = new FormControl("");
   newNoteText = "";
   isSavingNote = false;
@@ -441,6 +443,21 @@ export class OrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.trackingOrder = order;
     this.isTrackingModalOpen = true;
+    this.isTrackingLoading = true;
+    this.cdr.markForCheck();
+
+    this.ordersService.getOrderById(order.id).subscribe({
+      next: (details) => {
+        this.trackingOrder = details;
+        this.isTrackingLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isTrackingLoading = false;
+        this.notification.error("Failed to load order history logs");
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   openNotes(order: Order, event: Event): void {
@@ -448,6 +465,21 @@ export class OrdersComponent implements OnInit, OnDestroy {
     this.notesOrder = order;
     this.newNoteText = "";
     this.isNotesModalOpen = true;
+    this.isNotesLoading = true;
+    this.cdr.markForCheck();
+
+    this.ordersService.getOrderById(order.id).subscribe({
+      next: (details) => {
+        this.notesOrder = details;
+        this.isNotesLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isNotesLoading = false;
+        this.notification.error("Failed to load order notes");
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   addNote(): void {

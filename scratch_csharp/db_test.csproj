@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Reference Include="ECommerce.Core">
+      <HintPath>..\ECommerce.Core\bin\Debug\net10.0\ECommerce.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ECommerce.Infrastructure">
+      <HintPath>..\ECommerce.Infrastructure\bin\Debug\net10.0\ECommerce.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="ECommerce.API">
+      <HintPath>..\ECommerce.API\bin\Debug\net10.0\ECommerce.API.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
+    <PackageReference Include="AutoMapper" Version="16.1.1" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

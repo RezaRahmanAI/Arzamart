@@ -32,6 +32,11 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   isEditPasswordVisible = false;
   searchQuery = "";
 
+  isHistoryModalOpen = false;
+  selectedUserHistory: any[] = [];
+  selectedHistoryUserName = "";
+  isHistoryLoading = false;
+
   createForm = this.fb.nonNullable.group({
     fullName: ["", [Validators.required]],
     email: ["", [Validators.pattern(/^[^A-Z]+$/)]],
@@ -141,8 +146,12 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
     this.usersService.getPassword(admin.id).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
-        admin.plainPassword = res.password;
-        this.revealedPasswords.add(admin.id);
+        if (res.password) {
+          admin.plainPassword = res.password;
+          this.revealedPasswords.add(admin.id);
+        } else {
+          this.notification.warn(res.message || "No encrypted password stored. Please reset the password.");
+        }
         this.passwordLoading.delete(admin.id);
         this.cdr.markForCheck();
       },
@@ -297,6 +306,27 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       .slice(0, 2)
       .join("")
       .toUpperCase();
+  }
+
+  openHistoryModal(admin: AdminUser): void {
+    this.selectedHistoryUserName = admin.fullName || admin.userName;
+    this.selectedUserHistory = [];
+    this.isHistoryLoading = true;
+    this.isHistoryModalOpen = true;
+    this.cdr.markForCheck();
+
+    this.usersService.getActivityLog(admin.id).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (logs) => {
+        this.selectedUserHistory = logs || [];
+        this.isHistoryLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.notification.error("Failed to load user activity log");
+        this.isHistoryLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   toggleMenuSelection(menuKey: string): void {

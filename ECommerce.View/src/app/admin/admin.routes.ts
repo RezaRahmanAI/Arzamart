@@ -215,8 +215,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: "staff",
         loadComponent: () =>
-          import("./pages/staff-management/staff-management.component").then(
-            (m) => m.StaffManagementComponent,
+          import("./pages/user-management/user-management.component").then(
+            (m) => m.UserManagementComponent,
           ),
         data: { title: "Staff Management", menuKey: "users" }, canActivate: [staffGuard],
       },
