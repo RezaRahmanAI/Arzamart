@@ -1,5 +1,4 @@
 import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe, DatePipe, NgFor, TitleCasePipe } from "@angular/common";
-import { CdkDragDrop, moveItemInArray, DragDropModule } from "@angular/cdk/drag-drop";
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID } from "@angular/core";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -33,6 +32,7 @@ import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
 import { QuickAddModalComponent } from "../../../../shared/components/quick-add-modal/quick-add-modal.component";
 import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
 import { AuthService } from "../../../../core/services/auth.service";
+import { CustomLandingPageEditorComponent } from "./components/custom-landing-page-editor/custom-landing-page-editor.component";
 
 interface LandingSection {
   id: string;
@@ -45,7 +45,22 @@ interface LandingSection {
 @Component({
   selector: "app-custom-landing-page",
   standalone: true,
-  imports: [AsyncPipe, NgClass, FormsModule, ReactiveFormsModule, RouterModule, AppIconComponent, SafeHtmlPipe, DecimalPipe, DatePipe, NgFor, QuickAddModalComponent, NgIf, TitleCasePipe, DragDropModule],
+  imports: [
+    AsyncPipe,
+    NgClass,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    AppIconComponent,
+    SafeHtmlPipe,
+    DecimalPipe,
+    DatePipe,
+    NgFor,
+    QuickAddModalComponent,
+    NgIf,
+    TitleCasePipe,
+    CustomLandingPageEditorComponent
+  ],
   templateUrl: "./custom-landing-page.component.html",
   styleUrl: "./custom-landing-page.component.css"
 })
@@ -289,7 +304,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   filteredAreas: string[] = [];
   areaSearch = "";
   isAreaDropdownOpen = false;
-  isAddSectionMenuOpen = false;
 
   didAutofill = false;
 
@@ -829,64 +843,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleActiveSection(section: LandingSection): void {
-    this.ensureSectionSettings(section);
-    this.activeEditorSection = this.activeEditorSection === section.id ? '' : section.id;
-  }
-
-  moveSection(index: number, direction: 'up' | 'down'): void {
-    if (direction === 'up' && index > 0) {
-      [this.sections[index], this.sections[index-1]] = [this.sections[index-1], this.sections[index]];
-    } else if (direction === 'down' && index < this.sections.length - 1) {
-      [this.sections[index], this.sections[index+1]] = [this.sections[index+1], this.sections[index]];
-    }
-    this.sections = [...this.sections];
-    this.updateSections();
-  }
-
-  drop(event: CdkDragDrop<LandingSection[]>): void {
-    moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
-    this.sections = [...this.sections];
-    this.updateSections();
-  }
-
-  toggleVisibility(index: number): void { 
-    this.sections[index].visible = !this.sections[index].visible; 
-    this.sections = [...this.sections];
-    this.updateSections();
-  }
-
-  deleteSection(index: number): void { 
-    if (confirm('Delete this section?')) {
-      const deletedSection = this.sections[index];
-      if (deletedSection && this.activeEditorSection === deletedSection.id) {
-        this.activeEditorSection = '';
-      }
-      this.sections.splice(index, 1); 
-      this.sections = [...this.sections];
-      this.updateSections();
-    }
-  }
-  
-  addSection(type: string): void {
-    const labels: Record<string, string> = {
-      'countdown': '⏱ Countdown Bar',
-      'hero': '🎯 Hero / Offer',
-      'product-hero': '🛍 Product Hero',
-      'discount-cta': '💚 Discount CTA',
-      'info-banner': '🟡 Info Banner',
-      'product-details': 'ℹ️ Product Details',
-      'trust-banner': '🛡️ Trust Banner',
-      'product-select': '📦 Product Selection',
-      'reviews': '💬 Customer Reviews',
-      'order-form': '📝 Order Form'
-    };
-    const settings: any = {};
-    if (type === 'product-select') settings.customProductIds = [];
-    const section = { id: `${type}_${Date.now()}`, type, label: labels[type] || 'New Section', visible: true, settings };
-    this.ensureSectionSettings(section);
-    this.sections.push(section);
-    this.sections = [...this.sections];
+  onSectionsChanged(updatedSections: LandingSection[]): void {
+    this.sections = updatedSections;
     this.updateSections();
   }
 
