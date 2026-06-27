@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, ChangeDetectionStrategy, inject, OnDestroy, OnInit, ChangeDetectorRef } from "@angular/core";
 import { NgIf, AsyncPipe, DatePipe, NgFor } from '@angular/common';
 import {
   FormBuilder,
@@ -11,7 +11,8 @@ import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { Order } from "../../../../core/models/order";
 import { catchError, finalize, of, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
-import { RouterModule } from "@angular/router";
+import { Router, ActivatedRoute, RouterModule } from "@angular/router";
+import { AuthService } from "../../../../core/services/auth.service";
 
 @Component({
   selector: "app-profile-page",
@@ -26,9 +27,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly destroy$ = new Subject<void>();
   readonly imageUrlService = inject(ImageUrlService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly cdr = inject(ChangeDetectorRef);
   private successTimeout: ReturnType<typeof setTimeout> | null = null;
 
   phone$ = this.profileService.phone$;
+  isLoggedIn$ = this.authService.isLoggedIn$;
   orders: Order[] = [];
   isLoading = false;
   isSubmitting = false;
@@ -58,8 +64,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.profileService.phone$.pipe(takeUntil(this.destroy$)).subscribe((phone) => {
-      if (phone) {
+      if (phone && this.authService.isLoggedIn()) {
         this.loadData(phone);
+      } else {
+        this.orders = [];
+        this.cdr.markForCheck();
       }
     });
   }
@@ -81,14 +90,34 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     const phone = this.loginForm.get("phone")?.value;
 
-    this.profileService.storePhone(phone);
-    this.isSubmitting = false;
+    this.authService.customerPhoneLogin(phone).subscribe({
+      next: (user) => {
+        this.isSubmitting = false;
+        this.cdr.markForCheck();
+        if (user) {
+          this.profileService.storePhone(phone);
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/profile';
+          this.router.navigateByUrl(returnUrl);
+        } else {
+          this.loginForm.get("phone")?.setErrors({ invalidPhone: true });
+        }
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.cdr.markForCheck();
+        console.error(err);
+        this.loginForm.get("phone")?.setErrors({ serverError: true });
+      }
+    });
   }
 
   logout(): void {
+    this.authService.logout();
     this.profileService.clearPhone();
     this.orders = [];
     this.loginForm.reset();
+    this.cdr.markForCheck();
+    this.router.navigate(['/']);
   }
 
   loadData(phone: string): void {
@@ -109,15 +138,20 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
         catchError((err) => {
           if (err.status === 404) {
             this.profileForm.patchValue({ phone });
+            this.cdr.markForCheck();
             return of(null);
           }
           return of(null);
         }),
         switchMap(() => this.profileService.getOrders(phone)),
-        finalize(() => (this.isLoading = false)),
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        }),
       )
       .subscribe((orders) => {
         this.orders = orders || [];
+        this.cdr.markForCheck();
       });
   }
 
@@ -137,11 +171,18 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
 
     this.profileService
       .updateProfile(request)
-      .pipe(finalize(() => (this.isSubmitting = false)))
+      .pipe(finalize(() => {
+        this.isSubmitting = false;
+        this.cdr.markForCheck();
+      }))
       .subscribe({
         next: () => {
           this.saveSuccess = true;
-          this.successTimeout = setTimeout(() => (this.saveSuccess = false), 3000);
+          this.cdr.markForCheck();
+          this.successTimeout = setTimeout(() => {
+            this.saveSuccess = false;
+            this.cdr.markForCheck();
+          }, 3000);
         },
         error: (err) => {
           console.error("Failed to update profile", err);

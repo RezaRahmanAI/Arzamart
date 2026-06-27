@@ -40,18 +40,23 @@ export const globalErrorInterceptor: HttpInterceptorFn = (request, next) => {
             break;
 
           case 401:
-            // Don't notify or redirect for silent refresh failures or auth checks on startup
+            // Don't notify or redirect for silent refresh failures, auth checks on startup, or customer lookup
             if (
               !request.url.includes("auth/refresh") &&
               !request.url.includes("auth/login") &&
               !request.url.includes("auth/me") &&
-              !request.url.includes("auth/logout")
+              !request.url.includes("auth/logout") &&
+              !request.url.includes("/customers/lookup")
             ) {
               notificationService.error("Session expired. Please login again.");
             }
             break;
 
           case 403: {
+            // Skip notification for customer lookup (unauthenticated guest checkouts entering an existing phone)
+            if (request.url.includes("/customers/lookup")) {
+              break;
+            }
             const message =
               error.error?.message ||
               (typeof error.error === "string" ? error.error : null) ||

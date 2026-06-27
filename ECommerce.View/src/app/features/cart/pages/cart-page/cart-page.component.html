@@ -31,7 +31,7 @@
                       <td>
                         <div class="flex items-center">
                           <!-- Red Outline Delete Cross Icon -->
-                          <button (click)="removeItem(item)" class="cart-delete-btn" aria-label="Remove item">
+                          <button [disabled]="item.id.startsWith('temp-')" (click)="removeItem(item)" class="cart-delete-btn" aria-label="Remove item">
                             <svg viewBox="0 0 24 24" class="w-[22px] h-[22px]" fill="none">
                               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" fill="none"/>
                               <path d="M8.5 8.5L15.5 15.5M15.5 8.5L8.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
@@ -62,9 +62,9 @@
                       <td class="text-center">
                         <div class="flex justify-center">
                           <div class="qty-selector">
-                            <button (click)="decreaseQuantity(item)" class="qty-btn" type="button" aria-label="Decrease quantity">-</button>
+                            <button [disabled]="item.id.startsWith('temp-')" (click)="decreaseQuantity(item)" class="qty-btn" type="button" aria-label="Decrease quantity">-</button>
                             <span class="qty-val">{{ item.quantity }}</span>
-                            <button (click)="increaseQuantity(item)" class="qty-btn" type="button" aria-label="Increase quantity">+</button>
+                            <button [disabled]="item.id.startsWith('temp-')" (click)="increaseQuantity(item)" class="qty-btn" type="button" aria-label="Increase quantity">+</button>
                           </div>
                         </div>
                       </td>
@@ -92,7 +92,7 @@
                     
                     <!-- Absolute Delete Cross Button -->
                     <div class="cart-card-delete-absolute">
-                      <button (click)="removeItem(item)" class="cart-delete-btn" aria-label="Remove item">
+                      <button [disabled]="item.id.startsWith('temp-')" (click)="removeItem(item)" class="cart-delete-btn" aria-label="Remove item">
                         <svg viewBox="0 0 24 24" class="w-[22px] h-[22px]" fill="none">
                           <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" fill="none"/>
                           <path d="M8.5 8.5L15.5 15.5M15.5 8.5L8.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
@@ -127,9 +127,9 @@
                     <div class="card-row">
                       <span class="card-label">Quantity:</span>
                       <div class="qty-selector">
-                        <button (click)="decreaseQuantity(item)" class="qty-btn" type="button" aria-label="Decrease quantity">-</button>
+                        <button [disabled]="item.id.startsWith('temp-')" (click)="decreaseQuantity(item)" class="qty-btn" type="button" aria-label="Decrease quantity">-</button>
                         <span class="qty-val">{{ item.quantity }}</span>
-                        <button (click)="increaseQuantity(item)" class="qty-btn" type="button" aria-label="Increase quantity">+</button>
+                        <button [disabled]="item.id.startsWith('temp-')" (click)="increaseQuantity(item)" class="qty-btn" type="button" aria-label="Increase quantity">+</button>
                       </div>
                     </div>
 

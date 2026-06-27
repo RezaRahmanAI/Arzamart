@@ -83,6 +83,9 @@ export class CartService {
         debounceTime(500),
         switchMap((update) => {
           const numericId = parseInt(update!.id, 10);
+          if (isNaN(numericId)) {
+            return of(null);
+          }
           return this.api
             .put<CartDto>(
               `${this.apiUrl}/items/${numericId}`,

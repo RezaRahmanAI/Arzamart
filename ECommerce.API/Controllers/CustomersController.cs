@@ -27,7 +27,21 @@ public class CustomersController : ControllerBase
         }
 
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        return !string.IsNullOrEmpty(userId) && userId == customer.UserId;
+        if (!string.IsNullOrEmpty(userId))
+        {
+            if (userId == customer.UserId || userId == customer.Id.ToString())
+            {
+                return true;
+            }
+        }
+
+        var phoneClaim = User.FindFirst(System.Security.Claims.ClaimTypes.MobilePhone)?.Value;
+        if (!string.IsNullOrEmpty(phoneClaim) && phoneClaim == customer.Phone)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     [HttpGet("lookup")]

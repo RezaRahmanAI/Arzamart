@@ -11,7 +11,12 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 
   // Record attempted URL for redirect after login
-  router.navigate(["/login"], { queryParams: { returnUrl: state.url } });
+  const url = state.url.toLowerCase();
+  if (url.startsWith("/checkout") || url.startsWith("/profile") || url.startsWith("/orders") || url.startsWith("/account")) {
+    router.navigate(["/profile"], { queryParams: { returnUrl: state.url } });
+  } else {
+    router.navigate(["/login"], { queryParams: { returnUrl: state.url } });
+  }
   return false;
 };
 

@@ -284,3 +284,9 @@
   font-weight: 800;
   font-size: 16px;
 }
+
+.qty-btn:disabled, .cart-delete-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}

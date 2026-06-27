@@ -22,6 +22,15 @@ public class CartService : ICartService
         _unitOfWork = unitOfWork;
     }
 
+    private string? SanitizeUserId(string? userId)
+    {
+        if (!string.IsNullOrEmpty(userId) && !Guid.TryParse(userId, out _))
+        {
+            return null;
+        }
+        return userId;
+    }
+
     private static void CleanupStaleLocks(object? state)
     {
         var cutoff = DateTime.UtcNow.AddMinutes(-30);
@@ -42,12 +51,14 @@ public class CartService : ICartService
 
     public async Task<CartDto> GetCartAsync(string? userId, string? sessionId)
     {
+        userId = SanitizeUserId(userId);
         var cart = await GetOrCreateCartAsync(userId, sessionId);
         return MapToDto(cart);
     }
 
     public async Task<CartDto> AddItemAsync(string? userId, string? sessionId, AddToCartDto dto)
     {
+        userId = SanitizeUserId(userId);
         var cart = await GetOrCreateCartAsync(userId, sessionId, track: true);
 
         var productExists = await _unitOfWork.Repository<Product>()
@@ -84,6 +95,7 @@ public class CartService : ICartService
 
     public async Task<CartDto> UpdateItemAsync(int itemId, string? userId, string? sessionId, int quantity)
     {
+        userId = SanitizeUserId(userId);
         var item = await _unitOfWork.Repository<CartItem>()
             .GetQueryable(track: true)
             .Include(i => i.Cart)
@@ -123,6 +135,7 @@ public class CartService : ICartService
 
     public async Task<CartDto> RemoveItemAsync(int itemId, string? userId, string? sessionId)
     {
+        userId = SanitizeUserId(userId);
         var cart = await GetOrCreateCartAsync(userId, sessionId, track: true);
         var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
 
@@ -138,6 +151,7 @@ public class CartService : ICartService
 
     public async Task ClearCartAsync(string? userId, string? sessionId)
     {
+        userId = SanitizeUserId(userId);
         var cart = await GetOrCreateCartAsync(userId, sessionId, track: true);
         var repo = _unitOfWork.Repository<CartItem>();
         foreach (var item in cart.Items.ToList())
@@ -149,6 +163,7 @@ public class CartService : ICartService
 
     public async Task<CartDto> MergeGuestCartAsync(string sessionId, string userId)
     {
+        userId = SanitizeUserId(userId) ?? string.Empty;
         var guestCart = await GetCartQuery(null, track: true)
             .FirstOrDefaultAsync(c => c.SessionId == sessionId && string.IsNullOrEmpty(c.UserId));
 
