@@ -36,6 +36,24 @@
       }
 
       <main class="min-h-screen">
+        <!-- Global Marquee Bar -->
+        @if (configForm.get('isMarqueeVisible')?.value) {
+          <div class="marquee-container bg-ds-accent py-2.5 text-white text-xs border-b border-white/10 z-[70] relative">
+            <div class="marquee-content flex gap-8">
+              <div class="flex gap-8 shrink-0">
+                <span>{{ processedMarqueeText }}</span>
+                <span>{{ processedMarqueeText }}</span>
+                <span>{{ processedMarqueeText }}</span>
+              </div>
+              <div class="flex gap-8 shrink-0" aria-hidden="true">
+                <span>{{ processedMarqueeText }}</span>
+                <span>{{ processedMarqueeText }}</span>
+                <span>{{ processedMarqueeText }}</span>
+              </div>
+            </div>
+          </div>
+        }
+
         @for (section of sections; track section.id) {
           @if (section.visible) {
             
@@ -152,37 +170,16 @@
 
                 <!-- MODULE 7: Product Details -->
                 @case ('product-details') {
-                  @if (section.settings?.isProductDetailsVisible !== undefined ? section.settings.isProductDetailsVisible : configForm.get('isProductDetailsVisible')?.value) {
-                    <section class="section-padding bg-white">
-                      <div class="max-w-[800px] mx-auto">
-                        <h2 class="text-center mb-10">{{ section.settings?.productDetailsTitle !== undefined ? section.settings.productDetailsTitle : (configForm.get('productDetailsTitle')?.value || 'প্রোডাক্টের বিবরণ') }}</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          @if (section.settings?.isFabricVisible !== undefined ? section.settings.isFabricVisible : configForm.get('isFabricVisible')?.value) {
-                            <div class="flex gap-4 p-4 bg-ds-surface rounded-lg">
-                              <div class="size-10 bg-ds-primary/10 text-ds-primary flex items-center justify-center rounded-full shrink-0">
-                                <app-icon name="Info" size="20"></app-icon>
-                              </div>
-                              <div>
-                                <h4 class="font-bold mb-1">উপাদান ও গুণমান</h4>
-                                <p class="text-sm text-ds-text-secondary whitespace-pre-wrap">{{ data.product.description }}</p>
-                              </div>
-                            </div>
-                          }
-                          @if (section.settings?.isDesignVisible !== undefined ? section.settings.isDesignVisible : configForm.get('isDesignVisible')?.value) {
-                            <div class="flex gap-4 p-4 bg-ds-surface rounded-lg">
-                              <div class="size-10 bg-ds-primary/10 text-ds-primary flex items-center justify-center rounded-full shrink-0">
-                                <app-icon name="Layers" size="20"></app-icon>
-                              </div>
-                              <div>
-                                <h4 class="font-bold mb-1">ডিজাইন ও বিশেষত্ব</h4>
-                                <p class="text-sm text-ds-text-secondary">আমাদের দক্ষ ডিজাইনারদের দ্বারা তৈরি বিশেষ কালেকশন।</p>
-                              </div>
-                            </div>
-                          }
+                  <section class="section-padding bg-white">
+                    <div class="max-w-[800px] mx-auto">
+                      <h2 class="text-center mb-10">{{ section.settings?.productDetailsTitle !== undefined ? section.settings.productDetailsTitle : (configForm.get('productDetailsTitle')?.value || 'প্রোডাক্টের বিবরণ') }}</h2>
+                      <div class="p-6 bg-ds-surface rounded-lg">
+                        <div class="prose max-w-none text-sm text-ds-text whitespace-pre-wrap leading-relaxed">
+                          {{ data.product.description }}
                         </div>
                       </div>
-                    </section>
-                  }
+                    </div>
+                  </section>
                 }
 
                 <!-- MODULE 8: Trust Banner -->

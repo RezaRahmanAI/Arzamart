@@ -10,9 +10,11 @@
 </style>
 
 <aside
-  class="fixed lg:sticky top-0 left-0 w-64 h-screen bg-brand-dark text-white/80 flex flex-col flex-shrink-0 transition-all duration-500 z-50 border-r border-white/10 lg:translate-x-0 overflow-hidden"
+  class="fixed lg:sticky top-0 left-0 w-64 h-screen bg-brand-dark text-white/80 flex flex-col flex-shrink-0 transition-all duration-500 z-50 border-r border-white/10 overflow-hidden"
   [class.-translate-x-full]="!sidebarService.isOpen()"
   [class.translate-x-0]="sidebarService.isOpen()"
+  [class.lg:-ml-64]="!sidebarService.isOpen()"
+  [class.lg:ml-0]="sidebarService.isOpen()"
 >
   <!-- Mobile Close Header -->
   <div class="lg:hidden flex justify-end p-4 relative z-10">

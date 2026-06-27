@@ -67,9 +67,9 @@
               </div>
 
               <button (click)="toggleActiveSection(section)"
-                      class="flex-1 flex items-center gap-2 text-left min-w-0 px-1 py-1.5">
-                <span class="text-white/90 truncate text-sm">{{ section.label }}</span>
-                <app-icon [name]="activeEditorSection === section.id ? 'ChevronUp' : 'ChevronDown'" size="12" class="text-white/20"></app-icon>
+                      class="flex-1 flex items-center gap-1.5 text-left min-w-0 px-1 py-1.5">
+                <span class="text-white/90 text-sm font-medium leading-tight">{{ section.label }}</span>
+                <app-icon [name]="activeEditorSection === section.id ? 'ChevronUp' : 'ChevronDown'" size="10" class="text-white/20 shrink-0"></app-icon>
               </button>
               
               <div class="flex items-center gap-1 pr-1">
@@ -156,21 +156,9 @@
                   }
                   @case ('product-details') {
                     <div class="space-y-3 pt-3">
-                      <div class="flex items-center justify-between">
-                        <span class="text-xs text-white/60">Visible</span>
-                        <input type="checkbox" [(ngModel)]="section.settings.isProductDetailsVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm">
-                      </div>
                       <div class="space-y-1.5">
                         <label class="text-[10px] text-white/40 uppercase">Section Title</label>
                         <input type="text" [(ngModel)]="section.settings.productDetailsTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-xs text-white/40">Show Fabric Info</span>
-                        <input type="checkbox" [(ngModel)]="section.settings.isFabricVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm scale-75">
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-xs text-white/40">Show Design Info</span>
-                        <input type="checkbox" [(ngModel)]="section.settings.isDesignVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm scale-75">
                       </div>
                     </div>
                   }
