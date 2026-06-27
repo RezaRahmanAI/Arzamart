@@ -1,5 +1,5 @@
 @if (vm$ | async; as vm) {
-  <div class="bg-[#FFFFFF] min-h-screen text-[#1A1A1A] py-8 sm:py-12">
+  <div class="bg-ds-bg min-h-screen text-ds-text py-8 sm:py-12">
     <div class="site-container">
       
       <!-- Elegant Serif Header -->
@@ -14,7 +14,7 @@
           <div class="lg:col-span-8 space-y-6">
             
             <!-- DESKTOP VIEW: Table (Hidden on Mobile) -->
-            <div class="hidden md:block bg-[#FFFFFF] border border-[#EAEAEA] rounded-[8px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
+            <div class="hidden md:block bg-ds-bg border border-ds-border rounded-[8px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
               <table class="cart-table">
                 <thead>
                   <tr>
@@ -47,7 +47,7 @@
                           <div class="flex flex-col min-w-0">
                             <span class="cart-product-title truncate max-w-[220px] lg:max-w-[280px]" [title]="item.name">{{ item.name }}</span>
                             @if (item.size && item.size !== 'One Size') {
-                              <span class="text-[11px] text-[#888888] font-semibold uppercase tracking-wider mt-1">Size: {{ item.size }}</span>
+                              <span class="text-[11px] text-ds-text-sec font-semibold uppercase tracking-wider mt-1">Size: {{ item.size }}</span>
                             }
                           </div>
                         </div>
@@ -135,7 +135,7 @@
 
                     <!-- Subtotal row -->
                     <div class="card-row">
-                      <span class="card-label font-bold text-[#1A1A1A]">Subtotal:</span>
+                      <span class="card-label font-bold text-ds-text">Subtotal:</span>
                       <span class="card-value-subtotal">৳{{ (item.price * item.quantity) | number: '1.2-2' }}</span>
                     </div>
                   </div>
@@ -165,7 +165,7 @@
                 <!-- Total discount row -->
                 <div class="totals-row border-line">
                   <span class="totals-label">Total Discount</span>
-                  <span class="totals-value text-[#D94F4F]">-৳{{ vm.summary.discount | number: '1.2-2' }}</span>
+                  <span class="totals-value text-ds-danger">-৳{{ vm.summary.discount | number: '1.2-2' }}</span>
                 </div>
 
                 <!-- Total payable row -->
@@ -190,16 +190,16 @@
       } @else {
         <!-- Empty Cart State -->
         <div class="flex flex-col items-center justify-center py-20 text-center space-y-6">
-          <div class="w-28 h-28 bg-[#F5F5F5] border border-[#E0E0E0] rounded-sm flex items-center justify-center mb-2 group">
-            <app-icon name="ShoppingBag" size="44" className="text-[#888888] opacity-40 group-hover:opacity-100 transition-opacity duration-200"></app-icon>
+          <div class="w-28 h-28 bg-ds-surface border border-ds-border rounded-sm flex items-center justify-center mb-2 group">
+            <app-icon name="ShoppingBag" size="44" className="text-ds-text-sec opacity-40 group-hover:opacity-100 transition-opacity duration-200"></app-icon>
           </div>
           <div class="space-y-2">
-            <h2 class="text-xl font-bold text-[#1A1A1A]">Your cart is empty</h2>
-            <p class="text-sm text-[#888888] max-w-xs mx-auto">
+            <h2 class="text-xl font-bold text-ds-text">Your cart is empty</h2>
+            <p class="text-sm text-ds-text-sec max-w-xs mx-auto">
               Looks like you haven't added anything to your cart yet.
             </p>
           </div>
-          <a routerLink="/" class="btn btn-primary min-h-[48px] px-8 text-sm inline-flex items-center justify-center bg-[#111111] text-white rounded-md mt-4">
+          <a routerLink="/" class="btn btn-primary min-h-[48px] px-8 text-sm inline-flex items-center justify-center bg-ds-accent text-white rounded-md mt-4">
             Start Shopping
           </a>
         </div>

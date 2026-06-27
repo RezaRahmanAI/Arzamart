@@ -25,12 +25,9 @@ module.exports = {
         "ds-accent-hover": "var(--color-accent-hover)",
         "ds-hero-bg":      "var(--color-hero-bg)",
         "ds-hero-text":    "var(--color-hero-text)",
+        "ds-primary":      "var(--color-primary)",
         "ds-danger":       "var(--color-danger)",
         "ds-success":      "var(--color-success)",
-        /* ── Semantic aliases used in admin components ── */
-        "text-main-light":      "var(--color-text-primary)",
-        "text-main-dark":       "var(--color-hero-text)",
-        "text-secondary-light": "var(--color-text-secondary)",
         "border-light":         "var(--color-border-ds)",
         "border-dark":          "#333333",
       },

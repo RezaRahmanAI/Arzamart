@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-[#F5F5F5] text-[#1a1a1a] pb-20">
+<div class="min-h-screen bg-ds-surface text-ds-text pb-20">
   <!-- Loading State -->
   @if (isLoading) {
     <div
@@ -7,9 +7,9 @@
       <app-icon
         name="Loader2"
         size="48"
-        className="text-[#1a1a1a] animate-spin"
+        className="text-ds-text animate-spin"
       ></app-icon>
-      <p class="text-[#1A1A1A]">
+      <p class="text-ds-text">
         Loading...
       </p>
     </div>
@@ -34,7 +34,7 @@
                   (click)="goToImage(i)"
                   type="button"
                   class="flex-shrink-0 w-full h-28 border transition-all duration-300 overflow-hidden relative"
-                  [class.border-[#1a1a1a]]="i === currentImageIndex"
+                  [class.border-ds-text]="i === currentImageIndex"
                   [class.border-transparent]="i !== currentImageIndex"
                 >
                   <img
@@ -44,7 +44,7 @@
                   />
                   @if (i === currentImageIndex) {
                     <div
-                      class="absolute bottom-0 left-0 w-full h-0.5 bg-[#1a1a1a]"
+                      class="absolute bottom-0 left-0 w-full h-0.5 bg-ds-accent"
                     ></div>
                   }
                 </button>
@@ -55,7 +55,7 @@
           <!-- Main Image Area -->
           <div class="relative flex-1">
             <div
-              class="relative bg-[#EFEFEF] overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[550px]"
+              class="relative bg-ds-surface-2 overflow-hidden group aspect-[3/4] max-h-[70vh] lg:max-h-[550px]"
             >
               <!-- Images -->
               @for (url of gallery; track url; let i = $index) {
@@ -72,7 +72,7 @@
               @if (product.tier) {
                 <div class="absolute top-6 right-6 z-10">
                   <span
-                    class="px-4 py-1.5 bg-white/95 text-[#1a1a1a] border border-[#E0E0E0] backdrop-blur-sm shadow-sm"
+                    class="px-4 py-1.5 bg-white/95 text-ds-text border border-ds-border backdrop-blur-sm shadow-sm"
                   >
                     {{ product.tier }}
                   </span>
@@ -115,7 +115,7 @@
                     (click)="goToImage(i)"
                     type="button"
                     class="flex-shrink-0 w-16 h-20 border transition-all duration-300 overflow-hidden"
-                    [class.border-[#1a1a1a]]="i === currentImageIndex"
+                    [class.border-ds-text]="i === currentImageIndex"
                     [class.border-transparent]="i !== currentImageIndex"
                   >
                     <img
@@ -133,7 +133,7 @@
         <!-- ===== RIGHT: Product Info ===== -->
         <div class="lg:col-span-5 space-y-8 lg:pl-4">
           <div class="space-y-4">
-            <h1 class="text-[#1a1a1a]">
+            <h1 class="text-ds-text">
               {{ product.name }}
             </h1>
             @if (product.shortDescription) {
@@ -142,9 +142,9 @@
           </div>
 
           <!-- Pricing Section -->
-          <div class="flex items-baseline gap-4 py-5 border-y border-[#E0E0E0]">
+          <div class="flex items-baseline gap-4 py-5 border-y border-ds-border">
             <app-price-display
-              class="text-[#1a1a1a]"
+              class="text-ds-text"
               [amount]="currentPrice"
               size="md"
             ></app-price-display>
@@ -170,8 +170,8 @@
             @if (product.variants && product.variants.length > 0) {
               <div class="space-y-5">
                 <div class="flex items-center justify-between">
-                  <p class="text-[#1a1a1a]">Select Size</p>
-                  <button (click)="openSizeGuide()" type="button" class="text-[#BBBBBB] hover:text-[#1a1a1a] transition-colors border-b border-[#E0E0E0] pb-0.5">Size Guide</button>
+                  <p class="text-ds-text">Select Size</p>
+                  <button (click)="openSizeGuide()" type="button" class="text-[#BBBBBB] hover:text-ds-text transition-colors border-b border-ds-border pb-0.5">Size Guide</button>
                 </div>
                 <div class="flex flex-wrap gap-2">
                   @for (v of product.variants; track v.id) {
@@ -179,12 +179,12 @@
                       (click)="checkoutForm.patchValue({ selectedSize: v.size })"
                       type="button"
                       class="min-w-[60px] h-14 border transition-all duration-300"
-                      [class.bg-[#1a1a1a]]="v.size === checkoutForm.controls.selectedSize.value"
+                      [class.bg-ds-accent]="v.size === checkoutForm.controls.selectedSize.value"
                       [class.text-white]="v.size === checkoutForm.controls.selectedSize.value"
-                      [class.border-[#1a1a1a]]="v.size === checkoutForm.controls.selectedSize.value"
+                      [class.border-ds-text]="v.size === checkoutForm.controls.selectedSize.value"
                       [class.bg-white]="v.size !== checkoutForm.controls.selectedSize.value"
-                      [class.text-[#1a1a1a]]="v.size !== checkoutForm.controls.selectedSize.value"
-                      [class.border-[#E0E0E0]]="v.size !== checkoutForm.controls.selectedSize.value"
+                      [class.text-ds-text]="v.size !== checkoutForm.controls.selectedSize.value"
+                      [class.border-ds-border]="v.size !== checkoutForm.controls.selectedSize.value"
                     >
                       {{ v.size }}
                     </button>
@@ -192,7 +192,7 @@
                 </div>
                 @if (checkoutForm.controls.selectedSize.value) {
                   <p class="text-[#BBBBBB]">
-                    Stock Status: <span class="text-[#1a1a1a]">In stock</span>
+                    Stock Status: <span class="text-ds-text">In stock</span>
                   </p>
                 }
               </div>
@@ -200,27 +200,27 @@
           </div>
 
           <!-- Description & Features -->
-          <div class="space-y-8 pt-8 border-t border-[#E0E0E0]">
+          <div class="space-y-8 pt-8 border-t border-ds-border">
             @if (product.description) {
               <div class="space-y-4">
                 <h3 class="text-[#111111]">Description</h3>
-                <div class="text-[#1A1A1A] whitespace-pre-line prose prose-slate prose-sm max-w-none" [innerHTML]="product.description | safeHtml"></div>
+                <div class="text-ds-text whitespace-pre-line prose prose-slate prose-sm max-w-none" [innerHTML]="product.description | safeHtml"></div>
               </div>
             }
 
             <!-- Features Info -->
             <div class="grid grid-cols-2 gap-4 pt-6">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center">
-                  <app-icon name="Truck" size="16" className="text-[#888888]"></app-icon>
+                <div class="w-8 h-8 rounded-full bg-white border border-ds-border flex items-center justify-center">
+                  <app-icon name="Truck" size="16" className="text-ds-text-sec"></app-icon>
                 </div>
-                <span class="text-[#888888]">Priority Shipping</span>
+                <span class="text-ds-text-sec">Priority Shipping</span>
               </div>
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center">
-                  <app-icon name="ShieldCheck" size="16" className="text-[#888888]"></app-icon>
+                <div class="w-8 h-8 rounded-full bg-white border border-ds-border flex items-center justify-center">
+                  <app-icon name="ShieldCheck" size="16" className="text-ds-text-sec"></app-icon>
                 </div>
-                <span class="text-[#888888]">Secure Payment</span>
+                <span class="text-ds-text-sec">Secure Payment</span>
               </div>
             </div>
           </div>
@@ -229,23 +229,23 @@
 
       <!-- Tabs/Accordions -->
       <div class="pt-2">
-        <div class="divide-y divide-[#E0E0E0] border-t border-[#E0E0E0]">
+        <div class="divide-y divide-[#E0E0E0] border-t border-ds-border">
           @if (product.fabricAndCare) {
             <details class="group">
               <summary
                 class="flex items-center justify-between py-5 cursor-pointer list-none"
               >
                 <span
-                  class="text-[#1a1a1a]"
+                  class="text-ds-text"
                   >Fabric & Care</span
                 >
                 <app-icon
                   name="Plus"
                   size="16"
-                  className="text-[#888888] transition-transform duration-300 group-open:rotate-45"
+                  className="text-ds-text-sec transition-transform duration-300 group-open:rotate-45"
                 ></app-icon>
               </summary>
-              <div class="pb-6 text-[#888888] whitespace-pre-line" [innerHTML]="product.fabricAndCare | safeHtml">
+              <div class="pb-6 text-ds-text-sec whitespace-pre-line" [innerHTML]="product.fabricAndCare | safeHtml">
               </div>
             </details>
           }
@@ -254,33 +254,33 @@
               class="flex items-center justify-between py-5 cursor-pointer list-none"
             >
               <span
-                class="text-[#1a1a1a]"
+                class="text-ds-text"
                 >Delivery & Returns</span
               >
               <app-icon
                 name="Plus"
                 size="16"
-                className="text-[#888888] transition-transform duration-300 group-open:rotate-45"
+                className="text-ds-text-sec transition-transform duration-300 group-open:rotate-45"
               ></app-icon>
             </summary>
-            <div class="pb-6 text-[#888888] whitespace-pre-line" [innerHTML]="(product.shippingAndReturns || 'Express delivery in 24-48 hours. Stress-free returns.') | safeHtml">
+            <div class="pb-6 text-ds-text-sec whitespace-pre-line" [innerHTML]="(product.shippingAndReturns || 'Express delivery in 24-48 hours. Stress-free returns.') | safeHtml">
             </div>
           </details>
         </div>
       </div>
 
       <!-- ROW 2: Order Form Section -->
-      <div class="mt-20 xl:mt-24 pt-20 border-t-2 border-dashed border-[#E0E0E0]">
+      <div class="mt-20 xl:mt-24 pt-20 border-t-2 border-dashed border-ds-border">
         <div class="max-w-[1000px] mx-auto">
           <div class="text-center mb-16 space-y-4">
             <h2
-              class="text-[#1a1a1a]"
+              class="text-ds-text"
             >
               Complete Your Order
             </h2>
             <div class="flex items-center justify-center gap-4">
               <span class="h-[1px] w-12 bg-[#E0E0E0]"></span>
-              <p class="text-[#888888]">
+              <p class="text-ds-text-sec">
                 Cash on delivery nationwide
               </p>
               <span class="h-[1px] w-12 bg-[#E0E0E0]"></span>
@@ -288,11 +288,11 @@
           </div>
 
           <div
-            class="bg-white border-2 border-[#1a1a1a] rounded-[2.5rem] p-8 lg:p-12 shadow-2xl shadow-indigo-900/10 relative overflow-hidden"
+            class="bg-white border-2 border-ds-text rounded-[2.5rem] p-8 lg:p-12 shadow-2xl shadow-indigo-900/10 relative overflow-hidden"
           >
             <!-- Background accent -->
             <div
-              class="absolute top-0 right-0 w-32 h-32 bg-[#1a1a1a]/5 rounded-bl-[5rem] -mr-8 -mt-8"
+              class="absolute top-0 right-0 w-32 h-32 bg-ds-accent/5 rounded-bl-[5rem] -mr-8 -mt-8"
             ></div>
 
             <form
@@ -302,19 +302,19 @@
             >
               <!-- Saved Info Prompt -->
               @if (showAutofillPrompt) {
-                <div class="mb-12 p-6 bg-slate-50 border-2 border-[#1a1a1a]/5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in slide-in-from-top duration-300">
+                <div class="mb-12 p-6 bg-slate-50 border-2 border-ds-text/5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in slide-in-from-top duration-300">
                   <div class="flex items-center gap-4 text-center sm:text-left">
-                    <div class="w-12 h-12 rounded-2xl bg-[#1a1a1a] flex items-center justify-center shrink-0 shadow-lg">
+                    <div class="w-12 h-12 rounded-2xl bg-ds-accent flex items-center justify-center shrink-0 shadow-lg">
                       <app-icon name="User" size="24" className="text-white"></app-icon>
                     </div>
                     <div>
-                      <p class="text-[#1a1a1a]">Saved Information Found</p>
+                      <p class="text-ds-text">Saved Information Found</p>
                       <p class="text-gray-400">Would you like to use your last order details?</p>
                     </div>
                   </div>
                   <div class="flex gap-3 w-full sm:w-auto">
-                    <button type="button" (click)="dismissAutofill()" class="flex-1 sm:flex-none px-6 py-3 text-gray-400 hover:text-[#1a1a1a] transition-colors">No</button>
-                    <button type="button" (click)="applyAutofill()" class="flex-1 sm:flex-none px-8 py-3 bg-[#1a1a1a] text-white rounded-xl shadow-xl shadow-[#1a1a1a]/20 active:scale-95 transition-all">Yes, Use Info</button>
+                    <button type="button" (click)="dismissAutofill()" class="flex-1 sm:flex-none px-6 py-3 text-gray-400 hover:text-ds-text transition-colors">No</button>
+                    <button type="button" (click)="applyAutofill()" class="flex-1 sm:flex-none px-8 py-3 bg-ds-accent text-white rounded-xl shadow-xl shadow-[#1a1a1a]/20 active:scale-95 transition-all">Yes, Use Info</button>
                   </div>
                 </div>
               }
@@ -323,7 +323,7 @@
                 <div class="space-y-8">
                   <div class="flex items-center gap-3 mb-2">
                     <div
-                      class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center"
+                      class="w-8 h-8 rounded-full bg-ds-accent flex items-center justify-center"
                     >
                       <app-icon
                         name="User"
@@ -332,7 +332,7 @@
                       ></app-icon>
                     </div>
                     <h3
-                      class="text-[#1a1a1a]"
+                      class="text-ds-text"
                     >
                       Customer Info
                     </h3>
@@ -342,17 +342,17 @@
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="space-y-2">
                       <label
-                        class="text-[#888888] ml-1"
+                        class="text-ds-text-sec ml-1"
                         >Mobile Number</label
                       >
                       <div class="relative flex">
-                        <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-[#E0E0E0] bg-[#FFFFFF] text-[#888888]">+88</span>
+                        <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-ds-border bg-ds-bg text-ds-text-sec">+88</span>
                         <input
                           type="tel"
                           formControlName="phone"
                           placeholder="01xxxxxxxxx"
                           autocomplete="tel"
-                          class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-r-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]"
+                          class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-r-2xl focus:border-ds-text focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]"
                         />
                       </div>
                       @if (checkoutForm.controls.phone.touched && checkoutForm.controls.phone.invalid) {
@@ -366,7 +366,7 @@
 
                     <div class="space-y-2">
                       <label
-                        class="text-[#888888] ml-1"
+                        class="text-ds-text-sec ml-1"
                         >Full Name</label
                       >
                       <input
@@ -374,7 +374,7 @@
                         formControlName="fullName"
                         placeholder="e.g. Abdullah"
                         autocomplete="name"
-                        class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]"
+                        class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]"
                       />
                       @if (checkoutForm.controls.fullName.touched && checkoutForm.controls.fullName.invalid) {
                         <p
@@ -390,30 +390,30 @@
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 hidden">
                     <!-- City -->
                     <div class="space-y-2">
-                      <label class="text-[#888888] ml-1">City</label>
+                      <label class="text-ds-text-sec ml-1">City</label>
                       <div class="relative">
                         <div class="relative items-center flex cursor-pointer" (click)="toggleCityDropdown()">
                           <input
-                            class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
+                            class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
                             type="text"
                             [value]="checkoutForm.controls.city.value"
                             placeholder="Select city"
                             readonly
                           />
-                          <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-[#888888] pointer-events-none"></app-icon>
+                          <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-ds-text-sec pointer-events-none"></app-icon>
                         </div>
 
                         <!-- Dropdown -->
                         @if (isCityDropdownOpen) {
                           <div
-                            class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+                            class="absolute z-50 w-full mt-2 bg-white border-2 border-ds-text rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
                             (click)="$event.stopPropagation()">
-                            <div class="p-3 border-b border-[#E0E0E0]">
+                            <div class="p-3 border-b border-ds-border">
                               <div class="relative flex items-center">
                                 <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
                                 <input
                                   type="text"
-                                  class="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border-none rounded-xl focus:ring-0 outline-none"
+                                  class="w-full pl-10 pr-4 py-2 bg-ds-bg border-none rounded-xl focus:ring-0 outline-none"
                                   placeholder="Search cities..."
                                   (input)="filterCities($event)"
                                   [value]="citySearch"
@@ -423,13 +423,13 @@
                             </div>
                             <ul class="max-h-60 overflow-y-auto py-1">
                               @if (filteredCities.length === 0) {
-                                <li class="px-5 py-3 text-[#888888] text-center">No cities found</li>
+                                <li class="px-5 py-3 text-ds-text-sec text-center">No cities found</li>
                               }
                               @for (city of filteredCities; track city) {
                                 <li
                                   (click)="selectCity(city)"
-                                  class="px-5 py-3 text-[#1A1A1A] hover:bg-[#FFFFFF] hover:text-[#1a1a1a] cursor-pointer transition-colors"
-                                  [ngClass]="{'bg-[#1a1a1a]/5 text-[#1a1a1a]': checkoutForm.controls.city.value === city}"
+                                  class="px-5 py-3 text-ds-text hover:bg-ds-bg hover:text-ds-text cursor-pointer transition-colors"
+                                  [ngClass]="{'bg-ds-accent/5 text-ds-text': checkoutForm.controls.city.value === city}"
                                 >
                                   {{ city }}
                                 </li>
@@ -445,31 +445,31 @@
 
                     <!-- Area -->
                     <div class="space-y-2">
-                      <label class="text-[#888888] ml-1">Area</label>
+                      <label class="text-ds-text-sec ml-1">Area</label>
                       <div class="relative">
                         <div class="relative items-center flex cursor-pointer" (click)="toggleAreaDropdown()">
                           <input
-                            class="w-full h-14 px-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
+                            class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
                             [class.opacity-50]="!checkoutForm.controls.city.value"
                             type="text"
                             [value]="checkoutForm.controls.area.value"
                             placeholder="Select area"
                             readonly
                           />
-                          <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-[#888888] pointer-events-none"></app-icon>
+                          <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-ds-text-sec pointer-events-none"></app-icon>
                         </div>
 
                         <!-- Dropdown -->
                         @if (isAreaDropdownOpen) {
                           <div
-                            class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+                            class="absolute z-50 w-full mt-2 bg-white border-2 border-ds-text rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
                             (click)="$event.stopPropagation()">
-                            <div class="p-3 border-b border-[#E0E0E0]">
+                            <div class="p-3 border-b border-ds-border">
                               <div class="relative flex items-center">
                                 <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
                                 <input
                                   type="text"
-                                  class="w-full pl-10 pr-4 py-2 bg-[#FFFFFF] border-none rounded-xl focus:ring-0 outline-none"
+                                  class="w-full pl-10 pr-4 py-2 bg-ds-bg border-none rounded-xl focus:ring-0 outline-none"
                                   placeholder="Search areas..."
                                   (input)="filterAreas($event)"
                                   [value]="areaSearch"
@@ -479,13 +479,13 @@
                             </div>
                             <ul class="max-h-60 overflow-y-auto py-1">
                               @if (filteredAreas.length === 0) {
-                                <li class="px-5 py-3 text-[#888888] text-center">No areas found</li>
+                                <li class="px-5 py-3 text-ds-text-sec text-center">No areas found</li>
                               }
                               @for (area of filteredAreas; track area) {
                                 <li
                                   (click)="selectArea(area)"
-                                  class="px-5 py-3 text-[#1A1A1A] hover:bg-[#FFFFFF] hover:text-[#1a1a1a] cursor-pointer transition-colors"
-                                  [ngClass]="{'bg-[#1a1a1a]/5 text-[#1a1a1a]': checkoutForm.controls.area.value === area}"
+                                  class="px-5 py-3 text-ds-text hover:bg-ds-bg hover:text-ds-text cursor-pointer transition-colors"
+                                  [ngClass]="{'bg-ds-accent/5 text-ds-text': checkoutForm.controls.area.value === area}"
                                 >
                                   {{ area }}
                                 </li>
@@ -503,7 +503,7 @@
                   <!-- Address -->
                   <div class="space-y-2">
                     <label
-                      class="text-[#888888] ml-1"
+                      class="text-ds-text-sec ml-1"
                       >Delivery Address</label
                     >
                     <textarea
@@ -511,7 +511,7 @@
                       rows="3"
                       placeholder="House, Road..."
                       autocomplete="street-address"
-                      class="w-full p-6 bg-[#FFFFFF] border-2 border-[#E0E0E0] rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] resize-none"
+                      class="w-full p-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] resize-none"
                     ></textarea>
                     @if (checkoutForm.controls.address.touched && checkoutForm.controls.address.invalid) {
                       <p
@@ -527,7 +527,7 @@
                 <div class="space-y-8">
                   <div class="flex items-center gap-3 mb-2">
                     <div
-                      class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center"
+                      class="w-8 h-8 rounded-full bg-ds-accent flex items-center justify-center"
                     >
                       <app-icon
                         name="Truck"
@@ -536,7 +536,7 @@
                       ></app-icon>
                     </div>
                     <h3
-                      class="text-[#1a1a1a]"
+                      class="text-ds-text"
                     >
                       Order Details
                     </h3>
@@ -545,7 +545,7 @@
                   <!-- Shipping -->
                   <div class="space-y-4">
                     <label
-                      class="text-[#888888] ml-1"
+                      class="text-ds-text-sec ml-1"
                       >Delivery Method</label
                     >
                     <div class="space-y-3">
@@ -555,8 +555,8 @@
                           [ngClass]="
                             checkoutForm.controls.deliveryMethodId.value ===
                             method.id
-                              ? 'border-[#1a1a1a] bg-[#1a1a1a]/5'
-                              : 'border-[#E0E0E0] hover:border-[#E0E0E0]'
+                              ? 'border-ds-text bg-ds-accent/5'
+                              : 'border-ds-border hover:border-ds-border'
                           "
                         >
                           <input
@@ -570,29 +570,29 @@
 
                           <div class="flex items-center gap-4">
                             <div
-                              class="w-5 h-5 rounded-full border-2 border-[#E0E0E0] flex items-center justify-center shadow-inner"
-                              [class.border-[#1a1a1a]]="
+                              class="w-5 h-5 rounded-full border-2 border-ds-border flex items-center justify-center shadow-inner"
+                              [class.border-ds-text]="
                                 checkoutForm.controls.deliveryMethodId.value ===
                                 method.id
                               "
                             >
                               @if (checkoutForm.controls.deliveryMethodId.value === method.id) {
                                 <div
-                                  class="w-2.5 h-2.5 rounded-full bg-[#1a1a1a] animate-scale-in"
+                                  class="w-2.5 h-2.5 rounded-full bg-ds-accent animate-scale-in"
                                 ></div>
                               }
                             </div>
                             <div class="space-y-0.5">
-                              <p class="text-[#1a1a1a]">
+                              <p class="text-ds-text">
                                 {{ method.name }}
                               </p>
-                              <p class="text-[#888888]">
+                              <p class="text-ds-text-sec">
                                 {{ method.estimatedDays }} Estimated
                               </p>
                             </div>
                           </div>
                           <div class="text-right">
-                            <p class="text-[#1a1a1a]">
+                            <p class="text-ds-text">
                               {{ method.cost === 0 ? 'FREE' : (method.cost | number: '1.0-0') + ' ৳' }}
                             </p>
                           </div>
@@ -603,20 +603,20 @@
 
                   <!-- Quantity & Total -->
                   <div
-                    class="bg-[#F5F5F5] rounded-3xl p-6 border-2 border-dashed border-[#E0E0E0] flex items-center justify-between"
+                    class="bg-ds-surface rounded-3xl p-6 border-2 border-dashed border-ds-border flex items-center justify-between"
                   >
                     <div class="space-y-1">
                       <span
-                        class="text-[#888888]"
+                        class="text-ds-text-sec"
                         >Quantity</span
                       >
                       <div
-                        class="flex items-center h-12 bg-white border-2 border-[#E0E0E0] rounded-xl overflow-hidden shadow-inner"
+                        class="flex items-center h-12 bg-white border-2 border-ds-border rounded-xl overflow-hidden shadow-inner"
                       >
                         <button
                           (click)="decreaseQuantity()"
                           type="button"
-                          class="w-10 h-full flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white transition-all"
+                          class="w-10 h-full flex items-center justify-center hover:bg-ds-accent hover:text-white transition-all"
                         >
                           <app-icon
                             name="Minus"
@@ -624,14 +624,14 @@
                           ></app-icon>
                         </button>
                         <div
-                          class="w-10 h-full flex items-center justify-center text-[#1a1a1a]"
+                          class="w-10 h-full flex items-center justify-center text-ds-text"
                         >
                           {{ checkoutForm.controls.quantity.value }}
                         </div>
                         <button
                           (click)="increaseQuantity()"
                           type="button"
-                          class="w-10 h-full flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white transition-all"
+                          class="w-10 h-full flex items-center justify-center hover:bg-ds-accent hover:text-white transition-all"
                         >
                           <app-icon
                             name="Plus"
@@ -643,14 +643,14 @@
 
                     <div class="text-right space-y-1">
                       <span
-                        class="text-[#888888]"
+                        class="text-ds-text-sec"
                         >Total Amount</span
                       >
                       <div>
                         <app-price-display
                           [amount]="total"
                           size="lg"
-                          class="text-[#1a1a1a]"
+                          class="text-ds-text"
                         ></app-price-display>
                       </div>
                     </div>
@@ -659,12 +659,12 @@
               </div>
 
               <!-- Action Buttons -->
-              <div class="mt-12 pt-10 border-t border-[#E0E0E0]">
+              <div class="mt-12 pt-10 border-t border-ds-border">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <button
                     type="submit"
                     [disabled]="isOrdering"
-                    class="h-16 bg-[#1a1a1a] text-white rounded-2xl hover:bg-[#333333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group"
+                    class="h-16 bg-ds-accent text-white rounded-2xl hover:bg-[#333333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group"
                   >
                     @if (isOrdering) {
                       <app-icon
@@ -688,7 +688,7 @@
                   <button
                     type="button"
                     (click)="addToCart()"
-                    class="h-16 bg-white border-2 border-[#E0E0E0] hover:border-[#1a1a1a] text-[#1a1a1a] rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
+                    class="h-16 bg-white border-2 border-ds-border hover:border-ds-text text-ds-text rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
                   >
                     <app-icon
                       name="ShoppingCart"
@@ -717,16 +717,16 @@
         class="glowing-btn flex items-center gap-3 px-8 py-5 rounded-2xl shadow-[0_20px_50px_-10px_rgba(200,146,42,0.4)] hover:-translate-y-2 transition-all duration-500 border border-[#111111]/20"
       >
         <div class="flex items-center gap-3">
-          <app-icon name="ExternalLink" size="18" className="text-[#1a1a1a]"></app-icon>
-          <span class="text-[#1a1a1a]">Visit Website</span>
+          <app-icon name="ExternalLink" size="18" className="text-ds-text"></app-icon>
+          <span class="text-ds-text">Visit Website</span>
         </div>
       </a>
       <!-- Subtle pulse ripple -->
-      <div class="absolute -inset-2 bg-[#111111]/10 rounded-3xl blur-xl animate-pulse -z-10 group-hover:bg-[#111111]/20"></div>
+      <div class="absolute -inset-2 bg-ds-accent/10 rounded-3xl blur-xl animate-pulse -z-10 group-hover:bg-ds-accent/20"></div>
     </div>
 
     <div class="mt-16 text-center pb-12">
-      <p class="text-[#1a1a1a]/30">
+      <p class="text-ds-text/30">
         © {{ 2024 }} {{ brandName$ | async }} • Timeless Elegance
       </p>
     </div>

@@ -17,7 +17,7 @@ a {
 }
 
 .offer-modal {
-  background: #fff;
+  background: var(--color-bg);
   border-radius: 24px;
   max-width: 1100px;
   width: 100%;
@@ -40,19 +40,19 @@ a {
   font-size: 0.7rem;
   letter-spacing: 0.18em;
   font-weight: 700;
-  color: #111111;
+  color: var(--color-accent-ds);
 }
 
 .offer-title {
   font-size: 2.1rem;
   font-weight: 700;
-  color: #1A1A1A;
+  color: var(--color-text-primary);
   margin: 0.5rem 0 0.25rem;
 }
 
 .offer-subtitle {
   font-size: 1rem;
-  color: #888888;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -60,11 +60,11 @@ a {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #F5F5F5;
+  background: var(--color-surface);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1A1A1A;
+  color: var(--color-text-primary);
 }
 
 .offer-content {
@@ -84,7 +84,7 @@ a {
   margin-top: 1rem;
   padding: 1rem;
   border-radius: 16px;
-  background: #FFFFFF;
+  background: var(--color-bg);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -94,8 +94,8 @@ a {
   margin: 1rem 0 1.5rem;
   padding: 0.85rem 1rem;
   border-radius: 14px;
-  background: #FFFFFF;
-  border: 1px solid #F5F5F5;
+  background: var(--color-bg);
+  border: 1px solid var(--color-surface);
 }
 
 .offer-form {
@@ -109,18 +109,18 @@ a {
   flex-direction: column;
   gap: 0.4rem;
   font-size: 0.85rem;
-  color: #888888;
+  color: var(--color-text-secondary);
 }
 
 .offer-form input,
 .offer-form select,
 .offer-form textarea {
-  border: 1px solid #E0E0E0;
+  border: 1px solid var(--color-border-ds);
   border-radius: 10px;
   padding: 0.6rem 0.75rem;
   font-size: 0.95rem;
-  color: #1A1A1A;
-  background: #fff;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
 }
 
 .field-grid {
@@ -135,14 +135,14 @@ a {
   justify-content: space-between;
   padding: 0.75rem 1rem;
   border-radius: 12px;
-  background: #FFFFFF;
+  background: var(--color-bg);
   font-weight: 600;
-  color: #1A1A1A;
+  color: var(--color-text-primary);
 }
 
 .offer-form button {
-  background: #111111;
-  color: #fff;
+  background: var(--color-accent-ds);
+  color: var(--color-hero-text);
   border: none;
   border-radius: 999px;
   padding: 0.8rem 1.5rem;
@@ -152,17 +152,17 @@ a {
 }
 
 .offer-form button:disabled {
-  background: #888888;
+  background: var(--color-text-secondary);
   cursor: not-allowed;
 }
 
 .error-text {
-  color: #D94F4F;
+  color: var(--color-danger);
   font-size: 0.85rem;
 }
 
 .success-text {
-  color: #3D9970;
+  color: var(--color-success);
   font-size: 0.85rem;
 }
 

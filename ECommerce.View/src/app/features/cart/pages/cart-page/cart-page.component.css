@@ -18,21 +18,21 @@
 .cart-table th {
   font-size: 13px;
   font-weight: 700;
-  color: #1A1A1A;
+  color: var(--color-text-primary);
   padding: 16px 20px;
-  border-bottom: 1.5px solid #E5E5E5;
-  background: #F9F9F9;
+  border-bottom: 1.5px solid var(--color-border-ds);
+  background: var(--color-surface);
 }
 
 .cart-table td {
   padding: 20px;
   vertical-align: middle;
-  border-bottom: 1px solid #EAEAEA;
+  border-bottom: 1px solid var(--color-border-ds);
 }
 
 /* Red Circle Outline Cross Delete Button */
 .cart-delete-btn {
-  color: #D94F4F;
+  color: var(--color-danger);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -45,7 +45,7 @@
 }
 
 .cart-delete-btn:hover {
-  color: #b53838;
+  color: var(--color-danger-hover);
   transform: scale(1.1);
 }
 
@@ -53,8 +53,8 @@
 .cart-img-wrapper {
   width: 70px;
   height: 85px;
-  background: #FFFFFF;
-  border: 1px solid #EAEAEA;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-ds);
   border-radius: 4px;
   overflow: hidden;
   display: flex;
@@ -66,14 +66,14 @@
 .cart-img-wrapper img {
   width: 100%;
   height: 100%;
-  object-cover: cover;
+  object-fit: cover;
 }
 
 /* Product details */
 .cart-product-title {
   font-size: 15px;
   font-weight: 500;
-  color: #1A1A1A;
+  color: var(--color-text-primary);
   line-height: 1.4;
 }
 
@@ -81,10 +81,10 @@
 .qty-selector {
   display: inline-flex;
   align-items: center;
-  border: 1px solid #D0D0D0;
+  border: 1px solid var(--color-border-input);
   border-radius: 4px;
   overflow: hidden;
-  background: #FFFFFF;
+  background: var(--color-bg);
   height: 34px;
 }
 
@@ -94,9 +94,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #EFEFEF;
+  background: var(--color-surface-2);
   border: none;
-  color: #555555;
+  color: var(--color-text-muted);
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
@@ -104,8 +104,8 @@
 }
 
 .qty-btn:hover {
-  background: #E2E2E2;
-  color: #111111;
+  background: var(--color-border-ds);
+  color: var(--color-accent-ds);
 }
 
 .qty-val {
@@ -113,27 +113,27 @@
   text-align: center;
   font-size: 13px;
   font-weight: 600;
-  color: #111111;
+  color: var(--color-accent-ds);
 }
 
 /* Currency and Price Styling */
 .price-text {
   font-size: 15px;
   font-weight: 500;
-  color: #1A1A1A;
+  color: var(--color-text-primary);
 }
 
 .subtotal-text {
   font-size: 15px;
   font-weight: 700;
-  color: #1A1A1A;
+  color: var(--color-text-primary);
 }
 
 /* Laurel Frame Media Trust Seal */
 /* Cart Totals Card */
 .cart-totals-card {
-  background: #FFFFFF;
-  border: 1px solid #EAEAEA;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-ds);
   border-radius: 8px;
   padding: 24px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.02);
@@ -143,7 +143,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1.5px solid #EAEAEA;
+  border-bottom: 1.5px solid var(--color-border-ds);
   padding-bottom: 16px;
   margin-bottom: 20px;
 }
@@ -151,12 +151,12 @@
 .cart-totals-title {
   font-size: 18px;
   font-weight: 700;
-  color: #1A1A1A;
+  color: var(--color-text-primary);
 }
 
 .qty-badge {
-  background: #EFEFEF;
-  color: #111111;
+  background: var(--color-surface-2);
+  color: var(--color-accent-ds);
   font-size: 11px;
   font-weight: 600;
   padding: 4px 10px;
@@ -169,11 +169,11 @@
   align-items: center;
   font-size: 14px;
   padding: 12px 0;
-  border-bottom: 1px solid #FAFAFA;
+  border-bottom: 1px solid var(--color-surface);
 }
 
 .totals-row.border-line {
-  border-bottom: 1px solid #EAEAEA;
+  border-bottom: 1px solid var(--color-border-ds);
 }
 
 .totals-row.grand-total {
@@ -184,29 +184,29 @@
 .totals-row.grand-total .label {
   font-size: 16px;
   font-weight: 700;
-  color: #1A1A1A;
+  color: var(--color-text-primary);
 }
 
 .totals-row.grand-total .value {
   font-size: 22px;
   font-weight: 800;
-  color: #1A1A1A;
+  color: var(--color-text-primary);
 }
 
 .totals-label {
-  color: #666666;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
 .totals-value {
-  color: #1A1A1A;
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
 /* Mobile Cart Item Cards */
 .cart-item-card {
-  background: #FFFFFF;
-  border: 1px solid #EAEAEA;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-ds);
   border-radius: 8px;
   padding: 16px;
   position: relative;
@@ -222,17 +222,17 @@
 .cart-card-img {
   width: 80px;
   height: 95px;
-  background: #FFFFFF;
-  border: 1px solid #EAEAEA;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-ds);
   border-radius: 4px;
   overflow: hidden;
-  shrink-0: 0;
+  flex-shrink: 0;
 }
 
 .cart-card-img img {
   width: 100%;
   height: 100%;
-  object-cover: cover;
+  object-fit: cover;
 }
 
 .cart-card-delete-absolute {
@@ -253,7 +253,7 @@
   align-items: center;
   font-size: 14px;
   padding-bottom: 8px;
-  border-bottom: 1px solid #F5F5F5;
+  border-bottom: 1px solid var(--color-surface);
 }
 
 .card-row:last-child {
@@ -263,24 +263,24 @@
 }
 
 .card-label {
-  color: #666666;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
 .card-value {
-  color: #111111;
+  color: var(--color-accent-ds);
   font-weight: 600;
   text-align: right;
-  max-w: 65%;
+  max-width: 65%;
 }
 
 .card-value-bold {
-  color: #111111;
+  color: var(--color-accent-ds);
   font-weight: 700;
 }
 
 .card-value-subtotal {
-  color: #111111;
+  color: var(--color-accent-ds);
   font-weight: 800;
   font-size: 16px;
 }

@@ -2,7 +2,7 @@
   display: block;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -14,7 +14,7 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeInUp 0.3s ease-out forwards;
 }
 
 /* Custom transitions for mega menu */
@@ -53,7 +53,7 @@ nav::-webkit-scrollbar-track {
 }
 
 nav::-webkit-scrollbar-thumb {
-  background: #E0E0E0;
+  background: var(--color-border-ds);
   border-radius: 1px;
 }
 
@@ -84,7 +84,7 @@ nav::-webkit-scrollbar-thumb {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-primary, #1A1A1A) !important;
+  color: var(--color-text-primary) !important;
   text-decoration: none;
   border-radius: 9999px;
   background: transparent;
@@ -116,7 +116,7 @@ nav::-webkit-scrollbar-thumb {
   content: "";
   position: absolute;
   inset: 2px; /* This creates the border thickness of 2px */
-  background: var(--color-bg, #FFFFFF); /* dynamic theme bg */
+  background: var(--color-bg); /* dynamic theme bg */
   border-radius: 9999px;
   z-index: -1;
   transition: background 0.3s ease;

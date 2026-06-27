@@ -8,9 +8,9 @@
   --orange: #F5A623;
   --yellow-dark: #E8870A;
   --blue-accent: #1E6FD9;
-  --white: #FFFFFF;
-  --light-gray: #F5F5F5;
-  --text-dark: #1A1A1A;
+  --white: var(--color-bg);
+  --light-gray: var(--color-surface);
+  --text-dark: var(--color-text-primary);
 }
 
 .font-bengali {

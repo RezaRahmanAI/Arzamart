@@ -1,8 +1,8 @@
 ﻿/* ─── Custom scrollbar ─── */
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
-.dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-border-ds); border-radius: 10px; }
+.dark .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-text-muted); }
 
 /* ════════════════════════════════════════
    PRINT — constrain to exactly half A4
