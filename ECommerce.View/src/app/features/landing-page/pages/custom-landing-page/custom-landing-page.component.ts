@@ -1,5 +1,5 @@
 import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe, DatePipe, NgFor, TitleCasePipe } from "@angular/common";
-import { Component, OnInit, OnDestroy, inject, PLATFORM_ID } from "@angular/core";
+import { Component, OnInit, OnDestroy, inject, PLATFORM_ID, NgZone, ChangeDetectorRef } from "@angular/core";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { Product, ProductVariant } from "../../../../core/models/product";
@@ -85,6 +85,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private readonly notification = inject(NotificationService);
   private readonly authService = inject(AuthService);
   private readonly reviewService = inject(ReviewService);
+  private readonly ngZone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   brandName$ = this.siteSettingsService.getSettings().pipe(map(s => s.websiteName));
   isAdmin$ = this.authService.currentUser.pipe(
@@ -332,19 +334,38 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       window.addEventListener('message', (event) => {
         if (event.data && event.data.type === 'CLP_PREVIEW_UPDATE') {
-          this.sections = event.data.sections;
-          if (event.data.config) {
-            this.configForm.patchValue(event.data.config, { emitEvent: false });
-            if (this.data) {
-              this.data.config = {
-                ...this.data.config,
-                ...event.data.config
-              };
+          this.ngZone.run(() => {
+            this.sections = event.data.sections;
+            if (event.data.config) {
+              const oldMins = this.configForm.value.relativeTimerTotalMinutes;
+              this.configForm.patchValue(event.data.config, { emitEvent: false });
+              if (this.data) {
+                this.data.config = {
+                  ...this.data.config,
+                  ...event.data.config
+                };
+              }
+              if (event.data.config.relativeTimerTotalMinutes !== oldMins) {
+                this.startRelativeTimer(this.data?.product?.id || 0, event.data.config.relativeTimerTotalMinutes);
+              }
             }
-          }
+            this.cdr.detectChanges();
+          });
         }
       });
     }
+
+    this.configForm.controls.relativeTimerTotalMinutes.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((minutes) => {
+        const productId = this.data?.product?.id || 0;
+        if (minutes) {
+          this.startRelativeTimer(productId, minutes);
+        } else {
+          if (this.timerInterval) clearInterval(this.timerInterval);
+          this.timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+        }
+      });
 
     this.orderForm.controls.city.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -474,11 +495,19 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
           this.updateSelections(res.product, 0, "");
         }
 
+        let timerMinutes = res.config?.relativeTimerTotalMinutes;
+
         if (res.config?.sectionsJson) {
           try {
             this.sections = JSON.parse(res.config.sectionsJson);
             this.sections.forEach(s => this.ensureSectionSettings(s));
             this.configForm.patchValue({ sectionsJson: res.config.sectionsJson });
+
+            // Fallback for timer minutes from sections settings
+            const countdownSection = this.sections.find(s => s.type === 'countdown');
+            if (countdownSection && countdownSection.settings?.relativeTimerTotalMinutes) {
+              timerMinutes = countdownSection.settings.relativeTimerTotalMinutes;
+            }
           } catch (e) {
             console.error("Invalid sections JSON", e);
           }
@@ -500,12 +529,13 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         if (res.config) {
           this.configForm.patchValue({
             ...res.config,
+            relativeTimerTotalMinutes: timerMinutes,
             featuredProductName: res.config.featuredProductName || res.product.name,
             promoPrice: res.config.promoPrice || res.product.price,
             originalPrice: res.config.originalPrice || res.product.compareAtPrice || res.product.price
           });
-          if (res.config.relativeTimerTotalMinutes) {
-            this.startRelativeTimer(res.config.productId, res.config.relativeTimerTotalMinutes);
+          if (timerMinutes) {
+            this.startRelativeTimer(res.config.productId, timerMinutes);
           }
         }
 
@@ -863,9 +893,25 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  private lastRelativeTimerMins: number | null = null;
+
   onSectionsChanged(updatedSections: LandingSection[]): void {
     this.sections = updatedSections;
     this.updateSections();
+
+    const countdownSection = this.sections.find(s => s.type === 'countdown');
+    if (countdownSection) {
+      const minutes = countdownSection.settings?.relativeTimerTotalMinutes;
+      if (minutes !== this.lastRelativeTimerMins) {
+        this.lastRelativeTimerMins = minutes;
+        if (minutes) {
+          this.startRelativeTimer(this.data?.product?.id || 0, minutes);
+        } else {
+          if (this.timerInterval) clearInterval(this.timerInterval);
+          this.timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+        }
+      }
+    }
   }
 
   get productsForSelectionPool(): Product[] {
@@ -945,10 +991,60 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  syncSectionSettingsToForm(): void {
+    // 1. Countdown Section
+    const countdown = this.sections.find(s => s.type === 'countdown');
+    if (countdown && countdown.settings) {
+      this.configForm.patchValue({
+        relativeTimerTotalMinutes: countdown.settings.relativeTimerTotalMinutes,
+        isTimerVisible: countdown.settings.isTimerVisible ?? true,
+        headerTitle: countdown.settings.headerTitle || ''
+      });
+    }
+
+    // 2. Product Details Section
+    const details = this.sections.find(s => s.type === 'product-details');
+    if (details && details.settings) {
+      this.configForm.patchValue({
+        isProductDetailsVisible: details.settings.isProductDetailsVisible ?? true,
+        productDetailsTitle: details.settings.productDetailsTitle || '',
+        isFabricVisible: details.settings.isFabricVisible ?? true,
+        isDesignVisible: details.settings.isDesignVisible ?? true
+      });
+    }
+
+    // 3. Trust Banner Section
+    const trust = this.sections.find(s => s.type === 'trust-banner');
+    if (trust && trust.settings) {
+      this.configForm.patchValue({
+        isTrustBannerVisible: trust.settings.isTrustBannerVisible ?? true,
+        trustBannerText: trust.settings.trustBannerText || ''
+      });
+    }
+
+    // 4. Reviews Section
+    const reviews = this.sections.find(s => s.type === 'reviews');
+    if (reviews && reviews.settings) {
+      this.configForm.patchValue({
+        isReviewsVisible: reviews.settings.isReviewsVisible ?? true
+      });
+    }
+
+    // 5. Order Form Section
+    const orderForm = this.sections.find(s => s.type === 'order-form');
+    if (orderForm && orderForm.settings) {
+      this.configForm.patchValue({
+        promoText: orderForm.settings.promoText || ''
+      });
+    }
+  }
+
   saveLayout(): void {
     if (!this.data) return;
     this.isSaving = true;
     
+    this.syncSectionSettingsToForm();
+
     const formValue = this.configForm.getRawValue();
     const config: CustomLandingPageConfig = {
       ...formValue,
@@ -962,10 +1058,12 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.isSaving = false; 
         this.notification.success('Landing Page Updated!'); 
         if (this.data) this.data.config = config;
+        this.cdr.detectChanges();
       },
       error: () => { 
         this.isSaving = false; 
         this.notification.error('Update failed.'); 
+        this.cdr.detectChanges();
       }
     });
   }

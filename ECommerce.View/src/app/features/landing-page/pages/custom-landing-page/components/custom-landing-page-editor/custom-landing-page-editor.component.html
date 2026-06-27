@@ -84,7 +84,7 @@
 
             <!-- Section Fields (Accordion Content) -->
             @if (activeEditorSection === section.id) {
-              <div class="p-4 pt-0 space-y-4 border-t border-white/5 bg-black/20">
+              <div class="p-4 pt-0 space-y-4 border-t border-white/5 bg-black/20" (input)="emitChange()" (change)="emitChange()">
                 @switch (section.type) {
                   @case ('countdown') {
                     <div class="space-y-3 pt-3">

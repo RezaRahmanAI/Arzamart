@@ -330,9 +330,59 @@ export class LandingPageDesignComponent implements OnInit, OnDestroy {
     this.sendConfigToPreview();
   }
 
+  syncSectionSettingsToForm(): void {
+    // 1. Countdown Section
+    const countdown = this.sections.find(s => s.type === 'countdown');
+    if (countdown && countdown.settings) {
+      this.configForm.patchValue({
+        relativeTimerTotalMinutes: countdown.settings.relativeTimerTotalMinutes,
+        isTimerVisible: countdown.settings.isTimerVisible ?? true,
+        headerTitle: countdown.settings.headerTitle || ''
+      });
+    }
+
+    // 2. Product Details Section
+    const details = this.sections.find(s => s.type === 'product-details');
+    if (details && details.settings) {
+      this.configForm.patchValue({
+        isProductDetailsVisible: details.settings.isProductDetailsVisible ?? true,
+        productDetailsTitle: details.settings.productDetailsTitle || '',
+        isFabricVisible: details.settings.isFabricVisible ?? true,
+        isDesignVisible: details.settings.isDesignVisible ?? true
+      });
+    }
+
+    // 3. Trust Banner Section
+    const trust = this.sections.find(s => s.type === 'trust-banner');
+    if (trust && trust.settings) {
+      this.configForm.patchValue({
+        isTrustBannerVisible: trust.settings.isTrustBannerVisible ?? true,
+        trustBannerText: trust.settings.trustBannerText || ''
+      });
+    }
+
+    // 4. Reviews Section
+    const reviews = this.sections.find(s => s.type === 'reviews');
+    if (reviews && reviews.settings) {
+      this.configForm.patchValue({
+        isReviewsVisible: reviews.settings.isReviewsVisible ?? true
+      });
+    }
+
+    // 5. Order Form Section
+    const orderForm = this.sections.find(s => s.type === 'order-form');
+    if (orderForm && orderForm.settings) {
+      this.configForm.patchValue({
+        promoText: orderForm.settings.promoText || ''
+      });
+    }
+  }
+
   saveLayout(): void {
     if (!this.product) return;
     this.isSaving = true;
+
+    this.syncSectionSettingsToForm();
 
     const formValue = this.configForm.getRawValue();
     const configPayload: CustomLandingPageConfig = {
@@ -346,11 +396,13 @@ export class LandingPageDesignComponent implements OnInit, OnDestroy {
       next: () => {
         this.isSaving = false;
         this.notification.success("Landing page configuration saved successfully!");
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.isSaving = false;
         console.error(err);
         this.notification.error("Failed to save configuration.");
+        this.cdr.detectChanges();
       }
     });
   }

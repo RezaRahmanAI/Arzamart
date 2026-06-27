@@ -170,7 +170,7 @@ export class CustomLandingPageEditorComponent {
     }
   }
 
-  private emitChange(): void {
+  emitChange(): void {
     this.sectionsChange.emit(this.sections);
   }
 }

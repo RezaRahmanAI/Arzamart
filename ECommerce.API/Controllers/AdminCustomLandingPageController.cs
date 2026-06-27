@@ -19,13 +19,13 @@ public class AdminCustomLandingPageController : ControllerBase
     }
 
     [HttpGet("{productId}")]
-    public async Task<ActionResult<CustomLandingPageConfigDto>> GetConfig(int productId)
+    public async Task<ActionResult<CustomLandingPageConfigDto?>> GetConfig(int productId)
     {
         var config = await _landingPageService.GetConfigAsync(productId);
 
         if (config == null)
         {
-            return Ok(new CustomLandingPageConfigDto { ProductId = productId });
+            return Ok(null);
         }
 
         return Ok(config);
@@ -34,6 +34,7 @@ public class AdminCustomLandingPageController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<CustomLandingPageConfigDto>> SaveConfig(CustomLandingPageConfigUpdateDto updateDto)
     {
+        Serilog.Log.Information($"[SAVE CONFIG DEBUG] ProductId: {updateDto.ProductId}, Mins: {updateDto.RelativeTimerTotalMinutes}, SectionsJson: {updateDto.SectionsJson}");
         var result = await _landingPageService.SaveConfigAsync(updateDto);
         return Ok(result);
     }

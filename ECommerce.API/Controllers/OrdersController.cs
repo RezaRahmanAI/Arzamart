@@ -3,6 +3,8 @@ using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.SignalR;
+using ECommerce.API.Hubs;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,12 +15,14 @@ public class OrdersController : ControllerBase
     private readonly IOrderService _orderService;
     private readonly ICustomerService _customerService;
     private readonly ILogger<OrdersController> _logger;
+    private readonly IHubContext<OrderHub> _hubContext;
 
-    public OrdersController(IOrderService orderService, ICustomerService customerService, ILogger<OrdersController> logger)
+    public OrdersController(IOrderService orderService, ICustomerService customerService, ILogger<OrdersController> logger, IHubContext<OrderHub> hubContext)
     {
         _orderService = orderService;
         _customerService = customerService;
         _logger = logger;
+        _hubContext = hubContext;
     }
 
     [HttpPost]
@@ -32,6 +36,15 @@ public class OrdersController : ControllerBase
         try
         {
             var order = await _orderService.CreateOrderAsync(orderDto);
+
+            try
+            {
+                await _hubContext.Clients.All.SendAsync("ReceiveOrderNotification", order);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send SignalR live order notification for OrderNumber {OrderNumber}", order.OrderNumber);
+            }
 
             try
             {

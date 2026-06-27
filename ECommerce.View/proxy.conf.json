@@ -3,5 +3,16 @@
     "target": "https://localhost:7201",
     "secure": false,
     "changeOrigin": true
+  },
+  "/uploads": {
+    "target": "https://localhost:7201",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/hubs": {
+    "target": "https://localhost:7201",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true
   }
 }

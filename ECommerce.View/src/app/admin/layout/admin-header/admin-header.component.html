@@ -16,30 +16,72 @@
   </div>
 
   <div class="flex items-center gap-ds-4 md:gap-ds-8">
-    <div class="relative w-64 lg:w-96 hidden md:block group">
-      <span
-        class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text transition-colors"
-      >
-        <app-icon name="Search" size="16"></app-icon>
-      </span>
-      <input
-        class="form-input !pl-ds-10 !h-11 !bg-ds-bg/50 !rounded-sm"
-        placeholder="Search everything..."
-        type="text"
-        [formControl]="searchControl"
-      />
-    </div>
+    <div class="flex items-center gap-ds-4">
+      <!-- Notification Dropdown -->
+      <div class="relative">
+        <button
+          (click)="toggleNotificationDropdown()"
+          class="relative p-ds-2.5 text-ds-text-muted hover:text-ds-text hover:bg-ds-bg rounded-sm transition-all duration-base"
+          type="button"
+        >
+          <app-icon name="Bell" size="20"></app-icon>
+          <span
+            *ngIf="unreadCount > 0"
+            class="absolute top-1.5 right-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-ds-accent text-[9px] font-bold text-ds-surface border border-ds-surface animate-pulse px-1"
+          >
+            {{ unreadCount }}
+          </span>
+        </button>
 
-    <div class="flex items-center gap-ds-4 pl-ds-6 border-l border-ds-border">
-      <button
-        class="relative p-ds-2.5 text-ds-text-muted hover:text-ds-text hover:bg-ds-bg rounded-sm transition-all duration-base"
-        type="button"
-      >
-        <app-icon name="Bell" size="20"></app-icon>
-        <span
-          class="absolute top-2.5 right-2.5 w-2 h-2 bg-ds-accent border-2 border-ds-surface rounded-full"
-        ></span>
-      </button>
+        <!-- Dropdown Menu -->
+        <div
+          *ngIf="isNotificationDropdownOpen"
+          class="absolute right-0 mt-3 w-80 bg-ds-surface border border-ds-border rounded-sm shadow-2xl p-ds-2 z-50 animate-in fade-in slide-in-from-top-2 duration-base"
+        >
+          <div class="px-ds-4 py-ds-3 mb-ds-2 border-b border-ds-border flex items-center justify-between">
+            <span class="font-semibold text-ds-text">Live Notifications</span>
+            <button
+              *ngIf="notifications.length > 0"
+              (click)="clearNotifications()"
+              class="text-xs text-ds-accent hover:underline"
+            >
+              Clear all
+            </button>
+          </div>
+
+          <div class="max-h-[300px] overflow-y-auto custom-scrollbar space-y-1 pr-1">
+            <ng-container *ngIf="notifications.length > 0; else noNotifications">
+              <a
+                *ngFor="let notif of notifications"
+                [routerLink]="['/admin/orders', notif.orderId]"
+                (click)="isNotificationDropdownOpen = false; notif.read = true"
+                class="flex flex-col gap-1 px-ds-4 py-ds-3 rounded-sm hover:bg-ds-bg transition-all duration-base group border-b border-ds-border/10 last:border-0"
+              >
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium text-ds-text group-hover:text-ds-accent transition-colors flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 bg-ds-accent rounded-full animate-ping" *ngIf="!notif.read"></span>
+                    Order Placed
+                  </span>
+                  <span class="text-[10px] text-ds-text-muted">{{ notif.time | date:'shortTime' }}</span>
+                </div>
+                <div class="text-xs text-ds-text-muted font-normal">
+                  <span class="text-ds-text font-semibold">{{ notif.orderNumber }}</span> by {{ notif.customerName }}
+                </div>
+                <div class="text-xs font-semibold text-ds-accent mt-0.5">
+                  Total: ৳{{ notif.total | number }}
+                </div>
+              </a>
+            </ng-container>
+            <ng-template #noNotifications>
+              <div class="py-ds-8 text-center text-ds-text-muted">
+                <app-icon name="BellOff" size="24" className="mx-auto opacity-20 mb-2"></app-icon>
+                <p class="text-sm">No new notifications</p>
+                <p class="text-xs opacity-60">Live orders will show up here</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
 
       <!-- Profile Dropdown -->
       <div class="relative ml-ds-2" *ngIf="currentUser$ | async as user">

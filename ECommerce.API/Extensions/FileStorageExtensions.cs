@@ -50,12 +50,8 @@ public static class FileStorageExtensions
             return configuredPath;
         }
 
-        var contentRoot = env.ContentRootPath;
-        var parent = Directory.GetParent(contentRoot);
-
-        return parent != null
-            ? Path.Combine(parent.FullName, "ArzaMedia")
-            : Path.Combine(contentRoot, "ArzaMedia");
+        var webRoot = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+        return Path.Combine(webRoot, "uploads");
     }
 
     private static void EnsureUploadDirectories(string rootPath)

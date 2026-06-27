@@ -1,26 +1,5 @@
 <div class="site-container-admin mx-auto flex w-full flex-1 flex-col gap-ds-4 py-ds-4">
-  <!-- Page Heading & Global Actions -->
-  <div class="flex flex-col justify-between gap-ds-4 sm:flex-row sm:items-center border-b border-ds-border pb-ds-4">
-    <div>
-      <div class="flex items-center gap-2 text-ds-text-muted mb-2">
-        <span>Catalog</span>
-        <app-icon name="ChevronRight" size="10"></app-icon>
-        <span class="text-ds-text">Product Groups</span>
-      </div>
-      <h1 class="text-ds-text">
-        Product Groups
-      </h1>
-    </div>
-    <div class="flex items-center gap-ds-3">
-      <button
-        (click)="startCreate()"
-        class="btn btn-primary h-11 px-ds-8"
-       *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
-        <app-icon name="Plus" size="14"></app-icon>
-        <span>Create New Group</span>
-      </button>
-    </div>
-  </div>
+  
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-ds-4">
     <!-- Left Column: List -->
@@ -30,16 +9,27 @@
           Available Groups
         </h2>
         
-        <div class="relative mb-ds-4">
-          <input
-            [formControl]="filterControl"
-            type="text"
-            placeholder="Search groups..."
-            class="form-input !h-10 pl-ds-10"
-          />
-          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-ds-text-muted">
-            <app-icon name="Search" size="14"></app-icon>
+        <div class="flex items-center gap-2 mb-ds-4">
+          <div class="relative flex-1">
+            <input
+              [formControl]="filterControl"
+              type="text"
+              placeholder="Search groups..."
+              class="form-input !h-10 pl-ds-10 w-full"
+            />
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-ds-text-muted">
+              <app-icon name="Search" size="14"></app-icon>
+            </div>
           </div>
+          <button
+            (click)="startCreate()"
+            class="btn btn-primary h-10 px-4 flex items-center gap-1.5 flex-shrink-0"
+            *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'"
+            title="Create Group"
+          >
+            <app-icon name="Plus" size="14"></app-icon>
+            <span>Create</span>
+          </button>
         </div>
 
         <div class="space-y-1 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">

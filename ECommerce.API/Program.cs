@@ -56,6 +56,7 @@ try
     builder.Services.AddAppServices(builder.Configuration);
     builder.Services.AddCustomCors(builder.Configuration, builder.Environment);
     builder.Services.AddSwaggerServices(builder.Environment);
+    builder.Services.AddSignalR();
 
     var app = builder.Build();
 
@@ -107,6 +108,7 @@ try
     app.UseResponseCaching();
 
     app.MapControllers();
+    app.MapHub<ECommerce.API.Hubs.OrderHub>("/hubs/orders");
 
     // ── 5. Smart One-Time Seeder ────────────────────────────────────
     using (var scope = app.Services.CreateScope())

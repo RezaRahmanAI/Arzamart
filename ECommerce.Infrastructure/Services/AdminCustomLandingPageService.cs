@@ -33,7 +33,7 @@ public class AdminCustomLandingPageService : IAdminCustomLandingPageService
     public async Task<CustomLandingPageConfigDto> SaveConfigAsync(CustomLandingPageConfigUpdateDto dto)
     {
         var config = await _unitOfWork.Repository<CustomLandingPageConfig>()
-            .GetQueryable()
+            .GetQueryable(track: true)
             .FirstOrDefaultAsync(c => c.ProductId == dto.ProductId);
 
         if (config == null)
