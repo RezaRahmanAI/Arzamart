@@ -1,16 +1,7 @@
 <div class="editor-panel w-[320px] h-full flex-shrink-0 bg-ds-accent border-r border-white/10 overflow-y-auto z-[100] transition-all"
      [class.hidden]="!isEditorOpen">
   
-  <!-- Editor Header -->
-  <div class="sticky top-0 p-6 bg-ds-accent/95 backdrop-blur-md border-b border-white/10 flex items-center justify-between z-20">
-    <div>
-      <h2 class="text-white">Design Engine</h2>
-      <p class="text-white/40 mt-1">Configure & Build</p>
-    </div>
-    <button (click)="closeEditor.emit()" class="text-white/60 hover:text-white transition-colors">
-      <app-icon name="X" size="20"></app-icon>
-    </button>
-  </div>
+
 
   <div class="p-4 space-y-4" [formGroup]="configForm">
     

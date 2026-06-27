@@ -1,0 +1,101 @@
+<div class="site-container-admin mx-auto flex flex-col gap-ds-6 h-[calc(100vh-140px)] overflow-hidden">
+  
+  <!-- Header Bar -->
+  <div class="flex items-center justify-between border-b border-ds-border pb-ds-4">
+    <div class="flex items-center gap-ds-4">
+      <a routerLink="/admin/products" class="flex items-center gap-1 text-ds-text-muted hover:text-ds-text text-sm transition-colors">
+        <app-icon name="ArrowLeft" size="16"></app-icon>
+        <span>Back to Products</span>
+      </a>
+      <span class="text-ds-border">|</span>
+      <h2 class="text-xl font-bold flex items-center gap-2">
+        <span>Design Landing Page</span>
+        <span class="text-xs px-2 py-0.5 bg-ds-accent/15 text-ds-accent rounded-sm" *ngIf="product">{{ product.name }}</span>
+      </h2>
+    </div>
+    <div class="flex items-center gap-2" *ngIf="product">
+      <a [href]="'/clp/' + product.slug" target="_blank" class="btn btn-secondary h-9 px-ds-4 flex items-center gap-2 text-xs">
+        <app-icon name="ExternalLink" size="14"></app-icon>
+        <span>View Live Site</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex-1 flex flex-col items-center justify-center gap-4 bg-ds-surface border border-ds-border rounded-sm">
+    <div class="w-10 h-10 border-4 border-ds-border border-t-ds-accent rounded-full animate-spin"></div>
+    <p class="text-ds-text-sec text-sm">Loading Landing Page Customizer...</p>
+    
+    <!-- Diagnostic Logs -->
+    <div class="mt-4 p-4 max-w-lg bg-ds-bg border border-ds-border rounded-sm text-xs font-mono text-left text-ds-text-sec">
+      <div class="font-bold border-b border-ds-border pb-1 mb-2 text-ds-text">Diagnostic Logs:</div>
+      <div *ngFor="let log of debugLogs" class="py-0.5">{{ log }}</div>
+    </div>
+  </div>
+
+  <!-- Split Screen Workspace -->
+  <div class="flex-1 flex gap-ds-6 overflow-hidden min-h-0" *ngIf="!isLoading">
+    
+    <!-- Editor Pane (Left) -->
+    <div class="w-[320px] flex-shrink-0 flex flex-col bg-ds-surface border border-ds-border rounded-sm overflow-hidden h-full">
+      <app-custom-landing-page-editor
+        class="h-full block overflow-hidden"
+        [configForm]="configForm"
+        [sections]="sections"
+        [allProducts]="allProducts"
+        [defaultRelatedProducts]="defaultRelatedProducts"
+        [isSaving]="isSaving"
+        [isProductSelectionLoading]="isProductSelectionLoading"
+        [isEditorOpen]="true"
+        [primaryProductId]="product?.id"
+        (save)="saveLayout()"
+        (share)="sharePageLink()"
+        (closeEditor)="onCloseEditor()"
+        (sectionsChange)="onSectionsChanged($event)"
+        (productSelectionToggled)="toggleProductSelection($event)">
+      </app-custom-landing-page-editor>
+    </div>
+
+    <!-- Live Preview Pane (Right) -->
+    <div class="flex-1 flex flex-col items-center p-ds-6 bg-ds-bg/40 border border-ds-border rounded-sm h-full overflow-hidden relative">
+      
+      <!-- Device Toggler Header -->
+      <div class="flex items-center justify-between w-full mb-ds-4 border-b border-ds-border pb-ds-3 flex-shrink-0">
+        <span class="text-xs uppercase tracking-widest text-ds-text-sec font-bold">Interactive Preview</span>
+        
+        <div class="flex items-center gap-1 bg-ds-surface border border-ds-border p-1 rounded-sm">
+          <button (click)="setPreviewDevice('desktop')" 
+                  [class.active-device]="previewDevice === 'desktop'" 
+                  class="device-btn" title="Desktop Frame">
+            <app-icon name="Monitor" size="14"></app-icon>
+          </button>
+          <button (click)="setPreviewDevice('tablet')" 
+                  [class.active-device]="previewDevice === 'tablet'" 
+                  class="device-btn" title="Tablet Frame">
+            <app-icon name="Tablet" size="14"></app-icon>
+          </button>
+          <button (click)="setPreviewDevice('mobile')" 
+                  [class.active-device]="previewDevice === 'mobile'" 
+                  class="device-btn" title="Mobile Frame">
+            <app-icon name="Smartphone" size="14"></app-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Simulation Viewport -->
+      <div class="preview-viewport-wrapper flex-1 w-full flex items-center justify-center overflow-auto min-h-0 pr-2">
+        <div [class]="'preview-device-frame shadow-2xl transition-all duration-300 ' + previewDevice">
+          <iframe #previewIframe 
+                  *ngIf="previewUrl" 
+                  [src]="previewUrl" 
+                  (load)="onIframeLoad()" 
+                  class="w-full h-full border-0 bg-white rounded-[4px] shadow-sm">
+          </iframe>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -4,7 +4,7 @@
     <!-- ═══════════════════════════════════════════
          EDITOR / ADMIN PANEL (LEFT SIDEBAR)
     ═══════════════════════════════════════════ -->
-    @if (isAdmin$ | async; as isAdmin) {
+    @if ((isAdmin$ | async) && !isPreviewMode) {
       <app-custom-landing-page-editor
         [configForm]="configForm"
         [sections]="sections"
@@ -28,7 +28,7 @@
     <div class="flex-1 h-full overflow-y-auto relative scroll-smooth bg-white">
       
       <!-- Editor Toggle Button (Hidden in clean preview) -->
-      @if ((isAdmin$ | async) && !isEditorOpen) {
+      @if ((isAdmin$ | async) && !isEditorOpen && !isPreviewMode) {
         <button (click)="isEditorOpen = true" 
                 class="fixed top-6 left-6 z-[200] w-14 h-14 bg-ds-info text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.5)] hover:scale-110 active:scale-95 transition-all border border-white/20">
           <app-icon name="Settings" size="24"></app-icon>

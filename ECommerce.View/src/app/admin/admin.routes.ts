@@ -77,6 +77,14 @@ export const ADMIN_ROUTES: Routes = [
         data: { title: "Edit Product", menuKey: "products" }, canActivate: [staffGuard],
       },
       {
+        path: "products/:id/landing-page",
+        loadComponent: () =>
+          import("./pages/landing-page-design/landing-page-design.component").then(
+            (m) => m.LandingPageDesignComponent,
+          ),
+        data: { title: "Design Landing Page", menuKey: "products" }, canActivate: [staffGuard],
+      },
+      {
         path: "orders",
         loadComponent: () =>
           import("./pages/orders/orders.component").then(

@@ -99,6 +99,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   isSaving = false;
   isEditMode = false;
   activeEditorSection: string = 'global';
+  isPreviewMode = false;
 
   sharePageLink(): void {
     if (typeof window !== 'undefined') {
@@ -316,7 +317,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         const qSize = queryParams.get('qSize');
         const qQty = queryParams.get('qQty');
         const shouldEdit = queryParams.get('edit') === 'true';
+        const isPreview = queryParams.get('preview') === 'true';
         this.isEditMode = shouldEdit;
+        this.isPreviewMode = isPreview;
 
         if (qSize) this.orderForm.patchValue({ selectedSize: qSize });
         if (qQty) this.orderForm.patchValue({ quantity: parseInt(qQty, 10) || 1 });
@@ -325,6 +328,23 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         if (isPlatformBrowser(this.platformId)) window.scrollTo({ top: 0, behavior: "smooth" });
       }
     });
+
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'CLP_PREVIEW_UPDATE') {
+          this.sections = event.data.sections;
+          if (event.data.config) {
+            this.configForm.patchValue(event.data.config, { emitEvent: false });
+            if (this.data) {
+              this.data.config = {
+                ...this.data.config,
+                ...event.data.config
+              };
+            }
+          }
+        }
+      });
+    }
 
     this.orderForm.controls.city.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
