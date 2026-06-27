@@ -1,5 +1,5 @@
 <form
-  class="site-container-admin mx-auto flex w-full max-w-5xl flex-1 flex-col gap-ds-3"
+  class="site-container-admin mx-auto flex w-full flex-1 flex-col gap-ds-3"
   [formGroup]="form"
   (ngSubmit)="saveProduct()"
 >
@@ -14,7 +14,7 @@
   <!-- Page Heading & Global Actions -->
   <div class="flex flex-col justify-between gap-ds-2 sm:flex-row sm:items-center border-b border-ds-border pb-ds-2">
     <div>
-      <div class="flex items-center gap-1.5 text-ds-text-muted mb-1 text-[10px] font-semibold uppercase tracking-wider">
+      <div class="flex items-center gap-1.5 text-ds-text-muted mb-1 text-ds-xs font-semibold uppercase tracking-wider">
         <span>Products</span>
         <app-icon name="ChevronRight" size="8"></app-icon>
         <span class="text-ds-text">{{ isEditMode ? "Edit Product" : "New Product" }}</span>
@@ -43,20 +43,20 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 gap-ds-3 lg:grid-cols-3">
-    <!-- Left Column (Main Info) -->
-    <div class="flex flex-col gap-ds-3 lg:col-span-2">
+  <div class="grid grid-cols-1 gap-ds-3 lg:grid-cols-[1fr_1fr_0.5fr]">
+    <!-- Column 1: Basic Info + Details -->
+    <div class="flex flex-col gap-ds-3">
       <!-- General Information Card -->
       <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm">
-        <h2 class="mb-ds-3 text-ds-text-muted text-[10px] font-bold uppercase tracking-wider">
+        <h2 class="mb-ds-3 text-ds-text-muted text-ds-xs font-bold uppercase tracking-wider">
           Basic Info
         </h2>
         <div class="flex flex-col gap-ds-3">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-3">
             <label class="flex flex-col gap-ds-1.5">
-              <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Product Name</span>
+              <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Product Name</span>
               <input
-                class="form-input !h-9.5 text-xs"
+                class="form-input"
                 placeholder="e.g. Luxe Silk Abaya - Noir"
                 type="text"
                 formControlName="name"
@@ -64,8 +64,8 @@
             </label>
 
             <label class="flex flex-col gap-ds-1.5">
-              <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Product Type</span>
-              <select class="form-input !h-9.5 appearance-none cursor-pointer text-xs" formControlName="productType">
+              <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Product Type</span>
+              <select class="form-input appearance-none cursor-pointer" formControlName="productType">
                 <option [ngValue]="ProductType.Simple">Simple Product</option>
                 <option [ngValue]="ProductType.Combo">Combo</option>
               </select>
@@ -74,9 +74,9 @@
           <div *ngIf="form.get('productType')?.value == ProductType.Combo" class="flex flex-col gap-ds-3 p-ds-3 bg-ds-bg/20 border border-ds-border rounded-sm animate-in fade-in slide-in-from-top-2 duration-base">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-ds-3">
               <label class="flex flex-col gap-ds-1.5">
-                <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Bundle Qty</span>
+                <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Bundle Qty</span>
                 <input
-                  class="form-input !h-9.5 text-center text-xs"
+                  class="form-input text-center"
                   placeholder="e.g. 2"
                   type="number"
                   formControlName="bundleSize"
@@ -85,12 +85,12 @@
               </label>
               
               <div class="md:col-span-3 flex flex-col gap-ds-1.5 relative">
-                <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Add Products</span>
+                <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Add Products</span>
                 <div class="relative group/search">
                   <input 
                     #searchInput
                     type="text" 
-                    class="form-input !h-9.5 text-xs pr-ds-10" 
+                    class="form-input pr-ds-10" 
                     placeholder="Search by name or SKU..." 
                     (input)="searchProducts($event)"
                   />
@@ -113,7 +113,7 @@
                       </div>
                       <div class="flex flex-col">
                         <span class="text-ds-text text-xs group-hover/result:text-ds-accent transition-colors">{{ p.name }}</span>
-                        <span class="text-ds-text-muted text-[10px] mt-0.5">{{ p.sku || p.id }} | {{ p.price | currency: 'BDT ': 'symbol': '1.0-0' }}</span>
+                        <span class="text-ds-text-muted text-ds-xs mt-0.5">{{ p.sku || p.id }} | {{ p.price | currency: 'BDT ': 'symbol': '1.0-0' }}</span>
                       </div>
                     </div>
                   </div>
@@ -124,7 +124,7 @@
             <!-- Selected Combo Items List -->
             <div class="space-y-ds-2 mt-ds-1" formArrayName="comboItems">
               <div class="flex items-center justify-between mb-1">
-                <h3 class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Selected Products</h3>
+                <h3 class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Selected Products</h3>
 
 
                 <div class="flex items-center gap-2">
@@ -194,7 +194,7 @@
 
 
           <label class="flex flex-col gap-ds-1.5">
-            <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Description</span>
+            <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Description</span>
             <div class="border border-ds-border rounded-sm overflow-hidden bg-ds-bg/30">
               <!-- Rich Text Toolbar -->
               <div class="flex items-center gap-ds-1 border-b border-ds-border bg-ds-bg px-ds-1.5 py-ds-1 text-xs">
@@ -234,31 +234,21 @@
               </div>
               <textarea
                 #descriptionArea
-                class="form-textarea !border-none !bg-transparent !p-ds-2.5 text-xs"
+                class="form-textarea !border-none !bg-transparent !p-ds-2.5"
                 placeholder="Write product description..."
                 rows="4"
                 formControlName="description"
               ></textarea>
             </div>
-            <span class="text-ds-text-muted text-[10px] mt-0.5">Material, fit and care instructions.</span>
-          </label>
-
-          <label class="flex flex-col gap-ds-1.5">
-            <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Short Description</span>
-            <textarea
-              class="form-textarea !h-16 text-xs"
-              placeholder="Short description for quick view..."
-              rows="2"
-              formControlName="shortDescription"
-            ></textarea>
+            <span class="text-ds-text-muted text-ds-xs mt-0.5">Material, fit and care instructions.</span>
           </label>
         </div>
       </div>
 
-      <!-- Product Options (Colors & Sizes) -->
+      <!-- Product Options (Sizes) -->
       <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm" formGroupName="variants">
         <div class="flex items-center justify-between mb-ds-3">
-          <h2 class="text-ds-text-muted text-[10px] font-bold uppercase tracking-wider">
+          <h2 class="text-ds-text-muted text-ds-xs font-bold uppercase tracking-wider">
             Sizes
           </h2>
           <button
@@ -278,100 +268,102 @@
           </p>
         </div>
 
-        <div class="space-y-ds-2" formArrayName="sizes">
-          <div
-            class="bg-ds-bg/30 border border-ds-border p-ds-3 rounded-sm relative group"
-            *ngFor="let size of sizesArray.controls; let sizeIndex = index; trackBy: trackBySize"
-            [formGroupName]="sizeIndex"
-          >
-            <button
-              class="absolute -top-2.5 -right-2.5 size-6 bg-ds-surface border border-ds-border text-red-500 rounded-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white z-10"
-              type="button"
-              (click)="removeSize(sizeIndex)"
-              title="Remove"
-            >
-              <app-icon name="X" size="12"></app-icon>
-            </button>
-
-            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-ds-3 items-end">
-              <label class="flex flex-col gap-ds-1.5">
-                <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Size Name</span>
-                <div class="relative group/select">
-                  <input
-                    class="form-input !h-9.5 text-xs pr-ds-8"
-                    formControlName="label"
-                    placeholder="e.g. XL"
-                    (click)="$event.stopPropagation()"
-                  />
-                  <button
-                    type="button"
-                    (click)="toggleSizeDropdown(sizeIndex, $event)"
-                    class="absolute right-0 top-0 h-full px-ds-2 text-ds-text-muted hover:text-ds-text transition-colors"
-                  >
-                    <app-icon name="ChevronDown" size="12"></app-icon>
-                  </button>
-
-                  <div
-                    *ngIf="openSizeDropdownIndex === sizeIndex"
-                    class="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-ds-surface border border-ds-border rounded-sm shadow-2xl py-1 animate-in fade-in slide-in-from-top-1 duration-base"
-                  >
-                    <div
-                      *ngFor="let sz of getFilteredSizes(); trackBy: trackByIndex"
-                      (click)="selectSize(sizeIndex, sz, $event)"
-                      class="px-ds-4 py-ds-2 text-ds-text-muted hover:text-ds-text hover:bg-ds-bg cursor-pointer flex justify-between items-center transition-colors text-xs"
+        <div class="overflow-x-auto -mx-ds-3 px-ds-3" formArrayName="sizes">
+          <table class="w-full text-xs min-w-[600px]">
+            <thead>
+              <tr class="border-b border-ds-border">
+                <th class="py-ds-2 px-ds-2 text-left text-ds-text-muted font-semibold uppercase tracking-wider w-[18%]">Size</th>
+                <th class="py-ds-2 px-ds-2 text-left text-ds-text-muted font-semibold uppercase tracking-wider w-[16%]">Retail</th>
+                <th class="py-ds-2 px-ds-2 text-left text-ds-text-muted font-semibold uppercase tracking-wider w-[16%]">Sale</th>
+                <th class="py-ds-2 px-ds-2 text-left text-ds-text-muted font-semibold uppercase tracking-wider w-[16%]">Cost</th>
+                <th class="py-ds-2 px-ds-2 text-left text-ds-text-muted font-semibold uppercase tracking-wider w-[14%]">Stock</th>
+                <th class="py-ds-2 px-ds-2 text-center text-ds-text-muted font-semibold uppercase tracking-wider w-[10%]">Default</th>
+                <th class="py-ds-2 px-ds-2 w-[10%]"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="border-b border-ds-border last:border-0 group/row hover:bg-ds-bg/30 transition-colors"
+                *ngFor="let size of sizesArray.controls; let sizeIndex = index; trackBy: trackBySize"
+                [formGroupName]="sizeIndex"
+              >
+                <!-- Size Name -->
+                <td class="py-ds-2 px-ds-2">
+                  <div class="relative">
+                    <input
+                      class="form-input !py-2"
+                      formControlName="label"
+                      placeholder="XL"
+                      (click)="$event.stopPropagation()"
+                    />
+                    <button
+                      type="button"
+                      (click)="toggleSizeDropdown(sizeIndex, $event)"
+                      class="absolute right-0 top-0 h-full px-1.5 text-ds-text-muted hover:text-ds-text transition-colors"
                     >
-                      <span>{{ sz }}</span>
-                      <app-icon *ngIf="size.get('label')?.value === sz" name="Check" size="10" className="text-ds-accent"></app-icon>
+                      <app-icon name="ChevronDown" size="12"></app-icon>
+                    </button>
+                    <div
+                      *ngIf="openSizeDropdownIndex === sizeIndex"
+                      class="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-ds-surface border border-ds-border rounded-sm shadow-2xl py-1 animate-in fade-in slide-in-from-top-1 duration-base"
+                    >
+                      <div
+                        *ngFor="let sz of getFilteredSizes(); trackBy: trackByIndex"
+                        (click)="selectSize(sizeIndex, sz, $event)"
+                        class="px-ds-3 py-1.5 text-ds-text-muted hover:text-ds-text hover:bg-ds-bg cursor-pointer flex justify-between items-center transition-colors text-xs"
+                      >
+                        <span>{{ sz }}</span>
+                        <app-icon *ngIf="size.get('label')?.value === sz" name="Check" size="10" className="text-ds-accent"></app-icon>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </label>
+                </td>
 
-              <label class="flex flex-col gap-ds-1.5">
-                <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Retail Price</span>
-                <input
-                  class="form-input !h-9.5 text-xs"
-                  type="number"
-                  placeholder="0.00"
-                  formControlName="price"
-                  (focus)="$any($event.target).select()"
-                />
-              </label>
+                <!-- Retail Price -->
+                <td class="py-ds-2 px-ds-2">
+                  <input
+                    class="form-input !py-2"
+                    type="number"
+                    placeholder="0"
+                    formControlName="price"
+                    (focus)="$any($event.target).select()"
+                  />
+                </td>
 
-              <label class="flex flex-col gap-ds-1.5">
-                <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Sale Price</span>
-                <input
-                  class="form-input !h-9.5 text-xs border-ds-accent/30 focus:border-ds-accent"
-                  type="number"
-                  placeholder="0.00"
-                  formControlName="salePrice"
-                  (focus)="$any($event.target).select()"
-                />
-              </label>
+                <!-- Sale Price -->
+                <td class="py-ds-2 px-ds-2">
+                  <input
+                    class="form-input !py-2 !border-ds-accent/30 focus:!border-ds-accent"
+                    type="number"
+                    placeholder="0"
+                    formControlName="salePrice"
+                    (focus)="$any($event.target).select()"
+                  />
+                </td>
 
-              <label class="flex flex-col gap-ds-1.5">
-                <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Buying Cost</span>
-                <input
-                  class="form-input !h-9.5 text-xs opacity-60"
-                  type="number"
-                  placeholder="0.00"
-                  formControlName="purchaseRate"
-                  (focus)="$any($event.target).select()"
-                />
-              </label>
+                <!-- Buying Cost -->
+                <td class="py-ds-2 px-ds-2">
+                  <input
+                    class="form-input !py-2 opacity-60"
+                    type="number"
+                    placeholder="0"
+                    formControlName="purchaseRate"
+                    (focus)="$any($event.target).select()"
+                  />
+                </td>
 
-              <label class="flex flex-col gap-ds-1.5">
-                <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Stock</span>
-                <input
-                  class="form-input !h-9.5 text-xs"
-                  type="number"
-                  formControlName="stock"
-                  (focus)="$any($event.target).select()"
-                />
-              </label>
+                <!-- Stock -->
+                <td class="py-ds-2 px-ds-2">
+                  <input
+                    class="form-input !py-2"
+                    type="number"
+                    formControlName="stock"
+                    (focus)="$any($event.target).select()"
+                  />
+                </td>
 
-              <div class="h-9.5 flex items-center justify-center">
-                <label class="flex items-center gap-1.5 cursor-pointer group/radio">
+                <!-- Default -->
+                <td class="py-ds-2 px-ds-2 text-center">
                   <input
                     class="form-radio size-3.5"
                     type="radio"
@@ -379,20 +371,40 @@
                     [checked]="size.get('selected')?.value"
                     (change)="setSelectedSize(sizeIndex)"
                   />
-                  <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider group-hover/radio:text-ds-text transition-colors">Default</span>
-                </label>
-              </div>
-            </div>
+                </td>
+
+                <!-- Delete -->
+                <td class="py-ds-2 px-ds-2 text-center">
+                  <button
+                    type="button"
+                    (click)="removeSize(sizeIndex)"
+                    class="text-red-400 hover:text-red-600 p-1 transition-colors"
+                    title="Remove"
+                  >
+                    <app-icon name="Trash2" size="12"></app-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div *ngIf="sizesArray.length === 0" class="py-ds-6 text-center border border-dashed border-ds-border rounded-sm bg-ds-bg/10 mt-ds-2">
+            <p class="text-ds-text-muted text-xs">No sizes added yet.</p>
+            <button type="button" (click)="addSize()" class="mt-ds-2 text-ds-accent text-xs font-semibold hover:underline">
+              + Add your first size
+            </button>
           </div>
         </div>
       </div>
 
+    </div>
 
-
+    <!-- Column 2: Images -->
+    <div class="flex flex-col gap-ds-3">
       <!-- Media Card -->
       <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm">
         <div class="mb-ds-3 flex items-center justify-between">
-          <h2 class="text-ds-text-muted text-[10px] font-bold uppercase tracking-wider">
+          <h2 class="text-ds-text-muted text-ds-xs font-bold uppercase tracking-wider">
             Images
           </h2>
           <button
@@ -416,7 +428,7 @@
             </div>
             <div>
               <p class="text-ds-text text-xs font-medium">Drop files here to upload</p>
-              <p class="text-ds-text-muted text-[10px] mt-0.5">Recommended: <span class="text-ds-text font-medium">1200 x 1600 px</span> (3:4 Ratio)</p>
+              <p class="text-ds-text-muted text-ds-xs mt-0.5">Recommended: <span class="text-ds-text font-medium">1200 x 1600 px</span> (3:4 Ratio)</p>
             </div>
           </div>
           <input
@@ -451,17 +463,17 @@
 
               <div class="flex-1 grid gap-ds-3 grid-cols-1 md:grid-cols-3 items-start w-full">
                 <label class="flex flex-col gap-ds-1.5">
-                  <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Image Label</span>
-                  <input class="form-input !h-9.5 text-xs" type="text" formControlName="label" />
+                  <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Image Label</span>
+                  <input class="form-input" type="text" formControlName="label" />
                 </label>
                 <label class="flex flex-col gap-ds-1.5">
-                  <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Alt Text</span>
-                  <input class="form-input !h-9.5 text-xs" type="text" formControlName="alt" />
+                  <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Alt Text</span>
+                  <input class="form-input" type="text" formControlName="alt" />
                 </label>
                 <div class="grid grid-cols-2 gap-ds-2 items-start">
                   <label class="flex flex-col gap-ds-1.5">
-                    <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Type</span>
-                    <select class="form-input !h-9.5 appearance-none cursor-pointer text-xs" formControlName="type">
+                    <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Type</span>
+                    <select class="form-input appearance-none cursor-pointer" formControlName="type">
                       <option value="image">Image</option>
                       <option value="video">Video</option>
                     </select>
@@ -470,7 +482,7 @@
                   <div class="flex flex-col gap-2 pt-ds-6">
                     <label class="flex items-center gap-1.5 cursor-pointer group/radio">
                       <input class="form-radio size-3.5" type="radio" name="mainMedia" [checked]="media.get('isMain')?.value" (change)="setMainMedia(mediaIndex)" />
-                      <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider group-hover/radio:text-ds-text transition-colors">Main</span>
+                      <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider group-hover/radio:text-ds-text transition-colors">Main</span>
                     </label>
                     <button class="w-fit text-red-500 hover:text-red-700 transition-colors text-xs flex items-center gap-1 font-semibold" type="button" (click)="removeMediaItem(mediaIndex)">
                       <app-icon name="Trash2" size="12"></app-icon> Delete
@@ -486,65 +498,88 @@
         </div>
       </div>
 
-      <!-- Product Details Card -->
+      <!-- Size Chart Card -->
       <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm" formGroupName="meta">
-        <h2 class="mb-ds-3 text-ds-text-muted text-[10px] font-bold uppercase tracking-wider">
-          Details
+        <h2 class="mb-ds-3 text-ds-text-muted text-ds-xs font-bold uppercase tracking-wider">
+          Size Chart
         </h2>
-        <div class="grid gap-ds-3">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-3">
-            <label class="flex flex-col gap-ds-1.5">
-              <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Fabric & Care</span>
-              <textarea
-                class="form-textarea !h-16 text-xs"
-                rows="2"
-                placeholder="Fabric, fit and care instructions..."
-                formControlName="fabricAndCare"
-              ></textarea>
-            </label>
-            <label class="flex flex-col gap-ds-1.5">
-              <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Shipping & Returns</span>
-              <textarea
-                class="form-textarea !h-16 text-xs"
-                rows="2"
-                placeholder="Delivery and return policy..."
-                formControlName="shippingAndReturns"
-              ></textarea>
-            </label>
+        <label class="flex flex-col gap-ds-1.5">
+          <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Size Chart Image URL</span>
+          <div class="flex gap-ds-2">
+            <input
+              class="form-input flex-1"
+              placeholder="e.g. /uploads/size-charts/tshirt.jpg"
+              type="text"
+              formControlName="sizeChartUrl"
+            />
+            <button 
+              type="button"
+              (click)="openImageUploader('sizeChart')"
+              class="btn btn-secondary h-9 px-ds-4 text-xs font-semibold flex-shrink-0"
+            >
+              Upload
+            </button>
           </div>
-          <label class="flex flex-col gap-ds-1.5">
-            <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Size Chart URL</span>
-            <div class="flex gap-ds-2">
-              <input
-                class="form-input !h-9.5 text-xs flex-1"
-                placeholder="e.g. https://cdn.arza.com/charts/hijab-size.jpg"
-                type="text"
-                formControlName="sizeChartUrl"
-              />
-              <button 
-                type="button"
-                (click)="openImageUploader('sizeChart')"
-                class="btn btn-secondary h-9.5 px-ds-4 text-xs font-semibold"
-              >
-                Upload
-              </button>
-            </div>
-            <div *ngIf="form.get('meta.sizeChartUrl')?.value" class="mt-ds-3 relative group w-24 h-24 bg-ds-bg border border-ds-border p-ds-1.5 rounded-sm">
-                <img loading="lazy" [src]="imageUrlService.getImageUrl(form.get('meta.sizeChartUrl')?.value)" class="w-full h-full object-contain transition-all duration-base">
-                <button (click)="form.get('meta.sizeChartUrl')?.setValue('')" class="absolute -top-2 -right-2 size-5 bg-red-500 text-white rounded-sm flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600">
-                    <app-icon name="X" size="10"></app-icon>
-                </button>
-            </div>
-          </label>
-        </div>
+          <div *ngIf="form.get('meta.sizeChartUrl')?.value" class="mt-ds-3 relative group w-24 h-24 bg-ds-bg border border-ds-border p-ds-1.5 rounded-sm">
+            <img loading="lazy" [src]="imageUrlService.getImageUrl(form.get('meta.sizeChartUrl')?.value)" class="w-full h-full object-contain transition-all duration-base">
+            <button (click)="form.get('meta.sizeChartUrl')?.setValue('')" class="absolute -top-2 -right-2 size-5 bg-red-500 text-white rounded-sm flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600">
+              <app-icon name="X" size="10"></app-icon>
+            </button>
+          </div>
+        </label>
       </div>
     </div>
 
-    <!-- Right Column (Organization & Settings) -->
-    <div class="flex flex-col gap-ds-3 lg:col-span-1">
+    <!-- Column 3: Category + Status -->
+    <div class="flex flex-col gap-ds-3">
+      <!-- Organization Card -->
+      <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm">
+        <h2 class="mb-ds-3 text-ds-text-muted text-ds-xs font-bold uppercase tracking-wider">
+          Category
+        </h2>
+        <div class="flex flex-col gap-ds-3">
+          <label class="flex flex-col gap-ds-1.5">
+            <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Category</span>
+            <select class="form-input appearance-none cursor-pointer" formControlName="category">
+              <option value="" disabled>Choose category</option>
+              <option *ngFor="let cat of categories; trackBy: trackByCategory" [value]="cat.id">{{ cat.name }}</option>
+            </select>
+          </label>
+
+          <label class="flex flex-col gap-ds-1.5" *ngIf="filteredSubCategories.length > 0">
+            <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Subcategory</span>
+            <select class="form-input appearance-none cursor-pointer" formControlName="subCategory">
+              <option value="">None</option>
+              <option *ngFor="let sub of filteredSubCategories; trackBy: trackBySubCategory" [value]="sub.id">{{ sub.name }}</option>
+            </select>
+          </label>
+
+          <label class="flex flex-col gap-ds-1.5" *ngIf="filteredCollections.length > 0">
+            <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Collection</span>
+            <select class="form-input appearance-none cursor-pointer" formControlName="collection">
+              <option value="">Standalone</option>
+              <option *ngFor="let col of filteredCollections; trackBy: trackByCollection" [value]="col.id">{{ col.name }}</option>
+            </select>
+          </label>
+
+          <label class="flex flex-col gap-ds-1.5">
+            <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Product Group</span>
+            <select class="form-input appearance-none cursor-pointer" formControlName="productGroupId">
+              <option [value]="null">No Group</option>
+              <option *ngFor="let grp of productGroups; trackBy: trackByProductGroup" [value]="grp.id">{{ grp.name }}</option>
+            </select>
+          </label>
+
+          <label class="flex flex-col gap-ds-1.5">
+            <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider">Sort Order</span>
+            <input class="form-input" type="number" placeholder="0" formControlName="sortOrder" (focus)="$any($event.target).select()" min="0" />
+          </label>
+        </div>
+      </div>
+
       <!-- Status Card -->
       <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm">
-        <h2 class="mb-ds-2 text-ds-text-muted text-[10px] font-bold uppercase tracking-wider">
+        <h2 class="mb-ds-2 text-ds-text-muted text-ds-xs font-bold uppercase tracking-wider">
           Status
         </h2>
         
@@ -572,74 +607,6 @@
               <span></span>
             </label>
           </div>
-        </div>
-
-        <div class="mt-ds-3 bg-ds-bg/30 border border-ds-border p-ds-2 rounded-sm text-[10px]">
-          <p class="text-ds-text-muted flex items-center gap-1.5 font-medium">
-            <app-icon name="Eye" size="10" className="text-ds-accent"></app-icon>
-            Immediate Deployment
-          </p>
-        </div>
-      </div>
-
-      <!-- Organization Card -->
-      <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm">
-        <h2 class="mb-ds-3 text-ds-text-muted text-[10px] font-bold uppercase tracking-wider">
-          Category
-        </h2>
-        <div class="flex flex-col gap-ds-3">
-          <label class="flex flex-col gap-ds-1.5">
-            <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Category</span>
-            <select class="form-input !h-9.5 appearance-none cursor-pointer text-xs" formControlName="category">
-              <option value="" disabled>Choose category</option>
-              <option *ngFor="let cat of categories; trackBy: trackByCategory" [value]="cat.id">{{ cat.name }}</option>
-            </select>
-          </label>
-
-          <label class="flex flex-col gap-ds-1.5" *ngIf="filteredSubCategories.length > 0">
-            <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Subcategory</span>
-            <select class="form-input !h-9.5 appearance-none cursor-pointer text-xs" formControlName="subCategory">
-              <option value="">None</option>
-              <option *ngFor="let sub of filteredSubCategories; trackBy: trackBySubCategory" [value]="sub.id">{{ sub.name }}</option>
-            </select>
-          </label>
-
-          <label class="flex flex-col gap-ds-1.5" *ngIf="filteredCollections.length > 0">
-            <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Collection</span>
-            <select class="form-input !h-9.5 appearance-none cursor-pointer text-xs" formControlName="collection">
-              <option value="">Standalone</option>
-              <option *ngFor="let col of filteredCollections; trackBy: trackByCollection" [value]="col.id">{{ col.name }}</option>
-            </select>
-          </label>
-
-          <label class="flex flex-col gap-ds-1.5">
-            <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Product Group</span>
-            <select class="form-input !h-9.5 appearance-none cursor-pointer text-xs" formControlName="productGroupId">
-              <option [value]="null">No Group</option>
-              <option *ngFor="let grp of productGroups; trackBy: trackByProductGroup" [value]="grp.id">{{ grp.name }}</option>
-            </select>
-          </label>
-
-          <label class="flex flex-col gap-ds-1.5">
-            <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Tier</span>
-            <select class="form-input !h-9.5 appearance-none cursor-pointer !border-ds-accent/30 text-xs" formControlName="tier">
-              <option value="">Standard</option>
-              <option value="Premium">Premium</option>
-              <option value="Luxury">Luxury Edition</option>
-              <option value="Platinum">Platinum Archive</option>
-              <option value="Sahara">Sahara Select</option>
-            </select>
-          </label>
-
-          <label class="flex flex-col gap-ds-1.5">
-            <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Tags</span>
-            <input class="form-input !h-9.5 text-xs" type="text" placeholder="e.g. winter, sale, new" formControlName="tags" />
-          </label>
-
-          <label class="flex flex-col gap-ds-1.5">
-            <span class="text-ds-text-muted text-[10px] font-semibold uppercase tracking-wider">Sort Order</span>
-            <input class="form-input !h-9.5 text-xs" type="number" placeholder="0" formControlName="sortOrder" (focus)="$any($event.target).select()" min="0" />
-          </label>
         </div>
       </div>
     </div>

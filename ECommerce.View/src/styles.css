@@ -51,6 +51,13 @@
   --radius-xl:   24px;
   --radius-full: 9999px;
 
+  /* ── Input & Button Design System Radius ── */
+  --ds-input-radius-xs: 6px;
+  --ds-input-radius-sm: 6px;
+  --ds-input-radius-md: 8px;
+  --ds-input-radius-lg: 10px;
+  --ds-input-radius-xl: 12px;
+
   /* ── Fluid Spacing ── */
   --space-1:  clamp(0.25rem, 0.3vw, 0.25rem);
   --space-2:  clamp(0.375rem, 0.5vw, 0.5rem);
@@ -782,4 +789,335 @@ input[type='number'] {
 
   .text-deep-gold { color: #C5A059; }
   .border-deep-gold { border-color: #C5A059; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   INPUTS & BUTTONS REDESIGN SYSTEM (SPEC-COMPLIANT)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Standard Input Fields Default Reset (MD Size Base) ── */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="search"],
+input[type="date"],
+select,
+.input,
+.form-input,
+.form-select {
+  width: 100%;
+  height: 40px !important;
+  padding: 0 14px !important;
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: normal !important;
+  letter-spacing: normal !important;
+  font-style: normal !important;
+  text-transform: none !important;
+  border-radius: var(--ds-input-radius-md) !important;
+  background: var(--color-surface) !important;
+  border: 1.5px solid var(--color-border-ds) !important;
+  color: var(--color-text-primary) !important;
+  transition: border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base) !important;
+  outline: none !important;
+}
+
+/* Placeholders */
+input::placeholder,
+.form-input::placeholder,
+.input::placeholder {
+  color: var(--color-text-muted) !important;
+  opacity: 1 !important;
+}
+
+/* Focus state */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="date"]:focus,
+select:focus,
+.input:focus,
+.form-input:focus,
+.form-select:focus {
+  border-color: var(--color-accent-ds) !important;
+  background: var(--color-bg) !important;
+  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.05) !important;
+}
+
+/* Error state */
+input.error,
+.form-input.error,
+select.error {
+  border-color: var(--color-danger) !important;
+  background: #FDF0F0 !important;
+}
+
+/* Disabled input state */
+input:disabled,
+select:disabled,
+.form-input:disabled,
+.form-select:disabled {
+  background: var(--color-surface-2) !important;
+  color: var(--color-text-secondary) !important;
+  cursor: not-allowed !important;
+  opacity: 0.7 !important;
+}
+
+/* ── Textarea Reset ── */
+textarea,
+.form-textarea {
+  width: 100%;
+  padding: 12px 14px !important;
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  letter-spacing: normal !important;
+  border-radius: var(--ds-input-radius-md) !important;
+  background: var(--color-surface) !important;
+  border: 1.5px solid var(--color-border-ds) !important;
+  color: var(--color-text-primary) !important;
+  transition: border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base) !important;
+  outline: none !important;
+  resize: vertical !important;
+}
+
+/* Restrict default min-height only to textareas that do not have specific height class overrides (like h-8/h-10) */
+textarea:not(.h-7):not(.h-8):not(.h-9):not(.h-10):not(.h-11):not(.h-12):not(.h-14):not(.h-16),
+.form-textarea:not(.h-7):not(.h-8):not(.h-9):not(.h-10):not(.h-11):not(.h-12):not(.h-14):not(.h-16) {
+  min-height: 96px !important;
+}
+
+textarea:focus,
+.form-textarea:focus {
+  border-color: var(--color-accent-ds) !important;
+  background: var(--color-bg) !important;
+  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.05) !important;
+}
+
+textarea::placeholder,
+.form-textarea::placeholder {
+  color: var(--color-text-muted) !important;
+  opacity: 1 !important;
+}
+
+textarea:disabled,
+.form-textarea:disabled {
+  background: var(--color-surface-2) !important;
+  color: var(--color-text-secondary) !important;
+  cursor: not-allowed !important;
+  opacity: 0.7 !important;
+}
+
+/* ── Standard Button Reset (MD Size Base) ── */
+button,
+.btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 40px !important;
+  padding: 0 18px !important;
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: normal !important;
+  letter-spacing: normal !important;
+  font-style: normal !important;
+  text-transform: none !important;
+  border-radius: var(--ds-input-radius-md) !important;
+  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base) !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  border: none !important;
+  width: auto !important; /* Overriding full-width defaults on mobile to support auto layout */
+}
+
+/* Disabled button state */
+button:disabled,
+.btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* ── Height & Size Variant Classes (Tailwind Height Class Mappings) ── */
+
+/* XS size (28px height) */
+input.h-7,
+select.h-7,
+.input-xs {
+  height: 28px !important;
+  padding: 0 8px !important;
+  font-size: 12px !important;
+  border-radius: var(--ds-input-radius-xs) !important;
+}
+/* Paired XS inputs/buttons */
+button.h-7,
+.btn-xs,
+input.paired.h-7,
+.input-paired-xs {
+  height: 28px !important;
+  padding: 0 10px !important;
+  font-size: 12px !important;
+  border-radius: var(--ds-input-radius-xs) !important;
+}
+
+/* SM size (32px height) */
+input.h-8,
+select.h-8,
+.input-sm {
+  height: 32px !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  border-radius: var(--ds-input-radius-sm) !important;
+}
+/* Paired SM inputs/buttons */
+button.h-8,
+.btn-sm,
+input.paired.h-8,
+.input-paired-sm {
+  height: 32px !important;
+  padding: 0 12px !important;
+  font-size: 13px !important;
+  border-radius: var(--ds-input-radius-sm) !important;
+}
+
+/* MD size (40px height) */
+input.h-10,
+input.h-11,
+select.h-10,
+select.h-11,
+.input-md {
+  height: 40px !important;
+  padding: 0 14px !important;
+  font-size: 14px !important;
+  border-radius: var(--ds-input-radius-md) !important;
+}
+/* Paired MD inputs/buttons */
+button.h-10,
+button.h-11,
+.btn-md,
+input.paired.h-10,
+input.paired.h-11,
+.input-paired-md {
+  height: 40px !important;
+  padding: 0 18px !important;
+  font-size: 14px !important;
+  border-radius: var(--ds-input-radius-md) !important;
+}
+
+/* LG size (48px height) */
+input.h-12,
+select.h-12,
+.input-lg {
+  height: 48px !important;
+  padding: 0 16px !important;
+  font-size: 16px !important;
+  border-radius: var(--ds-input-radius-lg) !important;
+}
+/* Paired LG inputs/buttons */
+button.h-12,
+.btn-lg,
+input.paired.h-12,
+.input-paired-lg {
+  height: 48px !important;
+  padding: 0 22px !important;
+  font-size: 16px !important;
+  border-radius: var(--ds-input-radius-lg) !important;
+}
+
+/* XL size (56px height) */
+input.h-14,
+input.h-16,
+select.h-14,
+select.h-16,
+.input-xl {
+  height: 56px !important;
+  padding: 0 20px !important;
+  font-size: 18px !important;
+  border-radius: var(--ds-input-radius-xl) !important;
+}
+/* Paired XL inputs/buttons */
+button.h-14,
+button.h-16,
+.btn-xl,
+input.paired.h-14,
+input.paired.h-16,
+.input-paired-xl {
+  height: 56px !important;
+  padding: 0 28px !important;
+  font-size: 18px !important;
+  border-radius: var(--ds-input-radius-xl) !important;
+}
+
+
+/* ── BUTTON VARIANT STYLES ── */
+
+/* Primary Button: Solid dark luxury */
+.btn-primary {
+  background: var(--color-accent-ds) !important;
+  color: var(--color-hero-text) !important;
+  border: 1px solid var(--color-accent-ds) !important;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-accent-hover) !important;
+  border-color: var(--color-accent-hover) !important;
+}
+
+/* Secondary Button: Outlined primary */
+.btn-secondary {
+  background: transparent !important;
+  color: var(--color-text-primary) !important;
+  border: 1.5px solid var(--color-text-primary) !important;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-text-primary) !important;
+  color: var(--color-bg) !important;
+}
+
+/* Accent Button: Deep luxury gold for CTAs, newsletter subscribe, sign up */
+.btn-accent {
+  background: var(--color-deep-gold) !important;
+  color: var(--color-hero-text) !important;
+  border: 1px solid var(--color-deep-gold) !important;
+  box-shadow: 0 2px 8px rgba(197, 160, 89, 0.2) !important;
+}
+.btn-accent:hover:not(:disabled) {
+  background: #B08B46 !important;
+  border-color: #B08B46 !important;
+  box-shadow: 0 4px 12px rgba(197, 160, 89, 0.3) !important;
+}
+
+/* Ghost Button: Muted text, transparent bg, light gray hover */
+.btn-ghost {
+  background: transparent !important;
+  color: var(--color-text-secondary) !important;
+  border: none !important;
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* Danger Button: Destructive red */
+.btn-danger {
+  background: var(--color-danger) !important;
+  color: var(--color-hero-text) !important;
+  border: 1px solid var(--color-danger) !important;
+}
+.btn-danger:hover:not(:disabled) {
+  background: #B83E3E !important;
+  border-color: #B83E3E !important;
+}
+
+/* Keep layout classes like full-width working */
+.btn.w-full,
+button.w-full {
+  width: 100% !important;
 }

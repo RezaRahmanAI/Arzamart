@@ -1,4 +1,4 @@
-﻿/* ═══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════
    ADMIN LAPTOP SCALE — compact fonts for 1024-1439px
    Reduces root font-size so all rem-based tokens scale down
    ═══════════════════════════════════════════════════════ */
@@ -48,21 +48,28 @@
     font-size: 0.75rem;
   }
 
-  /* Compact admin buttons */
-  .site-container-admin .btn {
-    font-size: 0.8rem;
-    padding: 8px 16px;
-    min-height: 36px;
+  /* Compact admin buttons - default MD buttons slightly shrunk for space, preserving other size classes */
+  .site-container-admin .btn:not(.btn-xs):not(.btn-sm):not(.btn-lg):not(.btn-xl):not(.h-7):not(.h-8):not(.h-12):not(.h-14):not(.h-16) {
+    font-size: 13px !important;
+    padding: 0 14px !important;
+    height: 36px !important;
+    min-height: 36px !important;
   }
 
-  /* Compact form inputs */
-  .site-container-admin .form-input,
-  .site-container-admin input,
-  .site-container-admin select,
-  .site-container-admin textarea {
-    font-size: 0.8rem;
-    padding: 8px 10px;
-    min-height: 36px;
+  /* Compact form inputs - default MD inputs slightly shrunk for space, preserving other size classes */
+  .site-container-admin .form-input:not(.input-xs):not(.input-sm):not(.input-lg):not(.input-xl):not(.h-7):not(.h-8):not(.h-12):not(.h-14):not(.h-16),
+  .site-container-admin input:not(.input-xs):not(.input-sm):not(.input-lg):not(.input-xl):not(.h-7):not(.h-8):not(.h-12):not(.h-14):not(.h-16),
+  .site-container-admin select:not(.input-xs):not(.input-sm):not(.input-lg):not(.input-xl):not(.h-7):not(.h-8):not(.h-12):not(.h-14):not(.h-16) {
+    font-size: 13px !important;
+    padding: 0 12px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+  }
+
+  /* Compact form textareas */
+  .site-container-admin textarea:not(.h-7):not(.h-8):not(.h-12):not(.h-14):not(.h-16) {
+    font-size: 13px !important;
+    padding: 10px 12px !important;
   }
 
   /* Compact badges/tags */
