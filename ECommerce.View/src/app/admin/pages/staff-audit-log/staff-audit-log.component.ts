@@ -118,11 +118,11 @@ export class StaffAuditLogComponent implements OnInit, OnDestroy {
   }
 
   getActionBadgeClass(action: string): string {
-    if (action.includes("CREATE")) return "badge-success border-emerald-200 text-emerald-700 bg-emerald-50";
-    if (action.includes("DELETE")) return "badge-danger border-red-200 text-red-700 bg-red-50";
-    if (action.includes("PASSWORD")) return "badge-warning border-amber-200 text-amber-700 bg-amber-50";
-    if (action.includes("UPDATE")) return "badge-default border-blue-200 text-blue-700 bg-blue-50";
-    return "badge-default border-slate-200 text-slate-700 bg-slate-50";
+    if (action.includes("CREATE")) return "badge-success border-ds-success/30 text-ds-success bg-ds-success-bg";
+    if (action.includes("DELETE")) return "badge-danger border-ds-danger/30 text-ds-danger bg-ds-danger-bg";
+    if (action.includes("PASSWORD")) return "badge-warning border-ds-warning/30 text-ds-warning bg-ds-warning-bg";
+    if (action.includes("UPDATE")) return "badge-default border-ds-info/30 text-ds-info bg-ds-info-bg";
+    return "badge-default border-ds-border text-ds-text-secondary bg-ds-surface";
   }
 
   ngOnDestroy(): void {

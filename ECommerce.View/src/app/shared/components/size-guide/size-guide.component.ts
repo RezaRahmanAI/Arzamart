@@ -27,14 +27,14 @@ import { map } from "rxjs";
       >
         <!-- Header -->
         <div
-          class="flex items-center justify-between px-8 py-6 border-b border-gray-100"
+          class="flex items-center justify-between px-8 py-6 border-b border-ds-border"
         >
           <h2 class="text-primary">
             Size Guide
           </h2>
           <button
             (click)="close.emit()"
-            class="p-2 text-slate-400 hover:text-red-500 transition-colors rounded-full hover:bg-red-50"
+            class="p-2 text-ds-text-muted hover:text-ds-danger transition-colors rounded-full hover:bg-ds-danger-bg"
           >
             <app-icon name="X" size="20"></app-icon>
           </button>
@@ -43,7 +43,7 @@ import { map } from "rxjs";
         <!-- Content -->
         <div class="flex-1 overflow-y-auto px-8 py-8">
           <p
-            class="text-slate-500 mb-8 text-center"
+            class="text-ds-text-muted mb-8 text-center"
           >
             {{
               customImageUrl || (settings$ | async)?.sizeGuideImageUrl
@@ -55,28 +55,28 @@ import { map } from "rxjs";
           <!-- Product Specific Image -->
           @if (customImageUrl) {
             <div class="mb-10 group">
-              <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50/30">
+              <div class="rounded-xl overflow-hidden border border-ds-border shadow-sm bg-ds-surface/30">
                 <img
                   [src]="getImageUrl(customImageUrl)"
                   alt="Product Size Chart"
                   class="w-full h-auto object-contain"
                 />
               </div>
-              <p class="mt-4 text-slate-400 text-center">
+              <p class="mt-4 text-ds-text-muted text-center">
                 * This chart is specifically for this product.
               </p>
             </div>
           } @else {
             @if ((settings$ | async)?.sizeGuideImageUrl; as globalImageUrl) {
               <div class="mb-10 group">
-                <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50/30">
+                <div class="rounded-xl overflow-hidden border border-ds-border shadow-sm bg-ds-surface/30">
                   <img
                     [src]="getImageUrl(globalImageUrl)"
                     alt="Global Size Guide"
                     class="w-full h-auto object-contain"
                   />
                 </div>
-                <p class="mt-4 text-slate-400 text-center">
+                <p class="mt-4 text-ds-text-muted text-center">
                   * Measurements shown in the image are for reference.
                 </p>
               </div>
@@ -84,14 +84,14 @@ import { map } from "rxjs";
               <!-- Unit Toggle -->
               <div class="flex justify-center mb-8">
                 <div
-                  class="inline-flex rounded-lg border border-gray-100 p-1 bg-gray-50/50"
+                  class="inline-flex rounded-lg border border-ds-border p-1 bg-ds-surface/50"
                 >
                   <button
                     class="px-6 py-2 rounded-md transition-all duration-300"
                     [ngClass]="
                       unit === 'cm'
                         ? 'bg-white shadow-sm text-primary'
-                        : 'text-slate-400 hover:text-slate-600'
+                        : 'text-ds-text-muted hover:text-ds-text-secondary'
                     "
                     (click)="unit = 'cm'"
                   >
@@ -102,7 +102,7 @@ import { map } from "rxjs";
                     [ngClass]="
                       unit === 'in'
                         ? 'bg-white shadow-sm text-primary'
-                        : 'text-slate-400 hover:text-slate-600'
+                        : 'text-ds-text-muted hover:text-ds-text-secondary'
                     "
                     (click)="unit = 'in'"
                   >
@@ -115,35 +115,35 @@ import { map } from "rxjs";
               <div class="overflow-x-auto">
                 <table class="w-full text-center">
                   <thead>
-                    <tr class="border-b border-gray-100">
+                    <tr class="border-b border-ds-border">
                       <th
-                        class="pb-3 text-slate-900"
+                        class="pb-3 text-ds-text"
                       >
                         Size
                       </th>
                       <th
-                        class="pb-3 text-slate-900 text-right"
+                        class="pb-3 text-ds-text text-right"
                       >
                         Chest
                       </th>
                       <th
-                        class="pb-3 text-slate-900 text-right"
+                        class="pb-3 text-ds-text text-right"
                       >
                         Length
                       </th>
                       <th
-                        class="pb-3 text-slate-900 text-right"
+                        class="pb-3 text-ds-text text-right"
                       >
                         Shoulder
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="text-slate-600">
+                  <tbody class="text-ds-text-secondary">
                     @for (row of sizeData; track row.size) {
                       <tr
-                        class="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors"
+                        class="border-b border-ds-border last:border-0 hover:bg-ds-surface/50 transition-colors"
                       >
-                        <td class="py-4 text-slate-900">
+                        <td class="py-4 text-ds-text">
                           {{ row.size }}
                         </td>
                         <td class="py-4 text-right">{{ convert(row.chest) }}</td>
@@ -156,28 +156,28 @@ import { map } from "rxjs";
               </div>
 
               <div
-                class="mt-12 bg-gray-50 p-6 rounded-none border border-gray-100"
+                class="mt-12 bg-ds-surface p-6 rounded-none border border-ds-border"
               >
                 <h4
-                  class="text-slate-900 mb-2"
+                  class="text-ds-text mb-2"
                 >
                   How to measure
                 </h4>
                 <div
-                  class="space-y-3 text-slate-500"
+                  class="space-y-3 text-ds-text-muted"
                 >
                   <p>
-                    <span class="text-slate-700">Chest:</span> Measure
+                    <span class="text-ds-text">Chest:</span> Measure
                     around the fullest part of your chest, keeping the tape
                     horizontal.
                   </p>
                   <p>
-                    <span class="text-slate-700">Length:</span>
+                    <span class="text-ds-text">Length:</span>
                     Measure from the highest point of the shoulder down to the
                     hem.
                   </p>
                   <p>
-                    <span class="text-slate-700">Shoulder:</span>
+                    <span class="text-ds-text">Shoulder:</span>
                     Measure across the back from shoulder tip to shoulder tip.
                   </p>
                 </div>

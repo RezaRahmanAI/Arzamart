@@ -13,7 +13,7 @@
     <div class="lg:col-span-1">
       <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm overflow-hidden">
         <div class="px-ds-6 py-ds-4 border-b border-ds-border bg-ds-bg/50 flex items-center gap-ds-3">
-          <app-icon name="Ban" size="14" className="text-red-500"></app-icon>
+          <app-icon name="Ban" size="14" className="text-ds-danger"></app-icon>
           <div>
             <h3 class="text-ds-text">Block IP</h3>
             <p class="text-ds-text-muted mt-0.5">Add new IP to blocklist</p>
@@ -31,7 +31,7 @@
               />
               <p
                 *ngIf="blockForm.get('ipAddress')?.touched && blockForm.get('ipAddress')?.errors?.['pattern']"
-                class="text-red-500 ml-1"
+                class="text-ds-danger ml-1"
               >
                 Invalid IP format
               </p>
@@ -48,7 +48,7 @@
             <button
               type="submit"
               [disabled]="blockForm.invalid || isLoading"
-              class="btn btn-primary w-full !h-12 bg-red-600 hover:bg-red-700 border-red-600"
+              class="btn btn-primary w-full !h-12 bg-ds-danger hover:bg-ds-danger-hover border-ds-danger"
             >
               Block IP
             </button>
@@ -84,9 +84,9 @@
               <tr *ngIf="!isLoading && blockedIps.length === 0">
                 <td colspan="4" class="px-ds-6 py-ds-16 text-center text-ds-text-muted">No IPs are currently blocked.</td>
               </tr>
-              <tr *ngFor="let ip of blockedIps" class="hover:bg-red-50/10 transition-colors group">
+              <tr *ngFor="let ip of blockedIps" class="hover:bg-ds-danger/10 transition-colors group">
                 <td class="px-ds-6 py-ds-4">
-                  <span class="text-red-500">{{ ip.ipAddress }}</span>
+                  <span class="text-ds-danger">{{ ip.ipAddress }}</span>
                 </td>
                 <td class="px-ds-6 py-ds-4">
                   <p class="text-ds-text truncate max-w-[200px]" [title]="ip.reason || 'No reason provided'">

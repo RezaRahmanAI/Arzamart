@@ -64,43 +64,32 @@ export class OrderDetailsComponent implements OnInit {
   statusClass(status: OrderStatus): string {
     switch (status) {
       case "Pending":
-        return "bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:border-amber-800/50";
+        return "bg-ds-warning-bg text-ds-warning border-ds-warning/30";
       case "Confirmed":
-        return "bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:border-emerald-800/50";
+        return "bg-ds-success-bg text-ds-success border-ds-success/30";
       case "Processing":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-200 dark:border-yellow-800/50";
+        return "bg-ds-warning-bg text-ds-warning border-ds-warning/30";
       case "Shipped":
-        return "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800/50";
+        return "bg-ds-info-bg text-ds-info border-ds-info/30";
       case "Delivered":
         return "bg-accent/40 text-primary border-primary/20 dark:bg-accent/20 dark:text-accent dark:border-accent/30";
       case "Cancelled":
-        return "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-200 dark:border-red-800/50";
+        return "bg-ds-danger-bg text-ds-danger border-ds-danger/30";
       case "Refund":
-        return "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-200 dark:border-red-800/50";
+        return "bg-ds-danger-bg text-ds-danger border-ds-danger/30";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "bg-ds-surface text-ds-text border-ds-border";
     }
   }
 
   getStatusColor(status: OrderStatus): string {
-    switch (status) {
-      case "Pending":
-        return "#f59e0b";
-      case "Confirmed":
-        return "#10b981";
-      case "Processing":
-        return "#eab308";
-      case "Shipped":
-        return "#3b82f6";
-      case "Delivered":
-        return "#6366f1";
-      case "Cancelled":
-        return "#ef4444";
-      case "Refund":
-        return "#f43f5e";
-      default:
-        return "#9ca3af";
-    }
+    const map: Record<string, string> = {
+      Pending: "var(--status-pending)", Confirmed: "var(--status-confirmed)",
+      Processing: "var(--status-processing)", Shipped: "var(--status-shipped)",
+      Delivered: "var(--status-delivered)", Cancelled: "var(--status-cancelled)",
+      Refund: "var(--status-refund)",
+    };
+    return map[status] || "var(--status-hold)";
   }
 
   updateStatus(orderId: number, newStatus: OrderStatus): void {

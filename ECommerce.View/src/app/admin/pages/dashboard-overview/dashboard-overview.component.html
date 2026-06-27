@@ -72,13 +72,13 @@
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-ds-3">
         
         <!-- 1. Today's Orders (Blue) -->
-        <div class="bg-blue-600 border border-blue-700 p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
+        <div class="bg-ds-info border border-ds-info p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-blue-200 block font-semibold leading-none mb-1">Orders</span>
+            <span class="text-[11px] uppercase tracking-wider text-ds-info/60 block font-semibold leading-none mb-1">Orders</span>
             <div class="text-ds-xl font-bold leading-none">{{ stats.todayOrdersCount }}</div>
-            <app-price-display [amount]="stats.todayOrdersRevenue" size="sm" class="text-blue-100 block"></app-price-display>
+            <app-price-display [amount]="stats.todayOrdersRevenue" size="sm" class="text-ds-info/40 block"></app-price-display>
           </div>
-          <div class="text-blue-200 opacity-20 size-9 flex items-center justify-center shrink-0">
+          <div class="text-ds-info/60 opacity-20 size-9 flex items-center justify-center shrink-0">
             <app-icon name="ShoppingCart" size="24"></app-icon>
           </div>
         </div>
@@ -90,7 +90,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayPendingCount }}</div>
             <app-price-display [amount]="stats.todayPendingRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-yellow-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-warning opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="Clock" size="16"></app-icon>
           </div>
         </div>
@@ -102,7 +102,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayConfirmCount }}</div>
             <app-price-display [amount]="stats.todayConfirmRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-green-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-success opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="CheckCircle" size="16"></app-icon>
           </div>
         </div>
@@ -114,7 +114,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayPackagingCount }}</div>
             <app-price-display [amount]="stats.todayPackagingRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-purple-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-info opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="ShoppingBag" size="16"></app-icon>
           </div>
         </div>
@@ -126,7 +126,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.wapaShopCount }}</div>
             <app-price-display [amount]="stats.wapaShopRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-blue-400 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-info opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="Store" size="16"></app-icon>
           </div>
         </div>
@@ -138,7 +138,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.mirpurShopCount }}</div>
             <app-price-display [amount]="stats.mirpurShopRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-emerald-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-success opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="Store" size="16"></app-icon>
           </div>
         </div>
@@ -156,25 +156,25 @@
         </div>
 
         <!-- 8. Pathao Return (Red) -->
-        <div class="bg-red-800 border border-red-900 p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
+        <div class="bg-ds-danger border border-ds-danger p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-red-200 block font-semibold leading-none mb-1">Pathao Return</span>
+            <span class="text-[11px] uppercase tracking-wider text-ds-danger/60 block font-semibold leading-none mb-1">Pathao Return</span>
             <div class="text-ds-xl font-bold leading-none">{{ stats.pathaoReturnCount }}</div>
-            <app-price-display [amount]="stats.pathaoReturnRevenue" size="sm" class="text-red-100 block"></app-price-display>
+            <app-price-display [amount]="stats.pathaoReturnRevenue" size="sm" class="text-ds-danger/40 block"></app-price-display>
           </div>
-          <div class="text-yellow-400 opacity-80 size-8 bg-red-900/50 border border-red-700 rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-warning opacity-80 size-8 bg-ds-danger/50 border border-ds-danger rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="RotateCcw" size="16"></app-icon>
           </div>
         </div>
 
         <!-- 9. Pathao Delivered (Green) -->
-        <div class="bg-emerald-800 border border-emerald-900 p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
+        <div class="bg-ds-success border border-ds-success p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-emerald-200 block font-semibold leading-none mb-1">Pathao Delivered</span>
+            <span class="text-[11px] uppercase tracking-wider text-ds-success/60 block font-semibold leading-none mb-1">Pathao Delivered</span>
             <div class="text-ds-xl font-bold leading-none">{{ stats.pathaoDeliveredCount }}</div>
-            <app-price-display [amount]="stats.pathaoDeliveredRevenue" size="sm" class="text-emerald-100 block"></app-price-display>
+            <app-price-display [amount]="stats.pathaoDeliveredRevenue" size="sm" class="text-ds-success/40 block"></app-price-display>
           </div>
-          <div class="text-yellow-400 opacity-80 size-8 bg-emerald-900/50 border border-emerald-700 rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-warning opacity-80 size-8 bg-ds-success/50 border border-ds-success rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="CheckCircle" size="16"></app-icon>
           </div>
         </div>
@@ -186,7 +186,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayPreOrdersCount }}</div>
             <app-price-display [amount]="stats.todayPreOrdersRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-red-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-danger opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="Clock" size="16"></app-icon>
           </div>
         </div>
@@ -210,7 +210,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalPendingCount }}</div>
             <app-price-display [amount]="stats.totalPendingRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-yellow-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-warning opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="Clock" size="16"></app-icon>
           </div>
         </div>
@@ -222,7 +222,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalConfirmCount }}</div>
             <app-price-display [amount]="stats.totalConfirmRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-green-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-success opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="CheckCircle" size="16"></app-icon>
           </div>
         </div>
@@ -234,7 +234,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalPackagingCount }}</div>
             <app-price-display [amount]="stats.totalPackagingRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-purple-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-info opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="ShoppingBag" size="16"></app-icon>
           </div>
         </div>
@@ -246,7 +246,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalReturnProcessCount }}</div>
             <app-price-display [amount]="stats.totalReturnProcessRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-red-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-danger opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="RotateCcw" size="16"></app-icon>
           </div>
         </div>
@@ -270,7 +270,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalPreOrdersCount }}</div>
             <app-price-display [amount]="stats.totalPreOrdersRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-red-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-danger opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="Clock" size="16"></app-icon>
           </div>
         </div>
@@ -282,7 +282,7 @@
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.incompleteOrdersCount }}</div>
             <app-price-display [amount]="stats.incompleteOrdersRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-yellow-600 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-warning opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="Activity" size="16"></app-icon>
           </div>
         </div>

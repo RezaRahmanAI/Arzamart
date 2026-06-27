@@ -43,11 +43,11 @@ export class PriceDisplayComponent {
   get usdClass(): string {
     switch (this.size) {
       case "sm":
-        return "text-xs text-slate-500";
+        return "text-xs text-ds-text-muted";
       case "lg":
-        return "text-sm text-slate-500";
+        return "text-sm text-ds-text-muted";
       default:
-        return "text-xs text-slate-500";
+        return "text-xs text-ds-text-muted";
     }
   }
 }

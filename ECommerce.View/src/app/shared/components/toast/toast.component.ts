@@ -39,15 +39,15 @@ import {
       @for (toast of toasts; track toast.id) {
         <div
           @toastAnimation
-          class="pointer-events-auto w-full bg-white text-gray-900 px-4 py-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex items-center justify-between gap-4 rounded-xl border border-gray-100"
+          class="pointer-events-auto w-full bg-ds-bg text-ds-text px-4 py-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex items-center justify-between gap-4 rounded-xl border border-ds-border"
         >
           <div class="flex items-center gap-3">
              @if (toast.type === 'SUCCESS') {
-                <div class="size-8 rounded-full bg-green-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-green-500/20">
+                <div class="size-8 rounded-full bg-ds-success flex items-center justify-center text-white shrink-0 shadow-lg shadow-ds-success/20">
                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
                 </div>
              } @else if (toast.type === 'ERROR') {
-                <div class="size-8 rounded-full bg-red-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-red-500/20">
+                <div class="size-8 rounded-full bg-ds-danger flex items-center justify-center text-white shrink-0 shadow-lg shadow-ds-danger/20">
                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                 </div>
              }
@@ -57,7 +57,7 @@ import {
           </div>
           <button
             (click)="remove(toast.id)"
-            class="size-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-all"
+            class="size-8 flex items-center justify-center rounded-full hover:bg-ds-surface text-ds-text-muted hover:text-ds-text transition-all"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
           </button>

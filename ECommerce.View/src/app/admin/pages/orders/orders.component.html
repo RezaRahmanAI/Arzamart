@@ -253,7 +253,7 @@
                   [ngClass]="order.isPreOrder ? 'text-ds-accent' : 'text-ds-text'"
                   title="Copy Order Number">
                   #{{ order.orderNumber }}
-                  <app-icon *ngIf="order.isPreOrder && !order.isStockAvailable" name="AlertTriangle" size="14" className="text-red-500 animate-pulse" title="Pre-Order Stock Issue Detected"></app-icon>
+                  <app-icon *ngIf="order.isPreOrder && !order.isStockAvailable" name="AlertTriangle" size="14" className="text-ds-danger animate-pulse" title="Pre-Order Stock Issue Detected"></app-icon>
                 </span>
                 <span class="text-ds-text-muted">{{ order.createdAt | date: 'MMM d, h:mm a' }}</span>
               </div>
@@ -344,14 +344,14 @@
                 <button *ngIf="!order.isPreOrder" (click)="moveToPreOrder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-violet-500 hover:border-violet-500 transition-colors flex items-center justify-center" title="Move to Pre-Order">
                   <app-icon name="ArrowRightCircle" size="14"></app-icon>
                 </button>
-                <button *ngIf="order.isPreOrder" (click)="moveToMainOrder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-emerald-500 hover:border-emerald-500 transition-colors flex items-center justify-center" title="Transfer to Main">
+                <button *ngIf="order.isPreOrder" (click)="moveToMainOrder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-success hover:border-ds-success transition-colors flex items-center justify-center" title="Transfer to Main">
                   <app-icon name="RefreshCw" size="14"></app-icon>
                 </button>
 
                 <button (click)="sendReminder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-amber-500 hover:border-amber-500 transition-colors flex items-center justify-center" title="SMS Reminder">
                   <app-icon name="Bell" size="14"></app-icon>
                 </button>
-                <button *ngIf="order.status !== 'Cancelled'" (click)="cancelOrder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center" title="Cancel Order">
+                <button *ngIf="order.status !== 'Cancelled'" (click)="cancelOrder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-danger hover:border-ds-danger transition-colors flex items-center justify-center" title="Cancel Order">
                   <app-icon name="XCircle" size="14"></app-icon>
                 </button>
               </div>

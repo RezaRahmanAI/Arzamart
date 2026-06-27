@@ -62,7 +62,7 @@
             <button
               *ngIf="authService.isSuperAdmin()"
               (click)="deleteBanner(banner.id)"
-              class="size-10 bg-ds-surface rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center"
+              class="size-10 bg-ds-surface rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-danger hover:border-ds-danger transition-colors flex items-center justify-center"
             >
               <app-icon name="Trash2" size="16"></app-icon>
             </button>

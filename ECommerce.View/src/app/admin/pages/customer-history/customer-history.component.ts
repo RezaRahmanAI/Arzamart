@@ -163,25 +163,16 @@ export class CustomerHistoryComponent implements OnInit, OnDestroy {
   }
 
   getStatusColor(status: string): string {
-    switch (status) {
-      case "Pending": return "#f59e0b";
-      case "Confirmed": return "#10b981";
-      case "Processing": return "#eab308";
-      case "Packed": return "#6366f1";
-      case "Shipped": return "#3b82f6";
-      case "Delivered": return "#0d4c5e";
-      case "Cancelled": return "#ef4444";
-      case "Hold": return "#6b7280";
-      case "PreOrder": return "#8b5cf6";
-      case "Return":
-      case "ReturnProcess":
-        return "#ec4899";
-      case "Exchange":
-        return "#8b5cf6";
-      case "Refund":
-        return "#f43f5e";
-      default: return "#94a3b8";
-    }
+    const map: Record<string, string> = {
+      Pending: "var(--status-pending)", Confirmed: "var(--status-confirmed)",
+      Processing: "var(--status-processing)", Packed: "var(--status-packed)",
+      Shipped: "var(--status-shipped)", Delivered: "var(--status-delivered)",
+      Cancelled: "var(--status-cancelled)", Hold: "var(--status-hold)",
+      PreOrder: "var(--status-preorder)", Return: "var(--status-return)",
+      ReturnProcess: "var(--status-return)", Exchange: "var(--status-preorder)",
+      Refund: "var(--status-refund)",
+    };
+    return map[status] || "var(--status-hold)";
   }
 
   // Action methods (copied from AdminOrders for functionality)

@@ -24,34 +24,34 @@ import { NotificationService } from "../../../core/services/notification.service
 
       <!-- Modal Card Container -->
       <div
-        class="relative w-full max-w-sm bg-white shadow-2xl rounded-2xl overflow-hidden transform transition-all duration-300 ease-out p-6 flex flex-col gap-6"
+        class="relative w-full max-w-sm bg-ds-bg shadow-2xl rounded-2xl overflow-hidden transform transition-all duration-300 ease-out p-6 flex flex-col gap-6"
       >
         <!-- Close Cross Button -->
         <button
           (click)="close.emit()"
-          class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          class="absolute top-4 right-4 text-ds-text-muted hover:text-ds-text transition-colors"
           aria-label="Close modal"
         >
           <app-icon name="X" size="18"></app-icon>
         </button>
 
         <!-- Title -->
-        <div class="border-b border-gray-100 pb-3">
-          <h3 class="text-base font-bold text-gray-900 text-center">Select Size & Quantity</h3>
+        <div class="border-b border-ds-border pb-3">
+          <h3 class="text-base font-bold text-ds-text text-center">Select Size & Quantity</h3>
         </div>
 
         <!-- Size Selection -->
         @if (availableSizes.length > 0) {
           <div class="flex flex-col gap-3">
-            <span class="text-sm font-semibold text-gray-800">Size:</span>
+            <span class="text-sm font-semibold text-ds-text">Size:</span>
             <div class="flex flex-wrap gap-2">
               @for (size of availableSizes; track size) {
                 <button
                   (click)="selectSize(size)"
                   class="h-10 min-w-[3rem] px-3 flex items-center justify-center border font-bold text-sm transition-all duration-200 rounded-md"
                   [ngClass]="{
-                    'border-[#1D5DEC] text-[#1D5DEC] bg-blue-50/20': selectedSize === size,
-                    'border-gray-200 text-gray-800 bg-white hover:border-gray-400': selectedSize !== size
+                    'border-ds-accent text-ds-accent bg-ds-info/10': selectedSize === size,
+                    'border-ds-border text-ds-text bg-ds-bg hover:border-ds-text-muted': selectedSize !== size
                   }"
                 >
                   {{ size }}
@@ -63,18 +63,18 @@ import { NotificationService } from "../../../core/services/notification.service
 
         <!-- Quantity Selector -->
         <div class="flex flex-col gap-3">
-          <span class="text-sm font-semibold text-gray-800">Quantity:</span>
-          <div class="flex items-center gap-1 w-fit border border-gray-200 rounded-md overflow-hidden bg-white">
+          <span class="text-sm font-semibold text-ds-text">Quantity:</span>
+          <div class="flex items-center gap-1 w-fit border border-ds-border rounded-md overflow-hidden bg-ds-bg">
             <button 
               (click)="decreaseQuantity()"
-              class="w-10 h-10 flex items-center justify-center bg-gray-50 text-gray-600 hover:bg-gray-100 transition-all font-bold"
+              class="w-10 h-10 flex items-center justify-center bg-ds-surface text-ds-text-secondary hover:bg-ds-surface-2 transition-all font-bold"
             >
               -
             </button>
-            <span class="w-12 text-center font-bold text-gray-900">{{ quantity }}</span>
+            <span class="w-12 text-center font-bold text-ds-text">{{ quantity }}</span>
             <button 
               (click)="increaseQuantity()"
-              class="w-10 h-10 flex items-center justify-center bg-gray-50 text-gray-600 hover:bg-gray-100 transition-all font-bold"
+              class="w-10 h-10 flex items-center justify-center bg-ds-surface text-ds-text-secondary hover:bg-ds-surface-2 transition-all font-bold"
             >
               +
             </button>
@@ -84,7 +84,7 @@ import { NotificationService } from "../../../core/services/notification.service
         <!-- Action Button -->
         <button
           (click)="confirm()"
-          class="w-full h-12 bg-[#1D5DEC] hover:bg-[#154ec5] text-white font-bold rounded-lg shadow-md transition-all active:scale-[0.98] flex items-center justify-center text-sm"
+          class="w-full h-12 bg-ds-accent hover:bg-ds-accent-hover text-white font-bold rounded-lg shadow-md transition-all active:scale-[0.98] flex items-center justify-center text-sm"
         >
           {{ actionType === 'order' ? 'Order Now' : 'Add to Cart' }}
         </button>

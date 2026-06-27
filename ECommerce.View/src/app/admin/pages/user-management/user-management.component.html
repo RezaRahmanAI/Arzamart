@@ -173,7 +173,7 @@
                     <td class="px-ds-6 py-ds-3.5 text-right">
                       <div class="flex items-center justify-end gap-ds-1.5">
                         <button (click)="openHistoryModal(admin)" title="Activity History"
-                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-blue-500 hover:border-blue-500 transition-colors flex items-center justify-center">
+                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-info hover:border-ds-info transition-colors flex items-center justify-center">
                           <app-icon name="History" size="13"></app-icon>
                         </button>
                         <button (click)="openEditModal(admin)" title="Edit"
@@ -181,11 +181,11 @@
                           <app-icon name="Edit" size="13"></app-icon>
                         </button>
                         <button (click)="resetPassword(admin)" title="Reset Password"
-                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-orange-500 hover:border-orange-500 transition-colors flex items-center justify-center">
+                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-warning hover:border-ds-warning transition-colors flex items-center justify-center">
                           <app-icon name="Lock" size="13"></app-icon>
                         </button>
                         <button (click)="deleteAdmin(admin)" title="Deactivate"
-                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center">
+                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-danger hover:border-ds-danger transition-colors flex items-center justify-center">
                           <app-icon name="Trash2" size="13"></app-icon>
                         </button>
                       </div>
@@ -290,7 +290,7 @@
                     <td class="px-ds-6 py-ds-3.5 text-right">
                       <div class="flex items-center justify-end gap-ds-1.5">
                         <button (click)="openHistoryModal(admin)" title="Activity History"
-                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-blue-500 hover:border-blue-500 transition-colors flex items-center justify-center">
+                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-info hover:border-ds-info transition-colors flex items-center justify-center">
                           <app-icon name="History" size="13"></app-icon>
                         </button>
                         <button (click)="openEditModal(admin)" title="Edit"
@@ -298,7 +298,7 @@
                           <app-icon name="Edit" size="13"></app-icon>
                         </button>
                         <button (click)="resetPassword(admin)" title="Reset Password"
-                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-orange-500 hover:border-orange-500 transition-colors flex items-center justify-center">
+                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-warning hover:border-ds-warning transition-colors flex items-center justify-center">
                           <app-icon name="Lock" size="13"></app-icon>
                         </button>
                       </div>
@@ -403,7 +403,7 @@
                     <td class="px-ds-6 py-ds-3.5 text-right">
                       <div class="flex items-center justify-end gap-ds-1.5">
                         <button (click)="openHistoryModal(admin)" title="Activity History"
-                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-blue-500 hover:border-blue-500 transition-colors flex items-center justify-center">
+                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-info hover:border-ds-info transition-colors flex items-center justify-center">
                           <app-icon name="History" size="13"></app-icon>
                         </button>
                         <button (click)="openEditModal(admin)" title="Edit"
@@ -411,7 +411,7 @@
                           <app-icon name="Edit" size="13"></app-icon>
                         </button>
                         <button (click)="resetPassword(admin)" title="Reset Password"
-                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-orange-500 hover:border-orange-500 transition-colors flex items-center justify-center">
+                                class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-warning hover:border-ds-warning transition-colors flex items-center justify-center">
                           <app-icon name="Lock" size="13"></app-icon>
                         </button>
                       </div>
@@ -459,9 +459,9 @@
                       <label class="block text-ds-text ml-1 text-sm">Username</label>
                       <input type="text" formControlName="userName" placeholder="E.G. avance"
                              class="form-input !h-10 sm:!h-11 !px-3 sm:!px-ds-4 text-sm"
-                             [ngClass]="{'!border-red-500': createForm.get('userName')?.errors?.['pattern']}">
+                             [ngClass]="{'!border-ds-danger': createForm.get('userName')?.errors?.['pattern']}">
                       @if (createForm.get('userName')?.errors?.['pattern']) {
-                        <p class="text-red-500 text-[10px] ml-1">
+                        <p class="text-ds-danger text-[10px] ml-1">
                           Only small letters and numbers allowed
                         </p>
                       }
@@ -472,9 +472,9 @@
                     <label class="block text-ds-text ml-1 text-sm">Email</label>
                     <input type="email" formControlName="email" placeholder="E.G. vance&#64;arzamart.com"
                            class="form-input !h-10 sm:!h-11 !px-3 sm:!px-ds-4 text-sm"
-                           [ngClass]="{'!border-red-500': createForm.get('email')?.errors?.['pattern']}">
+                           [ngClass]="{'!border-ds-danger': createForm.get('email')?.errors?.['pattern']}">
                     @if (createForm.get('email')?.errors?.['pattern']) {
-                      <p class="text-red-500 text-[10px] ml-1">
+                      <p class="text-ds-danger text-[10px] ml-1">
                         Capital letters are not allowed in email
                       </p>
                     }
@@ -525,7 +525,7 @@
                 }
 
                 <div class="p-3 sm:p-ds-6 bg-ds-bg border border-ds-border rounded-sm space-y-2 sm:space-y-ds-3">
-                    <div class="flex items-center gap-2 sm:gap-ds-3 text-orange-500">
+                    <div class="flex items-center gap-2 sm:gap-ds-3 text-ds-warning">
                         <app-icon name="ShieldAlert" size="14" class="sm:!size-4"></app-icon>
                         <span class="text-sm">Warning</span>
                     </div>
@@ -583,9 +583,9 @@
                       <label class="block text-ds-text ml-1 text-sm">Username</label>
                       <input type="text" formControlName="userName" placeholder="Username"
                              class="form-input !h-10 sm:!h-11 !px-3 sm:!px-ds-4 text-sm"
-                             [ngClass]="{'!border-red-500': editForm.get('userName')?.errors?.['pattern']}">
+                             [ngClass]="{'!border-ds-danger': editForm.get('userName')?.errors?.['pattern']}">
                       @if (editForm.get('userName')?.errors?.['pattern']) {
-                        <p class="text-red-500 text-[10px] ml-1">
+                        <p class="text-ds-danger text-[10px] ml-1">
                           Only small letters and numbers allowed
                         </p>
                       }
@@ -596,9 +596,9 @@
                     <label class="block text-ds-text ml-1 text-sm">Email</label>
                     <input type="email" formControlName="email" placeholder="Email"
                            class="form-input !h-10 sm:!h-11 !px-3 sm:!px-ds-4 text-sm"
-                           [ngClass]="{'!border-red-500': editForm.get('email')?.errors?.['pattern']}">
+                           [ngClass]="{'!border-ds-danger': editForm.get('email')?.errors?.['pattern']}">
                     @if (editForm.get('email')?.errors?.['pattern']) {
-                      <p class="text-red-500 text-[10px] ml-1">
+                      <p class="text-ds-danger text-[10px] ml-1">
                         Capital letters are not allowed in email
                       </p>
                     }

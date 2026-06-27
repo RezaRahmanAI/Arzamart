@@ -60,7 +60,7 @@
                <span class="inline-flex items-center gap-ds-2 px-ds-4 py-1.5 rounded-sm bg-ds-success/10 text-ds-success border border-ds-success/20">
                  <app-icon name="ThumbsUp" size="14"></app-icon> Positive: 0
                </span>
-               <span class="inline-flex items-center gap-ds-2 px-ds-4 py-1.5 rounded-sm bg-red-500/10 text-red-500 border border-red-500/20">
+               <span class="inline-flex items-center gap-ds-2 px-ds-4 py-1.5 rounded-sm bg-ds-danger/10 text-ds-danger border border-ds-danger/20">
                  <app-icon name="ThumbsDown" size="14"></app-icon> Caution: 0
                </span>
             </div>
@@ -85,7 +85,7 @@
                 <td class="px-ds-4 py-3 text-center">{{ item.count }}</td>
                 <td class="px-ds-4 py-3 text-right">৳{{ item.amount }}</td>
                 <td class="px-ds-4 py-3 text-right text-ds-success">৳{{ item.paid }}</td>
-                <td class="px-ds-4 py-3 text-right" [class.text-red-500]="item.due > 0">৳{{ item.due }}</td>
+                <td class="px-ds-4 py-3 text-right" [class.text-ds-danger]="item.due > 0">৳{{ item.due }}</td>
               </tr>
               <tr class="bg-ds-text text-ds-surface">
                 <td class="px-ds-4 py-3">Global Matrix</td>
@@ -120,7 +120,7 @@
            <p class="text-ds-text-muted mt-1">Delivered</p>
          </div>
          <div class="bg-ds-bg border border-ds-border p-ds-4 rounded-sm text-center">
-           <p class="text-red-500">{{ customerStats.cancelled }}</p>
+           <p class="text-ds-danger">{{ customerStats.cancelled }}</p>
            <p class="text-ds-text-muted mt-1">Revoked</p>
          </div>
        </div>
@@ -198,7 +198,7 @@
             </td>
             <td class="px-ds-4 py-ds-4 text-center text-ds-text">৳{{ order.total }}</td>
             <td class="px-ds-4 py-ds-4 text-center text-ds-success">৳{{ getPaidAmount(order) }}</td>
-            <td class="px-ds-4 py-ds-4 text-center" [class.text-red-500]="getDueAmount(order) > 0">৳{{ getDueAmount(order) }}</td>
+            <td class="px-ds-4 py-ds-4 text-center" [class.text-ds-danger]="getDueAmount(order) > 0">৳{{ getDueAmount(order) }}</td>
             <td class="px-ds-4 py-ds-4">
               <div class="flex items-center justify-end flex-wrap gap-ds-1 max-w-[220px] ml-auto">
                 <button (click)="openTracking(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">Logs</button>

@@ -72,7 +72,7 @@
               @if (product.tier) {
                 <div class="absolute top-6 right-6 z-10">
                   <span
-                    class="px-4 py-1.5 bg-white/95 text-ds-text border border-ds-border backdrop-blur-sm shadow-sm"
+                    class="px-4 py-1.5 bg-ds-bg/95 text-ds-text border border-ds-border backdrop-blur-sm shadow-sm"
                   >
                     {{ product.tier }}
                   </span>
@@ -83,7 +83,7 @@
               @if (gallery.length > 1) {
                 <button
                   (click)="prevImage()"
-                  class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
+                  class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-ds-bg/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-ds-bg"
                   type="button"
                 >
                   <app-icon
@@ -94,7 +94,7 @@
 
                 <button
                   (click)="nextImage()"
-                  class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-white"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-ds-bg/80 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-ds-bg"
                   type="button"
                 >
                   <app-icon
@@ -137,7 +137,7 @@
               {{ product.name }}
             </h1>
             @if (product.shortDescription) {
-              <div class="text-[#111111] whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></div>
+              <div class="text-ds-text whitespace-pre-line" [innerHTML]="product.shortDescription | safeHtml"></div>
             }
           </div>
 
@@ -151,13 +151,13 @@
 
             @if (currentCompareAtPrice && currentCompareAtPrice > currentPrice) {
               <app-price-display
-                class="line-through text-gray-400"
+                class="line-through text-ds-text-muted"
                 [amount]="currentCompareAtPrice"
                 size="sm"
               ></app-price-display>
 
               <span
-                class="text-red-500 ml-auto"
+                class="text-ds-danger ml-auto"
               >
                 Offer -৳{{ getDiscountAmount({ price: currentPrice, compareAtPrice: currentCompareAtPrice }) }}
               </span>
@@ -171,7 +171,7 @@
               <div class="space-y-5">
                 <div class="flex items-center justify-between">
                   <p class="text-ds-text">Select Size</p>
-                  <button (click)="openSizeGuide()" type="button" class="text-[#BBBBBB] hover:text-ds-text transition-colors border-b border-ds-border pb-0.5">Size Guide</button>
+                  <button (click)="openSizeGuide()" type="button" class="text-ds-text-muted hover:text-ds-text transition-colors border-b border-ds-border pb-0.5">Size Guide</button>
                 </div>
                 <div class="flex flex-wrap gap-2">
                   @for (v of product.variants; track v.id) {
@@ -182,7 +182,7 @@
                       [class.bg-ds-accent]="v.size === checkoutForm.controls.selectedSize.value"
                       [class.text-white]="v.size === checkoutForm.controls.selectedSize.value"
                       [class.border-ds-text]="v.size === checkoutForm.controls.selectedSize.value"
-                      [class.bg-white]="v.size !== checkoutForm.controls.selectedSize.value"
+                      [class.bg-ds-bg]="v.size !== checkoutForm.controls.selectedSize.value"
                       [class.text-ds-text]="v.size !== checkoutForm.controls.selectedSize.value"
                       [class.border-ds-border]="v.size !== checkoutForm.controls.selectedSize.value"
                     >
@@ -191,7 +191,7 @@
                   }
                 </div>
                 @if (checkoutForm.controls.selectedSize.value) {
-                  <p class="text-[#BBBBBB]">
+                  <p class="text-ds-text-muted">
                     Stock Status: <span class="text-ds-text">In stock</span>
                   </p>
                 }
@@ -203,7 +203,7 @@
           <div class="space-y-8 pt-8 border-t border-ds-border">
             @if (product.description) {
               <div class="space-y-4">
-                <h3 class="text-[#111111]">Description</h3>
+                <h3 class="text-ds-text">Description</h3>
                 <div class="text-ds-text whitespace-pre-line prose prose-slate prose-sm max-w-none" [innerHTML]="product.description | safeHtml"></div>
               </div>
             }
@@ -211,13 +211,13 @@
             <!-- Features Info -->
             <div class="grid grid-cols-2 gap-4 pt-6">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white border border-ds-border flex items-center justify-center">
+                <div class="w-8 h-8 rounded-full bg-ds-bg border border-ds-border flex items-center justify-center">
                   <app-icon name="Truck" size="16" className="text-ds-text-sec"></app-icon>
                 </div>
                 <span class="text-ds-text-sec">Priority Shipping</span>
               </div>
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white border border-ds-border flex items-center justify-center">
+                <div class="w-8 h-8 rounded-full bg-ds-bg border border-ds-border flex items-center justify-center">
                   <app-icon name="ShieldCheck" size="16" className="text-ds-text-sec"></app-icon>
                 </div>
                 <span class="text-ds-text-sec">Secure Payment</span>
@@ -229,7 +229,7 @@
 
       <!-- Tabs/Accordions -->
       <div class="pt-2">
-        <div class="divide-y divide-[#E0E0E0] border-t border-ds-border">
+        <div class="divide-y divide-ds-border border-t border-ds-border">
           @if (product.fabricAndCare) {
             <details class="group">
               <summary
@@ -279,16 +279,16 @@
               Complete Your Order
             </h2>
             <div class="flex items-center justify-center gap-4">
-              <span class="h-[1px] w-12 bg-[#E0E0E0]"></span>
+              <span class="h-[1px] w-12 bg-ds-surface-2"></span>
               <p class="text-ds-text-sec">
                 Cash on delivery nationwide
               </p>
-              <span class="h-[1px] w-12 bg-[#E0E0E0]"></span>
+              <span class="h-[1px] w-12 bg-ds-surface-2"></span>
             </div>
           </div>
 
           <div
-            class="bg-white border-2 border-ds-text rounded-[2.5rem] p-8 lg:p-12 shadow-2xl shadow-indigo-900/10 relative overflow-hidden"
+            class="bg-ds-bg border-2 border-ds-text rounded-[2.5rem] p-8 lg:p-12 shadow-2xl shadow-indigo-900/10 relative overflow-hidden"
           >
             <!-- Background accent -->
             <div
@@ -302,19 +302,19 @@
             >
               <!-- Saved Info Prompt -->
               @if (showAutofillPrompt) {
-                <div class="mb-12 p-6 bg-slate-50 border-2 border-ds-text/5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in slide-in-from-top duration-300">
+                <div class="mb-12 p-6 bg-ds-surface border-2 border-ds-text/5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in slide-in-from-top duration-300">
                   <div class="flex items-center gap-4 text-center sm:text-left">
                     <div class="w-12 h-12 rounded-2xl bg-ds-accent flex items-center justify-center shrink-0 shadow-lg">
                       <app-icon name="User" size="24" className="text-white"></app-icon>
                     </div>
                     <div>
                       <p class="text-ds-text">Saved Information Found</p>
-                      <p class="text-gray-400">Would you like to use your last order details?</p>
+                      <p class="text-ds-text-muted">Would you like to use your last order details?</p>
                     </div>
                   </div>
                   <div class="flex gap-3 w-full sm:w-auto">
-                    <button type="button" (click)="dismissAutofill()" class="flex-1 sm:flex-none px-6 py-3 text-gray-400 hover:text-ds-text transition-colors">No</button>
-                    <button type="button" (click)="applyAutofill()" class="flex-1 sm:flex-none px-8 py-3 bg-ds-accent text-white rounded-xl shadow-xl shadow-[#1a1a1a]/20 active:scale-95 transition-all">Yes, Use Info</button>
+                    <button type="button" (click)="dismissAutofill()" class="flex-1 sm:flex-none px-6 py-3 text-ds-text-muted hover:text-ds-text transition-colors">No</button>
+                    <button type="button" (click)="applyAutofill()" class="flex-1 sm:flex-none px-8 py-3 bg-ds-accent text-white rounded-xl shadow-xl shadow-ds-text/20 active:scale-95 transition-all">Yes, Use Info</button>
                   </div>
                 </div>
               }
@@ -352,12 +352,12 @@
                           formControlName="phone"
                           placeholder="01xxxxxxxxx"
                           autocomplete="tel"
-                          class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-r-2xl focus:border-ds-text focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]"
+                          class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-r-2xl focus:border-ds-text focus:bg-ds-bg focus:ring-0 transition-all placeholder:text-ds-text-muted"
                         />
                       </div>
                       @if (checkoutForm.controls.phone.touched && checkoutForm.controls.phone.invalid) {
                         <p
-                          class="text-red-500 ml-1"
+                          class="text-ds-danger ml-1"
                         >
                           Required
                         </p>
@@ -374,11 +374,11 @@
                         formControlName="fullName"
                         placeholder="e.g. Abdullah"
                         autocomplete="name"
-                        class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]"
+                        class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-ds-bg focus:ring-0 transition-all placeholder:text-ds-text-muted"
                       />
                       @if (checkoutForm.controls.fullName.touched && checkoutForm.controls.fullName.invalid) {
                         <p
-                          class="text-red-500 ml-1"
+                          class="text-ds-danger ml-1"
                         >
                           Required
                         </p>
@@ -394,7 +394,7 @@
                       <div class="relative">
                         <div class="relative items-center flex cursor-pointer" (click)="toggleCityDropdown()">
                           <input
-                            class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
+                            class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-ds-bg focus:ring-0 transition-all placeholder:text-ds-text-muted pointer-events-none"
                             type="text"
                             [value]="checkoutForm.controls.city.value"
                             placeholder="Select city"
@@ -406,11 +406,11 @@
                         <!-- Dropdown -->
                         @if (isCityDropdownOpen) {
                           <div
-                            class="absolute z-50 w-full mt-2 bg-white border-2 border-ds-text rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+class="absolute z-50 w-full mt-2 bg-ds-bg border-2 border-ds-text rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
                             (click)="$event.stopPropagation()">
                             <div class="p-3 border-b border-ds-border">
                               <div class="relative flex items-center">
-                                <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
+                                <app-icon name="Search" size="16" className="absolute left-3 text-ds-text-muted"></app-icon>
                                 <input
                                   type="text"
                                   class="w-full pl-10 pr-4 py-2 bg-ds-bg border-none rounded-xl focus:ring-0 outline-none"
@@ -449,7 +449,7 @@
                       <div class="relative">
                         <div class="relative items-center flex cursor-pointer" (click)="toggleAreaDropdown()">
                           <input
-                            class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
+                            class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-ds-bg focus:ring-0 transition-all placeholder:text-ds-text-muted pointer-events-none"
                             [class.opacity-50]="!checkoutForm.controls.city.value"
                             type="text"
                             [value]="checkoutForm.controls.area.value"
@@ -462,11 +462,11 @@
                         <!-- Dropdown -->
                         @if (isAreaDropdownOpen) {
                           <div
-                            class="absolute z-50 w-full mt-2 bg-white border-2 border-ds-text rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+class="absolute z-50 w-full mt-2 bg-ds-bg border-2 border-ds-text rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
                             (click)="$event.stopPropagation()">
                             <div class="p-3 border-b border-ds-border">
                               <div class="relative flex items-center">
-                                <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
+                                <app-icon name="Search" size="16" className="absolute left-3 text-ds-text-muted"></app-icon>
                                 <input
                                   type="text"
                                   class="w-full pl-10 pr-4 py-2 bg-ds-bg border-none rounded-xl focus:ring-0 outline-none"
@@ -511,11 +511,11 @@
                       rows="3"
                       placeholder="House, Road..."
                       autocomplete="street-address"
-                      class="w-full p-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] resize-none"
+                      class="w-full p-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-text focus:bg-ds-bg focus:ring-0 transition-all placeholder:text-ds-text-muted resize-none"
                     ></textarea>
                     @if (checkoutForm.controls.address.touched && checkoutForm.controls.address.invalid) {
                       <p
-                        class="text-red-500 ml-1"
+                        class="text-ds-danger ml-1"
                       >
                         Required
                       </p>
@@ -611,7 +611,7 @@
                         >Quantity</span
                       >
                       <div
-                        class="flex items-center h-12 bg-white border-2 border-ds-border rounded-xl overflow-hidden shadow-inner"
+                        class="flex items-center h-12 bg-ds-bg border-2 border-ds-border rounded-xl overflow-hidden shadow-inner"
                       >
                         <button
                           (click)="decreaseQuantity()"
@@ -664,7 +664,7 @@
                   <button
                     type="submit"
                     [disabled]="isOrdering"
-                    class="h-16 bg-ds-accent text-white rounded-2xl hover:bg-[#333333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group"
+                    class="h-16 bg-ds-accent text-white rounded-2xl hover:bg-ds-accent-hover transition-all disabled:opacity-70 shadow-2xl shadow-ds-text/30 flex items-center justify-center gap-3 group"
                   >
                     @if (isOrdering) {
                       <app-icon
@@ -688,7 +688,7 @@
                   <button
                     type="button"
                     (click)="addToCart()"
-                    class="h-16 bg-white border-2 border-ds-border hover:border-ds-text text-ds-text rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
+                    class="h-16 bg-ds-bg border-2 border-ds-border hover:border-ds-text text-ds-text rounded-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
                   >
                     <app-icon
                       name="ShoppingCart"
@@ -699,7 +699,7 @@
                 </div>
                 @if (errorMessage) {
                   <p
-                    class="text-red-500 text-center mt-6"
+                    class="text-ds-danger text-center mt-6"
                   >
                     {{ errorMessage }}
                   </p>
@@ -714,7 +714,7 @@
     <div class="fixed bottom-8 right-8 z-[100] group">
       <a 
         routerLink="/" 
-        class="glowing-btn flex items-center gap-3 px-8 py-5 rounded-2xl shadow-[0_20px_50px_-10px_rgba(200,146,42,0.4)] hover:-translate-y-2 transition-all duration-500 border border-[#111111]/20"
+        class="glowing-btn flex items-center gap-3 px-8 py-5 rounded-2xl shadow-[0_20px_50px_-10px_rgba(200,146,42,0.4)] hover:-translate-y-2 transition-all duration-500 border border-ds-accent/20"
       >
         <div class="flex items-center gap-3">
           <app-icon name="ExternalLink" size="18" className="text-ds-text"></app-icon>

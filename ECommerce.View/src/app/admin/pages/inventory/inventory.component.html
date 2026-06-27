@@ -65,8 +65,8 @@
                   <span class="inline-flex items-center justify-center px-ds-3 py-1 rounded-sm border"
                         [ngClass]="{
                           'bg-ds-bg text-ds-success border-ds-success/20': product.totalStock > 10,
-                          'bg-ds-bg text-orange-500 border-orange-500/20': product.totalStock > 0 && product.totalStock <= 10,
-                          'bg-ds-bg text-red-500 border-red-500/20': product.totalStock === 0
+'bg-ds-bg text-ds-warning border-ds-warning/20': product.totalStock > 0 && product.totalStock <= 10,
+                           'bg-ds-bg text-ds-danger border-ds-danger/20': product.totalStock === 0
                         }">
                     {{ product.totalStock }}
                   </span>
@@ -197,7 +197,7 @@
                 <div class="flex items-center justify-between gap-ds-6">
                   <span class="text-ds-text-muted">Stock</span>
                   <div class="flex items-center gap-ds-3">
-                    <button (click)="adjustVariantStock(i, -1)" class="size-10 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center">
+                    <button (click)="adjustVariantStock(i, -1)" class="size-10 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-danger hover:border-ds-danger transition-colors flex items-center justify-center">
                       <app-icon name="Minus" size="14"></app-icon>
                     </button>
                     <input type="number" [(ngModel)]="variantStockValues[i]" (change)="onVariantStockChange(i)" class="form-input !w-24 !h-10 !text-center">
@@ -233,7 +233,7 @@
               <div class="space-y-4 text-center">
                 <label class="text-ds-text-muted">Stock</label>
                 <div class="flex items-center justify-center gap-ds-6">
-                  <button (click)="adjustStock(-1)" class="size-14 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center shadow-sm">
+                  <button (click)="adjustStock(-1)" class="size-14 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-danger hover:border-ds-danger transition-colors flex items-center justify-center shadow-sm">
                     <app-icon name="Minus" size="20"></app-icon>
                   </button>
                   <input type="number" [(ngModel)]="newStockValue" class="form-input !w-36 !h-14 !text-center !bg-ds-surface shadow-inner">

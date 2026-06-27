@@ -543,7 +543,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       return "px-2 py-1 bg-accent/30 text-primary text-xs rounded-md font-medium";
     }
 
-    return "px-2 py-1 bg-gray-100 text-text-secondary text-xs rounded-md font-medium";
+    return "px-2 py-1 bg-ds-surface text-text-secondary text-xs rounded-md font-medium";
   }
 
   ngOnDestroy(): void {

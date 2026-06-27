@@ -59,7 +59,7 @@
                 </button>
                 <button (click)="$event.stopPropagation(); deleteRole(role)" title="Delete Role"
                         [disabled]="role.staffCount > 0"
-                        class="size-7 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors">
+                        class="size-7 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-danger hover:border-ds-danger disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors">
                   <app-icon name="Trash2" size="12"></app-icon>
                 </button>
               }

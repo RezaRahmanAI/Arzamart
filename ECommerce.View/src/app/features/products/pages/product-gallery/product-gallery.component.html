@@ -18,9 +18,9 @@
     <div class="flex flex-col lg:flex-row gap-ds-12 lg:gap-ds-16">
       <!-- Sidebar -->
       <aside class="hidden lg:block w-full lg:w-72 shrink-0">
-        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm sticky top-24">
-          <div class="flex items-center gap-3 pl-1 mb-5 border-l-4 border-[#E52222]">
-            <h3 class="text-base font-bold text-gray-900">
+        <div class="bg-ds-bg border border-ds-border rounded-2xl p-5 shadow-sm sticky top-24">
+          <div class="flex items-center gap-3 pl-1 mb-5 border-l-4 border-ds-danger">
+            <h3 class="text-base font-bold text-ds-text">
               {{ isOffersPage ? 'Offers by Category' : 'Sub Categories' }}
             </h3>
           </div>
@@ -34,15 +34,15 @@
                     (click)="navigateToSub('/category/' + parentCategorySlug)"
                     class="w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold transition-all group"
                     [ngClass]="{
-                      'bg-[#E52222] text-white': !activeSubSlug,
-                      'text-gray-700 hover:bg-gray-50': activeSubSlug
+                      'bg-ds-danger text-white': !activeSubSlug,
+                      'text-ds-text-secondary hover:bg-ds-surface': activeSubSlug
                     }"
                   >
                     <div class="flex items-center gap-2.5">
-                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="!activeSubSlug ? 'bg-white' : 'bg-[#E52222]'"></span>
+                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="!activeSubSlug ? 'bg-white' : 'bg-ds-danger'"></span>
                       <span>All {{ parentCategoryName }}</span>
                     </div>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" [ngClass]="!activeSubSlug ? 'text-white' : 'text-gray-400'"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" [ngClass]="!activeSubSlug ? 'text-white' : 'text-ds-text-muted'"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                   </button>
                 }
 
@@ -51,15 +51,15 @@
                     (click)="navigateToSub('/subcategory/' + sub.slug)"
                     class="w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold transition-all group"
                     [ngClass]="{
-                      'bg-[#E52222] text-white': sub.slug === activeSubSlug,
-                      'text-gray-700 hover:bg-gray-50': sub.slug !== activeSubSlug
+                      'bg-ds-danger text-white': sub.slug === activeSubSlug,
+                      'text-ds-text-secondary hover:bg-ds-surface': sub.slug !== activeSubSlug
                     }"
                   >
                     <div class="flex items-center gap-2.5">
-                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="sub.slug === activeSubSlug ? 'bg-white' : 'bg-[#E52222]'"></span>
+                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="sub.slug === activeSubSlug ? 'bg-white' : 'bg-ds-danger'"></span>
                       <span>{{ sub.name }}</span>
                     </div>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" [ngClass]="sub.slug === activeSubSlug ? 'text-white' : 'text-gray-400'"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" [ngClass]="sub.slug === activeSubSlug ? 'text-white' : 'text-ds-text-muted'"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                   </button>
                 }
               </nav>
@@ -71,20 +71,20 @@
                 @for (cat of offerCategories; track cat.id) {
                   <div class="space-y-3">
                     <div class="flex items-center gap-2.5 px-2">
-                      <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">{{ cat.name }}</span>
-                      <div class="h-[1px] flex-1 bg-gray-100"></div>
+                      <span class="text-xs font-bold text-ds-text-muted uppercase tracking-wider">{{ cat.name }}</span>
+                      <div class="h-[1px] flex-1 bg-ds-surface-2"></div>
                     </div>
                     <nav class="flex flex-col gap-1.5">
                       @for (sub of cat.subCategories; track sub.id) {
                         <button 
                           (click)="navigateToSub('/subcategory/' + sub.slug + '?isOffer=true')"
-                          class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all group"
+                          class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-ds-text-secondary hover:bg-ds-surface transition-all group"
                         >
                           <div class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-[#E52222]"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-ds-danger"></span>
                             <span>{{ sub.name }}</span>
                           </div>
-                          <svg class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                          <svg class="w-4 h-4 text-ds-text-muted opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </button>
                       }
                     </nav>
@@ -95,7 +95,7 @@
             
             @if ((!isOffersPage && subCategories.length === 0) || (isOffersPage && offerCategories.length === 0)) {
               <div class="py-10 text-center">
-                <p class="text-gray-400 text-sm">No Categories Found</p>
+                <p class="text-ds-text-muted text-sm">No Categories Found</p>
               </div>
             }
           </div>
@@ -107,15 +107,15 @@
           <!-- Size Filter Block -->
           @if (allSizes.length > 1) {
             <div class="flex flex-col gap-3">
-              <h3 class="text-sm font-bold text-gray-800">Choice by your size</h3>
+              <h3 class="text-sm font-bold text-ds-text">Choice by your size</h3>
               <div class="flex flex-wrap gap-2">
                 @for (size of allSizes; track size) {
                   <button
                     (click)="selectSizeFilter(size)"
                     class="h-9 min-w-[3.5rem] px-4 flex items-center justify-center border font-bold text-xs transition-all duration-200 rounded-md"
                     [ngClass]="{
-                      'bg-[#E52222] border-[#E52222] text-white shadow-sm': selectedSize === size,
-                      'bg-white border-gray-200 text-gray-700 hover:border-gray-400': selectedSize !== size
+                      'bg-ds-danger border-ds-danger text-white shadow-sm': selectedSize === size,
+                      'bg-ds-bg border-ds-border text-ds-text-secondary hover:border-ds-text-muted': selectedSize !== size
                     }"
                   >
                     {{ size }}

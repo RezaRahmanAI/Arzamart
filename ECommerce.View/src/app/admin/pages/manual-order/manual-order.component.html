@@ -32,7 +32,7 @@
                 >
                   <div class="absolute top-2 left-2 z-10">
                     <span class="px-1.5 py-0.5 rounded-sm shadow-sm" 
-                          [ngClass]="product.stockQuantity > 0 ? 'bg-ds-success text-white' : 'bg-red-500 text-white'">
+                          [ngClass]="product.stockQuantity > 0 ? 'bg-ds-success text-white' : 'bg-ds-danger text-white'">
                       Stock: {{ product.stockQuantity }}
                     </span>
                   </div>
@@ -72,7 +72,7 @@
                       >
                         <span>{{ variant.size }}</span>
                         <span class="opacity-30">|</span>
-                        <span [ngClass]="variant.stockQuantity <= 5 ? 'text-red-500' : 'text-ds-success'">{{ variant.stockQuantity }}</span>
+                        <span [ngClass]="variant.stockQuantity <= 5 ? 'text-ds-danger' : 'text-ds-success'">{{ variant.stockQuantity }}</span>
                       </button>
                     </ng-container>
                   </div>
@@ -93,7 +93,7 @@
           <button 
             *ngIf="cart().length > 0"
             (click)="clearCart()"
-            class="text-red-500 hover:text-red-700 transition-colors flex items-center gap-1.5"
+            class="text-ds-danger hover:text-ds-danger-hover transition-colors flex items-center gap-1.5"
           >
             Clear Cart <app-icon name="RotateCcw" size="10"></app-icon>
           </button>
@@ -118,7 +118,7 @@
                 </td>
                 <td class="px-ds-2 py-1.5">
                   <div class="flex items-center justify-center gap-2">
-                    <button (click)="updateQuantity(item, -1)" class="size-5 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-red-500">-</button>
+                    <button (click)="updateQuantity(item, -1)" class="size-5 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-ds-danger">-</button>
                     <span class="w-4 text-center">{{ item.quantity }}</span>
                     <button (click)="updateQuantity(item, 1)" class="size-5 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-ds-accent">+</button>
                   </div>
@@ -140,7 +140,7 @@
                   <span class="text-ds-text">৳{{ item.unitPrice * item.quantity }}</span>
                 </td>
                 <td class="px-ds-2 py-1.5 text-center">
-                  <button (click)="removeFromCart(item)" class="size-6 flex items-center justify-center text-ds-text-muted hover:text-red-500 transition-colors">
+                  <button (click)="removeFromCart(item)" class="size-6 flex items-center justify-center text-ds-text-muted hover:text-ds-danger transition-colors">
                     <app-icon name="X" size="14"></app-icon>
                   </button>
                 </td>
@@ -169,9 +169,9 @@
           </div>
 
           <div class="grid grid-cols-3 gap-ds-2" [formGroup]="orderForm">
-            <div class="flex justify-between items-center px-ds-3 h-10 bg-red-500/5 border border-red-500/10 rounded-sm">
-              <span class="text-red-500">Discount</span>
-              <input type="number" formControlName="additionalDiscount" (focus)="$any($event.target).select()" class="w-16 !h-8 bg-white border border-red-500 ring-2 ring-red-500/20 rounded-md px-1.5 text-red-500 text-right outline-none">
+            <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-danger/5 border border-ds-danger/10 rounded-sm">
+              <span class="text-ds-danger">Discount</span>
+              <input type="number" formControlName="additionalDiscount" (focus)="$any($event.target).select()" class="w-16 !h-8 bg-white border border-ds-danger ring-2 ring-ds-danger/20 rounded-md px-1.5 text-ds-danger text-right outline-none">
             </div>
             <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-success/5 border border-ds-success/10 rounded-sm">
               <span class="text-ds-success">Paid</span>
@@ -269,7 +269,7 @@
               (click)="submitOrder()"
               [disabled]="isSubmitting || cart().length === 0"
               class="btn w-full !h-10 shadow-xl hover:shadow-2xl transition-all disabled:opacity-30"
-              [ngClass]="isPreOrderMode ? 'bg-orange-600 border-orange-600 text-white' : 'btn-primary'"
+              [ngClass]="isPreOrderMode ? 'bg-ds-warning border-ds-warning text-white' : 'btn-primary'"
             >
               {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update Order' : (isPreOrderMode ? 'Create Pre-Order' : 'Create Order')) }}
             </button>
@@ -344,7 +344,7 @@
       class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in duration-base"
     >
       <div class="p-ds-10 text-center">
-        <div class="size-20 bg-red-500/10 text-red-500 rounded-sm flex items-center justify-center mx-auto mb-ds-8 border border-red-500/20">
+        <div class="size-20 bg-ds-danger/10 text-ds-danger rounded-sm flex items-center justify-center mx-auto mb-ds-8 border border-ds-danger/20">
           <app-icon name="AlertTriangle" size="40"></app-icon>
         </div>
         <h3 class="text-ds-text mb-2">Not Enough Stock</h3>
@@ -354,13 +354,13 @@
         
         <div class="bg-ds-bg/30 rounded-sm p-ds-6 mb-ds-10 max-h-64 overflow-y-auto border border-ds-border">
           <ul class="space-y-ds-3">
-            <li *ngFor="let item of outOfStockItems(); trackBy: trackByOutOfStockItem" class="flex justify-between items-start gap-ds-4 p-ds-4 bg-ds-surface rounded-sm border border-red-500/20 shadow-sm">
+            <li *ngFor="let item of outOfStockItems(); trackBy: trackByOutOfStockItem" class="flex justify-between items-start gap-ds-4 p-ds-4 bg-ds-surface rounded-sm border border-ds-danger/20 shadow-sm">
               <div class="flex-1 min-w-0 text-left">
                 <p class="text-ds-text" [title]="item.name">{{ item.name }}</p>
                 <p *ngIf="item.size" class="text-ds-text-muted mt-1">Size: {{ item.size }}</p>
               </div>
               <div class="text-right whitespace-nowrap">
-                <p class="text-red-500">Requested: {{ item.needed }}</p>
+                <p class="text-ds-danger">Requested: {{ item.needed }}</p>
                 <p class="text-ds-text-muted mt-1">Stock: {{ item.stock }}</p>
               </div>
             </li>
@@ -376,7 +376,7 @@
           </button>
           <button 
             (click)="confirmOrder()"
-            class="btn btn-primary flex-1 !h-12 !bg-red-600 !border-red-600"
+            class="btn btn-primary flex-1 !h-12 !bg-ds-danger !border-ds-danger"
           >
             Continue Anyway
           </button>

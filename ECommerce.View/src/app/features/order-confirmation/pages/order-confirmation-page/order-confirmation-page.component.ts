@@ -81,7 +81,7 @@ export class OrderConfirmationPageComponent {
   stepIconClasses(order: Order, step: OrderStatus): string {
     const state = this.stepState(order, step);
     if (state === "pending") {
-      return "w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-400 flex items-center justify-center z-10";
+      return "w-10 h-10 rounded-full bg-ds-surface-2 dark:bg-gray-700 text-ds-text-muted flex items-center justify-center z-10";
     }
     if (state === "active") {
       return "w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center z-10 border-4 border-white dark:border-background-dark shadow-sm";
@@ -92,7 +92,7 @@ export class OrderConfirmationPageComponent {
   stepLabelClasses(order: Order, step: OrderStatus): string {
     const state = this.stepState(order, step);
     if (state === "pending") {
-      return "mt-2 text-gray-400";
+      return "mt-2 text-ds-text-muted";
     }
     return "mt-2";
   }
@@ -101,7 +101,7 @@ export class OrderConfirmationPageComponent {
     const currentIndex = this.statusSteps.indexOf(order.status);
     return currentIndex > index
       ? "flex-1 h-1 bg-primary mx-2 -mt-6"
-      : "flex-1 h-1 bg-gray-200 dark:bg-gray-700 mx-2 -mt-6";
+      : "flex-1 h-1 bg-ds-surface-2 dark:bg-gray-700 mx-2 -mt-6";
   }
 
   trackOrderItem(_: number, item: OrderItem): number {

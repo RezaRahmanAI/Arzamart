@@ -24,7 +24,8 @@ import { LoadingService } from "../../../core/services/loading.service";
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(255, 255, 255, 0.8);
+        background: var(--color-bg);
+        opacity: 0.8;
         backdrop-filter: blur(8px);
         display: flex;
         align-items: center;
@@ -47,15 +48,16 @@ import { LoadingService } from "../../../core/services/loading.service";
       .luxury-spinner {
         width: 54px;
         height: 54px;
-        border: 2px solid rgba(26, 26, 26, 0.1);
-        border-top: 2px solid #1a1a1a;
+        border: 2px solid var(--color-border-ds);
+        opacity: 0.3;
+        border-top: 2px solid var(--color-text-primary);
         border-radius: 50%;
         animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
       }
 
       :host-context(.dark) .luxury-spinner {
         border: 2px solid rgba(255, 255, 255, 0.1);
-        border-top: 2px solid #ffffff;
+        border-top: 2px solid var(--color-hero-text);
       }
 
       .loading-text {
@@ -64,12 +66,12 @@ import { LoadingService } from "../../../core/services/loading.service";
         font-weight: 600;
         letter-spacing: 0.3em;
         text-transform: uppercase;
-        color: #1a1a1a;
+        color: var(--color-text-primary);
         animation: pulse 2s ease-in-out infinite;
       }
 
       :host-context(.dark) .loading-text {
-        color: #ffffff;
+        color: var(--color-hero-text);
       }
 
       @keyframes spin {

@@ -5,35 +5,35 @@
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-primary dark:text-white">Account</h1>
-            <p class="text-slate-500 dark:text-slate-400">Manage your profile, addresses, and orders.</p>
+            <p class="text-ds-text-muted dark:text-slate-400">Manage your profile, addresses, and orders.</p>
           </div>
           <a class="text-primary hover:underline" routerLink="/orders">View all orders</a>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+          <div class="bg-ds-bg dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-ds-border dark:border-slate-800">
             <h2 class="text-primary dark:text-white mb-4">Profile details</h2>
             <form class="space-y-4" [formGroup]="profileForm">
               <div>
-                <label class="text-slate-600 dark:text-slate-300">Full name</label>
+                <label class="text-ds-text-secondary dark:text-slate-300">Full name</label>
                 <input
-                  class="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
+                  class="mt-1 w-full rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
                   formControlName="name"
                   type="text"
                 />
               </div>
               <div>
-                <label class="text-slate-600 dark:text-slate-300">Email</label>
+                <label class="text-ds-text-secondary dark:text-slate-300">Email</label>
                 <input
-                  class="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
+                  class="mt-1 w-full rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
                   formControlName="email"
                   type="email"
                 />
               </div>
               <div>
-                <label class="text-slate-600 dark:text-slate-300">Phone</label>
+                <label class="text-ds-text-secondary dark:text-slate-300">Phone</label>
                 <input
-                  class="mt-1 w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
+                  class="mt-1 w-full rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary"
                   formControlName="phone"
                   type="text"
                 />
@@ -48,16 +48,16 @@
             </form>
           </div>
 
-          <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+          <div class="bg-ds-bg dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-ds-border dark:border-slate-800">
             <h2 class="text-primary dark:text-white mb-4">Order history</h2>
             <div class="space-y-4">
               @for (order of vm.orders; track order.id) {
                 <div
-                  class="flex items-center justify-between border border-slate-200 dark:border-slate-800 rounded-lg p-4"
+                  class="flex items-center justify-between border border-ds-border dark:border-slate-800 rounded-lg p-4"
                 >
                   <div>
                     <p class="text-primary dark:text-white">Order {{ order.id }}</p>
-                    <p class="text-slate-500 dark:text-slate-400">{{ order.items.length }} items · {{ order.status }}</p>
+                    <p class="text-ds-text-muted dark:text-slate-400">{{ order.items.length }} items · {{ order.status }}</p>
                   </div>
                   <a
                     class="text-primary hover:underline"
@@ -67,14 +67,14 @@
                   </a>
                 </div>
               } @empty {
-                <p class="text-slate-500 dark:text-slate-400">No orders yet.</p>
+                <p class="text-ds-text-muted dark:text-slate-400">No orders yet.</p>
               }
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+          <div class="bg-ds-bg dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-ds-border dark:border-slate-800">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-primary dark:text-white">Address book</h2>
               <button class="text-primary hover:underline" type="button" (click)="resetAddressForm()">
@@ -84,7 +84,7 @@
             <div class="space-y-3 mb-6">
               @for (address of vm.profile?.addresses; track address.id) {
                 <div
-                  class="border border-slate-200 dark:border-slate-800 rounded-lg p-4 flex items-start justify-between gap-4"
+                  class="border border-ds-border dark:border-slate-800 rounded-lg p-4 flex items-start justify-between gap-4"
                 >
                   <div>
                     <p class="text-primary dark:text-white">
@@ -93,42 +93,42 @@
                         <span class="ml-2 text-accent">Default</span>
                       }
                     </p>
-                    <p class="text-slate-500 dark:text-slate-400">
+                    <p class="text-ds-text-muted dark:text-slate-400">
                       {{ address.recipient }} · {{ address.phone }}
                     </p>
-                    <p class="text-slate-500 dark:text-slate-400">
+                    <p class="text-ds-text-muted dark:text-slate-400">
                       {{ address.address }}, {{ address.city }}, {{ address.region }}
                     </p>
                   </div>
                   <div class="flex flex-col gap-2">
                     <button class="text-primary hover:underline" type="button" (click)="startEditAddress(address)">Edit</button>
-                    <button class="text-slate-500 hover:underline" type="button" (click)="setDefaultAddress(vm.profile, address.id)">
+                    <button class="text-ds-text-muted hover:underline" type="button" (click)="setDefaultAddress(vm.profile, address.id)">
                       Set default
                     </button>
-                    <button class="text-red-500 hover:underline" type="button" (click)="removeAddress(vm.profile, address.id)">Remove</button>
+                    <button class="text-ds-danger hover:underline" type="button" (click)="removeAddress(vm.profile, address.id)">Remove</button>
                   </div>
                 </div>
               } @empty {
-                <p class="text-slate-500 dark:text-slate-400 mb-6">No saved addresses yet.</p>
+                <p class="text-ds-text-muted dark:text-slate-400 mb-6">No saved addresses yet.</p>
               }
             </div>
 
             <form class="space-y-3" [formGroup]="addressForm">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Label" formControlName="label" />
-                <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Recipient" formControlName="recipient" />
+                <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="Label" formControlName="label" />
+                <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="Recipient" formControlName="recipient" />
               </div>
-              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Phone" formControlName="phone" />
-              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Address" formControlName="address" />
-              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Apartment" formControlName="apartment" />
+              <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="Phone" formControlName="phone" />
+              <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="Address" formControlName="address" />
+              <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="Apartment" formControlName="apartment" />
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="City" formControlName="city" />
-                <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="State" formControlName="region" />
-                <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Postal" formControlName="postalCode" />
+                <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="City" formControlName="city" />
+                <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="State" formControlName="region" />
+                <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="Postal" formControlName="postalCode" />
               </div>
               <div class="flex items-center gap-2">
-                <input class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox" formControlName="isDefault" />
-                <span class="text-slate-500 dark:text-slate-400">Set as default</span>
+                <input class="h-4 w-4 rounded border-ds-border text-primary focus:ring-primary" type="checkbox" formControlName="isDefault" />
+                <span class="text-ds-text-muted dark:text-slate-400">Set as default</span>
               </div>
               <button
                 class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5"
@@ -140,7 +140,7 @@
             </form>
           </div>
 
-          <div class="bg-white dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+          <div class="bg-ds-bg dark:bg-surface-dark rounded-2xl p-6 shadow-sm border border-ds-border dark:border-slate-800">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-primary dark:text-white">Payment methods</h2>
               <button class="text-primary hover:underline" type="button" (click)="resetPaymentForm()">
@@ -150,7 +150,7 @@
             <div class="space-y-3 mb-6">
               @for (method of vm.profile?.paymentMethods; track method.id) {
                 <div
-                  class="border border-slate-200 dark:border-slate-800 rounded-lg p-4 flex items-start justify-between gap-4"
+                  class="border border-ds-border dark:border-slate-800 rounded-lg p-4 flex items-start justify-between gap-4"
                 >
                   <div>
                     <p class="text-primary dark:text-white">
@@ -159,33 +159,33 @@
                         <span class="ml-2 text-accent">Default</span>
                       }
                     </p>
-                    <p class="text-slate-500 dark:text-slate-400">
+                    <p class="text-ds-text-muted dark:text-slate-400">
                       {{ method.brand }} · **** {{ method.last4 }} · {{ method.expMonth }}/{{ method.expYear }}
                     </p>
                   </div>
                   <div class="flex flex-col gap-2">
                     <button class="text-primary hover:underline" type="button" (click)="startEditPayment(method)">Edit</button>
-                    <button class="text-slate-500 hover:underline" type="button" (click)="setDefaultPayment(vm.profile, method.id)">
+                    <button class="text-ds-text-muted hover:underline" type="button" (click)="setDefaultPayment(vm.profile, method.id)">
                       Set default
                     </button>
-                    <button class="text-red-500 hover:underline" type="button" (click)="removePayment(vm.profile, method.id)">Remove</button>
+                    <button class="text-ds-danger hover:underline" type="button" (click)="removePayment(vm.profile, method.id)">Remove</button>
                   </div>
                 </div>
               } @empty {
-                <p class="text-slate-500 dark:text-slate-400 mb-6">No saved payment methods yet.</p>
+                <p class="text-ds-text-muted dark:text-slate-400 mb-6">No saved payment methods yet.</p>
               }
             </div>
 
             <form class="space-y-3" [formGroup]="paymentForm">
-              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Label" formControlName="label" />
-              <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Card number" formControlName="cardNumber" />
+              <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="Label" formControlName="label" />
+              <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="Card number" formControlName="cardNumber" />
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Exp. month" formControlName="expMonth" />
-                <input class="rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800" placeholder="Exp. year" formControlName="expYear" />
+                <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="Exp. month" formControlName="expMonth" />
+                <input class="rounded-lg border-ds-border dark:border-slate-700 dark:bg-slate-800" placeholder="Exp. year" formControlName="expYear" />
               </div>
               <div class="flex items-center gap-2">
-                <input class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox" formControlName="isDefault" />
-                <span class="text-slate-500 dark:text-slate-400">Set as default</span>
+                <input class="h-4 w-4 rounded border-ds-border text-primary focus:ring-primary" type="checkbox" formControlName="isDefault" />
+                <span class="text-ds-text-muted dark:text-slate-400">Set as default</span>
               </div>
               <button
                 class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2.5"

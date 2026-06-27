@@ -10,7 +10,7 @@
 </style>
 
 <aside
-  class="fixed lg:sticky top-0 left-0 w-64 h-screen bg-brand-dark text-gray-300 flex flex-col flex-shrink-0 transition-all duration-500 z-50 border-r border-gray-800 lg:translate-x-0 overflow-hidden"
+  class="fixed lg:sticky top-0 left-0 w-64 h-screen bg-brand-dark text-white/80 flex flex-col flex-shrink-0 transition-all duration-500 z-50 border-r border-white/10 lg:translate-x-0 overflow-hidden"
   [class.-translate-x-full]="!sidebarService.isOpen()"
   [class.translate-x-0]="sidebarService.isOpen()"
 >
@@ -28,9 +28,9 @@
   <!-- Main Scrollable Content -->
   <div class="flex-1 flex flex-col min-h-0 relative z-10">
     <!-- Branding -->
-    <div class="p-6 pb-2 border-b border-gray-800" *ngIf="settings$ | async as settings">
+    <div class="p-6 pb-2 border-b border-white/10" *ngIf="settings$ | async as settings">
       <div class="flex items-center gap-3 mb-2">
-        <div class="bg-gray-800 p-2 rounded-lg">
+        <div class="bg-white/10 p-2 rounded-lg">
           <!-- Shop Icon -->
           <img
             *ngIf="settings.logoUrl"
@@ -70,16 +70,16 @@
           <li *ngIf="hasAccess('dashboard')">
             <a
               routerLink="/admin/dashboard"
-              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              routerLinkActive="bg-white/10 text-white font-medium border-l-4 border-brand-blue"
               #rlaOverview="routerLinkActive"
               [routerLinkActiveOptions]="{ exact: true }"
               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
-              [ngClass]="rlaOverview.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+              [ngClass]="rlaOverview.isActive ? '' : 'text-white/60 hover:text-white hover:bg-white/10'"
             >
               <app-icon
                 name="LayoutDashboard"
                 size="20"
-                [className]="rlaOverview.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+                [className]="rlaOverview.isActive ? 'text-brand-blue' : 'text-white/50 group-hover:text-white/80'"
               ></app-icon>
               <span>Overview</span>
             </a>
@@ -92,20 +92,20 @@
                 type="button"
                 (click)="toggleOrdersMenu()"
                 class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
-                [ngClass]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+                [ngClass]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'bg-white/10 text-white' : 'text-white/60 hover:text-white hover:bg-white/10'"
               >
                 <div class="flex items-center gap-3">
                   <app-icon
                     name="PlusCircle"
                     size="20"
-                    [className]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                    [className]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'text-white' : 'text-white/50 group-hover:text-white/80'"
                   ></app-icon>
                   <span>Orders</span>
                 </div>
                 <app-icon
                   [name]="isOrdersMenuOpen ? 'ChevronUp' : 'ChevronDown'"
                   size="14"
-                  [className]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                  [className]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'text-white' : 'text-white/50 group-hover:text-white/80'"
                 ></app-icon>
               </button>
               
@@ -114,7 +114,7 @@
                 class="overflow-hidden transition-all duration-300"
                 [style.max-height]="isOrdersMenuOpen ? '150px' : '0px'"
               >
-                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-gray-400">
+                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-white/60">
                   <li>
                     <a
                       routerLink="/admin/orders/pre-order"
@@ -147,20 +147,20 @@
                 type="button"
                 (click)="toggleOrderViewMenu()"
                 class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
-                [ngClass]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+                [ngClass]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'bg-white/10 text-white' : 'text-white/60 hover:text-white hover:bg-white/10'"
               >
                 <div class="flex items-center gap-3">
                   <app-icon
                     name="Eye"
                     size="20"
-                    [className]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                    [className]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-white' : 'text-white/50 group-hover:text-white/80'"
                   ></app-icon>
                   <span>Order View</span>
                 </div>
                 <app-icon
                   [name]="isOrderViewMenuOpen ? 'ChevronUp' : 'ChevronDown'"
                   size="14"
-                  [className]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                  [className]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-white' : 'text-white/50 group-hover:text-white/80'"
                 ></app-icon>
               </button>
               
@@ -169,7 +169,7 @@
                 class="overflow-hidden transition-all duration-300"
                 [style.max-height]="isOrderViewMenuOpen ? '200px' : '0px'"
               >
-                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-gray-400">
+                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-white/60">
                   <li>
                     <a
                       routerLink="/admin/orders"
@@ -220,20 +220,20 @@
                 type="button"
                 (click)="toggleProductsMenu()"
                 class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
-                [ngClass]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+                [ngClass]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'bg-white/10 text-white' : 'text-white/60 hover:text-white hover:bg-white/10'"
               >
                 <div class="flex items-center gap-3">
                   <app-icon
                     name="ShoppingBag"
                     size="20"
-                    [className]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                    [className]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'text-white' : 'text-white/50 group-hover:text-white/80'"
                   ></app-icon>
                   <span>Inventory</span>
                 </div>
                 <app-icon
                   [name]="isProductsMenuOpen ? 'ChevronUp' : 'ChevronDown'"
                   size="14"
-                  [className]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                  [className]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'text-white' : 'text-white/50 group-hover:text-white/80'"
                 ></app-icon>
               </button>
               
@@ -242,7 +242,7 @@
                 class="overflow-hidden transition-all duration-300"
                 [style.max-height]="isProductsMenuOpen ? '250px' : '0px'"
               >
-                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-gray-400">
+                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-white/60">
                   <li>
                     <a
                       routerLink="/admin/products"
@@ -305,20 +305,20 @@
                 type="button"
                 (click)="toggleStaffMenu()"
                 class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
-                [ngClass]="(isStaffMenuOpen || isGroupActive(['/admin/staff', '/admin/roles', '/admin/staff/audit'])) ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+                [ngClass]="(isStaffMenuOpen || isGroupActive(['/admin/staff', '/admin/roles', '/admin/staff/audit'])) ? 'bg-white/10 text-white' : 'text-white/60 hover:text-white hover:bg-white/10'"
               >
                 <div class="flex items-center gap-3">
                   <app-icon
                     name="Shield"
                     size="20"
-                    [className]="(isStaffMenuOpen || isGroupActive(['/admin/staff', '/admin/roles', '/admin/staff/audit'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                    [className]="(isStaffMenuOpen || isGroupActive(['/admin/staff', '/admin/roles', '/admin/staff/audit'])) ? 'text-white' : 'text-white/50 group-hover:text-white/80'"
                   ></app-icon>
                   <span>Security & Staff</span>
                 </div>
                 <app-icon
                   [name]="isStaffMenuOpen ? 'ChevronUp' : 'ChevronDown'"
                   size="14"
-                  [className]="(isStaffMenuOpen || isGroupActive(['/admin/staff', '/admin/roles', '/admin/staff/audit'])) ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'"
+                  [className]="(isStaffMenuOpen || isGroupActive(['/admin/staff', '/admin/roles', '/admin/staff/audit'])) ? 'text-white' : 'text-white/50 group-hover:text-white/80'"
                 ></app-icon>
               </button>
               
@@ -327,7 +327,7 @@
                 class="overflow-hidden transition-all duration-300"
                 [style.max-height]="isStaffMenuOpen ? '150px' : '0px'"
               >
-                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-gray-400">
+                <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-white/60">
                   <li>
                     <a
                       routerLink="/admin/staff"
@@ -375,15 +375,15 @@
           <li *ngIf="hasAccess('banners')">
             <a
               routerLink="/admin/banners"
-              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              routerLinkActive="bg-white/10 text-white font-medium border-l-4 border-brand-blue"
               #rlaBanners="routerLinkActive"
               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
-              [ngClass]="rlaBanners.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+              [ngClass]="rlaBanners.isActive ? '' : 'text-white/60 hover:text-white hover:bg-white/10'"
             >
               <app-icon
                 name="GalleryVertical"
                 size="20"
-                [className]="rlaBanners.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+                [className]="rlaBanners.isActive ? 'text-brand-blue' : 'text-white/50 group-hover:text-white/80'"
               ></app-icon>
               <span>Banners & Campaigns</span>
             </a>
@@ -393,15 +393,15 @@
           <li *ngIf="hasAccess('pages')">
             <a
               routerLink="/admin/pages"
-              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              routerLinkActive="bg-white/10 text-white font-medium border-l-4 border-brand-blue"
               #rlaPages="routerLinkActive"
               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
-              [ngClass]="rlaPages.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+              [ngClass]="rlaPages.isActive ? '' : 'text-white/60 hover:text-white hover:bg-white/10'"
             >
               <app-icon
                 name="FileText"
                 size="20"
-                [className]="rlaPages.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+                [className]="rlaPages.isActive ? 'text-brand-blue' : 'text-white/50 group-hover:text-white/80'"
               ></app-icon>
               <span>Site Content</span>
             </a>
@@ -411,15 +411,15 @@
           <li *ngIf="hasAccess('order-sources')">
             <a
               routerLink="/admin/order-sources"
-              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              routerLinkActive="bg-white/10 text-white font-medium border-l-4 border-brand-blue"
               #rlaSources="routerLinkActive"
               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
-              [ngClass]="rlaSources.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+              [ngClass]="rlaSources.isActive ? '' : 'text-white/60 hover:text-white hover:bg-white/10'"
             >
               <app-icon
                 name="Globe"
                 size="20"
-                [className]="rlaSources.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+                [className]="rlaSources.isActive ? 'text-brand-blue' : 'text-white/50 group-hover:text-white/80'"
               ></app-icon>
               <span>Order Sources</span>
             </a>
@@ -429,15 +429,15 @@
           <li *ngIf="hasAccess('reviews')">
             <a
               routerLink="/admin/reviews"
-              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              routerLinkActive="bg-white/10 text-white font-medium border-l-4 border-brand-blue"
               #rlaReviews="routerLinkActive"
               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
-              [ngClass]="rlaReviews.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+              [ngClass]="rlaReviews.isActive ? '' : 'text-white/60 hover:text-white hover:bg-white/10'"
             >
               <app-icon
                 name="MessageSquare"
                 size="20"
-                [className]="rlaReviews.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+                [className]="rlaReviews.isActive ? 'text-brand-blue' : 'text-white/50 group-hover:text-white/80'"
               ></app-icon>
               <span>Customer Reviews</span>
             </a>
@@ -447,15 +447,15 @@
           <li *ngIf="hasAccess('customers')">
             <a
               routerLink="/admin/customers"
-              routerLinkActive="bg-gray-800 text-white font-medium border-l-4 border-brand-blue"
+              routerLinkActive="bg-white/10 text-white font-medium border-l-4 border-brand-blue"
               #rlaCustomers="routerLinkActive"
               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group"
-              [ngClass]="rlaCustomers.isActive ? '' : 'text-gray-400 hover:text-white hover:bg-gray-800'"
+              [ngClass]="rlaCustomers.isActive ? '' : 'text-white/60 hover:text-white hover:bg-white/10'"
             >
               <app-icon
                 name="Users"
                 size="20"
-                [className]="rlaCustomers.isActive ? 'text-brand-blue' : 'text-gray-500 group-hover:text-gray-300'"
+                [className]="rlaCustomers.isActive ? 'text-brand-blue' : 'text-white/50 group-hover:text-white/80'"
               ></app-icon>
               <span>Customers</span>
             </a>

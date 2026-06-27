@@ -94,7 +94,7 @@
                 <span class="text-ds-text">৳{{ item.unitPrice }}</span>
                 
                 <!-- Stock Warning Badge -->
-                <span *ngIf="!item.isStockAvailable" class="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-red-500/10 text-red-500 border border-red-500/20 animate-pulse">
+                <span *ngIf="!item.isStockAvailable" class="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-ds-danger/10 text-ds-danger border border-ds-danger/20 animate-pulse">
                   <app-icon name="AlertTriangle" size="10"></app-icon>
                   <span>INSUFFICIENT STOCK</span>
                 </span>

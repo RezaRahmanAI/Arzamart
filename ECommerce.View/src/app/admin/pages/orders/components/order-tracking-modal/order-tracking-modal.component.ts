@@ -60,15 +60,15 @@ export class OrderTrackingModalComponent {
   private readonly notification = inject(NotificationService);
 
   private static readonly STATUS_COLORS: Record<string, string> = {
-    Pending: "#f59e0b", Confirmed: "#10b981", Processing: "#eab308",
-    Packed: "#6366f1", Shipped: "#3b82f6", Delivered: "#0d4c5e",
-    Cancelled: "#ef4444", Hold: "#6b7280", PreOrder: "#8b5cf6",
-    Return: "#ec4899", ReturnProcess: "#ec4899", Exchange: "#8b5cf6",
-    Refund: "#f43f5e",
+    Pending: "var(--status-pending)", Confirmed: "var(--status-confirmed)", Processing: "var(--status-processing)",
+    Packed: "var(--status-packed)", Shipped: "var(--status-shipped)", Delivered: "var(--status-delivered)",
+    Cancelled: "var(--status-cancelled)", Hold: "var(--status-hold)", PreOrder: "var(--status-preorder)",
+    Return: "var(--status-return)", ReturnProcess: "var(--status-return)", Exchange: "var(--status-preorder)",
+    Refund: "var(--status-refund)",
   };
 
   getStatusColor(status: string): string {
-    return OrderTrackingModalComponent.STATUS_COLORS[status] || "#94a3b8";
+    return OrderTrackingModalComponent.STATUS_COLORS[status] || "var(--status-hold)";
   }
 
   trackByLogIndex(_: number, log: OrderLog): number {

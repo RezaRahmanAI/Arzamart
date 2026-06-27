@@ -140,7 +140,7 @@
                       <app-icon name="StarHalf" size="16" className="fill-current"></app-icon>
                     }
                     @for (star of emptyStars(vm.averageRating); track star) {
-                      <app-icon name="Star" size="16" className="text-gray-300"></app-icon>
+                      <app-icon name="Star" size="16" className="text-ds-text-muted"></app-icon>
                     }
                   </div>
                   <span class="text-ds-sm font-medium">{{ vm.averageRating }}</span>
@@ -214,18 +214,18 @@
               </div>
 
               @if ((settings$ | async)?.whatsAppNumber; as whatsApp) {
-                <a [href]="getWhatsAppUrl(vm.product, whatsApp)" target="_blank" class="btn btn-whatsapp-glow w-full h-11 sm:h-14 !bg-[#25D366] !text-white !border-none flex items-center justify-center gap-2">
+                <a [href]="getWhatsAppUrl(vm.product, whatsApp)" target="_blank" class="btn btn-whatsapp-glow w-full h-11 sm:h-14 !bg-ds-whatsapp !text-white !border-none flex items-center justify-center gap-2">
                   <app-icon name="WhatsApp" size="18"></app-icon>
                   WHATSAPP US
                 </a>
               }
 
               <!-- Watching Section -->
-              <div class="p-ds-4 rounded-sm flex items-center gap-ds-3 border border-[#E63946]/50 animate-pulse"
+              <div class="p-ds-4 rounded-sm flex items-center gap-ds-3 border border-ds-danger/50 animate-pulse"
                    style="background: rgba(230,57,70,0.05);">
-                <app-icon name="Eye" size="16" className="text-[#E63946]"></app-icon>
+                <app-icon name="Eye" size="16" className="text-ds-danger"></app-icon>
                 <p class="text-ds-text-sec">
-                  <span class="text-[#E63946]">{{ watchingCount }}</span> People watching this product now!
+                  <span class="text-ds-danger">{{ watchingCount }}</span> People watching this product now!
                 </p>
               </div>
             </div>
@@ -267,7 +267,7 @@
     </div>
 
     <!-- Product Reviews Section -->
-    <section id="reviews" class="section-py border-t border-ds-border bg-white">
+    <section id="reviews" class="section-py border-t border-ds-border bg-ds-bg">
       <div class="site-container">
         <!-- Section Header -->
         <div class="text-center mb-ds-12 space-y-ds-2">
@@ -287,7 +287,7 @@
                   <app-icon 
                     [name]="getStarIcon(vm.averageRating, star)" 
                     size="20"
-                    [className]="vm.averageRating >= star ? 'fill-current' : (vm.averageRating + 0.5 >= star ? 'fill-current' : 'text-gray-300')"
+                    [className]="vm.averageRating >= star ? 'fill-current' : (vm.averageRating + 0.5 >= star ? 'fill-current' : 'text-ds-text-muted')"
                   ></app-icon>
                 }
               </div>
@@ -318,7 +318,7 @@
                   {{ isReviewFormOpen ? 'CANCEL REVIEW' : 'WRITE A REVIEW' }}
                 </button>
                 <div class="text-center pt-ds-1">
-                  <button (click)="logoutCustomer()" class="text-[11px] text-ds-text-sec hover:text-red-500 transition-colors hover:underline">
+                  <button (click)="logoutCustomer()" class="text-[11px] text-ds-text-sec hover:text-ds-danger transition-colors hover:underline">
                     Log out of this account
                   </button>
                 </div>
@@ -438,7 +438,7 @@
                         <app-icon 
                           name="Star" 
                           size="28" 
-                          [className]="star <= reviewRating ? 'fill-current text-amber-400' : 'text-gray-300 fill-none'"
+                          [className]="star <= reviewRating ? 'fill-current text-amber-400' : 'text-ds-text-muted fill-none'"
                         ></app-icon>
                       </button>
                     }
@@ -516,7 +516,7 @@
                             <app-icon 
                               [name]="getStarIcon(review.rating, star)" 
                               size="14" 
-                              [className]="review.rating >= star ? 'fill-current' : (review.rating + 0.5 >= star ? 'fill-current' : 'text-gray-300')"
+                              [className]="review.rating >= star ? 'fill-current' : (review.rating + 0.5 >= star ? 'fill-current' : 'text-ds-text-muted')"
                             ></app-icon>
                           }
                         </div>
@@ -527,7 +527,7 @@
                       <div class="flex items-center gap-ds-2">
                         <span class="font-medium text-ds-text text-ds-sm">{{ review.customerName }}</span>
                         @if (review.isVerifiedPurchase) {
-                          <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                          <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-ds-success bg-ds-success-bg px-2 py-0.5 rounded-full border border-ds-success/30">
                             <app-icon name="Check" size="10"></app-icon> Verified Purchase
                           </span>
                         }

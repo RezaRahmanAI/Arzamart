@@ -81,24 +81,24 @@ export class OrdersComponent implements OnInit, OnDestroy {
   updateStatusOptions = this.statusOptions.filter((s): s is OrderStatus => s !== 'All' && s !== 'All Statuses' as any);
 
   private static readonly STATUS_CLASSES: Record<string, string> = {
-    Pending: "border-amber-500 bg-amber-50/50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-200",
-    Confirmed: "border-emerald-500 bg-emerald-50/50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200",
-    Processing: "border-yellow-500 bg-yellow-50/50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-200",
-    Packed: "border-indigo-500 bg-indigo-50/50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-200",
-    Shipped: "border-blue-500 bg-blue-50/50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-200",
-    Delivered: "border-accent bg-accent/10 text-primary dark:bg-accent/20 dark:text-accent",
-    Cancelled: "border-red-500 bg-red-50/50 text-red-700 dark:bg-red-900/20 dark:text-red-200",
-    Refund: "border-red-500 bg-red-50/50 text-red-700 dark:bg-red-900/20 dark:text-red-200",
-    Hold: "border-gray-500 bg-gray-50/50 text-gray-700 dark:bg-gray-900/20 dark:text-gray-200",
-    PreOrder: "border-violet-500 bg-violet-50/50 text-violet-700 dark:bg-violet-900/20 dark:text-violet-200",
+    Pending: "border-ds-warning/50 bg-ds-warning-bg text-ds-warning",
+    Confirmed: "border-ds-success/50 bg-ds-success-bg text-ds-success",
+    Processing: "border-ds-warning/50 bg-ds-warning-bg text-ds-warning",
+    Packed: "border-ds-info/50 bg-ds-info-bg text-ds-info",
+    Shipped: "border-ds-info/50 bg-ds-info-bg text-ds-info",
+    Delivered: "border-ds-success/50 bg-ds-success-bg text-ds-success",
+    Cancelled: "border-ds-danger/50 bg-ds-danger-bg text-ds-danger",
+    Refund: "border-ds-danger/50 bg-ds-danger-bg text-ds-danger",
+    Hold: "border-ds-text-muted/50 bg-ds-surface text-ds-text-secondary",
+    PreOrder: "border-ds-info/50 bg-ds-info-bg text-ds-info",
   };
 
   private static readonly STATUS_COLORS: Record<string, string> = {
-    Pending: "#f59e0b", Confirmed: "#10b981", Processing: "#eab308",
-    Packed: "#6366f1", Shipped: "#3b82f6", Delivered: "#0d4c5e",
-    Cancelled: "#ef4444", Hold: "#6b7280", PreOrder: "#8b5cf6",
-    Return: "#ec4899", ReturnProcess: "#ec4899", Exchange: "#8b5cf6",
-    Refund: "#f43f5e",
+    Pending: "var(--status-pending)", Confirmed: "var(--status-confirmed)", Processing: "var(--status-processing)",
+    Packed: "var(--status-packed)", Shipped: "var(--status-shipped)", Delivered: "var(--status-delivered)",
+    Cancelled: "var(--status-cancelled)", Hold: "var(--status-hold)", PreOrder: "var(--status-preorder)",
+    Return: "var(--status-return)", ReturnProcess: "var(--status-return)", Exchange: "var(--status-preorder)",
+    Refund: "var(--status-refund)",
   };
 
   private static readonly STATUS_ICONS: Record<string, string> = {
@@ -120,11 +120,11 @@ export class OrdersComponent implements OnInit, OnDestroy {
   };
 
   statusClass(status: string): string {
-    return OrdersComponent.STATUS_CLASSES[status] || "border-gray-300 bg-gray-50 text-gray-700";
+    return OrdersComponent.STATUS_CLASSES[status] || "border-ds-border bg-ds-surface text-ds-text-secondary";
   }
 
   getStatusColor(status: string): string {
-    return OrdersComponent.STATUS_COLORS[status] || "#94a3b8";
+    return OrdersComponent.STATUS_COLORS[status] || "var(--status-hold)";
   }
 
   getStatusIconName(status: string): string {
@@ -189,12 +189,12 @@ export class OrdersComponent implements OnInit, OnDestroy {
   tempEndDate: string | null = null;
 
   avatarStyles = [
-    "bg-orange-100 text-orange-700",
-    "bg-blue-100 text-blue-700",
-    "bg-purple-100 text-purple-700",
-    "bg-gray-200 text-gray-700",
-    "bg-pink-100 text-pink-700",
-    "bg-teal-100 text-teal-700",
+    "bg-ds-warning-bg text-ds-warning",
+    "bg-ds-info-bg text-ds-info",
+    "bg-ds-info-bg text-ds-info",
+    "bg-ds-surface-2 text-ds-text-secondary",
+    "bg-ds-danger-bg text-ds-danger",
+    "bg-ds-success-bg text-ds-success",
   ];
 
   ngOnInit(): void {

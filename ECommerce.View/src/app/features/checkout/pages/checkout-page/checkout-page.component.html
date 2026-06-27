@@ -47,7 +47,7 @@
                     type="tel"
                     placeholder="017XXXXXXXX"
                     autocomplete="tel"
-                    class="w-full h-11 px-4 bg-ds-surface border-none focus:ring-2 focus:ring-[#E52222] transition-all outline-none text-sm"
+                    class="w-full h-11 px-4 bg-ds-surface border-none focus:ring-2 focus:ring-ds-danger transition-all outline-none text-sm"
                   />
                 </div>
 
@@ -58,7 +58,7 @@
                     type="text"
                     placeholder="e.g. Rizve Rahman"
                     autocomplete="name"
-                    class="w-full h-11 px-4 bg-ds-surface border-none focus:ring-2 focus:ring-[#E52222] transition-all outline-none text-sm"
+                    class="w-full h-11 px-4 bg-ds-surface border-none focus:ring-2 focus:ring-ds-danger transition-all outline-none text-sm"
                   />
                 </div>
               </div>
@@ -84,8 +84,8 @@
                   </button>
 
                   @if (isCityDropdownOpen) {
-                    <div class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-100 shadow-2xl overflow-hidden">
-                      <div class="p-2 border-b border-gray-100">
+                    <div class="absolute z-50 left-0 right-0 mt-1 bg-ds-bg border border-ds-border shadow-2xl overflow-hidden">
+                      <div class="p-2 border-b border-ds-border">
                         <input
                           type="text"
                           placeholder="Search cities..."
@@ -98,7 +98,7 @@
                       <ul class="max-h-40 overflow-y-auto">
                         @for (city of filteredCities; track city) {
                           <li>
-                            <button type="button" (click)="selectCity(city)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50">
+                            <button type="button" (click)="selectCity(city)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-ds-surface">
                               {{ city }}
                             </button>
                           </li>
@@ -124,8 +124,8 @@
                   </button>
 
                   @if (isAreaDropdownOpen) {
-                    <div class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-100 shadow-2xl overflow-hidden">
-                      <div class="p-2 border-b border-gray-100">
+                    <div class="absolute z-50 left-0 right-0 mt-1 bg-ds-bg border border-ds-border shadow-2xl overflow-hidden">
+                      <div class="p-2 border-b border-ds-border">
                         <input
                           type="text"
                           placeholder="Search areas..."
@@ -138,7 +138,7 @@
                       <ul class="max-h-40 overflow-y-auto">
                         @for (area of filteredAreas; track area) {
                           <li>
-                            <button type="button" (click)="selectArea(area)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50">
+                            <button type="button" (click)="selectArea(area)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-ds-surface">
                               {{ area }}
                             </button>
                           </li>
@@ -152,7 +152,7 @@
                 <div class="md:col-span-2 space-y-1.5">
                   <label class="text-ds-text text-sm">Detailed Address</label>
                   <textarea formControlName="address" rows="2" placeholder="House #12, Road #4, Block B..."
-                            class="w-full p-4 bg-ds-surface border-none focus:ring-2 focus:ring-[#E52222] transition-all outline-none resize-none text-sm"></textarea>
+                            class="w-full p-4 bg-ds-surface border-none focus:ring-2 focus:ring-ds-danger transition-all outline-none resize-none text-sm"></textarea>
                 </div>
               </div>
             </section>
@@ -209,7 +209,7 @@
                 <div class="flex justify-between text-ds-text-sec">
                   <span>Shipping</span>
                   @if (vm.summary.shipping === 0) {
-                    <span class="text-emerald-600">FREE</span>
+                    <span class="text-ds-success">FREE</span>
                   } @else {
                     <app-price-display [amount]="vm.summary.shipping"></app-price-display>
                   }
@@ -235,7 +235,7 @@
               </div>
 
               @if (errorMessage) {
-                <div class="mt-5 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">
+                <div class="mt-5 p-3 bg-ds-danger/10 border border-ds-danger/20 text-ds-danger text-sm rounded-lg">
                   {{ errorMessage }}
                 </div>
               }

@@ -290,13 +290,13 @@ export class ProductsComponent implements OnInit, OnDestroy {
       case "Active":
         return "bg-accent text-primary";
       case "Draft":
-        return "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
+        return "bg-ds-surface dark:bg-slate-700 text-ds-text-secondary dark:text-slate-300";
       case "Archived":
-        return "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
+        return "bg-ds-surface dark:bg-slate-700 text-ds-text-secondary dark:text-slate-300";
       case "Out of Stock":
-        return "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400";
+        return "bg-ds-danger-bg dark:bg-red-900/30 text-ds-danger dark:text-red-400";
       default:
-        return "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
+        return "bg-ds-surface dark:bg-slate-700 text-ds-text-secondary dark:text-slate-300";
     }
   }
 

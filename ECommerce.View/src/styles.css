@@ -36,6 +36,28 @@
   --color-danger-bg:      #FDF0F0;
   --color-danger-hover:   #B83E3E;
   --color-success:        #3D9970;
+  --color-success-bg:     #F0FAF5;
+  --color-warning:        #D4A017;
+  --color-warning-bg:     #FDF8F0;
+  --color-info:           #2563EB;
+  --color-info-bg:        #EFF6FF;
+
+  /* ── Order Status Colors (centralized) ── */
+  --status-pending:       #D4A017;
+  --status-confirmed:     #3D9970;
+  --status-processing:    #D4A017;
+  --status-packed:        #7C3AED;
+  --status-shipped:       #2563EB;
+  --status-delivered:     #0D4C5E;
+  --status-cancelled:     #D94F4F;
+  --status-hold:          #6B7280;
+  --status-preorder:      #7C3AED;
+  --status-return:        #EC4899;
+  --status-refund:        #E11D48;
+
+  /* ── External Brand Colors ── */
+  --color-whatsapp:       #25D366;
+  --color-messenger:      #0084FF;
 
   /* ── Spacing ── */
   --radius-sm:   6px;
@@ -385,9 +407,10 @@
   }
   .badge-default  { background: var(--color-surface);  color: var(--color-text-secondary); }
   .badge-active   { background: var(--color-accent-ds); color: var(--color-hero-text); }
-  .badge-success  { background: #F0FAF5; color: var(--color-success); }
-  .badge-danger   { background: #FDF0F0; color: var(--color-danger); }
-  .badge-warning  { background: #FDF8F0; color: #B07D2A; }
+  .badge-success  { background: var(--color-success-bg); color: var(--color-success); }
+  .badge-danger   { background: var(--color-danger-bg); color: var(--color-danger); }
+  .badge-warning  { background: var(--color-warning-bg); color: var(--color-warning); }
+  .badge-info     { background: var(--color-info-bg); color: var(--color-info); }
 
   /* ── NAVBAR ── */
   .navbar {
@@ -457,10 +480,10 @@
   .ds-table td {
     padding: 14px 16px;
     color: var(--color-text-primary);
-    border-bottom: 1px solid #F0F0F0;
+    border-bottom: 1px solid var(--color-border-ds);
   }
   @media (hover: hover) {
-    .ds-table tr:hover td { background: #FAFAFA; }
+    .ds-table tr:hover td { background: var(--color-surface); }
   }
 
   /* ── HERO SECTION ── */
@@ -1003,6 +1026,28 @@ input.paired.h-16,
 .btn-danger:hover:not(:disabled) {
   background: var(--color-danger-hover) !important;
   border-color: var(--color-danger-hover) !important;
+}
+
+/* Success Button */
+.btn-success {
+  background: var(--color-success) !important;
+  color: var(--color-hero-text) !important;
+  border: 1px solid var(--color-success) !important;
+}
+.btn-success:hover:not(:disabled) {
+  background: #2E7D5A !important;
+  border-color: #2E7D5A !important;
+}
+
+/* Warning Button */
+.btn-warning {
+  background: var(--color-warning) !important;
+  color: var(--color-hero-text) !important;
+  border: 1px solid var(--color-warning) !important;
+}
+.btn-warning:hover:not(:disabled) {
+  background: #B8920F !important;
+  border-color: #B8920F !important;
 }
 
 /* Keep layout classes like full-width working */

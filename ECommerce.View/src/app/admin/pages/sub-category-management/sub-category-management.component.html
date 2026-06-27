@@ -80,7 +80,7 @@
                           <app-icon name="Edit3" size="14"></app-icon>
                         </button>
                         @if (authService.isSuperAdmin()) {
-                          <button class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center"
+                          <button class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-danger hover:border-ds-danger transition-colors flex items-center justify-center"
                                   (click)="$event.stopPropagation(); deleteSubCategory(sub)">
                             <app-icon name="Trash2" size="14"></app-icon>
                           </button>
@@ -149,7 +149,7 @@
               <app-icon name="ChevronDown" size="14" className="absolute right-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
             </div>
             @if (categoryForm.get('categoryId')?.touched && categoryForm.get('categoryId')?.errors?.['required']) {
-              <p class="text-red-500 ml-1 mt-1">Parent is required</p>
+              <p class="text-ds-danger ml-1 mt-1">Parent is required</p>
             }
           </div>
 
@@ -159,7 +159,7 @@
             <input class="form-input !h-11 !px-ds-4"
                    id="cat-name" type="text" formControlName="name" placeholder="E.G. ACCESSORIES" />
             @if (categoryForm.get('name')?.touched && categoryForm.get('name')?.errors?.['required']) {
-              <p class="text-red-500 ml-1 mt-1">Name is required</p>
+              <p class="text-ds-danger ml-1 mt-1">Name is required</p>
             }
           </div>
 

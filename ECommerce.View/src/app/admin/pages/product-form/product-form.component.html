@@ -129,11 +129,11 @@
 
                 <div class="flex items-center gap-2">
                   <span class="text-ds-text-muted">Total:</span>
-                  <span  [ngClass]="{'text-ds-accent': comboQuantityMatches, 'text-red-400': !comboQuantityMatches}">
+                  <span  [ngClass]="{'text-ds-accent': comboQuantityMatches, 'text-ds-danger': !comboQuantityMatches}">
                     {{ totalComboQuantity }} / {{ form.get('bundleSize')?.value }}
                   </span>
                   <app-icon *ngIf="comboQuantityMatches" name="CheckCircle2" size="12" className="text-ds-accent"></app-icon>
-                  <app-icon *ngIf="!comboQuantityMatches" name="AlertCircle" size="12" className="text-red-400"></app-icon>
+                  <app-icon *ngIf="!comboQuantityMatches" name="AlertCircle" size="12" className="text-ds-danger"></app-icon>
                 </div>
               </div>
               <div 
@@ -178,7 +178,7 @@
                   <button 
                     type="button" 
                     (click)="removeComboItem(i)"
-                    class="text-red-500 hover:text-red-700 p-1.5 transition-colors opacity-0 group-hover:opacity-100"
+                    class="text-ds-danger hover:text-ds-danger-hover p-1.5 transition-colors opacity-0 group-hover:opacity-100"
                   >
                     <app-icon name="Trash2" size="14"></app-icon>
                   </button>
@@ -378,7 +378,7 @@
                   <button
                     type="button"
                     (click)="removeSize(sizeIndex)"
-                    class="text-red-400 hover:text-red-600 p-1 transition-colors"
+                    class="text-ds-danger hover:text-ds-danger-hover p-1 transition-colors"
                     title="Remove"
                   >
                     <app-icon name="Trash2" size="12"></app-icon>
@@ -440,7 +440,7 @@
           />
         </div>
 
-        <p *ngIf="mediaError" class="mt-ds-3 text-red-500 text-xs">{{ mediaError }}</p>
+        <p *ngIf="mediaError" class="mt-ds-3 text-ds-danger text-xs">{{ mediaError }}</p>
 
         <div class="mt-ds-3 space-y-ds-2" formArrayName="mediaItems">
           <div
@@ -484,7 +484,7 @@
                       <input class="form-radio size-3.5" type="radio" name="mainMedia" [checked]="media.get('isMain')?.value" (change)="setMainMedia(mediaIndex)" />
                       <span class="text-ds-text-muted text-ds-xs font-semibold uppercase tracking-wider group-hover/radio:text-ds-text transition-colors">Main</span>
                     </label>
-                    <button class="w-fit text-red-500 hover:text-red-700 transition-colors text-xs flex items-center gap-1 font-semibold" type="button" (click)="removeMediaItem(mediaIndex)">
+                    <button class="w-fit text-ds-danger hover:text-ds-danger-hover transition-colors text-xs flex items-center gap-1 font-semibold" type="button" (click)="removeMediaItem(mediaIndex)">
                       <app-icon name="Trash2" size="12"></app-icon> Delete
                     </button>
                   </div>
@@ -522,7 +522,7 @@
           </div>
           <div *ngIf="form.get('meta.sizeChartUrl')?.value" class="mt-ds-3 relative group w-24 h-24 bg-ds-bg border border-ds-border p-ds-1.5 rounded-sm">
             <img loading="lazy" [src]="imageUrlService.getImageUrl(form.get('meta.sizeChartUrl')?.value)" class="w-full h-full object-contain transition-all duration-base">
-            <button (click)="form.get('meta.sizeChartUrl')?.setValue('')" class="absolute -top-2 -right-2 size-5 bg-red-500 text-white rounded-sm flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600">
+            <button (click)="form.get('meta.sizeChartUrl')?.setValue('')" class="absolute -top-2 -right-2 size-5 bg-ds-danger text-white rounded-sm flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 transition-all hover:bg-ds-danger-hover">
               <app-icon name="X" size="10"></app-icon>
             </button>
           </div>

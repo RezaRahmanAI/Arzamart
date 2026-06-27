@@ -88,7 +88,7 @@
 
 .arza-quill-wrapper:focus-within {
   border-color: var(--color-text-primary);
-  box-shadow: 0 0 0 2px rgba(42, 51, 66, 0.1);
+  box-shadow: 0 0 0 2px var(--color-border-ds);
 }
 
 .arza-quill-wrapper .ql-toolbar.ql-snow {

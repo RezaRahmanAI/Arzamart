@@ -5,11 +5,11 @@
          EDITOR / ADMIN PANEL (LEFT SIDEBAR)
     ═══════════════════════════════════════════ -->
     @if (isAdmin$ | async; as isAdmin) {
-      <div class="editor-panel w-[320px] h-full flex-shrink-0 bg-[#1A1A1A] border-r border-white/10 overflow-y-auto z-[100] transition-all"
+      <div class="editor-panel w-[320px] h-full flex-shrink-0 bg-ds-accent border-r border-white/10 overflow-y-auto z-[100] transition-all"
            [class.hidden]="!isEditorOpen">
         
         <!-- Editor Header -->
-        <div class="sticky top-0 p-6 bg-[#1A1A1A]/95 backdrop-blur-md border-b border-white/10 flex items-center justify-between z-20">
+        <div class="sticky top-0 p-6 bg-ds-accent/95 backdrop-blur-md border-b border-white/10 flex items-center justify-between z-20">
           <div>
             <h2 class="text-white">Design Engine</h2>
             <p class="text-white/40 mt-1">Configure & Build</p>
@@ -89,10 +89,10 @@
                     </button>
                     
                     <div class="flex items-center gap-1 pr-1">
-                      <button (click)="toggleVisibility(i); $event.stopPropagation()" class="p-1.5 hover:bg-white/10 rounded-md transition-colors" [class.text-[#3B4FD8]]="section.visible">
+                      <button (click)="toggleVisibility(i); $event.stopPropagation()" class="p-1.5 hover:bg-white/10 rounded-md transition-colors" [class.text-ds-info]="section.visible">
                         <app-icon [name]="section.visible ? 'Eye' : 'EyeOff'" size="14"></app-icon>
                       </button>
-                      <button (click)="deleteSection(i); $event.stopPropagation()" class="p-1.5 hover:bg-red-500/20 text-red-400 rounded-md">
+                      <button (click)="deleteSection(i); $event.stopPropagation()" class="p-1.5 hover:bg-ds-danger/20 text-ds-danger rounded-md">
                         <app-icon name="Trash2" size="14"></app-icon>
                       </button>
                     </div>
@@ -248,8 +248,8 @@
                                     </div>
                                     <button (click)="toggleProductSelection(p.id)"
                                             class="w-6 h-6 rounded-full flex items-center justify-center transition-all border border-white/10"
-                                            [style.background]="isProductInCustomSelection(p.id) ? '#1E6FD9' : 'transparent'"
-                                            [style.borderColor]="isProductInCustomSelection(p.id) ? '#1E6FD9' : 'rgba(255,255,255,0.1)'">
+                                            [style.background]="isProductInCustomSelection(p.id) ? 'var(--color-info)' : 'transparent'"
+                                            [style.borderColor]="isProductInCustomSelection(p.id) ? 'var(--color-info)' : 'rgba(255,255,255,0.1)'">
                                       <app-icon [name]="isProductInCustomSelection(p.id) ? 'Check' : 'Plus'" size="10"></app-icon>
                                     </button>
                                   </div>
@@ -257,7 +257,7 @@
                               }
                             </div>
                             
-                            <div class="p-3 bg-blue-500/5 rounded-lg border border-dashed border-blue-500/20">
+                            <div class="p-3 bg-ds-info/5 rounded-lg border border-dashed border-ds-info/20">
                               <p class="text-[10px] text-white/50 text-center leading-relaxed font-bengali">
                                 এখান থেকে পণ্য সিলেক্ট করলে সেগুলো ল্যান্ডিং পেজে দেখাবে। সিলেক্ট না করলে অটোমেটিক রিলেটেড পণ্য দেখাবে।
                               </p>
@@ -277,15 +277,15 @@
             <!-- Add Section -->
             <div class="relative mt-6">
               <button (click)="isAddSectionMenuOpen = !isAddSectionMenuOpen" 
-                      class="w-full h-11 border border-dashed border-white/10 hover:border-[#3B4FD8] text-white/30 hover:text-[#3B4FD8] flex items-center justify-center gap-2 transition-all rounded-lg text-sm bg-white/[0.02]">
+                      class="w-full h-11 border border-dashed border-white/10 hover:border-ds-info text-white/30 hover:text-ds-info flex items-center justify-center gap-2 transition-all rounded-lg text-sm bg-white/[0.02]">
                 <app-icon name="Plus" size="14"></app-icon>
                 Add Component
               </button>
               @if (isAddSectionMenuOpen) {
-                <div class="absolute bottom-full left-0 right-0 bg-[#222] border border-white/10 shadow-2xl z-50 overflow-hidden rounded-lg mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                <div class="absolute bottom-full left-0 right-0 bg-ds-accent border border-white/10 shadow-2xl z-50 overflow-hidden rounded-lg mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
                   <div class="max-h-64 overflow-y-auto custom-scrollbar">
                     @for (type of ['countdown', 'hero', 'product-hero', 'discount-cta', 'info-banner', 'product-details', 'trust-banner', 'reviews', 'product-select', 'order-form']; track type) {
-                      <button (click)="addSection(type); isAddSectionMenuOpen = false" class="w-full text-left px-4 py-2.5 text-white/60 hover:bg-[#3B4FD8] hover:text-white transition-all border-b border-white/5 last:border-0 text-sm">
+                      <button (click)="addSection(type); isAddSectionMenuOpen = false" class="w-full text-left px-4 py-2.5 text-white/60 hover:bg-ds-info hover:text-white transition-all border-b border-white/5 last:border-0 text-sm">
                         {{ type.replace('-', ' ') | titlecase }}
                       </button>
                     }
@@ -299,9 +299,9 @@
         </div>
 
         <!-- Footer Actions -->
-        <div class="sticky bottom-0 p-4 bg-[#1A1A1A]/95 backdrop-blur-md border-t border-white/10 z-20 space-y-3">
+        <div class="sticky bottom-0 p-4 bg-ds-accent/95 backdrop-blur-md border-t border-white/10 z-20 space-y-3">
           <button (click)="saveLayout()" [disabled]="isSaving"
-                  class="w-full h-11 bg-[#3B4FD8] text-white shadow-lg hover:shadow-[#3B4FD8]/20 transition-all flex items-center justify-center gap-2 rounded-lg font-bold text-sm">
+                  class="w-full h-11 bg-ds-info text-white shadow-lg hover:shadow-ds-info/20 transition-all flex items-center justify-center gap-2 rounded-lg font-bold text-sm">
             @if (isSaving) {
               <app-icon name="Loader2" size="16" className="animate-spin"></app-icon>
               Saving Changes...
@@ -328,7 +328,7 @@
       <!-- Editor Toggle Button (Hidden in clean preview) -->
       @if ((isAdmin$ | async) && !isEditorOpen) {
         <button (click)="isEditorOpen = true" 
-                class="fixed top-6 left-6 z-[200] w-14 h-14 bg-[#3B4FD8] text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(59,79,216,0.5)] hover:scale-110 active:scale-95 transition-all border border-white/20">
+                class="fixed top-6 left-6 z-[200] w-14 h-14 bg-ds-info text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.5)] hover:scale-110 active:scale-95 transition-all border border-white/20">
           <app-icon name="Settings" size="24"></app-icon>
         </button>
       }
@@ -343,7 +343,7 @@
                 <!-- MODULE 1: Countdown Bar -->
                 @case ('countdown') {
                   @if (section.settings?.isTimerVisible !== undefined ? section.settings.isTimerVisible : configForm.get('isTimerVisible')?.value) {
-                    <div class="sticky top-0 z-[60] w-full bg-[#E52222] text-white py-2 px-4 shadow-lg overflow-hidden">
+                    <div class="sticky top-0 z-[60] w-full bg-ds-danger text-white py-2 px-4 shadow-lg overflow-hidden">
                       <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-center gap-4">
                         <span class="font-bengali whitespace-pre-line">{{ section.settings?.headerTitle !== undefined ? section.settings.headerTitle : (configForm.get('headerTitle')?.value || 'অফার শেষ হতে বাকি:') }}</span>
                         <div class="flex gap-2">
@@ -367,7 +367,7 @@
                 <!-- MODULE 2: Hero / Offer -->
                 @case ('hero') {
                   <section class="section-padding text-center text-white" 
-                           style="background: linear-gradient(135deg, #3B4FD8, #7B3FE4, #8B2FC9);">
+                           style="background: linear-gradient(135deg, var(--color-info), #7B3FE4, #8B2FC9);">
                     <div class="max-w-[800px] mx-auto">
                       <p class="mb-4">🚀</p>
                       <h1 class="mb-6 whitespace-pre-line">
@@ -376,12 +376,12 @@
                       <p class="text-white/90 mb-8 whitespace-pre-line">
                         {{ section.settings?.heroSubtitle !== undefined ? section.settings.heroSubtitle : (configForm.get('heroSubtitle')?.value || 'প্রিমিয়াম কোয়ালিটি এখন সাশ্রয়ী মূল্যে') }}
                       </p>
-                      <div class="inline-block px-6 py-2 bg-[#F5C518] text-ds-text rounded-[12px] mb-10 whitespace-pre-line">
+                      <div class="inline-block px-6 py-2 bg-ds-warning text-ds-text rounded-[12px] mb-10 whitespace-pre-line">
                         {{ section.settings?.heroBadge !== undefined ? section.settings.heroBadge : (configForm.get('heroBadge')?.value || 'স্টক ফুরিয়ে যাওয়ার আগেই সংগ্রহ করুন') }}
                       </div>
                       <div>
                         <button (click)="scrollToOrder()" 
-                                class="btn-pill bg-white text-[#3B4FD8] hover:scale-105 active:scale-95 shadow-2xl">
+                                class="btn-pill bg-white text-ds-info hover:scale-105 active:scale-95 shadow-2xl">
                           অর্ডার করুন এখনই
                         </button>
                       </div>
@@ -401,7 +401,7 @@
                           {{ section.settings?.productHeroDescription !== undefined ? section.settings.productHeroDescription : (configForm.get('productHeroDescription')?.value || 'সেরা উপাদান দিয়ে তৈরি যা আপনার ত্বকের যত্ন নেবে।') }}
                         </p>
                         <div>
-                          <button (click)="scrollToOrder()" class="btn-pill bg-white text-[#E91E8C] shadow-xl">
+                          <button (click)="scrollToOrder()" class="btn-pill bg-white text-ds-danger shadow-xl">
                             বিস্তারিত দেখুন
                           </button>
                         </div>
@@ -419,14 +419,14 @@
                 <!-- MODULE 5: Discount CTA -->
                 @case ('discount-cta') {
                   <section class="section-padding text-center text-white"
-                           style="background: linear-gradient(135deg, #27A860, #1B9B7A);">
+                           style="background: linear-gradient(135deg, var(--color-success), #1B9B7A);">
                     <div class="max-w-[800px] mx-auto">
                       <p class="mb-6">🎁</p>
                       <h2 class="mb-4 whitespace-pre-line">{{ section.settings?.discountCtaTitle !== undefined ? section.settings.discountCtaTitle : (configForm.get('discountCtaTitle')?.value || 'অবিশ্বাস্য ডিসকাউন্ট অফার!') }}</h2>
                       <p class="text-white/90 mb-10 whitespace-pre-line">
                         {{ section.settings?.discountCtaDescription !== undefined ? section.settings.discountCtaDescription : (configForm.get('discountCtaDescription')?.value || 'আজই অর্ডার করলে পাবেন বিশেষ ছাড় এবং ফ্রি ডেলিভারি।') }}
                       </p>
-                      <button (click)="scrollToOrder()" class="btn-pill bg-white text-[#27A860]">
+                      <button (click)="scrollToOrder()" class="btn-pill bg-white text-ds-success">
                         অফারটি গ্রহণ করুন
                       </button>
                     </div>
@@ -435,7 +435,7 @@
 
                 <!-- MODULE 6: Info Banner -->
                 @case ('info-banner') {
-                  <section class="section-padding" style="background: linear-gradient(135deg, #F5A623, #E8870A);">
+                  <section class="section-padding" style="background: linear-gradient(135deg, var(--color-warning), #E8870A);">
                     <div class="max-w-[800px] mx-auto text-center text-ds-text">
                       <div class="size-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-black/10">
                         <app-icon name="Info" size="32" className="text-ds-text"></app-icon>
@@ -456,24 +456,24 @@
                         <h2 class="text-center mb-10">{{ section.settings?.productDetailsTitle !== undefined ? section.settings.productDetailsTitle : (configForm.get('productDetailsTitle')?.value || 'প্রোডাক্টের বিবরণ') }}</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                           @if (section.settings?.isFabricVisible !== undefined ? section.settings.isFabricVisible : configForm.get('isFabricVisible')?.value) {
-                            <div class="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                            <div class="flex gap-4 p-4 bg-ds-surface rounded-lg">
                               <div class="size-10 bg-ds-primary/10 text-ds-primary flex items-center justify-center rounded-full shrink-0">
                                 <app-icon name="Info" size="20"></app-icon>
                               </div>
                               <div>
                                 <h4 class="font-bold mb-1">উপাদান ও গুণমান</h4>
-                                <p class="text-sm text-gray-600 whitespace-pre-wrap">{{ data.product.description }}</p>
+                                <p class="text-sm text-ds-text-secondary whitespace-pre-wrap">{{ data.product.description }}</p>
                               </div>
                             </div>
                           }
                           @if (section.settings?.isDesignVisible !== undefined ? section.settings.isDesignVisible : configForm.get('isDesignVisible')?.value) {
-                            <div class="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                            <div class="flex gap-4 p-4 bg-ds-surface rounded-lg">
                               <div class="size-10 bg-ds-primary/10 text-ds-primary flex items-center justify-center rounded-full shrink-0">
                                 <app-icon name="Layers" size="20"></app-icon>
                               </div>
                               <div>
                                 <h4 class="font-bold mb-1">ডিজাইন ও বিশেষত্ব</h4>
-                                <p class="text-sm text-gray-600">আমাদের দক্ষ ডিজাইনারদের দ্বারা তৈরি বিশেষ কালেকশন।</p>
+                                <p class="text-sm text-ds-text-secondary">আমাদের দক্ষ ডিজাইনারদের দ্বারা তৈরি বিশেষ কালেকশন।</p>
                               </div>
                             </div>
                           }
@@ -486,14 +486,14 @@
                 <!-- MODULE 8: Trust Banner -->
                 @case ('trust-banner') {
                   @if (section.settings?.isTrustBannerVisible !== undefined ? section.settings.isTrustBannerVisible : configForm.get('isTrustBannerVisible')?.value) {
-                    <section class="py-10 bg-[#1A1A1A] text-white">
+                    <section class="py-10 bg-ds-accent text-white">
                       <div class="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
                         <div class="flex items-center gap-4">
                           <div class="size-16 bg-white/10 rounded-full flex items-center justify-center">
-                            <app-icon name="ShieldCheck" size="32" className="text-[#F5C518]"></app-icon>
+                            <app-icon name="ShieldCheck" size="32" className="text-ds-warning"></app-icon>
                           </div>
                           <div>
-                            <h3 class="text-[#F5C518]">১০০% বিশ্বস্ততা</h3>
+                            <h3 class="text-ds-warning">১০০% বিশ্বস্ততা</h3>
                             <p class="text-white/60 text-sm">হাজারো গ্রাহকের আস্থার প্রতীক</p>
                           </div>
                         </div>
@@ -518,14 +518,14 @@
                       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                         @for (p of [data.product].concat(relatedProducts); track p.id) {
                           <div class="relative p-3 sm:p-4 transition-all duration-500 border-2"
-                               [style.borderColor]="isProductSelected(p) ? '#1E6FD9' : '#F0F0F0'"
+                               [style.borderColor]="isProductSelected(p) ? 'var(--color-info)' : 'var(--color-surface)'"
                                [style.boxShadow]="isProductSelected(p) ? '0 10px 30px rgba(30,111,217,0.1)' : 'none'">
                             
                             <!-- Checkbox -->
                             <div class="absolute -top-2.5 -left-2.5 z-10" (click)="$event.stopPropagation(); toggleProductCheck(p)">
                               <div class="w-7 h-7 flex items-center justify-center rounded-sm border-2 transition-all duration-200 cursor-pointer"
-                                   [style.background]="isProductSelected(p) ? '#1E6FD9' : 'white'"
-                                   [style.borderColor]="isProductSelected(p) ? '#1E6FD9' : '#D0D0D0'">
+                                   [style.background]="isProductSelected(p) ? 'var(--color-info)' : 'var(--color-bg)'"
+                                   [style.borderColor]="isProductSelected(p) ? 'var(--color-info)' : 'var(--color-border-ds)'">
                                 @if (isProductSelected(p)) {
                                   <app-icon name="Check" size="14" className="text-white"></app-icon>
                                 }
@@ -533,14 +533,14 @@
                             </div>
 
                             @if (p.compareAtPrice && p.compareAtPrice > p.price) {
-                              <div class="absolute top-3 right-3 z-10 bg-[#E52222] text-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                              <div class="absolute top-3 right-3 z-10 bg-ds-danger text-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                                 ৳{{ (p.compareAtPrice - p.price) }} OFF
                               </div>
                             }
 
                             <div class="cursor-pointer mb-4 group relative" (click)="$event.stopPropagation(); openProductDetails(p)">
                               <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" 
-                                   class="w-full aspect-square object-contain rounded-sm bg-gray-50">
+                                   class="w-full aspect-square object-contain rounded-sm bg-ds-surface">
                               <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <span class="bg-white/90 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">Details</span>
                               </div>
@@ -549,7 +549,7 @@
                             <h4 class="mb-1 !text-sm !font-bold">{{ p.name }}</h4>
                             
                             <div class="flex items-center flex-nowrap gap-2 mb-4">
-                              <span class="text-[#1E6FD9] font-bold whitespace-nowrap">৳ {{ getProductPrice(p) }}</span>
+                              <span class="text-ds-info font-bold whitespace-nowrap">৳ {{ getProductPrice(p) }}</span>
                               @if (p.compareAtPrice && p.compareAtPrice > p.price) {
                                 <span class="text-ds-text-sec line-through text-xs whitespace-nowrap">৳ {{ p.compareAtPrice }}</span>
                               }
@@ -563,9 +563,9 @@
                                   @for (size of getUniqueSizes(p); track size) {
                                     <button (click)="$event.stopPropagation(); selectProductSize(p, size)"
                                             class="w-9 h-9 flex items-center justify-center transition-all border text-xs font-bold rounded-sm"
-                                            [style.background]="(getSelectedSize(p) === size) ? '#1E6FD9' : 'transparent'"
-                                            [style.color]="(getSelectedSize(p) === size) ? 'white' : '#1A1A1A'"
-                                            [style.borderColor]="(getSelectedSize(p) === size) ? '#1E6FD9' : '#E0E0E0'"
+                                            [style.background]="(getSelectedSize(p) === size) ? 'var(--color-info)' : 'transparent'"
+                                            [style.color]="(getSelectedSize(p) === size) ? 'var(--color-bg)' : 'var(--color-text-primary)'"
+                                            [style.borderColor]="(getSelectedSize(p) === size) ? 'var(--color-info)' : 'var(--color-border-ds)'"
                                             [style.boxShadow]="(getSelectedSize(p) === size) ? '0 4px 12px rgba(30,111,217,0.2)' : 'none'">
                                       {{ size }}
                                     </button>
@@ -578,9 +578,9 @@
                             <div class="flex items-center gap-3">
                               <p class="text-ds-text-sec text-[10px] uppercase font-bold tracking-widest">Qty</p>
                               <div class="flex items-center border border-ds-border rounded-sm overflow-hidden">
-                                <button (click)="$event.stopPropagation(); updateProductQuantity(p, -1)" class="w-9 h-9 flex items-center justify-center hover:bg-gray-50 text-sm">-</button>
+                                <button (click)="$event.stopPropagation(); updateProductQuantity(p, -1)" class="w-9 h-9 flex items-center justify-center hover:bg-ds-surface text-sm">-</button>
                                 <div class="w-9 h-9 flex items-center justify-center font-bold text-sm">{{ getProductQuantity(p) || 1 }}</div>
-                                <button (click)="$event.stopPropagation(); updateProductQuantity(p, 1)" class="w-9 h-9 flex items-center justify-center hover:bg-gray-50 text-sm">+</button>
+                                <button (click)="$event.stopPropagation(); updateProductQuantity(p, 1)" class="w-9 h-9 flex items-center justify-center hover:bg-ds-surface text-sm">+</button>
                               </div>
                             </div>
                           </div>
@@ -592,7 +592,7 @@
 
                 <!-- MODULE 8: Order Form -->
                 @case ('order-form') {
-                  <section id="order-form-section" class="section-padding bg-white border-t border-[#F5F5F5]">
+                  <section id="order-form-section" class="section-padding bg-white border-t border-ds-surface">
                     <div class="max-w-[1000px] mx-auto">
                       <h2 class="text-ds-text mb-12 text-center font-bengali">অর্ডার করুন</h2>
                       
@@ -602,19 +602,19 @@
                         <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
                           <!-- Saved Info Prompt -->
                           @if (showAutofillPrompt) {
-                            <div class="mb-8 p-6 bg-slate-50 border-2 border-[#1a1a1a]/5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in slide-in-from-top duration-300">
+                            <div class="mb-8 p-6 bg-ds-surface border-2 border-ds-accent/5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in slide-in-from-top duration-300">
                               <div class="flex items-center gap-4 text-center sm:text-left">
-                                <div class="w-12 h-12 rounded-2xl bg-[#1a1a1a] flex items-center justify-center shrink-0 shadow-lg">
+                                <div class="w-12 h-12 rounded-2xl bg-ds-accent flex items-center justify-center shrink-0 shadow-lg">
                                   <app-icon name="User" size="24" className="text-white"></app-icon>
                                 </div>
                                 <div>
                                   <p class="text-ds-text">Saved Information Found</p>
-                                  <p class="text-gray-400">Would you like to use your last order details?</p>
+                                  <p class="text-ds-text-muted">Would you like to use your last order details?</p>
                                 </div>
                               </div>
                               <div class="flex gap-3 w-full sm:w-auto">
-                                <button type="button" (click)="dismissAutofill()" class="flex-1 sm:flex-none px-6 py-3 text-gray-400 hover:text-ds-text transition-colors">No</button>
-                                <button type="button" (click)="applyAutofill()" class="flex-1 sm:flex-none px-8 py-3 bg-[#1a1a1a] text-white rounded-xl shadow-xl shadow-[#1a1a1a]/20 active:scale-95 transition-all">Yes, Use Info</button>
+                                <button type="button" (click)="dismissAutofill()" class="flex-1 sm:flex-none px-6 py-3 text-ds-text-muted hover:text-ds-text transition-colors">No</button>
+                                <button type="button" (click)="applyAutofill()" class="flex-1 sm:flex-none px-8 py-3 bg-ds-accent text-white rounded-xl shadow-xl shadow-ds-text/20 active:scale-95 transition-all">Yes, Use Info</button>
                               </div>
                             </div>
                           }
@@ -622,7 +622,7 @@
                           <div class="space-y-8">
                             <!-- Customer Info Section -->
                             <div class="flex items-center gap-3 mb-2">
-                              <div class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center">
+                              <div class="w-8 h-8 rounded-full bg-ds-accent flex items-center justify-center">
                                 <app-icon name="User" size="16" className="text-white"></app-icon>
                               </div>
                               <h3 class="text-ds-text">Customer Info</h3>
@@ -634,18 +634,18 @@
                                 <div class="relative flex">
                                   <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-ds-border bg-white text-ds-text-sec">+88</span>
                                   <input type="tel" formControlName="phone" placeholder="01xxxxxxxxx"
-                                         class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-r-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]" />
+                                         class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-r-2xl focus:border-ds-accent focus:bg-white focus:ring-0 transition-all placeholder:text-ds-text-muted" />
                                 </div>
                                 @if (orderForm.controls.phone.touched && orderForm.controls.phone.invalid) {
-                                  <p class="text-red-500 ml-1">Required</p>
+                                  <p class="text-ds-danger ml-1">Required</p>
                                 }
                               </div>
                               <div class="space-y-2">
                                 <label class="text-ds-text-sec ml-1">আপনার নাম *</label>
                                 <input type="text" formControlName="fullName" placeholder="e.g. Abdullah"
-                                       class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0]" />
+                                       class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-white focus:ring-0 transition-all placeholder:text-ds-text-muted" />
                                 @if (orderForm.controls.fullName.touched && orderForm.controls.fullName.invalid) {
-                                  <p class="text-red-500 ml-1">Required</p>
+                                  <p class="text-ds-danger ml-1">Required</p>
                                 }
                               </div>
                             </div>
@@ -656,16 +656,16 @@
                               <div class="space-y-2 relative" (click)="$event.stopPropagation()">
                                 <label class="text-ds-text-sec ml-1">জেলা *</label>
                                 <div class="relative items-center flex cursor-pointer" (click)="toggleCityDropdown()">
-                                  <input class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
+                                  <input class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-white focus:ring-0 transition-all placeholder:text-ds-text-muted pointer-events-none"
                                          type="text" [value]="orderForm.get('city')?.value" placeholder="সিলেক্ট করুন" readonly />
                                   <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-ds-text-sec pointer-events-none"></app-icon>
                                 </div>
                                 @if (isCityDropdownOpen) {
-                                  <div class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+                                  <div class="absolute z-50 w-full mt-2 bg-white border-2 border-ds-accent rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
                                        (click)="$event.stopPropagation()">
                                     <div class="p-3 border-b border-ds-border">
                                       <div class="relative flex items-center">
-                                        <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
+                                        <app-icon name="Search" size="16" className="absolute left-3 text-ds-text-muted"></app-icon>
                                         <input type="text" class="w-full pl-10 pr-4 py-2 bg-white border-none rounded-xl focus:ring-0 outline-none"
                                                placeholder="Search cities..." (input)="filterCities($event)" [value]="citySearch" autofocus />
                                       </div>
@@ -675,8 +675,8 @@
                                         <li class="px-5 py-3 text-ds-text-sec text-center">No cities found</li>
                                       }
                                       @for (city of filteredCities; track city) {
-                                        <li (click)="selectCity(city)" class="px-5 py-3 text-ds-text hover:bg-gray-50 cursor-pointer transition-colors"
-                                            [ngClass]="{'bg-[#1a1a1a]/5': orderForm.get('city')?.value === city}">
+                                        <li (click)="selectCity(city)" class="px-5 py-3 text-ds-text hover:bg-ds-surface cursor-pointer transition-colors"
+                                            [ngClass]="{'bg-ds-accent/5': orderForm.get('city')?.value === city}">
                                           {{ city }}
                                         </li>
                                       }
@@ -692,17 +692,17 @@
                               <div class="space-y-2 relative" (click)="$event.stopPropagation()">
                                 <label class="text-ds-text-sec ml-1">এলাকা *</label>
                                 <div class="relative items-center flex cursor-pointer" (click)="toggleAreaDropdown()">
-                                  <input class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] pointer-events-none"
+                                  <input class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-white focus:ring-0 transition-all placeholder:text-ds-text-muted pointer-events-none"
                                          [class.opacity-50]="!orderForm.get('city')?.value"
                                          type="text" [value]="orderForm.get('area')?.value" placeholder="সিলেক্ট করুন" readonly />
                                   <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-ds-text-sec pointer-events-none"></app-icon>
                                 </div>
                                 @if (isAreaDropdownOpen) {
-                                  <div class="absolute z-50 w-full mt-2 bg-white border-2 border-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+                                  <div class="absolute z-50 w-full mt-2 bg-white border-2 border-ds-accent rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
                                        (click)="$event.stopPropagation()">
                                     <div class="p-3 border-b border-ds-border">
                                       <div class="relative flex items-center">
-                                        <app-icon name="Search" size="16" className="absolute left-3 text-[#E0E0E0]"></app-icon>
+                                        <app-icon name="Search" size="16" className="absolute left-3 text-ds-text-muted"></app-icon>
                                         <input type="text" class="w-full pl-10 pr-4 py-2 bg-white border-none rounded-xl focus:ring-0 outline-none"
                                                placeholder="Search areas..." (input)="filterAreas($event)" [value]="areaSearch" autofocus />
                                       </div>
@@ -712,8 +712,8 @@
                                         <li class="px-5 py-3 text-ds-text-sec text-center">No areas found</li>
                                       }
                                       @for (area of filteredAreas; track area) {
-                                        <li (click)="selectArea(area)" class="px-5 py-3 text-ds-text hover:bg-gray-50 cursor-pointer transition-colors"
-                                            [ngClass]="{'bg-[#1a1a1a]/5': orderForm.get('area')?.value === area}">
+                                        <li (click)="selectArea(area)" class="px-5 py-3 text-ds-text hover:bg-ds-surface cursor-pointer transition-colors"
+                                            [ngClass]="{'bg-ds-accent/5': orderForm.get('area')?.value === area}">
                                           {{ area }}
                                         </li>
                                       }
@@ -730,16 +730,16 @@
                             <div class="space-y-2">
                               <label class="text-ds-text-sec ml-1">সম্পূর্ণ ঠিকানা *</label>
                               <textarea formControlName="address" rows="3" placeholder="House, Road..."
-                                        class="w-full p-6 bg-white border-2 border-ds-border rounded-2xl focus:border-[#1a1a1a] focus:bg-white focus:ring-0 transition-all placeholder:text-[#E0E0E0] resize-none"></textarea>
+                                        class="w-full p-6 bg-white border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-white focus:ring-0 transition-all placeholder:text-ds-text-muted resize-none"></textarea>
                               @if (orderForm.controls.address.touched && orderForm.controls.address.invalid) {
-                                <p class="text-red-500 ml-1">Required</p>
+                                <p class="text-ds-danger ml-1">Required</p>
                               }
                             </div>
 
                             <!-- Delivery Method -->
                             <div class="space-y-4">
                               <div class="flex items-center gap-3 mb-2">
-                                <div class="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center">
+                                <div class="w-8 h-8 rounded-full bg-ds-accent flex items-center justify-center">
                                   <app-icon name="Truck" size="16" className="text-white"></app-icon>
                                 </div>
                                 <h3 class="text-ds-text">ডেলিভারি অপশন</h3>
@@ -748,14 +748,14 @@
                                 @for (method of deliveryMethods; track method.id) {
                                   @if (!orderForm.controls.city.value || orderForm.controls.deliveryMethodId.value === method.id) {
                                     <div class="relative flex items-center justify-between p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 group"
-                                         [ngClass]="orderForm.controls.deliveryMethodId.value === method.id ? 'border-[#1a1a1a] bg-[#1a1a1a]/5' : 'border-ds-border hover:border-ds-border'">
+                                         [ngClass]="orderForm.controls.deliveryMethodId.value === method.id ? 'border-ds-accent bg-ds-accent/5' : 'border-ds-border hover:border-ds-border'">
                                       <input type="radio" formControlName="deliveryMethodId" [value]="method.id" [id]="'clp-method-' + method.id" class="hidden" />
                                       <label [for]="'clp-method-' + method.id" class="absolute inset-0 z-10 cursor-pointer"></label>
                                       <div class="flex items-center gap-4">
                                         <div class="w-5 h-5 rounded-full border-2 border-ds-border flex items-center justify-center shadow-inner"
-                                             [class.border-[#1a1a1a]]="orderForm.controls.deliveryMethodId.value === method.id">
+                                             [class.border-ds-accent]="orderForm.controls.deliveryMethodId.value === method.id">
                                           @if (orderForm.controls.deliveryMethodId.value === method.id) {
-                                            <div class="w-2.5 h-2.5 rounded-full bg-[#1a1a1a] animate-scale-in"></div>
+                                            <div class="w-2.5 h-2.5 rounded-full bg-ds-accent animate-scale-in"></div>
                                           }
                                         </div>
                                         <div class="space-y-0.5">
@@ -774,7 +774,7 @@
 
                             <!-- Submit Button -->
                             <button type="submit" [disabled]="isOrdering"
-                                    class="w-full h-16 bg-[#1a1a1a] text-white rounded-2xl hover:bg-[#333333] transition-all disabled:opacity-70 shadow-2xl shadow-[#1a1a1a]/30 flex items-center justify-center gap-3 group">
+                                    class="w-full h-16 bg-ds-accent text-white rounded-2xl hover:bg-ds-accent-hover transition-all disabled:opacity-70 shadow-2xl shadow-ds-text/30 flex items-center justify-center gap-3 group">
                               @if (isOrdering) {
                                 <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
                                 <span>অর্ডার প্রক্রিয়াকরণ...</span>
@@ -790,11 +790,11 @@
 
                         <!-- Cart Summary -->
                         <div class="bg-ds-surface p-8 rounded-[12px] h-fit sticky top-24">
-                          <h3 class="mb-6 pb-4 border-b border-gray-200 font-bengali">অর্ডার সামারি</h3>
+                          <h3 class="mb-6 pb-4 border-b border-ds-border font-bengali">অর্ডার সামারি</h3>
                           
                           @if (section.settings?.promoText !== undefined ? section.settings.promoText : configForm.get('promoText')?.value) {
-                            <div class="mb-6 p-4 bg-[#E52222]/5 border border-dashed border-[#E52222]/20 rounded-lg">
-                              <p class="text-[#E52222] text-sm leading-relaxed font-bengali italic whitespace-pre-line">
+                            <div class="mb-6 p-4 bg-ds-danger/5 border border-dashed border-ds-danger/20 rounded-lg">
+                              <p class="text-ds-danger text-sm leading-relaxed font-bengali italic whitespace-pre-line">
                                 " {{ section.settings?.promoText !== undefined ? section.settings.promoText : configForm.get('promoText')?.value }} "
                               </p>
                             </div>
@@ -802,7 +802,7 @@
                           
                           <div class="space-y-6 mb-8">
                             @for (item of selectedProductList; track item.product.id) {
-                              <div class="flex gap-4 pb-4 border-b border-gray-100 last:border-0">
+                              <div class="flex gap-4 pb-4 border-b border-ds-border last:border-0">
                                 <img loading="lazy" [src]="imageUrlService.getImageUrl(item.product.imageUrl || '')" 
                                      class="w-16 h-16 object-cover rounded-md">
                                 <div class="flex-1">
@@ -811,7 +811,7 @@
                                     <span>সাইজ: {{ item.selectedSize }}</span>
                                     <span>পরিমাণ: {{ item.quantity }}</span>
                                   </div>
-                                  <p class="text-sm text-[#1E6FD9] font-bold mt-1">৳ {{ getProductPrice(item.product) * item.quantity }}</p>
+                                  <p class="text-sm text-ds-info font-bold mt-1">৳ {{ getProductPrice(item.product) * item.quantity }}</p>
                                 </div>
                               </div>
                             }
@@ -831,9 +831,9 @@
                             </div>
                           </div>
 
-                          <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+                          <div class="flex justify-between items-center pt-6 border-t border-ds-border">
                             <span class="font-bold">মোট</span>
-                            <span class="text-2xl font-bold text-[#1E6FD9]">৳ {{ total }}</span>
+                            <span class="text-2xl font-bold text-ds-info">৳ {{ total }}</span>
                           </div>
                         </div>
 
@@ -850,44 +850,44 @@
                         <div class="text-center mb-12">
                           <h2 class="mb-4">আমাদের সন্তুষ্ট কাস্টমারদের মতামত</h2>
                           <div class="flex items-center justify-center gap-1">
-                            <app-icon *ngFor="let s of [1,2,3,4,5]" name="Star" size="20" className="text-yellow-400 fill-yellow-400"></app-icon>
+                            <app-icon *ngFor="let s of [1,2,3,4,5]" name="Star" size="20" className="text-ds-warning fill-ds-warning"></app-icon>
                             <span class="ml-2 font-bold">(4.9/5)</span>
                           </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                           @for (review of productReviews; track review.id) {
-                            <div class="bg-white p-6 rounded-[12px] shadow-sm border border-gray-100 flex flex-col gap-4">
+                            <div class="bg-white p-6 rounded-[12px] shadow-sm border border-ds-border flex flex-col gap-4">
                               <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
-                                  <div class="size-10 rounded-full bg-gray-100 overflow-hidden border border-gray-200 flex items-center justify-center text-gray-400">
+                                  <div class="size-10 rounded-full bg-ds-surface-2 overflow-hidden border border-ds-border flex items-center justify-center text-ds-text-muted">
                                     <img *ngIf="review.customerAvatar" loading="lazy" [src]="review.customerAvatar" class="w-full h-full object-cover">
                                     <app-icon *ngIf="!review.customerAvatar" name="User" size="18"></app-icon>
                                   </div>
                                   <div>
                                     <p class="font-bold text-sm">{{ review.customerName }}</p>
-                                    <div class="flex items-center gap-1 text-yellow-400">
-                                      <app-icon *ngFor="let s of [].constructor(review.rating)" name="Star" size="12" className="fill-yellow-400"></app-icon>
+                                    <div class="flex items-center gap-1 text-ds-warning">
+                                      <app-icon *ngFor="let s of [].constructor(review.rating)" name="Star" size="12" className="fill-ds-warning"></app-icon>
                                     </div>
                                   </div>
                                 </div>
-                                <div class="bg-green-50 text-green-600 px-2 py-1 rounded-sm text-[10px] font-bold border border-green-100 flex items-center gap-1">
+                                <div class="bg-ds-success-bg text-ds-success px-2 py-1 rounded-sm text-[10px] font-bold border border-ds-success/30 flex items-center gap-1">
                                   <app-icon name="CheckCircle" size="10"></app-icon>
                                   VERIFIED
                                 </div>
                               </div>
-                              <p class="text-gray-600 text-sm italic">"{{ review.comment }}"</p>
+                              <p class="text-ds-text-secondary text-sm italic">"{{ review.comment }}"</p>
                               <div *ngIf="review.screenshotUrl" class="mt-3">
-                                <a [href]="imageUrlService.getImageUrl(review.screenshotUrl)" target="_blank" class="inline-block border border-gray-100 rounded-lg overflow-hidden bg-gray-50 max-w-full hover:border-gray-300 transition-all">
+                                <a [href]="imageUrlService.getImageUrl(review.screenshotUrl)" target="_blank" class="inline-block border border-ds-border rounded-lg overflow-hidden bg-ds-surface max-w-full hover:border-ds-border transition-all">
                                   <img [src]="imageUrlService.getImageUrl(review.screenshotUrl)" class="max-h-32 w-auto object-contain" alt="Customer Attachment">
                                 </a>
                               </div>
-                              <p class="text-[10px] text-gray-400 uppercase tracking-widest">{{ review.date | date:'longDate' }}</p>
+                              <p class="text-[10px] text-ds-text-muted uppercase tracking-widest">{{ review.date | date:'longDate' }}</p>
                             </div>
                           }
                         </div>
 
-                        <div *ngIf="productReviews.length === 0" class="text-center py-12 text-gray-400 italic">
+                        <div *ngIf="productReviews.length === 0" class="text-center py-12 text-ds-text-muted italic">
                           No reviews found for this product yet.
                         </div>
                       </div>
@@ -901,7 +901,7 @@
       </main>
 
       <!-- Footer -->
-      <footer class="section-padding bg-[#1A1A1A] text-white/40 text-center">
+      <footer class="section-padding bg-ds-accent text-white/40 text-center">
         © 2024 {{ brandName$ | async }} · Built with Arza Modular
       </footer>
     </div>
@@ -913,12 +913,12 @@
   ═══════════════════════════════════════════ -->
   <div class="fixed bottom-6 left-0 right-0 px-4 md:px-10 w-full flex justify-between gap-3 z-[90]">
     <a (click)="whatsappUs()" 
-       class="h-14 px-6 md:px-10 bg-[#25D366] text-white flex items-center gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all cursor-pointer">
+       class="h-14 px-6 md:px-10 bg-ds-whatsapp text-white flex items-center gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all cursor-pointer">
       <app-icon name="MessageCircle" size="20"></app-icon>
       <span class="hidden md:inline">WhatsApp</span>
     </a>
     <button (click)="scrollToOrder()"
-            class="h-14 px-8 md:px-12 bg-[#E52222] text-white flex items-center justify-center gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all">
+            class="h-14 px-8 md:px-12 bg-ds-danger text-white flex items-center justify-center gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all">
       অর্ডার করুন এখনই
     </button>
   </div>
@@ -930,7 +930,7 @@
 ═══════════════════════════════════════════ -->
 @if (isLoading) {
   <div class="min-h-screen flex flex-col items-center justify-center gap-5 bg-white">
-    <div class="w-12 h-12 border-4 border-gray-100 border-t-[#E52222] rounded-full animate-spin"></div>
+    <div class="w-12 h-12 border-4 border-ds-border border-t-ds-danger rounded-full animate-spin"></div>
     <p class="text-ds-text-sec animate-pulse">Initializing Modular Builder...</p>
   </div>
 }

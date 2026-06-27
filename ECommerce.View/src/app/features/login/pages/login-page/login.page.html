@@ -65,7 +65,7 @@
             />
             @if (emailOrUsername.touched && emailOrUsername.invalid) {
               <span
-                class="text-red-500 mt-2"
+                class="text-ds-danger mt-2"
                 >Email or username is required.</span
               >
             }
@@ -97,7 +97,7 @@
             </div>
             @if (password.touched && password.invalid) {
               <span
-                class="text-red-500 mt-2"
+                class="text-ds-danger mt-2"
                 >Password must be at least 6 characters.</span
               >
             }
@@ -125,7 +125,7 @@
             {{ isLoading ? 'Logging in...' : 'Log In' }}
           </button>
           @if (errorMessage) {
-            <span class="text-red-500 text-center"
+            <span class="text-ds-danger text-center"
               >{{ errorMessage }}</span
             >
           }

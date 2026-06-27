@@ -1,13 +1,13 @@
 :host {
-  --red: #E52222;
-  --blue: #3B4FD8;
-  --purple: #8B2FC9;
-  --pink: #E91E8C;
-  --green: #27A860;
-  --teal: #1B9B7A;
-  --orange: #F5A623;
-  --yellow-dark: #E8870A;
-  --blue-accent: #1E6FD9;
+  --red: var(--color-danger);
+  --blue: var(--color-info);
+  --purple: var(--color-info);
+  --pink: var(--color-danger);
+  --green: var(--color-success);
+  --teal: var(--color-success);
+  --orange: var(--color-warning);
+  --yellow-dark: var(--color-warning);
+  --blue-accent: var(--color-info);
   --white: var(--color-bg);
   --light-gray: var(--color-surface);
   --text-dark: var(--color-text-primary);

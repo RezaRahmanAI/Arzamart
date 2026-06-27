@@ -106,7 +106,7 @@
           <button
             *ngIf="authService.isSuperAdmin()"
             (click)="deleteReview(review.id)"
-            class="size-9 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors"
+            class="size-9 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-danger hover:border-ds-danger transition-colors"
             title="Delete"
           >
             <app-icon name="Trash2" size="16"></app-icon>
@@ -378,7 +378,7 @@
                 *ngIf="reviewForm.get('screenshotUrl')?.value"
                 type="button"
                 (click)="reviewForm.patchValue({ screenshotUrl: '' })"
-                class="size-12 flex items-center justify-center bg-ds-bg border border-ds-border hover:border-red-500/30 transition-colors rounded-sm text-red-400"
+                class="size-12 flex items-center justify-center bg-ds-bg border border-ds-border hover:border-ds-danger/30 transition-colors rounded-sm text-ds-danger"
                 title="Remove Screenshot"
               >
                 <app-icon name="Trash2" size="18"></app-icon>

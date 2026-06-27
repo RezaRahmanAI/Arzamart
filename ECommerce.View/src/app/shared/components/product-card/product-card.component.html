@@ -15,7 +15,7 @@
     <!-- Sophisticated Badge -->
     <div class="absolute top-ds-4 left-ds-4">
       @if (hasDiscount) {
-        <span class="bg-red-500 text-white px-2 py-0.5 rounded-sm text-[10px] font-bold shadow-sm uppercase">
+        <span class="bg-ds-danger text-ds-hero-text px-2 py-0.5 rounded-sm text-[10px] font-bold shadow-sm uppercase">
           -৳{{ discountAmount }} OFF
         </span>
       }
@@ -37,7 +37,7 @@
     <!-- Meta Info -->
     <div class="space-y-1.5">
       <div class="flex items-center flex-nowrap gap-2">
-        <span class="text-red-500 font-bold text-lg whitespace-nowrap">৳{{ currentPrice }}</span>
+        <span class="text-ds-danger font-bold text-lg whitespace-nowrap">৳{{ currentPrice }}</span>
         @if (hasDiscount) {
           <span class="text-ds-text-muted line-through text-sm whitespace-nowrap opacity-70">৳{{ originalPrice }}</span>
         }
@@ -51,13 +51,13 @@
     <div class="mt-auto w-full flex flex-col gap-2">
       <button
         (click)="addToCart($event)"
-        class="w-full h-10 bg-white hover:bg-gray-50 text-ds-text border border-ds-text font-bold rounded transition-all active:scale-95 flex items-center justify-center text-xs uppercase"
+        class="w-full h-10 bg-ds-bg hover:bg-ds-surface text-ds-text border border-ds-text font-bold rounded transition-all active:scale-95 flex items-center justify-center text-xs uppercase"
       >
         ADD TO CART
       </button>
       <button
         (click)="orderNow($event)"
-        class="w-full h-10 bg-[#E52222] hover:bg-[#b81b1b] text-white font-bold rounded transition-all active:scale-95 flex items-center justify-center text-xs uppercase"
+        class="w-full h-10 bg-ds-danger hover:bg-ds-danger-hover text-ds-hero-text font-bold rounded transition-all active:scale-95 flex items-center justify-center text-xs uppercase"
       >
         ORDER NOW
       </button>

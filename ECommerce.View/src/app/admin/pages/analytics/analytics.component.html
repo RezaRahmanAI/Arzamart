@@ -101,7 +101,7 @@
                  'bg-ds-text': item.status === 'Processing',
                  'bg-ds-text/60': item.status === 'Shipped',
                  'bg-ds-success': item.status === 'Delivered',
-                 'bg-red-500/60': item.status === 'Cancelled' || item.status === 'Refund',
+                 'bg-ds-danger/60': item.status === 'Cancelled' || item.status === 'Refund',
                  'bg-ds-text/30': !['Processing','Shipped','Delivered','Cancelled','Refund'].includes(item.status)
                }"
                [style.width]="getStatusPercentage(item.count)" 

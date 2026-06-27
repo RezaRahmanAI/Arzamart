@@ -7,7 +7,7 @@
   </div>
   <div
     *ngIf="saveError"
-    class="rounded-sm border border-red-500/30 bg-red-500/10 px-ds-6 py-ds-4 text-red-500"
+    class="rounded-sm border border-ds-danger/30 bg-ds-danger/10 px-ds-6 py-ds-4 text-ds-danger"
   >
     {{ saveError }}
   </div>
@@ -133,7 +133,7 @@
                           </div>
                         </div>
                       </div>
-                      <p *ngIf="logoError" class="mt-2 text-red-500">{{ logoError }}</p>
+                      <p *ngIf="logoError" class="mt-2 text-ds-danger">{{ logoError }}</p>
                     </div>
                   </div>
                 </div>
@@ -186,7 +186,7 @@
                         <app-icon name="Upload" size="14"></app-icon>
                         <span>Replace</span>
                       </button>
-                      <p *ngIf="sizeGuideError" class="mt-2 text-red-500">{{ sizeGuideError }}</p>
+                      <p *ngIf="sizeGuideError" class="mt-2 text-ds-danger">{{ sizeGuideError }}</p>
                     </div>
                   </div>
                 </div>
@@ -377,7 +377,7 @@
                     <td class="px-ds-6 py-ds-4 text-right">
                       <div class="flex justify-end gap-ds-2">
                         <button class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors flex items-center justify-center" (click)="editDelivery(method)"><app-icon name="Edit" size="14"></app-icon></button>
-                        <button *ngIf="authService.isSuperAdmin()" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center" (click)="deleteDelivery(method)"><app-icon name="Trash2" size="14"></app-icon></button>
+                        <button *ngIf="authService.isSuperAdmin()" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-danger hover:border-ds-danger transition-colors flex items-center justify-center" (click)="deleteDelivery(method)"><app-icon name="Trash2" size="14"></app-icon></button>
                       </div>
                     </td>
                   </tr>

@@ -56,7 +56,7 @@
               </td>
               <td class="px-ds-6 py-ds-4 text-center">
                 <span 
-                  [class]="customer.isSuspicious ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-ds-success/10 text-ds-success border-ds-success/20'"
+                  [class]="customer.isSuspicious ? 'bg-ds-danger/10 text-ds-danger border-ds-danger/20' : 'bg-ds-success/10 text-ds-success border-ds-success/20'"
                   class="px-ds-3 py-1 rounded-sm border"
                 >
                   {{ customer.isSuspicious ? 'Flagged / Suspicious' : 'Verified Trust' }}
@@ -72,7 +72,7 @@
                   </a>
                   <button
                     (click)="toggleSuspicious(customer)"
-                    [class]="customer.isSuspicious ? 'text-ds-success' : 'text-red-500'"
+                    [class]="customer.isSuspicious ? 'text-ds-success' : 'text-ds-danger'"
                     class="hover:opacity-70 transition-all"
                   >
                     {{ customer.isSuspicious ? 'Re-Verify' : 'Flag Account' }}
