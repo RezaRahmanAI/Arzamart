@@ -13,6 +13,8 @@ import { CategoryService } from "../../../../core/services/category.service";
 import { Category } from "../../../../core/models/category";
 import { Router, RouterModule } from "@angular/router";
 
+import { sortProductSizes } from "../../../../core/constants/product.constants";
+
 @Component({
   selector: "app-product-gallery",
   standalone: true,
@@ -37,7 +39,18 @@ export class ProductGalleryComponent implements OnInit {
   isOffersPage = false;
 
   selectedSize: string = 'All Sizes';
-  allSizes = ['All Sizes', 'S', 'M', 'L', 'XL', 'XXL'];
+
+  get allSizes(): string[] {
+    const sizes = new Set<string>();
+    this.products.forEach(product => {
+      product.variants?.forEach(v => {
+        if (v.size && v.size.trim() !== '') {
+          sizes.add(v.size);
+        }
+      });
+    });
+    return ['All Sizes', ...sortProductSizes(Array.from(sizes))];
+  }
 
   activeSubSlug: string | null = null;
   parentCategoryName: string | null = null;

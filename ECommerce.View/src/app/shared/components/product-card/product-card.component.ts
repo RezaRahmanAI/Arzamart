@@ -222,35 +222,14 @@ export class ProductCardComponent implements OnDestroy {
   addToCart(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-
-    if (this.isAdding) return;
-
-    const sizes = this.availableSizes;
-    if (sizes.length > 0 && !this.selectedSize) {
-      this.notificationService.warn("Please select a size first");
-      return;
-    }
-
-    if ("id" in this.product) {
-      this.isAdding = true;
-      this.cartService
-        .addItem(this.product as Product, 1, this.selectedSize ?? undefined)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            this.resetTimeout = setTimeout(() => (this.isAdding = false), 1000);
-          },
-          error: () => (this.isAdding = false),
-        });
-    }
+    this.isOrdering = false;
+    this.showQuickAdd = true;
   }
 
   get isInCart(): boolean {
     const cart = this.cartService.getCartSnapshot();
     return cart.some(
-      (item) =>
-        item.productId === this.product.id &&
-        (!this.selectedSize || item.size === this.selectedSize),
+      (item) => item.productId === this.product.id,
     );
   }
 
@@ -265,30 +244,26 @@ export class ProductCardComponent implements OnDestroy {
         .addItem(
           this.product as Product,
           selection.quantity,
-          selection.size ?? this.selectedSize ?? undefined,
+          selection.size ?? undefined,
         )
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             this.resetTimeout = setTimeout(() => (this.isAdding = false), 1000);
+            if (this.isOrdering) {
+              this.router.navigate(["/checkout"]);
+            }
           },
           error: () => (this.isAdding = false),
         });
-
-      if (this.isOrdering) {
-        // Instant redirect for "Buy Now"
-        this.router.navigate(["/checkout"]);
-      }
     }
   }
 
   orderNow(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-
-    if (this.product.slug) {
-      this.router.navigate(["/product", this.product.slug]);
-    }
+    this.isOrdering = true;
+    this.showQuickAdd = true;
   }
 
   viewDetails(event: Event): void {

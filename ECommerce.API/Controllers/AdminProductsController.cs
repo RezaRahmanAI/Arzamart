@@ -27,12 +27,13 @@ public class AdminProductsController : ControllerBase
     public async Task<ActionResult<AdminProductListResultDto>> GetProducts(
         [FromQuery] string? searchTerm,
         [FromQuery] string? category,
+        [FromQuery] string? subCategory,
         [FromQuery] string? statusTab,
         [FromQuery] string? stockStatus,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
-        var result = await _productService.GetAdminProductsAsync(searchTerm, category, statusTab, stockStatus, page, pageSize);
+        var result = await _productService.GetAdminProductsAsync(searchTerm, category, subCategory, statusTab, stockStatus, page, pageSize);
         return Ok(result);
     }
 

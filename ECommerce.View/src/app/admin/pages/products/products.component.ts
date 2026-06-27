@@ -10,6 +10,9 @@ import {
   ProductsStatusTab,
 } from "../../../core/models/product";
 import { ProductsService } from "../../services/products.service";
+import { SubCategoriesService } from "../../services/sub-categories.service";
+import { CategoriesService } from "../../services/categories.service";
+import { Category, SubCategory } from "../../../core/models/category";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
 import { AuthService } from "../../../core/services/auth.service";
@@ -24,6 +27,8 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
 })
 export class ProductsComponent implements OnInit, OnDestroy {
   private productsService = inject(ProductsService);
+  private subCategoriesService = inject(SubCategoriesService);
+  private categoriesService = inject(CategoriesService);
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
   readonly imageUrlService = inject(ImageUrlService);
@@ -35,6 +40,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   isLoading = false;
   searchControl = new FormControl("", { nonNullable: true });
   categoryControl = new FormControl("All Categories", { nonNullable: true });
+  subCategoryControl = new FormControl("All Subcategories", { nonNullable: true });
   statusControl = new FormControl("All Items", { nonNullable: true });
 
   statusTabs: ProductsStatusTab[] = [
@@ -45,7 +51,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
   ];
   selectedStatusTab: ProductsStatusTab = "All Items";
 
-  categories = ["All Categories", "Women", "Men", "Kids", "Accessories"];
+  categories: string[] = ["All Categories"];
+  allCategories: Category[] = [];
+  allSubCategories: SubCategory[] = [];
+  filteredSubCategories: SubCategory[] = [];
 
   products: AdminProduct[] = [];
   totalResults = 0;
@@ -56,7 +65,18 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.pageTitle = "Products";
-    
+
+    this.categoriesService.getAll().pipe(takeUntil(this.destroy$)).subscribe((cats) => {
+      this.allCategories = cats.filter(c => c.isActive);
+      this.categories = ["All Categories", ...this.allCategories.map(c => c.name)];
+      this.cdr.markForCheck();
+    });
+
+    this.subCategoriesService.getAll().pipe(takeUntil(this.destroy$)).subscribe((subs) => {
+      this.allSubCategories = subs.filter(s => s.isActive);
+      this.updateFilteredSubCategories();
+    });
+
     this.loadProducts();
 
     this.searchControl.valueChanges
@@ -67,6 +87,15 @@ export class ProductsComponent implements OnInit, OnDestroy {
       });
 
     this.categoryControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.subCategoryControl.setValue("All Subcategories", { emitEvent: false });
+        this.updateFilteredSubCategories();
+        this.page = 1;
+        this.loadProducts();
+      });
+
+    this.subCategoryControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.page = 1;
@@ -301,14 +330,35 @@ export class ProductsComponent implements OnInit, OnDestroy {
       this.categoryControl.value === "All Categories"
         ? "all"
         : this.categoryControl.value;
+    const subCategory =
+      this.subCategoryControl.value === "All Subcategories"
+        ? "all"
+        : this.subCategoryControl.value;
 
     return {
       searchTerm: this.searchControl.value,
       category,
+      subCategory,
       statusTab,
       page: this.page,
       pageSize: this.pageSize,
     };
+  }
+
+  private updateFilteredSubCategories(): void {
+    const selectedCatName = this.categoryControl.value;
+    if (selectedCatName === "All Categories") {
+      this.filteredSubCategories = this.allSubCategories;
+    } else {
+      const selectedCat = this.allCategories.find(c => c.name === selectedCatName);
+      if (selectedCat) {
+        this.filteredSubCategories = this.allSubCategories.filter(
+          (s) => s.categoryId === selectedCat.id
+        );
+      } else {
+        this.filteredSubCategories = [];
+      }
+    }
   }
 }
 

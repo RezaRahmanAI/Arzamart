@@ -42,6 +42,7 @@ export class ProductsService {
       fromObject: {
         searchTerm: params.searchTerm,
         category: params.category,
+        subCategory: params.subCategory,
         statusTab: params.statusTab,
         stockStatus: params.stockStatus ?? "all",
         page: params.page,
@@ -61,6 +62,7 @@ export class ProductsService {
       fromObject: {
         searchTerm: params.searchTerm,
         category: params.category,
+        subCategory: params.subCategory,
         statusTab: params.statusTab,
         stockStatus: params.stockStatus ?? "all",
       },

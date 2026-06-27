@@ -38,7 +38,7 @@ public class ProductService : IProductService
         return Task.FromResult(product == null ? null : _mapper.Map<ProductDto>(product));
     }
 
-    public async Task<AdminProductListResultDto> GetAdminProductsAsync(string? searchTerm, string? category, string? statusTab, string? stockStatus, int page, int pageSize)
+    public async Task<AdminProductListResultDto> GetAdminProductsAsync(string? searchTerm, string? category, string? subCategory, string? statusTab, string? stockStatus, int page, int pageSize)
     {
         var query = _unitOfWork.Repository<Product>().GetQueryable()
             .IgnoreQueryFilters()
@@ -53,6 +53,14 @@ public class ProductService : IProductService
                 .FirstOrDefaultAsync(c => c.Name.ToLower() == category.ToLower());
             if (dbCat != null)
                 query = query.Where(p => p.CategoryId == dbCat.Id);
+        }
+
+        if (!string.IsNullOrEmpty(subCategory) && subCategory != "all")
+        {
+            var dbSubCat = await _unitOfWork.Repository<SubCategory>().GetQueryable()
+                .FirstOrDefaultAsync(s => s.Name.ToLower() == subCategory.ToLower());
+            if (dbSubCat != null)
+                query = query.Where(p => p.SubCategoryId == dbSubCat.Id);
         }
 
         if (!string.IsNullOrEmpty(statusTab) && statusTab != "all")
@@ -99,6 +107,7 @@ public class ProductService : IProductService
             Category = p.Category?.Name ?? "",
             SubCategory = p.SubCategory?.Name ?? "",
             CategoryId = p.CategoryId,
+            SubCategoryId = p.SubCategoryId,
             MediaUrls = p.Images.Select(i => i.Url).ToList(),
             Images = p.Images.Select(i => new ProductImageDto { ImageUrl = i.Url }).ToList(),
             Variants = p.Variants.Select(v => new ProductVariantDto { Id = v.Id, Size = v.Size, StockQuantity = v.StockQuantity, Price = v.Price }).ToList(),

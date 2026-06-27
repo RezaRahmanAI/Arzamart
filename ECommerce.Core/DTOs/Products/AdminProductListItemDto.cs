@@ -18,6 +18,7 @@ public class AdminProductListItemDto
     public string Category { get; set; } = string.Empty;
     public string SubCategory { get; set; } = string.Empty;
     public int? CategoryId { get; set; }
+    public int? SubCategoryId { get; set; }
     public List<string> MediaUrls { get; set; } = new();
     public List<ECommerce.Core.DTOs.ProductImageDto> Images { get; set; } = new();
     public List<ECommerce.Core.DTOs.ProductVariantDto> Variants { get; set; } = new();

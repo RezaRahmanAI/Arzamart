@@ -12,6 +12,7 @@ import { ToastComponent } from "./shared/components/toast/toast.component";
 import { ContactFabComponent } from "./shared/components/contact-fab/contact-fab.component";
 import { AnalyticsService } from "./core/services/analytics.service";
 import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loading-spinner.component";
+import { CartDrawerComponent } from "./shared/components/cart-drawer/cart-drawer.component";
 
 @Component({
   selector: "app-root",
@@ -24,6 +25,7 @@ import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loa
     ToastComponent,
     ContactFabComponent,
     LoadingSpinnerComponent,
+    CartDrawerComponent,
   ],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",

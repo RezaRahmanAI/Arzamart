@@ -59,6 +59,9 @@ export class CartService {
     qty: number;
   } | null>(null);
 
+  private readonly isDrawerOpenSubject = new BehaviorSubject<boolean>(false);
+  readonly isDrawerOpen$ = this.isDrawerOpenSubject.asObservable();
+
   constructor() {
     // Subscribe to settings updates via public SiteSettingsService
     this.settingsService.getSettings()
@@ -108,6 +111,14 @@ export class CartService {
       .subscribe((dto) => {
         if (dto) this.updateLocalState(dto);
       });
+  }
+
+  openDrawer(): void {
+    this.isDrawerOpenSubject.next(true);
+  }
+
+  closeDrawer(): void {
+    this.isDrawerOpenSubject.next(false);
   }
 
   getSessionId(): string {
@@ -241,6 +252,7 @@ export class CartService {
       .pipe(
         tap((dto) => {
           this.updateLocalState(dto);
+          this.openDrawer();
         }),
         catchError((err) => {
           console.error("Failed to add item to cart", err);

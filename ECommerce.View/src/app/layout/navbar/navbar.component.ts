@@ -113,6 +113,11 @@ export class NavbarComponent {
     }
   }
 
+  openCartDrawer(event: Event): void {
+    event.preventDefault();
+    this.cartService.openDrawer();
+  }
+
   logout(): void {
     this.authService.logout();
   }

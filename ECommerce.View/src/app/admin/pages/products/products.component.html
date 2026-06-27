@@ -2,7 +2,7 @@
   <!-- Filters & Search -->
   <div class="grid grid-cols-1 md:grid-cols-12 gap-ds-3">
     <!-- Search -->
-    <div class="md:col-span-5">
+    <div class="md:col-span-4">
       <div class="relative group">
         <span class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text">
           <app-icon name="Search" size="16"></app-icon>
@@ -16,7 +16,7 @@
       </div>
     </div>
     <!-- Category Filter -->
-    <div class="md:col-span-3">
+    <div class="md:col-span-2">
       <div class="relative group">
         <span class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text">
           <app-icon name="Filter" size="16"></app-icon>
@@ -26,6 +26,24 @@
           [formControl]="categoryControl"
         >
           <option *ngFor="let category of categories">{{ category }}</option>
+        </select>
+        <div class="absolute inset-y-0 right-ds-4 flex items-center pointer-events-none text-ds-text-muted">
+          <app-icon name="ChevronDown" size="14"></app-icon>
+        </div>
+      </div>
+    </div>
+    <!-- Subcategory Filter -->
+    <div class="md:col-span-2">
+      <div class="relative group">
+        <span class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text">
+          <app-icon name="Filter" size="16"></app-icon>
+        </span>
+        <select
+          class="form-input !pl-ds-10 !h-11 appearance-none cursor-pointer"
+          [formControl]="subCategoryControl"
+        >
+          <option value="All Subcategories">All Subcategories</option>
+          <option *ngFor="let sub of filteredSubCategories">{{ sub.name }}</option>
         </select>
         <div class="absolute inset-y-0 right-ds-4 flex items-center pointer-events-none text-ds-text-muted">
           <app-icon name="ChevronDown" size="14"></app-icon>
@@ -76,6 +94,7 @@
             </th>
             <th class="px-ds-3 py-ds-4">Product</th>
             <th class="px-ds-3 py-ds-4 hidden sm:table-cell">Category</th>
+            <th class="px-ds-3 py-ds-4 hidden lg:table-cell">Subcategory</th>
             <th class="px-ds-3 py-ds-4 hidden md:table-cell">Pricing</th>
             <th class="px-ds-3 py-ds-4">Status</th>
             <th class="px-ds-3 py-ds-4 text-right">Actions</th>
@@ -118,6 +137,11 @@
             <td class="px-ds-3 py-ds-4 hidden sm:table-cell">
               <div class="flex flex-col gap-0.5">
                 <span class="text-ds-text-sec text-xs">{{ product.category }}</span>
+              </div>
+            </td>
+            <td class="px-ds-3 py-ds-4 hidden lg:table-cell">
+              <div class="flex flex-col gap-0.5">
+                <span class="text-ds-text-sec text-xs">{{ product.subCategory || '—' }}</span>
               </div>
             </td>
             <td class="px-ds-3 py-ds-4 hidden md:table-cell">

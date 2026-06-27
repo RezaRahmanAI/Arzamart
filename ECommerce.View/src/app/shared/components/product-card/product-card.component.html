@@ -47,45 +47,19 @@
       </h4>
     </div>
 
-    <!-- Size Selector -->
-    @if (availableSizes.length > 0) {
-      <div class="flex flex-wrap gap-ds-2">
-        @for (size of availableSizes; track size) {
-          <button
-            (click)="selectSize(size); $event.preventDefault(); $event.stopPropagation()"
-            class="h-8 min-w-[2.5rem] px-2 flex items-center justify-center transition-all border"
-            [ngClass]="{
-              'bg-ds-text border-ds-text text-ds-bg': selectedSize === size,
-              'bg-ds-bg border-ds-border text-ds-text-sec hover:border-ds-text': selectedSize !== size
-            }"
-          >
-            {{ size }}
-          </button>
-        }
-      </div>
-    }
-
     <!-- Actions (Always Visible) -->
-    <div class="mt-auto w-full flex items-center gap-2">
-      <button
-        (click)="orderNow($event)"
-        class="flex-1 h-11 bg-ds-accent text-ds-bg font-bold rounded-md transition-all active:scale-95 flex items-center justify-center"
-      >
-        Buy Now
-      </button>
+    <div class="mt-auto w-full flex flex-col gap-2">
       <button
         (click)="addToCart($event)"
-        [disabled]="isAdding"
-        class="size-11 flex items-center justify-center bg-ds-surface border border-ds-border text-ds-text rounded-md shadow-sm active:scale-95 transition-all disabled:opacity-50"
-        [ngClass]="{
-          'text-ds-accent bg-ds-accent/5 border-ds-accent/20': isInCart
-        }"
+        class="w-full h-10 bg-white hover:bg-gray-50 text-[#1A1A1A] border border-[#1A1A1A] font-bold rounded transition-all active:scale-95 flex items-center justify-center text-xs uppercase"
       >
-        @if (isAdding) {
-          <span class="size-4 border-2 border-ds-accent/30 border-t-ds-accent rounded-full animate-spin"></span>
-        } @else {
-          <app-icon [name]="isInCart ? 'Check' : 'ShoppingCart'" [size]="isInCart ? 16 : 20"></app-icon>
-        }
+        ADD TO CART
+      </button>
+      <button
+        (click)="orderNow($event)"
+        class="w-full h-10 bg-[#E52222] hover:bg-[#b81b1b] text-white font-bold rounded transition-all active:scale-95 flex items-center justify-center text-xs uppercase"
+      >
+        ORDER NOW
       </button>
     </div>
   </div>
@@ -95,6 +69,7 @@
     <app-quick-add-modal
       [product]="$any(product)"
       [initialSize]="selectedSize"
+      [actionType]="isOrdering ? 'order' : 'cart'"
       (close)="showQuickAdd = false; isOrdering = false"
       (added)="onQuickAddConfirm($event)"
     ></app-quick-add-modal>

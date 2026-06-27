@@ -4,6 +4,7 @@ export interface AdminProduct extends Product {
   status?: ProductStatus;
   statusActive?: boolean;
   category?: string;
+  subCategory?: string;
 }
 
 export type ProductStatus = "Active" | "Draft" | "Archived" | "Out of Stock";
@@ -86,6 +87,7 @@ export interface ProductPayload {
 export interface ProductsQueryParams {
   searchTerm: string;
   category: string;
+  subCategory: string;
   statusTab: string;
   stockStatus?: string;
   isNew?: boolean;

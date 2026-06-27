@@ -196,6 +196,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
           return this.productsService.getProducts({
             searchTerm: term || "",
             category: "all",
+            subCategory: "all",
             statusTab: "Active",
             stockStatus: "all",
             page: 1,
@@ -280,6 +281,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
       this.productsService.getProducts({
         searchTerm: term,
         category: "all",
+        subCategory: "all",
         statusTab: "Active",
         stockStatus: "all",
         page: 1,
