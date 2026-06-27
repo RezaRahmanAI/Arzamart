@@ -2,7 +2,7 @@ import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
-import { ProfileService, UserProfile, UpdateProfileRequest } from "../../services/profile.service";
+import { ProfileService, AdminUserProfile, UpdateProfileRequest } from "../../services/profile.service";
 import { AuthService } from "../../../core/services/auth.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { Subject } from "rxjs";
@@ -26,7 +26,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isLoading = true;
   isSubmitting = false;
   isPasswordSubmitting = false;
-  userProfile?: UserProfile;
+  userProfile?: AdminUserProfile;
 
   profileForm = this.fb.group({
     fullName: ["", [Validators.required]],
@@ -94,7 +94,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.isSubmitting = false;
         this.notification.success(res.message || "Profile updated successfully!");
         this.loadProfile();
-        // Update local session if needed
         this.authService.updateCurrentUser({
             fullName: this.profileForm.get('fullName')?.value || undefined,
             email: this.profileForm.get('email')?.value || undefined

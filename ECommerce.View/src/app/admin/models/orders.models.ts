@@ -6,5 +6,4 @@ export {
   OrderNote,
   OrdersQueryParams,
   OrderStats,
-  OrderDetail,
 } from "../../core/models/order";

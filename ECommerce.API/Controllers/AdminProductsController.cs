@@ -3,7 +3,6 @@ using ECommerce.Core.DTOs.Products;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,15 +12,15 @@ namespace ECommerce.API.Controllers;
 [ECommerce.API.Helpers.StaffMenuAccess("products")]
 public class AdminProductsController : ControllerBase
 {
-    private readonly IWebHostEnvironment _environment;
     private readonly IProductService _productService;
-    private readonly IConfiguration _config;
+    private readonly IProductAdminHelper _productAdminHelper;
+    private readonly ILogger<AdminProductsController> _logger;
 
-    public AdminProductsController(IWebHostEnvironment environment, IProductService productService, IConfiguration config)
+    public AdminProductsController(IProductService productService, IProductAdminHelper productAdminHelper, ILogger<AdminProductsController> logger)
     {
-        _environment = environment;
         _productService = productService;
-        _config = config;
+        _productAdminHelper = productAdminHelper;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -47,38 +46,6 @@ public class AdminProductsController : ControllerBase
         return Ok(product);
     }
 
-    private static readonly System.Text.Json.JsonSerializerOptions _jsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
-    };
-
-    private ProductVariantsDto DeserializeVariantsDto(string? json)
-    {
-        if (string.IsNullOrEmpty(json)) return new ProductVariantsDto();
-        try
-        {
-            return System.Text.Json.JsonSerializer.Deserialize<ProductVariantsDto>(json, _jsonOptions) ?? new ProductVariantsDto();
-        }
-        catch
-        {
-            return new ProductVariantsDto();
-        }
-    }
-
-    private ProductMetaDto DeserializeMetaDto(string? json)
-    {
-        if (string.IsNullOrEmpty(json)) return new ProductMetaDto();
-        try
-        {
-            return System.Text.Json.JsonSerializer.Deserialize<ProductMetaDto>(json, _jsonOptions) ?? new ProductMetaDto();
-        }
-        catch
-        {
-            return new ProductMetaDto();
-        }
-    }
-
     [HttpPost]
     public async Task<ActionResult> CreateProduct([FromBody] ProductCreateDto dto)
     {
@@ -96,17 +63,17 @@ public class AdminProductsController : ControllerBase
         catch (Exception ex)
         {
             var innerMsg = ex.InnerException != null ? $". Inner: {ex.InnerException.Message}" : "";
-            Console.WriteLine($"[ADMIN_ERROR] Error creating product: {ex.Message}{innerMsg}");
-            return StatusCode(500, new { message = $"Error creating product: {ex.Message}{innerMsg}" });
+            _logger.LogError(ex, "Error creating product: {Message}{InnerMsg}", ex.Message, innerMsg);
+            return StatusCode(500, new { message = "An error occurred while creating the product." });
         }
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult> UpdateProduct(int id, [FromBody] ProductUpdateDto dto)
     {
         try
         {
-            Console.WriteLine($"[ADMIN_DEBUG] Updating Product {id}: {dto.Name}, Type: {dto.ProductType}");
+            _logger.LogInformation("Updating Product {ProductId}: {Name}, Type: {Type}", id, dto.Name, dto.ProductType);
             var result = await _productService.UpdateProductAsync(id, dto, ignoreFilters: true);
             if (result == null) return BadRequest(new { message = "Error updating product" });
 
@@ -119,8 +86,8 @@ public class AdminProductsController : ControllerBase
         catch (Exception ex)
         {
             var innerMsg = ex.InnerException != null ? $". Inner: {ex.InnerException.Message}" : "";
-            Console.WriteLine($"[ADMIN_ERROR] Error updating product: {ex.Message}{innerMsg}");
-            return StatusCode(500, new { message = $"Error updating product: {ex.Message}{innerMsg}" });
+            _logger.LogError(ex, "Error updating product: {Message}{InnerMsg}", ex.Message, innerMsg);
+            return StatusCode(500, new { message = "An error occurred while updating the product." });
         }
     }
 
@@ -134,57 +101,11 @@ public class AdminProductsController : ControllerBase
             return NotFound();
 
         if (!string.IsNullOrEmpty(mainImageUrl))
-            DeleteImageFile(mainImageUrl);
+            _productAdminHelper.DeleteImageFile(mainImageUrl);
 
         foreach (var url in imageUrls)
-            DeleteImageFile(url);
+            _productAdminHelper.DeleteImageFile(url);
 
         return Ok(true);
-    }
-
-
-    private List<object> DeserializeVariants(string? json)
-    {
-        if (string.IsNullOrEmpty(json))
-            return new List<object>();
-        
-        try
-        {
-            return System.Text.Json.JsonSerializer.Deserialize<List<object>>(json) ?? new List<object>();
-        }
-        catch
-        {
-            return new List<object>();
-        }
-    }
-
-    private void DeleteImageFile(string imageUrl)
-    {
-        try
-        {
-            var fileName = Path.GetFileName(imageUrl);
-            var uploadsFolder = PathHelper.GetUploadsFolder(_config, _environment, "products");
-            var filePath = Path.Combine(uploadsFolder, fileName);
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-        }
-        catch
-        {
-            // Log error but don't fail the request
-        }
-    }
-
-    private static string GenerateSlug(string name)
-    {
-        return name.ToLower()
-            .Replace(" ", "-")
-            .Replace("?", "")
-            .Replace("!", "")
-            .Replace(".", "")
-            .Replace(",", "")
-            .Replace("'", "")
-            .Replace("\"", "");
     }
 }

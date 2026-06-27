@@ -1,4 +1,4 @@
-import { Component, inject, DestroyRef, OnInit, OnDestroy } from "@angular/core";
+import { Component, ChangeDetectionStrategy, inject, DestroyRef, OnInit, OnDestroy } from "@angular/core";
 import { AsyncPipe, NgClass, DecimalPipe, DatePipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
@@ -16,6 +16,7 @@ import {
   interval,
   Subject,
   takeUntil,
+  catchError,
 } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
@@ -23,6 +24,8 @@ import { ProductService } from "../../../../core/services/product.service";
 import { Product, ProductImage } from "../../../../core/models/product";
 import { Review } from "../../../../core/models/review";
 import { ReviewService } from "../../../../core/services/review.service";
+import { AuthService } from "../../../../core/services/auth.service";
+import { CustomerProfileService } from "../../../../core/services/customer-profile.service";
 import { CartService } from "../../../../core/services/cart.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
@@ -40,6 +43,7 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
 @Component({
   selector: "app-product-details-page",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AsyncPipe,
     NgClass,
@@ -62,7 +66,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
   private readonly cartService = inject(CartService);
   private readonly reviewService = inject(ReviewService);
   private readonly notificationService = inject(NotificationService);
-  private readonly router = inject(Router);
+  readonly router = inject(Router);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly analyticsService = inject(AnalyticsService);
   private readonly siteSettingsService = inject(SiteSettingsService);
@@ -72,8 +76,29 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
   watchingCount: number = Math.floor(Math.random() * (45 - 15 + 1) + 15);
   private watchingInterval: any;
 
+  private readonly authService = inject(AuthService);
+  readonly isLoggedIn$ = this.authService.isLoggedIn$;
+
+  isPhoneLoginFormOpen = false;
+  loginPhone = "";
+  isLoggingInPhone = false;
+  phoneLoginError = "";
+
+  isSignupFormOpen = false;
+  signupName = "";
+  signupAddress = "";
+  isSigningUp = false;
+  signupError = "";
+
+  private readonly profileService = inject(CustomerProfileService);
+
+
   ngOnInit(): void {
     this.startWatchingFluctuation();
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      this.reviewName = currentUser.fullName || currentUser.name || '';
+    }
   }
 
   ngOnDestroy(): void {
@@ -129,11 +154,18 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
     shareReplay(1),
   );
 
-  reviews$ = this.product$.pipe(
-    switchMap((product) =>
-      this.productService.getReviewsByProductId(product.id),
+  private readonly refreshReviewsSubject = new BehaviorSubject<void>(void 0);
+
+  reviews$ = combineLatest([
+    this.product$,
+    this.refreshReviewsSubject
+  ]).pipe(
+    switchMap(([product]) =>
+      this.reviewService.getReviewsByProductId(product.id)
     ),
+    shareReplay(1)
   );
+
 
   relatedProducts$ = this.product$.pipe(
     switchMap((product) => {
@@ -183,6 +215,8 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
     this.quantitySubject,
     this.selectedMediaSubject,
     this.relatedProducts$,
+    this.reviews$,
+    this.isLoggedIn$,
   ]).pipe(
     map(
       ([
@@ -191,6 +225,8 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
         quantity,
         selectedMedia,
         relatedProducts,
+        reviews,
+        isLoggedIn,
       ]) => {
 
 
@@ -223,6 +259,11 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
             ? selectedVariant!.compareAtPrice!
             : (smallestVariant?.compareAtPrice ?? product.compareAtPrice);
 
+        const totalReviews = reviews.length;
+        const averageRating = totalReviews > 0
+          ? Number((reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1))
+          : 0;
+
         return {
           product,
           selectedSize,
@@ -234,6 +275,10 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
           gallery: this.buildGallery(product),
           uniqueSizes: sortedUniqueSizes,
           relatedProducts,
+          reviews,
+          isLoggedIn,
+          averageRating,
+          totalReviews
         };
       },
     ),
@@ -256,6 +301,20 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
       { length: Math.max(0, 5 - full - half) },
       (_, index) => index,
     );
+  }
+
+  getRatingCount(reviews: Review[] | undefined, rating: number): number {
+    return reviews ? reviews.filter(r => Math.round(r.rating) === rating).length : 0;
+  }
+
+  getStarIcon(rating: number, star: number): string {
+    if (rating >= star) {
+      return 'Star';
+    }
+    if (rating + 0.5 >= star) {
+      return 'StarHalf';
+    }
+    return 'Star';
   }
 
   hasDiscount(product: Product): boolean {
@@ -337,6 +396,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
         quantity,
         selectedSize ?? undefined,
       )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
 
     this.selectionError = "";
@@ -503,15 +563,15 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
       comment: this.reviewComment,
     };
 
-    this.reviewService.addReview(productId, review).subscribe({
+    this.reviewService.addReview(productId, review).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (newReview: Review) => {
         this.isSubmittingReview = false;
         this.isReviewFormOpen = false;
         this.reviewComment = "";
-        this.reviewName = "";
+        const currentUser = this.authService.getCurrentUser();
+        this.reviewName = currentUser ? (currentUser.fullName || currentUser.name || '') : "";
         this.reviewRating = 5;
-
-        // Reviews will refresh on next product navigation
+        this.refreshReviewsSubject.next();
       },
       error: (err: unknown) => {
         this.isSubmittingReview = false;
@@ -519,5 +579,102 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
         console.error(err);
       },
     });
+  }
+
+  submitPhoneLogin(): void {
+    if (!this.loginPhone.trim()) {
+      this.phoneLoginError = "Please enter your phone number.";
+      return;
+    }
+
+    this.isLoggingInPhone = true;
+    this.phoneLoginError = "";
+
+    const phone = this.loginPhone.trim();
+
+    this.authService.customerPhoneLogin(phone).subscribe({
+      next: (user) => {
+        if (user) {
+          this.profileService.getProfile(phone).subscribe({
+            next: (profile) => {
+              this.isLoggingInPhone = false;
+              if (profile && profile.name && profile.name !== "Guest Customer") {
+                this.isPhoneLoginFormOpen = false;
+                this.isSignupFormOpen = false;
+                this.isReviewFormOpen = true;
+                this.reviewName = profile.name;
+                this.loginPhone = "";
+              } else {
+                this.isSignupFormOpen = true;
+                this.signupName = "";
+                this.signupAddress = profile?.address || "";
+              }
+            },
+            error: () => {
+              this.isLoggingInPhone = false;
+              this.isSignupFormOpen = true;
+              this.signupName = "";
+              this.signupAddress = "";
+            }
+          });
+        } else {
+          this.isLoggingInPhone = false;
+          this.phoneLoginError = "Failed to log in. Please check your phone number.";
+        }
+      },
+      error: (err: any) => {
+        this.isLoggingInPhone = false;
+        this.phoneLoginError = err.error?.message || "Failed to log in. Please try again.";
+        console.error(err);
+      }
+    });
+  }
+
+  submitSignup(): void {
+    if (!this.signupName.trim()) {
+      this.signupError = "Please enter your name.";
+      return;
+    }
+
+    this.isSigningUp = true;
+    this.signupError = "";
+
+    const phone = localStorage.getItem('customer_phone') || this.loginPhone.trim();
+    if (!phone) {
+      this.isSigningUp = false;
+      this.signupError = "Phone number is missing. Please start again.";
+      return;
+    }
+
+    const request = {
+      phone: phone,
+      name: this.signupName.trim(),
+      address: this.signupAddress.trim()
+    };
+
+    this.profileService.updateProfile(request).subscribe({
+      next: (profile) => {
+        this.isSigningUp = false;
+        this.isPhoneLoginFormOpen = false;
+        this.isSignupFormOpen = false;
+        this.isReviewFormOpen = true;
+        this.reviewName = profile.name;
+        this.loginPhone = "";
+      },
+      error: (err) => {
+        this.isSigningUp = false;
+        this.signupError = "Failed to save details. Please try again.";
+        console.error(err);
+      }
+    });
+  }
+
+  logoutCustomer(): void {
+    this.authService.logout();
+    localStorage.removeItem('customer_phone');
+    this.isReviewFormOpen = false;
+    this.isPhoneLoginFormOpen = false;
+    this.isSignupFormOpen = false;
+    this.reviewName = "";
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, inject, PLATFORM_ID } from "@angular/core";
+import { DestroyRef, Injectable, inject, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
 import {
   BehaviorSubject,
@@ -11,7 +11,7 @@ import {
   switchMap,
   filter,
 } from "rxjs";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpHeaders, HttpParams } from "@angular/common/http";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { CartItem, CartSummary } from "../models/cart";
@@ -26,6 +26,7 @@ import {
 import { NotificationService } from "./notification.service";
 import { ApiHttpClient } from "../http/http-client";
 import { AppConstants } from "../constants/app.constants";
+import { StorageKeys } from "../constants/storage-keys";
 
 @Injectable({
   providedIn: "root",
@@ -34,8 +35,6 @@ export class CartService {
   private freeShippingThreshold = 0;
   private shippingCharge = 0;
   private readonly taxRate = 0;
-  private readonly sessionIdKey = "cart_session_id";
-  private readonly sessionTimeKey = "cart_session_timestamp";
   private readonly sessionExpiryDays = AppConstants.GuestSessionExpiryDays;
   private readonly apiUrl = `/Cart`;
 
@@ -44,6 +43,7 @@ export class CartService {
   private readonly notificationService = inject(NotificationService);
   private readonly api = inject(ApiHttpClient);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
   readonly cartItems$ = this.cartItemsSubject.asObservable();
@@ -61,13 +61,15 @@ export class CartService {
 
   constructor() {
     // Subscribe to settings updates via public SiteSettingsService
-    this.settingsService.getSettings().subscribe((settings) => {
-      if (settings) {
-        this.freeShippingThreshold = settings.freeShippingThreshold || 0;
-        this.shippingCharge = 0;
-        this.cartItemsSubject.next(this.cartItemsSubject.getValue());
-      }
-    });
+    this.settingsService.getSettings()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((settings) => {
+        if (settings) {
+          this.freeShippingThreshold = settings.freeShippingThreshold || 0;
+          this.shippingCharge = settings.shippingCharge || 0;
+          this.cartItemsSubject.next(this.cartItemsSubject.getValue());
+        }
+      });
 
     // Initial load from server (only in browser — SSR has no session)
     if (isPlatformBrowser(this.platformId)) {
@@ -107,8 +109,8 @@ export class CartService {
 
   getSessionId(): string {
     if (!isPlatformBrowser(this.platformId)) return "ssr-placeholder";
-    let sessionId = localStorage.getItem(this.sessionIdKey);
-    const sessionTimestamp = localStorage.getItem(this.sessionTimeKey);
+    let sessionId = localStorage.getItem(StorageKeys.CART_SESSION_ID);
+    const sessionTimestamp = localStorage.getItem(StorageKeys.CART_SESSION_TIMESTAMP);
     const now = Date.now();
     const expiryMs = this.sessionExpiryDays * 24 * 60 * 60 * 1000;
 
@@ -131,15 +133,15 @@ export class CartService {
       this.saveSessionId(sessionId);
     } else {
       // Refresh timestamp on every active session access to extend life if active
-      localStorage.setItem(this.sessionTimeKey, now.toString());
+      localStorage.setItem(StorageKeys.CART_SESSION_TIMESTAMP, now.toString());
     }
 
     return sessionId;
   }
 
   private saveSessionId(id: string): void {
-    localStorage.setItem(this.sessionIdKey, id);
-    localStorage.setItem(this.sessionTimeKey, Date.now().toString());
+    localStorage.setItem(StorageKeys.CART_SESSION_ID, id);
+    localStorage.setItem(StorageKeys.CART_SESSION_TIMESTAMP, Date.now().toString());
   }
 
   private get options() {
@@ -245,10 +247,6 @@ export class CartService {
       );
   }
 
-  private setLastMutation(): void {
-    this.lastMutation = Date.now();
-  }
-
   removeItem(cartItemId: string): void {
     // Backend uses numeric ID for cart items
     const numericId = parseInt(cartItemId, 10);
@@ -310,7 +308,7 @@ export class CartService {
   }
 
   mergeGuestCart(): Observable<CartDto | null> {
-    const sessionId = localStorage.getItem(this.sessionIdKey);
+    const sessionId = localStorage.getItem(StorageKeys.CART_SESSION_ID);
     if (!sessionId) return of(null);
 
     // Auth token is handled by the auth interceptor automatically
@@ -389,7 +387,4 @@ export class CartService {
     };
   }
 
-  notifySizeRequired(): void {
-    this.notificationService.error("Please select a size first");
-  }
 }

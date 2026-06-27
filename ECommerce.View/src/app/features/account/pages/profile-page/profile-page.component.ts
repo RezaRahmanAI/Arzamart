@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, ChangeDetectionStrategy, inject, OnDestroy, OnInit } from "@angular/core";
 import { NgIf, AsyncPipe, DatePipe, NgFor } from '@angular/common';
 import {
   FormBuilder,
@@ -16,6 +16,7 @@ import { RouterModule } from "@angular/router";
 @Component({
   selector: "app-profile-page",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgIf, AsyncPipe, DatePipe, ReactiveFormsModule, AppIconComponent, RouterModule, NgFor],
   templateUrl: "./profile-page.component.html",
   styleUrl: "./profile-page.component.css",

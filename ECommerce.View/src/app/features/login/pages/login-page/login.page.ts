@@ -70,7 +70,7 @@ export class LoginPageComponent implements OnInit {
     const { emailOrUsername, password, rememberMe } = this.loginForm.getRawValue();
 
     this.authService
-      .adminLogin(emailOrUsername, password)
+      .login(emailOrUsername, password)
       .pipe(
         take(1),
         finalize(() => {

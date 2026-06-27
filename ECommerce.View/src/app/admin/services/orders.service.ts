@@ -4,7 +4,6 @@ import { Observable, map } from "rxjs";
 
 import {
   Order,
-  OrderDetail,
   OrderStatus,
   OrdersQueryParams,
   OrderStats,
@@ -17,84 +16,29 @@ import { ApiHttpClient } from "../../core/http/http-client";
 export class OrdersService {
   private readonly api = inject(ApiHttpClient);
 
-  getOrderById(id: number): Observable<OrderDetail> {
-    return this.api.get<OrderDetail>(`/admin/orders/${id}`);
+  getOrderById(id: number): Observable<Order> {
+    return this.api.get<Order>(`/admin/orders/${id}`);
   }
 
   getOrders(
     params: OrdersQueryParams,
     forceRefresh = false,
   ): Observable<{ items: Order[]; total: number }> {
-    const fromObject: any = {
-      searchTerm: params.searchTerm,
-      status: params.status,
-      dateRange: params.dateRange,
-      page: params.page,
-      pageSize: params.pageSize,
-      preOrderOnly: params.preOrderOnly ?? false,
-      websiteOnly: params.websiteOnly ?? false,
-      manualOnly: params.manualOnly ?? false,
-    };
-
-    if (params.startDate) fromObject.startDate = params.startDate;
-    if (params.endDate) fromObject.endDate = params.endDate;
-    if (params.sourcePageId != null && (params.sourcePageId as any) !== 'null') fromObject.sourcePageId = params.sourcePageId;
-    if (params.socialMediaSourceId != null && (params.socialMediaSourceId as any) !== 'null') fromObject.socialMediaSourceId = params.socialMediaSourceId;
-    if (params.customerPhone) fromObject.customerPhone = params.customerPhone;
-    if (params.productId) fromObject.productId = params.productId;
-    if (params.orderNumber) fromObject.orderNumber = params.orderNumber;
-
-    const queryParams = new HttpParams({ fromObject });
+    const queryParams = this.buildHttpParams(params);
     return this.api.get<{ items: Order[]; total: number }>("/admin/orders", {
       params: queryParams,
     });
   }
 
   getFilteredOrders(params: OrdersQueryParams): Observable<Order[]> {
-    const fromObject: any = {
-      searchTerm: params.searchTerm,
-      status: params.status,
-      dateRange: params.dateRange,
-      preOrderOnly: params.preOrderOnly ?? false,
-      websiteOnly: params.websiteOnly ?? false,
-      manualOnly: params.manualOnly ?? false,
-    };
-
-    if (params.startDate) fromObject.startDate = params.startDate;
-    if (params.endDate) fromObject.endDate = params.endDate;
-    if (params.sourcePageId != null && (params.sourcePageId as any) !== 'null') fromObject.sourcePageId = params.sourcePageId;
-    if (params.socialMediaSourceId != null && (params.socialMediaSourceId as any) !== 'null') fromObject.socialMediaSourceId = params.socialMediaSourceId;
-    if (params.customerPhone) fromObject.customerPhone = params.customerPhone;
-    if (params.productId) fromObject.productId = params.productId;
-    if (params.orderNumber) fromObject.orderNumber = params.orderNumber;
-
-    const queryParams = new HttpParams({ fromObject });
-
+    const queryParams = this.buildHttpParams(params);
     return this.api.get<Order[]>("/admin/orders/filtered", {
       params: queryParams,
     });
   }
 
   getOrderStats(params: OrdersQueryParams): Observable<OrderStats> {
-    const fromObject: any = {
-      searchTerm: params.searchTerm,
-      status: params.status,
-      dateRange: params.dateRange,
-      preOrderOnly: params.preOrderOnly ?? false,
-      websiteOnly: params.websiteOnly ?? false,
-      manualOnly: params.manualOnly ?? false,
-    };
-
-    if (params.startDate) fromObject.startDate = params.startDate;
-    if (params.endDate) fromObject.endDate = params.endDate;
-    if (params.sourcePageId != null && (params.sourcePageId as any) !== 'null') fromObject.sourcePageId = params.sourcePageId;
-    if (params.socialMediaSourceId != null && (params.socialMediaSourceId as any) !== 'null') fromObject.socialMediaSourceId = params.socialMediaSourceId;
-    if (params.customerPhone) fromObject.customerPhone = params.customerPhone;
-    if (params.productId) fromObject.productId = params.productId;
-    if (params.orderNumber) fromObject.orderNumber = params.orderNumber;
-
-    const queryParams = new HttpParams({ fromObject });
-
+    const queryParams = this.buildHttpParams(params);
     return this.api.get<OrderStats>("/admin/orders/stats", {
       params: queryParams,
     });
@@ -104,10 +48,6 @@ export class OrdersService {
     return this.getFilteredOrders(params).pipe(
       map((rows) => this.buildCsv(rows)),
     );
-  }
-
-  print(): void {
-    window.print();
   }
 
   updateStatus(
@@ -128,11 +68,34 @@ export class OrdersService {
   }
   
   updateOrder(orderId: number, payload: any): Observable<Order> {
-    return this.api.post<Order>(`/admin/orders/${orderId}`, payload);
+    return this.api.put<Order>(`/admin/orders/${orderId}`, payload);
   }
 
   transferToMainOrder(orderId: number): Observable<any> {
     return this.api.post<any>(`/admin/orders/${orderId}/transfer`, {});
+  }
+
+  private buildHttpParams(params: OrdersQueryParams): HttpParams {
+    const fromObject: any = {
+      searchTerm: params.searchTerm,
+      status: params.status,
+      dateRange: params.dateRange,
+      page: (params as any).page,
+      pageSize: (params as any).pageSize,
+      preOrderOnly: params.preOrderOnly ?? false,
+      websiteOnly: params.websiteOnly ?? false,
+      manualOnly: params.manualOnly ?? false,
+    };
+
+    if (params.startDate) fromObject.startDate = params.startDate;
+    if (params.endDate) fromObject.endDate = params.endDate;
+    if (params.sourcePageId != null && (params.sourcePageId as any) !== 'null') fromObject.sourcePageId = params.sourcePageId;
+    if (params.socialMediaSourceId != null && (params.socialMediaSourceId as any) !== 'null') fromObject.socialMediaSourceId = params.socialMediaSourceId;
+    if (params.customerPhone) fromObject.customerPhone = params.customerPhone;
+    if (params.productId) fromObject.productId = params.productId;
+    if (params.orderNumber) fromObject.orderNumber = params.orderNumber;
+
+    return new HttpParams({ fromObject });
   }
 
   private buildCsv(rows: Order[]): string {

@@ -1,8 +1,10 @@
-import { Injectable, inject, PLATFORM_ID } from "@angular/core";
+import { DestroyRef, Injectable, inject, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
 import { BehaviorSubject, catchError, map, Observable, of, tap } from "rxjs";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ApiHttpClient } from "../http/http-client";
 import { AuthResponse, LoginPayload, User } from "../models/entities";
+import { StorageKeys } from "../constants/storage-keys";
 
 @Injectable({
   providedIn: "root",
@@ -12,11 +14,9 @@ export class AuthService {
   currentUser = this.userSubject.asObservable();
   isLoggedIn$ = this.currentUser.pipe(map((user) => !!user));
 
-  private currentUserKey = "arza-user";
-  private tokenKey = "arza_token";
-
   api = inject(ApiHttpClient);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     this.hydrateSession();
@@ -24,7 +24,7 @@ export class AuthService {
 
   private hydrateSession() {
     if (!isPlatformBrowser(this.platformId)) return;
-    const stored = localStorage.getItem(this.currentUserKey);
+    const stored = localStorage.getItem(StorageKeys.CURRENT_USER);
     if (stored) {
       try {
         this.userSubject.next(JSON.parse(stored));
@@ -33,9 +33,9 @@ export class AuthService {
       }
     }
 
-    const token = localStorage.getItem(this.tokenKey);
+    const token = localStorage.getItem(StorageKeys.AUTH_TOKEN);
     if (token) {
-      this.api.get<User>("/auth/me").subscribe({
+      this.api.get<User>("/auth/me").pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (user) => this.setSession(user, token),
         error: () => this.clearSession(),
       });
@@ -48,7 +48,7 @@ export class AuthService {
       tap((response) => {
         this.setSession(response.user, response.token);
         if (response.refreshToken) {
-          localStorage.setItem("arza_refresh_token", response.refreshToken);
+          localStorage.setItem(StorageKeys.REFRESH_TOKEN, response.refreshToken);
         }
       }),
       map((response) => response.user),
@@ -60,11 +60,10 @@ export class AuthService {
       next: () => this.clearSession(),
       error: () => this.clearSession(),
     });
-    this.clearSession();
   }
 
   refreshToken(): Observable<User | null> {
-    const refreshToken = localStorage.getItem("arza_refresh_token");
+    const refreshToken = localStorage.getItem(StorageKeys.REFRESH_TOKEN);
     if (!refreshToken) {
       return of(null);
     }
@@ -72,7 +71,7 @@ export class AuthService {
       tap((response) => {
         this.setSession(response.user, response.token);
         if (response.refreshToken) {
-          localStorage.setItem("arza_refresh_token", response.refreshToken);
+          localStorage.setItem(StorageKeys.REFRESH_TOKEN, response.refreshToken);
         }
       }),
       map((response) => response.user),
@@ -85,20 +84,20 @@ export class AuthService {
 
   setSession(user: User, token: string) {
     this.userSubject.next(user);
-    localStorage.setItem(this.currentUserKey, JSON.stringify(user));
+    localStorage.setItem(StorageKeys.CURRENT_USER, JSON.stringify(user));
     if (token) {
-      localStorage.setItem(this.tokenKey, token);
+      localStorage.setItem(StorageKeys.AUTH_TOKEN, token);
     }
   }
 
   private clearSession() {
     this.userSubject.next(null);
-    localStorage.removeItem(this.currentUserKey);
-    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(StorageKeys.CURRENT_USER);
+    localStorage.removeItem(StorageKeys.AUTH_TOKEN);
   }
 
   getAccessToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return localStorage.getItem(StorageKeys.AUTH_TOKEN);
   }
 
   getCurrentUser() {
@@ -128,66 +127,36 @@ export class AuthService {
     return this.userSubject.value?.role;
   }
 
-  adminLogin(emailOrUsername: string, password: string): Observable<User | null> {
-    const payload = { identifier: emailOrUsername, password, rememberMe: true };
-    return this.api.post<any>("/auth/login", payload).pipe(
-      tap((response) => {
-        if (response.token && response.user) {
-          const rawUser = response.user;
-          const user: User = {
-            id: rawUser.id,
-            fullName: rawUser.fullName,
-            userName: rawUser.userName,
-            email: rawUser.email,
-            role: rawUser.role,
-            allowedMenus: rawUser.allowedMenus || []
-          };
-          this.setSession(user, response.token);
-          localStorage.setItem("arza_refresh_token", response.refreshToken);
-        }
-      }),
-      map((response) => {
-        if (response.token && response.user) {
-          const rawUser = response.user;
-          return {
-            id: rawUser.id,
-            fullName: rawUser.fullName,
-            userName: rawUser.userName,
-            email: rawUser.email,
-            role: rawUser.role,
-            allowedMenus: rawUser.allowedMenus || []
-          };
-        }
-        return null;
-      })
-    );
-  }
-
   customerPhoneLogin(phone: string): Observable<User | null> {
     if (!phone || !phone.trim()) {
       return of(null);
     }
-    // For MVP/Guest checkout, we might just "identify" them or do a silent login
-    // If backend doesn't have a specific endpoint, we can use a mock or a simple me call
-    return this.api.get<User>(`/customers/lookup?phone=${phone}`).pipe(
-      tap((user) => {
-        if (user) {
-          this.setSession(user, this.getAccessToken() || "");
+    return this.api.post<{ accessToken: string; user: User }>("/auth/customer-login", { phone }).pipe(
+      tap((response) => {
+        if (response && response.accessToken) {
+          response.user.phoneNumber = phone;
+          this.setSession(response.user, response.accessToken);
+          localStorage.setItem(StorageKeys.CUSTOMER_PHONE, phone);
         }
       }),
+      map((response) => response.user),
+      catchError((error) => {
+        console.error("Customer phone login failed", error);
+        return of(null);
+      })
     );
   }
 
   saveEmail(email: string): void {
-    localStorage.setItem("arza-saved-email", email);
+    localStorage.setItem(StorageKeys.SAVED_EMAIL, email);
   }
 
   getSavedEmail(): string | null {
-    return localStorage.getItem("arza-saved-email");
+    return localStorage.getItem(StorageKeys.SAVED_EMAIL);
   }
 
   clearSavedEmail(): void {
-    localStorage.removeItem("arza-saved-email");
+    localStorage.removeItem(StorageKeys.SAVED_EMAIL);
   }
 
   updateCurrentUser(partial: Partial<User>): void {

@@ -21,15 +21,15 @@ public class OrderStockService : IOrderStockService
         _unitOfWork = unitOfWork;
     }
 
-    public bool ShouldDeductStock(ECommerce.Core.Domain.Orders.OrderStatus status)
+    public bool ShouldDeductStock(OrderStatus status)
     {
         return status switch
         {
-            ECommerce.Core.Domain.Orders.OrderStatus.Confirmed => true,
-            ECommerce.Core.Domain.Orders.OrderStatus.Processing => true,
-            ECommerce.Core.Domain.Orders.OrderStatus.Packed => true,
-            ECommerce.Core.Domain.Orders.OrderStatus.Shipped => true,
-            ECommerce.Core.Domain.Orders.OrderStatus.Delivered => true,
+            OrderStatus.Confirmed => true,
+            OrderStatus.Processing => true,
+            OrderStatus.Packed => true,
+            OrderStatus.Shipped => true,
+            OrderStatus.Delivered => true,
             _ => false
         };
     }
@@ -134,8 +134,11 @@ public class OrderStockService : IOrderStockService
         return true;
     }
 
-    public async Task ProcessProductStockAdjustmentAsync(Product product, int quantity, string? size, bool returnToStock)
+    public async Task ProcessProductStockAdjustmentAsync(Product product, int quantity, string? size, bool returnToStock, int recursionDepth = 0)
     {
+        if (recursionDepth > 5)
+            throw new InvalidOperationException($"Combo product recursion depth exceeded for product {product.Id}. Possible circular combo reference.");
+
         if (product.ProductType == ProductType.Combo)
         {
             foreach (var comboItem in product.ComboItems)
@@ -150,7 +153,7 @@ public class OrderStockService : IOrderStockService
                 if (childProduct != null)
                 {
                     string? childSize = comboItem.ProductVariant?.Size;
-                    await ProcessProductStockAdjustmentAsync(childProduct, quantity * comboItem.Quantity, childSize, returnToStock);
+                    await ProcessProductStockAdjustmentAsync(childProduct, quantity * comboItem.Quantity, childSize, returnToStock, recursionDepth + 1);
                 }
             }
         }
@@ -165,7 +168,7 @@ public class OrderStockService : IOrderStockService
             else
             {
                 if (product.StockQuantity < totalChange)
-                    throw new ECommerce.Core.Domain.Orders.InsufficientStockException(product.Id, product.Name, totalChange, product.StockQuantity);
+                    throw new InvalidOperationException($"Insufficient stock for product {product.Name} (ID: {product.Id}): requested {totalChange}, available {product.StockQuantity}");
                 product.StockQuantity -= totalChange;
             }
 
@@ -184,7 +187,7 @@ public class OrderStockService : IOrderStockService
                     else
                     {
                         if (variant.StockQuantity < totalChange)
-                            throw new ECommerce.Core.Domain.Orders.InsufficientStockException(product.Id, product.Name, totalChange, variant.StockQuantity, variant.Size);
+                            throw new InvalidOperationException($"Insufficient stock for product {product.Name} (ID: {product.Id}), size {variant.Size}: requested {totalChange}, available {variant.StockQuantity}");
                         variant.StockQuantity -= totalChange;
                     }
                     

@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ECommerce.Core.Domain.Orders;
+using ECommerce.Core.Enums;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -14,13 +13,13 @@ namespace ECommerce.Infrastructure.Services;
 
 public class DashboardService : IDashboardService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMemoryCache _cache;
     private const string DashboardStatsCacheKey = "DashboardStats";
 
-    public DashboardService(ApplicationDbContext context, IMemoryCache cache)
+    public DashboardService(IUnitOfWork unitOfWork, IMemoryCache cache)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
         _cache = cache;
     }
 
@@ -49,7 +48,7 @@ public class DashboardService : IDashboardService
             }
 
             // ── 1. TODAY STATUS AGGREGATIONS (single SQL query) ──────────
-            var todayQuery = _context.Orders.AsNoTracking().AsQueryable();
+            var todayQuery = _unitOfWork.Repository<Order>().GetQueryable();
             if (todayRangeStart.HasValue)
                 todayQuery = todayQuery.Where(o => o.CreatedAt >= todayRangeStart.Value);
             if (todayRangeEnd.HasValue)
@@ -77,9 +76,9 @@ public class DashboardService : IDashboardService
             decimal todayPackagingRevenue = todayStatusAgg.Where(x => x.Status == OrderStatus.Processing || x.Status == OrderStatus.Packed).Sum(x => x.Revenue);
             int todayShippedCount = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Shipped)?.Count ?? 0;
             decimal todayShippedRevenue = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Shipped)?.Revenue ?? 0;
-            int todayPreOrdersCount = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Count ?? 0
+            int todayPreOrdersCount = (todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Count ?? 0)
                                       + todayStatusAgg.Sum(x => x.PreOrderCount);
-            decimal todayPreOrdersRevenue = todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Revenue ?? 0
+            decimal todayPreOrdersRevenue = (todayStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Revenue ?? 0)
                                             + todayStatusAgg.Sum(x => x.PreOrderRevenue);
 
             // ── 1b. TODAY SOURCE MATCHING (single query, process in C#) ─────
@@ -107,7 +106,7 @@ public class DashboardService : IDashboardService
             decimal pathaoDeliveredRevenue = pathaoOrders.Where(o => o.Status == OrderStatus.Delivered).Sum(o => o.Total);
 
             // ── 2. TOTAL/LIFETIME STATUS AGGREGATIONS (single SQL query) ──
-            var totalQuery = _context.Orders.AsNoTracking().AsQueryable();
+            var totalQuery = _unitOfWork.Repository<Order>().GetQueryable();
             if (totalRangeStart.HasValue)
                 totalQuery = totalQuery.Where(o => o.CreatedAt >= totalRangeStart.Value);
             if (totalRangeEnd.HasValue)
@@ -143,19 +142,19 @@ public class DashboardService : IDashboardService
             decimal totalReturnProcessRevenue = totalStatusAgg.Where(x => x.Status == OrderStatus.ReturnProcess || x.Status == OrderStatus.Return || x.Status == OrderStatus.Refund).Sum(x => x.Revenue);
             int totalShippedCount = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Shipped)?.Count ?? 0;
             decimal totalShippedRevenue = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.Shipped)?.Revenue ?? 0;
-            int totalPreOrdersCount = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Count ?? 0
+            int totalPreOrdersCount = (totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Count ?? 0)
                                       + totalStatusAgg.Sum(x => x.PreOrderCount);
-            decimal totalPreOrdersRevenue = totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Revenue ?? 0
+            decimal totalPreOrdersRevenue = (totalStatusAgg.FirstOrDefault(x => x.Status == OrderStatus.PreOrder)?.Revenue ?? 0)
                                             + totalStatusAgg.Sum(x => x.PreOrderRevenue);
             int incompleteOrdersCount = totalStatusAgg.Where(x => x.Status == OrderStatus.Cancelled || x.Status == OrderStatus.Hold || x.Status == OrderStatus.Exchange).Sum(x => x.Count);
             decimal incompleteOrdersRevenue = totalStatusAgg.Where(x => x.Status == OrderStatus.Cancelled || x.Status == OrderStatus.Hold || x.Status == OrderStatus.Exchange).Sum(x => x.Revenue);
 
             // ── 3. CATALOG METRICS ───────────────────────────────────────
-            var totalProducts = await _context.Products.AsNoTracking().CountAsync();
-            var totalCustomers = await _context.Customers.AsNoTracking().CountAsync();
+            var totalProducts = await _unitOfWork.Repository<Product>().GetQueryable().CountAsync();
+            var totalCustomers = await _unitOfWork.Repository<Customer>().GetQueryable().CountAsync();
 
             // ── 4. SOLD ITEMS (JOIN instead of correlated subqueries) ─────
-            var soldItemsQuery = from i in _context.OrderItems.AsNoTracking()
+            var soldItemsQuery = from i in _unitOfWork.Repository<OrderItem>().GetQueryable()
                                  join o in totalQuery on i.OrderId equals o.Id
                                  select new { i.ProductId, i.Quantity };
 
@@ -163,8 +162,7 @@ public class DashboardService : IDashboardService
 
             var distinctProductIds = soldItems.Select(x => x.ProductId).Distinct().ToList();
 
-            var productPurchaseRates = await _context.ProductVariants
-                .AsNoTracking()
+            var productPurchaseRates = await _unitOfWork.Repository<ProductVariant>().GetQueryable()
                 .Where(v => distinctProductIds.Contains(v.ProductId))
                 .Select(v => new { v.ProductId, v.PurchaseRate, v.Id })
                 .ToListAsync();
@@ -242,9 +240,9 @@ public class DashboardService : IDashboardService
         var validStatuses = new[] { OrderStatus.Confirmed, OrderStatus.Processing, OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered };
 
         // Get top 5 sold product IDs directly from DB
-        var topProductIds = await _context.OrderItems
-            .AsNoTracking()
-            .Where(i => _context.Orders.Any(o => o.Id == i.OrderId && validStatuses.Contains(o.Status)))
+        var ordersQueryable = _unitOfWork.Repository<Order>().GetQueryable();
+        var topProductIds = await _unitOfWork.Repository<OrderItem>().GetQueryable()
+            .Where(i => ordersQueryable.Any(o => o.Id == i.OrderId && validStatuses.Contains(o.Status)))
             .GroupBy(i => i.ProductId)
             .OrderByDescending(g => g.Sum(i => i.Quantity))
             .Take(5)
@@ -256,8 +254,7 @@ public class DashboardService : IDashboardService
         var productIds = topProductIds.Select(x => x.ProductId).ToList();
 
         // Fetch only the relevant products with necessary includes
-        var products = await _context.Products
-            .AsNoTracking()
+        var products = await _unitOfWork.Repository<Product>().GetQueryable()
             .Where(p => productIds.Contains(p.Id))
             .Include(p => p.Images)
             .Include(p => p.Variants)
@@ -281,8 +278,7 @@ public class DashboardService : IDashboardService
 
     public async Task<List<RecentOrderDto>> GetRecentOrdersAsync()
     {
-        return await _context.Orders
-            .AsNoTracking()
+        return await _unitOfWork.Repository<Order>().GetQueryable()
             .OrderByDescending(o => o.CreatedAt)
             .Take(5)
             .Select(o => new RecentOrderDto
@@ -293,7 +289,7 @@ public class DashboardService : IDashboardService
                 OrderDate = o.CreatedAt,
                 Total = o.Total,
                 Status = o.Status.ToString(),
-                PaymentStatus = "Paid" // Placeholder
+                PaymentStatus = o.Status == OrderStatus.Delivered ? "Paid" : "Unpaid"
             })
             .ToListAsync();
     }
@@ -307,8 +303,7 @@ public class DashboardService : IDashboardService
             // Group by Month for the last 12 months
             var startDate = new DateTime(endDate.Year, endDate.Month, 1).AddMonths(-11);
             
-            var salesData = await _context.Orders
-                .AsNoTracking()
+            var salesData = await _unitOfWork.Repository<Order>().GetQueryable()
                 .Where(o => validStatuses.Contains(o.Status) && o.CreatedAt >= startDate)
                 .GroupBy(o => new { o.CreatedAt.Year, o.CreatedAt.Month })
                 .Select(g => new
@@ -329,8 +324,7 @@ public class DashboardService : IDashboardService
         else if (period.ToLower() == "all")
         {
             // Group by Year for all time
-            var salesData = await _context.Orders
-                .AsNoTracking()
+            var salesData = await _unitOfWork.Repository<Order>().GetQueryable()
                 .Where(o => validStatuses.Contains(o.Status))
                 .GroupBy(o => o.CreatedAt.Year)
                 .Select(g => new
@@ -352,8 +346,7 @@ public class DashboardService : IDashboardService
             // Default: Group by Day (week or month)
             var startDate = period.ToLower() == "week" ? endDate.AddDays(-7) : endDate.AddDays(-30);
 
-            var salesData = await _context.Orders
-                .AsNoTracking()
+            var salesData = await _unitOfWork.Repository<Order>().GetQueryable()
                 .Where(o => validStatuses.Contains(o.Status) &&
                             o.CreatedAt >= startDate && o.CreatedAt <= endDate)
                 .GroupBy(o => o.CreatedAt.Date)
@@ -375,8 +368,7 @@ public class DashboardService : IDashboardService
 
     public async Task<List<StatusDistributionDto>> GetOrderStatusDistributionAsync()
     {
-        var distribution = await _context.Orders
-            .AsNoTracking()
+        var distribution = await _unitOfWork.Repository<Order>().GetQueryable()
             .GroupBy(o => o.Status)
             .Select(g => new
             {
@@ -397,8 +389,7 @@ public class DashboardService : IDashboardService
         // Get last 6 months of customer growth
         var startDate = DateTime.UtcNow.AddMonths(-6);
 
-        var growth = await _context.Customers 
-            .AsNoTracking()
+        var growth = await _unitOfWork.Repository<Customer>().GetQueryable()
             .Where(c => c.CreatedAt >= startDate)
             .GroupBy(c => new { c.CreatedAt.Year, c.CreatedAt.Month })
             .Select(g => new 
@@ -415,5 +406,27 @@ public class DashboardService : IDashboardService
             Date = $"{x.Year}-{x.Month:00}",
             Count = x.Count
         }).ToList();
+    }
+
+    public async Task<List<CategorySalesDto>> GetSalesByCategoryAsync()
+    {
+        var validStatuses = new[] { OrderStatus.Pending, OrderStatus.Confirmed, OrderStatus.Processing, OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered };
+
+        var result = await (
+            from i in _unitOfWork.Repository<OrderItem>().GetQueryable()
+            join o in _unitOfWork.Repository<Order>().GetQueryable() on i.OrderId equals o.Id
+            join p in _unitOfWork.Repository<Product>().GetQueryable() on i.ProductId equals p.Id
+            where validStatuses.Contains(o.Status)
+            group i by (p.Category != null ? p.Category.Name : "Uncategorized") into g
+            select new CategorySalesDto
+            {
+                CategoryName = g.Key ?? "Uncategorized",
+                Amount = g.Sum(i => i.UnitPrice * i.Quantity)
+            }
+        )
+        .OrderByDescending(x => x.Amount)
+        .ToListAsync();
+
+        return result;
     }
 }

@@ -408,33 +408,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
         .filter(Boolean),
     };
 
-    this.isSaving = true;
-
     if (this.editingZoneId) {
-      this.settingsService
-        .updateShippingZone(this.editingZoneId, updatedZone)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((zone) => {
-          this.isSaving = false;
-          this.shippingZones = this.shippingZones.map((item) =>
-            item.id === zone.id ? zone : item,
-          );
-          this.zoneForm.reset({ id: 0, name: "", region: "", rates: "" });
-          this.showZoneForm = false;
-          this.editingZoneId = null;
-          this.cdr.markForCheck();
-        });
-      return;
+      this.shippingZones = this.shippingZones.map((item) =>
+        item.id === this.editingZoneId ? updatedZone : item,
+      );
+    } else {
+      updatedZone.id = Date.now();
+      this.shippingZones = [...this.shippingZones, updatedZone];
     }
 
-    this.settingsService.createShippingZone(updatedZone).pipe(takeUntil(this.destroy$)).subscribe((zone) => {
-      this.isSaving = false;
-      this.shippingZones = [...this.shippingZones, zone];
-      this.zoneForm.reset({ id: 0, name: "", region: "", rates: "" });
-      this.showZoneForm = false;
-      this.editingZoneId = null;
-      this.cdr.markForCheck();
-    });
+    this.zoneForm.reset({ id: 0, name: "", region: "", rates: "" });
+    this.showZoneForm = false;
+    this.editingZoneId = null;
+    this.cdr.markForCheck();
   }
 
   cancelZoneEdit(): void {
@@ -448,15 +434,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.settingsService.deleteShippingZone(zone.id).pipe(takeUntil(this.destroy$)).subscribe((success) => {
-      if (!success) {
-        return;
-      }
-      this.shippingZones = this.shippingZones.filter(
-        (item) => item.id !== zone.id,
-      );
-      this.cdr.markForCheck();
-    });
+    this.shippingZones = this.shippingZones.filter(
+      (item) => item.id !== zone.id,
+    );
+    this.cdr.markForCheck();
   }
 
   startAddDelivery(): void {

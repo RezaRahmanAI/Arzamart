@@ -32,33 +32,12 @@ public class ReviewService : IReviewService
     public async Task<Review> AddReviewAsync(Review review)
     {
         // Auto-approve for now
-        review.IsApproved = true; 
+        review.IsApproved = true;
         review.Date = DateTime.UtcNow;
-        
+
         _unitOfWork.Repository<Review>().Add(review);
         await _unitOfWork.Complete();
-        
+
         return review;
-    }
-
-    public async Task<Review?> GetReviewByIdAsync(int id)
-    {
-        return await _unitOfWork.Repository<Review>().GetByIdAsync(id);
-    }
-
-    public async Task UpdateReviewAsync(Review review)
-    {
-        _unitOfWork.Repository<Review>().Update(review);
-        await _unitOfWork.Complete();
-    }
-
-    public async Task DeleteReviewAsync(int id)
-    {
-        var review = await _unitOfWork.Repository<Review>().GetByIdAsync(id);
-        if (review != null)
-        {
-            _unitOfWork.Repository<Review>().Delete(review);
-            await _unitOfWork.Complete();
-        }
     }
 }

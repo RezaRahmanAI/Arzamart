@@ -10,4 +10,5 @@ public interface IDashboardService
     Task<List<SalesDataDto>> GetSalesDataAsync(string period);
     Task<List<StatusDistributionDto>> GetOrderStatusDistributionAsync();
     Task<List<CustomerGrowthDto>> GetCustomerGrowthAsync();
+    Task<List<CategorySalesDto>> GetSalesByCategoryAsync();
 }

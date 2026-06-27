@@ -1,11 +1,18 @@
+using System.ComponentModel.DataAnnotations;
 using ECommerce.Core.Entities;
+using ECommerce.Core.Enums;
 
 namespace ECommerce.Core.DTOs;
 
 public class OrderCreateDto
 {
+    [Required(ErrorMessage = "Customer name is required")]
     public string Name { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Phone number is required")]
     public string Phone { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Shipping address is required")]
     public string Address { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Area { get; set; } = string.Empty;
@@ -19,6 +26,10 @@ public class OrderCreateDto
     public int? SocialMediaSourceId { get; set; }
     public string? AdminNote { get; set; }
     public string? CustomerNote { get; set; }
+
+    [Required(ErrorMessage = "Order must contain at least one item")]
+    [MinLength(1, ErrorMessage = "Order must contain at least one item")]
+    [MaxLength(100, ErrorMessage = "Order cannot contain more than 100 items")]
     public List<OrderItemDto> Items { get; set; } = new();
 }
 
@@ -51,11 +62,10 @@ public class OrderDto
     public decimal Total { get; set; }
     public int ItemsCount { get; set; }
     public int? DeliveryMethodId { get; set; }
-    public string Status { get; set; } = string.Empty;
+    public OrderStatus Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public bool IsPreOrder { get; set; }
     public bool IsStockAvailable { get; set; }
-    public string? AdminNote { get; set; }
     public string? CustomerNote { get; set; }
     public int? SourcePageId { get; set; }
     public string? SourcePageName { get; set; }
@@ -64,6 +74,11 @@ public class OrderDto
     public List<OrderItemDto> Items { get; set; } = new();
     public List<OrderLogDto> Logs { get; set; } = new();
     public List<OrderNoteDto> Notes { get; set; } = new();
+}
+
+public class AdminOrderDto : OrderDto
+{
+    public string? AdminNote { get; set; }
 }
 
 public class OrderLogDto

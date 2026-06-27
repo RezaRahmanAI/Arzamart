@@ -1,52 +1,25 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
-import { environment } from "../../../environments/environment";
+import { ApiHttpClient } from "../../core/http/http-client";
+import { CustomLandingPageConfig, LandingPageData } from "../../core/models/landing-page";
 
-export interface CustomLandingPageConfig {
-  id?: number;
-  productId: number;
-  relativeTimerTotalMinutes?: number | null;
-  isTimerVisible: boolean;
-  headerTitle?: string;
-  isProductDetailsVisible: boolean;
-  productDetailsTitle?: string;
-  isFabricVisible: boolean;
-  isDesignVisible: boolean;
-  isTrustBannerVisible: boolean;
-  trustBannerText?: string;
-  featuredProductName?: string;
-  promoPrice?: number;
-  originalPrice?: number;
-  promoText?: string;
-  freeShippingThresholdQuantity?: number | null;
-  isMarqueeVisible?: boolean;
-  marqueeText?: string;
-  isReviewsVisible?: boolean;
-  heroTitle?: string;
-  heroSubtitle?: string;
-  heroBadge?: string;
-  productHeroTitle?: string;
-  productHeroDescription?: string;
-  discountCtaTitle?: string;
-  discountCtaDescription?: string;
-  infoBannerTitle?: string;
-  infoBannerDescription?: string;
-  sectionsJson?: string;
-}
+export { CustomLandingPageConfig, LandingPageData } from "../../core/models/landing-page";
 
 @Injectable({
   providedIn: "root",
 })
 export class CustomLandingPageService {
-  private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiBaseUrl}/admin/custom-landing-page`;
+  private readonly api = inject(ApiHttpClient);
+
+  getBySlug(slug: string): Observable<LandingPageData> {
+    return this.api.get<LandingPageData>(`/custom-landing-page/${slug}`);
+  }
 
   getConfig(productId: number): Observable<CustomLandingPageConfig> {
-    return this.http.get<CustomLandingPageConfig>(`${this.apiUrl}/${productId}`, { headers: new HttpHeaders().set("X-Refresh", "true") });
+    return this.api.get<CustomLandingPageConfig>(`/admin/custom-landing-page/${productId}`);
   }
 
   saveConfig(config: CustomLandingPageConfig): Observable<CustomLandingPageConfig> {
-    return this.http.post<CustomLandingPageConfig>(this.apiUrl, config);
+    return this.api.put<CustomLandingPageConfig>("/admin/custom-landing-page", config);
   }
 }

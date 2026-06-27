@@ -11,29 +11,12 @@ namespace ECommerce.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "role_permissions",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "staff_audit_log",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "permissions",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "staff_users",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "modules",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "roles",
-                schema: "dbo");
+            migrationBuilder.Sql("IF OBJECT_ID('dbo.role_permissions', 'U') IS NOT NULL DROP TABLE [dbo].[role_permissions]");
+            migrationBuilder.Sql("IF OBJECT_ID('dbo.staff_audit_log', 'U') IS NOT NULL DROP TABLE [dbo].[staff_audit_log]");
+            migrationBuilder.Sql("IF OBJECT_ID('dbo.permissions', 'U') IS NOT NULL DROP TABLE [dbo].[permissions]");
+            migrationBuilder.Sql("IF OBJECT_ID('dbo.staff_users', 'U') IS NOT NULL DROP TABLE [dbo].[staff_users]");
+            migrationBuilder.Sql("IF OBJECT_ID('dbo.modules', 'U') IS NOT NULL DROP TABLE [dbo].[modules]");
+            migrationBuilder.Sql("IF OBJECT_ID('dbo.roles', 'U') IS NOT NULL DROP TABLE [dbo].[roles]");
 
             migrationBuilder.AddColumn<bool>(
                 name: "ForceChangePassword",

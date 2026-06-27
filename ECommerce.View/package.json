@@ -5,7 +5,7 @@
   "private": true,
   "main": "postcss.config.js",
   "scripts": {
-    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 ng serve --ssl",
+    "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

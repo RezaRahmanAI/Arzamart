@@ -1,6 +1,7 @@
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
+using ECommerce.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,18 +14,15 @@ namespace ECommerce.API.Controllers;
 public class AdminSettingsController : ControllerBase
 {
     private readonly IAdminSettingsService _settingsService;
-    private readonly IWebHostEnvironment _environment;
-    private readonly IConfiguration _config;
+    private readonly IFileUploadService _fileUploadService;
 
-    public AdminSettingsController(IAdminSettingsService settingsService, IWebHostEnvironment environment, IConfiguration config)
+    public AdminSettingsController(IAdminSettingsService settingsService, IFileUploadService fileUploadService)
     {
         _settingsService = settingsService;
-        _environment = environment;
-        _config = config;
+        _fileUploadService = fileUploadService;
     }
 
     [HttpGet]
-    [AllowAnonymous]
     public async Task<ActionResult<SiteSettingsDto>> GetSettings()
     {
         var settings = await _settingsService.GetSettingsAsync();
@@ -32,7 +30,7 @@ public class AdminSettingsController : ControllerBase
     }
 
     [Authorize(Roles = "SuperAdmin")]
-    [HttpPost]
+    [HttpPut]
     public async Task<ActionResult<SiteSettingsDto>> UpdateSettings([FromBody] SiteSettingsDto dto)
     {
         var result = await _settingsService.UpdateSettingsAsync(dto);
@@ -46,38 +44,27 @@ public class AdminSettingsController : ControllerBase
         if (file == null || file.Length == 0)
             return BadRequest("No file uploaded");
 
-        var externalPath = _config["ExternalMediaPath"] ?? Path.Combine(Directory.GetParent(_environment.ContentRootPath)!.FullName, "ArzaMedia");
-        var uploadsFolder = Path.Combine(externalPath, "settings");
-        Directory.CreateDirectory(uploadsFolder);
-
-        var fileExtension = Path.GetExtension(file.FileName);
-        var fileName = $"logo_{DateTime.UtcNow.Ticks}{fileExtension}";
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        return Ok(new UploadResultDto { Url = $"/uploads/settings/{fileName}" });
+        var url = await _fileUploadService.UploadAsync(file, "settings");
+        return Ok(new UploadResultDto { Url = url });
     }
 
     [HttpGet("delivery-methods")]
-    public async Task<ActionResult<IEnumerable<DeliveryMethod>>> GetDeliveryMethods()
+    public async Task<ActionResult<IEnumerable<DeliveryMethodDto>>> GetDeliveryMethods()
     {
-        return Ok(await _settingsService.GetDeliveryMethodsAsync());
+        var methods = await _settingsService.GetDeliveryMethodsAsync();
+        return Ok(methods);
     }
 
     [Authorize(Roles = "SuperAdmin")]
     [HttpPost("delivery-methods")]
-    public async Task<ActionResult<DeliveryMethod>> CreateDeliveryMethod([FromBody] DeliveryMethodDto dto)
+    public async Task<ActionResult<DeliveryMethodDto>> CreateDeliveryMethod([FromBody] DeliveryMethodDto dto)
     {
         var method = await _settingsService.CreateDeliveryMethodAsync(dto);
         return CreatedAtAction(nameof(GetDeliveryMethods), new { id = method.Id }, method);
     }
 
     [Authorize(Roles = "SuperAdmin")]
-    [HttpPost("delivery-methods/{id}")]
+    [HttpPut("delivery-methods/{id}")]
     public async Task<IActionResult> UpdateDeliveryMethod(int id, [FromBody] DeliveryMethodDto dto)
     {
         try

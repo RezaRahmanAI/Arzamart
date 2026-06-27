@@ -55,10 +55,6 @@ export class ProductGalleryComponent implements OnInit {
   title = "Products";
   skeletonItems = Array(8).fill(0);
   
-  // For virtual scrolling rows in a grid (e.g. 4 columns)
-  productRows: Product[][] = [];
-  readonly itemsPerRow = 5;
-
   ngOnInit(): void {
   }
 
@@ -117,7 +113,7 @@ export class ProductGalleryComponent implements OnInit {
       this.title = (collectionSlug || slug).replace(/-/g, " ");
     }
 
-    this.productService.getProducts(filterParams).subscribe({
+    this.productService.getProducts(filterParams).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.products = response.data;
         this.filteredProducts = response.data;
@@ -194,7 +190,7 @@ export class ProductGalleryComponent implements OnInit {
   private buildOfferHierarchy(): void {
     if (this.products.length === 0) return;
 
-    this.categoryService.getCategories().subscribe(categories => {
+    this.categoryService.getCategories().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(categories => {
       const hierarchy: any[] = [];
       const productCategories = new Set(this.products.map(p => String(p.categoryId)));
       const productSubCategories = new Set(this.products.map(p => String(p.subCategoryId)));
@@ -216,11 +212,4 @@ export class ProductGalleryComponent implements OnInit {
     });
   }
 
-  private chunkProductsIntoRows(): void {
-    const rows: Product[][] = [];
-    for (let i = 0; i < this.products.length; i += this.itemsPerRow) {
-      rows.push(this.products.slice(i, i + this.itemsPerRow));
-    }
-    this.productRows = rows;
-  }
 }

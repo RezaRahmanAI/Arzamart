@@ -1,7 +1,7 @@
 using ECommerce.Core.Constants;
+using ECommerce.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
 
@@ -11,13 +11,11 @@ namespace ECommerce.API.Controllers;
 [ECommerce.API.Helpers.StaffMenuAccess("products")]
 public class AdminProductMediaController : ControllerBase
 {
-    private readonly IWebHostEnvironment _environment;
-    private readonly IConfiguration _config;
+    private readonly IFileUploadService _fileUploadService;
 
-    public AdminProductMediaController(IWebHostEnvironment environment, IConfiguration config)
+    public AdminProductMediaController(IFileUploadService fileUploadService)
     {
-        _environment = environment;
-        _config = config;
+        _fileUploadService = fileUploadService;
     }
 
     [HttpPost("upload-media")]
@@ -25,40 +23,21 @@ public class AdminProductMediaController : ControllerBase
     [RequestFormLimits(MultipartBodyLengthLimit = FileUpload.MaxFileSize)]
     public async Task<ActionResult<List<string>>> UploadProductMedia(List<IFormFile> files)
     {
-        try 
+        try
         {
             if (files == null || files.Count == 0)
                 return BadRequest("No files uploaded");
 
-            var uploadedUrls = new List<string>();
-            var uploadsFolder = PathHelper.GetUploadsFolder(_config, _environment, "products");
-
-            foreach (var file in files)
-            {
-                if (file.Length > 0)
-                {
-                    var fileExtension = Path.GetExtension(file.FileName);
-                    var fileName = $"{Guid.NewGuid()}{fileExtension}";
-                    var filePath = Path.Combine(uploadsFolder, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-
-                    uploadedUrls.Add($"/uploads/products/{fileName}");
-                }
-            }
-
-            return Ok(uploadedUrls);
+            var urls = await _fileUploadService.UploadMultipleAsync(files, "products");
+            return Ok(urls);
         }
         catch (UnauthorizedAccessException ex)
         {
-             return StatusCode(403, new { message = "Permission denied: The server process does not have write access to the products folder. Error: " + ex.Message });
+            return StatusCode(403, new { message = "Permission denied: " + ex.Message });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { message = "An error occurred during product media upload: " + ex.Message });
+            return StatusCode(500, new { message = "An error occurred during product media upload." });
         }
     }
 }

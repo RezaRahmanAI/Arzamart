@@ -40,7 +40,7 @@ public class AdminReviewsController : ControllerBase
         }
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<ReviewDto>> UpdateReview(int id, [FromBody] ReviewUpdateDto dto)
     {
         try

@@ -117,6 +117,7 @@ public class AdminNavigationService : IAdminNavigationService
         var items = db.NavigationMenus
             .AsNoTracking()
             .Include(n => n.ChildMenus)
+                .ThenInclude(c => c.ChildMenus)
             .OrderBy(n => n.DisplayOrder)
             .ToList();
 
@@ -136,11 +137,22 @@ public class AdminNavigationService : IAdminNavigationService
                         Id = c.Id,
                         Name = c.Title ?? "",
                         Slug = c.Url ?? "",
-                        Collections = new List<MegaMenuCollectionDto>()
+                        Collections = c.ChildMenus?
+                            .Where(col => col.IsActive)
+                            .OrderBy(col => col.DisplayOrder)
+                            .Select(col => new MegaMenuCollectionDto
+                            {
+                                Id = col.Id,
+                                Name = col.Title ?? "",
+                                Slug = col.Url ?? ""
+                            }).ToList() ?? new List<MegaMenuCollectionDto>()
                     }).ToList() ?? new List<MegaMenuSubCategoryDto>()
             }).ToList();
 
-        _cache.NavigationMenus["main"] = megaMenuItems;
+        lock (_cache.RebuildLock)
+        {
+            _cache.NavigationMenus["main"] = megaMenuItems;
+        }
     }
 
     private NavigationMenuDto MapToDto(NavigationMenu menu)

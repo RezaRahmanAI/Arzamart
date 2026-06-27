@@ -48,6 +48,29 @@ public class AdminSecurityService : IAdminSecurityService
         return entity;
     }
 
+    public async Task<BlockedIp> BlockIpAddressAsync(string ipAddress, string? reason, string blockedBy)
+    {
+        var existing = await _unitOfWork.Repository<BlockedIp>()
+            .GetQueryable()
+            .FirstOrDefaultAsync(b => b.IpAddress == ipAddress);
+
+        if (existing != null)
+            throw new InvalidOperationException("This IP address is already blocked.");
+
+        var entity = new BlockedIp
+        {
+            IpAddress = ipAddress,
+            Reason = reason,
+            BlockedAt = DateTime.UtcNow,
+            BlockedBy = blockedBy
+        };
+
+        _unitOfWork.Repository<BlockedIp>().Add(entity);
+        await _unitOfWork.Complete();
+
+        return entity;
+    }
+
     public async Task UnblockIpAsync(int id)
     {
         var entity = await _unitOfWork.Repository<BlockedIp>()

@@ -1,10 +1,8 @@
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
 using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.API.Controllers;
 
@@ -23,47 +21,11 @@ public class AdminOrdersController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<PagedResponseDto<OrderDto>>> GetOrders(
-        [FromQuery] string? searchTerm,
-        [FromQuery] string? status,
-        [FromQuery] string? dateRange,
-        [FromQuery] DateTime? startDate,
-        [FromQuery] DateTime? endDate,
-        [FromQuery] bool preOrderOnly = false,
-        [FromQuery] bool websiteOnly = false,
-        [FromQuery] bool manualOnly = false,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10,
-        [FromQuery] int? sourcePageId = null,
-        [FromQuery] int? socialMediaSourceId = null,
-        [FromQuery] string? customerPhone = null,
-        [FromQuery] int? productId = null,
-        [FromQuery] string? orderNumber = null)
+        [FromQuery] OrderQueryDto query)
     {
-        var (items, total) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, page, pageSize, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber);
-        // Ensure properties are lowercase to match frontend expectations if JSON serialization doesn't do it automatically
+        query.PageSize = Math.Min(Math.Max(1, query.PageSize), 100);
+        var (items, total) = await _orderService.GetOrdersForAdminAsync(query.SearchTerm, query.Status, query.DateRange, query.Page, query.PageSize, query.PreOrderOnly, query.WebsiteOnly, query.ManualOnly, query.StartDate, query.EndDate, query.SourcePageId, query.SocialMediaSourceId, query.CustomerPhone, query.ProductId, query.OrderNumber);
         return Ok(new PagedResponseDto<OrderDto> { Items = items, Total = total });
-    }
-
-    [HttpGet("filtered")]
-    public async Task<ActionResult<IEnumerable<OrderDto>>> GetFilteredOrders(
-        [FromQuery] string? searchTerm,
-        [FromQuery] string? status,
-        [FromQuery] string? dateRange,
-        [FromQuery] DateTime? startDate,
-        [FromQuery] DateTime? endDate,
-        [FromQuery] bool preOrderOnly = false,
-        [FromQuery] bool websiteOnly = false,
-        [FromQuery] bool manualOnly = false,
-        [FromQuery] int? sourcePageId = null,
-        [FromQuery] int? socialMediaSourceId = null,
-        [FromQuery] string? customerPhone = null,
-        [FromQuery] int? productId = null,
-        [FromQuery] string? orderNumber = null,
-        [FromQuery] int pageSize = 50)
-    {
-        pageSize = Math.Min(Math.Max(1, pageSize), 100);
-        var (items, _) = await _orderService.GetOrdersForAdminAsync(searchTerm, status, dateRange, 1, pageSize, preOrderOnly, websiteOnly, manualOnly, startDate, endDate, sourcePageId, socialMediaSourceId, customerPhone, productId, orderNumber);
-        return Ok(items);
     }
 
     [HttpGet("stats")]
@@ -94,7 +56,7 @@ public class AdminOrdersController : ControllerBase
         return Ok(order);
     }
 
-    [HttpPost("{id}/status")]
+    [HttpPut("{id}/status")]
     public async Task<ActionResult> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDto dto)
     {
         var adminName = GetCurrentAdminName();
@@ -121,14 +83,14 @@ public class AdminOrdersController : ControllerBase
 
     private string GetCurrentAdminName()
     {
-        // Prioritize Full Name/Display Name claim, then UserName/Email, finally fallback to "Admin"
         return User.Identity?.Name 
                ?? User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value 
                ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value 
-               ?? "Admin";
+               ?? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+               ?? "Unknown";
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<OrderDto>> UpdateOrder(int id, [FromBody] OrderCreateDto dto)
     {
         try 

@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ECommerce.Core.DTOs;
+using ECommerce.Core.DTOs.Auth;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Services
@@ -16,17 +19,20 @@ namespace ECommerce.Infrastructure.Services
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _config;
+        private readonly ILogger<AuthService> _logger;
 
         public AuthService(
             UserManager<ApplicationUser> userManager,
             IJwtTokenService jwtTokenService,
             IUnitOfWork unitOfWork,
-            IConfiguration config)
+            IConfiguration config,
+            ILogger<AuthService> logger)
         {
             _userManager = userManager;
             _jwtTokenService = jwtTokenService;
             _unitOfWork = unitOfWork;
             _config = config;
+            _logger = logger;
         }
 
         public async Task<(LoginResponseDto Response, string RefreshToken)> LoginAsync(LoginDto loginDto, string deviceInfo, string ipAddress)
@@ -35,7 +41,8 @@ namespace ECommerce.Infrastructure.Services
 
             if (user == null)
             {
-                throw new Exception("INVALID_CREDENTIALS");
+                _logger.LogWarning("Login attempt for non-existent email {Email} from {IpAddress}", loginDto.Email, ipAddress);
+                throw new InvalidOperationException("INVALID_CREDENTIALS");
             }
 
             bool passwordValid = false;
@@ -48,9 +55,9 @@ namespace ECommerce.Infrastructure.Services
                     passwordValid = true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Not a BCrypt hash
+                _logger.LogDebug(ex, "BCrypt verification failed for user {UserId}, trying Identity", user.Id);
             }
 
             // 2. Try Identity PBKDF2 (Old Format)
@@ -58,31 +65,28 @@ namespace ECommerce.Infrastructure.Services
             {
                 try 
                 {
-                    // Only attempt Identity verification if it's not a BCrypt hash (starts with $)
-                    // Identity hashes are Base64 strings.
                     if (!user.PasswordHash.StartsWith("$"))
                     {
                         var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, loginDto.Password);
                         if (result == PasswordVerificationResult.Success || result == PasswordVerificationResult.SuccessRehashNeeded)
                         {
                             passwordValid = true;
-                            // Migrate to BCrypt
                             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(loginDto.Password);
                             user.PasswordSalt = "BCrypt";
                             await _userManager.UpdateAsync(user);
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // If Identity verification fails due to format (e.g. invalid Base64), 
-                    // we've already tried BCrypt, so we just let passwordValid stay false.
+                    _logger.LogWarning(ex, "Identity password verification failed for user {UserId}", user.Id);
                 }
             }
 
             if (!passwordValid)
             {
-                throw new Exception("INVALID_CREDENTIALS");
+                _logger.LogWarning("Invalid password for user {UserId} from {IpAddress}", user.Id, ipAddress);
+                throw new InvalidOperationException("INVALID_CREDENTIALS");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -97,7 +101,7 @@ namespace ECommerce.Infrastructure.Services
                 RefreshToken = refreshTokenString,
                 DeviceInfo = deviceInfo,
                 IpAddress = ipAddress,
-                ExpiresAt = DateTime.UtcNow.AddDays(double.Parse(_config["Token:RefreshTokenExpiryDays"] ?? "7"))
+                ExpiresAt = DateTime.UtcNow.AddDays(double.TryParse(_config["Token:RefreshTokenExpiryDays"], out var refreshDays) ? refreshDays : 7)
             };
 
             _unitOfWork.Repository<AppRefreshToken>().Add(refreshToken);
@@ -106,7 +110,7 @@ namespace ECommerce.Infrastructure.Services
             var response = new LoginResponseDto
             {
                 AccessToken = accessToken,
-                ExpiresIn = int.Parse(_config["Token:AccessTokenExpiryMinutes"] ?? "15") * 60,
+                ExpiresIn = (int.TryParse(_config["Token:AccessTokenExpiryMinutes"], out var accessMin) ? accessMin : 15) * 60,
                 User = new UserDto
                 {
                     Id = user.Id,
@@ -121,41 +125,56 @@ namespace ECommerce.Infrastructure.Services
 
         public async Task<(LoginResponseDto Response, string RefreshToken)> CustomerLoginAsync(string phone, string deviceInfo, string ipAddress)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Phone == phone);
+            var customer = await _unitOfWork.Repository<Customer>().GetQueryable().FirstOrDefaultAsync(c => c.Phone == phone);
 
-            if (user == null)
+            if (customer == null)
             {
-                // Auto-create customer if not exists (or handle in checkout)
-                throw new Exception("USER_NOT_FOUND");
+                customer = new Customer
+                {
+                    Phone = phone,
+                    Name = "Guest Customer",
+                    Address = "",
+                    City = "",
+                    Area = ""
+                };
+                _unitOfWork.Repository<Customer>().Add(customer);
+                await _unitOfWork.Complete();
             }
 
-            var roles = await _userManager.GetRolesAsync(user);
-            var role = roles.FirstOrDefault() ?? "Customer";
+            if (customer.IsSuspicious)
+            {
+                _logger.LogWarning("Deactivated/Suspicious customer login attempt for phone {Phone} from {IpAddress}", phone, ipAddress);
+                throw new InvalidOperationException("ACCOUNT_DEACTIVATED");
+            }
 
-            var accessToken = _jwtTokenService.GenerateAccessToken(user.Id, user.Email, user.Phone, role);
+            var role = "Customer";
+            var accessToken = _jwtTokenService.GenerateAccessToken(customer.Id.ToString(), null, customer.Phone, role);
             var refreshTokenString = _jwtTokenService.GenerateRefreshToken();
 
-            var refreshToken = new AppRefreshToken
+            if (!string.IsNullOrEmpty(customer.UserId))
             {
-                UserId = user.Id,
-                RefreshToken = refreshTokenString,
-                DeviceInfo = deviceInfo,
-                IpAddress = ipAddress,
-                ExpiresAt = DateTime.UtcNow.AddDays(double.Parse(_config["Token:RefreshTokenExpiryDays"] ?? "7"))
-            };
+                var refreshToken = new AppRefreshToken
+                {
+                    UserId = customer.UserId,
+                    RefreshToken = refreshTokenString,
+                    DeviceInfo = deviceInfo,
+                    IpAddress = ipAddress,
+                    ExpiresAt = DateTime.UtcNow.AddDays(double.TryParse(_config["Token:RefreshTokenExpiryDays"], out var refreshDays) ? refreshDays : 7)
+                };
 
-            _unitOfWork.Repository<AppRefreshToken>().Add(refreshToken);
-            await _unitOfWork.Complete();
+                _unitOfWork.Repository<AppRefreshToken>().Add(refreshToken);
+                await _unitOfWork.Complete();
+            }
 
             var response = new LoginResponseDto
             {
                 AccessToken = accessToken,
-                ExpiresIn = int.Parse(_config["Token:AccessTokenExpiryMinutes"] ?? "15") * 60,
+                ExpiresIn = (int.TryParse(_config["Token:AccessTokenExpiryMinutes"], out var accessMin) ? accessMin : 15) * 60,
                 User = new UserDto
                 {
-                    Id = user.Id,
-                    Email = user.Email ?? "",
-                    Name = user.FullName ?? "Customer",
+                    Id = customer.Id.ToString(),
+                    Email = "",
+                    Name = customer.Name,
                     Role = role
                 }
             };
@@ -165,17 +184,18 @@ namespace ECommerce.Infrastructure.Services
 
         public async Task<(AuthResponseDto Response, string RefreshToken)> RefreshTokenAsync(string refreshToken, string expiredAccessToken, string deviceInfo, string ipAddress)
         {
-            var userToken = _unitOfWork.Repository<AppRefreshToken>().GetQueryable()
-                .FirstOrDefault(x => x.RefreshToken == refreshToken);
+            var userToken = await _unitOfWork.Repository<AppRefreshToken>().GetQueryable()
+                .FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
 
             if (userToken == null || !userToken.IsActive)
             {
                 if (userToken != null && userToken.IsRevoked)
                 {
-                    _jwtTokenService.RevokeAllUserTokens(userToken.UserId);
-                    throw new Exception("TOKEN_REUSE_DETECTED");
+                    _logger.LogWarning("Token reuse detected for user {UserId} from {IpAddress}", userToken.UserId, ipAddress);
+                    await _jwtTokenService.RevokeAllUserTokensAsync(userToken.UserId);
+                    throw new InvalidOperationException("TOKEN_REUSE_DETECTED");
                 }
-                throw new Exception("TOKEN_INVALID");
+                throw new InvalidOperationException("TOKEN_INVALID");
             }
 
             var principal = _jwtTokenService.GetPrincipalFromExpiredToken(expiredAccessToken);
@@ -183,11 +203,11 @@ namespace ECommerce.Infrastructure.Services
 
             if (userId == null || userId != userToken.UserId)
             {
-                throw new Exception("TOKEN_INVALID");
+                throw new InvalidOperationException("TOKEN_INVALID");
             }
 
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) throw new Exception("USER_NOT_FOUND");
+            if (user == null) throw new InvalidOperationException("USER_NOT_FOUND");
 
             var roles = await _userManager.GetRolesAsync(user);
             var role = roles.FirstOrDefault() ?? "User";
@@ -205,7 +225,7 @@ namespace ECommerce.Infrastructure.Services
                 RefreshToken = newRefreshTokenString,
                 DeviceInfo = deviceInfo,
                 IpAddress = ipAddress,
-                ExpiresAt = DateTime.UtcNow.AddDays(double.Parse(_config["Token:RefreshTokenExpiryDays"] ?? "7"))
+                ExpiresAt = DateTime.UtcNow.AddDays(double.TryParse(_config["Token:RefreshTokenExpiryDays"], out var refreshDays) ? refreshDays : 7)
             };
 
             _unitOfWork.Repository<AppRefreshToken>().Add(newRefreshToken);
@@ -214,7 +234,7 @@ namespace ECommerce.Infrastructure.Services
             var response = new AuthResponseDto
             {
                 AccessToken = newAccessToken,
-                ExpiresIn = int.Parse(_config["Token:AccessTokenExpiryMinutes"] ?? "15") * 60,
+                ExpiresIn = (int.TryParse(_config["Token:AccessTokenExpiryMinutes"], out var accessMin) ? accessMin : 15) * 60,
                 User = new UserDto
                 {
                     Id = user.Id,
@@ -229,8 +249,8 @@ namespace ECommerce.Infrastructure.Services
 
         public async Task RevokeTokenAsync(string refreshToken)
         {
-            var userToken = _unitOfWork.Repository<AppRefreshToken>().GetQueryable()
-                .FirstOrDefault(x => x.RefreshToken == refreshToken);
+            var userToken = await _unitOfWork.Repository<AppRefreshToken>().GetQueryable()
+                .FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
 
             if (userToken != null)
             {
@@ -248,7 +268,7 @@ namespace ECommerce.Infrastructure.Services
         public async Task<UserDto> GetCurrentUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) throw new Exception("USER_NOT_FOUND");
+            if (user == null) throw new InvalidOperationException("USER_NOT_FOUND");
 
             var roles = await _userManager.GetRolesAsync(user);
             var role = roles.FirstOrDefault() ?? "Customer";
@@ -260,6 +280,186 @@ namespace ECommerce.Infrastructure.Services
                 Name = user.FullName ?? user.UserName ?? "Customer",
                 Role = role
             };
+        }
+
+        public async Task<(AdminAuthResponseDto Response, string RefreshToken)> AdminLoginAsync(string identifier, string password, string ipAddress)
+        {
+            var normalized = identifier.Trim();
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(u => u.Email == normalized || u.UserName == normalized);
+
+            if (user == null)
+            {
+                _logger.LogWarning("Admin login attempt for non-existent identifier from {IpAddress}", ipAddress);
+                throw new InvalidOperationException("INVALID_CREDENTIALS");
+            }
+
+            if (!user.IsActive)
+                throw new InvalidOperationException("ACCOUNT_DEACTIVATED");
+
+            var result = await _userManager.CheckPasswordAsync(user, password);
+            if (!result)
+            {
+                _logger.LogWarning("Invalid admin password for user {UserId} from {IpAddress}", user.Id, ipAddress);
+                throw new InvalidOperationException("INVALID_CREDENTIALS");
+            }
+
+            var dbRoles = await _userManager.GetRolesAsync(user);
+            if (!dbRoles.Any() && !string.IsNullOrEmpty(user.Role))
+                dbRoles = new List<string> { user.Role };
+            if (!dbRoles.Any())
+                dbRoles = new List<string> { "Customer" };
+
+            var primaryRole = dbRoles.Contains("SuperAdmin") ? "SuperAdmin" : (dbRoles.FirstOrDefault() ?? "Customer");
+
+            var accessToken = _jwtTokenService.GenerateAccessToken(user.Id, user.Email, user.Phone, primaryRole);
+            var refreshTokenString = _jwtTokenService.GenerateRefreshToken();
+
+            var refreshToken = new AppRefreshToken
+            {
+                UserId = user.Id,
+                RefreshToken = refreshTokenString,
+                DeviceInfo = "admin-web",
+                IpAddress = ipAddress,
+                ExpiresAt = DateTime.UtcNow.AddDays(double.TryParse(_config["Token:RefreshTokenExpiryDays"], out var refreshDays) ? refreshDays : 7)
+            };
+
+            _unitOfWork.Repository<AppRefreshToken>().Add(refreshToken);
+            await _unitOfWork.Complete();
+
+            var response = new AdminAuthResponseDto
+            {
+                Token = accessToken,
+                RefreshToken = refreshTokenString,
+                User = new UserSummaryDto
+                {
+                    Id = user.Id,
+                    Name = user.FullName ?? user.UserName ?? "User",
+                    Email = user.Email ?? string.Empty,
+                    Role = primaryRole,
+                    Phone = user.Phone,
+                    Username = user.UserName,
+                    AllowedMenus = user.AllowedMenus
+                },
+                ForceChangePassword = user.ForceChangePassword
+            };
+
+            return (Response: response, RefreshToken: refreshTokenString);
+        }
+
+        public async Task<UserSummaryDto?> GetUserSummaryAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return null;
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? user.Role ?? "Customer");
+
+            return new UserSummaryDto
+            {
+                Id = user.Id,
+                Name = user.FullName ?? user.UserName ?? "User",
+                Email = user.Email ?? string.Empty,
+                Role = role,
+                Phone = user.Phone,
+                Username = user.UserName,
+                AllowedMenus = user.AllowedMenus
+            };
+        }
+
+        public async Task AdminLogoutAsync(string userId)
+        {
+            var activeTokens = await _unitOfWork.Repository<AppRefreshToken>().GetQueryable()
+                .Where(t => t.UserId == userId && !t.IsRevoked)
+                .ToListAsync();
+
+            foreach (var token in activeTokens)
+            {
+                token.IsRevoked = true;
+                token.RevokedAt = DateTime.UtcNow;
+            }
+
+            await _unitOfWork.Complete();
+        }
+
+        public async Task<(AdminAuthResponseDto Response, string RefreshToken)> RefreshAdminTokenAsync(string refreshToken, string ipAddress)
+        {
+            var userToken = await _unitOfWork.Repository<AppRefreshToken>().GetQueryable()
+                .FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
+
+            if (userToken == null || !userToken.IsActive)
+            {
+                if (userToken != null && userToken.IsRevoked)
+                {
+                    _logger.LogWarning("Admin token reuse detected for user {UserId} from {IpAddress}", userToken.UserId, ipAddress);
+                    await _jwtTokenService.RevokeAllUserTokensAsync(userToken.UserId);
+                    throw new InvalidOperationException("TOKEN_REUSE_DETECTED");
+                }
+                throw new InvalidOperationException("TOKEN_INVALID");
+            }
+
+            var user = await _userManager.FindByIdAsync(userToken.UserId);
+            if (user == null || !user.IsActive)
+                throw new InvalidOperationException("TOKEN_INVALID");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            if (!roles.Any() && !string.IsNullOrEmpty(user.Role))
+                roles = new List<string> { user.Role };
+            if (!roles.Any())
+                roles = new List<string> { "Customer" };
+
+            var primaryRole = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? "Customer");
+
+            var accessToken = _jwtTokenService.GenerateAccessToken(user.Id, user.Email, user.Phone, primaryRole);
+            var refreshTokenString = _jwtTokenService.GenerateRefreshToken();
+
+            userToken.IsRevoked = true;
+            userToken.RevokedAt = DateTime.UtcNow;
+            userToken.ReplacedByToken = refreshTokenString;
+
+            var newRefreshToken = new AppRefreshToken
+            {
+                UserId = user.Id,
+                RefreshToken = refreshTokenString,
+                DeviceInfo = "admin-web",
+                IpAddress = ipAddress,
+                ExpiresAt = DateTime.UtcNow.AddDays(double.TryParse(_config["Token:RefreshTokenExpiryDays"], out var refreshDays) ? refreshDays : 7)
+            };
+
+            _unitOfWork.Repository<AppRefreshToken>().Add(newRefreshToken);
+            await _unitOfWork.Complete();
+
+            var response = new AdminAuthResponseDto
+            {
+                Token = accessToken,
+                RefreshToken = refreshTokenString,
+                User = new UserSummaryDto
+                {
+                    Id = user.Id,
+                    Name = user.FullName ?? user.UserName ?? "User",
+                    Email = user.Email ?? string.Empty,
+                    Role = primaryRole,
+                    Phone = user.Phone,
+                    Username = user.UserName,
+                    AllowedMenus = user.AllowedMenus
+                },
+                ForceChangePassword = user.ForceChangePassword
+            };
+
+            return (Response: response, RefreshToken: refreshTokenString);
+        }
+
+        public async Task ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) throw new InvalidOperationException("USER_NOT_FOUND");
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (!result.Succeeded)
+                throw new InvalidOperationException(string.Join(", ", result.Errors.Select(e => e.Description)));
+
+            user.ForceChangePassword = false;
+            await _userManager.UpdateAsync(user);
         }
     }
 }

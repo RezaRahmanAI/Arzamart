@@ -12,6 +12,15 @@ public static class DataSeeder
 {
     public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
     {
+        // Migrate kids category to children category if it exists
+        var kidsCategory = await context.Categories.FirstOrDefaultAsync(c => c.Slug == "kids");
+        if (kidsCategory != null)
+        {
+            kidsCategory.Name = "Children";
+            kidsCategory.Slug = "children";
+            await context.SaveChangesAsync();
+        }
+
         // 0. Seed Initial Categories
         if (!await context.Categories.AnyAsync())
         {
@@ -19,7 +28,7 @@ public static class DataSeeder
             {
                 new Category { Name = "Men", Slug = "men", DisplayOrder = 1, IsActive = true },
                 new Category { Name = "Women", Slug = "women", DisplayOrder = 2, IsActive = true },
-                new Category { Name = "Kids", Slug = "kids", DisplayOrder = 3, IsActive = true },
+                new Category { Name = "Children", Slug = "children", DisplayOrder = 3, IsActive = true },
                 new Category { Name = "Accessories", Slug = "accessories", DisplayOrder = 4, IsActive = true }
             };
 
@@ -54,6 +63,7 @@ public static class DataSeeder
 
         if (existingAdmin == null)
         {
+            var newPassword = Guid.NewGuid().ToString("N")[..12] + "!A1";
             var newAdmin = new ApplicationUser
             {
                 UserName = adminEmail,
@@ -63,12 +73,10 @@ public static class DataSeeder
                 Role = "SuperAdmin",
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
-                PasswordEncrypted = "encrypted", // Will be set after password hash
-                ForceChangePassword = false
+                ForceChangePassword = true
             };
 
-            // This will correctly hash the password "Arzamart@321" using Identity's PasswordHasher
-            var result = await userManager.CreateAsync(newAdmin, "Arzamart@321");
+            var result = await userManager.CreateAsync(newAdmin, newPassword);
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(newAdmin, "SuperAdmin");

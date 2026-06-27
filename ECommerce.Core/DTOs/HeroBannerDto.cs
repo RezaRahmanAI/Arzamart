@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using ECommerce.Core.Enums;
 
 namespace ECommerce.Core.DTOs;
@@ -19,6 +20,7 @@ public class CreateHeroBannerDto
 {
     public string Title { get; set; } = string.Empty;
     public string Subtitle { get; set; } = string.Empty;
+    [Required]
     public string ImageUrl { get; set; } = string.Empty;
     public string MobileImageUrl { get; set; } = string.Empty;
     public string LinkUrl { get; set; } = string.Empty;

@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from "@angu
 import { RouterModule } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
-import { Category } from "../../models/categories.models";
+import { Category } from "../../../core/models/category";
 import { CategoriesService } from "../../services/categories.service";
 import { environment } from "../../../../environments/environment";
 import { AuthService } from "../../../core/services/auth.service";
@@ -88,7 +88,7 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
     this.categoryService.getAll().subscribe({
       next: (categories) => {
-        this.allCategories = categories.sort((a, b) => a.displayOrder - b.displayOrder);
+        this.allCategories = categories.sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
         this.applyFilter();
         this.isLoading = false;
         this.cdr.markForCheck();

@@ -2,7 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
 
-export interface UserProfile {
+export interface AdminUserProfile {
   id: string;
   userName: string;
   email: string;
@@ -25,8 +25,8 @@ export interface UpdateProfileRequest {
 export class ProfileService {
   private readonly api = inject(ApiHttpClient);
 
-  getProfile(): Observable<UserProfile> {
-    return this.api.get<UserProfile>("/profile");
+  getProfile(): Observable<AdminUserProfile> {
+    return this.api.get<AdminUserProfile>("/profile");
   }
 
   updateProfile(data: UpdateProfileRequest): Observable<any> {

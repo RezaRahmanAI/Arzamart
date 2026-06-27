@@ -1,18 +1,10 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using ECommerce.API.Contracts.Auth;
 using ECommerce.Core.DTOs.Auth;
-using ECommerce.Core.Entities;
-using ECommerce.API.Helpers;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerce.API.Controllers;
 
@@ -20,134 +12,65 @@ namespace ECommerce.API.Controllers;
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly PasswordProtector _passwordProtector;
-    private readonly IActivityLogService _activityLogService;
+    private readonly IAuthService _authService;
     private readonly IMemoryCache _cache;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager, PasswordProtector passwordProtector, IActivityLogService activityLogService, IMemoryCache cache)
+    public AuthController(
+        IAuthService authService,
+        IMemoryCache cache,
+        ILogger<AuthController> logger)
     {
-        _configuration = configuration;
-        _userManager = userManager;
-        _passwordProtector = passwordProtector;
-        _activityLogService = activityLogService;
+        _authService = authService;
         _cache = cache;
+        _logger = logger;
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<AdminAuthResponseDto>> Login(LoginRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Identifier) || string.IsNullOrWhiteSpace(request.Password))
-        {
             return BadRequest("Identifier and password are required.");
-        }
 
-        var normalized = request.Identifier.Trim();
-        var user = await _userManager.Users
-            .FirstOrDefaultAsync(u => u.Email == normalized || u.UserName == normalized, cancellationToken);
-
-        if (user is null)
+        try
         {
-            return Unauthorized("Invalid credentials.");
+            var (response, _) = await _authService.AdminLoginAsync(
+                request.Identifier,
+                request.Password,
+                HttpContext.Connection.RemoteIpAddress?.ToString() ?? "");
+
+            return Ok(response);
         }
-
-        if (!user.IsActive)
+        catch (Exception ex)
         {
-            return Unauthorized("Account is deactivated.");
+            return ex.Message switch
+            {
+                "INVALID_CREDENTIALS" => Unauthorized("Invalid credentials."),
+                "ACCOUNT_DEACTIVATED" => Unauthorized("Account is deactivated."),
+                _ => StatusCode(500, "An error occurred.")
+            };
         }
-
-        var result = await _userManager.CheckPasswordAsync(user, request.Password);
-        if (!result)
-        {
-            return Unauthorized("Invalid credentials.");
-        }
-
-        var roles = await _userManager.GetRolesAsync(user);
-        if (!roles.Any() && !string.IsNullOrEmpty(user.Role))
-        {
-            roles = new List<string> { user.Role };
-        }
-        if (!roles.Any())
-        {
-            roles = new List<string> { "Customer" };
-        }
-
-        var primaryRole = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? "Customer");
-        var isSuperAdmin = primaryRole == "SuperAdmin";
-
-        var accessToken = GenerateAccessToken(user, roles, isSuperAdmin);
-        var refreshToken = GenerateRefreshToken();
-
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
-        await _userManager.UpdateAsync(user);
-
-        if (primaryRole == "SuperAdmin" || primaryRole == "Admin" || primaryRole == "Staff")
-        {
-            await _activityLogService.LogAsync(
-                user.Id,
-                "Login",
-                $"Logged in as {primaryRole}",
-                HttpContext.Connection.RemoteIpAddress?.ToString(),
-                user.Id);
-        }
-
-        var userSummary = ToSummary(user, primaryRole);
-
-        return Ok(new AdminAuthResponseDto
-        {
-            Token = accessToken,
-            RefreshToken = refreshToken,
-            User = userSummary,
-            ForceChangePassword = user.ForceChangePassword
-        });
     }
 
     [HttpPost("refresh")]
     public async Task<ActionResult> Refresh([FromBody] RefreshRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.RefreshToken))
-        {
             return BadRequest("Refresh token is required.");
-        }
 
-        var user = await _userManager.Users
-            .FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshToken, cancellationToken);
-
-        if (user == null || !user.IsActive || user.RefreshTokenExpiry == null || user.RefreshTokenExpiry.Value < DateTime.UtcNow)
+        try
         {
+            var (response, newRefreshToken) = await _authService.RefreshAdminTokenAsync(
+                request.RefreshToken,
+                HttpContext.Connection.RemoteIpAddress?.ToString() ?? "");
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Refresh token validation failed");
             return Unauthorized("Session expired or invalid refresh token.");
         }
-
-        var roles = await _userManager.GetRolesAsync(user);
-        if (!roles.Any() && !string.IsNullOrEmpty(user.Role))
-        {
-            roles = new List<string> { user.Role };
-        }
-        if (!roles.Any())
-        {
-            roles = new List<string> { "Customer" };
-        }
-
-        var primaryRole = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? "Customer");
-        var isSuperAdmin = primaryRole == "SuperAdmin";
-
-        var newAccessToken = GenerateAccessToken(user, roles, isSuperAdmin);
-        var newRefreshToken = GenerateRefreshToken();
-
-        user.RefreshToken = newRefreshToken;
-        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
-        await _userManager.UpdateAsync(user);
-
-        var userSummary = ToSummary(user, primaryRole);
-        return Ok(new AdminAuthResponseDto
-        {
-            Token = newAccessToken,
-            RefreshToken = newRefreshToken,
-            User = userSummary,
-            ForceChangePassword = user.ForceChangePassword
-        });
     }
 
     [Authorize]
@@ -155,27 +78,17 @@ public class AuthController : ControllerBase
     public async Task<ActionResult> Me(CancellationToken cancellationToken)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
+        if (userId == null) return Unauthorized();
 
         var cacheKey = $"auth_me:{userId}";
         if (_cache.TryGetValue(cacheKey, out UserSummaryDto cached))
             return Ok(cached);
 
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user is null)
-        {
-            return Unauthorized();
-        }
+        var userSummary = await _authService.GetUserSummaryAsync(userId);
+        if (userSummary == null) return Unauthorized();
 
-        var roles = await _userManager.GetRolesAsync(user);
-        var role = roles.Contains("SuperAdmin") ? "SuperAdmin" : (roles.FirstOrDefault() ?? user.Role ?? "Customer");
-
-        var result = ToSummary(user, role);
-        _cache.Set(cacheKey, result, TimeSpan.FromMinutes(5));
-        return Ok(result);
+        _cache.Set(cacheKey, userSummary, TimeSpan.FromMinutes(5));
+        return Ok(userSummary);
     }
 
     [Authorize]
@@ -186,104 +99,37 @@ public class AuthController : ControllerBase
         if (userId != null)
         {
             _cache.Remove($"auth_me:{userId}");
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user != null)
-            {
-                user.RefreshToken = null;
-                user.RefreshTokenExpiry = null;
-                await _userManager.UpdateAsync(user);
-            }
+            await _authService.AdminLogoutAsync(userId);
         }
         return Ok(new { message = "Logged out successfully" });
     }
 
-    [HttpPost("change-password")]
-    [Authorize]
-    public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
+    [HttpPost("customer-login")]
+    public async Task<ActionResult> CustomerLogin([FromBody] CustomerLoginRequest request, CancellationToken cancellationToken)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null) return Unauthorized();
+        if (string.IsNullOrWhiteSpace(request.Phone))
+            return BadRequest("Phone number is required.");
 
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user == null) return Unauthorized();
-
-        var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
-        if (!result.Succeeded)
+        try
         {
-            return BadRequest(new { message = string.Join(", ", result.Errors.Select(e => e.Description)) });
+            var (response, _) = await _authService.CustomerLoginAsync(
+                request.Phone,
+                "customer-web",
+                HttpContext.Connection.RemoteIpAddress?.ToString() ?? "");
+
+            return Ok(response);
         }
-
-        user.ForceChangePassword = false;
-        user.PasswordEncrypted = _passwordProtector.Encrypt(request.NewPassword);
-        await _userManager.UpdateAsync(user);
-
-        return Ok(new { message = "Password changed successfully" });
-    }
-
-    private string GenerateAccessToken(ApplicationUser user, IList<string> roles, bool isSuperAdmin)
-    {
-        var key = _configuration["Token:Key"] ?? "development_key_arzamart_123456789";
-        var issuer = _configuration["Token:Issuer"] ?? "https://api.arzamart.com";
-        var audience = _configuration["Token:Audience"] ?? "https://arzamart.com";
-        var keyBytes = Encoding.UTF8.GetBytes(key);
-        if (keyBytes.Length < 32)
+        catch (InvalidOperationException ex) when (ex.Message == "ACCOUNT_DEACTIVATED")
         {
-            using var sha256 = SHA256.Create();
-            keyBytes = sha256.ComputeHash(keyBytes);
+            return Unauthorized("Account is deactivated.");
         }
-        var securityKey = new SymmetricSecurityKey(keyBytes);
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-        var email = user.Email ?? string.Empty;
-        var displayName = user.FullName ?? user.UserName ?? email;
-
-        var claims = new List<Claim>
+        catch (Exception ex)
         {
-            new(ClaimTypes.NameIdentifier, user.Id),
-            new(ClaimTypes.Email, email),
-            new(ClaimTypes.Name, displayName),
-            new("is_super_admin", isSuperAdmin.ToString().ToLower()),
-            new("force_change_password", user.ForceChangePassword.ToString().ToLower())
-        };
-
-        foreach (var role in roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, role));
+            return StatusCode(500, new { message = ex.Message });
         }
-
-        var token = new JwtSecurityToken(
-            issuer: issuer,
-            audience: audience,
-            claims: claims,
-            expires: DateTime.UtcNow.AddHours(1),
-            signingCredentials: credentials);
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    private string GenerateRefreshToken()
-    {
-        var randomNumber = new byte[32];
-        using var rng = RandomNumberGenerator.Create();
-        rng.GetBytes(randomNumber);
-        return Convert.ToBase64String(randomNumber);
-    }
-
-    private static UserSummaryDto ToSummary(ApplicationUser user, string role)
-    {
-        return new UserSummaryDto
-        {
-            Id = user.Id,
-            Name = user.FullName ?? user.UserName ?? "User",
-            Email = user.Email ?? string.Empty,
-            Role = role,
-            Phone = user.Phone,
-            Username = user.UserName,
-            AllowedMenus = user.AllowedMenus
-        };
     }
 }
 
 public record RefreshRequest(string RefreshToken);
 
-public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
+public record CustomerLoginRequest(string Phone);

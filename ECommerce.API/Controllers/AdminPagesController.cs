@@ -39,7 +39,7 @@ public class AdminPagesController : ControllerBase
         return CreatedAtAction(nameof(GetPageById), new { id = result.Id }, result);
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<PageDto>> UpdatePage(int id, [FromBody] PageCreateDto dto)
     {
         try

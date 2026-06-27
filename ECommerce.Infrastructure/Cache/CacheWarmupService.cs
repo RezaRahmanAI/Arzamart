@@ -40,21 +40,41 @@ public class CacheWarmupService : IHostedService
         using var scope = _scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        await WarmUpProductsAsync(db, cancellationToken);
-        await WarmUpCategoriesAsync(db, cancellationToken);
-        await WarmUpBannersAsync(db, cancellationToken);
-        await WarmUpNavigationAsync(db, cancellationToken);
-        await WarmUpSiteSettingsAsync(db, cancellationToken);
-        await WarmUpProductGroupsAsync(db, cancellationToken);
-        WarmUpHomePage();
+        var warmups = new (string Name, Func<Task> Action)[]
+        {
+            ("Products", () => WarmUpProductsAsync(db, cancellationToken)),
+            ("Categories", () => WarmUpCategoriesAsync(db, cancellationToken)),
+            ("Banners", () => WarmUpBannersAsync(db, cancellationToken)),
+            ("Navigation", () => WarmUpNavigationAsync(db, cancellationToken)),
+            ("SiteSettings", () => WarmUpSiteSettingsAsync(db, cancellationToken)),
+        };
+
+        foreach (var (name, action) in warmups)
+        {
+            try
+            {
+                await action();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "[AppCache] Warmup failed for {Name}", name);
+            }
+        }
+
+        try
+        {
+            WarmUpHomePage();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[AppCache] Warmup failed for HomePage");
+        }
 
         _logger.LogInformation(
-            "[AppCache] Warmup complete. Products={P}, Categories={C}, SubCategories={SC}, Banners={B}, ProductGroups={PG}",
+            "[AppCache] Warmup complete. Products={P}, Categories={C}, Banners={B}",
             _cache.Products.Count,
             _cache.Categories.Count,
-            _cache.SubCategories.Count,
-            _cache.Banners.Count,
-            _cache.ProductGroups.Count);
+            _cache.Banners.Count);
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
@@ -68,7 +88,11 @@ public class CacheWarmupService : IHostedService
             .Include(p => p.Category)
             .ToListAsync(ct);
         foreach (var p in products)
+        {
             _cache.Products[p.Id] = p;
+            if (!string.IsNullOrEmpty(p.Slug))
+                _cache.ProductSlugIndex[p.Slug] = p.Id;
+        }
     }
 
     private async Task WarmUpCategoriesAsync(ApplicationDbContext db, CancellationToken ct)
@@ -78,9 +102,6 @@ public class CacheWarmupService : IHostedService
             .Include(c => c.SubCategories)
             .ToListAsync(ct);
         foreach (var c in categories) _cache.Categories[c.Id] = c;
-
-        var subCategories = await db.SubCategories.AsNoTracking().ToListAsync(ct);
-        foreach (var s in subCategories) _cache.SubCategories[s.Id] = s;
     }
 
     private async Task WarmUpBannersAsync(ApplicationDbContext db, CancellationToken ct)
@@ -109,6 +130,15 @@ public class CacheWarmupService : IHostedService
         var settings = await db.SiteSettings.AsNoTracking().FirstOrDefaultAsync(ct);
         var deliveryMethods = await db.DeliveryMethods.AsNoTracking().ToListAsync(ct);
 
+        var deliveryMethodDtos = deliveryMethods.Select(dm => new DeliveryMethodDto
+        {
+            Id = dm.Id,
+            Name = dm.Name,
+            Cost = dm.Cost,
+            EstimatedDays = dm.EstimatedDays,
+            IsActive = dm.IsActive
+        }).ToList();
+
         if (settings != null)
         {
             _cache.SiteSettings["settings"] = new SiteSettingsDto
@@ -129,19 +159,12 @@ public class CacheWarmupService : IHostedService
                 FacebookPixelId = settings.FacebookPixelId,
                 GoogleTagId = settings.GoogleTagId,
                 SizeGuideImageUrl = settings.SizeGuideImageUrl,
-                DeliveryMethods = deliveryMethods
+                DeliveryMethods = deliveryMethodDtos
             };
         }
     }
 
-    private async Task WarmUpProductGroupsAsync(ApplicationDbContext db, CancellationToken ct)
-    {
-        var groups = await db.ProductGroups
-            .AsNoTracking()
-            .Include(g => g.Products)
-            .ToListAsync(ct);
-        foreach (var g in groups) _cache.ProductGroups[g.Id] = g;
-    }
+
 
     public void WarmUpHomePage()
     {
@@ -263,7 +286,6 @@ public class CacheWarmupService : IHostedService
                 Size = v.Size,
                 Price = v.Price,
                 CompareAtPrice = v.CompareAtPrice,
-                PurchaseRate = v.PurchaseRate,
                 StockQuantity = v.StockQuantity
             }).ToList(),
             Images = p.Images.Select(i => new ProductImageDto

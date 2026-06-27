@@ -1,20 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable, map } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
-
-export interface AdminReview {
-  id: number;
-  userName: string;
-  userAvatar: string;
-  rating: number;
-  comment: string;
-  isVerifiedPurchase: boolean;
-  createdAt: string;
-  productId: number;
-  productName: string;
-  likes: number;
-  screenshotUrl?: string;
-}
+import { AdminReview } from "../models/reviews.models";
 
 @Injectable({
   providedIn: "root",
@@ -36,20 +23,11 @@ export class ReviewsService {
   }
 
   delete(id: number): Observable<void> {
-    return this.api.post<void>(`${this.baseUrl}/${id}/delete`, {});
+    return this.api.delete<void>(`${this.baseUrl}/${id}`);
   }
 
   create(payload: any): Observable<AdminReview> {
-    const backendPayload = {
-      productId: payload.productId,
-      customerName: payload.userName,
-      customerAvatar: payload.userAvatar,
-      rating: payload.rating,
-      comment: payload.comment,
-      isVerifiedPurchase: payload.isVerifiedPurchase,
-      screenshotUrl: payload.screenshotUrl
-    };
-    return this.api.post<AdminReview>(this.baseUrl, backendPayload);
+    return this.api.post<AdminReview>(this.baseUrl, payload);
   }
 
   update(id: number, payload: any): Observable<AdminReview> {
@@ -61,6 +39,6 @@ export class ReviewsService {
       isVerifiedPurchase: payload.isVerifiedPurchase,
       screenshotUrl: payload.screenshotUrl
     };
-    return this.api.post<AdminReview>(`${this.baseUrl}/${id}`, backendPayload);
+    return this.api.put<AdminReview>(`${this.baseUrl}/${id}`, backendPayload);
   }
 }

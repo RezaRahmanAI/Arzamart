@@ -29,7 +29,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Page> Pages { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Order> Orders { get; set; }
-    public DbSet<ECommerce.Core.Domain.Orders.OrderItem> OrderItems { get; set; }
+    public DbSet<ECommerce.Core.Entities.OrderItem> OrderItems { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<SiteSetting> SiteSettings { get; set; }
     public DbSet<DailyTraffic> DailyTraffics { get; set; }
@@ -43,6 +43,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ComboItem> ComboItems { get; set; }
     public DbSet<ProductGroup> ProductGroups { get; set; }
     public DbSet<AdminActivityLog> AdminActivityLogs { get; set; }
+    public DbSet<OrderLog> OrderLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -56,6 +57,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Collection>().HasQueryFilter(c => c.IsActive);
         builder.Entity<NavigationMenu>().HasQueryFilter(n => n.IsActive);
         builder.Entity<HeroBanner>().HasQueryFilter(h => h.IsActive);
+
+        builder.Entity<HeroBanner>(entity =>
+        {
+            entity.HasIndex(h => h.DisplayOrder);
+        });
         builder.Entity<SourcePage>().HasQueryFilter(p => p.IsActive);
         builder.Entity<SocialMediaSource>().HasQueryFilter(s => s.IsActive);
 
@@ -63,6 +69,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<CartItem>().HasQueryFilter(ci => ci.Product!.IsActive);
 
         builder.Entity<ProductImage>().HasQueryFilter(pi => pi.Product!.IsActive);
+
+        builder.Entity<ProductImage>(entity =>
+        {
+            entity.HasIndex(i => new { i.ProductId, i.IsMain })
+                  .IsUnique()
+                  .HasFilter("[IsMain] = 1");
+        });
         builder.Entity<ProductVariant>().HasQueryFilter(pv => pv.Product!.IsActive);
         builder.Entity<Review>().HasQueryFilter(r => r.Product!.IsActive);
         builder.Entity<ComboItem>().HasQueryFilter(ci => ci.Product!.IsActive);
@@ -127,6 +140,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasKey(c => c.Id);
             entity.HasIndex(c => c.Slug).IsUnique();
             entity.HasIndex(c => c.ParentId);
+            entity.HasIndex(c => c.DisplayOrder);
 
             entity.HasOne(c => c.ParentCategory)
                   .WithMany(c => c.ChildCategories)
@@ -140,6 +154,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasKey(sc => sc.Id);
             entity.HasIndex(sc => sc.Slug).IsUnique();
             entity.HasIndex(sc => sc.CategoryId);
+            entity.HasIndex(sc => sc.DisplayOrder);
 
             entity.HasOne(sc => sc.Category)
                   .WithMany(c => c.SubCategories)
@@ -170,7 +185,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .HasForeignKey(c => c.SubCategoryId)
                   .OnDelete(DeleteBehavior.Cascade);
             
-            entity.HasIndex(c => c.Slug);
+            entity.HasIndex(c => c.Slug).IsUnique();
+            entity.HasIndex(c => c.DisplayOrder);
         });
 
         builder.Entity<NavigationMenu>(entity =>
@@ -202,6 +218,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasIndex(o => o.Status);
             entity.HasIndex(o => o.CreatedAt);
             entity.HasIndex(o => o.OrderNumber);
+            entity.HasIndex(o => o.CustomerPhone);
+            entity.HasIndex(o => o.IsPreOrder);
 
             entity.HasMany(o => o.Notes)
                   .WithOne()
@@ -219,7 +237,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .OnDelete(DeleteBehavior.Restrict);
         });
 
-        builder.Entity<ECommerce.Core.Domain.Orders.OrderItem>(entity =>
+        builder.Entity<ECommerce.Core.Entities.OrderItem>(entity =>
         {
             entity.Property(i => i.UnitPrice).HasColumnType("decimal(18,2)");
 
@@ -250,7 +268,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasIndex(c => c.SessionId);
+            entity.HasIndex(c => c.UserId);
             entity.Property(c => c.SessionId).HasMaxLength(100);
+
+            entity.HasOne<ApplicationUser>()
+                  .WithMany()
+                  .HasForeignKey(c => c.UserId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
         // CartItem Configuration
@@ -308,6 +332,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .WithMany(p => p.Reviews)
                 .HasForeignKey(r => r.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(r => r.IsApproved);
+            entity.HasIndex(r => r.Rating);
         });
 
         // ComboItem Configuration
@@ -327,6 +354,22 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .WithMany()
                   .HasForeignKey(ci => ci.ProductVariantId)
                   .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<BlockedIp>(entity =>
+        {
+            entity.HasIndex(b => b.IpAddress).IsUnique();
+        });
+
+        builder.Entity<Page>(entity =>
+        {
+            entity.HasIndex(p => p.Slug).IsUnique();
+            entity.HasIndex(p => p.IsActive);
+        });
+
+        builder.Entity<DailyTraffic>(entity =>
+        {
+            entity.HasIndex(d => d.Date).IsUnique();
         });
 
         // AdminActivityLog Configuration

@@ -1,21 +1,9 @@
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiHttpClient } from "../../core/http/http-client";
+import { SalesData, StatusDistribution, CustomerGrowth } from "../../core/models/analytics";
 
-export interface SalesData {
-  date: string;
-  amount: number;
-}
-
-export interface StatusDistribution {
-  status: string;
-  count: number;
-}
-
-export interface CustomerGrowth {
-  date: string;
-  count: number;
-}
+export { SalesData, StatusDistribution, CustomerGrowth } from "../../core/models/analytics";
 
 export interface TopProduct {
   id: number;
@@ -31,27 +19,27 @@ export interface TopProduct {
 })
 export class ReportsService {
   private readonly api = inject(ApiHttpClient);
-  private readonly baseUrl = "/admin/analytics";
+  private readonly baseUrl = "/admin/dashboard";
 
   getSalesData(
     period: "week" | "month" | "year" = "month",
   ): Observable<SalesData[]> {
-    return this.api.get<SalesData[]>(`${this.baseUrl}/sales`, {
+    return this.api.get<SalesData[]>(`${this.baseUrl}/analytics/sales`, {
       params: { period } as any,
     });
   }
 
   getOrderStatusDistribution(): Observable<StatusDistribution[]> {
     return this.api.get<StatusDistribution[]>(
-      `${this.baseUrl}/orders/distribution`
+      `${this.baseUrl}/analytics/order-distribution`
     );
   }
 
   getCustomerGrowth(): Observable<CustomerGrowth[]> {
-    return this.api.get<CustomerGrowth[]>(`${this.baseUrl}/customers/growth`);
+    return this.api.get<CustomerGrowth[]>(`${this.baseUrl}/analytics/customer-growth`);
   }
 
   getTopProducts(): Observable<TopProduct[]> {
-    return this.api.get<TopProduct[]>(`${this.baseUrl}/products/top`);
+    return this.api.get<TopProduct[]>(`${this.baseUrl}/products/popular`);
   }
 }

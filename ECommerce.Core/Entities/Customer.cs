@@ -16,4 +16,6 @@ public class Customer : BaseEntity
     public string? Area { get; set; }
 
     public bool IsSuspicious { get; set; } = false;
+
+    public string? UserId { get; set; }
 }

@@ -1,6 +1,7 @@
-import { Component, Input, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
+import { Component, DestroyRef, Input, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
 import { RouterLink, Router } from "@angular/router";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import {
   Product,
@@ -42,6 +43,7 @@ export class ProductCardComponent implements OnDestroy {
     private readonly cartService: CartService,
     private readonly notificationService: NotificationService,
     private readonly router: Router,
+    private readonly destroyRef: DestroyRef,
   ) {}
 
   ngOnInit() {
@@ -233,6 +235,7 @@ export class ProductCardComponent implements OnDestroy {
       this.isAdding = true;
       this.cartService
         .addItem(this.product as Product, 1, this.selectedSize ?? undefined)
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             this.resetTimeout = setTimeout(() => (this.isAdding = false), 1000);
@@ -264,6 +267,7 @@ export class ProductCardComponent implements OnDestroy {
           selection.quantity,
           selection.size ?? this.selectedSize ?? undefined,
         )
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             this.resetTimeout = setTimeout(() => (this.isAdding = false), 1000);
@@ -273,7 +277,7 @@ export class ProductCardComponent implements OnDestroy {
 
       if (this.isOrdering) {
         // Instant redirect for "Buy Now"
-        window.location.href = "/checkout";
+        this.router.navigate(["/checkout"]);
       }
     }
   }

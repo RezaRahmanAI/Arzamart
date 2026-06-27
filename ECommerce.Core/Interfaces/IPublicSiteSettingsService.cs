@@ -7,4 +7,5 @@ public interface IPublicSiteSettingsService
 {
     Task<SiteSettingsDto> GetSettingsAsync();
     Task<List<DeliveryMethod>> GetActiveDeliveryMethodsAsync();
+    Task<List<DeliveryMethodDto>> GetActiveDeliveryMethodDtosAsync();
 }

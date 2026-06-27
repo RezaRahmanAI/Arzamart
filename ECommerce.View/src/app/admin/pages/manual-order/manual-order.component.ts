@@ -1,5 +1,5 @@
 import { NgIf, NgClass, NgFor } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, inject, signal, DestroyRef } from "@angular/core";
 import {
   FormControl,
   FormGroup,
@@ -34,7 +34,8 @@ import { BANGLADESH_LOCATIONS } from "../../../core/utils/bangladesh-locations";
 import { SourceManagementService } from "../../../core/services/source-management.service";
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
 import { matchLocationFromAddress } from "../../../core/utils/location-matcher";
-import { Order, OrderDetail, OrderItem } from "../../models/orders.models";
+import { Order, OrderItem } from "../../models/orders.models";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 
 interface OrderPayload {
@@ -81,6 +82,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
   public imageUrlService = inject(ImageUrlService);
   private sourceService = inject(SourceManagementService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
 
 
@@ -149,7 +151,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
       methods: this.settingsService.getDeliveryMethods()
     });
 
-    sources$.subscribe({
+    sources$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({ pages, sources, methods }) => {
         this.sourcePages = pages;
         this.socialMediaSources = sources;
@@ -282,7 +284,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
         stockStatus: "all",
         page: 1,
         pageSize: 50,
-      }).subscribe({
+      }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res) => {
           this.products.set(res.items);
           this.isLoadingProducts = false;
@@ -626,7 +628,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
       ? this.ordersService.updateOrder(this.orderId, payload)
       : this.orderApi.placeOrder(payload);
 
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.notification.success(`Order ${res.orderNumber} ${this.isEditMode ? 'updated' : 'created'} successfully!`);
         this.router.navigate(["/admin/orders"]);
@@ -643,7 +645,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
   private loadOrderForEdit(id: number) {
     this.isLoading = true;
     this.cdr.markForCheck();
-    this.ordersService.getOrderById(id).subscribe({
+    this.ordersService.getOrderById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (order) => {
         this.orderForm.patchValue({
           phone: order.customerPhone,
@@ -692,7 +694,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
 
         // Fetch full product details for each item to get correct stock/variants
         cartItems.forEach(item => {
-          this.productsService.getProductById(item.product.id).subscribe({
+          this.productsService.getProductById(item.product.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (fullProduct) => {
               this.cart.update(currentCart => currentCart.map(c => {
                 if (c.product.id === fullProduct.id) {

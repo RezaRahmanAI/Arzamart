@@ -1,37 +1,13 @@
 import { Injectable, inject } from "@angular/core";
-import { SettingsService } from "../../admin/services/settings.service";
-import { DeliveryMethod } from "../../admin/models/settings.models";
-import { firstValueFrom } from "rxjs";
-
-export interface DeliveryMethodInput {
-  city: string;
-  area: string;
-}
+import { Observable } from "rxjs";
+import { ApiHttpClient } from "../http/http-client";
+import { DeliveryMethod } from "../models/delivery";
 
 @Injectable({ providedIn: "root" })
 export class DeliveryService {
-  private readonly settings = inject(SettingsService);
-  private readonly outskirts = ["keraniganj", "savar", "ashulia", "asulia", "dohar"];
+  private readonly api = inject(ApiHttpClient);
 
-  async getDeliveryMethod(input: DeliveryMethodInput): Promise<DeliveryMethod | null> {
-    const methods = await firstValueFrom(this.settings.getDeliveryMethods());
-    if (methods.length < 2) return null;
-
-    const isOutskirts = input.area && this.outskirts.includes(input.area.toLowerCase());
-    const isInsideDhaka = input.city.toLowerCase() === "dhaka" && !isOutskirts;
-
-    return methods.find((m) =>
-      isInsideDhaka
-        ? m.name.toLowerCase().includes("inside")
-        : m.name.toLowerCase().includes("outside")
-    ) ?? null;
-  }
-
-  getOutskirts(): string[] {
-    return [...this.outskirts];
-  }
-
-  isOutskirtsArea(area: string): boolean {
-    return this.outskirts.includes(area.toLowerCase());
+  getPublicDeliveryMethods(): Observable<DeliveryMethod[]> {
+    return this.api.get<DeliveryMethod[]>("/sitesettings/delivery-methods");
   }
 }

@@ -63,11 +63,6 @@ public static class AppConstants
 public static class CacheDurations
 {
     /// <summary>
-    /// Short cache duration - 5 minutes
-    /// </summary>
-    public static readonly TimeSpan Short = TimeSpan.FromMinutes(5);
-
-    /// <summary>
     /// Medium cache duration - 10 minutes
     /// </summary>
     public static readonly TimeSpan Medium = TimeSpan.FromMinutes(10);

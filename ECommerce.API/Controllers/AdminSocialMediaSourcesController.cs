@@ -48,7 +48,7 @@ public class AdminSocialMediaSourcesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<SocialMediaSourceDto>> Update(int id, [FromBody] SocialMediaSourceCreateDto dto)
     {
         try

@@ -25,13 +25,13 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
         if (reqParts.Length == 2)
         {
             var module = reqParts[0];
-            var action = reqParts[1];
 
             if (permissions.Contains(requirement.Permission) || 
                 permissions.Contains($"{module}:*") ||
-                permissions.Contains($"*:*"))
+                permissions.Contains("*:*"))
             {
                 context.Succeed(requirement);
+                return Task.CompletedTask;
             }
         }
         else
@@ -39,9 +39,12 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
             if (permissions.Contains(requirement.Permission))
             {
                 context.Succeed(requirement);
+                return Task.CompletedTask;
             }
         }
 
+        // No matching permission found — fail the requirement
+        context.Fail();
         return Task.CompletedTask;
     }
 }

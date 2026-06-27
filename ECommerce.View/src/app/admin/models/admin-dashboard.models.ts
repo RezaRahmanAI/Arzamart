@@ -1,3 +1,5 @@
+export { SalesData, StatusDistribution, CustomerGrowth } from "../../core/models/analytics";
+
 export interface DashboardStats {
   totalRevenue: number;
   totalOrders: number;
@@ -68,21 +70,6 @@ export interface PopularProduct {
   price: number;
   imageUrl: string;
   stock: number;
-}
-
-export interface SalesData {
-  date: string;
-  amount: number;
-}
-
-export interface StatusDistribution {
-  status: string;
-  count: number;
-}
-
-export interface CustomerGrowth {
-  date: string;
-  count: number;
 }
 
 export interface DailyTraffic {

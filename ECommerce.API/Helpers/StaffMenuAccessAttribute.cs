@@ -2,6 +2,7 @@ using ECommerce.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
 using System.Security.Claims;
 
@@ -19,11 +20,13 @@ public class StaffMenuAccessFilter : IAsyncAuthorizationFilter
 {
     private readonly string _menuKey;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IMemoryCache _cache;
 
-    public StaffMenuAccessFilter(string menuKey, UserManager<ApplicationUser> userManager)
+    public StaffMenuAccessFilter(string menuKey, UserManager<ApplicationUser> userManager, IMemoryCache cache)
     {
         _menuKey = menuKey;
         _userManager = userManager;
+        _cache = cache;
     }
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
@@ -87,13 +90,17 @@ public class StaffMenuAccessFilter : IAsyncAuthorizationFilter
             var userId = userPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId != null)
             {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user != null)
+                var cacheKey = $"staff_allowed_menus:{userId}";
+                if (!_cache.TryGetValue(cacheKey, out List<string> allowedMenus))
                 {
-                    if (user.AllowedMenus.Contains(_menuKey))
-                    {
-                        return; // Access granted
-                    }
+                    var user = await _userManager.FindByIdAsync(userId);
+                    allowedMenus = user?.AllowedMenus ?? new List<string>();
+                    _cache.Set(cacheKey, allowedMenus, TimeSpan.FromMinutes(5));
+                }
+
+                if (allowedMenus.Contains(_menuKey))
+                {
+                    return; // Access granted
                 }
             }
         }

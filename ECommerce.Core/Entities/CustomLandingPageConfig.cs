@@ -34,4 +34,8 @@ public class CustomLandingPageConfig : BaseEntity
     
     // Modular Sections
     public string? SectionsJson { get; set; }
+
+    // Marquee
+    public bool IsMarqueeVisible { get; set; }
+    public string? MarqueeText { get; set; }
 }

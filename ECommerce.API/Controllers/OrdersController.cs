@@ -1,6 +1,8 @@
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerce.API.Controllers;
 
@@ -10,61 +12,43 @@ public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
     private readonly ICustomerService _customerService;
+    private readonly ILogger<OrdersController> _logger;
 
-    public OrdersController(IOrderService orderService, ICustomerService customerService)
+    public OrdersController(IOrderService orderService, ICustomerService customerService, ILogger<OrdersController> logger)
     {
         _orderService = orderService;
         _customerService = customerService;
+        _logger = logger;
     }
 
     [HttpPost]
-    public async Task<ActionResult<dynamic>> CreateOrder(OrderCreateDto orderDto)
+    public async Task<ActionResult<OrderDto>> CreateOrder(OrderCreateDto orderDto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        if (string.IsNullOrWhiteSpace(orderDto.Name))
-        {
-            return BadRequest(new { message = "Customer name is required" });
-        }
-
-        if (string.IsNullOrWhiteSpace(orderDto.Phone))
-        {
-            return BadRequest(new { message = "Phone number is required" });
-        }
-
-        var customer = await _customerService.GetCustomerByPhoneAsync(orderDto.Phone);
-        if (customer != null && customer.IsSuspicious)
-        {
-            return StatusCode(403, new { success = false, message = "Your account has been suspended. Please contact support." });
-        }
-
-        if (string.IsNullOrWhiteSpace(orderDto.Address))
-        {
-            return BadRequest(new { message = "Shipping address is required" });
-        }
-
-        if (orderDto.Items == null || !orderDto.Items.Any())
-        {
-            return BadRequest(new { message = "Order must contain at least one item" });
-        }
-
-        if (orderDto.DeliveryMethodId == 0)
-        {
-            orderDto.DeliveryMethodId = null;
-        }
-
         try
         {
             var order = await _orderService.CreateOrderAsync(orderDto);
 
-            var sessionId = Request.Headers["X-Session-Id"].ToString();
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            await _orderService.ClearCartAsync(userId, sessionId);
+            try
+            {
+                var sessionId = Request.Headers["X-Session-Id"].ToString();
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                await _orderService.ClearCartAsync(userId, sessionId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to clear cart after successful order creation for phone {Phone}", orderDto.Phone);
+            }
 
             return Ok(order);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return StatusCode(403, new { success = false, message = ex.Message });
         }
         catch (Exception ex)
         {
@@ -73,11 +57,13 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<PaginationDto<OrderDto>>> GetOrders(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
         pageSize = Math.Min(Math.Max(1, pageSize), 100);
-        return Ok(await _orderService.GetOrdersAsync(page, pageSize));
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        return Ok(await _orderService.GetOrdersAsync(userId, page, pageSize));
     }
 }

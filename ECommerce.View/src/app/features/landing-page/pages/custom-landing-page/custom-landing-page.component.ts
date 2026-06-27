@@ -3,23 +3,23 @@ import { CdkDragDrop, moveItemInArray, DragDropModule } from "@angular/cdk/drag-
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID } from "@angular/core";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
-import { environment } from "../../../../../environments/environment";
 import { Product, ProductVariant } from "../../../../core/models/product";
-import { CustomLandingPageConfig } from "../../../../admin/services/custom-landing-page.service";
+import { CustomLandingPageService } from "../../../../admin/services/custom-landing-page.service";
+import { CustomLandingPageConfig, LandingPageData } from "../../../../core/models/landing-page";
+import { LandingPageDataService } from "../../../../core/services/landing-page-data.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { OrderService } from "../../../../core/services/order.service";
 import { CartItem, CartSummary } from "../../../../core/models/cart";
 import { Router } from "@angular/router";
 import { SiteSettingsService } from "../../../../core/services/site-settings.service";
-import { SettingsService } from "../../../../admin/services/settings.service";
-import { DeliveryMethod } from "../../../../admin/models/settings.models";
+import { DeliveryService } from "../../../../core/services/delivery.service";
+import { DeliveryMethod } from "../../../../core/models/delivery";
 import { ProductService } from "../../../../core/services/product.service";
 import { of, combineLatest, forkJoin } from "rxjs";
-import { map, catchError, debounceTime, distinctUntilChanged, filter, switchMap, tap } from "rxjs/operators";
+import { map, debounceTime, distinctUntilChanged, filter, tap } from "rxjs/operators";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
-import { OrderApiService, CustomerLookupResponse } from "../../../../core/services/order-api.service";
+import { CustomerLookupService } from "../../../../core/services/customer-lookup.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DestroyRef } from "@angular/core";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
@@ -42,12 +42,6 @@ interface LandingSection {
   settings?: any;
 }
 
-interface LandingPageData {
-  product: Product;
-  config: CustomLandingPageConfig | null;
-  relatedProducts?: Product[];
-}
-
 @Component({
   selector: "app-custom-landing-page",
   standalone: true,
@@ -59,7 +53,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private static readonly dataCache = new Map<string, { data: LandingPageData; expires: number }>();
   private static readonly CACHE_TTL = 60 * 60 * 1000;
 
-  private readonly http = inject(HttpClient);
+  private readonly customLandingPageService = inject(CustomLandingPageService);
+  private readonly landingPageDataService = inject(LandingPageDataService);
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
   private readonly platformId = inject(PLATFORM_ID);
@@ -67,9 +62,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly siteSettingsService = inject(SiteSettingsService);
-  private readonly settingsService = inject(SettingsService);
+  private readonly deliveryService = inject(DeliveryService);
   private readonly productService = inject(ProductService);
-  private readonly orderApi = inject(OrderApiService);
+  private readonly customerLookup = inject(CustomerLookupService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly userPersistence = inject(UserPersistenceService);
   private readonly notification = inject(NotificationService);
@@ -92,7 +87,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   sharePageLink(): void {
     if (typeof window !== 'undefined') {
-      const url = window.location.href.split('?')[0]; // Clean URL without query params
+      const url = window.location.href.split('?')[0];
       navigator.clipboard.writeText(url).then(() => {
         this.notification.success('Link copied to clipboard! You can now share it with customers.');
       }).catch(() => {
@@ -123,9 +118,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   isOrdering = false;
   watchingCount: number = Math.floor(Math.random() * (45 - 15 + 1) + 15);
 
-  // Custom Selection for Editor
   allProducts: Product[] = [];
-  defaultRelatedProducts: Product[] = []; // Pool of related products for easy selection
+  defaultRelatedProducts: Product[] = [];
   productSearchTerm = "";
   isProductSelectionLoading = false;
 
@@ -205,7 +199,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   switchProduct(product: Product): void {
-    // Legacy support for older sections if needed, but primarily we use updateSelections now
     if (this.productSelections[product.id]?.quantity === 0) {
       this.updateSelections(product, 1);
     }
@@ -266,7 +259,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     isFabricVisible: [true],
     isDesignVisible: [true],
     isTrustBannerVisible: [true],
-    trustBannerText: ["দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই"],
+    trustBannerText: ["দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই"],
     featuredProductName: [""],
     promoPrice: [0],
     originalPrice: [0],
@@ -282,7 +275,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     productHeroDescription: ["সেরা উপাদান দিয়ে তৈরি যা আপনার ত্বকের যত্ন নেবে। আমাদের হাজার হাজার সন্তুষ্ট গ্রাহকের তালিকায় আপনিও যুক্ত হোন।"],
     discountCtaTitle: ["অবিশ্বাস্য ডিসকাউন্ট অফার!"],
     discountCtaDescription: ["আপনি কি সেরা কোয়ালিটির পণ্যটি খুঁজছেন? আজই অর্ডার করলে পাবেন বিশেষ ছাড় এবং ফ্রি ডেলিভারি।"],
-    infoBannerTitle: ["প্রোডাক্ট ব্যবহারের নিয়মাবলী"],
+    infoBannerTitle: ["প্রোডাক্ট ব্যবহারের নিয়মাবলী"],
     infoBannerDescription: ["প্রতিদিন সকালে ও রাতে পরিষ্কার ত্বকে অল্প পরিমাণে ক্রিম লাগিয়ে আলতোভাবে ম্যাসাজ করুন। নিয়মিত ব্যবহারে আপনি দৃশ্যমান পরিবর্তন লক্ষ্য করবেন। আমাদের পণ্যগুলি ১০০% প্রাকৃতিক উপাদান দিয়ে তৈরি।"],
     sectionsJson: [""],
   });
@@ -301,7 +294,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   didAutofill = false;
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const slug = params.get("slug");
       if (slug) {
         this.loadData(slug);
@@ -337,16 +330,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.updateDeliveryMethod(city, area);
       });
 
-    this.orderForm.controls.phone.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        filter((value) => value.length >= 7),
-        switchMap((phone) =>
-          this.orderApi.lookupCustomer(phone).pipe(catchError(() => of(null))),
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
+    this.customerLookup
+      .bindTo(this.orderForm.controls.phone.valueChanges)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((customer) => {
         if (customer) {
           this.didAutofill = true;
@@ -437,14 +423,14 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     const cached = CustomLandingPageComponent.dataCache.get(cacheKey);
     const mainData$ = cached && Date.now() < cached.expires
       ? of(cached.data)
-      : this.http.get<LandingPageData>(`${environment.apiBaseUrl}/custom-landing-page/${slug}`).pipe(
+      : this.landingPageDataService.getBySlug(slug).pipe(
           tap(data => CustomLandingPageComponent.dataCache.set(cacheKey, { data, expires: Date.now() + CustomLandingPageComponent.CACHE_TTL }))
         );
 
     combineLatest([
       mainData$,
-      this.settingsService.getPublicDeliveryMethods()
-    ]).subscribe({
+      this.deliveryService.getPublicDeliveryMethods()
+    ]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ([res, methods]) => {
         this.data = res;
         this.selectedImage = res.product?.imageUrl || "";
@@ -489,13 +475,10 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
           }
         }
 
-        // Show page immediately with essential data
         this.isLoading = false;
 
-        // Start auto-slide right away (only needs product.images, already loaded)
         this.startAutoSlide();
 
-        // Fire all non-critical API calls in parallel
         const selectSection = this.sections.find(s => s.type === "product-select");
         const customIds = selectSection?.settings?.customProductIds as number[] | undefined;
         const nameParts = (res.product?.name || "").trim().split(" ");
@@ -539,10 +522,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       let endTime: number;
       const now = new Date().getTime();
 
-      // Reset timer if:
-      // 1. No previous end time
-      // 2. Previous end time has passed
-      // 3. The configured total minutes has changed
       if (!endTimeStr || (parseInt(endTimeStr, 10) < now) || (storedMins !== totalMinutes.toString())) {
         endTime = now + (totalMinutes || 180) * 60 * 1000;
         localStorage.setItem(storageKey, endTime.toString());
@@ -574,17 +553,16 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   get selectedVariantPrice(): number {
-    // For single-product legacy getters (used in some old banners)
     const product = this.data?.product;
     if (!product) return 0;
     const selection = this.productSelections[product.id];
-    const variant = product.variants?.find(v => v.size === selection?.selectedSize);
+    const variant = product.variants?.find((v: ProductVariant) => v.size === selection?.selectedSize);
     return variant?.price || this.data?.config?.promoPrice || product.price || 0;
   }
 
   getProductPrice(product: Product): number {
     const selection = this.productSelections[product.id];
-    const variant = product.variants?.find(v => v.size === selection?.selectedSize);
+    const variant = product.variants?.find((v: ProductVariant) => v.size === selection?.selectedSize);
     return variant?.price || (product.id === this.data?.product.id ? this.data?.config?.promoPrice : 0) || product.price || 0;
   }
 
@@ -596,7 +574,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     return subtotal + this.shippingCost;
   }
 
-  // Helper for old components that might still use uniqueSizes
   getUniqueSizes(product: Product): string[] {
     if (!product.variants) return [];
     const sizes = Array.from(new Set(product.variants.map((v) => v.size).filter(Boolean))) as string[];
@@ -606,7 +583,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     const selections = this.selectedProductList;
     
-    // Check if any selected product is missing a size
     const itemsMissingSize = selections.filter(s => (s.product.variants?.length ?? 0) > 0 && !s.selectedSize);
     if (itemsMissingSize.length > 0) {
       this.notification.warn(`"${itemsMissingSize[0].product.name}" - আগে সাইজ সিলেক্ট করুন`);
@@ -671,7 +647,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       cartItems: cartItems,
       summary,
       deliveryMethodId: form.deliveryMethodId
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (order: Order) => {
         this.isOrdering = false;
         if (order?.id) {
@@ -683,7 +659,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Re-implement shipping helpers for multi-product
   get selectedDeliveryMethod(): DeliveryMethod | null {
     const id = this.orderForm.get("deliveryMethodId")?.value;
     return this.deliveryMethods.find(m => m.id === id) || null;
@@ -767,7 +742,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       this.slideProgress += step;
       if (this.slideProgress >= 100) {
         const images = this.data!.product.images;
-        const currentIndex = images.findIndex(img => img.imageUrl === this.selectedImage);
+        const currentIndex = images.findIndex((img: any) => img.imageUrl === this.selectedImage);
         const nextIndex = (currentIndex + 1) % images.length;
         this.selectedImage = images[nextIndex].imageUrl;
         this.slideProgress = 0;
@@ -789,7 +764,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.siteSettingsService.getSettings().subscribe(settings => {
+    this.siteSettingsService.getSettings().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(settings => {
       const phone = (settings.whatsAppNumber || settings.contactPhone || "").replace(/\D/g, "");
       const productNames = selections.map(s => `${s.product.name} (Size: ${s.selectedSize}, Qty: ${s.quantity})`).join(", ");
       const message = encodeURIComponent(`Hello, I'm interested in: ${productNames}. Can you help me?`);
@@ -817,7 +792,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     } else this.showQuickAdd = false;
   }
 
-  // --- MODULAR SECTION MANAGEMENT ---
   ensureSectionSettings(section: LandingSection): void {
     if (!section.settings) section.settings = {};
     const s = section.settings;
@@ -838,7 +812,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       if (s.discountCtaTitle === undefined) s.discountCtaTitle = form.discountCtaTitle || 'অবিশ্বাস্য ডিসকাউন্ট অফার!';
       if (s.discountCtaDescription === undefined) s.discountCtaDescription = form.discountCtaDescription || 'আজই অর্ডার করলে পাবেন বিশেষ ছাড় এবং ফ্রি ডেলিভারি।';
     } else if (section.type === 'info-banner') {
-      if (s.infoBannerTitle === undefined) s.infoBannerTitle = form.infoBannerTitle || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী';
+      if (s.infoBannerTitle === undefined) s.infoBannerTitle = form.infoBannerTitle || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী';
       if (s.infoBannerDescription === undefined) s.infoBannerDescription = form.infoBannerDescription || 'প্রতিদিন সকালে ও রাতে পরিষ্কার ত্বকে অল্প পরিমাণে ক্রিম লাগিয়ে আলতোভাবে ম্যাসাজ করুন।';
     } else if (section.type === 'product-details') {
       if (s.isProductDetailsVisible === undefined) s.isProductDetailsVisible = form.isProductDetailsVisible !== undefined ? form.isProductDetailsVisible : true;
@@ -847,7 +821,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       if (s.isDesignVisible === undefined) s.isDesignVisible = form.isDesignVisible !== undefined ? form.isDesignVisible : true;
     } else if (section.type === 'trust-banner') {
       if (s.isTrustBannerVisible === undefined) s.isTrustBannerVisible = form.isTrustBannerVisible !== undefined ? form.isTrustBannerVisible : true;
-      if (s.trustBannerText === undefined) s.trustBannerText = form.trustBannerText || 'দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই';
+      if (s.trustBannerText === undefined) s.trustBannerText = form.trustBannerText || 'দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই';
     } else if (section.type === 'reviews') {
       if (s.isReviewsVisible === undefined) s.isReviewsVisible = form.isReviewsVisible !== undefined ? form.isReviewsVisible : true;
     } else if (section.type === 'order-form') {
@@ -916,11 +890,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     this.updateSections();
   }
 
-  // --- PRODUCT SELECTION MANAGEMENT ---
   get productsForSelectionPool(): Product[] {
     const pool = [...this.defaultRelatedProducts];
     
-    // Add search results if searching
     if (this.productSearchTerm) {
       this.allProducts.forEach(p => {
         if (!pool.find(item => item.id === p.id)) {
@@ -960,7 +932,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   private loadAllProducts(): void {
     this.isProductSelectionLoading = true;
-    this.productService.getProducts({ pageSize: 100, orderBy: "name" }).subscribe({
+    this.productService.getProducts({ pageSize: 100, orderBy: "name" }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.allProducts = res.data;
         this.isProductSelectionLoading = false;
@@ -980,20 +952,17 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     const customIds = section?.settings?.customProductIds as number[] | undefined;
     
     if (customIds && customIds.length > 0) {
-      // Prioritize from allProducts if in edit mode and loaded, else from pool
       const combined = [...this.allProducts, ...this.defaultRelatedProducts];
       const selected = combined.filter(p => customIds.includes(p.id) && p.id !== this.data?.product.id);
       
-      // If we don't have all selected products in the local pool, we'll need to fetch them
       if (selected.length < customIds.length && !this.isProductSelectionLoading) {
-        this.productService.getProducts({ ids: customIds.join(","), pageSize: 100 }).subscribe(res => {
+        this.productService.getProducts({ ids: customIds.join(","), pageSize: 100 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
           this.relatedProducts = res.data.filter(p => p.id !== this.data?.product.id);
         });
       } else {
         this.relatedProducts = selected;
       }
     } else {
-      // Strictly manual curation - if nothing selected, show nothing
       this.relatedProducts = [];
     }
   }
@@ -1010,7 +979,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       relativeTimerTotalMinutes: formValue.relativeTimerTotalMinutes ?? undefined
     };
 
-    this.http.post(`${environment.apiBaseUrl}/admin/custom-landing-page`, config).subscribe({
+    this.customLandingPageService.saveConfig(config).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => { 
         this.isSaving = false; 
         this.notification.success('Landing Page Updated!'); 

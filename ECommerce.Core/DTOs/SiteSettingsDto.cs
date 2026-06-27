@@ -1,4 +1,3 @@
-using ECommerce.Core.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace ECommerce.Core.DTOs;
@@ -29,5 +28,5 @@ public class SiteSettingsDto
     public string? GoogleTagId { get; set; }
 
     public string? SizeGuideImageUrl { get; set; }
-    public IEnumerable<DeliveryMethod>? DeliveryMethods { get; set; }
+    public IEnumerable<DeliveryMethodDto>? DeliveryMethods { get; set; }
 }

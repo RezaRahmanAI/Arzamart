@@ -2,7 +2,7 @@ using ECommerce.Core.Entities;
 
 namespace ECommerce.Core.Interfaces;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork : IDisposable, IAsyncDisposable
 {
     IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity;
     Task<int> Complete();

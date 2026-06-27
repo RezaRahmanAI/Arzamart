@@ -1,4 +1,4 @@
-using ECommerce.Core.Entities;
+using ECommerce.Core.DTOs.Admin;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,27 +19,40 @@ public class AdminSecurityController : ControllerBase
     }
 
     [HttpGet("blocked-ips")]
-    public async Task<ActionResult<IEnumerable<BlockedIp>>> GetBlockedIps()
+    public async Task<ActionResult<IEnumerable<BlockedIpDto>>> GetBlockedIps()
     {
-        return await _securityService.GetBlockedIpsAsync();
+        var ips = await _securityService.GetBlockedIpsAsync();
+        return Ok(ips.Select(ip => new BlockedIpDto
+        {
+            Id = ip.Id,
+            IpAddress = ip.IpAddress,
+            Reason = ip.Reason,
+            BlockedAt = ip.BlockedAt,
+            BlockedBy = ip.BlockedBy
+        }));
     }
 
     [Authorize(Roles = "SuperAdmin")]
     [HttpPost("block-ip")]
-    public async Task<ActionResult<BlockedIp>> BlockIpAddress([FromBody] BlockedIp ipToBlock)
+    public async Task<ActionResult<BlockedIpDto>> BlockIpAddress([FromBody] BlockIpRequestDto dto)
     {
-        if (string.IsNullOrEmpty(ipToBlock.IpAddress))
+        if (string.IsNullOrEmpty(dto.IpAddress))
         {
             return BadRequest("IP Address is required.");
         }
 
         try
         {
-            ipToBlock.BlockedAt = DateTime.UtcNow;
-            ipToBlock.BlockedBy = User.Identity?.Name ?? "Admin";
-
-            var result = await _securityService.BlockIpAsync(ipToBlock);
-            return CreatedAtAction(nameof(GetBlockedIps), new { id = result.Id }, result);
+            var blockedBy = User.Identity?.Name ?? "Admin";
+            var result = await _securityService.BlockIpAddressAsync(dto.IpAddress, dto.Reason, blockedBy);
+            return CreatedAtAction(nameof(GetBlockedIps), new { id = result.Id }, new BlockedIpDto
+            {
+                Id = result.Id,
+                IpAddress = result.IpAddress,
+                Reason = result.Reason,
+                BlockedAt = result.BlockedAt,
+                BlockedBy = result.BlockedBy
+            });
         }
         catch (InvalidOperationException ex)
         {

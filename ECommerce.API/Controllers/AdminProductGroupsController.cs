@@ -1,14 +1,7 @@
-using AutoMapper;
-using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
+using ECommerce.Core.DTOs.Admin;
 using ECommerce.Core.Interfaces;
-using ECommerce.Infrastructure.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ECommerce.API.Controllers;
 
@@ -18,101 +11,113 @@ namespace ECommerce.API.Controllers;
 [ECommerce.API.Helpers.StaffMenuAccess("products")]
 public class AdminProductGroupsController : ControllerBase
 {
-    private readonly IGenericRepository<ProductGroup> _groupsRepo;
-    private readonly IGenericRepository<Product> _productsRepo;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
+    private readonly IProductGroupService _productGroupService;
 
-    public AdminProductGroupsController(
-        IGenericRepository<ProductGroup> groupsRepo,
-        IGenericRepository<Product> productsRepo,
-        IUnitOfWork unitOfWork,
-        IMapper mapper)
+    public AdminProductGroupsController(IProductGroupService productGroupService)
     {
-        _groupsRepo = groupsRepo;
-        _productsRepo = productsRepo;
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
+        _productGroupService = productGroupService;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<ProductGroup>>> GetGroups()
+    private ProductGroupDto MapToDto(ECommerce.Core.Entities.ProductGroup group) => new()
     {
-        return Ok(await _groupsRepo.ListAllAsync());
+        Id = group.Id,
+        Name = group.Name ?? string.Empty,
+        Description = group.Description,
+        CreatedAt = group.CreatedAt,
+        ProductIds = group.Products?.Select(p => p.Id).ToList() ?? new List<int>()
+    };
+
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<ProductGroupDto>>> GetGroups()
+    {
+        var groups = await _productGroupService.GetAllAsync();
+        return Ok(groups.Select(MapToDto));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProductGroup>> GetGroup(int id)
+    public async Task<ActionResult<ProductGroupDto>> GetGroup(int id)
     {
-        var spec = new BaseSpecification<ProductGroup>(x => x.Id == id);
-        spec.AddInclude(x => x.Products);
-        var group = await _groupsRepo.GetEntityWithSpec(spec);
-
+        var group = await _productGroupService.GetByIdAsync(id);
         if (group == null) return NotFound();
-
-        return Ok(group);
+        return Ok(MapToDto(group));
     }
 
     [HttpPost]
-    public async Task<ActionResult<ProductGroup>> CreateGroup(ProductGroup group)
+    public async Task<ActionResult<ProductGroupDto>> CreateGroup([FromBody] CreateProductGroupDto dto)
     {
-        _groupsRepo.Add(group);
-        await _unitOfWork.Complete();
-        return CreatedAtAction(nameof(GetGroup), new { id = group.Id }, group);
+        var entity = new ECommerce.Core.Entities.ProductGroup
+        {
+            Name = dto.Name,
+            Description = dto.Description
+        };
+        var created = await _productGroupService.CreateAsync(entity);
+        return CreatedAtAction(nameof(GetGroup), new { id = created.Id }, MapToDto(created));
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateGroup(int id, ProductGroup group)
+    public async Task<ActionResult> UpdateGroup(int id, [FromBody] CreateProductGroupDto dto)
     {
-        if (id != group.Id) return BadRequest();
-
-        _groupsRepo.Update(group);
-        await _unitOfWork.Complete();
+        var entity = new ECommerce.Core.Entities.ProductGroup
+        {
+            Name = dto.Name,
+            Description = dto.Description
+        };
+        await _productGroupService.UpdateAsync(id, entity);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteGroup(int id)
     {
-        var group = await _groupsRepo.GetByIdAsync(id);
-        if (group == null) return NotFound();
-
-        // Products' ProductGroupId will be set to NULL by EF (configured in DbContext)
-        _groupsRepo.Delete(group);
-        await _unitOfWork.Complete();
-        return NoContent();
+        try
+        {
+            await _productGroupService.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound(new { message = $"Product group with ID {id} not found." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPost("{groupId}/products/{productId}")]
     public async Task<ActionResult> AddProductToGroup(int groupId, int productId)
     {
-        var group = await _groupsRepo.GetByIdAsync(groupId);
-        if (group == null) return NotFound("Group not found");
-
-        var product = await _productsRepo.GetByIdAsync(productId);
-        if (product == null) return NotFound("Product not found");
-
-        product.ProductGroupId = groupId;
-        _productsRepo.Update(product);
-        await _unitOfWork.Complete();
-
-        return NoContent();
+        try
+        {
+            await _productGroupService.AddProductToGroupAsync(groupId, productId);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound(new { message = "Product group or product not found." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpDelete("{groupId}/products/{productId}")]
     public async Task<ActionResult> RemoveProductFromGroup(int groupId, int productId)
     {
-        var product = await _productsRepo.GetByIdAsync(productId);
-        if (product == null) return NotFound("Product not found");
-
-        if (product.ProductGroupId == groupId)
+        try
         {
-            product.ProductGroupId = null;
-            _productsRepo.Update(product);
-            await _unitOfWork.Complete();
+            await _productGroupService.RemoveProductFromGroupAsync(groupId, productId);
+            return NoContent();
         }
-
-        return NoContent();
+        catch (KeyNotFoundException)
+        {
+            return NotFound(new { message = "Product group or product not found." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }
-

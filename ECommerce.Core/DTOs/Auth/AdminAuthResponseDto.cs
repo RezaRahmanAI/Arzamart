@@ -18,14 +18,3 @@ public class UserSummaryDto
     public string? Username { get; set; }
     public List<string> AllowedMenus { get; set; } = new();
 }
-
-public class RefreshRequestDto
-{
-    public string RefreshToken { get; set; } = string.Empty;
-}
-
-public class ChangePasswordRequestDto
-{
-    public string CurrentPassword { get; set; } = string.Empty;
-    public string NewPassword { get; set; } = string.Empty;
-}

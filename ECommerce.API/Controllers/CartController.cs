@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 using AppConstants = ECommerce.Core.Constants;
@@ -15,6 +16,8 @@ public class CartController : ControllerBase
     private readonly ICartService _cartService;
     private readonly ILogger<CartController> _logger;
     private readonly IMemoryCache _cache;
+    private const string SessionCookieName = "cart_sid";
+    private const string SessionHeaderName = "X-Session-Id";
 
     public CartController(ICartService cartService, ILogger<CartController> logger, IMemoryCache cache)
     {
@@ -27,24 +30,47 @@ public class CartController : ControllerBase
 
     private string? GetSessionId()
     {
-        var headers = Request.Headers;
-        if (headers.TryGetValue("X-Session-Id", out var sessionId))
+        if (Request.Cookies.TryGetValue(SessionCookieName, out var cookieVal) &&
+            !string.IsNullOrEmpty(cookieVal) && cookieVal.Length >= 10)
         {
-            var val = sessionId.ToString().Trim();
+            return cookieVal;
+        }
+
+        if (Request.Headers.TryGetValue(SessionHeaderName, out var headerVal))
+        {
+            var val = headerVal.ToString().Trim();
             if (!string.IsNullOrEmpty(val) && val != "null" && val != "undefined" && val.Length >= 10)
             {
                 return val;
             }
         }
+
         return null;
     }
 
-    private string GetCacheKey()
+    private string EnsureSessionId()
+    {
+        var existing = GetSessionId();
+        if (!string.IsNullOrEmpty(existing)) return existing;
+
+        var sessionId = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
+        Response.Cookies.Append(SessionCookieName, sessionId, new CookieOptions
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax,
+            Secure = true,
+            MaxAge = TimeSpan.FromDays(30),
+            Path = "/"
+        });
+        return sessionId;
+    }
+
+    private string GetCacheKey(string? overrideSessionId = null)
     {
         var userId = GetUserId();
         if (!string.IsNullOrEmpty(userId)) return $"cart_{userId}";
 
-        var sessionId = GetSessionId();
+        var sessionId = overrideSessionId ?? GetSessionId();
         if (!string.IsNullOrEmpty(sessionId)) return $"cart_{sessionId}";
 
         return string.Empty;
@@ -71,13 +97,14 @@ public class CartController : ControllerBase
     }
 
     [HttpPost("items")]
-    public async Task<ActionResult> AddItem(AddToCartDto dto)
+    public async Task<ActionResult> AddItem([FromBody] AddToCartDto dto)
     {
         try
         {
-            var cartDto = await _cartService.AddItemAsync(GetUserId(), GetSessionId(), dto);
+            var sessionId = EnsureSessionId();
+            var cartDto = await _cartService.AddItemAsync(GetUserId(), sessionId, dto);
 
-            var cacheKey = GetCacheKey();
+            var cacheKey = GetCacheKey(sessionId);
             if (!string.IsNullOrEmpty(cacheKey))
             {
                 _cache.Set(cacheKey, cartDto, AppConstants.CacheDurations.Medium);
@@ -91,8 +118,8 @@ public class CartController : ControllerBase
         }
     }
 
-    [HttpPost("items/{id}")]
-    public async Task<ActionResult<CartDto>> UpdateItem(int id, UpdateCartItemDto dto)
+    [HttpPut("items/{id}")]
+    public async Task<ActionResult<CartDto>> UpdateItem(int id, [FromBody] UpdateCartItemDto dto)
     {
         try
         {
@@ -143,6 +170,7 @@ public class CartController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpPost("merge")]
     public async Task<ActionResult<CartDto>> MergeGuestCart([FromQuery] string sessionId)
     {

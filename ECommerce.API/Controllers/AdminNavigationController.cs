@@ -40,7 +40,7 @@ public class AdminNavigationController : ControllerBase
         return CreatedAtAction(nameof(GetMenuById), new { id = result.Id }, result);
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<NavigationMenuDto>> UpdateMenu(int id, [FromBody] NavigationMenuCreateDto dto)
     {
         try

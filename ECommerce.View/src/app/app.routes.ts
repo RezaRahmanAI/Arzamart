@@ -106,6 +106,7 @@ export const appRoutes: Routes = [
       import("./features/checkout/pages/checkout-page/checkout-page.component").then(
         (m) => m.CheckoutPageComponent,
       ),
+    canActivate: [authGuard],
   },
   {
     path: "order-confirmation/:orderId",
@@ -149,6 +150,7 @@ export const appRoutes: Routes = [
       import("./features/account/pages/profile-page/profile-page.component").then(
         (m) => m.ProfilePageComponent,
       ),
+    canActivate: [authGuard],
   },
   {
     path: "account",
@@ -156,6 +158,7 @@ export const appRoutes: Routes = [
       import("./features/account/pages/account-page/account-page.component").then(
         (m) => m.AccountPageComponent,
       ),
+    canActivate: [authGuard],
   },
   {
     path: "orders",
@@ -163,6 +166,7 @@ export const appRoutes: Routes = [
       import("./features/orders/pages/orders-page/orders-page.component").then(
         (m) => m.OrdersPageComponent,
       ),
+    canActivate: [authGuard],
   },
   {
     path: "admin",

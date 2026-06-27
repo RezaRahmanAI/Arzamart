@@ -10,7 +10,6 @@ import { NavbarComponent } from "./layout/navbar/navbar.component";
 import { FooterComponent } from "./layout/footer/footer.component";
 import { ToastComponent } from "./shared/components/toast/toast.component";
 import { ContactFabComponent } from "./shared/components/contact-fab/contact-fab.component";
-import { LoggerService } from "./core/services/logger.service";
 import { AnalyticsService } from "./core/services/analytics.service";
 import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loading-spinner.component";
 
@@ -34,7 +33,6 @@ export class AppComponent implements OnInit {
   private siteSettingsService = inject(SiteSettingsService);
   private renderer = inject(Renderer2);
   private document = inject(DOCUMENT);
-  private logger = inject(LoggerService);
   private titleService = inject(Title);
   private analyticsService = inject(AnalyticsService);
   private destroyRef = inject(DestroyRef);
@@ -58,8 +56,6 @@ export class AppComponent implements OnInit {
   );
 
   ngOnInit() {
-    this.logger.info("Application initialized with professional logging");
-
     // Track PageViews on route changes
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))

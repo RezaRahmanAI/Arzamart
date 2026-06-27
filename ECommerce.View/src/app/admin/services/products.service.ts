@@ -65,7 +65,7 @@ export class ProductsService {
         stockStatus: params.stockStatus ?? "all",
       },
     });
-    return this.api.get<Product[]>("/admin/products/filtered", {
+    return this.api.get<Product[]>("/admin/products", {
       params: queryParams,
     });
   }
@@ -77,7 +77,7 @@ export class ProductsService {
   }
 
   deleteProduct(productId: number): Observable<boolean> {
-    return this.api.post<boolean>(`/admin/products/${productId}/delete`, {}).pipe(
+    return this.api.delete<boolean>(`/admin/products/${productId}`).pipe(
       map((success) => {
         if (success) {
           this.updateCatalogSnapshot((products) =>
@@ -106,7 +106,7 @@ export class ProductsService {
     productId: number,
     payload: ProductPayload,
   ): Observable<Product> {
-    return this.api.post<Product>(`/admin/products/${productId}`, payload).pipe(
+    return this.api.put<Product>(`/admin/products/${productId}`, payload).pipe(
       map((updated) => {
         this.updateCatalogSnapshot((products) => {
           const index = products.findIndex((item) => item.id === productId);
@@ -147,25 +147,6 @@ export class ProductsService {
     }
     const params = new HttpParams().set('q', term);
     return this.api.get<any[]>('/admin/products/search', { params });
-  }
-
-  removeProductMedia(productId: number, mediaUrl: string): Observable<boolean> {
-    return this.api
-      .post<boolean>(`/admin/products/${productId}/media/remove`, { mediaUrl })
-      .pipe(
-        map((success) => {
-          if (success) {
-            this.updateCatalogSnapshot((products) =>
-              products.map((product) =>
-                product.id === productId
-                  ? this.removeMediaFromProduct(product, mediaUrl)
-                  : product,
-              ),
-            );
-          }
-          return success;
-        }),
-      );
   }
 
   private loadCatalog(): void {
@@ -220,37 +201,5 @@ export class ProductsService {
         row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","),
       )
       .join("\n");
-  }
-
-  private removeMediaFromProduct(product: Product, mediaUrl: string): Product {
-    const updatedImages = (product.images || []).filter(
-      (img) => img.imageUrl !== mediaUrl,
-    );
-    const imageUrl =
-      product.imageUrl === mediaUrl
-        ? updatedImages[0]?.imageUrl || ""
-        : product.imageUrl;
-
-    return {
-      ...product,
-      images: updatedImages,
-      imageUrl,
-    };
-  }
-
-  private buildImagesFromMedia(
-    mediaUrls: string[],
-    name: string,
-    existing?: ProductImage[],
-  ): ProductImage[] {
-    return mediaUrls.map((url, index) => {
-      const existingImg = existing?.find((img) => img.imageUrl === url);
-      return {
-        id: existingImg?.id ?? 0,
-        imageUrl: url,
-        altText: existingImg?.altText ?? `${name} image ${index + 1}`,
-        isPrimary: index === 0,
-      };
-    });
   }
 }

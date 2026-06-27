@@ -7,24 +7,24 @@ import {
   OnInit,
   inject,
   ChangeDetectorRef,
+  DestroyRef,
 } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import {
   Order,
-  OrderDetail,
   OrderItem,
-  OrderLog,
-  OrderNote,
   OrderStatus,
   OrdersQueryParams,
   OrderStats,
 } from "../../models/orders.models";
 import { OrdersService } from "../../services/orders.service";
 import { OrderInvoiceComponent } from "./components/admin-order-invoice/order-invoice.component";
-import { ProductsService } from "../../services/products.service";
+import { OrderTrackingModalComponent } from "./components/order-tracking-modal/order-tracking-modal.component";
+import { OrderNotesModalComponent } from "./components/order-notes-modal/order-notes-modal.component";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { SourceManagementService } from "../../../core/services/source-management.service";
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
@@ -34,7 +34,7 @@ import { NotificationService } from "../../../core/services/notification.service
 @Component({
   selector: "app-admin-orders",
   standalone: true,
-  imports: [NgIf, NgClass, NgStyle, DatePipe, ReactiveFormsModule, FormsModule, RouterModule, PriceDisplayComponent, AppIconComponent, OrderInvoiceComponent, NgFor],
+  imports: [NgIf, NgClass, NgStyle, DatePipe, ReactiveFormsModule, FormsModule, RouterModule, PriceDisplayComponent, AppIconComponent, OrderInvoiceComponent, OrderTrackingModalComponent, OrderNotesModalComponent, NgFor],
   templateUrl: "./orders.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -44,8 +44,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private sourceService = inject(SourceManagementService);
   private notification = inject(NotificationService);
-  private productService = inject(ProductsService);
   private destroy$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
   private cdr = inject(ChangeDetectorRef);
 
   isLoading = false;
@@ -55,7 +55,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
 
   orders: Order[] = [];
-  invoiceOrder: OrderDetail | null = null;
+  invoiceOrder: Order | null = null;
   isInvoiceLoading = false;
   totalResults = 0;
   page = 1;
@@ -182,11 +182,6 @@ export class OrdersComponent implements OnInit, OnDestroy {
   notesOrder: Order | null = null;
   isTrackingModalOpen = false;
   isNotesModalOpen = false;
-  isTrackingLoading = false;
-  isNotesLoading = false;
-  adminNoteControl = new FormControl("");
-  newNoteText = "";
-  isSavingNote = false;
 
   customStartDate: string | null = null;
   customEndDate: string | null = null;
@@ -229,11 +224,11 @@ export class OrdersComponent implements OnInit, OnDestroy {
   }
 
   loadSources(): void {
-    this.sourceService.getAllSourcePages().subscribe(pages => {
+    this.sourceService.getAllSourcePages().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(pages => {
       this.sourcePages = pages;
       this.cdr.markForCheck();
     });
-    this.sourceService.getAllSocialMediaSources().subscribe(sources => {
+    this.sourceService.getAllSocialMediaSources().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(sources => {
       this.socialMediaSources = sources;
       this.cdr.markForCheck();
     });
@@ -316,7 +311,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.statusUpdateOrderId = null;
     
-    this.ordersService.updateStatus(orderId, newStatus, `Status updated to ${newStatus}`).subscribe({
+    this.ordersService.updateStatus(orderId, newStatus, `Status updated to ${newStatus}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => this.loadOrders(false),
         error: () => {
             this.notification.error("Failed to update status");
@@ -408,7 +403,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     const nextStatus = this.getNextStatus(order.status);
     if (nextStatus) {
-      this.ordersService.updateStatus(order.id, nextStatus, `Moved to ${nextStatus}`).subscribe({
+      this.ordersService.updateStatus(order.id, nextStatus, `Moved to ${nextStatus}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => this.loadOrders(false),
         error: () => {
           this.notification.error("Failed to update status");
@@ -423,7 +418,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     const shouldCancel = window.confirm("Cancel this order?");
     if (shouldCancel) {
-      this.ordersService.updateStatus(order.id, OrderStatus.Cancelled, "Cancelled from index").subscribe({
+      this.ordersService.updateStatus(order.id, OrderStatus.Cancelled, "Cancelled from index").pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => this.loadOrders(false),
         error: () => {
           this.notification.error("Failed to cancel order");
@@ -443,87 +438,22 @@ export class OrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.trackingOrder = order;
     this.isTrackingModalOpen = true;
-    this.isTrackingLoading = true;
     this.cdr.markForCheck();
-
-    this.ordersService.getOrderById(order.id).subscribe({
-      next: (details) => {
-        this.trackingOrder = details;
-        this.isTrackingLoading = false;
-        this.cdr.markForCheck();
-      },
-      error: () => {
-        this.isTrackingLoading = false;
-        this.notification.error("Failed to load order history logs");
-        this.cdr.markForCheck();
-      }
-    });
   }
 
   openNotes(order: Order, event: Event): void {
     event.stopPropagation();
     this.notesOrder = order;
-    this.newNoteText = "";
     this.isNotesModalOpen = true;
-    this.isNotesLoading = true;
     this.cdr.markForCheck();
-
-    this.ordersService.getOrderById(order.id).subscribe({
-      next: (details) => {
-        this.notesOrder = details;
-        this.isNotesLoading = false;
-        this.cdr.markForCheck();
-      },
-      error: () => {
-        this.isNotesLoading = false;
-        this.notification.error("Failed to load order notes");
-        this.cdr.markForCheck();
-      }
-    });
   }
 
-  addNote(): void {
-    if (!this.notesOrder || !this.newNoteText.trim()) return;
-    this.isSavingNote = true;
+  onNoteAdded(updatedOrder: Order): void {
+    const index = this.orders.findIndex(o => o.id === updatedOrder.id);
+    if (index !== -1) {
+      this.orders[index] = updatedOrder;
+    }
     this.cdr.markForCheck();
-    
-    this.ordersService.addOrderNote(this.notesOrder.id, this.newNoteText.trim()).subscribe({
-      next: (updatedOrder) => {
-        this.notesOrder!.notes = updatedOrder.notes;
-        this.newNoteText = "";
-        this.isSavingNote = false;
-        const index = this.orders.findIndex(o => o.id === updatedOrder.id);
-        if (index !== -1) {
-          this.orders[index] = updatedOrder;
-        }
-        this.cdr.markForCheck();
-      },
-      error: () => {
-        this.isSavingNote = false;
-        this.notification.error("Failed to add note");
-        this.cdr.markForCheck();
-      }
-    });
-  }
-
-  saveNote(): void {
-    if (!this.notesOrder) return;
-    this.isSavingNote = true;
-    this.cdr.markForCheck();
-    const note = this.adminNoteControl.value || "";
-    
-    this.ordersService.updateStatus(this.notesOrder.id, this.notesOrder.status, note).subscribe({
-      next: () => {
-        this.notesOrder!.adminNote = note;
-        this.isSavingNote = false;
-        this.isNotesModalOpen = false;
-        this.loadOrders(false);
-      },
-      error: () => {
-        this.isSavingNote = false;
-        this.cdr.markForCheck();
-      }
-    });
   }
 
   sendReminder(order: Order, event: Event): void {
@@ -555,7 +485,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   moveToPreOrder(order: Order, event: Event): void {
     event.stopPropagation();
     if (window.confirm("Move this order to Pre-Order?")) {
-      this.ordersService.updateStatus(order.id, OrderStatus.PreOrder, "Moved to Pre-Order").subscribe({
+      this.ordersService.updateStatus(order.id, OrderStatus.PreOrder, "Moved to Pre-Order").pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => this.loadOrders(false),
         error: () => {
           this.notification.error("Failed to move to pre-order");
@@ -568,7 +498,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   moveToMainOrder(order: Order, event: Event): void {
     event.stopPropagation();
     if (window.confirm("Transfer this Pre-Order to Main Order? This will enable stock deduction logic.")) {
-      this.ordersService.transferToMainOrder(order.id).subscribe({
+      this.ordersService.transferToMainOrder(order.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
             this.notification.success("Order transferred to main pool");
             this.loadOrders(false);
@@ -585,7 +515,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.isInvoiceLoading = true;
     this.cdr.markForCheck();
-    this.ordersService.getOrderById(order.id).subscribe({
+    this.ordersService.getOrderById(order.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (details) => {
         this.invoiceOrder = details;
         this.isInvoiceLoading = false;
@@ -647,14 +577,6 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
   trackBySocialMediaSource(_: number, source: SocialMediaSource): number {
     return source.id;
-  }
-
-  trackByLogIndex(_: number, log: OrderLog): number {
-    return log.id;
-  }
-
-  trackByNoteId(_: number, note: OrderNote): string {
-    return note.createdAt;
   }
 
   trackByOrderItem(_: number, item: OrderItem): string {

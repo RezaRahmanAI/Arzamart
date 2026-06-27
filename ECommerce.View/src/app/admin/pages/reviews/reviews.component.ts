@@ -1,7 +1,8 @@
 import { NgIf, NgClass, DatePipe, NgFor } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject, HostListener } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject, HostListener, DestroyRef } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { AdminReview } from "../../models/reviews.models";
 import { ReviewsService } from "../../services/reviews.service";
 import { AuthService } from "../../../core/services/auth.service";
@@ -26,6 +27,7 @@ export class ReviewsComponent implements OnInit, OnDestroy {
   readonly authService = inject(AuthService);
   private notification = inject(NotificationService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
   private destroy$ = new Subject<void>();
 
   reviews: AdminReview[] = [];
@@ -158,7 +160,7 @@ export class ReviewsComponent implements OnInit, OnDestroy {
     if (!file) return;
 
     this.isUploadingAvatar = true;
-    this.productsService.uploadProductMedia([file]).subscribe({
+    this.productsService.uploadProductMedia([file]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (urls) => {
         if (urls && urls.length > 0) {
           this.reviewForm.patchValue({ userAvatar: urls[0] });
@@ -176,7 +178,7 @@ export class ReviewsComponent implements OnInit, OnDestroy {
     if (!file) return;
 
     this.isUploadingScreenshot = true;
-    this.productsService.uploadProductMedia([file]).subscribe({
+    this.productsService.uploadProductMedia([file]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (urls) => {
         if (urls && urls.length > 0) {
           this.reviewForm.patchValue({ screenshotUrl: urls[0] });
@@ -210,7 +212,7 @@ export class ReviewsComponent implements OnInit, OnDestroy {
       ? this.reviewsService.create(reviewData)
       : this.reviewsService.update(this.selectedReviewId!, reviewData);
 
-    request$.subscribe({
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.loadReviews();
         this.closeModal();
@@ -227,7 +229,7 @@ export class ReviewsComponent implements OnInit, OnDestroy {
 
   deleteReview(id: number): void {
     if (confirm("Are you sure you want to delete this review?")) {
-      this.reviewsService.delete(id).subscribe(() => {
+      this.reviewsService.delete(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         this.loadReviews();
       });
     }

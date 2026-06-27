@@ -1,5 +1,6 @@
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { StorageKeys } from '../constants/storage-keys';
 
 export interface UserDetails {
   fullName: string;
@@ -14,17 +15,16 @@ export interface UserDetails {
 })
 export class UserPersistenceService {
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly STORAGE_KEY = 'arza_user_details';
 
   saveUserDetails(details: UserDetails): void {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(details));
+      localStorage.setItem(StorageKeys.USER_DETAILS, JSON.stringify(details));
     }
   }
 
   getUserDetails(): UserDetails | null {
     if (isPlatformBrowser(this.platformId)) {
-      const data = localStorage.getItem(this.STORAGE_KEY);
+      const data = localStorage.getItem(StorageKeys.USER_DETAILS);
       return data ? JSON.parse(data) : null;
     }
     return null;
@@ -32,14 +32,14 @@ export class UserPersistenceService {
 
   hasSavedDetails(): boolean {
     if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem(this.STORAGE_KEY) !== null;
+      return localStorage.getItem(StorageKeys.USER_DETAILS) !== null;
     }
     return false;
   }
 
   clearUserDetails(): void {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem(this.STORAGE_KEY);
+      localStorage.removeItem(StorageKeys.USER_DETAILS);
     }
   }
 }

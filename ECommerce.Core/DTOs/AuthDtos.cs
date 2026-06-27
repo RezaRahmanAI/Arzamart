@@ -12,20 +12,6 @@ public class LoginDto
     public string Password { get; set; } = null!;
 }
 
-public class RegisterDto
-{
-    [Required]
-    public string FullName { get; set; } = null!;
-
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; } = null!;
-
-    [Required]
-    [MinLength(6)]
-    public string Password { get; set; } = null!;
-}
-
 public class AuthResponseDto
 {
     public string AccessToken { get; set; } = null!;
@@ -45,11 +31,4 @@ public class UserDto
     public string Name { get; set; } = null!;
     public string Role { get; set; } = null!;
     public List<string> AllowedMenus { get; set; } = new();
-}
-
-public class CustomerLoginDto
-{
-    [Required]
-    [Phone]
-    public string Phone { get; set; } = null!;
 }

@@ -9,12 +9,13 @@ import { OrderItem } from "../../../../core/models/order";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { CustomerProfileService } from "../../../../core/services/customer-profile.service";
 
-import { OrderApiService, CustomerLookupResponse } from "../../../../core/services/order-api.service";
+import { CustomerLookupService } from "../../../../core/services/customer-lookup.service";
+import { OrderApiService } from "../../../../core/services/order-api.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
-import { map, debounceTime, distinctUntilChanged, filter, switchMap, catchError, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
 
 
@@ -61,6 +62,7 @@ export class OfferDetailsPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly customerLookup = inject(CustomerLookupService);
   private readonly orderApi = inject(OrderApiService);
   private readonly orderService = inject(OrderService);
   private readonly destroyRef = inject(DestroyRef);
@@ -116,22 +118,11 @@ export class OfferDetailsPageComponent {
         this.citySearch = city;
       });
 
-    this.orderForm.controls.phone.valueChanges
-      .pipe(
-        map((value) => value.trim()),
-        debounceTime(300),
-        distinctUntilChanged(),
-        filter((value) => value.length >= 7),
-        switchMap((phone) =>
-          this.orderApi
-            .lookupCustomer(phone)
-            .pipe(catchError(() => of(null))),
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((customer: CustomerLookupResponse | null) => {
+    this.customerLookup
+      .bindTo(this.orderForm.controls.phone.valueChanges)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((customer) => {
         if (customer) {
-          // Patch city first to trigger areas update
           if (customer.city) {
             this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
             this.filteredAreas = [...this.areas];

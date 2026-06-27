@@ -41,7 +41,20 @@ public class OrderService : IOrderService
 
     public async Task<OrderDto> CreateOrderAsync(OrderCreateDto orderDto)
     {
-        var items = new List<ECommerce.Core.Domain.Orders.OrderItem>();
+        // Business logic: normalize DeliveryMethodId
+        if (orderDto.DeliveryMethodId == 0)
+        {
+            orderDto.DeliveryMethodId = null;
+        }
+
+        // Business logic: check for suspicious customer
+        var customer = await _customerService.GetCustomerByPhoneAsync(orderDto.Phone);
+        if (customer != null && customer.IsSuspicious)
+        {
+            throw new InvalidOperationException("Your account has been suspended. Please contact support.");
+        }
+
+        var items = new List<OrderItem>();
         
         // 1. Bulk Fetch Products to fix N+1 query issue
         var productIds = orderDto.Items.Select(i => i.ProductId).Distinct().ToList();
@@ -51,29 +64,28 @@ public class OrderService : IOrderService
         var products = await _unitOfWork.Repository<Product>().ListAsync(productSpec, track: true);
         var productDict = products.ToDictionary(p => p.Id);
 
-        // 2. Pre-scan for stock availability to determine if this should be an auto Pre-Order
-        bool autoPreOrder = false;
-        if (!orderDto.IsPreOrder)
-        {
-            foreach (var itemDto in orderDto.Items)
-            {
-                if (productDict.TryGetValue(itemDto.ProductId, out var product))
-                {
-                    if (!await _stockService.CheckIsProductStockAvailableAsync(product, itemDto.Quantity, itemDto.Size))
-                    {
-                        autoPreOrder = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        bool finalIsPreOrder = orderDto.IsPreOrder || autoPreOrder;
-
         // Wrap stock operations in a DB transaction for atomicity
         Order order = null!;
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
+            // Pre-scan for stock availability to determine if this should be an auto Pre-Order
+            bool autoPreOrder = false;
+            if (!orderDto.IsPreOrder)
+            {
+                foreach (var itemDto in orderDto.Items)
+                {
+                    if (productDict.TryGetValue(itemDto.ProductId, out var product))
+                    {
+                        if (!await _stockService.CheckIsProductStockAvailableAsync(product, itemDto.Quantity, itemDto.Size))
+                        {
+                            autoPreOrder = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            bool finalIsPreOrder = orderDto.IsPreOrder || autoPreOrder;
             foreach (var itemDto in orderDto.Items)
             {
                 if (!productDict.TryGetValue(itemDto.ProductId, out var product))
@@ -84,7 +96,7 @@ public class OrderService : IOrderService
 
                 // 1 & 2. Deduct from stock ONLY if NOT a pre-order AND status is a "Deducted" status
                 // Note: Since CreateOrderAsync usually defaults to Pending or PreOrder, stock will NOT be deducted here by default.
-                if (!finalIsPreOrder && _stockService.ShouldDeductStock(finalIsPreOrder ? ECommerce.Core.Domain.Orders.OrderStatus.PreOrder : ECommerce.Core.Domain.Orders.OrderStatus.Pending))
+                if (!finalIsPreOrder && _stockService.ShouldDeductStock(finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending))
                 {
                     await _stockService.ProcessProductStockAdjustmentAsync(product, itemDto.Quantity, itemDto.Size, returnToStock: false);
                 }
@@ -121,12 +133,20 @@ public class OrderService : IOrderService
                 // Image fallback
                 var itemImageUrl = product.ImageUrl;
 
-                var orderItem = ECommerce.Core.Domain.Orders.OrderItem.Create(product.Id, product.Name, itemDto.Quantity, unitPrice, itemDto.Size, itemImageUrl);
+                var orderItem = new OrderItem
+                {
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    Quantity = itemDto.Quantity,
+                    UnitPrice = unitPrice,
+                    Size = itemDto.Size,
+                    ImageUrl = itemImageUrl
+                };
                 
                 items.Add(orderItem);
             }
 
-            var subtotal = items.Sum(i => i.TotalPrice);
+            var subtotal = items.Sum(i => i.UnitPrice * i.Quantity);
             decimal shippingCost = 0;
             
             // Fetch Site Settings for Free Shipping Threshold
@@ -170,7 +190,7 @@ public class OrderService : IOrderService
                 Tax = 0,
                 ShippingCost = shippingCost,
                 DeliveryMethodId = orderDto.DeliveryMethodId,
-                Status = finalIsPreOrder ? ECommerce.Core.Domain.Orders.OrderStatus.PreOrder : ECommerce.Core.Domain.Orders.OrderStatus.Pending,
+                Status = finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending,
                 IsPreOrder = finalIsPreOrder,
                 SourcePageId = orderDto.SourcePageId,
                 SocialMediaSourceId = orderDto.SocialMediaSourceId,
@@ -181,14 +201,29 @@ public class OrderService : IOrderService
                 CreatedAt = DateTime.UtcNow
             };
             
+            // Server-side total calculation — never trust client-supplied Total
             order.Total = order.SubTotal + order.Tax + order.ShippingCost - order.Discount;
+
+            // Validate Discount doesn't exceed subtotal + tax + shipping
+            if (order.Discount < 0)
+                order.Discount = 0;
+            if (order.Discount > order.SubTotal + order.Tax + order.ShippingCost)
+                order.Discount = order.SubTotal + order.Tax + order.ShippingCost;
+
+            // Recalculate after clamping
+            order.Total = order.SubTotal + order.Tax + order.ShippingCost - order.Discount;
+
+            // Validate AdvancePayment doesn't exceed total
+            if (order.AdvancePayment < 0)
+                order.AdvancePayment = 0;
+            if (order.AdvancePayment > order.Total)
+                order.AdvancePayment = order.Total;
 
             _unitOfWork.Repository<Order>().Add(order);
             await _unitOfWork.Complete();
 
-            // 5. Update OrderNumber using generator
+            // 5. Update OrderNumber using generator and persist it
             order.OrderNumber = _orderNumberGenerator.Generate(order.Id);
-            _unitOfWork.Repository<Order>().Update(order);
             await _unitOfWork.Complete();
         });
 
@@ -212,72 +247,81 @@ public class OrderService : IOrderService
 
         if (order == null) throw new KeyNotFoundException("Order not found");
 
-        // 1. Handle Stock Reversal for existing items (if stock was already deducted)
-        if (!order.IsPreOrder && _stockService.ShouldDeductStock(order.Status))
+        // Wrap entire update in a transaction to prevent stock inconsistency
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            await _stockService.AdjustStockOnStatusChangeAsync(order, returnToStock: true);
-        }
-
-        // 2. Clear existing items from DB (we will recreate them)
-        order.Items.Clear();
-
-        // 3. Process New Items and Deduct Stock
-        var newItems = new List<ECommerce.Core.Domain.Orders.OrderItem>();
-        var productIds = orderDto.Items.Select(i => i.ProductId).Distinct().ToList();
-        var products = await _unitOfWork.Repository<Product>().ListAsync(new ProductsWithCategoriesSpecification(productIds), track: true);
-        var productDict = products.ToDictionary(p => p.Id);
-
-        foreach (var itemDto in orderDto.Items)
-        {
-            if (!productDict.TryGetValue(itemDto.ProductId, out var product)) continue;
-
-            if (!orderDto.IsPreOrder && _stockService.ShouldDeductStock(order.Status))
+            // 1. Handle Stock Reversal for existing items (if stock was already deducted)
+            if (!order.IsPreOrder && _stockService.ShouldDeductStock(order.Status))
             {
-                await _stockService.ProcessProductStockAdjustmentAsync(product, itemDto.Quantity, itemDto.Size, returnToStock: false);
+                await _stockService.AdjustStockOnStatusChangeAsync(order, returnToStock: true);
             }
 
-            newItems.Add(ECommerce.Core.Domain.Orders.OrderItem.Create(product.Id, product.Name, itemDto.Quantity, itemDto.UnitPrice ?? 0, itemDto.Size, itemDto.ImageUrl ?? product.ImageUrl));
-        }
+            // 2. Clear existing items from DB (we will recreate them)
+            order.Items.Clear();
 
-        // 4. Update Order Head
-        order.CustomerName = orderDto.Name;
-        order.CustomerPhone = orderDto.Phone;
-        order.ShippingAddress = orderDto.Address;
-        order.City = orderDto.City;
-        order.Area = orderDto.Area;
-        order.Items.Clear();
-        foreach (var ni in newItems) order.Items.Add(ni);
-        order.IsPreOrder = orderDto.IsPreOrder;
-        order.DeliveryMethodId = orderDto.DeliveryMethodId;
-        order.SourcePageId = orderDto.SourcePageId;
-        order.SocialMediaSourceId = orderDto.SocialMediaSourceId;
-        order.AdminNote = orderDto.AdminNote;
-        order.CustomerNote = orderDto.CustomerNote;
-        order.Discount = orderDto.Discount;
-        order.AdvancePayment = orderDto.AdvancePayment;
-        
-        order.SubTotal = newItems.Sum(i => i.UnitPrice * i.Quantity);
-        
-        // Recalculate Shipping
-        decimal shippingCost = 0;
-        var siteSettings = await _unitOfWork.Repository<SiteSetting>().ListAllAsync();
-        var settings = siteSettings.FirstOrDefault();
-        var freeShippingThreshold = settings?.FreeShippingThreshold ?? 0;
+            // 3. Process New Items and Deduct Stock
+            var newItems = new List<OrderItem>();
+            var productIds = orderDto.Items.Select(i => i.ProductId).Distinct().ToList();
+            var products = await _unitOfWork.Repository<Product>().ListAsync(new ProductsWithCategoriesSpecification(productIds), track: true);
+            var productDict = products.ToDictionary(p => p.Id);
 
-        if (order.DeliveryMethodId.HasValue)
-        {
-            var method = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(order.DeliveryMethodId.Value);
-            if (method != null)
+            foreach (var itemDto in orderDto.Items)
             {
-                shippingCost = (freeShippingThreshold > 0 && order.SubTotal >= freeShippingThreshold) ? 0 : method.Cost;
-            }
-        }
-        order.ShippingCost = shippingCost;
-        order.Total = order.SubTotal + order.Tax + order.ShippingCost - order.Discount;
-        await _unitOfWork.Complete();
+                if (!productDict.TryGetValue(itemDto.ProductId, out var product)) continue;
 
-        _unitOfWork.Repository<Order>().Update(order);
-        await _unitOfWork.Complete();
+                if (!orderDto.IsPreOrder && _stockService.ShouldDeductStock(order.Status))
+                {
+                    await _stockService.ProcessProductStockAdjustmentAsync(product, itemDto.Quantity, itemDto.Size, returnToStock: false);
+                }
+
+                newItems.Add(new OrderItem
+                {
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    Quantity = itemDto.Quantity,
+                    UnitPrice = itemDto.UnitPrice ?? 0,
+                    Size = itemDto.Size,
+                    ImageUrl = itemDto.ImageUrl ?? product.ImageUrl
+                });
+            }
+
+            // 4. Update Order Head
+            order.CustomerName = orderDto.Name;
+            order.CustomerPhone = orderDto.Phone;
+            order.ShippingAddress = orderDto.Address;
+            order.City = orderDto.City;
+            order.Area = orderDto.Area;
+            order.Items.Clear();
+            foreach (var ni in newItems) order.Items.Add(ni);
+            order.IsPreOrder = orderDto.IsPreOrder;
+            order.DeliveryMethodId = orderDto.DeliveryMethodId;
+            order.SourcePageId = orderDto.SourcePageId;
+            order.SocialMediaSourceId = orderDto.SocialMediaSourceId;
+            order.AdminNote = orderDto.AdminNote;
+            order.CustomerNote = orderDto.CustomerNote;
+            order.Discount = orderDto.Discount;
+            order.AdvancePayment = orderDto.AdvancePayment;
+            
+            order.SubTotal = newItems.Sum(i => i.UnitPrice * i.Quantity);
+            
+            // Recalculate Shipping
+            decimal shippingCost = 0;
+            var siteSettings = await _unitOfWork.Repository<SiteSetting>().ListAllAsync();
+            var settings = siteSettings.FirstOrDefault();
+            var freeShippingThreshold = settings?.FreeShippingThreshold ?? 0;
+
+            if (order.DeliveryMethodId.HasValue)
+            {
+                var method = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(order.DeliveryMethodId.Value);
+                if (method != null)
+                {
+                    shippingCost = (freeShippingThreshold > 0 && order.SubTotal >= freeShippingThreshold) ? 0 : method.Cost;
+                }
+            }
+            order.ShippingCost = shippingCost;
+            order.Total = order.SubTotal + order.Tax + order.ShippingCost - order.Discount;
+            await _unitOfWork.Complete();
+        });
 
         await _customerService.CreateOrUpdateCustomerAsync(
             orderDto.Phone,
@@ -290,12 +334,27 @@ public class OrderService : IOrderService
         return _mapper.Map<Order, OrderDto>(order);
     }
 
-    public async Task<PaginationDto<OrderDto>> GetOrdersAsync(int page = 1, int pageSize = 10)
+    public async Task<PaginationDto<OrderDto>> GetOrdersAsync(string? userId = null, int page = 1, int pageSize = 10)
     {
         var spec = new BaseSpecification<Order>();
+        if (!string.IsNullOrEmpty(userId))
+        {
+            // Look up customer by userId to get their phone, then filter orders
+            var customer = await _unitOfWork.Repository<Customer>().GetQueryable()
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer != null)
+            {
+                spec = new BaseSpecification<Order>(o => o.CustomerPhone == customer.Phone);
+            }
+            else
+            {
+                // No customer found for this user, return empty
+                return new PaginationDto<OrderDto>(page, pageSize, 0, new List<OrderDto>());
+            }
+        }
         spec.AddInclude(x => x.Items);
         spec.ApplyPaging((page - 1) * pageSize, pageSize);
-        var total = await _unitOfWork.Repository<Order>().CountAsync(new BaseSpecification<Order>());
+        var total = await _unitOfWork.Repository<Order>().CountAsync(spec);
         var orders = await _unitOfWork.Repository<Order>().ListAsync(spec);
 
         var dtos = _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderDto>>(orders);
@@ -388,9 +447,9 @@ public class OrderService : IOrderService
             .Select(g => new OrderStatsDto
             {
                 TotalOrders = g.Count(),
-                Processing = g.Count(o => o.Status == ECommerce.Core.Domain.Orders.OrderStatus.Processing || o.Status == ECommerce.Core.Domain.Orders.OrderStatus.Pending),
+                Processing = g.Count(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Pending),
                 TotalRevenue = g.Sum(o => o.Total),
-                RefundRequests = g.Count(o => o.Status == ECommerce.Core.Domain.Orders.OrderStatus.Refund)
+                RefundRequests = g.Count(o => o.Status == OrderStatus.Refund)
             })
             .FirstOrDefaultAsync();
 

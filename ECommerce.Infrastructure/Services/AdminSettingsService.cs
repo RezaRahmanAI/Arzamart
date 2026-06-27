@@ -32,37 +32,39 @@ public class AdminSettingsService : IAdminSettingsService
             .AsNoTracking()
             .FirstOrDefaultAsync();
 
-        if (settings == null)
-        {
-            settings = new SiteSetting();
-            _unitOfWork.Repository<SiteSetting>().Add(settings);
-            await _unitOfWork.Complete();
-        }
-
         var deliveryMethods = await _unitOfWork.Repository<DeliveryMethod>()
             .GetQueryable()
             .AsNoTracking()
             .ToListAsync();
 
+        var deliveryMethodDtos = deliveryMethods.Select(dm => new DeliveryMethodDto
+        {
+            Id = dm.Id,
+            Name = dm.Name,
+            Cost = dm.Cost,
+            EstimatedDays = dm.EstimatedDays,
+            IsActive = dm.IsActive
+        }).ToList();
+
         return new SiteSettingsDto
         {
-            WebsiteName = settings.WebsiteName,
-            LogoUrl = settings.LogoUrl,
-            ContactEmail = settings.ContactEmail,
-            ContactPhone = settings.ContactPhone,
-            Address = settings.Address,
-            FacebookUrl = settings.FacebookUrl,
-            InstagramUrl = settings.InstagramUrl,
-            TwitterUrl = settings.TwitterUrl,
-            YoutubeUrl = settings.YoutubeUrl,
-            WhatsAppNumber = settings.WhatsAppNumber,
-            Currency = settings.Currency,
-            FreeShippingThreshold = settings.FreeShippingThreshold,
-            ShippingCharge = settings.ShippingCharge,
-            FacebookPixelId = settings.FacebookPixelId,
-            GoogleTagId = settings.GoogleTagId,
-            SizeGuideImageUrl = settings.SizeGuideImageUrl,
-            DeliveryMethods = deliveryMethods
+            WebsiteName = settings?.WebsiteName,
+            LogoUrl = settings?.LogoUrl,
+            ContactEmail = settings?.ContactEmail,
+            ContactPhone = settings?.ContactPhone,
+            Address = settings?.Address,
+            FacebookUrl = settings?.FacebookUrl,
+            InstagramUrl = settings?.InstagramUrl,
+            TwitterUrl = settings?.TwitterUrl,
+            YoutubeUrl = settings?.YoutubeUrl,
+            WhatsAppNumber = settings?.WhatsAppNumber,
+            Currency = settings?.Currency,
+            FreeShippingThreshold = settings?.FreeShippingThreshold ?? 0,
+            ShippingCharge = settings?.ShippingCharge ?? 0,
+            FacebookPixelId = settings?.FacebookPixelId,
+            GoogleTagId = settings?.GoogleTagId,
+            SizeGuideImageUrl = settings?.SizeGuideImageUrl,
+            DeliveryMethods = deliveryMethodDtos
         };
     }
 
@@ -177,28 +179,40 @@ public class AdminSettingsService : IAdminSettingsService
             .AsNoTracking()
             .ToList();
 
+        var deliveryMethodDtos = deliveryMethods.Select(dm => new DeliveryMethodDto
+        {
+            Id = dm.Id,
+            Name = dm.Name,
+            Cost = dm.Cost,
+            EstimatedDays = dm.EstimatedDays,
+            IsActive = dm.IsActive
+        }).ToList();
+
         if (settings != null)
         {
-            _cache.SiteSettings["settings"] = new SiteSettingsDto
+            lock (_cache.RebuildLock)
             {
-                WebsiteName = settings.WebsiteName,
-                LogoUrl = settings.LogoUrl,
-                ContactEmail = settings.ContactEmail,
-                ContactPhone = settings.ContactPhone,
-                Address = settings.Address,
-                FacebookUrl = settings.FacebookUrl,
-                InstagramUrl = settings.InstagramUrl,
-                TwitterUrl = settings.TwitterUrl,
-                YoutubeUrl = settings.YoutubeUrl,
-                WhatsAppNumber = settings.WhatsAppNumber,
-                Currency = settings.Currency,
-                FreeShippingThreshold = settings.FreeShippingThreshold,
-                ShippingCharge = settings.ShippingCharge,
-                FacebookPixelId = settings.FacebookPixelId,
-                GoogleTagId = settings.GoogleTagId,
-                SizeGuideImageUrl = settings.SizeGuideImageUrl,
-                DeliveryMethods = deliveryMethods
-            };
+                _cache.SiteSettings["settings"] = new SiteSettingsDto
+                {
+                    WebsiteName = settings.WebsiteName,
+                    LogoUrl = settings.LogoUrl,
+                    ContactEmail = settings.ContactEmail,
+                    ContactPhone = settings.ContactPhone,
+                    Address = settings.Address,
+                    FacebookUrl = settings.FacebookUrl,
+                    InstagramUrl = settings.InstagramUrl,
+                    TwitterUrl = settings.TwitterUrl,
+                    YoutubeUrl = settings.YoutubeUrl,
+                    WhatsAppNumber = settings.WhatsAppNumber,
+                    Currency = settings.Currency,
+                    FreeShippingThreshold = settings.FreeShippingThreshold,
+                    ShippingCharge = settings.ShippingCharge,
+                    FacebookPixelId = settings.FacebookPixelId,
+                    GoogleTagId = settings.GoogleTagId,
+                    SizeGuideImageUrl = settings.SizeGuideImageUrl,
+                    DeliveryMethods = deliveryMethodDtos
+                };
+            }
         }
     }
 }

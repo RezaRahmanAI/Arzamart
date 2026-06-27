@@ -1,5 +1,4 @@
 using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,9 +23,9 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet("delivery-methods")]
-        public async Task<ActionResult<IEnumerable<DeliveryMethod>>> GetDeliveryMethods()
+        public async Task<ActionResult<IEnumerable<DeliveryMethodDto>>> GetDeliveryMethods()
         {
-            var methods = await _publicSiteSettingsService.GetActiveDeliveryMethodsAsync();
+            var methods = await _publicSiteSettingsService.GetActiveDeliveryMethodDtosAsync();
             return Ok(methods);
         }
     }

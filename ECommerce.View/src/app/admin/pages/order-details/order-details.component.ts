@@ -2,7 +2,7 @@ import { NgIf, NgClass, NgStyle, AsyncPipe, DatePipe, NgFor } from '@angular/com
 import { Component, OnInit, inject, HostListener } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { Observable, switchMap, Subject, takeUntil, of } from "rxjs";
-import { OrderDetail, OrderStatus } from "../../models/orders.models";
+import { Order, OrderStatus } from "../../models/orders.models";
 import { OrdersService } from "../../services/orders.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
@@ -23,7 +23,7 @@ export class OrderDetailsComponent implements OnInit {
   private ordersService = inject(OrdersService);
   readonly imageUrlService = inject(ImageUrlService);
 
-  order$: Observable<OrderDetail> | null = null;
+  order$: Observable<Order> | null = null;
   statusMenuOpen = false;
   statusOptions: OrderStatus[] = [
     OrderStatus.Pending,
@@ -35,7 +35,7 @@ export class OrderDetailsComponent implements OnInit {
 
   newNoteText = "";
   isSavingNote = false;
-  currentOrder: OrderDetail | null = null;
+  currentOrder: Order | null = null;
 
   @HostListener("document:click")
   closeMenu(): void {

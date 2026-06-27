@@ -1,9 +1,9 @@
 using ECommerce.Core.Constants;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
+using ECommerce.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
 
@@ -14,14 +14,12 @@ namespace ECommerce.API.Controllers;
 public class AdminSubCategoryController : ControllerBase
 {
     private readonly ISubCategoryAdminService _subCategoryService;
-    private readonly IWebHostEnvironment _environment;
-    private readonly IConfiguration _config;
+    private readonly IFileUploadService _fileUploadService;
 
-    public AdminSubCategoryController(ISubCategoryAdminService subCategoryService, IWebHostEnvironment environment, IConfiguration config)
+    public AdminSubCategoryController(ISubCategoryAdminService subCategoryService, IFileUploadService fileUploadService)
     {
         _subCategoryService = subCategoryService;
-        _environment = environment;
-        _config = config;
+        _fileUploadService = fileUploadService;
     }
 
     [HttpGet]
@@ -55,7 +53,7 @@ public class AdminSubCategoryController : ControllerBase
         }
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<SubCategoryDto>> UpdateSubCategory(int id, [FromBody] SubCategoryUpdateDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Name))
@@ -94,29 +92,16 @@ public class AdminSubCategoryController : ControllerBase
     {
         try
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("No file uploaded");
-
-            var uploadsFolder = PathHelper.GetUploadsFolder(_config, _environment, "subcategories");
-
-            var fileExtension = Path.GetExtension(file.FileName);
-            var fileName = $"{Guid.NewGuid()}{fileExtension}";
-            var filePath = Path.Combine(uploadsFolder, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            return Ok(new UploadResultDto { Url = $"/uploads/subcategories/{fileName}" });
+            var url = await _fileUploadService.UploadAsync(file, "subcategories");
+            return Ok(new UploadResultDto { Url = url });
         }
         catch (UnauthorizedAccessException ex)
         {
-            return StatusCode(403, new { message = "Permission denied: The server process does not have write access to the subcategories folder. Error: " + ex.Message });
+            return StatusCode(403, new { message = "Permission denied: " + ex.Message });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { message = "An error occurred during subcategory image upload: " + ex.Message });
+            return StatusCode(500, new { message = "An error occurred during subcategory image upload." });
         }
     }
 }

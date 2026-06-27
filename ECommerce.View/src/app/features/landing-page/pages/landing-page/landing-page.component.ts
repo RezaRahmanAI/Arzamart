@@ -4,7 +4,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import {
-  catchError,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
@@ -23,10 +22,10 @@ import { CartItem, CartSummary } from "../../../../core/models/cart";
 import { Order } from "../../../../core/models/order";
 import { SiteSettingsService, SiteSettings } from "../../../../core/services/site-settings.service";
 import { CheckoutService } from "../../../../core/services/checkout.service";
-import { OrderApiService, CustomerLookupResponse } from "../../../../core/services/order-api.service";
+import { CustomerLookupService } from "../../../../core/services/customer-lookup.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
-import { SettingsService } from "../../../../admin/services/settings.service";
-import { DeliveryMethod } from "../../../../admin/models/settings.models";
+import { DeliveryService } from "../../../../core/services/delivery.service";
+import { DeliveryMethod } from "../../../../core/models/delivery";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { SizeGuideComponent } from "../../../../shared/components/size-guide/size-guide.component";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
@@ -62,8 +61,8 @@ export class LandingPageComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
-  private readonly orderApi = inject(OrderApiService);
-  private readonly settingsService = inject(SettingsService);
+  private readonly customerLookup = inject(CustomerLookupService);
+  private readonly deliveryService = inject(DeliveryService);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly siteSettingsService = inject(SiteSettingsService);
   private readonly orderService = inject(OrderService);
@@ -155,7 +154,7 @@ export class LandingPageComponent implements OnInit {
         filter((slug) => slug.length > 0),
         switchMap((slug) => this.productService.getBySlug(slug)),
       ),
-      this.settingsService.getPublicDeliveryMethods(),
+      this.deliveryService.getPublicDeliveryMethods(),
     ])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -199,24 +198,13 @@ export class LandingPageComponent implements OnInit {
   }
 
   private setupFormWatchers(): void {
-    this.checkoutForm.controls.phone.valueChanges
-      .pipe(
-        map((value) => value.trim()),
-        debounceTime(300),
-        distinctUntilChanged(),
-        filter((value) => value.length >= 7),
-        switchMap((phone) =>
-          this.orderApi
-            .lookupCustomer(phone)
-            .pipe(catchError(() => of(null))),
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
+    this.customerLookup
+      .bindTo(this.checkoutForm.controls.phone.valueChanges)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((customer) => {
         if (customer) {
           this.didAutofill = true;
           
-          // Patch city first to trigger areas update
           if (customer.city) {
             this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
             this.filteredAreas = [...this.areas];

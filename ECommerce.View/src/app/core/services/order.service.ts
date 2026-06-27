@@ -6,6 +6,7 @@ import { CheckoutState } from "../models/checkout";
 import { Order, OrderItem, OrderStatus } from "../models/order";
 import { OrderApiService, OrderItemRequest, CustomerOrderRequest, CustomerOrderResponse } from "./order-api.service";
 import { CartService } from "./cart.service";
+import { StorageKeys } from "../constants/storage-keys";
 
 interface PlaceOrderPayload {
   state: CheckoutState;
@@ -25,7 +26,6 @@ interface PlaceOrderPayload {
 export class OrderService {
   private readonly orderApi = inject(OrderApiService);
   private readonly cartService = inject(CartService);
-  private readonly storageKey = "orders";
   private readonly ordersSubject = new BehaviorSubject<Order[]>(
     this.loadOrders(),
   );
@@ -35,10 +35,6 @@ export class OrderService {
     return this.orders$.pipe(
       map((orders) => orders.find((order) => order.id === orderId)),
     );
-  }
-
-  getFallbackOrder(): Order {
-    return this.ordersSubject.getValue()[0];
   }
 
   placeOrder(payload: PlaceOrderPayload): Observable<Order> {
@@ -131,7 +127,7 @@ export class OrderService {
       customerName: response.customerName,
       customerPhone: response.customerPhone,
       shippingAddress: response.shippingAddress,
-      subTotal: response.subTotal ?? total,
+      subTotal: response.subTotal ?? total - shippingCost - tax,
       shippingCost: response.shippingCost ?? shippingCost,
       tax: response.tax ?? tax,
       total: response.total ?? total,
@@ -142,7 +138,7 @@ export class OrderService {
   }
 
   private loadOrders(): Order[] {
-    const stored = localStorage.getItem(this.storageKey);
+    const stored = localStorage.getItem(StorageKeys.ORDERS);
     if (stored) {
       try {
         return JSON.parse(stored) as Order[];
@@ -155,7 +151,7 @@ export class OrderService {
 
   private persistOrders(): void {
     localStorage.setItem(
-      this.storageKey,
+      StorageKeys.ORDERS,
       JSON.stringify(this.ordersSubject.getValue()),
     );
   }

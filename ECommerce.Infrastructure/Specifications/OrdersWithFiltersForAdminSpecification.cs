@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using ECommerce.Core.Domain.Orders;
+using ECommerce.Core.Enums;
 using ECommerce.Core.Entities;
 
 namespace ECommerce.Infrastructure.Specifications;

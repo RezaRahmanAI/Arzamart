@@ -4,7 +4,6 @@ import { finalize } from "rxjs";
 import {
   LoadingService,
   SHOW_LOADING,
-  SKIP_LOADING,
 } from "../services/loading.service";
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {

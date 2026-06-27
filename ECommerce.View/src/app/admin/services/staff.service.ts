@@ -1,7 +1,7 @@
 import { Injectable, inject } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { API_CONFIG, ApiConfig } from "../../core/config/api.config";
+import { ApiHttpClient } from "../../core/http/http-client";
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -11,6 +11,13 @@ export interface ApiResponse<T> {
 
 export interface PaginatedResponse<T> {
   items: T[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+}
+
+export interface StaffUserListResult {
+  items: StaffUserDto[];
   page: number;
   pageSize: number;
   totalCount: number;
@@ -68,17 +75,9 @@ export interface AuditLogDto {
   providedIn: "root",
 })
 export class StaffService {
-  private readonly http = inject(HttpClient);
-  private readonly config = inject<ApiConfig>(API_CONFIG);
+  private readonly api = inject(ApiHttpClient);
 
-  private buildUrl(path: string): string {
-    const baseUrl = this.config.baseUrl.replace(/\/$/, "");
-    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-    return `${baseUrl}${normalizedPath}`;
-  }
-
-  // Staff CRUD
-  getStaffUsers(params?: { search?: string; roleId?: string; isActive?: boolean; page?: number; pageSize?: number }): Observable<ApiResponse<PaginatedResponse<StaffUserDto>>> {
+  getStaffUsers(params?: { search?: string; roleId?: string; isActive?: boolean; page?: number; pageSize?: number }): Observable<StaffUserListResult> {
     let httpParams = new HttpParams();
     if (params) {
       if (params.search) {
@@ -98,68 +97,65 @@ export class StaffService {
       }
     }
     const refreshHeaders = new HttpHeaders().set("X-Refresh", "true");
-    return this.http.get<ApiResponse<PaginatedResponse<StaffUserDto>>>(this.buildUrl("/staff/users"), { params: httpParams, headers: refreshHeaders });
+    return this.api.get<StaffUserListResult>("/staff/users", { params: httpParams, headers: refreshHeaders });
   }
 
   getStaffUser(id: string): Observable<ApiResponse<StaffUserDto>> {
-    return this.http.get<ApiResponse<StaffUserDto>>(this.buildUrl(`/staff/users/${id}`), { headers: new HttpHeaders().set("X-Refresh", "true") });
+    return this.api.get<ApiResponse<StaffUserDto>>(`/staff/users/${id}`, { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
   createStaff(data: any): Observable<ApiResponse<{ id: string }>> {
-    return this.http.post<ApiResponse<{ id: string }>>(this.buildUrl("/staff/users"), data);
+    return this.api.post<ApiResponse<{ id: string }>>("/staff/users", data);
   }
 
   updateStaff(id: string, data: any): Observable<ApiResponse<any>> {
-    return this.http.put<ApiResponse<any>>(this.buildUrl(`/staff/users/${id}`), data);
+    return this.api.put<ApiResponse<any>>(`/staff/users/${id}`, data);
   }
 
   toggleStatus(id: string, isActive: boolean): Observable<ApiResponse<any>> {
-    return this.http.patch<ApiResponse<any>>(this.buildUrl(`/staff/users/${id}/status`), { isActive });
+    return this.api.patch<ApiResponse<any>>(`/staff/users/${id}/status`, { isActive });
   }
 
   deleteStaff(id: string): Observable<ApiResponse<any>> {
-    return this.http.delete<ApiResponse<any>>(this.buildUrl(`/staff/users/${id}`));
+    return this.api.delete<ApiResponse<any>>(`/staff/users/${id}`);
   }
 
   viewPassword(id: string): Observable<ApiResponse<{ password: string }>> {
-    return this.http.get<ApiResponse<{ password: string }>>(this.buildUrl(`/staff/users/${id}/password`), { headers: new HttpHeaders().set("X-Refresh", "true") });
+    return this.api.post<ApiResponse<{ password: string }>>(`/staff/users/${id}/password`, {}, { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
   resetPassword(id: string, newPassword: string): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(this.buildUrl(`/staff/users/${id}/reset-password`), { password: newPassword });
+    return this.api.post<ApiResponse<any>>(`/staff/users/${id}/reset-password`, { password: newPassword });
   }
 
-  // Roles
   getRoles(): Observable<ApiResponse<RoleDto[]>> {
-    return this.http.get<ApiResponse<RoleDto[]>>(this.buildUrl("/staff/roles"), { headers: new HttpHeaders().set("X-Refresh", "true") });
+    return this.api.get<ApiResponse<RoleDto[]>>("/staff/roles", { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
   createRole(data: { name: string; description?: string }): Observable<ApiResponse<{ id: string }>> {
-    return this.http.post<ApiResponse<{ id: string }>>(this.buildUrl("/staff/roles"), data);
+    return this.api.post<ApiResponse<{ id: string }>>("/staff/roles", data);
   }
 
   updateRole(id: string, data: { name: string; description?: string }): Observable<ApiResponse<any>> {
-    return this.http.put<ApiResponse<any>>(this.buildUrl(`/staff/roles/${id}`), data);
+    return this.api.put<ApiResponse<any>>(`/staff/roles/${id}`, data);
   }
 
   deleteRole(id: string): Observable<ApiResponse<any>> {
-    return this.http.delete<ApiResponse<any>>(this.buildUrl(`/staff/roles/${id}`));
+    return this.api.delete<ApiResponse<any>>(`/staff/roles/${id}`);
   }
 
   getRolePermissions(roleId: string): Observable<ApiResponse<string[]>> {
-    return this.http.get<ApiResponse<string[]>>(this.buildUrl(`/staff/roles/${roleId}/permissions`), { headers: new HttpHeaders().set("X-Refresh", "true") });
+    return this.api.get<ApiResponse<string[]>>(`/staff/roles/${roleId}/permissions`, { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
   updateRolePermissions(roleId: string, permissionIds: string[]): Observable<ApiResponse<any>> {
-    return this.http.put<ApiResponse<any>>(this.buildUrl(`/staff/roles/${roleId}/permissions`), { permissionIds });
+    return this.api.put<ApiResponse<any>>(`/staff/roles/${roleId}/permissions`, { permissionIds });
   }
 
-  // Modules (Read-only)
   getModules(): Observable<ApiResponse<ModuleDto[]>> {
-    return this.http.get<ApiResponse<ModuleDto[]>>(this.buildUrl("/staff/modules"), { headers: new HttpHeaders().set("X-Refresh", "true") });
+    return this.api.get<ApiResponse<ModuleDto[]>>("/staff/modules", { headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 
-  // Audit Logs
   getAuditLogs(params?: { actorId?: string; action?: string; startDate?: string; endDate?: string; page?: number; pageSize?: number }): Observable<ApiResponse<PaginatedResponse<AuditLogDto>>> {
     let httpParams = new HttpParams();
     if (params) {
@@ -182,7 +178,6 @@ export class StaffService {
         httpParams = httpParams.set("pageSize", params.pageSize.toString());
       }
     }
-    return this.http.get<ApiResponse<PaginatedResponse<AuditLogDto>>>(this.buildUrl("/staff/audit-log"), { params: httpParams, headers: new HttpHeaders().set("X-Refresh", "true") });
+    return this.api.get<ApiResponse<PaginatedResponse<AuditLogDto>>>("/staff/audit-log", { params: httpParams, headers: new HttpHeaders().set("X-Refresh", "true") });
   }
 }
-

@@ -1,6 +1,6 @@
 import { AuthService } from '../../../core/services/auth.service';
 import { NgIf, NgClass, CurrencyPipe, NgFor } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, inject } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, inject, DestroyRef } from "@angular/core";
 import {
   AbstractControl,
   FormArray,
@@ -12,6 +12,7 @@ import {
 import { Router, RouterModule, ActivatedRoute } from "@angular/router";
 import { combineLatest, Subject } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import {
   ProductPayload,
@@ -26,7 +27,7 @@ import {
   Category,
   SubCategory,
   Collection,
-} from "../../models/categories.models";
+} from "../../../core/models/category";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { ImageUrlService } from "../../../core/services/image-url.service";
@@ -70,6 +71,7 @@ export class ProductFormComponent {
   private publicProductService = inject(ProductService);
   private publicBannerService = inject(BannerService);
   private productGroupsService = inject(ProductGroupsService);
+  private destroyRef = inject(DestroyRef);
 
   // Mode detection
   isEditMode = false;
@@ -201,7 +203,8 @@ export class ProductFormComponent {
         this.loadAvailableSizes();
         this.cdr.markForCheck();
         return this.route.paramMap;
-      })
+      }),
+      takeUntilDestroyed(this.destroyRef),
     ).subscribe({
       next: (params) => {
         const id = params.get("id");
@@ -238,7 +241,7 @@ export class ProductFormComponent {
   }
 
   loadCategories(): void {
-    this.categoriesService.getAll().subscribe((categories) => {
+    this.categoriesService.getAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((categories) => {
       this.categories = categories;
       this.loadAvailableSizes();
       this.cdr.markForCheck();
@@ -246,7 +249,7 @@ export class ProductFormComponent {
   }
 
   loadAvailableSizes(): void {
-    this.productsService.getAvailableSizes().subscribe({
+    this.productsService.getAvailableSizes().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (sizes) => {
         this.dynamicSizes = sizes;
         const combined = new Set([...this.standardSizes, ...this.dynamicSizes]);
@@ -355,6 +358,7 @@ export class ProductFormComponent {
     this.cdr.markForCheck();
     this.productsService
       .getProductById(productId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (product: AdminProduct) => {
           this.mediaItemsArray.clear();
@@ -420,8 +424,6 @@ export class ProductFormComponent {
 
         this.sizesArray.clear();
         const variants = (product as any).variants || (product as any).Variants || [];
-        console.log("[DEBUG] product.id:", product.id);
-        console.log("[DEBUG] variants loaded from API:", JSON.stringify(variants));
 
         if (variants && variants.length > 0) {
           variants.forEach((v: any, idx: number) => {
@@ -446,12 +448,9 @@ export class ProductFormComponent {
               selected: [true],
               id: [v.id ?? v.Id ?? null]
             });
-            console.log(`[DEBUG] mapping variant [${idx}]:`, sizeGroup.value);
             this.sizesArray.push(sizeGroup);
           });
-          console.log("[DEBUG] sizesArray after mapping:", this.sizesArray.value);
         } else {
-          console.log("[DEBUG] variants is empty, pushing default size group");
           this.sizesArray.push(this.createSizeGroup(true));
         }
 
@@ -553,7 +552,7 @@ export class ProductFormComponent {
 
     this.isSearching = true;
     this.cdr.markForCheck();
-    this.productsService.searchProductsForCombo(term).subscribe({
+    this.productsService.searchProductsForCombo(term).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (results) => {
         this.searchResults = results;
         this.isSearching = false;
@@ -674,7 +673,7 @@ export class ProductFormComponent {
     input.onchange = (e: any) => {
       const file = e.target.files[0];
       if (file) {
-        this.productsService.uploadProductMedia([file]).subscribe({
+        this.productsService.uploadProductMedia([file]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (urls) => {
             if (urls && urls.length > 0) {
               if (target === 'sizeChart') {
@@ -798,6 +797,7 @@ export class ProductFormComponent {
             return this.productsService.createProduct(payload as any);
           }
         }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (product) => {

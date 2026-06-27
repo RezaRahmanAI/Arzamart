@@ -38,10 +38,10 @@ export class InventoryService {
   }
 
   updateStock(productId: number, data: { quantity: number; price?: number; compareAtPrice?: number; purchaseRate?: number }): Observable<any> {
-    return this.api.post(`${this.baseUrl}/product/${productId}`, data);
+    return this.api.put(`${this.baseUrl}/product/${productId}`, data);
   }
 
   updateVariantStock(variantId: number, data: { quantity: number; price?: number; compareAtPrice?: number; purchaseRate?: number }): Observable<any> {
-    return this.api.post(`${this.baseUrl}/${variantId}`, data);
+    return this.api.put(`${this.baseUrl}/${variantId}`, data);
   }
 }

@@ -1,0 +1,930 @@
+{
+  "communities": {
+    "0": [
+      "accessories_page_accessories_page_component_accessoriespagecomponent",
+      "children_products_page_children_products_page_component_childrenproductspagecomponent",
+      "featured_products_featured_products_component_featuredproductscomponent",
+      "men_products_page_men_products_page_component_menproductspagecomponent",
+      "models_product_product",
+      "models_product_relatedproduct",
+      "new_arrivals_new_arrivals_component_newarrivalscomponent",
+      "product_card_product_card_component_productcardcomponent",
+      "product_gallery_product_gallery_component_productgallerycomponent",
+      "product_grid_product_grid_component_menproductgridcomponent",
+      "product_grid_product_grid_component_womenproductgridcomponent",
+      "product_group_management_product_group_management_component_productgroupmanagementcomponent",
+      "quick_add_modal_quick_add_modal_component_quickaddmodalcomponent",
+      "services_product_groups_service_productgroup"
+    ],
+    "1": [
+      "admin_order_invoice_order_invoice_component_orderinvoicecomponent",
+      "custom_landing_page_custom_landing_page_component_customlandingpagecomponent",
+      "landing_page_landing_page_component_landingpagecomponent",
+      "models_review_review",
+      "models_settings_models_adminsettings",
+      "models_settings_models_deliverymethod",
+      "models_settings_models_shippingzone",
+      "services_custom_landing_page_service_landingpagedata",
+      "settings_settings_component_settingscomponent",
+      "testimonials_testimonials_component_testimonialscomponent"
+    ],
+    "2": [
+      "customer_history_customer_history_component_customerhistorycomponent",
+      "models_order_order",
+      "models_order_orderdetail",
+      "models_order_ordersqueryparams",
+      "models_order_orderstats",
+      "order_details_order_details_component_orderdetailscomponent",
+      "order_table_order_table_component_ordertablecomponent",
+      "orders_orders_component_orderscomponent",
+      "profile_page_profile_page_component_profilepagecomponent"
+    ],
+    "3": [
+      "category_management_category_management_component_categorymanagementcomponent",
+      "models_categories_models_category",
+      "models_categories_models_collection",
+      "models_categories_models_subcategory",
+      "product_form_product_form_component_productformcomponent",
+      "sub_category_management_sub_category_management_component_subcategorymanagementcomponent"
+    ],
+    "4": [
+      "analytics_analytics_component_analyticscomponent",
+      "services_reports_service_customergrowth",
+      "services_reports_service_salesdata",
+      "services_reports_service_statusdistribution",
+      "services_reports_service_topproduct"
+    ],
+    "5": [
+      "manual_order_manual_order_component_manualordercomponent",
+      "models_order_source_socialmediasource",
+      "models_order_source_sourcepage",
+      "order_filter_bar_order_filter_bar_component_orderfilterbarcomponent",
+      "source_management_source_management_component_sourcemanagementcomponent"
+    ],
+    "6": [
+      "models_product_adminproduct",
+      "models_product_productsstatustab",
+      "models_reviews_models_adminreview",
+      "products_products_component_productscomponent",
+      "reviews_reviews_component_reviewscomponent"
+    ],
+    "7": [
+      "category_grid_category_grid_component_categorygridcomponent",
+      "models_category_category",
+      "models_home_data_homedata",
+      "services_product_service_productservice"
+    ],
+    "8": [
+      "dashboard_overview_dashboard_overview_component_dashboardoverviewcomponent",
+      "models_admin_dashboard_models_dailytraffic",
+      "models_admin_dashboard_models_dashboardstats"
+    ],
+    "9": [
+      "role_management_role_management_component_rolemanagementcomponent",
+      "services_staff_service_moduledto",
+      "services_staff_service_roledto"
+    ],
+    "10": [
+      "services_staff_service_auditlogdto",
+      "services_staff_service_staffuserdto",
+      "staff_audit_log_staff_audit_log_component_staffauditlogcomponent"
+    ],
+    "11": [
+      "banners_banners_component_bannerscomponent",
+      "models_banners_models_adminbanner"
+    ],
+    "12": [
+      "blocked_ips_blocked_ips_component_blockedipscomponent",
+      "services_security_service_blockedip"
+    ],
+    "13": [
+      "customers_customers_component_customerscomponent",
+      "services_customers_service_customer"
+    ],
+    "14": [
+      "inventory_inventory_component_inventorycomponent",
+      "services_inventory_service_productinventorydto"
+    ],
+    "15": [
+      "models_navigation_models_adminnavigationmenu",
+      "navigation_management_navigation_management_component_navigationmanagementcomponent"
+    ],
+    "16": [
+      "models_pages_models_adminpage",
+      "pages_pages_component_pagescomponent"
+    ],
+    "17": [
+      "profile_profile_component_profilecomponent",
+      "services_profile_service_adminuserprofile"
+    ],
+    "18": [
+      "services_notification_service_toastmessage",
+      "toast_toast_component_toastcomponent"
+    ],
+    "19": [
+      "services_users_service_adminuser",
+      "user_management_user_management_component_usermanagementcomponent"
+    ],
+    "20": [
+      "about_about_component_aboutcomponent"
+    ],
+    "21": [
+      "account_page_account_page_component_accountpagecomponent"
+    ],
+    "22": [
+      "admin_header_admin_header_component_adminheadercomponent"
+    ],
+    "23": [
+      "admin_layout_admin_layout_component_adminlayoutcomponent"
+    ],
+    "24": [
+      "admin_sidebar_admin_sidebar_component_adminsidebarcomponent"
+    ],
+    "25": [
+      "app_app_component_appcomponent"
+    ],
+    "26": [
+      "app_icon_app_icon_component_appiconcomponent"
+    ],
+    "27": [
+      "badge_badge_component_badgecomponent"
+    ],
+    "28": [
+      "breadcrumbs_breadcrumbs_component_menbreadcrumbscomponent"
+    ],
+    "29": [
+      "breadcrumbs_breadcrumbs_component_womenbreadcrumbscomponent"
+    ],
+    "30": [
+      "campaign_spotlight_campaign_spotlight_component_campaignspotlightcomponent"
+    ],
+    "31": [
+      "cart_page_cart_page_component_cartpagecomponent"
+    ],
+    "32": [
+      "category_chips_category_chips_component_mencategorychipscomponent"
+    ],
+    "33": [
+      "category_section_category_section_component_categorysectioncomponent"
+    ],
+    "34": [
+      "checkout_page_checkout_page_component_checkoutpagecomponent"
+    ],
+    "35": [
+      "config_api_config_apiconfig"
+    ],
+    "36": [
+      "constants_product_constants_sortproductsizes"
+    ],
+    "37": [
+      "contact_contact_component_contactcomponent"
+    ],
+    "38": [
+      "contact_contact_service_contactpayload"
+    ],
+    "39": [
+      "contact_contact_service_contactservice"
+    ],
+    "40": [
+      "contact_fab_contact_fab_component_contactfabcomponent"
+    ],
+    "41": [
+      "ecommerce_view_src_app_admin_services_navigation_service_ts_services_navigation_service_navigationservice"
+    ],
+    "42": [
+      "ecommerce_view_src_app_core_services_navigation_service_ts_services_navigation_service_navigationservice"
+    ],
+    "43": [
+      "filters_sortbar_filters_sortbar_component_menfilterssortbarcomponent"
+    ],
+    "44": [
+      "footer_footer_component_footercomponent"
+    ],
+    "45": [
+      "hero_hero_component_herocomponent"
+    ],
+    "46": [
+      "home_page_home_page_component_homepagecomponent"
+    ],
+    "47": [
+      "http_http_client_apihttpclient"
+    ],
+    "48": [
+      "icon_button_icon_button_component_iconbuttoncomponent"
+    ],
+    "49": [
+      "interceptors_http_cache_interceptor_clearhttpcache"
+    ],
+    "50": [
+      "interceptors_http_cache_interceptor_invalidatehttpcache"
+    ],
+    "51": [
+      "loading_spinner_loading_spinner_component_loadingspinnercomponent"
+    ],
+    "52": [
+      "login_page_login_page_loginpagecomponent"
+    ],
+    "53": [
+      "logout_logout_component_logoutcomponent"
+    ],
+    "54": [
+      "models_admin_dashboard_models_categorysales"
+    ],
+    "55": [
+      "models_admin_dashboard_models_customergrowth"
+    ],
+    "56": [
+      "models_admin_dashboard_models_popularproduct"
+    ],
+    "57": [
+      "models_admin_dashboard_models_recentorder"
+    ],
+    "58": [
+      "models_admin_dashboard_models_salesdata"
+    ],
+    "59": [
+      "models_admin_dashboard_models_statusdistribution"
+    ],
+    "60": [
+      "models_banners_models_bannercreatepayload"
+    ],
+    "61": [
+      "models_cart_cartitem"
+    ],
+    "62": [
+      "models_cart_cartsummary"
+    ],
+    "63": [
+      "models_cart_dto_model_addtocartdto"
+    ],
+    "64": [
+      "models_cart_dto_model_cartdto"
+    ],
+    "65": [
+      "models_cart_dto_model_cartitemdto"
+    ],
+    "66": [
+      "models_cart_dto_model_updatecartitemdto"
+    ],
+    "67": [
+      "models_categories_models_categorynode"
+    ],
+    "68": [
+      "models_categories_models_reorderpayload"
+    ],
+    "69": [
+      "models_category_categorynode"
+    ],
+    "70": [
+      "models_category_collection"
+    ],
+    "71": [
+      "models_category_reorderpayload"
+    ],
+    "72": [
+      "models_category_subcategory"
+    ],
+    "73": [
+      "models_checkout_checkoutstate"
+    ],
+    "74": [
+      "models_entities_authresponse"
+    ],
+    "75": [
+      "models_entities_loginpayload"
+    ],
+    "76": [
+      "models_entities_user"
+    ],
+    "77": [
+      "models_navigation_models_navigationmenucreatepayload"
+    ],
+    "78": [
+      "models_order_orderitem"
+    ],
+    "79": [
+      "models_order_orderlog"
+    ],
+    "80": [
+      "models_order_ordernote"
+    ],
+    "81": [
+      "models_order_source_socialmediasourcecreate"
+    ],
+    "82": [
+      "models_order_source_sourcepagecreate"
+    ],
+    "83": [
+      "models_pages_models_pagecreatepayload"
+    ],
+    "84": [
+      "models_pagination_pagination"
+    ],
+    "85": [
+      "models_product_comboitem"
+    ],
+    "86": [
+      "models_product_productimage"
+    ],
+    "87": [
+      "models_product_productpayload"
+    ],
+    "88": [
+      "models_product_productsqueryparams"
+    ],
+    "89": [
+      "models_product_productstatus"
+    ],
+    "90": [
+      "models_product_productvariant"
+    ],
+    "91": [
+      "models_products_models_productvariantedit"
+    ],
+    "92": [
+      "models_products_models_productvariantoption"
+    ],
+    "93": [
+      "models_products_models_productvariantrow"
+    ],
+    "94": [
+      "models_review_createreview"
+    ],
+    "95": [
+      "models_reviews_models_reviewupdatepayload"
+    ],
+    "96": [
+      "models_testimonial_testimonial"
+    ],
+    "97": [
+      "models_user_address"
+    ],
+    "98": [
+      "models_user_paymentmethod"
+    ],
+    "99": [
+      "models_user_userprofile"
+    ],
+    "100": [
+      "navbar_navbar_component_navbarcomponent"
+    ],
+    "101": [
+      "newsletter_newsletter_component_newslettercomponent"
+    ],
+    "102": [
+      "offer_details_page_offer_details_page_component_offerdetailspagecomponent"
+    ],
+    "103": [
+      "order_confirmation_page_order_confirmation_page_component_orderconfirmationpagecomponent"
+    ],
+    "104": [
+      "orders_page_orders_page_component_orderspagecomponent"
+    ],
+    "105": [
+      "pagination_pagination_component_menpaginationcomponent"
+    ],
+    "106": [
+      "pagination_pagination_component_womenpaginationcomponent"
+    ],
+    "107": [
+      "pipes_bdt_to_usd_pipe_bdttousdpipe"
+    ],
+    "108": [
+      "pipes_safe_html_pipe_safehtmlpipe"
+    ],
+    "109": [
+      "placeholder_placeholder_component_placeholdercomponent"
+    ],
+    "110": [
+      "price_display_price_display_component_pricedisplaycomponent"
+    ],
+    "111": [
+      "product_details_page_product_details_page_component_productdetailspagecomponent"
+    ],
+    "112": [
+      "promo_banner_promo_banner_component_promobannercomponent"
+    ],
+    "113": [
+      "section_header_section_header_component_sectionheadercomponent"
+    ],
+    "114": [
+      "services_analytics_service_analyticsservice"
+    ],
+    "115": [
+      "services_auth_service_authservice"
+    ],
+    "116": [
+      "services_banner_service_banner"
+    ],
+    "117": [
+      "services_banner_service_bannerservice"
+    ],
+    "118": [
+      "services_cart_service_cartservice"
+    ],
+    "119": [
+      "services_categories_service_categoriesservice"
+    ],
+    "120": [
+      "services_category_service_categoryservice"
+    ],
+    "121": [
+      "services_checkout_service_checkoutservice"
+    ],
+    "122": [
+      "services_custom_landing_page_service_customlandingpageconfig"
+    ],
+    "123": [
+      "services_custom_landing_page_service_customlandingpageservice"
+    ],
+    "124": [
+      "services_customer_profile_service_customerprofile"
+    ],
+    "125": [
+      "services_customer_profile_service_customerprofilerequest"
+    ],
+    "126": [
+      "services_customer_profile_service_customerprofileservice"
+    ],
+    "127": [
+      "services_customers_service_customersqueryparams"
+    ],
+    "128": [
+      "services_customers_service_customersresponse"
+    ],
+    "129": [
+      "services_customers_service_customersservice"
+    ],
+    "130": [
+      "services_dashboard_service_dashboardservice"
+    ],
+    "131": [
+      "services_image_url_service_imageurlservice"
+    ],
+    "132": [
+      "services_inventory_service_inventoryservice"
+    ],
+    "133": [
+      "services_inventory_service_variantinventorydto"
+    ],
+    "134": [
+      "services_loading_service_loadingservice"
+    ],
+    "135": [
+      "services_navigation_service_megamenucollection"
+    ],
+    "136": [
+      "services_navigation_service_megamenuitem"
+    ],
+    "137": [
+      "services_navigation_service_megamenusubcategory"
+    ],
+    "138": [
+      "services_navigation_service_navigationmenuitem"
+    ],
+    "139": [
+      "services_notification_service_notificationservice"
+    ],
+    "140": [
+      "services_order_api_service_customerlookupresponse"
+    ],
+    "141": [
+      "services_order_api_service_customerorderrequest"
+    ],
+    "142": [
+      "services_order_api_service_customerorderresponse"
+    ],
+    "143": [
+      "services_order_api_service_orderapiservice"
+    ],
+    "144": [
+      "services_order_api_service_orderitemrequest"
+    ],
+    "145": [
+      "services_order_service_orderservice"
+    ],
+    "146": [
+      "services_orders_service_ordersservice"
+    ],
+    "147": [
+      "services_pages_service_pagesservice"
+    ],
+    "148": [
+      "services_pages_service_staticpage"
+    ],
+    "149": [
+      "services_product_groups_service_productgroupsservice"
+    ],
+    "150": [
+      "services_products_service_productsservice"
+    ],
+    "151": [
+      "services_profile_service_profileservice"
+    ],
+    "152": [
+      "services_profile_service_updateprofilerequest"
+    ],
+    "153": [
+      "services_reports_service_reportsservice"
+    ],
+    "154": [
+      "services_review_service_reviewservice"
+    ],
+    "155": [
+      "services_reviews_service_adminreview"
+    ],
+    "156": [
+      "services_reviews_service_reviewsservice"
+    ],
+    "157": [
+      "services_security_service_securityservice"
+    ],
+    "158": [
+      "services_settings_service_settingsservice"
+    ],
+    "159": [
+      "services_sidebar_service_sidebarservice"
+    ],
+    "160": [
+      "services_site_settings_service_sitesettings"
+    ],
+    "161": [
+      "services_site_settings_service_sitesettingsservice"
+    ],
+    "162": [
+      "services_source_management_service_sourcemanagementservice"
+    ],
+    "163": [
+      "services_staff_service_apiresponse"
+    ],
+    "164": [
+      "services_staff_service_modulepermissiondto"
+    ],
+    "165": [
+      "services_staff_service_paginatedresponse"
+    ],
+    "166": [
+      "services_staff_service_staffservice"
+    ],
+    "167": [
+      "services_staff_service_staffuserlistresult"
+    ],
+    "168": [
+      "services_sub_categories_service_subcategoriesservice"
+    ],
+    "169": [
+      "services_sub_categories_service_subcategory"
+    ],
+    "170": [
+      "services_user_persistence_service_userdetails"
+    ],
+    "171": [
+      "services_user_persistence_service_userpersistenceservice"
+    ],
+    "172": [
+      "services_user_service_userservice"
+    ],
+    "173": [
+      "services_users_service_createadminrequest"
+    ],
+    "174": [
+      "services_users_service_usersservice"
+    ],
+    "175": [
+      "sidebar_filters_sidebar_filters_component_womensidebarfilterscomponent"
+    ],
+    "176": [
+      "size_guide_size_guide_component_sizeguidecomponent"
+    ],
+    "177": [
+      "toolbar_toolbar_component_womentoolbarcomponent"
+    ],
+    "178": [
+      "utils_location_matcher_matchedlocation"
+    ],
+    "179": [
+      "utils_location_matcher_matchlocationfromaddress"
+    ],
+    "180": [
+      "why_choose_us_why_choose_us_component_whychooseuscomponent"
+    ],
+    "181": [
+      "women_products_page_women_products_page_component_womenproductspagecomponent"
+    ]
+  },
+  "cohesion": {
+    "0": 0.15384615384615385,
+    "1": 0.2,
+    "2": 0.25,
+    "3": 0.3333333333333333,
+    "4": 0.4,
+    "5": 0.6,
+    "6": 0.4,
+    "7": 0.5,
+    "8": 0.6666666666666666,
+    "9": 0.6666666666666666,
+    "10": 0.6666666666666666,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0,
+    "117": 1.0,
+    "118": 1.0,
+    "119": 1.0,
+    "120": 1.0,
+    "121": 1.0,
+    "122": 1.0,
+    "123": 1.0,
+    "124": 1.0,
+    "125": 1.0,
+    "126": 1.0,
+    "127": 1.0,
+    "128": 1.0,
+    "129": 1.0,
+    "130": 1.0,
+    "131": 1.0,
+    "132": 1.0,
+    "133": 1.0,
+    "134": 1.0,
+    "135": 1.0,
+    "136": 1.0,
+    "137": 1.0,
+    "138": 1.0,
+    "139": 1.0,
+    "140": 1.0,
+    "141": 1.0,
+    "142": 1.0,
+    "143": 1.0,
+    "144": 1.0,
+    "145": 1.0,
+    "146": 1.0,
+    "147": 1.0,
+    "148": 1.0,
+    "149": 1.0,
+    "150": 1.0,
+    "151": 1.0,
+    "152": 1.0,
+    "153": 1.0,
+    "154": 1.0,
+    "155": 1.0,
+    "156": 1.0,
+    "157": 1.0,
+    "158": 1.0,
+    "159": 1.0,
+    "160": 1.0,
+    "161": 1.0,
+    "162": 1.0,
+    "163": 1.0,
+    "164": 1.0,
+    "165": 1.0,
+    "166": 1.0,
+    "167": 1.0,
+    "168": 1.0,
+    "169": 1.0,
+    "170": 1.0,
+    "171": 1.0,
+    "172": 1.0,
+    "173": 1.0,
+    "174": 1.0,
+    "175": 1.0,
+    "176": 1.0,
+    "177": 1.0,
+    "178": 1.0,
+    "179": 1.0,
+    "180": 1.0,
+    "181": 1.0
+  },
+  "gods": [
+    {
+      "id": "models_product_product",
+      "label": "Product",
+      "degree": 16
+    },
+    {
+      "id": "orders_orders_component_orderscomponent",
+      "label": "OrdersComponent",
+      "degree": 6
+    },
+    {
+      "id": "models_settings_models_deliverymethod",
+      "label": "DeliveryMethod",
+      "degree": 4
+    },
+    {
+      "id": "analytics_analytics_component_analyticscomponent",
+      "label": "AnalyticsComponent",
+      "degree": 4
+    },
+    {
+      "id": "models_order_source_sourcepage",
+      "label": "SourcePage",
+      "degree": 4
+    },
+    {
+      "id": "models_order_source_socialmediasource",
+      "label": "SocialMediaSource",
+      "degree": 4
+    },
+    {
+      "id": "models_order_order",
+      "label": "Order",
+      "degree": 4
+    },
+    {
+      "id": "models_order_orderdetail",
+      "label": "OrderDetail",
+      "degree": 4
+    },
+    {
+      "id": "custom_landing_page_custom_landing_page_component_customlandingpagecomponent",
+      "label": "CustomLandingPageComponent",
+      "degree": 4
+    },
+    {
+      "id": "models_categories_models_category",
+      "label": "Category",
+      "degree": 3
+    }
+  ],
+  "surprises": [
+    {
+      "source": "LandingPageComponent",
+      "target": "Product",
+      "source_files": [
+        "ECommerce.View/src/app/features/landing-page/pages/landing-page/landing-page.component.ts",
+        "ECommerce.View/src/app/core/models/product.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities; peripheral node `LandingPageComponent` unexpectedly reaches hub `Product`"
+    },
+    {
+      "source": "ManualOrderComponent",
+      "target": "DeliveryMethod",
+      "source_files": [
+        "ECommerce.View/src/app/admin/pages/manual-order/manual-order.component.ts",
+        "ECommerce.View/src/app/admin/models/settings.models.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "OrderInvoiceComponent",
+      "target": "OrderDetail",
+      "source_files": [
+        "ECommerce.View/src/app/admin/pages/orders/components/admin-order-invoice/order-invoice.component.ts",
+        "ECommerce.View/src/app/core/models/order.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "OrdersComponent",
+      "target": "OrdersQueryParams",
+      "source_files": [
+        "ECommerce.View/src/app/admin/pages/orders/orders.component.ts",
+        "ECommerce.View/src/app/core/models/order.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `OrdersQueryParams` unexpectedly reaches hub `OrdersComponent`"
+    },
+    {
+      "source": "OrdersComponent",
+      "target": "OrderStats",
+      "source_files": [
+        "ECommerce.View/src/app/admin/pages/orders/orders.component.ts",
+        "ECommerce.View/src/app/core/models/order.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `OrderStats` unexpectedly reaches hub `OrdersComponent`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `Product` connect `Community 0` to `Community 1`, `Community 6`, `Community 7`?",
+      "why": "High betweenness centrality (0.025) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `DeliveryMethod` connect `Community 1` to `Community 5`?",
+      "why": "High betweenness centrality (0.017) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `ManualOrderComponent` connect `Community 5` to `Community 1`?",
+      "why": "High betweenness centrality (0.012) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `AdminHeaderComponent`, `AdminLayoutComponent`, `AdminSidebarComponent` to the rest of the system?",
+      "why": "216 weakly-connected nodes found - possible documentation gaps or missing edges."
+    }
+  ]
+}

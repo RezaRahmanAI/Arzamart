@@ -41,4 +41,22 @@ public class PublicSiteSettingsService : IPublicSiteSettingsService
 
         return Task.FromResult(methods);
     }
+
+    public Task<List<DeliveryMethodDto>> GetActiveDeliveryMethodDtosAsync()
+    {
+        _cache.SiteSettings.TryGetValue("settings", out var settings);
+        var dtos = settings?.DeliveryMethods?
+            .Where(dm => dm.IsActive)
+            .Select(dm => new DeliveryMethodDto
+            {
+                Id = dm.Id,
+                Name = dm.Name ?? string.Empty,
+                Cost = dm.Cost,
+                EstimatedDays = dm.EstimatedDays,
+                IsActive = dm.IsActive
+            })
+            .ToList() ?? new List<DeliveryMethodDto>();
+
+        return Task.FromResult(dtos);
+    }
 }

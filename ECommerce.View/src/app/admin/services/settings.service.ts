@@ -4,9 +4,8 @@ import { tap } from "rxjs/operators";
 
 import {
   AdminSettings,
-  ShippingZone,
-  DeliveryMethod,
 } from "../models/settings.models";
+import { DeliveryMethod } from "../../core/models/delivery";
 import { ApiHttpClient } from "../../core/http/http-client";
 
 @Injectable({ providedIn: "root" })
@@ -25,27 +24,6 @@ export class SettingsService {
     return this.api
       .post<AdminSettings>("/admin/settings", payload)
       .pipe(tap((settings) => this.settingsSubject.next(settings)));
-  }
-
-  createShippingZone(payload: ShippingZone): Observable<ShippingZone> {
-    return this.api.post<ShippingZone>(
-      "/admin/settings/shipping-zones",
-      payload,
-    );
-  }
-
-  updateShippingZone(
-    zoneId: number,
-    payload: ShippingZone,
-  ): Observable<ShippingZone> {
-    return this.api.post<ShippingZone>(
-      `/admin/settings/shipping-zones/${zoneId}`,
-      payload,
-    );
-  }
-
-  deleteShippingZone(zoneId: number): Observable<boolean> {
-    return this.api.delete<boolean>(`/admin/settings/shipping-zones/${zoneId}`);
   }
 
   // Delivery Methods API
@@ -70,14 +48,14 @@ export class SettingsService {
     id: number,
     payload: Partial<DeliveryMethod>,
   ): Observable<void> {
-    return this.api.post<void>(
+    return this.api.put<void>(
       `/admin/settings/delivery-methods/${id}`,
       payload,
     );
   }
 
   deleteDeliveryMethod(id: number): Observable<void> {
-    return this.api.post<void>(`/admin/settings/delivery-methods/${id}/delete`, {});
+    return this.api.delete<void>(`/admin/settings/delivery-methods/${id}`);
   }
 
   uploadLogo(file: File): Observable<{ url: string }> {

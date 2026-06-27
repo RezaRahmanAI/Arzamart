@@ -4,28 +4,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Services;
 
 public class CustomerService : ICustomerService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CustomerService(ApplicationDbContext context)
+    public CustomerService(IUnitOfWork unitOfWork)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Customer?> GetCustomerByPhoneAsync(string phone)
     {
-        // Normalize phone number if needed
-        return await _context.Customers
+        return await _unitOfWork.Repository<Customer>().GetQueryable()
             .FirstOrDefaultAsync(c => c.Phone == phone);
     }
 
-    public async Task<Customer> CreateOrUpdateCustomerAsync(string phone, string name, string address, string? city = null, string? area = null)
+    public async Task<Customer> CreateOrUpdateCustomerAsync(string phone, string name, string address, string? city = null, string? area = null, string? userId = null)
     {
         var customer = await GetCustomerByPhoneAsync(phone);
 
@@ -37,27 +35,30 @@ public class CustomerService : ICustomerService
                 Name = name,
                 Address = address,
                 City = city,
-                Area = area
+                Area = area,
+                UserId = userId
             };
-            _context.Customers.Add(customer);
+            _unitOfWork.Repository<Customer>().Add(customer);
         }
         else
         {
-            // Update existing customer info
             customer.Name = name;
             customer.Address = address;
             customer.City = city ?? customer.City;
             customer.Area = area ?? customer.Area;
             customer.UpdatedAt = DateTime.UtcNow;
-            _context.Customers.Update(customer);
+            if (userId != null)
+                customer.UserId = userId;
+            _unitOfWork.Repository<Customer>().Update(customer);
         }
 
-        await _context.SaveChangesAsync();
+        await _unitOfWork.Complete();
         return customer;
     }
+
     public async Task<(List<Customer> Items, int Total)> GetCustomersAsync(string? searchTerm, int page, int pageSize)
     {
-        var query = _context.Customers.AsQueryable();
+        var query = _unitOfWork.Repository<Customer>().GetQueryable();
 
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
@@ -73,14 +74,25 @@ public class CustomerService : ICustomerService
 
         return (items, total);
     }
+
     public async Task<Customer?> GetCustomerByIdAsync(int id)
     {
-        return await _context.Customers.FindAsync(id);
+        return await _unitOfWork.Repository<Customer>().GetByIdAsync(id);
     }
 
     public async Task UpdateCustomerAsync(Customer customer)
     {
-        _context.Customers.Update(customer);
-        await _context.SaveChangesAsync();
+        _unitOfWork.Repository<Customer>().Update(customer);
+        await _unitOfWork.Complete();
+    }
+
+    public async Task FlagCustomerAsync(int id, bool isSuspicious)
+    {
+        var customer = await GetCustomerByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Customer with ID {id} not found.");
+
+        customer.IsSuspicious = isSuspicious;
+        _unitOfWork.Repository<Customer>().Update(customer);
+        await _unitOfWork.Complete();
     }
 }

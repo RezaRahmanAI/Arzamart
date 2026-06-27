@@ -3,12 +3,12 @@ import { BehaviorSubject } from 'rxjs';
 
 import { User as AuthUser } from '../models/entities';
 import { Address, PaymentMethod, UserProfile } from '../models/user';
+import { StorageKeys } from '../constants/storage-keys';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private readonly storageKey = 'user_profiles';
 
   private readonly profilesSubject = new BehaviorSubject<UserProfile[]>(this.loadProfiles());
   readonly profiles$ = this.profilesSubject.asObservable();
@@ -116,7 +116,7 @@ export class UserService {
   }
 
   private loadProfiles(): UserProfile[] {
-    const stored = localStorage.getItem(this.storageKey);
+    const stored = localStorage.getItem(StorageKeys.USER_PROFILES);
     if (!stored) {
       return [];
     }
@@ -130,6 +130,6 @@ export class UserService {
 
   private updateProfiles(profiles: UserProfile[]): void {
     this.profilesSubject.next(profiles);
-    localStorage.setItem(this.storageKey, JSON.stringify(profiles));
+    localStorage.setItem(StorageKeys.USER_PROFILES, JSON.stringify(profiles));
   }
 }

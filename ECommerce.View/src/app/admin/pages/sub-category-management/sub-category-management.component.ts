@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from "@angu
 import { RouterModule } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
-import { Category, SubCategory } from "../../models/categories.models";
+import { Category, SubCategory } from "../../../core/models/category";
 import { CategoriesService } from "../../services/categories.service";
 import { SubCategoriesService } from "../../services/sub-categories.service";
 import { environment } from "../../../../environments/environment";

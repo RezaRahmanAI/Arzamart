@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, ChangeDetectionStrategy, inject } from "@angular/core";
 import { AsyncPipe, NgClass } from "@angular/common";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { combineLatest, map } from "rxjs";
@@ -15,6 +15,7 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
 @Component({
   selector: "app-order-confirmation-page",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AsyncPipe,
     NgClass,

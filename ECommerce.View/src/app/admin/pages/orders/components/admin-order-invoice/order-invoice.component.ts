@@ -1,6 +1,6 @@
 import { NgIf, DatePipe, NgFor } from '@angular/common';
 import { Component, Input, Output, EventEmitter, OnInit, inject } from "@angular/core";
-import { OrderDetail } from "../../../../models/orders.models";
+import { Order } from "../../../../models/orders.models";
 import { AdminSettings } from "../../../../models/settings.models";
 import { SettingsService } from "../../../../services/settings.service";
 import { ImageUrlService } from "../../../../../core/services/image-url.service";
@@ -15,7 +15,7 @@ import { AppIconComponent } from "../../../../../shared/components/app-icon/app-
   styleUrl: "./order-invoice.component.css",
 })
 export class OrderInvoiceComponent implements OnInit {
-  @Input({ required: true }) order!: OrderDetail;
+  @Input({ required: true }) order!: Order;
   @Output() close = new EventEmitter<void>();
 
   private settingsService = inject(SettingsService);

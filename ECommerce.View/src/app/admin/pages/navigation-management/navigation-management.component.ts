@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angula
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { AdminNavigationMenu } from "../../models/navigation.models";
-import { NavigationService } from "../../services/navigation.service";
+import { NavigationMenuService } from "../../services/navigation-menu.service";
 import { AuthService } from "../../../core/services/auth.service";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 
@@ -15,7 +15,7 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
 })
 export class NavigationManagementComponent implements OnInit, OnDestroy {
 
-  private navService = inject(NavigationService);
+  private navService = inject(NavigationMenuService);
   private fb = inject(FormBuilder);
   readonly authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);

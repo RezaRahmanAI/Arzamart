@@ -44,27 +44,33 @@ public class AdminCustomersController : ControllerBase
         });
     }
     [HttpPost("{id}/flag")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> FlagCustomer(int id)
     {
-        var customer = await _customerService.GetCustomerByIdAsync(id);
-        if (customer == null) return NotFound();
-
-        customer.IsSuspicious = true;
-        await _customerService.UpdateCustomerAsync(customer);
-
-        return Ok();
+        try
+        {
+            await _customerService.FlagCustomerAsync(id, true);
+            return Ok();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{id}/unflag")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> UnflagCustomer(int id)
     {
-        var customer = await _customerService.GetCustomerByIdAsync(id);
-        if (customer == null) return NotFound();
-
-        customer.IsSuspicious = false;
-        await _customerService.UpdateCustomerAsync(customer);
-
-        return Ok();
+        try
+        {
+            await _customerService.FlagCustomerAsync(id, false);
+            return Ok();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }
 

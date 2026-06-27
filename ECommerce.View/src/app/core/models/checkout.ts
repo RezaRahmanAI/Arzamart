@@ -6,11 +6,3 @@ export interface CheckoutState {
   area?: string;
   deliveryMethodId?: number;
 }
-
-export interface ShippingMethod {
-  id: string;
-  label: string;
-  description: string;
-  price: number;
-  estimatedDelivery: string;
-}

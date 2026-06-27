@@ -7,13 +7,13 @@ using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using ECommerce.Infrastructure.Specifications;
-using ECommerce.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using ECommerce.Core.Enums;
 using ECommerce.Core.DTOs.Products;
 using ECommerce.Core.Constants;
 using ECommerce.Infrastructure.Cache;
-using Microsoft.Extensions.DependencyInjection;
+using ECommerce.Infrastructure.Helpers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerce.Infrastructure.Services;
 
@@ -22,22 +22,14 @@ public class ProductService : IProductService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly AppCache _cache;
-    private readonly ApplicationDbContext _db;
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILogger<ProductService> _logger;
 
-    public ProductService(IUnitOfWork unitOfWork, IMapper mapper, AppCache cache, ApplicationDbContext db, IServiceScopeFactory scopeFactory)
+    public ProductService(IUnitOfWork unitOfWork, IMapper mapper, AppCache cache, ILogger<ProductService> logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _cache = cache;
-        _db = db;
-        _scopeFactory = scopeFactory;
-    }
-
-    public Task<ProductDto?> GetProductBySlugAsync(string slug)
-    {
-        var product = _cache.Products.Values.FirstOrDefault(p => p.Slug == slug);
-        return Task.FromResult(product == null ? null : _mapper.Map<ProductDto>(product));
+        _logger = logger;
     }
 
     public Task<ProductDto?> GetProductByIdAsync(int id, bool ignoreFilters = false)
@@ -48,7 +40,7 @@ public class ProductService : IProductService
 
     public async Task<AdminProductListResultDto> GetAdminProductsAsync(string? searchTerm, string? category, string? statusTab, string? stockStatus, int page, int pageSize)
     {
-        var query = _db.Products
+        var query = _unitOfWork.Repository<Product>().GetQueryable()
             .IgnoreQueryFilters()
             .AsNoTracking();
 
@@ -57,7 +49,7 @@ public class ProductService : IProductService
 
         if (!string.IsNullOrEmpty(category) && category != "all")
         {
-            var dbCat = await _db.Categories
+            var dbCat = await _unitOfWork.Repository<Category>().GetQueryable()
                 .FirstOrDefaultAsync(c => c.Name.ToLower() == category.ToLower());
             if (dbCat != null)
                 query = query.Where(p => p.CategoryId == dbCat.Id);
@@ -143,12 +135,15 @@ public class ProductService : IProductService
         {
             _unitOfWork.Repository<Product>().Delete(product);
             await _unitOfWork.Complete();
-            _cache.Products.TryRemove(id, out _);
+            _cache.Products.TryRemove(id, out var removedProduct);
+            if (removedProduct != null && !string.IsNullOrEmpty(removedProduct.Slug))
+                _cache.ProductSlugIndex.TryRemove(removedProduct.Slug, out _);
             RebuildHomePageCache();
             return (true, mainImageUrl, imageUrls);
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Error deleting product {ProductId}", id);
             return (false, null, new List<string>());
         }
     }
@@ -241,7 +236,7 @@ public class ProductService : IProductService
         var result = await _unitOfWork.Complete();
         if (result <= 0) return null!;
 
-        var full = await _db.Products
+        var full = await _unitOfWork.Repository<Product>().GetQueryable()
             .AsNoTracking()
             .Include(p => p.Images)
             .Include(p => p.Variants)
@@ -250,6 +245,8 @@ public class ProductService : IProductService
             .FirstAsync(p => p.Id == product.Id);
 
         _cache.Products[full.Id] = full;
+        if (!string.IsNullOrEmpty(full.Slug))
+            _cache.ProductSlugIndex[full.Slug] = full.Id;
         RebuildHomePageCache();
 
         return _mapper.Map<ProductDto>(full);
@@ -408,7 +405,7 @@ public class ProductService : IProductService
         _unitOfWork.Repository<Product>().Update(product);
         await _unitOfWork.Complete();
 
-        var full = await _db.Products
+        var full = await _unitOfWork.Repository<Product>().GetQueryable()
             .AsNoTracking()
             .Include(p => p.Images)
             .Include(p => p.Variants)
@@ -417,6 +414,8 @@ public class ProductService : IProductService
             .FirstAsync(p => p.Id == product.Id);
 
         _cache.Products[full.Id] = full;
+        if (!string.IsNullOrEmpty(full.Slug))
+            _cache.ProductSlugIndex[full.Slug] = full.Id;
         RebuildHomePageCache();
 
         return _mapper.Map<ProductDto>(full);
@@ -424,38 +423,12 @@ public class ProductService : IProductService
 
     private void RebuildHomePageCache()
     {
-        var homeDto = new HomePageDto
+        lock (_cache.RebuildLock)
         {
-            Banners = _mapper.Map<List<HeroBannerDto>>(
-                _cache.Banners.Values.OrderBy(b => b.DisplayOrder).ToList()),
-            Categories = _mapper.Map<List<CategoryDto>>(
-                _cache.Categories.Values.Take(10).ToList()),
-            FeaturedProducts = _mapper.Map<List<ProductListDto>>(
-                _cache.Products.Values
-                    .Where(p => p.IsFeatured && p.IsActive)
-                    .Take(12).ToList()),
-            NewArrivals = _mapper.Map<List<ProductListDto>>(
-                _cache.Products.Values
-                    .Where(p => p.IsActive)
-                    .OrderByDescending(p => p.CreatedAt)
-                    .Take(12).ToList())
-        };
-        _cache.HomePageData["homepage"] = homeDto;
+            HomePageCacheRebuilder.Rebuild(_cache);
+        }
     }
 
-    public async Task UpdateProductGroupAsync(int groupId)
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var group = await db.ProductGroups
-            .AsNoTracking()
-            .Include(g => g.Products)
-            .FirstOrDefaultAsync(g => g.Id == groupId);
-        
-        if (group != null) _cache.ProductGroups[groupId] = group;
-        else _cache.ProductGroups.TryRemove(groupId, out _);
-        RebuildHomePageCache();
-    }
 
     public async Task<List<ProductSearchResultDto>> SearchProductsForComboAsync(string? q)
     {
@@ -465,8 +438,8 @@ public class ProductService : IProductService
         var searchTerm = q.Trim().ToLower();
 
         var products = _cache.Products.Values
-            .Where(p => p.Name.ToLower().Contains(searchTerm)
-                     || (p.Sku != null && p.Sku.ToLower().Contains(searchTerm)))
+            .Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                     || (p.Sku != null && p.Sku.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
             .OrderByDescending(p => p.CreatedAt)
             .Take(15)
             .ToList();
@@ -553,7 +526,7 @@ public class ProductService : IProductService
 
     private async Task<string> GenerateUniqueSlugAsync(string name)
     {
-        var baseSlug = GenerateSlug(name);
+        var baseSlug = SlugHelper.GenerateSlug(name);
         var slug = baseSlug;
         int counter = 1;
 
@@ -566,18 +539,5 @@ public class ProductService : IProductService
         }
 
         return slug;
-    }
-
-    private string GenerateSlug(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return Guid.NewGuid().ToString().Substring(0, 8);
-        
-        var slug = name.ToLower().Trim();
-        slug = System.Text.RegularExpressions.Regex.Replace(slug, @"[^a-z0-9\s-]", "");
-        slug = System.Text.RegularExpressions.Regex.Replace(slug, @"\s+", "-").Trim('-');
-        
-        if (slug.Length > 150) slug = slug.Substring(0, 150).Trim('-');
-        
-        return string.IsNullOrEmpty(slug) ? Guid.NewGuid().ToString().Substring(0, 8) : slug;
     }
 }

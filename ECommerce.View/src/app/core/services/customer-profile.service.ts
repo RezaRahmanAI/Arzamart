@@ -4,6 +4,7 @@ import { HttpParams } from "@angular/common/http";
 import { BehaviorSubject, Observable, map, tap } from "rxjs";
 import { Order, OrderStatus } from "../models/order";
 import { ApiHttpClient } from "../http/http-client";
+import { StorageKeys } from "../constants/storage-keys";
 
 export interface CustomerProfile {
   id: number;
@@ -26,7 +27,7 @@ export class CustomerProfileService {
   private readonly api = inject(ApiHttpClient);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly baseUrl = "/customers";
-  private readonly storageKey = "customer_phone";
+  private readonly storageKey = StorageKeys.CUSTOMER_PHONE;
 
   private readonly phoneSubject = new BehaviorSubject<string | null>(
     this.getStoredPhone(),

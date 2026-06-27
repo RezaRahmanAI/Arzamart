@@ -31,7 +31,7 @@ public class AdminCustomLandingPageController : ControllerBase
         return Ok(config);
     }
 
-    [HttpPost]
+    [HttpPut]
     public async Task<ActionResult<CustomLandingPageConfigDto>> SaveConfig(CustomLandingPageConfigUpdateDto updateDto)
     {
         var result = await _landingPageService.SaveConfigAsync(updateDto);

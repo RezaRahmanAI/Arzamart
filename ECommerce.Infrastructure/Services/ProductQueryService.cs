@@ -12,33 +12,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Services;
 
-public interface IProductQueryService
-{
-    Task<PaginationDto<ProductListDto>> GetProductsAsync(
-        string? sort,
-        int? categoryId,
-        int? subCategoryId,
-        int? collectionId,
-        string? categorySlug,
-        string? subCategorySlug,
-        string? collectionSlug,
-        string? searchTerm,
-        string? tier,
-        string? tags,
-        bool? isNew,
-        bool? isFeatured,
-        int pageIndex,
-        int pageSize,
-        int? productGroupId,
-        int? productType);
-
-    Task<IReadOnlyList<ProductListDto>> GetProductsByIdsAsync(List<int> ids);
-
-    Task<ProductDto?> GetProductBySlugAsync(string slug);
-    Task<ProductDto?> GetProductByIdAsync(int id, bool ignoreFilters = false);
-    Task<List<string>> GetAvailableSizesAsync();
-}
-
 public class ProductQueryService : IProductQueryService
 {
     private readonly IMapper _mapper;
@@ -152,38 +125,9 @@ public class ProductQueryService : IProductQueryService
 
     public Task<ProductDto?> GetProductBySlugAsync(string slug)
     {
-        var product = _cache.Products.Values.FirstOrDefault(p => p.Slug == slug);
-        return Task.FromResult(product == null ? null : _mapper.Map<ProductDto>(product));
-    }
+        if (_cache.ProductSlugIndex.TryGetValue(slug, out var productId) && _cache.Products.TryGetValue(productId, out var product))
+            return Task.FromResult<ProductDto?>(_mapper.Map<ProductDto>(product));
 
-    public Task<ProductDto?> GetProductByIdAsync(int id, bool ignoreFilters = false)
-    {
-        _cache.Products.TryGetValue(id, out var product);
-        return Task.FromResult(product == null ? null : _mapper.Map<ProductDto>(product));
-    }
-
-    public Task<List<string>> GetAvailableSizesAsync()
-    {
-        var sizes = _cache.Products.Values
-            .SelectMany(p => p.Variants)
-            .Where(v => !string.IsNullOrEmpty(v.Size))
-            .Select(v => v.Size!)
-            .Distinct()
-            .ToList();
-
-        var sizeOrder = new List<string>
-        {
-            "2", "4", "6", "8", "10", "12", "14", "16",
-            "28", "30", "32", "34", "36", "38", "40", "42", "44",
-            "xs", "s", "m", "l", "xl", "xxl", "2xl", "xxxl", "3xl", "4xl", "5xl"
-        };
-
-        var ordered = sizes.OrderBy(s =>
-        {
-            var index = sizeOrder.IndexOf(s.ToLower());
-            return index == -1 ? 999 : index;
-        }).ThenBy(s => s).ToList();
-
-        return Task.FromResult(ordered);
+        return Task.FromResult<ProductDto?>(null);
     }
 }

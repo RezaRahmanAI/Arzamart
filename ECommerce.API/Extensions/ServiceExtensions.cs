@@ -1,4 +1,5 @@
 using ECommerce.API.Helpers;
+using ECommerce.API.Services;
 using ECommerce.Core.Constants;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
@@ -12,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Text.Json;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
@@ -30,6 +32,7 @@ public static class ServiceExtensions
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
         // 2. Performance: Compression
@@ -104,13 +107,21 @@ public static class ServiceExtensions
         services.AddScoped<IAdminSourcePageService, AdminSourcePageService>();
         services.AddScoped<IAdminSocialMediaSourceService, AdminSocialMediaSourceService>();
         services.AddScoped<IAdminCustomLandingPageService, AdminCustomLandingPageService>();
+        services.AddScoped<IProductGroupService, ProductGroupService>();
         services.AddScoped<IInventoryService, InventoryService>();
         services.AddScoped<IActivityLogService, ActivityLogService>();
+        services.AddScoped<IAdminUserService, ECommerce.API.Services.AdminUserService>();
+        services.AddScoped<IFileUploadService, ECommerce.API.Services.FileUploadService>();
+        services.AddScoped<IProductAdminHelper, ECommerce.API.Services.ProductAdminHelper>();
+        services.AddScoped<IProfileService, ProfileService>();
+        services.AddScoped<IStaffService, StaffService>();
         services.AddScoped<ICustomLandingPageService, CustomLandingPageService>();
         services.AddScoped<IPublicCategoryService, PublicCategoryService>();
         services.AddScoped<IPublicSiteSettingsService, PublicSiteSettingsService>();
         services.AddScoped<IAnalyticsService, AnalyticsService>();
         services.AddScoped<PasswordProtector>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         return services;
     }
@@ -156,10 +167,23 @@ public static class ServiceExtensions
             ?? config["AZURE_SQL_CONNECTIONSTRING"];
     }
 
-    public static IServiceCollection AddExoosisAuthServices(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddExoosisAuthServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
     {
         // JWT Setup
-        var jwtKey = config["Token:Key"] ?? "development_key_arzamart_123456789";
+        var jwtKey = config["Token:Key"];
+        if (string.IsNullOrEmpty(jwtKey))
+        {
+            if (env.IsDevelopment())
+            {
+                jwtKey = "development_key_arzamart_123456789";
+            }
+            else
+            {
+                throw new InvalidOperationException(
+                    "Token:Key is not configured. Set it in appsettings, user-secrets, or environment variables. " +
+                    "This is required in production to prevent JWT token forgery.");
+            }
+        }
         var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
         if (keyBytes.Length < 32)
         {
@@ -170,11 +194,12 @@ public static class ServiceExtensions
         // 1. Identity Setup
         services.AddIdentityCore<ApplicationUser>(options =>
         {
-            options.Password.RequireDigit = false;
-            options.Password.RequireLowercase = false;
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
             options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequiredLength = 4;
+            options.Password.RequireUppercase = true;
+            options.Password.RequiredLength = 8;
+            options.User.RequireUniqueEmail = true;
         })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -202,11 +227,6 @@ public static class ServiceExtensions
 
         services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationPolicyProvider, ECommerce.API.Middleware.PermissionPolicyProvider>();
         services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, ECommerce.API.Middleware.PermissionHandler>();
-
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("SuperAdminOnly", policy => policy.RequireClaim("is_super_admin", "true"));
-        });
 
         return services;
     }

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from "@angular/core";
+import { Component, ChangeDetectionStrategy, DestroyRef, inject } from "@angular/core";
 import { AsyncPipe, NgClass, DecimalPipe, NgIf } from "@angular/common";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
@@ -7,29 +7,28 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
-  filter,
   map,
   of,
-  switchMap,
   tap,
   startWith,
   shareReplay,
+  take,
 } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { CartService } from "../../../../core/services/cart.service";
 import { CheckoutService } from "../../../../core/services/checkout.service";
 import { CartItem } from "../../../../core/models/cart";
-import { OrderApiService, CustomerLookupResponse } from "../../../../core/services/order-api.service";
+import { CustomerLookupService } from "../../../../core/services/customer-lookup.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { AuthService } from "../../../../core/services/auth.service";
-import { SettingsService } from "../../../../admin/services/settings.service";
+import { DeliveryService } from "../../../../core/services/delivery.service";
+import { SiteSettingsService, SiteSettings } from "../../../../core/services/site-settings.service";
 import { AnalyticsService } from "../../../../core/services/analytics.service";
 import {
   DeliveryMethod,
-  AdminSettings,
-} from "../../../../admin/models/settings.models";
+} from "../../../../core/models/delivery";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
@@ -40,6 +39,7 @@ import { matchLocationFromAddress } from "../../../../core/utils/location-matche
 @Component({
   selector: "app-checkout-page",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AsyncPipe,
     DecimalPipe,
@@ -60,10 +60,11 @@ export class CheckoutPageComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
-  private readonly orderApi = inject(OrderApiService);
+  private readonly customerLookup = inject(CustomerLookupService);
   readonly imageUrlService = inject(ImageUrlService);
   private readonly analyticsService = inject(AnalyticsService);
-  private readonly settingsService = inject(SettingsService);
+  private readonly deliveryService = inject(DeliveryService);
+  private readonly siteSettingsService = inject(SiteSettingsService);
   private readonly userPersistence = inject(UserPersistenceService);
   private readonly notification = inject(NotificationService);
 
@@ -92,7 +93,7 @@ export class CheckoutPageComponent {
   didAutofill = false;
   showAutofillPrompt = false;
 
-  readonly deliveryMethods$ = this.settingsService
+  readonly deliveryMethods$ = this.deliveryService
     .getPublicDeliveryMethods()
     .pipe(
       tap((methods) => {
@@ -120,9 +121,9 @@ export class CheckoutPageComponent {
   readonly vm$ = combineLatest([
     this.cartService.getCart(),
     this.summary$,
-    this.settingsService
+    this.siteSettingsService
       .getSettings()
-      .pipe(startWith(null as AdminSettings | null)),
+      .pipe(startWith(null as SiteSettings | null)),
     this.deliveryMethods$.pipe(startWith([] as DeliveryMethod[])),
     this.checkoutForm.controls.deliveryMethodId.valueChanges.pipe(
       startWith(this.checkoutForm.controls.deliveryMethodId.value),
@@ -131,7 +132,7 @@ export class CheckoutPageComponent {
     map(([cartItems, summary, settings, deliveryMethods, currentMethodId]) => {
       const rawMethods = (deliveryMethods && deliveryMethods.length > 0) 
         ? deliveryMethods 
-        : (settings?.deliveryMethods || []);
+        : [];
       
       const activeMethods = rawMethods.filter(m => m.isActive);
       const freeShippingThreshold = settings?.freeShippingThreshold ?? 0;
@@ -206,24 +207,9 @@ export class CheckoutPageComponent {
         this.updateDeliveryMethod(city, area);
       });
 
-    this.checkoutForm.controls.phone.valueChanges
-      .pipe(
-        map((value) => value.trim()),
-        debounceTime(300),
-        distinctUntilChanged(),
-        tap((value) => {
-          if (value.length < 7) {
-            this.didAutofill = false;
-          }
-        }),
-        filter((value) => value.length >= 7),
-        switchMap((phone) =>
-          this.orderApi
-            .lookupCustomer(phone)
-            .pipe(catchError(() => of(null))),
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
+    this.customerLookup
+      .bindTo(this.checkoutForm.controls.phone.valueChanges)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((customer) => {
         if (customer) {
           this.didAutofill = true;
@@ -346,7 +332,7 @@ export class CheckoutPageComponent {
     const outskirtsSet = new Set(outskirts);
     const isOutskirts = area && outskirtsSet.has(area.toLowerCase());
     const isDhaka = city.toLowerCase() === "dhaka" && !isOutskirts;
-    this.deliveryMethods$.subscribe((methods) => {
+    this.deliveryMethods$.pipe(take(1)).subscribe((methods) => {
       const method = methods.find((m) =>
         isDhaka
           ? m.name.toLowerCase().includes("inside")

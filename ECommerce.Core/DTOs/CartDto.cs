@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ECommerce.Core.DTOs;
 
@@ -30,12 +31,17 @@ public class CartDto
 
 public class AddToCartDto
 {
+    [Required]
     public int ProductId { get; set; }
+
+    [Range(1, 999, ErrorMessage = "Quantity must be between 1 and 999")]
     public int Quantity { get; set; }
+
     public string Size { get; set; } = string.Empty;
 }
 
 public class UpdateCartItemDto
 {
+    [Range(1, 999, ErrorMessage = "Quantity must be between 1 and 999")]
     public int Quantity { get; set; }
 }

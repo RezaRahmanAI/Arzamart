@@ -1,34 +1,35 @@
 export interface Category {
-  id: string;
+  id: number;
   name: string;
   slug: string;
   href?: string;
-  parentId?: string | null;
+  parentId?: number | null;
   imageUrl?: string;
   isActive: boolean;
   productCount?: number;
   displayOrder?: number;
   metaTitle?: string;
   metaDescription?: string;
-  subCategories?: Category[];
+  subCategories?: SubCategory[];
 }
 
 export interface SubCategory {
-  id: string;
+  id: number;
   name: string;
   slug: string;
-  categoryId: string;
+  categoryId: number;
   isActive: boolean;
   imageUrl?: string;
+  description?: string;
   displayOrder?: number;
   collections?: Collection[];
 }
 
 export interface Collection {
-  id: string;
+  id: number;
   name: string;
   slug: string;
-  subCategoryId: string;
+  subCategoryId: number;
   isActive: boolean;
 }
 

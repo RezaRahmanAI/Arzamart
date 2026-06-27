@@ -12,7 +12,6 @@ import { Subject, takeUntil } from "rxjs";
 
 import {
   Order,
-  OrderDetail,
   OrderStatus,
   OrdersQueryParams,
 } from "../../models/orders.models";
@@ -39,7 +38,7 @@ export class CustomerHistoryComponent implements OnInit, OnDestroy {
   isRefreshing = false;
   selectedCustomerPhone: string | null = null;
   orders: Order[] = [];
-  invoiceOrder: OrderDetail | null = null;
+  invoiceOrder: Order | null = null;
   isInvoiceLoading = false;
   totalResults = 0;
   page = 1;

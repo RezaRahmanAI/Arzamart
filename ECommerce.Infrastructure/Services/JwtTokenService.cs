@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -22,7 +23,9 @@ namespace ECommerce.Infrastructure.Services
         {
             _config = config;
             _unitOfWork = unitOfWork;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]!));
+            var jwtKey = _config["Token:Key"] 
+                ?? throw new InvalidOperationException("Token:Key is not configured. Set it in appsettings or environment variables.");
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         }
 
         public string GenerateAccessToken(string userId, string? email, string? phone, string role)
@@ -30,6 +33,7 @@ namespace ECommerce.Infrastructure.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId),
+                new Claim(ClaimTypes.NameIdentifier, userId),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Role, role),
                 new Claim("iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
@@ -43,7 +47,7 @@ namespace ECommerce.Infrastructure.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(double.Parse(_config["Token:AccessTokenExpiryMinutes"] ?? "10080")),
+                Expires = DateTime.UtcNow.AddMinutes(double.TryParse(_config["Token:AccessTokenExpiryMinutes"], out var expiryMin) ? expiryMin : 15),
                 SigningCredentials = creds,
                 Issuer = _config["Token:Issuer"],
                 Audience = _config["Token:Audience"]
@@ -88,7 +92,7 @@ namespace ECommerce.Infrastructure.Services
             return principal;
         }
 
-        public void RevokeAllUserTokens(string userId)
+        public async Task RevokeAllUserTokensAsync(string userId)
         {
             var tokens = _unitOfWork.Repository<AppRefreshToken>().GetQueryable()
                 .Where(x => x.UserId == userId && !x.IsRevoked)
@@ -100,7 +104,7 @@ namespace ECommerce.Infrastructure.Services
                 token.RevokedAt = DateTime.UtcNow;
             }
 
-            _unitOfWork.Complete();
+            await _unitOfWork.Complete();
         }
     }
 }

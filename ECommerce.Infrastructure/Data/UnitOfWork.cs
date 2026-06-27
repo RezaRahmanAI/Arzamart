@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using AutoMapper;
 using ECommerce.Core.Entities;
@@ -13,7 +13,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
     private readonly IConfigurationProvider _mapperConfig;
-    private Hashtable _repositories = new();
+    private readonly ConcurrentDictionary<string, object> _repositories = new();
     private IDbContextTransaction? _currentTransaction;
 
     public UnitOfWork(ApplicationDbContext context, IConfigurationProvider mapperConfig)
@@ -58,6 +58,11 @@ public class UnitOfWork : IUnitOfWork
         _context.Dispose();
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        await _context.DisposeAsync();
+    }
+
     public async Task ExecuteInTransactionAsync(Func<Task> action)
     {
         var strategy = _context.Database.CreateExecutionStrategy();
@@ -79,18 +84,12 @@ public class UnitOfWork : IUnitOfWork
 
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity
     {
-        if (_repositories == null) _repositories = new Hashtable();
-
         var type = typeof(TEntity).Name;
 
-        if (!_repositories.ContainsKey(type))
+        return (IGenericRepository<TEntity>)_repositories.GetOrAdd(type, _ =>
         {
             var repositoryType = typeof(GenericRepository<>);
-            var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(TEntity)), _context, _mapperConfig);
-
-            _repositories.Add(type, repositoryInstance);
-        }
-
-        return (IGenericRepository<TEntity>)_repositories[type]!;
+            return Activator.CreateInstance(repositoryType.MakeGenericType(typeof(TEntity)), _context, _mapperConfig)!;
+        });
     }
 }

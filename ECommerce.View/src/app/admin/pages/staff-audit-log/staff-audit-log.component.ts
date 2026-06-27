@@ -44,7 +44,7 @@ export class StaffAuditLogComponent implements OnInit, OnDestroy {
     // Fetch all staff users for the actor filter dropdown
     this.staffService.getStaffUsers({ pageSize: 100 }).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
-        this.staffMembers = res.data.items;
+        this.staffMembers = res.items;
         this.cdr.markForCheck();
       }
     });

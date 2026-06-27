@@ -1,17 +1,6 @@
-export interface DeliveryMethod {
-  id: number;
-  name: string;
-  cost: number;
-  estimatedDays?: string;
-  isActive: boolean;
-}
+export { DeliveryMethod, ShippingZone } from "../../core/models/delivery";
 
-export interface ShippingZone {
-  id: number;
-  name: string;
-  region: string;
-  rates: string[];
-}
+import { DeliveryMethod, ShippingZone } from "../../core/models/delivery";
 
 export interface AdminSettings {
   websiteName: string;

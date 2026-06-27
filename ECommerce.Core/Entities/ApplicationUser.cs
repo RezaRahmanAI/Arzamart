@@ -20,8 +20,6 @@ public class ApplicationUser : IdentityUser
 
     // JWT columns
     public string? PasswordSalt { get; set; }
-    public string? RefreshToken { get; set; }
-    public DateTime? RefreshTokenExpiry { get; set; }
 
     public virtual ICollection<AppRefreshToken> RefreshTokens { get; set; } = new List<AppRefreshToken>();
 

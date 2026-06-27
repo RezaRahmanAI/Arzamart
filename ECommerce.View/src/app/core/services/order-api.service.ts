@@ -3,6 +3,7 @@ import { Injectable, inject } from "@angular/core";
 import { Observable, catchError, of, throwError } from "rxjs";
 
 import { ApiHttpClient } from "../http/http-client";
+import { StorageKeys } from "../constants/storage-keys";
 
 export interface CustomerLookupResponse {
   name: string;
@@ -76,7 +77,7 @@ export class OrderApiService {
   }
 
   placeOrder(payload: CustomerOrderRequest): Observable<CustomerOrderResponse> {
-    const sessionId = localStorage.getItem("cart_session_id");
+    const sessionId = localStorage.getItem(StorageKeys.CART_SESSION_ID);
     const options = sessionId
       ? { headers: new HttpHeaders().set("X-Session-Id", sessionId) }
       : {};

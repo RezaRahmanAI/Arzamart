@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Core.DTOs;
@@ -12,10 +14,30 @@ namespace ECommerce.Infrastructure.Services;
 public class CartService : ICartService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private static readonly ConcurrentDictionary<string, (SemaphoreSlim Semaphore, DateTime LastAccess)> _cartLocks = new();
+    private static readonly Timer _cleanupTimer = new(CleanupStaleLocks, null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
 
     public CartService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+    }
+
+    private static void CleanupStaleLocks(object? state)
+    {
+        var cutoff = DateTime.UtcNow.AddMinutes(-30);
+        var staleKeys = _cartLocks
+            .Where(kvp => kvp.Value.LastAccess < cutoff && kvp.Value.Semaphore.CurrentCount == 1)
+            .Select(kvp => kvp.Key)
+            .ToList();
+
+        foreach (var key in staleKeys)
+        {
+            if (_cartLocks.TryRemove(key, out var entry))
+            {
+                try { entry.Semaphore.Dispose(); }
+                catch (ObjectDisposedException) { }
+            }
+        }
     }
 
     public async Task<CartDto> GetCartAsync(string? userId, string? sessionId)
@@ -165,37 +187,51 @@ public class CartService : ICartService
 
     private async Task<Cart> GetOrCreateCartAsync(string? userId, string? sessionId, bool track = false)
     {
-        Cart? cart = null;
+        var lockKey = !string.IsNullOrEmpty(userId) ? $"user:{userId}" : $"session:{sessionId}";
+        var entry = _cartLocks.AddOrUpdate(lockKey,
+            _ => (new SemaphoreSlim(1, 1), DateTime.UtcNow),
+            (_, existing) => (existing.Semaphore, DateTime.UtcNow));
+        var semaphore = entry.Semaphore;
 
-        if (!string.IsNullOrEmpty(userId))
+        await semaphore.WaitAsync();
+        try
         {
-            cart = await GetCartQuery(null, track).FirstOrDefaultAsync(c => c.UserId == userId);
-        }
-        else if (!string.IsNullOrEmpty(sessionId))
-        {
-            cart = await GetCartQuery(null, track).FirstOrDefaultAsync(c => c.SessionId == sessionId && c.UserId == null);
-        }
+            Cart? cart = null;
 
-        if (cart == null)
-        {
-            var finalSessionId = sessionId;
-            if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(finalSessionId))
+            if (!string.IsNullOrEmpty(userId))
             {
-                finalSessionId = Guid.NewGuid().ToString();
+                cart = await GetCartQuery(null, track).FirstOrDefaultAsync(c => c.UserId == userId);
+            }
+            else if (!string.IsNullOrEmpty(sessionId))
+            {
+                cart = await GetCartQuery(null, track).FirstOrDefaultAsync(c => c.SessionId == sessionId && c.UserId == null);
             }
 
-            cart = new Cart
+            if (cart == null)
             {
-                UserId = userId,
-                SessionId = string.IsNullOrEmpty(userId) ? finalSessionId : null,
-                Items = new List<CartItem>()
-            };
+                var finalSessionId = sessionId;
+                if (string.IsNullOrEmpty(userId) && string.IsNullOrEmpty(finalSessionId))
+                {
+                    finalSessionId = Guid.NewGuid().ToString();
+                }
 
-            _unitOfWork.Repository<Cart>().Add(cart);
-            await _unitOfWork.Complete();
+                cart = new Cart
+                {
+                    UserId = userId,
+                    SessionId = string.IsNullOrEmpty(userId) ? finalSessionId : null,
+                    Items = new List<CartItem>()
+                };
+
+                _unitOfWork.Repository<Cart>().Add(cart);
+                await _unitOfWork.Complete();
+            }
+
+            return cart;
         }
-
-        return cart;
+        finally
+        {
+            semaphore.Release();
+        }
     }
 
     private IQueryable<Cart> GetCartQuery(int? id = null, bool track = false)

@@ -1,6 +1,8 @@
 using System.Net;
+using ECommerce.Core.Entities;
+using ECommerce.Core.Interfaces;
 using ECommerce.Infrastructure.Cache;
-using ECommerce.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.API.Middleware;
@@ -52,9 +54,9 @@ public class SecurityMiddleware
 
         try
         {
-            using var scope = _scopeFactory.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var isBlocked = await dbContext.BlockedIps.AnyAsync(b => b.IpAddress == ipAddress);
+            await using var scope = _scopeFactory.CreateAsyncScope();
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            var isBlocked = await unitOfWork.Repository<BlockedIp>().GetQueryable().AnyAsync(b => b.IpAddress == ipAddress);
             _cache.SetSecurityFlag(cacheKey, isBlocked, TimeSpan.FromSeconds(60));
             if (isBlocked)
             {
@@ -85,13 +87,15 @@ public class SecurityMiddleware
 
         try
         {
-            using var scope = _scopeFactory.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            await using var scope = _scopeFactory.CreateAsyncScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-            var isSuspicious = await dbContext.Users.AnyAsync(u => u.Id == userIdClaim.Value && u.IsSuspicious);
+            var user = await userManager.FindByIdAsync(userIdClaim.Value);
+            var isSuspicious = user != null && user.IsSuspicious;
             if (!isSuspicious)
             {
-                isSuspicious = await dbContext.Customers.AnyAsync(c => c.Phone == userIdClaim.Value && c.IsSuspicious);
+                isSuspicious = await unitOfWork.Repository<Customer>().GetQueryable().AnyAsync(c => c.Phone == userIdClaim.Value && c.IsSuspicious);
             }
 
             _cache.SetSecurityFlag(cacheKey, isSuspicious, TimeSpan.FromSeconds(60));

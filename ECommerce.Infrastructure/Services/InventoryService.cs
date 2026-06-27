@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
+using ECommerce.Infrastructure.Cache;
+using ECommerce.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Services;
@@ -12,10 +14,12 @@ namespace ECommerce.Infrastructure.Services;
 public class InventoryService : IInventoryService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly AppCache _cache;
 
-    public InventoryService(IUnitOfWork unitOfWork)
+    public InventoryService(IUnitOfWork unitOfWork, AppCache cache)
     {
         _unitOfWork = unitOfWork;
+        _cache = cache;
     }
 
     public async Task<List<ProductInventoryDto>> GetInventoryAsync()
@@ -59,6 +63,8 @@ public class InventoryService : IInventoryService
             throw new InvalidOperationException($"Variant with id {variantId} not found.");
 
         var product = await _unitOfWork.Repository<Product>().GetQueryable()
+            .Include(p => p.Images)
+            .Include(p => p.Variants)
             .FirstOrDefaultAsync(p => p.Id == variant.ProductId);
 
         if (product == null)
@@ -79,6 +85,13 @@ public class InventoryService : IInventoryService
         product.StockQuantity = variants.Sum(v => v.StockQuantity);
 
         await _unitOfWork.Complete();
+
+        // Update cache
+        _cache.Products[product.Id] = product;
+        lock (_cache.RebuildLock)
+        {
+            HomePageCacheRebuilder.Rebuild(_cache);
+        }
     }
 
     public async Task UpdateProductStockAsync(int productId, UpdateInventoryDto dto)
@@ -116,6 +129,13 @@ public class InventoryService : IInventoryService
         }
 
         await _unitOfWork.Complete();
+
+        // Update cache
+        _cache.Products[product.Id] = product;
+        lock (_cache.RebuildLock)
+        {
+            HomePageCacheRebuilder.Rebuild(_cache);
+        }
     }
 
     public async Task<int> SyncAllInventoryAsync()
@@ -140,6 +160,17 @@ public class InventoryService : IInventoryService
         }
 
         await _unitOfWork.Complete();
+
+        // Rebuild cache after sync
+        foreach (var product in products)
+        {
+            _cache.Products[product.Id] = product;
+        }
+        lock (_cache.RebuildLock)
+        {
+            HomePageCacheRebuilder.Rebuild(_cache);
+        }
+
         return fixedCount;
     }
 }

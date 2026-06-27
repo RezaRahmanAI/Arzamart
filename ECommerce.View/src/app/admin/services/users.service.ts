@@ -34,7 +34,7 @@ export class UsersService {
   }
 
   getPassword(userId: string): Observable<{ password: string; message?: string }> {
-    return this.api.get<{ password: string; message?: string }>(`/admin/users/${userId}/password`);
+    return this.api.post<{ password: string; message?: string }>(`/admin/users/${userId}/password`, {});
   }
 
   createAdmin(request: CreateAdminRequest): Observable<AdminUser> {

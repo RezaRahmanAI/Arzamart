@@ -1,17 +1,19 @@
-import { Injectable } from "@angular/core";
+import { DestroyRef, Injectable, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { BehaviorSubject, Observable, map, of, tap, switchMap } from "rxjs";
 
 import { CheckoutState } from "../models/checkout";
 import { CartService } from "./cart.service";
 import { OrderService } from "./order.service";
 import { CustomerProfileService } from "./customer-profile.service";
+import { StorageKeys } from "../constants/storage-keys";
 
 @Injectable({
   providedIn: "root",
 })
 export class CheckoutService {
-  private readonly storageBaseKey = "checkout_state";
-  private activeStorageKey = this.storageBaseKey;
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly activeStorageKey = StorageKeys.CHECKOUT_STATE;
 
   private readonly stateSubject = new BehaviorSubject<CheckoutState>(
     this.buildDefaultState(),
@@ -27,7 +29,7 @@ export class CheckoutService {
     const storedState = this.loadState();
     this.stateSubject.next(storedState ?? this.buildDefaultState());
 
-    this.state$.subscribe((state) => {
+    this.state$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((state) => {
       localStorage.setItem(this.activeStorageKey, JSON.stringify(state));
     });
   }

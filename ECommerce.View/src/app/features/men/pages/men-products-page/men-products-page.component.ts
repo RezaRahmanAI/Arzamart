@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, DestroyRef, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 
 import { MenBreadcrumbsComponent } from "../../components/breadcrumbs/breadcrumbs.component";
@@ -26,10 +27,10 @@ import { Product } from "../../../../core/models/product";
 export class MenProductsPageComponent implements OnInit {
   products: Product[] = [];
 
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService, private readonly destroyRef: DestroyRef) {}
 
   ngOnInit(): void {
-    this.productService.getProducts({ gender: "men" }).subscribe((response) => {
+    this.productService.getProducts({ gender: "men" }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((response) => {
       this.products = response.data;
     });
   }

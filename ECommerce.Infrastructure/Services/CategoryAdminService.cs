@@ -6,6 +6,7 @@ using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
 using ECommerce.Infrastructure.Cache;
+using ECommerce.Infrastructure.Helpers;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -110,7 +111,7 @@ public class CategoryAdminService : ICategoryAdminService
 
     public async Task<CategoryDto> CreateAsync(CategoryCreateDto dto)
     {
-        var slug = string.IsNullOrWhiteSpace(dto.Slug) ? GenerateSlug(dto.Name) : dto.Slug;
+        var slug = string.IsNullOrWhiteSpace(dto.Slug) ? SlugHelper.GenerateSlug(dto.Name) : dto.Slug;
 
         var slugExists = await _unitOfWork.Repository<Category>()
             .GetQueryable()
@@ -152,7 +153,7 @@ public class CategoryAdminService : ICategoryAdminService
         {
             category.Name = dto.Name;
             if (string.IsNullOrWhiteSpace(dto.Slug))
-                category.Slug = GenerateSlug(dto.Name);
+                category.Slug = SlugHelper.GenerateSlug(dto.Name);
         }
 
         if (!string.IsNullOrWhiteSpace(dto.Slug))
@@ -235,107 +236,21 @@ public class CategoryAdminService : ICategoryAdminService
                 .ThenInclude(sc => sc.Collections)
             .ToList();
 
-        _cache.Categories.Clear();
-        foreach (var c in cats)
-            _cache.Categories[c.Id] = c;
-
-        var subs = db.SubCategories.AsNoTracking().ToList();
-        _cache.SubCategories.Clear();
-        foreach (var s in subs)
-            _cache.SubCategories[s.Id] = s;
+        lock (_cache.RebuildLock)
+        {
+            _cache.Categories.Clear();
+            foreach (var c in cats)
+                _cache.Categories[c.Id] = c;
+        }
 
         RebuildHomePageCache();
     }
 
     private void RebuildHomePageCache()
     {
-        var banners = _cache.Banners.Values
-            .Where(b => b.IsActive)
-            .OrderBy(b => b.DisplayOrder)
-            .Select(b => new HeroBannerDto
-            {
-                Id = b.Id,
-                Title = b.Title ?? "",
-                Subtitle = b.Subtitle ?? "",
-                ImageUrl = b.ImageUrl,
-                MobileImageUrl = b.MobileImageUrl ?? "",
-                LinkUrl = b.LinkUrl ?? "",
-                ButtonText = b.ButtonText ?? "",
-                DisplayOrder = b.DisplayOrder,
-                Type = b.Type
-            })
-            .ToList();
-
-        var categories = _cache.Categories.Values
-            .Where(c => c.IsActive)
-            .OrderBy(c => c.DisplayOrder)
-            .Take(10)
-            .Select(c => new CategoryDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Slug = c.Slug,
-                ImageUrl = c.ImageUrl,
-                DisplayOrder = c.DisplayOrder,
-                IsActive = c.IsActive
-            })
-            .ToList();
-
-        var featuredProducts = _cache.Products.Values
-            .Where(p => p.IsActive && p.IsFeatured)
-            .OrderBy(p => p.SortOrder)
-            .Take(12)
-            .Select(p => new ProductListDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Slug = p.Slug,
-                ImageUrl = p.ImageUrl ?? "",
-                Price = p.Variants.FirstOrDefault()?.Price ?? 0,
-                CompareAtPrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
-                IsFeatured = p.IsFeatured,
-                IsActive = p.IsActive,
-                IsNew = p.IsNew,
-                CategoryName = p.Category?.Name ?? "",
-                SortOrder = p.SortOrder
-            })
-            .ToList();
-
-        var newArrivals = _cache.Products.Values
-            .Where(p => p.IsActive)
-            .OrderByDescending(p => p.CreatedAt)
-            .Take(12)
-            .Select(p => new ProductListDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Slug = p.Slug,
-                ImageUrl = p.ImageUrl ?? "",
-                Price = p.Variants.FirstOrDefault()?.Price ?? 0,
-                CompareAtPrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
-                IsFeatured = p.IsFeatured,
-                IsActive = p.IsActive,
-                IsNew = p.IsNew,
-                CategoryName = p.Category?.Name ?? "",
-                SortOrder = p.SortOrder
-            })
-            .ToList();
-
-        _cache.HomePageData["homepage"] = new HomePageDto
+        lock (_cache.RebuildLock)
         {
-            Banners = banners,
-            Categories = categories,
-            FeaturedProducts = featuredProducts,
-            NewArrivals = newArrivals
-        };
-    }
-
-    private static string GenerateSlug(string name)
-    {
-        return name.ToLower()
-            .Replace(" ", "-")
-            .Replace("&", "and")
-            .Replace("\"", "")
-            .Replace("'", "");
+            HomePageCacheRebuilder.Rebuild(_cache);
+        }
     }
 }

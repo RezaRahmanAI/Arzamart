@@ -13,7 +13,6 @@ public class ProductDto
     public string Sku { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public decimal? CompareAtPrice { get; set; }
-    public decimal? PurchaseRate { get; set; }
     public int StockQuantity { get; set; }
     public bool IsActive { get; set; }
     public bool IsItemProduct { get; set; }
@@ -76,7 +75,6 @@ public class ProductVariantDto
     public string? Size { get; set; }
     public decimal? Price { get; set; }
     public decimal? CompareAtPrice { get; set; }
-    public decimal? PurchaseRate { get; set; }
     public int StockQuantity { get; set; }
 }
 

@@ -1,4 +1,5 @@
 using ECommerce.Core.DTOs;
+using ECommerce.Core.Interfaces;
 using ECommerce.Infrastructure.Cache;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Infrastructure.Specifications;
@@ -38,6 +39,7 @@ public class ProductsController : ControllerBase
         [FromQuery] int? productGroupId,
         [FromQuery] int? productType,
         [FromQuery] string? ids,
+        [FromQuery] string? gender,
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 12)
     {
@@ -59,13 +61,32 @@ public class ProductsController : ControllerBase
             }
         }
 
+        // Map gender query parameter to categorySlug if categorySlug not provided
+        if (string.IsNullOrEmpty(categorySlug) && !string.IsNullOrEmpty(gender))
+        {
+            categorySlug = gender.ToLower() switch
+            {
+                "men" => "men",
+                "women" => "women",
+                "kids" or "children" or "childrens" => "children",
+                _ => gender.ToLower()
+            };
+        }
+
         // Map categorySlug to categoryId if not provided
         if (!categoryId.HasValue && !string.IsNullOrEmpty(categorySlug))
         {
-            var dbCat = _cache.Categories.Values.FirstOrDefault(c => c.Slug == categorySlug);
+            var dbCat = _cache.Categories.Values.FirstOrDefault(c => 
+                c.Slug.Equals(categorySlug, StringComparison.OrdinalIgnoreCase) ||
+                (categorySlug == "children" && c.Slug.Equals("kids", StringComparison.OrdinalIgnoreCase)) ||
+                (categorySlug == "kids" && c.Slug.Equals("children", StringComparison.OrdinalIgnoreCase))
+            );
+
             if (dbCat != null)
             {
                 categoryId = dbCat.Id;
+                // Clear categorySlug once categoryId is resolved to prevent double-filtering mismatch in ProductQueryService
+                categorySlug = null;
             }
             else
             {

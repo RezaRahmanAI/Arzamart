@@ -21,10 +21,4 @@ public class CategoriesController : ControllerBase
         var categories = await _publicCategoryService.GetAllActiveAsync();
         return Ok(categories ?? new List<CategoryDto>());
     }
-
-    [HttpGet("nav")]
-    public async Task<ActionResult<List<CategoryDto>>> GetNavCategories()
-    {
-        return await GetCategories();
-    }
 }

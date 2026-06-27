@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ECommerce.Core.DTOs;
 
 public class CreateAdminUserDto
@@ -5,6 +7,8 @@ public class CreateAdminUserDto
     public string FullName { get; set; } = string.Empty;
     public string? Email { get; set; }
     public string UserName { get; set; } = string.Empty;
+    [Required]
+    [MinLength(8)]
     public string Password { get; set; } = string.Empty;
     public string? Phone { get; set; }
     public string? Role { get; set; }
@@ -26,5 +30,7 @@ public class UpdateAdminUserDto
 
 public class ResetPasswordDto
 {
+    [Required]
+    [MinLength(8)]
     public string NewPassword { get; set; } = string.Empty;
 }

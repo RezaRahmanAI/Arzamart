@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ECommerce.Core.DTOs;
 
 public class CategoryDto
@@ -19,6 +21,7 @@ public class CategoryDto
 
 public class CategoryCreateDto
 {
+    [Required]
     public string Name { get; set; } = string.Empty;
     public string? Slug { get; set; }
     public string? ImageUrl { get; set; }
@@ -32,6 +35,7 @@ public class CategoryCreateDto
 
 public class CategoryUpdateDto
 {
+    [Required]
     public string Name { get; set; } = string.Empty;
     public string? Slug { get; set; }
     public string? ImageUrl { get; set; }

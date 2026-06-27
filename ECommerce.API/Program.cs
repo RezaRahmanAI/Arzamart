@@ -52,7 +52,7 @@ try
 
     // ── 3. Services Registration ─────────────────────────────────────
     builder.Services.AddDatabaseServices(builder.Configuration);
-    builder.Services.AddExoosisAuthServices(builder.Configuration);
+    builder.Services.AddExoosisAuthServices(builder.Configuration, builder.Environment);
     builder.Services.AddAppServices(builder.Configuration);
     builder.Services.AddCustomCors(builder.Configuration, builder.Environment);
     builder.Services.AddSwaggerServices(builder.Environment);
@@ -69,13 +69,16 @@ try
 
     app.UseAppSecurityMiddleware();
 
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    if (app.Environment.IsDevelopment())
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Arza Mart API v1");
-        c.RoutePrefix = "swagger";
-        c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
-    });
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Arza Mart API v1");
+            c.RoutePrefix = "swagger";
+            c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+        });
+    }
     
     app.UseHttpsRedirection();
     app.UseResponseCompression();
@@ -96,13 +99,10 @@ try
     app.UseRateLimiter();
 
     app.UseMiddleware<ECommerce.API.Middleware.CustomForbiddenMiddleware>();
+    app.UseMiddleware<ECommerce.API.Middleware.SecurityMiddleware>();
 
     app.UseAuthentication();
     app.UseAuthorization();
-    app.UseMiddleware<StaffDeleteRestrictionMiddleware>();
-
-    // Unified security: IP blocking, revoked tokens, suspicious users
-    app.UseMiddleware<ECommerce.API.Middleware.SecurityMiddleware>();
 
     app.UseResponseCaching();
 

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using ECommerce.Core.Domain.Orders;
+using ECommerce.Core.Enums;
 
 namespace ECommerce.Core.Entities;
 
@@ -9,6 +9,8 @@ public class Order : BaseEntity
     public string OrderNumber { get; set; } = string.Empty;
 
     public string CustomerName { get; set; } = string.Empty;
+    // NOTE: CustomerPhone is a flat string (no FK to Customer) by design.
+    // Orders can be placed by non-registered users, so a FK is not enforced here.
     public string CustomerPhone { get; set; } = string.Empty;
     public string ShippingAddress { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;

@@ -1,9 +1,9 @@
 using ECommerce.Core.Constants;
 using ECommerce.Core.Interfaces;
 using ECommerce.Core.DTOs;
+using ECommerce.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
 
@@ -14,17 +14,14 @@ namespace ECommerce.API.Controllers;
 public class AdminCategoryController : ControllerBase
 {
     private readonly ICategoryAdminService _categoryService;
-    private readonly IWebHostEnvironment _environment;
-    private readonly IConfiguration _config;
+    private readonly IFileUploadService _fileUploadService;
 
     public AdminCategoryController(
         ICategoryAdminService categoryService,
-        IWebHostEnvironment environment,
-        IConfiguration config)
+        IFileUploadService fileUploadService)
     {
         _categoryService = categoryService;
-        _environment = environment;
-        _config = config;
+        _fileUploadService = fileUploadService;
     }
 
     [HttpGet]
@@ -42,7 +39,7 @@ public class AdminCategoryController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<CategoryDto>> CreateCategory(CategoryCreateDto dto)
+    public async Task<ActionResult<CategoryDto>> CreateCategory([FromBody] CategoryCreateDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Name))
             return BadRequest("Category name is required");
@@ -58,7 +55,7 @@ public class AdminCategoryController : ControllerBase
         }
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCategory(int id, CategoryUpdateDto dto)
     {
         try
@@ -73,6 +70,7 @@ public class AdminCategoryController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
         try
@@ -107,25 +105,12 @@ public class AdminCategoryController : ControllerBase
     {
         try
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("No file uploaded");
-
-            var uploadsFolder = PathHelper.GetUploadsFolder(_config, _environment, "categories");
-
-            var fileExtension = Path.GetExtension(file.FileName);
-            var fileName = $"{Guid.NewGuid()}{fileExtension}";
-            var filePath = Path.Combine(uploadsFolder, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            return Ok(new UploadResultDto { Url = $"/uploads/categories/{fileName}" });
+            var url = await _fileUploadService.UploadAsync(file, "categories");
+            return Ok(new UploadResultDto { Url = url });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { message = "An error occurred during category image upload: " + ex.Message });
+            return StatusCode(500, new { message = "An error occurred during category image upload." });
         }
     }
 }

@@ -1,12 +1,9 @@
 import {
   HttpInterceptorFn,
   HttpResponse,
-  HttpClient,
 } from "@angular/common/http";
-import { inject } from "@angular/core";
 import { filter, tap } from "rxjs";
 import { invalidateHttpCache } from "./http-cache.interceptor";
-import { API_CONFIG } from "../config/api.config";
 
 export const adminCacheInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.method === "GET" || !req.url.includes("/admin/")) {
@@ -16,9 +13,6 @@ export const adminCacheInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.url.includes("/cache/evict")) {
     return next(req);
   }
-
-  const http = inject(HttpClient);
-  const apiConfig = inject(API_CONFIG);
 
   return next(req).pipe(
     filter((event) => event instanceof HttpResponse && event.status >= 200 && event.status < 300),
@@ -44,11 +38,20 @@ export const adminCacheInterceptor: HttpInterceptorFn = (req, next) => {
         patterns.push("/pages");
       } else if (req.url.includes("/customers")) {
         patterns.push("/customers");
+      } else if (req.url.includes("/reviews")) {
+        patterns.push("/reviews");
+      } else if (req.url.includes("/security")) {
+        patterns.push("/security");
+      } else if (req.url.includes("/product-groups")) {
+        patterns.push("/product-groups");
+      } else if (req.url.includes("/staff")) {
+        patterns.push("/staff");
+      } else if (req.url.includes("/profile")) {
+        patterns.push("/profile");
       }
 
       patterns.forEach((p) => invalidateHttpCache(p));
       invalidateHttpCache("/admin/dashboard");
-      invalidateHttpCache("/admin/analytics");
     }),
   );
 };

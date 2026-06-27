@@ -101,6 +101,3 @@ export interface OrderStats {
   totalRevenue: number;
   refundRequests: number;
 }
-
-/** @deprecated Use Order — items is already required */
-export type OrderDetail = Order;

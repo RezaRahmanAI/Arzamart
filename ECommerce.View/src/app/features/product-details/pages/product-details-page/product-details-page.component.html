@@ -128,6 +128,26 @@
               <h1 class="text-ds-text">
                 {{ vm.product.name }}
               </h1>
+              
+              <!-- Star Rating Summary -->
+              @if (vm.totalReviews > 0) {
+                <div class="flex items-center gap-ds-2 cursor-pointer text-ds-text-sec hover:text-ds-accent transition-colors" (click)="scrollToReviews()">
+                  <div class="flex text-amber-400 gap-0.5">
+                    @for (star of fullStars(vm.averageRating); track star) {
+                      <app-icon name="Star" size="16" className="fill-current"></app-icon>
+                    }
+                    @if (hasHalfStar(vm.averageRating)) {
+                      <app-icon name="StarHalf" size="16" className="fill-current"></app-icon>
+                    }
+                    @for (star of emptyStars(vm.averageRating); track star) {
+                      <app-icon name="Star" size="16" className="text-gray-300"></app-icon>
+                    }
+                  </div>
+                  <span class="text-ds-sm font-medium">{{ vm.averageRating }}</span>
+                  <span class="text-ds-xs text-ds-text-muted">({{ vm.totalReviews }} {{ vm.totalReviews === 1 ? 'review' : 'reviews' }})</span>
+                </div>
+              }
+
               <p class="text-ds-text-muted">
                 SKU: {{ vm.product.sku || 'N/A' }}
               </p>
@@ -245,6 +265,287 @@
         </div>
       </div>
     </div>
+
+    <!-- Product Reviews Section -->
+    <section id="reviews" class="section-py border-t border-ds-border bg-white">
+      <div class="site-container">
+        <!-- Section Header -->
+        <div class="text-center mb-ds-12 space-y-ds-2">
+          <p class="text-ds-text-muted">Customer Feedback</p>
+          <h2 class="section-title">Product Reviews</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-ds-8 lg:gap-ds-12">
+          <!-- Left: Summary Card -->
+          <div class="lg:col-span-4 bg-ds-surface p-ds-6 rounded border border-ds-border flex flex-col justify-between h-fit">
+            <div class="text-center py-ds-4">
+              <div class="text-ds-5xl font-semibold text-ds-text mb-ds-2">
+                {{ vm.averageRating || '0.0' }}
+              </div>
+              <div class="flex justify-center text-amber-400 gap-1 mb-ds-3">
+                @for (star of [1,2,3,4,5]; track star) {
+                  <app-icon 
+                    [name]="getStarIcon(vm.averageRating, star)" 
+                    size="20"
+                    [className]="vm.averageRating >= star ? 'fill-current' : (vm.averageRating + 0.5 >= star ? 'fill-current' : 'text-gray-300')"
+                  ></app-icon>
+                }
+              </div>
+              <p class="text-ds-sm text-ds-text-muted">
+                Based on {{ vm.totalReviews }} {{ vm.totalReviews === 1 ? 'review' : 'reviews' }}
+              </p>
+            </div>
+
+            <!-- Star Breakdown -->
+            <div class="space-y-ds-2 mt-ds-6">
+              @for (starsCount of [5, 4, 3, 2, 1]; track starsCount) {
+                @let count = getRatingCount(vm.reviews, starsCount);
+                @let pct = vm.totalReviews > 0 ? (count / vm.totalReviews * 100) : 0;
+                <div class="flex items-center gap-ds-3 text-ds-xs">
+                  <span class="w-12 text-right text-ds-text-sec font-medium">{{ starsCount }} stars</span>
+                  <div class="flex-1 h-2 bg-ds-bg rounded-full overflow-hidden border border-ds-border">
+                    <div class="h-full bg-amber-400" [style.width.%]="pct"></div>
+                  </div>
+                  <span class="w-8 text-ds-text-muted text-right">{{ count }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Write a Review / Phone Login Button -->
+            <div class="mt-ds-8 border-t border-ds-border pt-ds-6 text-center space-y-ds-3">
+              @if (vm.isLoggedIn) {
+                <button (click)="isReviewFormOpen = !isReviewFormOpen" class="btn btn-secondary w-full">
+                  {{ isReviewFormOpen ? 'CANCEL REVIEW' : 'WRITE A REVIEW' }}
+                </button>
+                <div class="text-center pt-ds-1">
+                  <button (click)="logoutCustomer()" class="text-[11px] text-ds-text-sec hover:text-red-500 transition-colors hover:underline">
+                    Log out of this account
+                  </button>
+                </div>
+              } @else {
+                <button (click)="isPhoneLoginFormOpen = !isPhoneLoginFormOpen; isSignupFormOpen = false" class="btn btn-secondary w-full">
+                  {{ isPhoneLoginFormOpen || isSignupFormOpen ? 'CANCEL' : 'WRITE A REVIEW' }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Right: Reviews List & Form -->
+          <div class="lg:col-span-8 space-y-ds-8">
+            <!-- Phone Login Form -->
+            @if (isPhoneLoginFormOpen && !isSignupFormOpen && !vm.isLoggedIn) {
+              <div class="bg-ds-surface p-ds-6 rounded border border-ds-accent/20 animate-fade-in space-y-ds-6">
+                <div>
+                  <h3 class="text-ds-lg font-medium text-ds-text mb-ds-1">Verify Your Phone Number</h3>
+                  <p class="text-ds-xs text-ds-text-muted">Enter your phone number to access your account or write a review.</p>
+                </div>
+
+                <div class="space-y-ds-2">
+                  <label for="loginPhone" class="block text-ds-sm font-medium text-ds-text-sec">Phone Number</label>
+                  <input 
+                    type="tel" 
+                    id="loginPhone" 
+                    [(ngModel)]="loginPhone" 
+                    placeholder="e.g. 017XXXXXXXX" 
+                    class="w-full px-ds-4 py-ds-3 bg-ds-bg border border-ds-border rounded text-ds-text focus:outline-none focus:border-ds-accent text-ds-sm"
+                    (keyup.enter)="submitPhoneLogin()"
+                  />
+                </div>
+
+                @if (phoneLoginError) {
+                  <p class="text-ds-danger text-ds-xs font-medium">{{ phoneLoginError }}</p>
+                }
+
+                <div class="flex justify-end gap-ds-3">
+                  <button type="button" (click)="isPhoneLoginFormOpen = false" class="btn btn-secondary !py-2 !px-4 text-ds-xs" [disabled]="isLoggingInPhone">
+                    Cancel
+                  </button>
+                  <button type="button" (click)="submitPhoneLogin()" class="btn btn-primary !py-2 !px-6 text-ds-xs flex items-center gap-2" [disabled]="isLoggingInPhone">
+                    @if (isLoggingInPhone) {
+                      <app-icon name="Loader2" size="14" className="animate-spin"></app-icon>
+                      Verifying...
+                    } @else {
+                      Verify & Continue
+                    }
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- Signup / Personal Info Form -->
+            @if (isSignupFormOpen && !vm.isLoggedIn) {
+              <div class="bg-ds-surface p-ds-6 rounded border border-ds-accent/20 animate-fade-in space-y-ds-6">
+                <div>
+                  <h3 class="text-ds-lg font-medium text-ds-text mb-ds-1">Create Customer Account</h3>
+                  <p class="text-ds-xs text-ds-text-muted">Please provide your details to complete your registration, just like you would during checkout.</p>
+                </div>
+
+                <!-- Name Input -->
+                <div class="space-y-ds-2">
+                  <label for="signupName" class="block text-ds-sm font-medium text-ds-text-sec">Full Name</label>
+                  <input 
+                    type="text" 
+                    id="signupName" 
+                    [(ngModel)]="signupName" 
+                    placeholder="Enter your full name" 
+                    class="w-full px-ds-4 py-ds-3 bg-ds-bg border border-ds-border rounded text-ds-text focus:outline-none focus:border-ds-accent text-ds-sm"
+                  />
+                </div>
+
+                <!-- Address Input -->
+                <div class="space-y-ds-2">
+                  <label for="signupAddress" class="block text-ds-sm font-medium text-ds-text-sec">Delivery Address</label>
+                  <textarea 
+                    id="signupAddress" 
+                    [(ngModel)]="signupAddress" 
+                    rows="3"
+                    placeholder="Enter your delivery address" 
+                    class="w-full px-ds-4 py-ds-3 bg-ds-bg border border-ds-border rounded text-ds-text focus:outline-none focus:border-ds-accent text-ds-sm"
+                  ></textarea>
+                </div>
+
+                @if (signupError) {
+                  <p class="text-ds-danger text-ds-xs font-medium">{{ signupError }}</p>
+                }
+
+                <div class="flex justify-end gap-ds-3">
+                  <button type="button" (click)="isSignupFormOpen = false; isPhoneLoginFormOpen = true" class="btn btn-secondary !py-2 !px-4 text-ds-xs" [disabled]="isSigningUp">
+                    Back
+                  </button>
+                  <button type="button" (click)="submitSignup()" class="btn btn-primary !py-2 !px-6 text-ds-xs flex items-center gap-2" [disabled]="isSigningUp">
+                    @if (isSigningUp) {
+                      <app-icon name="Loader2" size="14" className="animate-spin"></app-icon>
+                      Registering...
+                    } @else {
+                      Sign Up & Continue
+                    }
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- Review Form -->
+            @if (isReviewFormOpen && vm.isLoggedIn) {
+              <div class="bg-ds-surface p-ds-6 rounded border border-ds-accent/20 animate-fade-in space-y-ds-6">
+                <h3 class="text-ds-lg font-medium text-ds-text">Write a Review</h3>
+                
+                <!-- Rating Select -->
+                <div class="space-y-ds-2">
+                  <label class="block text-ds-sm font-medium text-ds-text-sec">Rating</label>
+                  <div class="flex text-amber-400 gap-1.5">
+                    @for (star of [1,2,3,4,5]; track star) {
+                      <button type="button" (click)="setRating(star)" class="hover:scale-110 transition-transform">
+                        <app-icon 
+                          name="Star" 
+                          size="28" 
+                          [className]="star <= reviewRating ? 'fill-current text-amber-400' : 'text-gray-300 fill-none'"
+                        ></app-icon>
+                      </button>
+                    }
+                  </div>
+                </div>
+
+                <!-- Review Name -->
+                <div class="space-y-ds-2">
+                  <label for="reviewName" class="block text-ds-sm font-medium text-ds-text-sec">Your Name</label>
+                  <input 
+                    type="text" 
+                    id="reviewName" 
+                    [(ngModel)]="reviewName" 
+                    placeholder="Enter your name" 
+                    class="w-full px-ds-4 py-ds-3 bg-ds-bg border border-ds-border rounded text-ds-text focus:outline-none focus:border-ds-accent text-ds-sm"
+                  />
+                </div>
+
+                <!-- Review Comment -->
+                <div class="space-y-ds-2">
+                  <label for="reviewComment" class="block text-ds-sm font-medium text-ds-text-sec">Comment</label>
+                  <textarea 
+                    id="reviewComment" 
+                    [(ngModel)]="reviewComment" 
+                    rows="4" 
+                    placeholder="Write your comments here..." 
+                    class="w-full px-ds-4 py-ds-3 bg-ds-bg border border-ds-border rounded text-ds-text focus:outline-none focus:border-ds-accent text-ds-sm"
+                  ></textarea>
+                </div>
+
+                @if (reviewError) {
+                  <p class="text-ds-danger text-ds-xs">{{ reviewError }}</p>
+                }
+
+                <div class="flex justify-end gap-ds-3">
+                  <button type="button" (click)="isReviewFormOpen = false" class="btn btn-secondary !py-2 !px-4 text-ds-xs" [disabled]="isSubmittingReview">
+                    Cancel
+                  </button>
+                  <button type="button" (click)="submitReview(vm.product.id)" class="btn btn-primary !py-2 !px-6 text-ds-xs flex items-center gap-2" [disabled]="isSubmittingReview">
+                    @if (isSubmittingReview) {
+                      <app-icon name="Loader2" size="14" className="animate-spin"></app-icon>
+                      Submitting...
+                    } @else {
+                      Submit Review
+                    }
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- Reviews List -->
+            <div class="space-y-ds-6">
+              @if (vm.reviews.length === 0) {
+                <div class="text-center py-ds-12 text-ds-text-muted border border-dashed border-ds-border rounded">
+                  <app-icon name="MessageSquare" size="32" className="mx-auto mb-ds-3 text-ds-text-muted/40"></app-icon>
+                  <p class="text-ds-sm">No reviews yet for this product.</p>
+                  @if (vm.isLoggedIn) {
+                    <button (click)="isReviewFormOpen = !isReviewFormOpen" class="mt-ds-3 text-ds-accent font-medium text-ds-xs hover:underline">
+                      Be the first to leave a review
+                    </button>
+                  } @else {
+                    <button (click)="isPhoneLoginFormOpen = true" class="mt-ds-3 text-ds-accent font-medium text-ds-xs hover:underline">
+                      Be the first to leave a review
+                    </button>
+                  }
+                </div>
+              } @else {
+                <div class="divide-y divide-ds-border">
+                  @for (review of vm.reviews; track trackReview($index, review)) {
+                    <div class="py-ds-6 first:pt-0 last:pb-0 space-y-ds-3">
+                      <!-- Star Rating & Date -->
+                      <div class="flex items-center justify-between">
+                        <div class="flex text-amber-400 gap-0.5">
+                          @for (star of [1,2,3,4,5]; track star) {
+                            <app-icon 
+                              [name]="getStarIcon(review.rating, star)" 
+                              size="14" 
+                              [className]="review.rating >= star ? 'fill-current' : (review.rating + 0.5 >= star ? 'fill-current' : 'text-gray-300')"
+                            ></app-icon>
+                          }
+                        </div>
+                        <span class="text-ds-xs text-ds-text-muted">{{ review.date | date:'mediumDate' }}</span>
+                      </div>
+
+                      <!-- Reviewer Name & Badge -->
+                      <div class="flex items-center gap-ds-2">
+                        <span class="font-medium text-ds-text text-ds-sm">{{ review.customerName }}</span>
+                        @if (review.isVerifiedPurchase) {
+                          <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                            <app-icon name="Check" size="10"></app-icon> Verified Purchase
+                          </span>
+                        }
+                      </div>
+
+                      <!-- Comment -->
+                      <p class="text-ds-text-sec text-ds-sm leading-relaxed whitespace-pre-line">
+                        {{ review.comment }}
+                      </p>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Related Products -->
     @if (vm.relatedProducts.length) {

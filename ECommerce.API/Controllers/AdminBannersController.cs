@@ -1,8 +1,8 @@
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
+using ECommerce.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ECommerce.API.Helpers;
 
 namespace ECommerce.API.Controllers;
 
@@ -13,14 +13,12 @@ namespace ECommerce.API.Controllers;
 public class AdminBannersController : ControllerBase
 {
     private readonly IAdminBannerService _bannerService;
-    private readonly IWebHostEnvironment _environment;
-    private readonly IConfiguration _config;
+    private readonly IFileUploadService _fileUploadService;
 
-    public AdminBannersController(IAdminBannerService bannerService, IWebHostEnvironment environment, IConfiguration config)
+    public AdminBannersController(IAdminBannerService bannerService, IFileUploadService fileUploadService)
     {
         _bannerService = bannerService;
-        _environment = environment;
-        _config = config;
+        _fileUploadService = fileUploadService;
     }
 
     [HttpGet]
@@ -44,7 +42,7 @@ public class AdminBannersController : ControllerBase
         return CreatedAtAction(nameof(GetBannerById), new { id = result.Id }, result);
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<HeroBannerDto>> UpdateBanner(int id, [FromBody] CreateHeroBannerDto dto)
     {
         try
@@ -76,20 +74,14 @@ public class AdminBannersController : ControllerBase
     [HttpPost("image")]
     public async Task<ActionResult<UploadResultDto>> UploadImage(IFormFile file)
     {
-        if (file == null || file.Length == 0)
-            return BadRequest("No file uploaded");
-
-        var uploadsFolder = PathHelper.GetUploadsFolder(_config, _environment, "banners");
-
-        var fileExtension = Path.GetExtension(file.FileName);
-        var fileName = $"{Guid.NewGuid()}{fileExtension}";
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
+        try
         {
-            await file.CopyToAsync(stream);
+            var url = await _fileUploadService.UploadAsync(file, "banners");
+            return Ok(new UploadResultDto { Url = url });
         }
-
-        return Ok(new UploadResultDto { Url = $"/uploads/banners/{fileName}" });
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "An error occurred during banner image upload." });
+        }
     }
 }

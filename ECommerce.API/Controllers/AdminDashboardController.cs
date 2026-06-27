@@ -59,4 +59,11 @@ public class AdminDashboardController : ControllerBase
         var data = await _dashboardService.GetCustomerGrowthAsync();
         return Ok(data);
     }
+
+    [HttpGet("analytics/sales-by-category")]
+    public async Task<ActionResult<List<CategorySalesDto>>> GetSalesByCategory()
+    {
+        var data = await _dashboardService.GetSalesByCategoryAsync();
+        return Ok(data);
+    }
 }

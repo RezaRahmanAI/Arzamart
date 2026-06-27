@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ECommerce.Core.DTOs;
 
@@ -15,6 +16,7 @@ public class NavigationMenuDto
 
 public class NavigationMenuCreateDto
 {
+    [Required]
     public string Name { get; set; } = string.Empty;
     public string Link { get; set; } = string.Empty;
     public int? ParentMenuId { get; set; }

@@ -18,52 +18,10 @@ namespace ECommerce.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("dbo")
-                .HasAnnotation("ProductVersion", "8.0.12")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ECommerce.Core.Domain.Orders.OrderItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Size")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderItems", "dbo");
-                });
 
             modelBuilder.Entity("ECommerce.Core.Entities.AdminActivityLog", b =>
                 {
@@ -240,12 +198,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RefreshTokenExpiry")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -309,6 +261,9 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IpAddress")
+                        .IsUnique();
+
                     b.ToTable("BlockedIps", "dbo");
                 });
 
@@ -334,11 +289,13 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SessionId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Carts", "dbo");
                 });
@@ -421,6 +378,8 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DisplayOrder");
+
                     b.HasIndex("ParentId");
 
                     b.HasIndex("Slug")
@@ -468,7 +427,10 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Slug");
+                    b.HasIndex("DisplayOrder");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.HasIndex("SubCategoryId");
 
@@ -541,6 +503,9 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<bool>("IsFeaturedOrderVisible")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsMarqueeVisible")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsProductDetailsVisible")
                         .HasColumnType("bit");
 
@@ -549,6 +514,9 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<bool>("IsTrustBannerVisible")
                         .HasColumnType("bit");
+
+                    b.Property<string>("MarqueeText")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("OriginalPrice")
                         .HasColumnType("decimal(18,2)");
@@ -622,6 +590,9 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedAt");
@@ -656,6 +627,9 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Date")
+                        .IsUnique();
 
                     b.ToTable("DailyTraffics", "dbo");
                 });
@@ -743,6 +717,8 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DisplayOrder");
 
                     b.ToTable("HeroBanners", "dbo");
                 });
@@ -834,7 +810,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<string>("CustomerPhone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("DeliveryMethodId")
                         .HasColumnType("int");
@@ -881,7 +857,11 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("CreatedAt");
 
+                    b.HasIndex("CustomerPhone");
+
                     b.HasIndex("DeliveryMethodId");
+
+                    b.HasIndex("IsPreOrder");
 
                     b.HasIndex("OrderNumber");
 
@@ -892,6 +872,51 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("Status");
 
                     b.ToTable("Orders", "dbo");
+                });
+
+            modelBuilder.Entity("ECommerce.Core.Entities.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.OrderLog", b =>
@@ -929,7 +954,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderLog", "dbo");
+                    b.ToTable("OrderLogs", "dbo");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.OrderNote", b =>
@@ -989,7 +1014,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -999,6 +1024,11 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("Pages", "dbo");
                 });
@@ -1191,7 +1221,9 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId", "IsMain")
+                        .IsUnique()
+                        .HasFilter("[IsMain] = 1");
 
                     b.ToTable("ProductImages", "dbo");
                 });
@@ -1294,7 +1326,11 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IsApproved");
+
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("Rating");
 
                     b.ToTable("Reviews", "dbo");
                 });
@@ -1458,6 +1494,8 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("DisplayOrder");
+
                     b.HasIndex("Slug")
                         .IsUnique();
 
@@ -1597,15 +1635,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", "dbo");
                 });
 
-            modelBuilder.Entity("ECommerce.Core.Domain.Orders.OrderItem", b =>
-                {
-                    b.HasOne("ECommerce.Core.Entities.Order", null)
-                        .WithMany("Items")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ECommerce.Core.Entities.AdminActivityLog", b =>
                 {
                     b.HasOne("ECommerce.Core.Entities.ApplicationUser", "PerformedBy")
@@ -1633,6 +1662,14 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ECommerce.Core.Entities.Cart", b =>
+                {
+                    b.HasOne("ECommerce.Core.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.CartItem", b =>
@@ -1743,6 +1780,23 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Navigation("SocialMediaSource");
 
                     b.Navigation("SourcePage");
+                });
+
+            modelBuilder.Entity("ECommerce.Core.Entities.OrderItem", b =>
+                {
+                    b.HasOne("ECommerce.Core.Entities.Order", null)
+                        .WithMany("Items")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ECommerce.Core.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.OrderLog", b =>

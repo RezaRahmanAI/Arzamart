@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 
@@ -15,16 +16,31 @@ namespace ECommerce.Infrastructure.Cache;
 /// </summary>
 public class AppCache
 {
+    /// <summary>
+    /// Lock object for atomic cache rebuilds. Acquire this before Clear+Repopulate sequences
+    /// to prevent readers from seeing an empty/partially-populated cache.
+    /// </summary>
+    public object RebuildLock { get; } = new();
+
+    private readonly Timer _securityCleanupTimer;
+
+    public AppCache()
+    {
+        _securityCleanupTimer = new Timer(_ => CleanExpiredSecurityFlags(), null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+    }
+
     // ─── Products ───────────────────────────────────────────────
     /// Key: Product.Id — includes Images, Variants, Category
     public ConcurrentDictionary<int, Product> Products { get; } = new();
+
+    /// Key: Product.Slug — maps slug to Product.Id for O(1) lookup
+    public ConcurrentDictionary<string, int> ProductSlugIndex { get; } = new();
 
     // ─── Categories ─────────────────────────────────────────────
     /// Key: Category.Id — includes nested SubCategories
     public ConcurrentDictionary<int, Category> Categories { get; } = new();
 
-    /// Key: SubCategory.Id — flat list for O(1) subcategory lookup
-    public ConcurrentDictionary<int, SubCategory> SubCategories { get; } = new();
+
 
     // ─── Banners ─────────────────────────────────────────────────
     /// Key: HeroBanner.Id — active banners only, ordered by DisplayOrder
@@ -38,9 +54,7 @@ public class AppCache
     /// Key: "settings" — single entry including DeliveryMethods
     public ConcurrentDictionary<string, SiteSettingsDto> SiteSettings { get; } = new();
 
-    // ─── Product Groups ───────────────────────────────────────────
-    /// Key: ProductGroup.Id — active groups with product references
-    public ConcurrentDictionary<int, ProductGroup> ProductGroups { get; } = new();
+
 
     // ─── HomePage Composite ───────────────────────────────────────
     /// Key: "homepage" — prebuilt HomePageDto, rebuilt on any dependency change

@@ -9,6 +9,6 @@ namespace ECommerce.Core.Interfaces
         string GenerateAccessToken(string userId, string? email, string? phone, string role);
         string GenerateRefreshToken();
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
-        void RevokeAllUserTokens(string userId);
+        Task RevokeAllUserTokensAsync(string userId);
     }
 }

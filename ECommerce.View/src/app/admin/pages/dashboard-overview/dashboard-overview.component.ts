@@ -1,5 +1,5 @@
 import { isPlatformBrowser, NgIf, AsyncPipe, NgFor } from '@angular/common';
-import { Component, DestroyRef, inject, PLATFORM_ID } from "@angular/core";
+import { Component, ChangeDetectionStrategy, DestroyRef, inject, PLATFORM_ID } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
 import { FormsModule } from "@angular/forms";
@@ -26,6 +26,7 @@ import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.c
 @Component({
   selector: "app-dashboard-overview",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgIf, AsyncPipe, RouterModule, PriceDisplayComponent, AppIconComponent, NgFor, FormsModule],
   templateUrl: "./dashboard-overview.component.html",
 })

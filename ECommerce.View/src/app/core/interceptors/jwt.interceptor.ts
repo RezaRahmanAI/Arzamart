@@ -5,9 +5,10 @@ import {
 import { inject } from "@angular/core";
 import { finalize, retry, timer } from "rxjs";
 import { LoadingService } from "../services/loading.service";
+import { StorageKeys } from "../constants/storage-keys";
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem("arza_token");
+  const token = localStorage.getItem(StorageKeys.AUTH_TOKEN);
   const isFormData = req.body instanceof FormData;
 
   const headers: Record<string, string> = {

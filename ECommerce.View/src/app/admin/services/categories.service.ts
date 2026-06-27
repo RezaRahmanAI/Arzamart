@@ -5,7 +5,7 @@ import {
   Category,
   CategoryNode,
   ReorderPayload,
-} from "../models/categories.models";
+} from "../../core/models/category";
 import { ApiHttpClient } from "../../core/http/http-client";
 
 @Injectable({
@@ -27,7 +27,7 @@ export class CategoriesService {
   }
 
   update(id: number, payload: any): Observable<Category> {
-    return this.api.post<Category>(`/admin/categories/${id}`, payload);
+    return this.api.put<Category>(`/admin/categories/${id}`, payload);
   }
 
   delete(id: number): Observable<boolean> {
@@ -44,9 +44,5 @@ export class CategoriesService {
 
   reorder(payload: ReorderPayload): Observable<boolean> {
     return this.api.post<boolean>("/admin/categories/reorder", payload);
-  }
-
-  getTree(): Observable<CategoryNode[]> {
-    return this.api.get<CategoryNode[]>("/admin/categories/tree");
   }
 }

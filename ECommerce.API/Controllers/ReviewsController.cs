@@ -44,12 +44,12 @@ public class ReviewsController : BaseApiController
         }
         catch (Exception ex)
         {
-            return BadRequest($"Error fetching featured reviews: {ex.Message} {ex.InnerException?.Message}");
+            return BadRequest($"Error fetching featured reviews: {ex.Message}");
         }
     }
 
     [HttpPost("products/{productId}")]
-    // [Authorize] // Uncomment when auth is fully ready on frontend
+    [Authorize]
     public async Task<ActionResult<ReviewDto>> AddReview(int productId, CreateReviewDto createReviewDto)
     {
         if (productId != createReviewDto.ProductId)
@@ -61,6 +61,7 @@ public class ReviewsController : BaseApiController
         review.ProductId = productId;
         
         var addedReview = await _reviewService.AddReviewAsync(review);
+        if (addedReview == null) return BadRequest("Failed to add review.");
         return Ok(_mapper.Map<ReviewDto>(addedReview));
     }
 }

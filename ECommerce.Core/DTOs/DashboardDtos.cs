@@ -90,3 +90,9 @@ public class PopularProductDto
     public int Stock { get; set; }
     public string ImageUrl { get; set; } = string.Empty;
 }
+
+public class CategorySalesDto
+{
+    public string CategoryName { get; set; } = string.Empty;
+    public decimal Amount { get; set; }
+}

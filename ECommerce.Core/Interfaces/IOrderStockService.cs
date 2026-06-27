@@ -1,4 +1,3 @@
-using ECommerce.Core.Domain.Orders;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Enums;
@@ -12,5 +11,5 @@ public interface IOrderStockService
     Task PopulateItemsStockStatusAsync(Entities.Order order, OrderDto dto);
     Task<bool> CheckIsProductStockAvailableAsync(Product product, int quantity, string? size);
     Task<bool> CalculateIsStockAvailableAsync(Entities.Order order);
-    Task ProcessProductStockAdjustmentAsync(Product product, int quantity, string? size, bool returnToStock);
+    Task ProcessProductStockAdjustmentAsync(Product product, int quantity, string? size, bool returnToStock, int recursionDepth = 0);
 }

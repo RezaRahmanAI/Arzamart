@@ -1,9 +1,8 @@
 using AutoMapper;
 using ECommerce.Core.Constants;
-using ECommerce.Core.Domain.Orders;
+using ECommerce.Core.Enums;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
-using ECommerce.Core.Enums;
 using System.Linq;
 
 namespace ECommerce.API.Helpers;
@@ -30,10 +29,6 @@ public class MappingProfiles : Profile
                 s.Variants.Any(v => v.Price > 0)
                     ? s.Variants.Where(v => v.Price > 0).Max(v => v.CompareAtPrice) 
                     : (s.Variants.FirstOrDefault() != null ? s.Variants.FirstOrDefault()!.CompareAtPrice ?? null : null)))
-            .ForMember(d => d.PurchaseRate, o => o.MapFrom(s => 
-                s.Variants.Any(v => v.PurchaseRate != null && v.PurchaseRate > 0)
-                    ? s.Variants.Where(v => v.PurchaseRate != null && v.PurchaseRate > 0).Min(v => v.PurchaseRate)
-                    : null))
             .ForMember(d => d.Images, o => o.MapFrom(s => s.Images.Select(i => new ProductImageDto 
             {
                 Id = i.Id,
@@ -50,7 +45,6 @@ public class MappingProfiles : Profile
                 Size = v.Size,
                 Price = v.Price,
                 CompareAtPrice = v.CompareAtPrice,
-                PurchaseRate = v.PurchaseRate,
                 StockQuantity = v.StockQuantity
             })))
             .ForMember(d => d.FabricAndCare, o => o.MapFrom(s => s.FabricAndCare))
@@ -92,7 +86,6 @@ public class MappingProfiles : Profile
                 Size = v.Size,
                 Price = v.Price,
                 CompareAtPrice = v.CompareAtPrice,
-                PurchaseRate = v.PurchaseRate,
                 StockQuantity = v.StockQuantity
             })))
             .ForMember(d => d.Images, o => o.MapFrom(s => s.Images.Select(i => new ProductImageDto 

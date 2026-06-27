@@ -22,8 +22,7 @@ namespace ECommerce.API.Middleware
             var path = context.Request.Path.Value?.ToLower();
             if (path != null
                 && context.Request.Method.Equals("GET", StringComparison.OrdinalIgnoreCase)
-                && !path.StartsWith("/api")
-                && !path.StartsWith("/admin")
+                && (path.Equals("/api/home") || path.StartsWith("/api/products"))
                 && !path.Contains("."))
             {
                 var isNewVisitor = string.IsNullOrEmpty(context.Request.Cookies["VisitorId"]);
