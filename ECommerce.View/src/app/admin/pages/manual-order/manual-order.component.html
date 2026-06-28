@@ -169,13 +169,13 @@
           </div>
 
           <div class="grid grid-cols-3 gap-ds-2" [formGroup]="orderForm">
-            <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-danger/5 border border-ds-danger/10 rounded-sm">
+            <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-danger/5 ">
               <span class="text-ds-danger">Discount</span>
-              <input type="number" formControlName="additionalDiscount" (focus)="$any($event.target).select()" class="w-16 !h-8 bg-white border border-ds-danger ring-2 ring-ds-danger/20 rounded-md px-1.5 text-ds-danger text-right outline-none">
+              <input type="number" formControlName="additionalDiscount" (focus)="$any($event.target).select()" class="form-input w-16 !h-8 !text-right !px-2">
             </div>
-            <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-success/5 border border-ds-success/10 rounded-sm">
+            <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-success/5 ">
               <span class="text-ds-success">Paid</span>
-              <input type="number" formControlName="advancePayment" (focus)="$any($event.target).select()" class="w-16 !h-8 bg-white border border-ds-success ring-2 ring-ds-success/20 rounded-md px-1.5 text-ds-success text-right outline-none">
+              <input type="number" formControlName="advancePayment" (focus)="$any($event.target).select()" class="form-input w-16 !h-8 !text-right !px-2">
             </div>
             <div class="flex justify-between items-center px-ds-3 h-10 bg-ds-text/5 border border-ds-border rounded-sm">
               <span class="text-ds-text-muted">Due</span>
