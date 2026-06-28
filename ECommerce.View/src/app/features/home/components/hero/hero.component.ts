@@ -80,6 +80,13 @@ export class HeroComponent implements OnInit, OnDestroy {
     this.stopTimer();
   }
 
+  private updateProgressBarDOM() {
+    const progressBar = document.getElementById("hero-progress-bar");
+    if (progressBar) {
+      progressBar.style.width = `${this.slideProgress}%`;
+    }
+  }
+
   startTimer() {
     if (this.mainSlides.length <= 1) return;
     this.stopTimer();
@@ -91,9 +98,11 @@ export class HeroComponent implements OnInit, OnDestroy {
       this.timer = setInterval(() => {
         if (!this.isPaused) {
           this.slideProgress += step;
+          this.updateProgressBarDOM();
           if (this.slideProgress >= 100) {
             this.ngZone.run(() => { this.next(); });
             this.slideProgress = 0;
+            this.updateProgressBarDOM();
           }
         }
       }, 16);
@@ -110,6 +119,7 @@ export class HeroComponent implements OnInit, OnDestroy {
     this.direction = "next";
     this.currentSlide = (this.currentSlide + 1) % this.mainSlides.length;
     this.slideProgress = 0;
+    this.updateProgressBarDOM();
   }
 
   prev() {
@@ -117,12 +127,14 @@ export class HeroComponent implements OnInit, OnDestroy {
     this.currentSlide =
       (this.currentSlide - 1 + this.mainSlides.length) % this.mainSlides.length;
     this.slideProgress = 0;
+    this.updateProgressBarDOM();
   }
 
   goTo(index: number) {
     this.direction = index > this.currentSlide ? "next" : "prev";
     this.currentSlide = index;
     this.slideProgress = 0;
+    this.updateProgressBarDOM();
     this.stopTimer();
     this.startTimer();
   }

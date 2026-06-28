@@ -231,6 +231,8 @@ public class ProductService : IProductService
             .Include(p => p.Variants)
             .Include(p => p.Category)
             .Include(p => p.SubCategory)
+            .Include(p => p.ComboItems).ThenInclude(ci => ci.Product)
+            .Include(p => p.ComboItems).ThenInclude(ci => ci.ProductVariant)
             .AsSplitQuery()
             .FirstAsync(p => p.Id == productId);
     }

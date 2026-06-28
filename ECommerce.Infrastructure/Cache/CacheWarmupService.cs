@@ -90,6 +90,8 @@ public class CacheWarmupService : IHostedService
             .Include(p => p.Category)
             .Include(p => p.SubCategory)
             .Include(p => p.Collection)
+            .Include(p => p.ComboItems).ThenInclude(ci => ci.Product)
+            .Include(p => p.ComboItems).ThenInclude(ci => ci.ProductVariant)
             .AsSplitQuery()
             .ToListAsync(ct);
         foreach (var p in products)

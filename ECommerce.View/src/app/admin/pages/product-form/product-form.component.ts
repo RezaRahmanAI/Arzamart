@@ -397,7 +397,7 @@ export class ProductFormComponent {
           tier: product.tier || (product as any).Tier || "",
           tags: product.tags || (product as any).Tags || "",
           sortOrder: product.sortOrder ?? (product as any).SortOrder ?? 0,
-          productType: Number(product.productType ?? (product as any).ProductType ?? 0),
+          productType: ((product.productType as any) === "Combo" || product.productType === 1 || (product as any).ProductType === "Combo" || (product as any).ProductType === 1) ? ProductType.Combo : ProductType.Simple,
           productGroupId: product.productGroupId ?? (product as any).ProductGroupId ?? null,
         });
 

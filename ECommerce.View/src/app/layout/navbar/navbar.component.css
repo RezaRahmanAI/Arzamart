@@ -77,11 +77,6 @@ nav::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 1
   animation: rotateGlow 3s linear infinite;
 }
 
-.glowing-offer-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(255, 0, 128, 0.25);
-}
-
 @keyframes rotateGlow {
   to {
     --angle: 360deg;

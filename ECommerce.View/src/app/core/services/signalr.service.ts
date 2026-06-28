@@ -3,6 +3,7 @@ import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } fro
 import { Subject, Observable } from "rxjs";
 import { Order } from "../models/order";
 import { NotificationService } from "./notification.service";
+import { AuthService } from "./auth.service";
 
 @Injectable({
   providedIn: "root",
@@ -11,17 +12,26 @@ export class SignalrService {
   private hubConnection!: HubConnection;
   private newOrdersSubject = new Subject<Order>();
   private notification = inject(NotificationService);
+  private authService = inject(AuthService);
 
   public newOrders$: Observable<Order> = this.newOrdersSubject.asObservable();
 
   constructor() {
     this.buildConnection();
-    this.startConnection();
+    this.authService.currentUser.subscribe(user => {
+      if (user && (user.role === 'SuperAdmin' || user.role === 'Admin' || user.role === 'Manager' || user.role === 'Staff')) {
+        this.startConnection();
+      } else {
+        this.stopConnection();
+      }
+    });
   }
 
   private buildConnection() {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl("/hubs/orders")
+      .withUrl("/hubs/orders", {
+        accessTokenFactory: () => this.authService.getAccessToken() || ""
+      })
       .withAutomaticReconnect([0, 2000, 10000, 30000])
       .configureLogging(LogLevel.Information)
       .build();
@@ -36,6 +46,10 @@ export class SignalrService {
   }
 
   private startConnection() {
+    const user = this.authService.currentUserSnapshot();
+    const isStaff = user && (user.role === 'SuperAdmin' || user.role === 'Admin' || user.role === 'Manager' || user.role === 'Staff');
+    if (!isStaff) return;
+
     if (this.hubConnection.state === HubConnectionState.Disconnected) {
       this.hubConnection
         .start()

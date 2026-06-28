@@ -18,14 +18,14 @@ public class AdminProductInventoryController : ControllerBase
         _inventoryService = inventoryService;
     }
 
-    [HttpGet("inventory")]
+    [HttpGet]
     public async Task<ActionResult<List<ProductInventoryDto>>> GetInventory()
     {
         var inventory = await _inventoryService.GetInventoryAsync();
         return Ok(inventory);
     }
 
-    [HttpPut("inventory/{variantId}")]
+    [HttpPut("{variantId:int}")]
     public async Task<ActionResult> UpdateStock(int variantId, UpdateInventoryDto dto)
     {
         try
@@ -40,7 +40,7 @@ public class AdminProductInventoryController : ControllerBase
         return Ok(new { message = "Stock updated successfully" });
     }
 
-    [HttpPut("inventory/product/{productId}")]
+    [HttpPut("product/{productId:int}")]
     public async Task<ActionResult> UpdateProductStock(int productId, UpdateInventoryDto dto)
     {
         try
@@ -56,7 +56,7 @@ public class AdminProductInventoryController : ControllerBase
     }
 
     [Authorize(Roles = "SuperAdmin")]
-    [HttpPost("inventory/sync-all")]
+    [HttpPost("sync-all")]
     public async Task<ActionResult> SyncAllInventory()
     {
         var fixedCount = await _inventoryService.SyncAllInventoryAsync();

@@ -37,7 +37,7 @@ public class AdminProductsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto>> GetProductById(int id)
     {
         var product = await _productService.GetProductByIdAsync(id, ignoreFilters: true);
@@ -69,7 +69,7 @@ public class AdminProductsController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdateProduct(int id, [FromBody] ProductUpdateDto dto)
     {
         try
