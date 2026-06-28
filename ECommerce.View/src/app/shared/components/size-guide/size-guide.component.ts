@@ -17,13 +17,13 @@ import { map } from "rxjs";
     >
       <!-- Backdrop -->
       <div
-        class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300"
+        class="absolute inset-0 bg-ds-bg/40 backdrop-blur-sm transition-opacity duration-300"
         (click)="close.emit()"
       ></div>
 
       <!-- Slide-over Panel -->
       <div
-        class="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col transform transition-transform duration-500 ease-out translate-x-0"
+        class="relative w-full max-w-md bg-ds-bg h-full shadow-2xl flex flex-col transform transition-transform duration-500 ease-out translate-x-0"
       >
         <!-- Header -->
         <div
@@ -90,7 +90,7 @@ import { map } from "rxjs";
                     class="px-6 py-2 rounded-md transition-all duration-300"
                     [ngClass]="
                       unit === 'cm'
-                        ? 'bg-white shadow-sm text-primary'
+                        ? 'bg-ds-surface shadow-sm text-primary'
                         : 'text-ds-text-muted hover:text-ds-text-secondary'
                     "
                     (click)="unit = 'cm'"
@@ -101,7 +101,7 @@ import { map } from "rxjs";
                     class="px-6 py-2 rounded-md transition-all duration-300"
                     [ngClass]="
                       unit === 'in'
-                        ? 'bg-white shadow-sm text-primary'
+                        ? 'bg-ds-surface shadow-sm text-primary'
                         : 'text-ds-text-muted hover:text-ds-text-secondary'
                     "
                     (click)="unit = 'in'"

@@ -31,75 +31,49 @@ import { LoadingService } from "../../../core/services/loading.service";
         align-items: center;
         justify-content: center;
         z-index: 10000;
-        animation: fade-in 0.3s ease-out;
-      }
-
-      :host-context(.dark) .loading-overlay {
-        background: rgba(15, 23, 42, 0.85); /* Dark slate background */
+        animation: fadeIn var(--duration-slow) var(--ease-out);
       }
 
       .spinner-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 20px;
+        gap: var(--space-5);
       }
 
       .luxury-spinner {
         width: 54px;
         height: 54px;
-        border: 2px solid var(--color-border-ds);
+        border: 2px solid var(--color-border);
         opacity: 0.3;
-        border-top: 2px solid var(--color-text-primary);
+        border-top: 2px solid var(--color-text);
         border-radius: 50%;
-        animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      }
-
-      :host-context(.dark) .luxury-spinner {
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        border-top: 2px solid var(--color-hero-text);
+        animation: spin 1s var(--ease-default) infinite;
       }
 
       .loading-text {
-        font-family: "Outfit", sans-serif;
-        font-size: 11px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.6875rem;
         font-weight: 600;
         letter-spacing: 0.3em;
         text-transform: uppercase;
-        color: var(--color-text-primary);
+        color: var(--color-text);
         animation: pulse 2s ease-in-out infinite;
       }
 
-      :host-context(.dark) .loading-text {
-        color: var(--color-hero-text);
-      }
-
       @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
       }
 
-      @keyframes fade-in {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
       }
 
       @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.5;
-        }
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
       }
     `,
   ],

@@ -13,7 +13,7 @@
   inset: 0;
   background-color: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(2px);
-  animation: fadeIn 0.3s ease forwards;
+  animation: fadeIn var(--transition-base) forwards;
 }
 
 /* Sliding Panel */
@@ -27,7 +27,7 @@
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
-  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideInRight var(--transition-base) forwards;
 }
 
 /* Header */
@@ -35,30 +35,31 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--color-border-ds);
+  padding: var(--space-5) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .cart-drawer-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 .cart-drawer-close {
-  color: var(--color-text-secondary);
+  color: var(--color-muted);
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: var(--space-1);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.15s ease, transform 0.15s ease;
+  transition: color var(--transition-base),
+              transform var(--transition-base);
 }
 
 .cart-drawer-close:hover {
-  color: var(--color-accent-ds);
+  color: var(--color-accent);
   transform: rotate(90deg);
 }
 
@@ -66,7 +67,7 @@
 .cart-drawer-body {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: var(--space-5);
   display: flex;
   flex-direction: column;
 }
@@ -85,26 +86,26 @@
   width: 72px;
   height: 72px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border-ds);
+  border: 1px solid var(--color-border);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-secondary);
+  color: var(--color-muted);
   opacity: 0.5;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .cart-drawer-empty h3 {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--color-text-primary);
-  margin-bottom: 6px;
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
 }
 
 .cart-drawer-empty p {
-  font-size: 13px;
-  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  color: var(--color-muted);
   max-width: 200px;
 }
 
@@ -112,13 +113,13 @@
 .cart-drawer-items {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .cart-drawer-item {
   display: flex;
-  gap: 14px;
-  padding-bottom: 16px;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--color-surface);
 }
 
@@ -131,8 +132,8 @@
   width: 64px;
   height: 76px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border-ds);
-  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -155,13 +156,13 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .item-name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--color-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -169,9 +170,9 @@
 }
 
 .item-remove-btn {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
-  color: var(--color-danger);
+  color: var(--color-primary);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -184,8 +185,8 @@
 }
 
 .item-size {
-  font-size: 11px;
-  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  color: var(--color-muted);
   text-transform: uppercase;
   margin-top: 2px;
 }
@@ -194,15 +195,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
+  margin-top: var(--space-2);
 }
 
 /* Quantity Selector */
 .qty-selector {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--color-border-input);
-  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
   overflow: hidden;
   background: var(--color-bg);
   height: 28px;
@@ -216,14 +217,14 @@
   justify-content: center;
   background: var(--color-surface);
   border: none;
-  color: var(--color-text-muted);
+  color: var(--color-muted);
   font-weight: 600;
-  font-size: 13px;
+  font-size: 0.8125rem;
   cursor: pointer;
 }
 
 .qty-btn:hover {
-  background: var(--color-border-ds);
+  background: var(--color-border);
 }
 
 .qty-btn:disabled {
@@ -235,21 +236,21 @@
 .qty-val {
   width: 28px;
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-accent-ds);
+  color: var(--color-accent);
 }
 
 .item-price {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
-  color: var(--color-accent-ds);
+  color: var(--color-accent);
 }
 
 /* Footer Summary Area */
 .cart-drawer-footer {
-  border-top: 1px solid var(--color-border-ds);
-  padding: 20px;
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-5);
   background: var(--color-bg);
 }
 
@@ -257,37 +258,37 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .subtotal-row .label {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: var(--color-accent-hover);
 }
 
 .subtotal-row .value {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
-  color: var(--color-accent-ds);
+  color: var(--color-accent);
 }
 
-/* Checkout Button styled exactly like reference screenshot */
+/* Checkout Button */
 .btn-checkout-bengali {
   width: 100%;
   height: 48px;
-  background-color: var(--color-accent-ds);
-  color: var(--color-hero-text);
-  font-size: 16px;
+  background-color: var(--color-accent);
+  color: var(--color-inverse);
+  font-size: 1rem;
   font-weight: 700;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background-color var(--transition-base),
+              transform var(--transition-fast);
 }
 
 .btn-checkout-bengali:hover {

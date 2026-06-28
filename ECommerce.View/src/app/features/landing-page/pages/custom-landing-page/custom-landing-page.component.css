@@ -1,8 +1,8 @@
 :host {
-  --red: var(--color-danger);
+  --red: var(--color-primary);
   --blue: var(--color-info);
   --purple: var(--color-info);
-  --pink: var(--color-danger);
+  --pink: var(--color-primary);
   --green: var(--color-success);
   --teal: var(--color-success);
   --orange: var(--color-warning);
@@ -10,7 +10,7 @@
   --blue-accent: var(--color-info);
   --white: var(--color-bg);
   --light-gray: var(--color-surface);
-  --text-dark: var(--color-text-primary);
+  --text-dark: var(--color-text);
 }
 
 .font-bengali {
@@ -24,25 +24,59 @@
 }
 
 @keyframes pulse-cta {
-  0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(229, 34, 34, 0.4); }
-  50% { transform: scale(1.02); box-shadow: 0 15px 35px rgba(229, 34, 34, 0.6); }
+  0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 59, 59, 0.4); }
+  50% { transform: scale(1.02); box-shadow: 0 15px 35px rgba(255, 59, 59, 0.6); }
 }
 
 .btn-pill {
-  border-radius: 9999px;
-  padding: 12px 32px;
+  border-radius: var(--radius-pill);
+  padding: var(--space-4) var(--space-8);
   font-weight: 700;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
 }
 
 .section-padding {
-  padding: 60px 20px;
+  padding: var(--space-12) var(--space-5);
 }
 
 @media (min-width: 1024px) {
   .section-padding {
-    padding: 80px 40px;
+    padding: var(--space-20) var(--space-10);
   }
 }
 
-/* Editor Panel Styles are now inside custom-landing-page-editor.component.css */
+/* Gradient backgrounds for landing page sections */
+.gradient-purple {
+  background: linear-gradient(135deg, var(--color-info), #7B3FE4, #8B2FC9);
+}
+
+.gradient-pink {
+  background: linear-gradient(135deg, #8B2FC9, #C2185B, #E91E8C);
+}
+
+.gradient-green {
+  background: linear-gradient(135deg, var(--color-success), #1B9B7A);
+}
+
+.gradient-orange {
+  background: linear-gradient(135deg, var(--color-warning), #E8870A);
+}
+
+/* Product card shadows */
+.product-card {
+  border-color: var(--color-surface);
+  box-shadow: none;
+}
+
+.product-card-selected {
+  border-color: var(--color-info);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
+}
+
+.size-option {
+  box-shadow: none;
+}
+
+.size-option-selected {
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}

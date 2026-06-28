@@ -2,21 +2,6 @@
   display: block;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fadeInUp 0.3s ease-out forwards;
-}
-
 /* Custom transitions for mega menu */
 .group:hover .group-hover\:visible {
   visibility: visible;
@@ -31,49 +16,24 @@ nav a::after {
   bottom: -4px;
   left: 0;
   background-color: currentColor;
-  transition: width 0.3s ease;
+  transition: width var(--transition-base);
 }
 
 nav a:hover::after {
   width: 100%;
 }
 
-/* Ensure mega menu dropdown doesn't flicker when moving mouse from link to menu */
+/* Mega menu positioning */
 .group {
   position: relative;
 }
 
-/* Scrollbar styling for mobile menu */
-nav::-webkit-scrollbar {
-  width: 2px;
-}
+/* Scrollbar for mobile menu */
+nav::-webkit-scrollbar { width: 2px; }
+nav::-webkit-scrollbar-track { background: transparent; }
+nav::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 1px; }
 
-nav::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-nav::-webkit-scrollbar-thumb {
-  background: var(--color-border-ds);
-  border-radius: 1px;
-}
-
-@keyframes pulse-subtle {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.85;
-    transform: scale(1.02);
-  }
-}
-
-.animate-pulse-subtle {
-  animation: pulse-subtle 3s ease-in-out infinite;
-  display: inline-block;
-}
-
-/* Rotating glowing border button styling for Offers */
+/* Rotating glowing border button for Offers */
 .glowing-offer-btn {
   position: relative;
   display: inline-flex;
@@ -81,16 +41,16 @@ nav::-webkit-scrollbar-thumb {
   justify-content: center;
   padding: 6px 18px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-primary) !important;
+  color: var(--color-text) !important;
   text-decoration: none;
-  border-radius: 9999px;
+  border-radius: var(--radius-pill);
   background: transparent;
   z-index: 1;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
   min-height: 36px;
 }
 
@@ -103,9 +63,9 @@ nav::-webkit-scrollbar-thumb {
   height: 400%;
   background: conic-gradient(
     transparent 10%,
-    rgba(229, 34, 34, 0.85) 30%,
-    rgba(59, 79, 216, 0.85) 50%,
-    rgba(245, 197, 24, 0.85) 70%,
+    rgba(255, 59, 59, 0.85) 30%,
+    rgba(37, 99, 235, 0.85) 50%,
+    rgba(255, 206, 0, 0.85) 70%,
     transparent 90%
   );
   animation: rotateGlow 3.5s linear infinite;
@@ -115,27 +75,23 @@ nav::-webkit-scrollbar-thumb {
 .glowing-offer-btn::after {
   content: "";
   position: absolute;
-  inset: 2px; /* This creates the border thickness of 2px */
-  background: var(--color-bg); /* dynamic theme bg */
-  border-radius: 9999px;
+  inset: 2px;
+  background: var(--color-bg);
+  border-radius: var(--radius-pill);
   z-index: -1;
-  transition: background 0.3s ease;
+  transition: background var(--transition-base);
 }
 
 .glowing-offer-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(229, 34, 34, 0.25);
+  box-shadow: 0 4px 15px rgba(255, 59, 59, 0.25);
 }
 
 .glowing-offer-btn:hover::after {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-text);
 }
 
 @keyframes rotateGlow {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

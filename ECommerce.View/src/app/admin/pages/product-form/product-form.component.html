@@ -456,8 +456,8 @@
                   class="h-full w-full object-cover transition-all duration-base"
                   [src]="imageUrlService.getImageUrl(media.get('url')?.value || '')"
                 />
-                <div *ngIf="media.get('type')?.value === 'video'" class="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
-                  <app-icon name="PlayCircle" size="24" className="text-white opacity-80"></app-icon>
+                <div *ngIf="media.get('type')?.value === 'video'" class="absolute inset-0 flex items-center justify-center bg-ds-text/20 pointer-events-none">
+                  <app-icon name="PlayCircle" size="24" className="text-ds-hero-text opacity-80"></app-icon>
                 </div>
               </div>
 

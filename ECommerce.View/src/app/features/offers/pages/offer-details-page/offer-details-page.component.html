@@ -51,7 +51,7 @@
 
           <!-- Saved Info Prompt -->
           @if (showAutofillPrompt) {
-            <div class="mb-6 p-4 bg-ds-surface border border-ds-border rounded-xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-1">
+            <div class="mb-6 p-4 bg-ds-surface border border-ds-border rounded-xl flex items-center justify-between gap-3 animate-dropdown">
               <div class="flex items-center gap-3">
                 <app-icon name="User" size="18" className="text-ds-text-muted"></app-icon>
                 <div>
@@ -61,7 +61,7 @@
               </div>
               <div class="flex gap-2">
                 <button type="button" (click)="dismissAutofill()" class="px-2 py-1 text-ds-text-muted hover:text-ds-text-secondary">No</button>
-                <button type="button" (click)="applyAutofill()" class="px-3 py-1 bg-black text-white rounded-md shadow-sm active:scale-95 transition-all">Yes</button>
+                <button type="button" (click)="applyAutofill()" class="px-3 py-1 bg-ds-text text-ds-bg rounded-md shadow-sm active:scale-95 transition-all">Yes</button>
               </div>
             </div>
           }
@@ -105,7 +105,7 @@
                 <!-- Dropdown List -->
                 @if (isCityDropdownOpen) {
                   <div 
-                    class="absolute z-[100] w-full mt-1 bg-ds-bg border border-ds-border rounded-lg shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
+                    class="absolute z-[100] w-full mt-1 bg-ds-bg border border-ds-border rounded-lg shadow-xl overflow-hidden animate-dropdown"
                     (click)="$event.stopPropagation()">
                     <div class="p-1.5 border-b border-ds-border">
                       <div class="relative flex items-center">
@@ -125,7 +125,7 @@
                         <li
                           (click)="selectCity(city)"
                           class="px-3 py-1.5 text-ds-text-secondary hover:bg-ds-surface cursor-pointer transition-colors"
-                          [ngClass]="{'bg-black/5 text-black': orderForm.get('city')?.value === city}"
+                          [ngClass]="{'bg-ds-text/5 text-ds-text': orderForm.get('city')?.value === city}"
                         >
                           {{ city }}
                         </li>
@@ -157,7 +157,7 @@
                 <!-- Dropdown List -->
                 @if (isAreaDropdownOpen) {
                   <div 
-                    class="absolute z-[100] w-full mt-1 bg-ds-bg border border-ds-border rounded-lg shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
+                    class="absolute z-[100] w-full mt-1 bg-ds-bg border border-ds-border rounded-lg shadow-xl overflow-hidden animate-dropdown"
                     (click)="$event.stopPropagation()">
                     <div class="p-1.5 border-b border-ds-border">
                       <div class="relative flex items-center">
@@ -177,7 +177,7 @@
                         <li
                           (click)="selectArea(area)"
                           class="px-3 py-1.5 text-ds-text-secondary hover:bg-ds-surface cursor-pointer transition-colors"
-                          [ngClass]="{'bg-black/5 text-black': orderForm.get('area')?.value === area}"
+                          [ngClass]="{'bg-ds-text/5 text-ds-text': orderForm.get('area')?.value === area}"
                         >
                           {{ area }}
                         </li>
@@ -241,8 +241,13 @@
             </p>
           }
 
-          <button type="submit" [disabled]="isLoading">
-            {{ isLoading ? "Placing order..." : "Submit order" }}
+          <button type="submit" [disabled]="isLoading" class="flex items-center justify-center gap-2">
+            @if (isLoading) {
+              <app-icon name="Loader2" size="18" className="animate-spin"></app-icon>
+              <span>Placing order...</span>
+            } @else {
+              <span>Submit order</span>
+            }
           </button>
         </form>
       </div>

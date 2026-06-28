@@ -18,7 +18,7 @@
           <div class="flex flex-row gap-ds-4">
             <!-- Thumbnails (Desktop) -->
             @if (vm.gallery.length > 1) {
-              <div class="hidden lg:flex flex-col gap-ds-3 overflow-y-auto w-20 flex-shrink-0" style="max-height: 700px;">
+              <div class="hidden lg:flex flex-col gap-ds-3 overflow-y-auto w-20 flex-shrink-0 max-h-[700px]">
                 @for (url of vm.gallery; track url; let i = $index) {
                   <button
                     (click)="goToImage(i)"
@@ -64,10 +64,10 @@
 
                 <!-- Nav Arrows -->
                 @if (vm.gallery.length > 1) {
-                  <button (click)="prevImage(vm.gallery); $event.stopPropagation()" class="absolute left-ds-4 top-1/2 -translate-y-1/2 z-30 btn-icon !w-11 !h-11 !bg-black/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
+                  <button (click)="prevImage(vm.gallery); $event.stopPropagation()" class="absolute left-ds-4 top-1/2 -translate-y-1/2 z-30 btn-icon !w-11 !h-11 !bg-ds-text/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
                     <app-icon name="ChevronLeft" size="20"></app-icon>
                   </button>
-                  <button (click)="nextImage(vm.gallery); $event.stopPropagation()" class="absolute right-ds-4 top-1/2 -translate-y-1/2 z-30 btn-icon !w-11 !h-11 !bg-black/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
+                  <button (click)="nextImage(vm.gallery); $event.stopPropagation()" class="absolute right-ds-4 top-1/2 -translate-y-1/2 z-30 btn-icon !w-11 !h-11 !bg-ds-text/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
                     <app-icon name="ChevronRight" size="20"></app-icon>
                   </button>
                 }
@@ -221,8 +221,7 @@
               }
 
               <!-- Watching Section -->
-              <div class="p-ds-4 rounded-sm flex items-center gap-ds-3 border border-ds-danger/50 animate-pulse"
-                   style="background: rgba(230,57,70,0.05);">
+              <div class="p-ds-4 rounded-sm flex items-center gap-ds-3 border border-ds-danger/50 bg-ds-danger/5 animate-pulse">
                 <app-icon name="Eye" size="16" className="text-ds-danger"></app-icon>
                 <p class="text-ds-text-sec">
                   <span class="text-ds-danger">{{ watchingCount }}</span> People watching this product now!
@@ -574,7 +573,7 @@
   @if (isLightboxOpen && (vm$ | async); as vm) {
     <div class="fixed inset-0 z-[1000] bg-ds-accent/95 backdrop-blur-glass flex items-center justify-center animate-fade-in" (click)="closeLightbox()">
       <!-- Close Button -->
-      <button (click)="closeLightbox()" class="absolute top-ds-8 right-ds-8 z-[1010] btn-icon !bg-black/40 !text-white border border-white/10 backdrop-blur-md hover:!bg-black/60 transition-all">
+      <button (click)="closeLightbox()" class="absolute top-ds-8 right-ds-8 z-[1010] btn-icon !bg-ds-text/40 !text-white border border-white/10 backdrop-blur-md hover:!bg-ds-text/60 transition-all">
         <app-icon name="X" size="24"></app-icon>
       </button>
 
@@ -600,10 +599,10 @@
 
           <!-- Nav Arrows -->
           @if (vm.gallery.length > 1) {
-            <button (click)="prevLightbox(vm.gallery)" class="absolute left-ds-4 top-1/2 -translate-y-1/2 btn-icon !w-12 !h-12 !bg-black/40 !text-white border border-white/10 backdrop-blur-md hover:!bg-black/60 transition-all">
+            <button (click)="prevLightbox(vm.gallery)" class="absolute left-ds-4 top-1/2 -translate-y-1/2 btn-icon !w-12 !h-12 !bg-ds-text/40 !text-white border border-white/10 backdrop-blur-md hover:!bg-ds-text/60 transition-all">
               <app-icon name="ChevronLeft" size="28"></app-icon>
             </button>
-            <button (click)="nextLightbox(vm.gallery)" class="absolute right-ds-4 top-1/2 -translate-y-1/2 btn-icon !w-12 !h-12 !bg-black/40 !text-white border border-white/10 backdrop-blur-md hover:!bg-black/60 transition-all">
+            <button (click)="nextLightbox(vm.gallery)" class="absolute right-ds-4 top-1/2 -translate-y-1/2 btn-icon !w-12 !h-12 !bg-ds-text/40 !text-white border border-white/10 backdrop-blur-md hover:!bg-ds-text/60 transition-all">
               <app-icon name="ChevronRight" size="28"></app-icon>
             </button>
           }

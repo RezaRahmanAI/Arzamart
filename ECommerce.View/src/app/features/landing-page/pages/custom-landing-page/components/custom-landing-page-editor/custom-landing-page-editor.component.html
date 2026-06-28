@@ -1,4 +1,4 @@
-<div class="editor-panel w-[320px] h-full flex-shrink-0 bg-ds-accent border-r border-white/10 overflow-y-auto z-[100] transition-all"
+<div class="editor-panel w-[320px] h-full flex-shrink-0 bg-ds-bg border-r border-ds-border overflow-y-auto z-[100] transition-all"
      [class.hidden]="!isEditorOpen">
   
 
@@ -6,37 +6,37 @@
   <div class="p-4 space-y-4" [formGroup]="configForm">
     
     <!-- Section: Global Settings -->
-    <div class="bg-white/5 rounded-lg overflow-hidden border border-white/10">
-      <button class="w-full px-4 py-3 flex items-center justify-between hover:bg-white/5 transition-colors"
+    <div class="bg-ds-bg/5 rounded-lg overflow-hidden border border-ds-border">
+      <button class="w-full px-4 py-3 flex items-center justify-between hover:bg-ds-bg/5 transition-colors"
               (click)="activeEditorSection = activeEditorSection === 'global' ? '' : 'global'">
-        <span class="text-xs font-bold uppercase tracking-widest text-white/60">💎 Global Settings</span>
+        <span class="text-xs font-bold uppercase tracking-widest text-ds-text-muted">💎 Global Settings</span>
         <app-icon [name]="activeEditorSection === 'global' ? 'ChevronUp' : 'ChevronDown'" size="14"></app-icon>
       </button>
       
-      <div class="p-4 space-y-4 border-t border-white/5" [class.hidden]="activeEditorSection !== 'global'">
+      <div class="p-4 space-y-4 border-t border-ds-border" [class.hidden]="activeEditorSection !== 'global'">
         <div class="grid grid-cols-2 gap-3">
           <div class="space-y-1.5">
-            <label class="text-[10px] uppercase text-white/40">Promo Price</label>
+            <label class="text-[10px] uppercase text-ds-text-muted">Promo Price</label>
             <input type="number" formControlName="promoPrice" class="editor-input">
           </div>
           <div class="space-y-1.5">
-            <label class="text-[10px] uppercase text-white/40">Original Price</label>
+            <label class="text-[10px] uppercase text-ds-text-muted">Original Price</label>
             <input type="number" formControlName="originalPrice" class="editor-input">
           </div>
         </div>
         <div class="space-y-1.5">
-          <label class="text-[10px] uppercase text-white/40">Featured Name</label>
+          <label class="text-[10px] uppercase text-ds-text-muted">Featured Name</label>
           <input type="text" formControlName="featuredProductName" class="editor-input">
         </div>
         <div class="space-y-1.5">
-          <label class="text-[10px] uppercase text-white/40">Free Shipping Min Qty</label>
+          <label class="text-[10px] uppercase text-ds-text-muted">Free Shipping Min Qty</label>
           <input type="number" formControlName="freeShippingThresholdQuantity" class="editor-input" placeholder="Empty = No free shipping">
         </div>
 
         <!-- Marquee Settings -->
-        <div class="pt-2 border-t border-white/5 space-y-3">
+        <div class="pt-2 border-t border-ds-border space-y-3">
           <div class="flex items-center justify-between">
-            <span class="text-xs text-white/80">Marquee Bar</span>
+            <span class="text-xs text-ds-text">Marquee Bar</span>
             <input type="checkbox" formControlName="isMarqueeVisible" class="toggle-sm">
           </div>
           @if (configForm.get('isMarqueeVisible')?.value) {
@@ -49,31 +49,31 @@
     <!-- Section: Layout & Components -->
     <div class="space-y-3">
       <div class="flex items-center justify-between px-2">
-        <p class="text-[10px] uppercase tracking-widest text-white/30 font-bold">Layout Components</p>
-        <p class="text-[9px] text-white/20 italic">Drag to reorder</p>
+        <p class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold">Layout Components</p>
+        <p class="text-[9px] text-ds-text-muted italic">Drag to reorder</p>
       </div>
       
       <div class="space-y-2" cdkDropList (cdkDropListDropped)="drop($event)">
         @for (section of sections; track section.id; let i = $index) {
-          <div class="bg-white/5 rounded-lg border border-white/5 overflow-hidden transition-all"
+          <div class="bg-ds-bg/5 rounded-lg border border-ds-border overflow-hidden transition-all"
                cdkDrag
                [class.active-section-border]="activeEditorSection === section.id">
             
             <!-- Section Header -->
-            <div class="flex items-center gap-1 p-1 hover:bg-white/5 group">
+            <div class="flex items-center gap-1 p-1 hover:bg-ds-bg/5 group">
               <!-- Drag Handle -->
-              <div cdkDragHandle class="p-2 cursor-grab active:cursor-grabbing text-white/20 hover:text-white/40 transition-colors">
+              <div cdkDragHandle class="p-2 cursor-grab active:cursor-grabbing text-ds-text-muted hover:text-ds-text-muted transition-colors">
                 <app-icon name="GripVertical" size="14"></app-icon>
               </div>
 
               <button (click)="toggleActiveSection(section)"
                       class="flex-1 flex items-center gap-1.5 text-left min-w-0 px-1 py-1.5">
-                <span class="text-white/90 text-sm font-medium leading-tight">{{ section.label }}</span>
-                <app-icon [name]="activeEditorSection === section.id ? 'ChevronUp' : 'ChevronDown'" size="10" class="text-white/20 shrink-0"></app-icon>
+                <span class="text-ds-text text-sm font-medium leading-tight">{{ section.label }}</span>
+                <app-icon [name]="activeEditorSection === section.id ? 'ChevronUp' : 'ChevronDown'" size="10" class="text-ds-text-muted shrink-0"></app-icon>
               </button>
               
               <div class="flex items-center gap-1 pr-1">
-                <button (click)="toggleVisibility(i); $event.stopPropagation()" class="p-1.5 hover:bg-white/10 rounded-md transition-colors" [class.text-ds-info]="section.visible">
+                <button (click)="toggleVisibility(i); $event.stopPropagation()" class="p-1.5 hover:bg-ds-surface rounded-md transition-colors" [class.text-ds-info]="section.visible">
                   <app-icon [name]="section.visible ? 'Eye' : 'EyeOff'" size="14"></app-icon>
                 </button>
                 <button (click)="deleteSection(i); $event.stopPropagation()" class="p-1.5 hover:bg-ds-danger/20 text-ds-danger rounded-md">
@@ -84,100 +84,100 @@
 
             <!-- Section Fields (Accordion Content) -->
             @if (activeEditorSection === section.id) {
-              <div class="p-4 pt-0 space-y-4 border-t border-white/5 bg-black/20" (input)="emitChange()" (change)="emitChange()">
+              <div class="p-4 pt-0 space-y-4 border-t border-ds-border bg-ds-text/20" (input)="emitChange()" (change)="emitChange()">
                 @switch (section.type) {
                   @case ('countdown') {
                     <div class="space-y-3 pt-3">
                       <div class="flex items-center justify-between">
-                        <span class="text-xs text-white/60">Visible</span>
+                        <span class="text-xs text-ds-text-muted">Visible</span>
                         <input type="checkbox" [(ngModel)]="section.settings.isTimerVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Bar Title</label>
-                        <input type="text" [(ngModel)]="section.settings.headerTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
+                        <label class="text-[10px] text-ds-text-muted uppercase">Bar Title</label>
+                        <input type="text" [(ngModel)]="section.settings.headerTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Reset Minutes</label>
-                        <input type="number" [(ngModel)]="section.settings.relativeTimerTotalMinutes" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
+                        <label class="text-[10px] text-ds-text-muted uppercase">Reset Minutes</label>
+                        <input type="number" [(ngModel)]="section.settings.relativeTimerTotalMinutes" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                     </div>
                   }
                   @case ('hero') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Main Title</label>
-                        <textarea [(ngModel)]="section.settings.heroTitle" [ngModelOptions]="{standalone: true}" rows="2" class="editor-textarea bg-black/40"></textarea>
+                        <label class="text-[10px] text-ds-text-muted uppercase">Main Title</label>
+                        <textarea [(ngModel)]="section.settings.heroTitle" [ngModelOptions]="{standalone: true}" rows="2" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Subtitle</label>
-                        <textarea [(ngModel)]="section.settings.heroSubtitle" [ngModelOptions]="{standalone: true}" rows="2" class="editor-textarea bg-black/40"></textarea>
+                        <label class="text-[10px] text-ds-text-muted uppercase">Subtitle</label>
+                        <textarea [(ngModel)]="section.settings.heroSubtitle" [ngModelOptions]="{standalone: true}" rows="2" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Badge Text</label>
-                        <input type="text" [(ngModel)]="section.settings.heroBadge" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
+                        <label class="text-[10px] text-ds-text-muted uppercase">Badge Text</label>
+                        <input type="text" [(ngModel)]="section.settings.heroBadge" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                     </div>
                   }
                   @case ('product-hero') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Section Title</label>
-                        <input type="text" [(ngModel)]="section.settings.productHeroTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
+                        <label class="text-[10px] text-ds-text-muted uppercase">Section Title</label>
+                        <input type="text" [(ngModel)]="section.settings.productHeroTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Description</label>
-                        <textarea [(ngModel)]="section.settings.productHeroDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-black/40"></textarea>
+                        <label class="text-[10px] text-ds-text-muted uppercase">Description</label>
+                        <textarea [(ngModel)]="section.settings.productHeroDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                     </div>
                   }
                   @case ('discount-cta') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">CTA Title</label>
-                        <input type="text" [(ngModel)]="section.settings.discountCtaTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
+                        <label class="text-[10px] text-ds-text-muted uppercase">CTA Title</label>
+                        <input type="text" [(ngModel)]="section.settings.discountCtaTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">CTA Description</label>
-                        <textarea [(ngModel)]="section.settings.discountCtaDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-black/40"></textarea>
+                        <label class="text-[10px] text-ds-text-muted uppercase">CTA Description</label>
+                        <textarea [(ngModel)]="section.settings.discountCtaDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                     </div>
                   }
                   @case ('info-banner') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Banner Title</label>
-                        <input type="text" [(ngModel)]="section.settings.infoBannerTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
+                        <label class="text-[10px] text-ds-text-muted uppercase">Banner Title</label>
+                        <input type="text" [(ngModel)]="section.settings.infoBannerTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Banner Description</label>
-                        <textarea [(ngModel)]="section.settings.infoBannerDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-black/40"></textarea>
+                        <label class="text-[10px] text-ds-text-muted uppercase">Banner Description</label>
+                        <textarea [(ngModel)]="section.settings.infoBannerDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                     </div>
                   }
                   @case ('product-details') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Section Title</label>
-                        <input type="text" [(ngModel)]="section.settings.productDetailsTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-black/40">
+                        <label class="text-[10px] text-ds-text-muted uppercase">Section Title</label>
+                        <input type="text" [(ngModel)]="section.settings.productDetailsTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                     </div>
                   }
                   @case ('trust-banner') {
                     <div class="space-y-3 pt-3">
                       <div class="flex items-center justify-between">
-                        <span class="text-xs text-white/60">Visible</span>
+                        <span class="text-xs text-ds-text-muted">Visible</span>
                         <input type="checkbox" [(ngModel)]="section.settings.isTrustBannerVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Trust Message</label>
-                        <textarea [(ngModel)]="section.settings.trustBannerText" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-black/40"></textarea>
+                        <label class="text-[10px] text-ds-text-muted uppercase">Trust Message</label>
+                        <textarea [(ngModel)]="section.settings.trustBannerText" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                     </div>
                   }
                   @case ('reviews') {
                     <div class="space-y-3 pt-3">
                       <div class="flex items-center justify-between">
-                        <span class="text-xs text-white/60">Show Reviews</span>
+                        <span class="text-xs text-ds-text-muted">Show Reviews</span>
                         <input type="checkbox" [(ngModel)]="section.settings.isReviewsVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm">
                       </div>
                     </div>
@@ -185,44 +185,43 @@
                   @case ('order-form') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-white/40 uppercase">Offer/Promo Text</label>
-                        <textarea [(ngModel)]="section.settings.promoText" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-black/40" placeholder="Shown in order summary..."></textarea>
+                        <label class="text-[10px] text-ds-text-muted uppercase">Offer/Promo Text</label>
+                        <textarea [(ngModel)]="section.settings.promoText" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface" placeholder="Shown in order summary..."></textarea>
                       </div>
                     </div>
                   }
                   @case ('product-select') {
                     <div class="space-y-4 pt-3">
-                      <p class="text-[10px] text-white/40 uppercase font-bold tracking-widest">Custom Product Selection</p>
+                      <p class="text-[10px] text-ds-text-muted uppercase font-bold tracking-widest">Custom Product Selection</p>
                       
                       <div class="relative">
                         <input type="text" 
                                [(ngModel)]="productSearchTerm" 
                                [ngModelOptions]="{standalone: true}"
                                placeholder="Search products..."
-                               class="editor-input bg-black/40 pl-10">
-                        <app-icon name="Search" size="14" class="absolute left-3 top-1/2 -translate-y-1/2 text-white/40"></app-icon>
+                               class="editor-input bg-ds-surface pl-10">
+                        <app-icon name="Search" size="14" class="absolute left-3 top-1/2 -translate-y-1/2 text-ds-text-muted"></app-icon>
                       </div>
 
                       <div class="space-y-2 max-h-64 overflow-y-auto custom-scrollbar pr-2">
                         @if (isProductSelectionLoading) {
                           <div class="flex items-center justify-center py-8">
-                            <app-icon name="Loader2" size="20" class="animate-spin text-white/20"></app-icon>
+                            <app-icon name="Loader2" size="20" class="animate-spin text-ds-text-muted"></app-icon>
                           </div>
                         } @else {
                           @for (p of productsForSelectionPool; track p.id) {
                             @if (p.id !== primaryProductId) {
-                              <div class="flex items-center justify-between p-3 rounded-lg bg-black/20 border border-white/5 hover:border-white/10 transition-colors">
+                              <div class="flex items-center justify-between p-3 rounded-lg bg-ds-text/20 border border-ds-border hover:border-ds-border transition-colors">
                                 <div class="flex items-center gap-3 overflow-hidden">
                                   <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" class="w-8 h-8 rounded object-cover flex-shrink-0">
                                   <div class="overflow-hidden">
                                     <p class="text-[11px] font-bold truncate">{{ p.name }}</p>
-                                    <p class="text-[9px] text-white/30">{{ p.sku }}</p>
+                                    <p class="text-[9px] text-ds-text-muted">{{ p.sku }}</p>
                                   </div>
                                 </div>
                                 <button (click)="toggleProductSelection(p.id)"
-                                        class="w-6 h-6 rounded-full flex items-center justify-center transition-all border border-white/10"
-                                        [style.background]="isProductInCustomSelection(p.id) ? 'var(--color-info)' : 'transparent'"
-                                        [style.borderColor]="isProductInCustomSelection(p.id) ? 'var(--color-info)' : 'rgba(255,255,255,0.1)'">
+                                        class="w-6 h-6 rounded-full flex items-center justify-center transition-all border border-ds-border"
+                                        [ngClass]="isProductInCustomSelection(p.id) ? 'bg-ds-info border-ds-info' : 'bg-transparent border-ds-border'">
                                   <app-icon [name]="isProductInCustomSelection(p.id) ? 'Check' : 'Plus'" size="10"></app-icon>
                                 </button>
                               </div>
@@ -232,14 +231,14 @@
                       </div>
                       
                       <div class="p-3 bg-ds-info/5 rounded-lg border border-dashed border-ds-info/20">
-                        <p class="text-[10px] text-white/50 text-center leading-relaxed font-bengali">
+                        <p class="text-[10px] text-ds-text-muted text-center leading-relaxed font-bengali">
                           এখান থেকে পণ্য সিলেক্ট করলে সেগুলো ল্যান্ডিং পেজে দেখাবে। সিলেক্ট না করলে অটোমেটিক রিলেটেড পণ্য দেখাবে।
                         </p>
                       </div>
                     </div>
                   }
                   @default {
-                    <p class="text-[10px] text-white/20 py-4 text-center italic">No extra settings for this component</p>
+                    <p class="text-[10px] text-ds-text-muted py-4 text-center italic">No extra settings for this component</p>
                   }
                 }
               </div>
@@ -251,15 +250,15 @@
       <!-- Add Section -->
       <div class="relative mt-6">
         <button (click)="isAddSectionMenuOpen = !isAddSectionMenuOpen" 
-                class="w-full h-11 border border-dashed border-white/10 hover:border-ds-info text-white/30 hover:text-ds-info flex items-center justify-center gap-2 transition-all rounded-lg text-sm bg-white/[0.02]">
+                class="w-full h-11 border border-dashed border-ds-border hover:border-ds-info text-ds-text-muted hover:text-ds-info flex items-center justify-center gap-2 transition-all rounded-lg text-sm bg-ds-surface">
           <app-icon name="Plus" size="14"></app-icon>
           Add Component
         </button>
         @if (isAddSectionMenuOpen) {
-          <div class="absolute bottom-full left-0 right-0 bg-ds-accent border border-white/10 shadow-2xl z-50 overflow-hidden rounded-lg mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div class="absolute bottom-full left-0 right-0 bg-ds-accent border border-ds-border shadow-2xl z-50 overflow-hidden rounded-lg mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
             <div class="max-h-64 overflow-y-auto custom-scrollbar">
               @for (type of ['countdown', 'hero', 'product-hero', 'discount-cta', 'info-banner', 'product-details', 'trust-banner', 'reviews', 'product-select', 'order-form']; track type) {
-                <button (click)="addSection(type); isAddSectionMenuOpen = false" class="w-full text-left px-4 py-2.5 text-white/60 hover:bg-ds-info hover:text-white transition-all border-b border-white/5 last:border-0 text-sm">
+                <button (click)="addSection(type); isAddSectionMenuOpen = false" class="w-full text-left px-4 py-2.5 text-ds-text-muted hover:bg-ds-info hover:text-white transition-all border-b border-ds-border last:border-0 text-sm">
                   {{ type.replace('-', ' ') | titlecase }}
                 </button>
               }
@@ -273,7 +272,7 @@
   </div>
 
   <!-- Footer Actions -->
-  <div class="sticky bottom-0 p-4 bg-ds-accent/95 backdrop-blur-md border-t border-white/10 z-20 space-y-3">
+  <div class="sticky bottom-0 p-4 bg-ds-accent/95 backdrop-blur-md border-t border-ds-border z-20 space-y-3">
     <button (click)="save.emit()" [disabled]="isSaving"
             class="w-full h-11 bg-ds-info text-white shadow-lg hover:shadow-ds-info/20 transition-all flex items-center justify-center gap-2 rounded-lg font-bold text-sm">
       @if (isSaving) {
@@ -286,7 +285,7 @@
     </button>
     
     <button (click)="share.emit()" 
-            class="w-full h-11 bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-all flex items-center justify-center gap-2 rounded-lg text-sm">
+            class="w-full h-11 bg-ds-bg/5 border border-ds-border text-ds-text hover:bg-ds-surface transition-all flex items-center justify-center gap-2 rounded-lg text-sm">
       <app-icon name="Share2" size="16"></app-icon>
       Share Page Link
     </button>

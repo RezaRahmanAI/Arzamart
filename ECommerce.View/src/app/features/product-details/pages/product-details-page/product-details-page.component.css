@@ -1,10 +1,6 @@
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
 .btn-whatsapp-glow {
   position: relative;
   animation: whatsapp-glow 3s infinite ease-in-out;

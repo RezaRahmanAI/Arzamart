@@ -39,7 +39,7 @@ import {
       @for (toast of toasts; track toast.id) {
         <div
           @toastAnimation
-          class="pointer-events-auto w-full bg-ds-bg text-ds-text px-4 py-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex items-center justify-between gap-4 rounded-xl border border-ds-border"
+          class="pointer-events-auto w-full bg-ds-bg text-ds-text px-4 py-3.5 shadow-lg flex items-center justify-between gap-4 rounded-xl border border-ds-border"
         >
           <div class="flex items-center gap-3">
              @if (toast.type === 'SUCCESS') {

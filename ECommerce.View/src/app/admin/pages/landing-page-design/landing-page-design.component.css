@@ -2,14 +2,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.25rem;
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-sm);
   color: var(--color-text-secondary);
   background: transparent;
   border: 0;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
 }
 
 .device-btn:hover {
@@ -19,13 +19,13 @@
 
 .device-btn.active-device {
   background: var(--color-info);
-  color: white !important;
+  color: var(--color-hero-text) !important;
 }
 
 /* Device Simulator Frames */
 .preview-device-frame {
   position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-base);
   overflow: hidden;
   max-width: 100%;
 }
@@ -34,28 +34,28 @@
   width: 100%;
   height: 100%;
   border: 1px solid var(--color-border-ds);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .preview-device-frame.tablet {
   width: 768px;
   height: 100%;
   max-height: 900px;
-  border: 12px solid #1f2937;
-  border-radius: 20px;
-  background: #1f2937;
+  border: 12px solid var(--color-text-primary);
+  border-radius: var(--radius-xl);
+  background: var(--color-text-primary);
 }
 
 .preview-device-frame.mobile {
   width: 375px;
   height: 100%;
   max-height: 720px;
-  border: 12px solid #1f2937;
-  border-radius: 24px;
-  background: #1f2937;
+  border: 12px solid var(--color-text-primary);
+  border-radius: var(--radius-xl);
+  background: var(--color-text-primary);
 }
 
 .preview-viewport-wrapper {
-  background-image: radial-gradient(rgba(0,0,0,0.15) 1px, transparent 0);
-  background-size: 16px 16px;
+  background-image: radial-gradient(var(--color-text-primary) 1px, transparent 0);
+  background-size: var(--space-4) var(--space-4);
 }

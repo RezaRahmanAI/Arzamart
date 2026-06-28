@@ -189,11 +189,16 @@
 
             <!-- Submit Button -->
             <button
-              class="btn btn-primary h-14 w-full sm:w-auto"
+              class="btn btn-primary h-14 w-full sm:w-auto flex items-center justify-center gap-2"
               type="submit"
               [disabled]="form.invalid || isSubmitting"
             >
-              {{ isSubmitting ? "Sending..." : "Send Message" }}
+              @if (isSubmitting) {
+                <app-icon name="Loader2" size="18" className="animate-spin"></app-icon>
+                <span>Sending...</span>
+              } @else {
+                <span>Send Message</span>
+              }
             </button>
             <p *ngIf="successMessage" class="text-ds-success mt-ds-2">
               {{ successMessage }}

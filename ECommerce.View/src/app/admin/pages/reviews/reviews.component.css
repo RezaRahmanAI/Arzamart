@@ -8,12 +8,12 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    background: var(--color-border-ds);
+    border-radius: var(--radius-lg);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--color-text-muted);
 }
 
 /* Animations */
@@ -29,12 +29,12 @@
 }
 
 .modal-animate-in {
-    animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: modalSlideIn var(--transition-base) forwards;
 }
 
 /* Form Input Enhancements */
 .form-input:focus {
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 0 0 4px var(--color-border-ds);
 }
 
 /* Custom Dropdown Animation */
@@ -50,5 +50,5 @@
 }
 
 .dropdown-animate {
-    animation: dropdownFadeIn 0.2s ease-out forwards;
+    animation: dropdownFadeIn var(--transition-base) forwards;
 }

@@ -5,7 +5,9 @@
     @if (showNavbar$ | async) {
       <app-navbar></app-navbar>
     }
-    <router-outlet></router-outlet>
+    <div class="animate-fade-in">
+      <router-outlet></router-outlet>
+    </div>
     
     @defer (on idle) {
       @if (showNavbar$ | async) {
@@ -14,7 +16,9 @@
     }
     <app-cart-drawer></app-cart-drawer>
   } @else {
-    <router-outlet></router-outlet>
+    <div class="animate-fade-in">
+      <router-outlet></router-outlet>
+    </div>
   }
 
   <app-toast></app-toast>

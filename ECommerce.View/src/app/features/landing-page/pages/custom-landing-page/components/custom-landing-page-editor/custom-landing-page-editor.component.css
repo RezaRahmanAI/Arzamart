@@ -1,5 +1,5 @@
 .editor-panel {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--transition-base);
 }
 
 .editor-panel.hidden {
@@ -22,11 +22,11 @@
   appearance: none;
   width: 2.5rem;
   height: 1.25rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
   position: relative;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background var(--transition-base);
 }
 
 .toggle-sm:checked {
@@ -40,9 +40,9 @@
   left: 2px;
   width: 1rem;
   height: 1rem;
-  background: white;
+  background: var(--color-text);
   border-radius: 50%;
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-base);
 }
 
 .toggle-sm:checked::after {
@@ -50,74 +50,54 @@
 }
 
 /* Scrollbar for Editor */
-.editor-panel::-webkit-scrollbar {
-  width: 4px;
-}
-
-.editor-panel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.editor-panel::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-}
-
-.editor-panel::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
+.editor-panel::-webkit-scrollbar { width: 4px; }
+.editor-panel::-webkit-scrollbar-track { background: transparent; }
+.editor-panel::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 10px; }
+.editor-panel::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
 
 .editor-input {
   width: 100%;
   height: 2.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   padding: 0 0.75rem;
-  color: white;
+  color: var(--color-text);
   font-size: 0.875rem;
   outline: none;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
 }
 
 .editor-input:focus {
   border-color: var(--color-info);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-card);
 }
 
 .editor-textarea {
   width: 100%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   padding: 0.75rem;
-  color: white;
+  color: var(--color-text);
   font-size: 0.875rem;
   outline: none;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
   resize: vertical;
 }
 
 .editor-textarea:focus {
   border-color: var(--color-info);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-card);
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.2);
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.1);
-  border-radius: 3px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.2);
-}
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: var(--color-bg); }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: var(--radius-xs); }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+
 .active-section-border {
-  border-color: rgba(59, 79, 216, 0.4) !important;
+  border-color: var(--color-info) !important;
 }
 
 .font-bengali {

@@ -2,19 +2,8 @@
   display: block;
 }
 
-@keyframes slide-in-bottom {
-  0% {
-    transform: translateY(2rem);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
 .animate-slide-up {
-  animation: slide-in-bottom 0.5s ease-out forwards;
+  animation: slideUp var(--transition-base) forwards;
 }
 
 select {

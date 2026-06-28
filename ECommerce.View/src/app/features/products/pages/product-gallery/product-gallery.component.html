@@ -39,7 +39,7 @@
                     }"
                   >
                     <div class="flex items-center gap-2.5">
-                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="!activeSubSlug ? 'bg-white' : 'bg-ds-danger'"></span>
+                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="!activeSubSlug ? 'bg-ds-bg' : 'bg-ds-danger'"></span>
                       <span>All {{ parentCategoryName }}</span>
                     </div>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" [ngClass]="!activeSubSlug ? 'text-white' : 'text-ds-text-muted'"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -56,7 +56,7 @@
                     }"
                   >
                     <div class="flex items-center gap-2.5">
-                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="sub.slug === activeSubSlug ? 'bg-white' : 'bg-ds-danger'"></span>
+                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="sub.slug === activeSubSlug ? 'bg-ds-bg' : 'bg-ds-danger'"></span>
                       <span>{{ sub.name }}</span>
                     </div>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" [ngClass]="sub.slug === activeSubSlug ? 'text-white' : 'text-ds-text-muted'"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>

@@ -25,12 +25,12 @@
     <!-- ═══════════════════════════════════════════
          MAIN CONTENT AREA (PREVIEW)
     ═══════════════════════════════════════════ -->
-    <div class="flex-1 h-full overflow-y-auto relative scroll-smooth bg-white">
+    <div class="flex-1 h-full overflow-y-auto relative scroll-smooth bg-ds-bg">
       
       <!-- Editor Toggle Button (Hidden in clean preview) -->
       @if ((isAdmin$ | async) && !isEditorOpen && !isPreviewMode) {
         <button (click)="isEditorOpen = true" 
-                class="fixed top-6 left-6 z-[200] w-14 h-14 bg-ds-info text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.5)] hover:scale-110 active:scale-95 transition-all border border-white/20">
+                class="fixed top-6 left-6 z-[200] w-14 h-14 bg-ds-info text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all border border-white/20">
           <app-icon name="Settings" size="24"></app-icon>
         </button>
       }
@@ -73,7 +73,7 @@
                             { val: timeLeft.minutes, label: 'মিনিট' },
                             { val: timeLeft.seconds, label: 'সেকেন্ড' }
                           ]; track unit.label) {
-                            <div class="flex flex-col items-center justify-center w-14 h-12 bg-white/15 rounded-sm">
+                            <div class="flex flex-col items-center justify-center w-14 h-12 bg-ds-bg/15 rounded-sm">
                               <span >{{ unit.val | number: '2.0' }}</span>
                               <span class="font-bengali mt-1 opacity-70">{{ unit.label }}</span>
                             </div>
@@ -86,8 +86,7 @@
 
                 <!-- MODULE 2: Hero / Offer -->
                 @case ('hero') {
-                  <section class="section-padding text-center text-white" 
-                           style="background: linear-gradient(135deg, var(--color-info), #7B3FE4, #8B2FC9);">
+                  <section class="section-padding text-center text-white gradient-purple">
                     <div class="max-w-[800px] mx-auto">
                       <p class="mb-4">🚀</p>
                       <h1 class="mb-6 whitespace-pre-line">
@@ -101,7 +100,7 @@
                       </div>
                       <div>
                         <button (click)="scrollToOrder()" 
-                                class="btn-pill bg-white text-ds-info hover:scale-105 active:scale-95 shadow-2xl">
+                                class="btn-pill bg-ds-bg text-ds-info hover:scale-105 active:scale-95 shadow-2xl">
                           অর্ডার করুন এখনই
                         </button>
                       </div>
@@ -111,8 +110,7 @@
 
                 <!-- MODULE 3: Product Hero -->
                 @case ('product-hero') {
-                  <section class="bg-white overflow-hidden" 
-                           style="background: linear-gradient(135deg, #8B2FC9, #C2185B, #E91E8C);">
+                  <section class="overflow-hidden gradient-pink">
                     <div class="max-w-[1200px] mx-auto grid lg:grid-cols-2">
                       <!-- Text Content -->
                       <div class="p-8 md:p-16 flex flex-col justify-center text-white order-2 lg:order-1">
@@ -121,13 +119,13 @@
                           {{ section.settings?.productHeroDescription !== undefined ? section.settings.productHeroDescription : (configForm.get('productHeroDescription')?.value || 'সেরা উপাদান দিয়ে তৈরি যা আপনার ত্বকের যত্ন নেবে।') }}
                         </p>
                         <div>
-                          <button (click)="scrollToOrder()" class="btn-pill bg-white text-ds-danger shadow-xl">
+                          <button (click)="scrollToOrder()" class="btn-pill bg-ds-bg text-ds-danger shadow-xl">
                             বিস্তারিত দেখুন
                           </button>
                         </div>
                       </div>
                       <!-- Image -->
-                      <div class="order-1 lg:order-2 h-[400px] lg:h-auto overflow-hidden bg-black/10">
+                      <div class="order-1 lg:order-2 h-[400px] lg:h-auto overflow-hidden bg-ds-text/10">
                         <img loading="lazy" [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" 
                              alt="Product" class="w-full h-full object-contain grayscale-[20%]">
                       </div>
@@ -138,15 +136,14 @@
 
                 <!-- MODULE 5: Discount CTA -->
                 @case ('discount-cta') {
-                  <section class="section-padding text-center text-white"
-                           style="background: linear-gradient(135deg, var(--color-success), #1B9B7A);">
+                  <section class="section-padding text-center text-white gradient-green">
                     <div class="max-w-[800px] mx-auto">
                       <p class="mb-6">🎁</p>
                       <h2 class="mb-4 whitespace-pre-line">{{ section.settings?.discountCtaTitle !== undefined ? section.settings.discountCtaTitle : (configForm.get('discountCtaTitle')?.value || 'অবিশ্বাস্য ডিসকাউন্ট অফার!') }}</h2>
                       <p class="text-white/90 mb-10 whitespace-pre-line">
                         {{ section.settings?.discountCtaDescription !== undefined ? section.settings.discountCtaDescription : (configForm.get('discountCtaDescription')?.value || 'আজই অর্ডার করলে পাবেন বিশেষ ছাড় এবং ফ্রি ডেলিভারি।') }}
                       </p>
-                      <button (click)="scrollToOrder()" class="btn-pill bg-white text-ds-success">
+                      <button (click)="scrollToOrder()" class="btn-pill bg-ds-bg text-ds-success">
                         অফারটি গ্রহণ করুন
                       </button>
                     </div>
@@ -155,9 +152,9 @@
 
                 <!-- MODULE 6: Info Banner -->
                 @case ('info-banner') {
-                  <section class="section-padding" style="background: linear-gradient(135deg, var(--color-warning), #E8870A);">
+                  <section class="section-padding gradient-orange">
                     <div class="max-w-[800px] mx-auto text-center text-ds-text">
-                      <div class="size-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-black/10">
+                      <div class="size-16 bg-ds-bg/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-black/10">
                         <app-icon name="Info" size="32" className="text-ds-text"></app-icon>
                       </div>
                       <h2 class="mb-4 whitespace-pre-line">{{ section.settings?.infoBannerTitle !== undefined ? section.settings.infoBannerTitle : (configForm.get('infoBannerTitle')?.value || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী') }}</h2>
@@ -170,7 +167,7 @@
 
                 <!-- MODULE 7: Product Details -->
                 @case ('product-details') {
-                  <section class="section-padding bg-white">
+                  <section class="section-padding bg-ds-bg">
                     <div class="max-w-[800px] mx-auto">
                       <h2 class="text-center mb-10">{{ section.settings?.productDetailsTitle !== undefined ? section.settings.productDetailsTitle : (configForm.get('productDetailsTitle')?.value || 'প্রোডাক্টের বিবরণ') }}</h2>
                       <div class="p-6 bg-ds-surface rounded-lg">
@@ -188,7 +185,7 @@
                     <section class="py-10 bg-ds-accent text-white">
                       <div class="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
                         <div class="flex items-center gap-4">
-                          <div class="size-16 bg-white/10 rounded-full flex items-center justify-center">
+                          <div class="size-16 bg-ds-bg/10 rounded-full flex items-center justify-center">
                             <app-icon name="ShieldCheck" size="32" className="text-ds-warning"></app-icon>
                           </div>
                           <div>
@@ -196,7 +193,7 @@
                             <p class="text-white/60 text-sm">হাজারো গ্রাহকের আস্থার প্রতীক</p>
                           </div>
                         </div>
-                        <div class="h-px w-20 bg-white/10 hidden md:block"></div>
+                        <div class="h-px w-20 bg-ds-bg/10 hidden md:block"></div>
                         <p class="max-w-[500px] text-lg italic whitespace-pre-line">
                           " {{ section.settings?.trustBannerText !== undefined ? section.settings.trustBannerText : (configForm.get('trustBannerText')?.value || 'নিশ্চিন্তে অর্ডার করুন, আমরা দিচ্ছি ১০০% অরিজিনাল পণ্যের গ্যারান্টি।') }} "
                         </p>
@@ -207,7 +204,7 @@
 
                 <!-- MODULE 9: Product Selection -->
                 @case ('product-select') {
-                  <section id="product-select-section" class="section-padding bg-white">
+                  <section id="product-select-section" class="section-padding bg-ds-bg">
                     <div class="max-w-[1200px] mx-auto">
                       <div class="text-center mb-12">
                         <h2 class="mb-2">পণ্য নির্বাচন করুন</h2>
@@ -217,14 +214,12 @@
                       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                         @for (p of [data.product].concat(relatedProducts); track p.id) {
                           <div class="relative p-3 sm:p-4 transition-all duration-500 border-2"
-                               [style.borderColor]="isProductSelected(p) ? 'var(--color-info)' : 'var(--color-surface)'"
-                               [style.boxShadow]="isProductSelected(p) ? '0 10px 30px rgba(30,111,217,0.1)' : 'none'">
+                               [ngClass]="isProductSelected(p) ? 'product-card-selected' : 'product-card'">
                             
                             <!-- Checkbox -->
                             <div class="absolute -top-2.5 -left-2.5 z-10" (click)="$event.stopPropagation(); toggleProductCheck(p)">
                               <div class="w-7 h-7 flex items-center justify-center rounded-sm border-2 transition-all duration-200 cursor-pointer"
-                                   [style.background]="isProductSelected(p) ? 'var(--color-info)' : 'var(--color-bg)'"
-                                   [style.borderColor]="isProductSelected(p) ? 'var(--color-info)' : 'var(--color-border-ds)'">
+                                   [ngClass]="isProductSelected(p) ? 'bg-ds-info border-ds-info' : 'bg-ds-bg border-ds-border'">
                                 @if (isProductSelected(p)) {
                                   <app-icon name="Check" size="14" className="text-white"></app-icon>
                                 }
@@ -240,8 +235,8 @@
                             <div class="cursor-pointer mb-4 group relative" (click)="$event.stopPropagation(); openProductDetails(p)">
                               <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" 
                                    class="w-full aspect-square object-contain rounded-sm bg-ds-surface">
-                              <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span class="bg-white/90 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">Details</span>
+                              <div class="absolute inset-0 bg-ds-text/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <span class="bg-ds-bg/90 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">Details</span>
                               </div>
                             </div>
                             
@@ -262,10 +257,7 @@
                                   @for (size of getUniqueSizes(p); track size) {
                                     <button (click)="$event.stopPropagation(); selectProductSize(p, size)"
                                             class="w-9 h-9 flex items-center justify-center transition-all border text-xs font-bold rounded-sm"
-                                            [style.background]="(getSelectedSize(p) === size) ? 'var(--color-info)' : 'transparent'"
-                                            [style.color]="(getSelectedSize(p) === size) ? 'var(--color-bg)' : 'var(--color-text-primary)'"
-                                            [style.borderColor]="(getSelectedSize(p) === size) ? 'var(--color-info)' : 'var(--color-border-ds)'"
-                                            [style.boxShadow]="(getSelectedSize(p) === size) ? '0 4px 12px rgba(30,111,217,0.2)' : 'none'">
+                                            [ngClass]="(getSelectedSize(p) === size) ? 'size-option-selected bg-ds-info text-ds-bg border-ds-info' : 'size-option bg-transparent text-ds-text border-ds-border'">
                                       {{ size }}
                                     </button>
                                   }
@@ -291,7 +283,7 @@
 
                 <!-- MODULE 8: Order Form -->
                 @case ('order-form') {
-                  <section id="order-form-section" class="section-padding bg-white border-t border-ds-surface">
+                  <section id="order-form-section" class="section-padding bg-ds-bg border-t border-ds-surface">
                     <div class="max-w-[1000px] mx-auto">
                       <h2 class="text-ds-text mb-12 text-center font-bengali">অর্ডার করুন</h2>
                       
@@ -331,9 +323,9 @@
                               <div class="space-y-2">
                                 <label class="text-ds-text-sec ml-1">মোবাইল নম্বর *</label>
                                 <div class="relative flex">
-                                  <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-ds-border bg-white text-ds-text-sec">+88</span>
+                                  <span class="inline-flex items-center px-4 rounded-l-2xl border-2 border-r-0 border-ds-border bg-ds-bg text-ds-text-sec">+88</span>
                                   <input type="tel" formControlName="phone" placeholder="01xxxxxxxxx"
-                                         class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-r-2xl focus:border-ds-accent focus:bg-white focus:ring-0 transition-all placeholder:text-ds-text-muted" />
+                                         class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-r-2xl focus:border-ds-accent focus:bg-ds-bg focus:ring-0 transition-all placeholder:text-ds-text-muted" />
                                 </div>
                                 @if (orderForm.controls.phone.touched && orderForm.controls.phone.invalid) {
                                   <p class="text-ds-danger ml-1">Required</p>
@@ -342,7 +334,7 @@
                               <div class="space-y-2">
                                 <label class="text-ds-text-sec ml-1">আপনার নাম *</label>
                                 <input type="text" formControlName="fullName" placeholder="e.g. Abdullah"
-                                       class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-white focus:ring-0 transition-all placeholder:text-ds-text-muted" />
+                                       class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-ds-bg focus:ring-0 transition-all placeholder:text-ds-text-muted" />
                                 @if (orderForm.controls.fullName.touched && orderForm.controls.fullName.invalid) {
                                   <p class="text-ds-danger ml-1">Required</p>
                                 }
@@ -355,17 +347,17 @@
                               <div class="space-y-2 relative" (click)="$event.stopPropagation()">
                                 <label class="text-ds-text-sec ml-1">জেলা *</label>
                                 <div class="relative items-center flex cursor-pointer" (click)="toggleCityDropdown()">
-                                  <input class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-white focus:ring-0 transition-all placeholder:text-ds-text-muted pointer-events-none"
+                                  <input class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-ds-bg focus:ring-0 transition-all placeholder:text-ds-text-muted pointer-events-none"
                                          type="text" [value]="orderForm.get('city')?.value" placeholder="সিলেক্ট করুন" readonly />
                                   <app-icon [name]="isCityDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-ds-text-sec pointer-events-none"></app-icon>
                                 </div>
                                 @if (isCityDropdownOpen) {
-                                  <div class="absolute z-50 w-full mt-2 bg-white border-2 border-ds-accent rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+                                  <div class="absolute z-50 w-full mt-2 bg-ds-bg border-2 border-ds-accent rounded-2xl shadow-2xl overflow-hidden animate-dropdown"
                                        (click)="$event.stopPropagation()">
                                     <div class="p-3 border-b border-ds-border">
                                       <div class="relative flex items-center">
                                         <app-icon name="Search" size="16" className="absolute left-3 text-ds-text-muted"></app-icon>
-                                        <input type="text" class="w-full pl-10 pr-4 py-2 bg-white border-none rounded-xl focus:ring-0 outline-none"
+                                        <input type="text" class="w-full pl-10 pr-4 py-2 bg-ds-bg border-none rounded-xl focus:ring-0 outline-none"
                                                placeholder="Search cities..." (input)="filterCities($event)" [value]="citySearch" autofocus />
                                       </div>
                                     </div>
@@ -391,18 +383,18 @@
                               <div class="space-y-2 relative" (click)="$event.stopPropagation()">
                                 <label class="text-ds-text-sec ml-1">এলাকা *</label>
                                 <div class="relative items-center flex cursor-pointer" (click)="toggleAreaDropdown()">
-                                  <input class="w-full h-14 px-6 bg-white border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-white focus:ring-0 transition-all placeholder:text-ds-text-muted pointer-events-none"
+                                  <input class="w-full h-14 px-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-ds-bg focus:ring-0 transition-all placeholder:text-ds-text-muted pointer-events-none"
                                          [class.opacity-50]="!orderForm.get('city')?.value"
                                          type="text" [value]="orderForm.get('area')?.value" placeholder="সিলেক্ট করুন" readonly />
                                   <app-icon [name]="isAreaDropdownOpen ? 'ChevronUp' : 'ChevronDown'" size="16" className="absolute right-4 text-ds-text-sec pointer-events-none"></app-icon>
                                 </div>
                                 @if (isAreaDropdownOpen) {
-                                  <div class="absolute z-50 w-full mt-2 bg-white border-2 border-ds-accent rounded-2xl shadow-2xl overflow-hidden animate-fade-in-down"
+                                  <div class="absolute z-50 w-full mt-2 bg-ds-bg border-2 border-ds-accent rounded-2xl shadow-2xl overflow-hidden animate-dropdown"
                                        (click)="$event.stopPropagation()">
                                     <div class="p-3 border-b border-ds-border">
                                       <div class="relative flex items-center">
                                         <app-icon name="Search" size="16" className="absolute left-3 text-ds-text-muted"></app-icon>
-                                        <input type="text" class="w-full pl-10 pr-4 py-2 bg-white border-none rounded-xl focus:ring-0 outline-none"
+                                        <input type="text" class="w-full pl-10 pr-4 py-2 bg-ds-bg border-none rounded-xl focus:ring-0 outline-none"
                                                placeholder="Search areas..." (input)="filterAreas($event)" [value]="areaSearch" autofocus />
                                       </div>
                                     </div>
@@ -429,7 +421,7 @@
                             <div class="space-y-2">
                               <label class="text-ds-text-sec ml-1">সম্পূর্ণ ঠিকানা *</label>
                               <textarea formControlName="address" rows="3" placeholder="House, Road..."
-                                        class="w-full p-6 bg-white border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-white focus:ring-0 transition-all placeholder:text-ds-text-muted resize-none"></textarea>
+                                        class="w-full p-6 bg-ds-bg border-2 border-ds-border rounded-2xl focus:border-ds-accent focus:bg-ds-bg focus:ring-0 transition-all placeholder:text-ds-text-muted resize-none"></textarea>
                               @if (orderForm.controls.address.touched && orderForm.controls.address.invalid) {
                                 <p class="text-ds-danger ml-1">Required</p>
                               }
@@ -556,7 +548,7 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                           @for (review of productReviews; track review.id) {
-                            <div class="bg-white p-6 rounded-[12px] shadow-sm border border-ds-border flex flex-col gap-4">
+                            <div class="bg-ds-bg p-6 rounded-[12px] shadow-sm border border-ds-border flex flex-col gap-4">
                               <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                   <div class="size-10 rounded-full bg-ds-surface-2 overflow-hidden border border-ds-border flex items-center justify-center text-ds-text-muted">
@@ -628,7 +620,7 @@
      LOADING STATE
 ═══════════════════════════════════════════ -->
 @if (isLoading) {
-  <div class="min-h-screen flex flex-col items-center justify-center gap-5 bg-white">
+  <div class="min-h-screen flex flex-col items-center justify-center gap-5 bg-ds-bg">
     <div class="w-12 h-12 border-4 border-ds-border border-t-ds-danger rounded-full animate-spin"></div>
     <p class="text-ds-text-sec animate-pulse">Initializing Modular Builder...</p>
   </div>

@@ -45,9 +45,14 @@
         <button
           type="submit"
           [disabled]="loginForm.invalid || isSubmitting"
-          class="btn btn-primary h-14 w-full"
+          class="btn btn-primary h-14 w-full flex items-center justify-center gap-2"
         >
-          {{ isSubmitting ? "Checking..." : "Access Profile" }}
+          @if (isSubmitting) {
+            <app-icon name="Loader2" size="18" className="animate-spin"></app-icon>
+            <span>Checking...</span>
+          } @else {
+            <span>Access Profile</span>
+          }
         </button>
       </form>
     </div>
@@ -113,9 +118,14 @@
               <button
                 type="submit"
                 [disabled]="profileForm.invalid || isSubmitting || profileForm.pristine"
-                class="btn btn-primary h-12 w-full"
+                class="btn btn-primary h-12 w-full flex items-center justify-center gap-2"
               >
-                {{ isSubmitting ? "Saving..." : "Update Details" }}
+                @if (isSubmitting) {
+                  <app-icon name="Loader2" size="18" className="animate-spin"></app-icon>
+                  <span>Saving...</span>
+                } @else {
+                  <span>Update Details</span>
+                }
               </button>
 
               <p

@@ -5,66 +5,66 @@
 @media (min-width: 1024px) and (max-width: 1439px) {
   /* Scale admin container — font-size reduction cascades to children */
   .site-container-admin {
-    font-size: 13px;
+    font-size: var(--text-xs);
   }
 
   /* Scale admin header */
   header { height: auto !important; }
 
   /* Scale sidebar brand text */
-  aside h1 { font-size: 1rem !important; }
+  aside h1 { font-size: var(--text-base) !important; }
 
   /* Compact admin table */
   .site-container-admin td,
   .site-container-admin th {
-    font-size: 0.75rem;
+    font-size: var(--text-xs);
     line-height: 1.4;
   }
 
   /* Compact admin headings */
-  .site-container-admin h2 { font-size: clamp(14px, 2vw, 17px); }
-  .site-container-admin h3 { font-size: clamp(13px, 1.8vw, 16px); }
-  .site-container-admin h4 { font-size: clamp(12px, 1.5vw, 14px); }
+  .site-container-admin h2 { font-size: var(--text-sm); }
+  .site-container-admin h3 { font-size: var(--text-xs); }
+  .site-container-admin h4 { font-size: var(--text-xs); }
 
   /* Compact admin paragraphs & spans */
   .site-container-admin p,
   .site-container-admin span,
   .site-container-admin label {
-    font-size: 0.75rem;
+    font-size: var(--text-xs);
   }
 
   /* Compact admin buttons - default MD buttons slightly shrunk for space, preserving other size classes */
   .site-container-admin .btn:not(.btn-xs):not(.btn-sm):not(.btn-lg):not(.btn-xl):not(.h-7):not(.h-8):not(.h-12):not(.h-14):not(.h-16) {
-    font-size: 13px !important;
-    padding: 0 14px !important;
-    height: 36px !important;
-    min-height: 36px !important;
+    font-size: var(--text-xs) !important;
+    padding: 0 var(--space-3.5) !important;
+    height: var(--space-9) !important;
+    min-height: var(--space-9) !important;
   }
 
   /* Compact form inputs - default MD inputs slightly shrunk for space, preserving other size classes */
   .site-container-admin .form-input:not(.input-xs):not(.input-sm):not(.input-lg):not(.input-xl):not(.h-7):not(.h-8):not(.h-12):not(.h-14):not(.h-16),
   .site-container-admin input:not(.input-xs):not(.input-sm):not(.input-lg):not(.input-xl):not(.h-7):not(.h-8):not(.h-12):not(.h-14):not(.h-16),
   .site-container-admin select:not(.input-xs):not(.input-sm):not(.input-lg):not(.input-xl):not(.h-7):not(.h-8):not(.h-12):not(.h-14):not(.h-16) {
-    font-size: 13px !important;
-    padding: 0 12px !important;
-    height: 36px !important;
-    min-height: 36px !important;
+    font-size: var(--text-xs) !important;
+    padding: 0 var(--space-3) !important;
+    height: var(--space-9) !important;
+    min-height: var(--space-9) !important;
   }
 
   /* Compact form textareas */
   .site-container-admin textarea:not(.h-7):not(.h-8):not(.h-12):not(.h-14):not(.h-16) {
-    font-size: 13px !important;
-    padding: 10px 12px !important;
+    font-size: var(--text-xs) !important;
+    padding: var(--space-2.5) var(--space-3) !important;
   }
 
   /* Compact badges/tags */
-  .site-container-admin .badge { font-size: 9px; padding: 2px 6px; }
+  .site-container-admin .badge { font-size: var(--text-2xs); padding: var(--space-0.5) var(--space-1.5); }
 
   /* Compact pagination */
   .site-container-admin nav button {
-    height: 30px;
-    min-width: 30px;
-    font-size: 0.75rem;
+    height: var(--space-7.5);
+    min-width: var(--space-7.5);
+    font-size: var(--text-xs);
   }
 }
 
@@ -73,10 +73,10 @@
    ═══════════════════════════════════════════════════════ */
 .arza-quill-wrapper {
   background: var(--color-bg);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--color-border-ds);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
   display: flex;
   flex-direction: column;
 }
@@ -95,7 +95,7 @@
   border: none;
   border-bottom: 1px solid var(--color-border-ds);
   background: var(--color-bg);
-  padding: 8px 12px;
+  padding: var(--space-2) var(--space-3);
 }
 
 .dark .arza-quill-wrapper .ql-toolbar.ql-snow {
@@ -117,15 +117,15 @@
 
 .arza-quill-wrapper .ql-container.ql-snow {
   border: none;
-  min-height: 180px;
-  max-height: 500px;
+  min-height: var(--space-48);
+  max-height: var(--space-[125]);
   overflow-y: auto;
   font-family: inherit;
   font-size: 0.95rem;
 }
 
 .arza-quill-wrapper .ql-editor {
-  padding: 16px;
+  padding: var(--space-4);
   line-height: 1.6;
 }
 
@@ -136,7 +136,7 @@
 .arza-quill-wrapper .ql-editor.ql-blank::before {
   color: var(--color-text-secondary);
   font-style: normal;
-  left: 16px;
+  left: var(--space-4);
 }
 
 /* Ensure the editor itself is visible */

@@ -86,7 +86,7 @@
       <!-- Desktop Categories Dropdown -->
       @if (isCategoriesMenuOpen) {
         <div
-          class="absolute top-full left-0 w-full bg-ds-bg border-b border-ds-border animate-fade-in z-[60]"
+          class="absolute top-full left-0 w-full bg-ds-bg border-b border-ds-border animate-dropdown z-[60]"
         >
           <div class="site-container py-ds-10 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-ds-6">
             @for (item of vm.menu; track item.id) {
@@ -105,7 +105,7 @@
 
       <!-- Expanded Search Bar (Desktop) -->
       @if (isSearchOpen) {
-        <div class="absolute top-full left-0 w-full bg-ds-bg border-b border-ds-border animate-fade-in z-[60] py-ds-4">
+        <div class="absolute top-full left-0 w-full bg-ds-bg border-b border-ds-border animate-dropdown z-[60] py-ds-4">
           <div class="site-container">
             <div class="relative flex items-center">
               <input
@@ -135,10 +135,10 @@
 
 
 @if (isMenuOpen) {
-  <div class="lg:hidden fixed inset-0 z-[100] bg-ds-bg pt-20 px-ds-6 overflow-y-auto animate-fade-in">
+  <div class="lg:hidden fixed inset-0 z-[100] bg-ds-bg pt-20 px-ds-6 overflow-y-auto animate-dropdown">
     <!-- Mobile Search Bar -->
     @if (isSearchOpen) {
-      <div class="mb-ds-8 animate-fade-in">
+      <div class="mb-ds-8 animate-dropdown">
         <div class="relative">
           <input
             #mobileSearchInput

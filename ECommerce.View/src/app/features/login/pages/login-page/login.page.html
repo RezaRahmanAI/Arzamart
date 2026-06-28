@@ -122,7 +122,12 @@
             type="submit"
             [disabled]="loginForm.invalid || isLoading"
           >
-            {{ isLoading ? 'Logging in...' : 'Log In' }}
+            @if (isLoading) {
+              <app-icon name="Loader2" size="18" className="animate-spin"></app-icon>
+              <span>Logging in...</span>
+            } @else {
+              <span>Log In</span>
+            }
           </button>
           @if (errorMessage) {
             <span class="text-ds-danger text-center"

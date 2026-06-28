@@ -10,7 +10,7 @@
         @let slide = mainSlides[currentSlide];
         <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[2000ms] group-hover:scale-105" 
              [style.background-image]="'url(' + imageUrlService.getImageUrl(slide.image) + ')'"></div>
-        <div class="absolute inset-0 bg-black/10"></div>
+        <div class="absolute inset-0 bg-ds-text/10"></div>
         
         <div class="relative h-full flex flex-col justify-end p-ds-10 lg:p-ds-16 text-ds-hero-text">
           <div class="max-w-xl space-y-ds-6 animate-fade-in-up">
@@ -30,10 +30,10 @@
 
         <!-- Hero Nav Arrows -->
         @if (mainSlides.length > 1) {
-          <button (click)="prev(); $event.stopPropagation()" class="absolute left-ds-6 top-1/2 -translate-y-1/2 z-30 btn-icon !w-12 !h-12 !bg-black/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
+          <button (click)="prev(); $event.stopPropagation()" class="absolute left-ds-6 top-1/2 -translate-y-1/2 z-30 btn-icon !w-12 !h-12 !bg-ds-text/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
             <app-icon name="ChevronLeft" size="24"></app-icon>
           </button>
-          <button (click)="next(); $event.stopPropagation()" class="absolute right-ds-6 top-1/2 -translate-y-1/2 z-30 btn-icon !w-12 !h-12 !bg-black/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
+          <button (click)="next(); $event.stopPropagation()" class="absolute right-ds-6 top-1/2 -translate-y-1/2 z-30 btn-icon !w-12 !h-12 !bg-ds-text/20 !text-white border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all">
             <app-icon name="ChevronRight" size="24"></app-icon>
           </button>
         }
@@ -58,7 +58,7 @@
             <span class="text-ds-hero-text/70 block">{{ spotlightSlide.subtitle }}</span>
           }
           <h3 >{{ spotlightSlide.title }}</h3>
-          <a [routerLink]="spotlightSlide.link" class="btn btn-secondary h-12 !bg-white/10 !text-white !border-white/20 hover:!bg-white hover:!text-ds-accent transition-all duration-base">
+          <a [routerLink]="spotlightSlide.link" class="btn btn-secondary h-12 !bg-ds-bg/10 !text-white !border-white/20 hover:!bg-ds-bg hover:!text-ds-accent transition-all duration-base">
             {{ spotlightSlide.linkText || 'Shop Now' }}
           </a>
         </div>

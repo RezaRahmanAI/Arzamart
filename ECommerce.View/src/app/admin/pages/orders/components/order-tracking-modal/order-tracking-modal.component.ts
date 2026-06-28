@@ -17,7 +17,7 @@ import { NotificationService } from "../../../../../core/services/notification.s
             <p class="opacity-60 mb-1">Order History</p>
             <h3>History — {{ order.orderNumber }}</h3>
           </div>
-          <button (click)="close.emit()" class="size-10 flex items-center justify-center hover:bg-white/10 transition-colors rounded-sm">
+          <button (click)="close.emit()" class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm">
             <app-icon name="X" size="20"></app-icon>
           </button>
         </div>
