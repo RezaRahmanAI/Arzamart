@@ -2,12 +2,14 @@ import {
   HttpInterceptorFn,
   HttpErrorResponse,
 } from "@angular/common/http";
-import { inject } from "@angular/core";
-import { finalize, retry, timer } from "rxjs";
+import { inject, Injector } from "@angular/core";
+import { catchError, finalize, retry, switchMap, throwError, timer } from "rxjs";
 import { LoadingService } from "../services/loading.service";
 import { StorageKeys } from "../constants/storage-keys";
+import { AuthService } from "../services/auth.service";
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
+  const injector = inject(Injector);
   const token = localStorage.getItem(StorageKeys.AUTH_TOKEN);
   const isFormData = req.body instanceof FormData;
 
@@ -21,6 +23,35 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   return next(req.clone({ setHeaders: headers })).pipe(
+    catchError((error) => {
+      if (
+        error instanceof HttpErrorResponse &&
+        error.status === 401 &&
+        !req.url.includes("auth/refresh") &&
+        !req.url.includes("auth/login")
+      ) {
+        const authService = injector.get(AuthService);
+        return authService.refreshToken().pipe(
+          switchMap((user) => {
+            if (user) {
+              const newToken = localStorage.getItem(StorageKeys.AUTH_TOKEN);
+              const retryHeaders = {
+                ...headers,
+                ...(newToken ? { Authorization: `Bearer ${newToken}` } : {}),
+              };
+              return next(req.clone({ setHeaders: retryHeaders }));
+            }
+            authService.logout();
+            return throwError(() => error);
+          }),
+          catchError((refreshErr) => {
+            authService.logout();
+            return throwError(() => error);
+          })
+        );
+      }
+      return throwError(() => error);
+    }),
     retry({
       count: 2,
       delay: (error, retryCount) => {

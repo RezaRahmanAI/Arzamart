@@ -431,6 +431,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
   editOrder(order: Order, event: Event): void {
     event.stopPropagation();
+    window.scrollTo({ top: 0, behavior: 'instant' });
     this.router.navigate(["/admin/orders", order.id, "edit"]);
   }
 

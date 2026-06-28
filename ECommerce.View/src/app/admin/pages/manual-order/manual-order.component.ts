@@ -140,6 +140,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
   filteredAreas: string[] = [];
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'instant' });
     this.filteredCities = this.cities;
     this.filteredAreas = this.areas;
     

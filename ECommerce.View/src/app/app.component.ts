@@ -58,13 +58,16 @@ export class AppComponent implements OnInit {
   );
 
   ngOnInit() {
-    // Track PageViews on route changes
+    // Track PageViews and reset scroll positions on route changes
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         if (!this.router.url.startsWith("/admin")) {
           this.analyticsService.trackPageView();
         }
+        // Reset scroll position for standard viewport and custom scrollable content containers
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        this.document.querySelectorAll(".overflow-y-auto").forEach((el) => el.scrollTo({ top: 0, behavior: 'instant' }));
       });
 
     this.siteSettingsService.getSettings().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((settings) => {
