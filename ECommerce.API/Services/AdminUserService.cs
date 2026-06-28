@@ -16,13 +16,16 @@ namespace ECommerce.API.Services;
 public class AdminUserService : IAdminUserService
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IActivityLogService _activityLogService;
 
     public AdminUserService(
         UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
         IActivityLogService activityLogService)
     {
         _userManager = userManager;
+        _roleManager = roleManager;
         _activityLogService = activityLogService;
     }
 
@@ -54,23 +57,35 @@ public class AdminUserService : IAdminUserService
         if (string.IsNullOrWhiteSpace(dto.UserName) || string.IsNullOrWhiteSpace(dto.Password))
             return (false, "Username and password are required", null);
 
-        if (dto.Password.Length < 6)
-            return (false, "Password must be at least 6 characters", null);
+        var passwordError = UserManagementHelper.ValidatePassword(dto.Password);
+        if (!string.IsNullOrEmpty(passwordError))
+            return (false, passwordError, null);
 
-        var existingByUsername = await _userManager.FindByNameAsync(dto.UserName);
-        if (existingByUsername != null)
-            return (false, "User already exists with this username", null);
+        var (usernameConflict, usernameMsg) = await UserManagementHelper.CheckUsernameConflictAsync(_userManager, dto.UserName);
+        if (usernameConflict) return (false, usernameMsg!, null);
 
-        if (!string.IsNullOrWhiteSpace(dto.Email))
-        {
-            var existingByEmail = await _userManager.FindByEmailAsync(dto.Email);
-            if (existingByEmail != null)
-                return (false, "User already exists with this email", null);
-        }
+        var (emailConflict, emailMsg) = await UserManagementHelper.CheckEmailConflictAsync(_userManager, dto.Email);
+        if (emailConflict) return (false, emailMsg!, null);
 
         var role = string.IsNullOrWhiteSpace(dto.Role) ? "Staff" : dto.Role;
-        if (role != "Admin" && role != "Staff" && role != "SuperAdmin")
-            return (false, "Invalid role. Only Admin, Staff, and SuperAdmin roles can be created.", null);
+        if (!UserManagementHelper.IsValidStaffRole(role))
+        {
+            var roleExists = await _roleManager.RoleExistsAsync(role);
+            if (!roleExists)
+                return (false, $"Invalid role: {role}", null);
+        }
+
+        List<string> allowedMenus = new List<string>();
+        var dbRole = await _roleManager.FindByNameAsync(role);
+        if (dbRole != null)
+        {
+            var claims = await _roleManager.GetClaimsAsync(dbRole);
+            allowedMenus = claims.Where(c => c.Type == "AllowedMenu").Select(c => c.Value).ToList();
+        }
+        else
+        {
+            allowedMenus = dto.AllowedMenus ?? new List<string>();
+        }
 
         var user = new ApplicationUser
         {
@@ -82,7 +97,7 @@ public class AdminUserService : IAdminUserService
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
             EmailConfirmed = !string.IsNullOrWhiteSpace(dto.Email),
-            AllowedMenus = role == "Staff" ? (dto.AllowedMenus ?? new List<string>()) : new List<string>(),
+            AllowedMenus = allowedMenus,
             ForceChangePassword = true
         };
 
@@ -116,32 +131,30 @@ public class AdminUserService : IAdminUserService
 
         if (!string.IsNullOrWhiteSpace(dto.UserName) && dto.UserName != user.UserName)
         {
-            var existing = await _userManager.FindByNameAsync(dto.UserName);
-            if (existing != null && existing.Id != user.Id)
-                return (false, "Username already taken");
+            var (conflict, msg) = await UserManagementHelper.CheckUsernameConflictAsync(_userManager, dto.UserName, user.Id);
+            if (conflict) return (false, msg!);
             changes.Add($"Username: {user.UserName} → {dto.UserName}");
             user.UserName = dto.UserName;
         }
 
         if (!string.IsNullOrWhiteSpace(dto.Email) && dto.Email != user.Email)
         {
-            var existing = await _userManager.FindByEmailAsync(dto.Email);
-            if (existing != null && existing.Id != user.Id)
-                return (false, "Email already taken");
+            var (conflict, msg) = await UserManagementHelper.CheckEmailConflictAsync(_userManager, dto.Email, user.Id);
+            if (conflict) return (false, msg!);
             changes.Add("Email updated");
             user.Email = dto.Email;
         }
 
         if (!string.IsNullOrWhiteSpace(dto.Role) && dto.Role != user.Role)
         {
-            if (dto.Role != "Admin" && dto.Role != "Staff" && dto.Role != "SuperAdmin")
-                return (false, "Invalid role. Only Admin, Staff, and SuperAdmin roles are allowed.");
+            if (!UserManagementHelper.IsValidStaffRole(dto.Role))
+            {
+                var roleExists = await _roleManager.RoleExistsAsync(dto.Role);
+                if (!roleExists) return (false, $"Invalid role: {dto.Role}");
+            }
 
-            var currentRoles = await _userManager.GetRolesAsync(user);
-            await _userManager.RemoveFromRolesAsync(user, currentRoles);
-            await _userManager.AddToRoleAsync(user, dto.Role);
+            await UserManagementHelper.ChangeUserRoleAsync(_userManager, user, dto.Role);
             changes.Add($"Role: {user.Role} → {dto.Role}");
-            user.Role = dto.Role;
         }
 
         if (dto.FullName != null && dto.FullName != user.FullName)
@@ -155,17 +168,31 @@ public class AdminUserService : IAdminUserService
             user.Phone = dto.Phone;
         }
 
-        if (user.Role == "Staff")
+        // Synchronize permissions from role claims or manually if legacy
+        var targetRole = user.Role;
+        var targetDbRole = await _roleManager.FindByNameAsync(targetRole);
+        if (targetDbRole != null)
         {
-            if (dto.AllowedMenus != null)
+            var claims = await _roleManager.GetClaimsAsync(targetDbRole);
+            var allowedMenus = claims.Where(c => c.Type == "AllowedMenu").Select(c => c.Value).ToList();
+            var currentMenus = user.AllowedMenus;
+            if (!currentMenus.OrderBy(m => m).SequenceEqual(allowedMenus.OrderBy(m => m)))
             {
-                changes.Add("Permissions updated");
-                user.AllowedMenus = dto.AllowedMenus;
+                user.AllowedMenus = allowedMenus;
+                changes.Add("Permissions synchronized from role");
             }
         }
         else
         {
-            user.AllowedMenus = new List<string>();
+            if (dto.AllowedMenus != null)
+            {
+                var currentMenus = user.AllowedMenus;
+                if (!currentMenus.OrderBy(m => m).SequenceEqual(dto.AllowedMenus.OrderBy(m => m)))
+                {
+                    user.AllowedMenus = dto.AllowedMenus;
+                    changes.Add("Permissions updated manually");
+                }
+            }
         }
 
         if (dto.ForceChangePassword.HasValue && dto.ForceChangePassword.Value != user.ForceChangePassword)
@@ -180,8 +207,9 @@ public class AdminUserService : IAdminUserService
 
         if (!string.IsNullOrWhiteSpace(dto.Password))
         {
-            if (dto.Password.Length < 6)
-                return (false, "Password must be at least 6 characters");
+            var passwordError = UserManagementHelper.ValidatePassword(dto.Password);
+            if (!string.IsNullOrEmpty(passwordError))
+                return (false, passwordError);
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var passwordResult = await _userManager.ResetPasswordAsync(user, token, dto.Password);
@@ -201,45 +229,21 @@ public class AdminUserService : IAdminUserService
 
     public async Task<(bool Success, string Message)> ResetPasswordAsync(string id, ResetPasswordDto dto, string performedByUserId, string? ipAddress)
     {
-        if (string.IsNullOrWhiteSpace(dto.NewPassword))
-            return (false, "New password is required");
-
-        if (dto.NewPassword.Length < 6)
-            return (false, "Password must be at least 6 characters");
-
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null) return (false, "User not found");
-
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var result = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
-        if (!result.Succeeded)
-            return (false, string.Join(", ", result.Errors.Select(e => e.Description)));
-
-        user.ForceChangePassword = true;
-        await _userManager.UpdateAsync(user);
-
-        await _activityLogService.LogAsync(user.Id, "PasswordReset", "Password was reset by SuperAdmin", ipAddress, performedByUserId);
-
-        return (true, "Password reset successfully");
+        return await UserManagementHelper.ResetPasswordAsync(
+            _userManager, id, dto.NewPassword, _activityLogService, performedByUserId, ipAddress);
     }
 
     public async Task<(bool Success, UserStatusChangeResultDto Result)> ToggleActiveAsync(string id, string currentUserId)
     {
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null) return (false, new UserStatusChangeResultDto { Message = "User not found" });
+        var (success, message) = await UserManagementHelper.ToggleActiveAsync(
+            _userManager, id, currentUserId, _activityLogService);
 
-        if (user.Id == currentUserId)
-            return (false, new UserStatusChangeResultDto { Message = "You cannot deactivate your own account" });
-
-        if (user.Role == "SuperAdmin")
-            return (false, new UserStatusChangeResultDto { Message = "SuperAdmin accounts cannot be deactivated" });
-
-        user.IsActive = !user.IsActive;
-        await _userManager.UpdateAsync(user);
-
-        await _activityLogService.LogAsync(user.Id, "StatusChanged", $"Account {(user.IsActive ? "activated" : "deactivated")}", null, currentUserId);
-
-        return (true, new UserStatusChangeResultDto { Message = $"User {(user.IsActive ? "activated" : "deactivated")} successfully", IsActive = user.IsActive });
+        var user = success ? await _userManager.FindByIdAsync(id) : null;
+        return (success, new UserStatusChangeResultDto
+        {
+            Message = message,
+            IsActive = user?.IsActive ?? false
+        });
     }
 
     public async Task<List<AdminActivityLogEntryDto>> GetActivityLogAsync(string id)

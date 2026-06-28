@@ -40,7 +40,9 @@ public class GlobalExceptionMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-        var response = _env.IsDevelopment()
+        var includeDetails = _env.IsDevelopment() && context.Request.Headers["X-Debug"].FirstOrDefault() == "true";
+
+        var response = includeDetails
             ? new ApiExceptionResponse(context.Response.StatusCode, exception.Message, exception.StackTrace?.ToString())
             : new ApiExceptionResponse(context.Response.StatusCode, "Internal Server Error. Please contact support.");
 

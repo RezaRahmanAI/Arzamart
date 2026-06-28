@@ -26,7 +26,7 @@ public class CustomForbiddenMiddleware
                 var errorResponse = new
                 {
                     success = false,
-                    error = "insufficient_permissions",
+                    error = "forbidden",
                     message = "You do not have permission to perform this action"
                 };
                 
@@ -43,7 +43,7 @@ public class CustomForbiddenMiddleware
                 var errorResponse = new
                 {
                     success = false,
-                    error = "UNAUTHORIZED",
+                    error = "unauthorized",
                     message = "You are not authorized to perform this action"
                 };
 

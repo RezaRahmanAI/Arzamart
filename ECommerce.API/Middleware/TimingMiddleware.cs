@@ -6,11 +6,13 @@ public class TimingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<TimingMiddleware> _logger;
+    private readonly IWebHostEnvironment _env;
 
-    public TimingMiddleware(RequestDelegate next, ILogger<TimingMiddleware> logger)
+    public TimingMiddleware(RequestDelegate next, ILogger<TimingMiddleware> logger, IWebHostEnvironment env)
     {
         _next = next;
         _logger = logger;
+        _env = env;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -35,8 +37,8 @@ public class TimingMiddleware
                 elapsedMs);
         }
 
-        // Add response header for performance transparency
-        if (!context.Response.HasStarted)
+        // Add response header for performance transparency (development only)
+        if (_env.IsDevelopment() && !context.Response.HasStarted)
         {
             context.Response.Headers["X-Response-Time"] = $"{elapsedMs}ms";
         }

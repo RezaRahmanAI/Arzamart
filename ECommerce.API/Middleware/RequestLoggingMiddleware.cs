@@ -7,6 +7,10 @@ public class RequestLoggingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<RequestLoggingMiddleware> _logger;
+    private static readonly HashSet<string> SensitiveParams = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "password", "token", "secret", "phone", "authorization"
+    };
 
     public RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggingMiddleware> logger)
     {
@@ -32,7 +36,7 @@ public class RequestLoggingMiddleware
                 _logger.LogInformation(
                     "HTTP {Method} {PathAndQuery} responded {StatusCode} in {ElapsedMilliseconds}ms",
                     request.Method,
-                    request.Path + request.QueryString,
+                    SanitizeQueryString(request.Path + request.QueryString),
                     statusCode,
                     sw.ElapsedMilliseconds);
             }
@@ -43,9 +47,29 @@ public class RequestLoggingMiddleware
             _logger.LogError(
                 "HTTP {Method} {PathAndQuery} failed in {ElapsedMilliseconds}ms",
                 request.Method,
-                request.Path + request.QueryString,
+                SanitizeQueryString(request.Path + request.QueryString),
                 sw.ElapsedMilliseconds);
             throw; // Re-throw to be caught by ExceptionMiddleware
         }
+    }
+
+    private static string SanitizeQueryString(string pathAndQuery)
+    {
+        var queryStart = pathAndQuery.IndexOf('?');
+        if (queryStart < 0) return pathAndQuery;
+
+        var path = pathAndQuery[..queryStart];
+        var queryString = pathAndQuery[queryStart..];
+
+        foreach (var param in SensitiveParams)
+        {
+            queryString = System.Text.RegularExpressions.Regex.Replace(
+                queryString,
+                $@"({System.Text.RegularExpressions.Regex.Escape(param)}=)([^&]*)",
+                "$1[REDACTED]",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        }
+
+        return path + queryString;
     }
 }

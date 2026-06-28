@@ -17,7 +17,6 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
-using System.Text.Json.Serialization;
 
 namespace ECommerce.API.Extensions;
 
@@ -52,6 +51,7 @@ public static class ServiceExtensions
         services.AddMemoryCache(); // DashboardService (15s stats), CartController (per-user session), SecurityMiddleware (JWT revocation)
         services.AddSingleton<AppCache>();
         services.AddHostedService<CacheWarmupService>();
+        services.AddHostedService<CacheHealthCheckService>();
 
         services.AddSingleton<ECommerce.Infrastructure.Tracking.VisitorTrackingWorker>();
         services.AddHostedService(sp => sp.GetRequiredService<ECommerce.Infrastructure.Tracking.VisitorTrackingWorker>());
@@ -111,7 +111,7 @@ public static class ServiceExtensions
         services.AddScoped<IInventoryService, InventoryService>();
         services.AddScoped<IActivityLogService, ActivityLogService>();
         services.AddScoped<IAdminUserService, ECommerce.API.Services.AdminUserService>();
-        services.AddScoped<IFileUploadService, ECommerce.API.Services.FileUploadService>();
+        services.AddScoped<ECommerce.API.Helpers.IFileUploadService, FileUploadService>();
         services.AddScoped<IProductAdminHelper, ECommerce.API.Services.ProductAdminHelper>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IStaffService, StaffService>();
@@ -119,7 +119,6 @@ public static class ServiceExtensions
         services.AddScoped<IPublicCategoryService, PublicCategoryService>();
         services.AddScoped<IPublicSiteSettingsService, PublicSiteSettingsService>();
         services.AddScoped<IAnalyticsService, AnalyticsService>();
-        services.AddScoped<PasswordProtector>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
 

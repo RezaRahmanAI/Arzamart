@@ -52,8 +52,12 @@ public static class HomePageCacheRebuilder
                 Name = p.Name,
                 Slug = p.Slug,
                 ImageUrl = p.ImageUrl ?? "",
-                Price = p.Variants.FirstOrDefault()?.Price ?? 0,
-                CompareAtPrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
+                Price = p.Variants.Any(v => v.Price > 0)
+                    ? p.Variants.Where(v => v.Price > 0).Min(v => v.Price) ?? 0
+                    : (p.Variants.FirstOrDefault()?.Price ?? 0),
+                CompareAtPrice = p.Variants.Any(v => v.Price > 0)
+                    ? p.Variants.Where(v => v.Price > 0).Max(v => v.CompareAtPrice)
+                    : p.Variants.FirstOrDefault()?.CompareAtPrice,
                 IsFeatured = p.IsFeatured,
                 IsActive = p.IsActive,
                 IsNew = p.IsNew,
@@ -72,8 +76,12 @@ public static class HomePageCacheRebuilder
                 Name = p.Name,
                 Slug = p.Slug,
                 ImageUrl = p.ImageUrl ?? "",
-                Price = p.Variants.FirstOrDefault()?.Price ?? 0,
-                CompareAtPrice = p.Variants.FirstOrDefault()?.CompareAtPrice,
+                Price = p.Variants.Any(v => v.Price > 0)
+                    ? p.Variants.Where(v => v.Price > 0).Min(v => v.Price) ?? 0
+                    : (p.Variants.FirstOrDefault()?.Price ?? 0),
+                CompareAtPrice = p.Variants.Any(v => v.Price > 0)
+                    ? p.Variants.Where(v => v.Price > 0).Max(v => v.CompareAtPrice)
+                    : p.Variants.FirstOrDefault()?.CompareAtPrice,
                 IsFeatured = p.IsFeatured,
                 IsActive = p.IsActive,
                 IsNew = p.IsNew,

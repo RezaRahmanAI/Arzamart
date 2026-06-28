@@ -18,20 +18,34 @@ export const staffGuard: CanActivateFn = (route, state) => {
       }
 
       const role = user.role;
-      const isSystemAdmin = role === 'SuperAdmin' || role === 'Super Admin' || role === 'Admin';
+      const isSuperAdmin = role === 'SuperAdmin';
 
-      if (isSystemAdmin) {
+      if (isSuperAdmin) {
         return true;
       }
 
       if (role && role !== 'Customer') {
         const requiredMenu = route.data['menuKey'];
         if (!requiredMenu) {
-          // If no menuKey is specified, we assume it's allowed (e.g. dashboard, profile, logout)
           return true;
         }
 
+        // Check direct slug match (old format)
         if (user.allowedMenus && user.allowedMenus.includes(requiredMenu)) {
+          return true;
+        }
+
+        // Check permission ID match (new format: "inventory:view", "sales:create", etc.)
+        const SLUG_TO_MODULE: Record<string, string> = {
+          'products': 'inventory',
+          'orders': 'sales',
+          'customers': 'hr',
+          'analytics': 'reports',
+          'settings': 'settings',
+          'users': 'staff-management',
+        };
+        const moduleId = SLUG_TO_MODULE[requiredMenu];
+        if (moduleId && user.allowedMenus && user.allowedMenus.some(p => p.startsWith(moduleId + ':'))) {
           return true;
         }
 

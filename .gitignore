@@ -34,3 +34,10 @@ build_errors.txt
 *.tmp
 logs/
 publish.zip
+
+# Production config (set via environment variables or user-secrets)
+appsettings.Production.json
+publish_api/appsettings.Production.json
+
+# Graphify
+graphify-out/

@@ -62,6 +62,15 @@ try
 
     // ── 4. Middleware Pipeline ───────────────────────────────────────
 
+    // Security Headers (early in pipeline)
+    app.UseMiddleware<ECommerce.API.Middleware.SecurityHeadersMiddleware>();
+
+    // Content-Type Validation (must run before body parsing)
+    app.UseMiddleware<ECommerce.API.Middleware.ContentTypeValidationMiddleware>();
+
+    // Audit Logging (after auth, before controllers)
+    app.UseMiddleware<ECommerce.API.Middleware.AuditLoggingMiddleware>();
+
     // Global Exception & Logging (Absolute Top)
     app.UseAppExceptionHandling();
 
@@ -81,6 +90,10 @@ try
         });
     }
     
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseHsts();
+    }
     app.UseHttpsRedirection();
     app.UseResponseCompression();
 
@@ -99,16 +112,19 @@ try
 
     app.UseRateLimiter();
 
-    app.UseMiddleware<ECommerce.API.Middleware.CustomForbiddenMiddleware>();
-    app.UseMiddleware<ECommerce.API.Middleware.SecurityMiddleware>();
-
     app.UseAuthentication();
     app.UseAuthorization();
+
+    // Token Revocation Check (after auth, before controllers)
+    app.UseMiddleware<ECommerce.API.Middleware.TokenRevocationMiddleware>();
+
+    app.UseMiddleware<ECommerce.API.Middleware.SecurityMiddleware>();
+    app.UseMiddleware<ECommerce.API.Middleware.CustomForbiddenMiddleware>();
 
     app.UseResponseCaching();
 
     app.MapControllers();
-    app.MapHub<ECommerce.API.Hubs.OrderHub>("/hubs/orders");
+    app.MapHub<ECommerce.API.Hubs.OrderHub>("/hubs/orders").RequireAuthorization();
 
     // ── 5. Smart One-Time Seeder ────────────────────────────────────
     using (var scope = app.Services.CreateScope())
@@ -117,9 +133,10 @@ try
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var context = services.GetRequiredService<ApplicationDbContext>();
+        var loggerFactory = services.GetService<ILoggerFactory>();
         
         // Ensure static categories exist (this method has internal check to skip if already present)
-        await DataSeeder.SeedAsync(userManager, roleManager, context);
+        await DataSeeder.SeedAsync(userManager, roleManager, context, loggerFactory);
     }
 
     app.Run();

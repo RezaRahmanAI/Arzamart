@@ -4,12 +4,14 @@ using ECommerce.Core.DTOs.Auth;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/auth")]
+[EnableRateLimiting("fixed")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
@@ -99,7 +101,16 @@ public class AuthController : ControllerBase
         if (userId != null)
         {
             _cache.Remove($"auth_me:{userId}");
-            await _authService.AdminLogoutAsync(userId);
+
+            // Extract access token from Authorization header
+            string? accessToken = null;
+            var authHeader = Request.Headers.Authorization.FirstOrDefault();
+            if (authHeader?.StartsWith("Bearer ") == true)
+            {
+                accessToken = authHeader["Bearer ".Length..];
+            }
+
+            await _authService.AdminLogoutAsync(userId, accessToken);
         }
         return Ok(new { message = "Logged out successfully" });
     }
@@ -129,7 +140,3 @@ public class AuthController : ControllerBase
         }
     }
 }
-
-public record RefreshRequest(string RefreshToken);
-
-public record CustomerLoginRequest(string Phone);

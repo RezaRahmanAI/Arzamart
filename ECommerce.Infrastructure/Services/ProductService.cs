@@ -165,97 +165,18 @@ public class ProductService : IProductService
         
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
 
-        var product = new Product
-        {
-            Name = dto.Name,
-            Description = dto.Description,
-            ShortDescription = dto.ShortDescription,
-            StockQuantity = dto.InventoryVariants.Sum(v => v.Inventory),
-            IsActive = dto.StatusActive,
-            CategoryId = category.Id,
-            ImageUrl = dto.Media?.MainImage?.ImageUrl ?? string.Empty,
-            IsNew = dto.NewArrival,
-            IsFeatured = dto.IsFeatured,
-            Slug = await GenerateUniqueSlugAsync(dto.Name),
-            Sku = $"PRD-{DateTime.UtcNow.Ticks}",
-            FabricAndCare = dto.Meta?.FabricAndCare,
-            ShippingAndReturns = dto.Meta?.ShippingAndReturns,
-            SizeChartUrl = dto.Meta?.SizeChartUrl,
-            Tier = dto.Tier,
-            Tags = dto.Tags,
-            SortOrder = dto.SortOrder,
-            BundleSize = dto.BundleSize,
-            SubCategoryId = await ValidateSubCategoryId(dto.SubCategoryId, category.Id),
-            CollectionId = await ValidateCollectionId(dto.CollectionId, dto.SubCategoryId),
-            ProductType = dto.ProductType,
-            ProductGroupId = dto.ProductGroupId
-        };
+        var slug = await GenerateUniqueSlugAsync(dto.Name);
+        var subCategoryId = await ValidateSubCategoryId(dto.SubCategoryId, category.Id);
+        var collectionId = await ValidateCollectionId(dto.CollectionId, dto.SubCategoryId);
+
+        var product = ProductFactory.MapToEntity(dto, category.Id, subCategoryId, collectionId, slug);
 
         _unitOfWork.Repository<Product>().Add(product);
-        
-        if (dto.Media?.MainImage != null)
-        {
-            product.Images.Add(new ProductImage {
-                Url = dto.Media.MainImage.ImageUrl ?? string.Empty,
-                AltText = dto.Media.MainImage.Alt,
-                Label = dto.Media.MainImage.Label,
-                MediaType = dto.Media.MainImage.Type ?? "image",
-                IsMain = true
-            });
-        }
-
-        foreach (var thumb in dto.Media?.Thumbnails ?? new())
-        {
-            product.Images.Add(new ProductImage {
-                Url = thumb.ImageUrl ?? string.Empty,
-                AltText = thumb.Alt,
-                Label = thumb.Label,
-                MediaType = thumb.Type ?? "image",
-                IsMain = false
-            });
-        }
-        if (dto.InventoryVariants != null)
-        {
-            foreach (var v in dto.InventoryVariants)
-            {
-                product.Variants.Add(new ProductVariant {
-                    Sku = v.Sku,
-                    Price = v.SalePrice ?? v.Price,
-                    CompareAtPrice = v.SalePrice.HasValue ? v.Price : null,
-                    PurchaseRate = v.PurchaseRate,
-                    StockQuantity = v.Inventory,
-                    Size = v.Label
-                });
-            }
-        }
-
-        if (dto.ProductType == ProductType.Combo && dto.ComboItems != null)
-        {
-            foreach (var ci in dto.ComboItems)
-            {
-                product.ComboItems.Add(new ComboItem
-                {
-                    ProductId = ci.ProductId,
-                    ProductVariantId = ci.ProductVariantId,
-                    Quantity = ci.Quantity
-                });
-            }
-        }
-
         var result = await _unitOfWork.Complete();
         if (result <= 0) return null!;
 
-        var full = await _unitOfWork.Repository<Product>().GetQueryable()
-            .AsNoTracking()
-            .Include(p => p.Images)
-            .Include(p => p.Variants)
-            .Include(p => p.Category)
-            .Include(p => p.SubCategory)
-            .FirstAsync(p => p.Id == product.Id);
-
-        _cache.Products[full.Id] = full;
-        if (!string.IsNullOrEmpty(full.Slug))
-            _cache.ProductSlugIndex[full.Slug] = full.Id;
+        var full = await LoadProductFullAsync(product.Id);
+        UpdateCache(full);
         RebuildHomePageCache();
 
         return _mapper.Map<ProductDto>(full);
@@ -270,161 +191,25 @@ public class ProductService : IProductService
 
         if (product == null) throw new KeyNotFoundException("Product not found");
 
-        var oldSlug = product.Slug;
         int.TryParse(dto.Category, out int catId);
         var category = await _unitOfWork.Repository<Category>().GetQueryable()
             .FirstOrDefaultAsync(c => c.Name.ToLower() == dto.Category.ToLower() || (catId != 0 && c.Id == catId));
         
         if (category == null) throw new KeyNotFoundException($"Category {dto.Category} not found");
 
-        product.Name = dto.Name;
-        product.Description = dto.Description;
-        product.ShortDescription = dto.ShortDescription;
-        product.IsActive = dto.StatusActive;
-        product.CategoryId = category.Id;
-        product.ImageUrl = dto.Media?.MainImage?.ImageUrl ?? string.Empty;
-        product.IsNew = dto.NewArrival;
-        product.IsFeatured = dto.IsFeatured;
-        product.FabricAndCare = dto.Meta?.FabricAndCare;
-        product.ShippingAndReturns = dto.Meta?.ShippingAndReturns;
-        product.SizeChartUrl = dto.Meta?.SizeChartUrl;
-        product.Tier = dto.Tier;
-        product.Tags = dto.Tags;
-        product.SortOrder = dto.SortOrder;
-        product.BundleSize = dto.BundleSize;
-        product.SubCategoryId = await ValidateSubCategoryId(dto.SubCategoryId, category.Id);
-        product.CollectionId = await ValidateCollectionId(dto.CollectionId, dto.SubCategoryId);
-        product.ProductType = dto.ProductType;
-        product.ProductGroupId = dto.ProductGroupId;
+        var subCategoryId = await ValidateSubCategoryId(dto.SubCategoryId, category.Id);
+        var collectionId = await ValidateCollectionId(dto.CollectionId, dto.SubCategoryId);
 
-        // Sync images
-        foreach (var img in product.Images.ToList()) _unitOfWork.Repository<ProductImage>().Delete(img);
-        if (dto.Media?.MainImage != null)
-        {
-            product.Images.Add(new ProductImage {
-                Url = dto.Media.MainImage.ImageUrl ?? string.Empty,
-                AltText = dto.Media.MainImage.Alt,
-                Label = dto.Media.MainImage.Label,
-                MediaType = dto.Media.MainImage.Type ?? "image",
-                IsMain = true
-            });
-        }
-        foreach (var thumb in dto.Media?.Thumbnails ?? new())
-        {
-            product.Images.Add(new ProductImage {
-                Url = thumb.ImageUrl ?? string.Empty,
-                AltText = thumb.Alt,
-                Label = thumb.Label,
-                MediaType = thumb.Type ?? "image",
-                IsMain = false
-            });
-        }
-
-        // Sync variants
-        var existingVariants = product.Variants.ToList();
-        var incomingVariants = dto.InventoryVariants;
-
-        // 1. Mark for deletion those not in incoming list
-        foreach (var existing in existingVariants)
-        {
-            if (!incomingVariants.Any(iv => iv.Id == existing.Id))
-            {
-                _unitOfWork.Repository<ProductVariant>().Delete(existing);
-            }
-        }
-
-        // 2. Add or Update
-        foreach (var iv in incomingVariants)
-        {
-            if (iv.Id.HasValue && iv.Id > 0)
-            {
-                // Update existing
-                var existing = existingVariants.FirstOrDefault(v => v.Id == iv.Id);
-                if (existing != null)
-                {
-                    existing.Sku = iv.Sku;
-                    existing.Price = iv.SalePrice ?? iv.Price;
-                    existing.CompareAtPrice = iv.SalePrice.HasValue ? iv.Price : null;
-                    existing.PurchaseRate = iv.PurchaseRate;
-                    existing.StockQuantity = iv.Inventory;
-                    existing.Size = iv.Label;
-                    _unitOfWork.Repository<ProductVariant>().Update(existing);
-                }
-            }
-            else
-            {
-                // Add new
-                product.Variants.Add(new ProductVariant
-                {
-                    Sku = iv.Sku,
-                    Price = iv.SalePrice ?? iv.Price,
-                    CompareAtPrice = iv.SalePrice.HasValue ? iv.Price : null,
-                    PurchaseRate = iv.PurchaseRate,
-                    StockQuantity = iv.Inventory,
-                    Size = iv.Label
-                });
-            }
-        }
-
-        // Sync combo items
-        var existingComboItems = product.ComboItems.ToList();
-        var incomingComboItems = dto.ComboItems ?? new List<ComboItemDto>();
-
-        // 1. Mark for deletion those not in incoming list
-        foreach (var existing in existingComboItems)
-        {
-            if (!incomingComboItems.Any(ici => ici.Id == existing.Id))
-            {
-                _unitOfWork.Repository<ComboItem>().Delete(existing);
-            }
-        }
-
-        // 2. Add or Update
-        if (dto.ProductType == ProductType.Combo)
-        {
-            foreach (var ici in incomingComboItems)
-            {
-                if (ici.Id.HasValue && ici.Id > 0)
-                {
-                    // Update existing
-                    var existing = existingComboItems.FirstOrDefault(ci => ci.Id == ici.Id);
-                    if (existing != null)
-                    {
-                        existing.ProductId = ici.ProductId;
-                        existing.ProductVariantId = ici.ProductVariantId;
-                        existing.Quantity = ici.Quantity;
-                        _unitOfWork.Repository<ComboItem>().Update(existing);
-                    }
-                }
-                else
-                {
-                    // Add new
-                    product.ComboItems.Add(new ComboItem
-                    {
-                        ProductId = ici.ProductId,
-                        ProductVariantId = ici.ProductVariantId,
-                        Quantity = ici.Quantity
-                    });
-                }
-            }
-        }
-
-        product.StockQuantity = dto.InventoryVariants.Sum(v => v.Inventory);
+        ProductFactory.ApplyUpdate(product, dto, category.Id, subCategoryId, collectionId);
+        ProductFactory.SyncImages(product, dto.Media);
+        ProductFactory.SyncVariants(product, dto.InventoryVariants);
+        ProductFactory.SyncComboItems(product, dto.ComboItems, dto.ProductType);
 
         _unitOfWork.Repository<Product>().Update(product);
         await _unitOfWork.Complete();
 
-        var full = await _unitOfWork.Repository<Product>().GetQueryable()
-            .AsNoTracking()
-            .Include(p => p.Images)
-            .Include(p => p.Variants)
-            .Include(p => p.Category)
-            .Include(p => p.SubCategory)
-            .FirstAsync(p => p.Id == product.Id);
-
-        _cache.Products[full.Id] = full;
-        if (!string.IsNullOrEmpty(full.Slug))
-            _cache.ProductSlugIndex[full.Slug] = full.Id;
+        var full = await LoadProductFullAsync(product.Id);
+        UpdateCache(full);
         RebuildHomePageCache();
 
         return _mapper.Map<ProductDto>(full);
@@ -436,6 +221,25 @@ public class ProductService : IProductService
         {
             HomePageCacheRebuilder.Rebuild(_cache);
         }
+    }
+
+    private async Task<Product> LoadProductFullAsync(int productId)
+    {
+        return await _unitOfWork.Repository<Product>().GetQueryable()
+            .AsNoTracking()
+            .Include(p => p.Images)
+            .Include(p => p.Variants)
+            .Include(p => p.Category)
+            .Include(p => p.SubCategory)
+            .AsSplitQuery()
+            .FirstAsync(p => p.Id == productId);
+    }
+
+    private void UpdateCache(Product product)
+    {
+        _cache.Products[product.Id] = product;
+        if (!string.IsNullOrEmpty(product.Slug))
+            _cache.ProductSlugIndex[product.Slug] = product.Id;
     }
 
 

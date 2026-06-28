@@ -108,12 +108,27 @@ export class AuthService {
 
   isAdmin() {
     const role = this.userSubject.value?.role;
-    return role === "Admin" || role === "SuperAdmin" || role === "Super Admin" || role === "Manager" || role === "Viewer" || role === "Staff";
+    return role === "Admin" || role === "SuperAdmin" || role === "Manager" || role === "Viewer" || role === "Staff";
   }
 
   isSuperAdmin() {
     const role = this.userSubject.value?.role;
-    return role === "SuperAdmin" || role === "Super Admin";
+    return role === "SuperAdmin";
+  }
+
+  hasPermission(moduleSlug: string, action?: string): boolean {
+    const user = this.userSubject.value;
+    if (!user) return false;
+    if (user.role === 'SuperAdmin') return true;
+
+    const allowedMenus = user.allowedMenus || [];
+    // Direct slug match
+    if (!action && allowedMenus.includes(moduleSlug)) return true;
+    // Permission ID match (e.g. "inventory:view")
+    if (action && allowedMenus.includes(`${moduleSlug}:${action}`)) return true;
+    // Any permission for this module
+    if (!action && allowedMenus.some(p => p.startsWith(moduleSlug + ':'))) return true;
+    return false;
   }
 
   isAuthenticated() {

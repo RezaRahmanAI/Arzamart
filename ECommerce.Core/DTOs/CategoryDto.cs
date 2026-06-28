@@ -47,12 +47,6 @@ public class CategoryUpdateDto
     public int? ParentId { get; set; }
 }
 
-public class ReorderCategoriesDto
-{
-
-    public List<int> OrderedIds { get; set; } = new();
-}
-
 public class SubCategoryDto
 {
     public int Id { get; set; }

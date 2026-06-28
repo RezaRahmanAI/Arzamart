@@ -63,8 +63,8 @@ export class StaffAuditLogComponent implements OnInit, OnDestroy {
       pageSize: this.pageSize
     }).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
-        this.auditLogs = res.data.items;
-        this.totalCount = res.data.totalCount;
+        this.auditLogs = res.items;
+        this.totalCount = res.totalCount;
         this.isLoading = false;
         this.cdr.markForCheck();
       },

@@ -102,15 +102,20 @@ public class CustomersController : ControllerBase
             userId
         );
 
+        if (updatedCustomer == null)
+        {
+            return BadRequest(new { error = "Failed to update profile" });
+        }
+
         return Ok(new CustomerDto
         {
-            Id = customer.Id,
-            Phone = customer.Phone,
-            Name = customer.Name,
-            Address = customer.Address,
-            City = customer.City,
-            Area = customer.Area,
-            CreatedAt = customer.CreatedAt
+            Id = updatedCustomer.Id,
+            Phone = updatedCustomer.Phone,
+            Name = updatedCustomer.Name,
+            Address = updatedCustomer.Address,
+            City = updatedCustomer.City,
+            Area = updatedCustomer.Area,
+            CreatedAt = updatedCustomer.CreatedAt
         });
     }
 

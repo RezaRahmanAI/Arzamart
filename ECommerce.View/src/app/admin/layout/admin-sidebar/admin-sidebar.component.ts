@@ -1,5 +1,5 @@
 import { NgIf, NgClass, AsyncPipe, NgFor } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { RouterModule, Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -12,6 +12,19 @@ interface AdminNavItem {
   route: string;
   menuKey?: string;
 }
+
+// Maps sidebar menuKey → RBAC module ID
+const SIDEBAR_TO_MODULE_MAP: Record<string, string> = {
+  'products': 'inventory',
+  'orders': 'sales',
+  'customers': 'hr',
+  'analytics': 'reports',
+  'settings': 'settings',
+  'users': 'staff-management',
+};
+
+// Sidebar-only keys that don't map to RBAC modules
+const SIDEBAR_ONLY_KEYS = ['dashboard', 'banners', 'pages', 'order-sources', 'reviews'];
 
 import { SiteSettingsService } from "../../../core/services/site-settings.service";
 import { ImageUrlService } from "../../../core/services/image-url.service";
@@ -31,6 +44,7 @@ export class AdminSidebarComponent implements OnInit, OnDestroy {
   private settingsService = inject(SiteSettingsService);
   public imageUrlService = inject(ImageUrlService);
   protected authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
 
   settings$ = this.settingsService.getSettings();
 
@@ -69,10 +83,10 @@ export class AdminSidebarComponent implements OnInit, OnDestroy {
 
   bottomItems: AdminNavItem[] = [];
 
-  isProductsMenuOpen = true;
-  isOrdersMenuOpen = true;
-  isOrderViewMenuOpen = true;
-  isStaffMenuOpen = true;
+  isProductsMenuOpen = false;
+  isOrdersMenuOpen = false;
+  isOrderViewMenuOpen = false;
+  isStaffMenuOpen = false;
 
   currentUserRole = "";
   currentUserMenus: string[] = [];
@@ -81,12 +95,21 @@ export class AdminSidebarComponent implements OnInit, OnDestroy {
     this.authService.currentUser.pipe(takeUntil(this.destroy$)).subscribe(user => {
       this.currentUserRole = user?.role || "";
       this.currentUserMenus = user?.allowedMenus || [];
+      this.cdr.markForCheck();
     });
   }
 
   hasAccess(menuKey: string): boolean {
-    if (this.currentUserRole === 'Super Admin' || this.currentUserRole === 'SuperAdmin' || this.currentUserRole === 'Admin') return true;
-    return this.currentUserMenus.includes(menuKey);
+    if (this.currentUserRole === 'SuperAdmin') return true;
+    // Check direct slug match (old format: "products", "orders", etc.)
+    if (this.currentUserMenus.includes(menuKey)) return true;
+    // Check permission ID match (new format: "inventory:view", "sales:create", etc.)
+    const moduleId = SIDEBAR_TO_MODULE_MAP[menuKey];
+    if (moduleId && this.currentUserMenus.some(p => p.startsWith(moduleId + ':'))) return true;
+    // For sidebar-only keys (dashboard, banners, pages, order-sources, reviews),
+    // grant access if user has any permission at all
+    if (SIDEBAR_ONLY_KEYS.includes(menuKey) && this.currentUserMenus.length > 0) return true;
+    return false;
   }
 
   toggleProductsMenu() {

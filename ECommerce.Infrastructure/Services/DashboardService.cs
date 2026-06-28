@@ -15,7 +15,6 @@ public class DashboardService : IDashboardService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMemoryCache _cache;
-    private const string DashboardStatsCacheKey = "DashboardStats";
 
     public DashboardService(IUnitOfWork unitOfWork, IMemoryCache cache)
     {

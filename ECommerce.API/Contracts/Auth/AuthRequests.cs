@@ -18,3 +18,7 @@ public record UserSummary(
     string? PhoneNumber,
     string? UserName = null,
     List<string>? AllowedMenus = null);
+
+public record RefreshRequest(string RefreshToken);
+
+public record CustomerLoginRequest(string Phone);

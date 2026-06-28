@@ -29,7 +29,8 @@ public class StaffService : IStaffService
                 new() { Id = "inventory:view", Action = "view" },
                 new() { Id = "inventory:create", Action = "create" },
                 new() { Id = "inventory:edit", Action = "edit" },
-                new() { Id = "inventory:delete", Action = "delete" }
+                new() { Id = "inventory:delete", Action = "delete" },
+                new() { Id = "inventory:export", Action = "export" }
             }
         },
         ["sales"] = new StaffModuleDto
@@ -38,8 +39,10 @@ public class StaffService : IStaffService
             Permissions = new()
             {
                 new() { Id = "sales:view", Action = "view" },
+                new() { Id = "sales:create", Action = "create" },
                 new() { Id = "sales:edit", Action = "edit" },
-                new() { Id = "sales:delete", Action = "delete" }
+                new() { Id = "sales:delete", Action = "delete" },
+                new() { Id = "sales:export", Action = "export" }
             }
         },
         ["hr"] = new StaffModuleDto
@@ -48,7 +51,10 @@ public class StaffService : IStaffService
             Permissions = new()
             {
                 new() { Id = "hr:view", Action = "view" },
-                new() { Id = "hr:edit", Action = "edit" }
+                new() { Id = "hr:create", Action = "create" },
+                new() { Id = "hr:edit", Action = "edit" },
+                new() { Id = "hr:delete", Action = "delete" },
+                new() { Id = "hr:export", Action = "export" }
             }
         },
         ["reports"] = new StaffModuleDto
@@ -56,7 +62,11 @@ public class StaffService : IStaffService
             Id = "reports", Name = "Reports & Analytics", Slug = "analytics",
             Permissions = new()
             {
-                new() { Id = "reports:view", Action = "view" }
+                new() { Id = "reports:view", Action = "view" },
+                new() { Id = "reports:create", Action = "create" },
+                new() { Id = "reports:edit", Action = "edit" },
+                new() { Id = "reports:delete", Action = "delete" },
+                new() { Id = "reports:export", Action = "export" }
             }
         },
         ["settings"] = new StaffModuleDto
@@ -65,7 +75,10 @@ public class StaffService : IStaffService
             Permissions = new()
             {
                 new() { Id = "settings:view", Action = "view" },
-                new() { Id = "settings:edit", Action = "edit" }
+                new() { Id = "settings:create", Action = "create" },
+                new() { Id = "settings:edit", Action = "edit" },
+                new() { Id = "settings:delete", Action = "delete" },
+                new() { Id = "settings:export", Action = "export" }
             }
         },
         ["staff-management"] = new StaffModuleDto
@@ -76,7 +89,8 @@ public class StaffService : IStaffService
                 new() { Id = "staff-management:view", Action = "view" },
                 new() { Id = "staff-management:create", Action = "create" },
                 new() { Id = "staff-management:edit", Action = "edit" },
-                new() { Id = "staff-management:delete", Action = "delete" }
+                new() { Id = "staff-management:delete", Action = "delete" },
+                new() { Id = "staff-management:export", Action = "export" }
             }
         }
     }.ToFrozenDictionary();
@@ -177,25 +191,20 @@ public class StaffService : IStaffService
         if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
             return (false, "Username and password are required", null);
 
-        if (dto.Password.Length < 6)
-            return (false, "Password must be at least 6 characters", null);
+        var passwordError = UserManagementHelper.ValidatePassword(dto.Password);
+        if (!string.IsNullOrEmpty(passwordError))
+            return (false, passwordError, null);
 
-        var existingByUsername = await _userManager.FindByNameAsync(dto.Username);
-        if (existingByUsername != null)
-            return (false, "User already exists with this username", null);
+        var (usernameConflict, usernameMsg) = await UserManagementHelper.CheckUsernameConflictAsync(_userManager, dto.Username);
+        if (usernameConflict) return (false, usernameMsg!, null);
 
-        if (!string.IsNullOrWhiteSpace(dto.Email))
-        {
-            var existingByEmail = await _userManager.FindByEmailAsync(dto.Email);
-            if (existingByEmail != null)
-                return (false, "User already exists with this email", null);
-        }
+        var (emailConflict, emailMsg) = await UserManagementHelper.CheckEmailConflictAsync(_userManager, dto.Email);
+        if (emailConflict) return (false, emailMsg!, null);
 
-        // Resolve role name from roleId (which is just the role name string)
         var roleName = dto.RoleId;
         if (string.IsNullOrWhiteSpace(roleName)) roleName = "Staff";
 
-        if (roleName != "Admin" && roleName != "Staff" && roleName != "SuperAdmin")
+        if (!UserManagementHelper.IsValidStaffRole(roleName))
             return (false, "Invalid role. Only Admin, Staff, and SuperAdmin roles can be created.", null);
 
         var user = new ApplicationUser
@@ -242,32 +251,27 @@ public class StaffService : IStaffService
 
         if (!string.IsNullOrWhiteSpace(dto.Username) && dto.Username != user.UserName)
         {
-            var existing = await _userManager.FindByNameAsync(dto.Username);
-            if (existing != null && existing.Id != user.Id)
-                return (false, "Username already taken");
+            var (conflict, msg) = await UserManagementHelper.CheckUsernameConflictAsync(_userManager, dto.Username, user.Id);
+            if (conflict) return (false, msg!);
             changes.Add($"Username: {user.UserName} → {dto.Username}");
             user.UserName = dto.Username;
         }
 
         if (!string.IsNullOrWhiteSpace(dto.Email) && dto.Email != user.Email)
         {
-            var existing = await _userManager.FindByEmailAsync(dto.Email);
-            if (existing != null && existing.Id != user.Id)
-                return (false, "Email already taken");
+            var (conflict, msg) = await UserManagementHelper.CheckEmailConflictAsync(_userManager, dto.Email, user.Id);
+            if (conflict) return (false, msg!);
             changes.Add("Email updated");
             user.Email = dto.Email;
         }
 
         if (!string.IsNullOrWhiteSpace(dto.RoleId) && dto.RoleId != user.Role)
         {
-            if (dto.RoleId != "Admin" && dto.RoleId != "Staff" && dto.RoleId != "SuperAdmin")
+            if (!UserManagementHelper.IsValidStaffRole(dto.RoleId))
                 return (false, "Invalid role. Only Admin, Staff, and SuperAdmin roles are allowed.");
 
-            var currentRoles = await _userManager.GetRolesAsync(user);
-            await _userManager.RemoveFromRolesAsync(user, currentRoles);
-            await _userManager.AddToRoleAsync(user, dto.RoleId);
+            await UserManagementHelper.ChangeUserRoleAsync(_userManager, user, dto.RoleId);
             changes.Add($"Role: {user.Role} → {dto.RoleId}");
-            user.Role = dto.RoleId;
         }
 
         if (dto.FullName != null && dto.FullName != user.FullName)
@@ -332,33 +336,15 @@ public class StaffService : IStaffService
 
     public async Task<(bool Success, string Message)> ResetPasswordAsync(string id, string newPassword, string performedByUserId, string? ipAddress)
     {
-        if (string.IsNullOrWhiteSpace(newPassword))
-            return (false, "New password is required");
-
-        if (newPassword.Length < 6)
-            return (false, "Password must be at least 6 characters");
-
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null) return (false, "User not found");
-
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
-        if (!result.Succeeded)
-            return (false, string.Join(", ", result.Errors.Select(e => e.Description)));
-
-        user.ForceChangePassword = true;
-        await _userManager.UpdateAsync(user);
-
-        await _activityLogService.LogAsync(user.Id, "PasswordReset", "Password was reset by SuperAdmin", ipAddress, performedByUserId);
-
-        return (true, "Password reset successfully");
+        return await UserManagementHelper.ResetPasswordAsync(
+            _userManager, id, newPassword, _activityLogService, performedByUserId, ipAddress);
     }
 
     // ──────────────────────── Roles ────────────────────────
 
     public async Task<List<StaffRoleDto>> GetRolesAsync()
     {
-        var roles = await _roleManager.Roles.ToListAsync();
+        var roles = await _roleManager.Roles.Where(r => r.Name != "Customer").ToListAsync();
         var result = new List<StaffRoleDto>();
 
         foreach (var role in roles)
@@ -437,20 +423,43 @@ public class StaffService : IStaffService
 
     public async Task<List<string>> GetRolePermissionsAsync(string roleId)
     {
-        // Permissions are stored as AllowedMenus on Staff users.
-        // For role-level permissions, we return the union of all staff users' AllowedMenus in this role.
-        // However, the frontend expects permission IDs like "inventory:view", "sales:edit" etc.
-        // Since we don't have a RolePermission entity, return empty — the frontend will show unchecked.
-        // The actual permission enforcement is done via AllowedMenus on each user.
-        return await Task.FromResult(new List<string>());
+        var role = await _roleManager.FindByNameAsync(roleId) ?? await _roleManager.FindByIdAsync(roleId);
+        if (role == null) return new List<string>();
+
+        var claims = await _roleManager.GetClaimsAsync(role);
+        return claims
+            .Where(c => c.Type == "AllowedMenu")
+            .Select(c => c.Value)
+            .ToList();
     }
 
-    public Task<(bool Success, string Message)> UpdateRolePermissionsAsync(string roleId, List<string> permissionIds)
+    public async Task<(bool Success, string Message)> UpdateRolePermissionsAsync(string roleId, List<string> permissionIds)
     {
-        // Role-level permissions are not stored separately in this schema.
-        // Permissions are enforced per-user via AllowedMenus.
-        // This endpoint is a no-op for now — the frontend will call it but permissions are managed per-user.
-        return Task.FromResult((true, "Role permissions updated (note: permissions are enforced per-user via AllowedMenus)"));
+        var role = await _roleManager.FindByNameAsync(roleId) ?? await _roleManager.FindByIdAsync(roleId);
+        if (role == null) return (false, "Role not found");
+
+        var claims = await _roleManager.GetClaimsAsync(role);
+        foreach (var claim in claims.Where(c => c.Type == "AllowedMenu"))
+        {
+            await _roleManager.RemoveClaimAsync(role, claim);
+        }
+
+        if (permissionIds != null)
+        {
+            foreach (var perm in permissionIds)
+            {
+                await _roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("AllowedMenu", perm));
+            }
+        }
+
+        var users = await _userManager.GetUsersInRoleAsync(role.Name!);
+        foreach (var u in users)
+        {
+            u.AllowedMenus = permissionIds ?? new List<string>();
+            await _userManager.UpdateAsync(u);
+        }
+
+        return (true, "Role permissions updated successfully");
     }
 
     // ──────────────────────── Modules ────────────────────────

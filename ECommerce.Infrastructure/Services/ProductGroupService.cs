@@ -92,9 +92,12 @@ public class ProductGroupService : IProductGroupService
         _productsRepo.Update(product);
         await _unitOfWork.Complete();
 
-        if (_cache.Products.TryGetValue(productId, out var cachedProduct))
+        lock (_cache.RebuildLock)
         {
-            cachedProduct.ProductGroupId = groupId;
+            if (_cache.Products.TryGetValue(productId, out var cachedProduct))
+            {
+                cachedProduct.ProductGroupId = groupId;
+            }
         }
 
         await InvalidateCacheAsync();
@@ -112,9 +115,12 @@ public class ProductGroupService : IProductGroupService
             _productsRepo.Update(product);
             await _unitOfWork.Complete();
 
-            if (_cache.Products.TryGetValue(productId, out var cachedProduct))
+            lock (_cache.RebuildLock)
             {
-                cachedProduct.ProductGroupId = null;
+                if (_cache.Products.TryGetValue(productId, out var cachedProduct))
+                {
+                    cachedProduct.ProductGroupId = null;
+                }
             }
 
             await InvalidateCacheAsync();

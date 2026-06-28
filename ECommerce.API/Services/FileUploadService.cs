@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ECommerce.API.Helpers;
+using ECommerce.API.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -61,16 +62,5 @@ public class FileUploadService : IFileUploadService
             urls.Add(url);
         }
         return urls;
-    }
-
-    public void DeleteFile(string filePath)
-    {
-        if (string.IsNullOrEmpty(filePath)) return;
-
-        var fullPath = Path.Combine(_environment.WebRootPath, filePath.TrimStart('/'));
-        if (File.Exists(fullPath))
-        {
-            File.Delete(fullPath);
-        }
     }
 }

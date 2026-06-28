@@ -1,7 +1,8 @@
+using ECommerce.API.Helpers;
 using ECommerce.Core.Constants;
 using ECommerce.Core.Interfaces;
 using ECommerce.Core.DTOs;
-using ECommerce.API.Services;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -85,7 +86,7 @@ public class AdminCategoryController : ControllerBase
     }
 
     [HttpPost("reorder")]
-    public async Task<IActionResult> ReorderCategories(List<int> sortedIds)
+    public async Task<IActionResult> ReorderCategories([FromBody] List<int> sortedIds)
     {
         try
         {

@@ -1,12 +1,13 @@
+using ECommerce.API.Helpers;
 using ECommerce.Core.Constants;
-using ECommerce.API.Services;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers;
 
 [ApiController]
-[Route("api/admin/products")]
+[Route("api/admin/products/media")]
 [Authorize(Roles = "Admin,SuperAdmin,Staff")]
 [ECommerce.API.Helpers.StaffMenuAccess("products")]
 public class AdminProductMediaController : ControllerBase

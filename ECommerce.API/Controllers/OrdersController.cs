@@ -2,6 +2,7 @@ using ECommerce.Core.DTOs;
 using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.SignalR;
 using ECommerce.API.Hubs;
@@ -26,6 +27,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost]
+    [EnableRateLimiting("fixed")]
     public async Task<ActionResult<OrderDto>> CreateOrder(OrderCreateDto orderDto)
     {
         if (!ModelState.IsValid)

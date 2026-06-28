@@ -20,19 +20,22 @@ namespace ECommerce.Infrastructure.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _config;
         private readonly ILogger<AuthService> _logger;
+        private readonly Cache.AppCache _appCache;
 
         public AuthService(
             UserManager<ApplicationUser> userManager,
             IJwtTokenService jwtTokenService,
             IUnitOfWork unitOfWork,
             IConfiguration config,
-            ILogger<AuthService> logger)
+            ILogger<AuthService> logger,
+            Cache.AppCache appCache)
         {
             _userManager = userManager;
             _jwtTokenService = jwtTokenService;
             _unitOfWork = unitOfWork;
             _config = config;
             _logger = logger;
+            _appCache = appCache;
         }
 
         public async Task<(LoginResponseDto Response, string RefreshToken)> LoginAsync(LoginDto loginDto, string deviceInfo, string ipAddress)
@@ -265,6 +268,32 @@ namespace ECommerce.Infrastructure.Services
             await RevokeTokenAsync(refreshToken);
         }
 
+        public async Task LogoutAsync(string userId, string refreshToken, string? accessToken)
+        {
+            await RevokeTokenAsync(refreshToken);
+
+            // Revoke the access token by adding its jti to the blacklist
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                try
+                {
+                    var principal = _jwtTokenService.GetPrincipalFromExpiredToken(accessToken);
+                    var jti = principal.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti)?.Value;
+                    var exp = principal.FindFirst("exp")?.Value;
+                    if (!string.IsNullOrEmpty(jti) && long.TryParse(exp, out var expUnix))
+                    {
+                        var expiresAt = DateTimeOffset.FromUnixTimeSeconds(expUnix).UtcDateTime;
+                        _appCache.RevokeAccessToken(jti, expiresAt);
+                        _logger.LogInformation("Access token {Jti} revoked for user {UserId}", jti, userId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug(ex, "Failed to parse access token for revocation");
+                }
+            }
+        }
+
         public async Task<UserDto> GetCurrentUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -380,6 +409,31 @@ namespace ECommerce.Infrastructure.Services
             }
 
             await _unitOfWork.Complete();
+        }
+
+        public async Task AdminLogoutAsync(string userId, string? accessToken)
+        {
+            await AdminLogoutAsync(userId);
+
+            // Revoke the access token if provided
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                try
+                {
+                    var principal = _jwtTokenService.GetPrincipalFromExpiredToken(accessToken);
+                    var jti = principal.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti)?.Value;
+                    var exp = principal.FindFirst("exp")?.Value;
+                    if (!string.IsNullOrEmpty(jti) && long.TryParse(exp, out var expUnix))
+                    {
+                        var expiresAt = DateTimeOffset.FromUnixTimeSeconds(expUnix).UtcDateTime;
+                        _appCache.RevokeAccessToken(jti, expiresAt);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug(ex, "Failed to parse admin access token for revocation");
+                }
+            }
         }
 
         public async Task<(AdminAuthResponseDto Response, string RefreshToken)> RefreshAdminTokenAsync(string refreshToken, string ipAddress)

@@ -497,32 +497,30 @@
                       <label class="block text-ds-text ml-1 text-sm">Role</label>
                       <div class="relative">
                           <select formControlName="role" class="form-input !h-10 sm:!h-11 !px-3 sm:!px-ds-4 appearance-none cursor-pointer text-sm">
-                              <option value="Staff">Staff (Limited Access)</option>
-                              <option value="Admin">Admin (Full Access)</option>
-                              <option value="SuperAdmin">Super Admin (Full Access)</option>
+                              <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
                           </select>
                           <app-icon name="ChevronDown" size="12" class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                       </div>
                   </div>
               </div>
 
-              <!-- Menu Access Checklist for Staff -->
-                @if (createForm.get('role')?.value === 'Staff') {
-                  <div class="space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-ds-border">
-                      <label class="block text-ds-text ml-1 text-sm">Menu Access</label>
-                      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
-                          @for (menu of availableMenus; track menu.key) {
-                            <label class="flex items-center gap-1.5 sm:gap-2 cursor-pointer group p-1.5 sm:p-2 border border-ds-border/50 rounded-sm hover:border-ds-border bg-ds-bg/30 text-xs sm:text-sm">
-                                <input type="checkbox"
-                                       [checked]="selectedMenus.includes(menu.key)"
-                                       (change)="toggleMenuSelection(menu.key)"
-                                       class="form-checkbox text-ds-text border-ds-border rounded-sm focus:ring-0 cursor-pointer !size-3.5 sm:!size-4">
-                                <span class="text-ds-text-muted group-hover:text-ds-text transition-colors truncate">{{ menu.label }}</span>
-                            </label>
+              <!-- Menu Access Reference for Selected Role -->
+              @if (createForm.get('role')?.value) {
+                <div class="space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-ds-border">
+                    <label class="block text-ds-text ml-1 text-sm font-semibold">Inherited Menu Access (From Role)</label>
+                    <div class="flex flex-wrap gap-2">
+                        @if (rolePermissionsMap[createForm.get('role')?.value || ''].length) {
+                          @for (menuKey of rolePermissionsMap[createForm.get('role')?.value || '']; track menuKey) {
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-sm text-xs font-semibold bg-ds-accent/10 text-ds-accent border border-ds-accent/20">
+                              {{ menuKey }}
+                            </span>
                           }
-                      </div>
-                  </div>
-                }
+                        } @else {
+                          <span class="text-xs text-ds-text-muted italic ml-1">No special menu access permissions.</span>
+                        }
+                    </div>
+                </div>
+              }
 
                 <div class="p-3 sm:p-ds-6 bg-ds-bg border border-ds-border rounded-sm space-y-2 sm:space-y-ds-3">
                     <div class="flex items-center gap-2 sm:gap-ds-3 text-ds-warning">
@@ -623,31 +621,30 @@
                       <div class="relative">
                           <select formControlName="role" class="form-input !h-10 sm:!h-11 !px-3 sm:!px-ds-4 appearance-none cursor-pointer text-sm">
                             <option value="Staff">Staff (Limited Access)</option>
-                            <option value="Admin">Admin (Full Access)</option>
-                            <option value="SuperAdmin">Super Admin (Full Access)</option>
+                              <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
                           </select>
                           <app-icon name="ChevronDown" size="12" class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
                       </div>
                   </div>
               </div>
 
-              <!-- Menu Access Checklist for Staff (Edit) -->
-                @if (editForm.get('role')?.value === 'Staff') {
-                  <div class="space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-ds-border">
-                      <label class="block text-ds-text ml-1 text-sm">Menu Access</label>
-                      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
-                          @for (menu of availableMenus; track menu.key) {
-                            <label class="flex items-center gap-1.5 sm:gap-2 cursor-pointer group p-1.5 sm:p-2 border border-ds-border/50 rounded-sm hover:border-ds-border bg-ds-bg/30 text-xs sm:text-sm">
-                                <input type="checkbox"
-                                       [checked]="selectedMenus.includes(menu.key)"
-                                       (change)="toggleMenuSelection(menu.key)"
-                                       class="form-checkbox text-ds-text border-ds-border rounded-sm focus:ring-0 cursor-pointer !size-3.5 sm:!size-4">
-                                <span class="text-ds-text-muted group-hover:text-ds-text transition-colors truncate">{{ menu.label }}</span>
-                            </label>
-                          }
-                      </div>
-                  </div>
-                }
+              <!-- Menu Access Reference for Selected Role (Edit) -->
+               @if (editForm.get('role')?.value) {
+                 <div class="space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-ds-border">
+                     <label class="block text-ds-text ml-1 text-sm font-semibold">Inherited Menu Access (From Role)</label>
+                     <div class="flex flex-wrap gap-2">
+                         @if (rolePermissionsMap[editForm.get('role')?.value || ''].length) {
+                           @for (menuKey of rolePermissionsMap[editForm.get('role')?.value || '']; track menuKey) {
+                             <span class="inline-flex items-center px-2.5 py-1 rounded-sm text-xs font-semibold bg-ds-accent/10 text-ds-accent border border-ds-accent/20">
+                               {{ menuKey }}
+                             </span>
+                           }
+                         } @else {
+                           <span class="text-xs text-ds-text-muted italic ml-1">No special menu access permissions.</span>
+                         }
+                     </div>
+                 </div>
+               }
 
                 <div class="flex flex-col sm:flex-row gap-3 sm:gap-ds-4 pt-2 sm:pt-ds-4">
                     <button type="button" (click)="isEditModalOpen = false" class="btn btn-secondary !h-10 sm:!h-12 text-sm sm:text-base">Cancel</button>

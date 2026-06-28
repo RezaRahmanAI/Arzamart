@@ -110,6 +110,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             // Additional indexes for common queries
             entity.HasIndex(p => p.StockQuantity);
             entity.HasIndex(p => p.CreatedAt);
+            entity.HasIndex(p => p.SubCategoryId);
+            entity.HasIndex(p => p.CollectionId);
 
             // Constraint
             entity.ToTable(t => t.HasCheckConstraint("CK_Product_Name", "LEN(Name) > 0")); 
@@ -217,6 +219,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
             entity.HasIndex(o => o.Status);
             entity.HasIndex(o => o.CreatedAt);
+            entity.HasIndex(o => new { o.Status, o.CreatedAt }).HasDatabaseName("IX_Orders_Status_CreatedAt");
             entity.HasIndex(o => o.OrderNumber);
             entity.HasIndex(o => o.CustomerPhone);
             entity.HasIndex(o => o.IsPreOrder);

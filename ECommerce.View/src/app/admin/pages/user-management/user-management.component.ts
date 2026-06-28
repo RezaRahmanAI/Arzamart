@@ -2,6 +2,7 @@ import { NgIf, NgClass, DatePipe, NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, ChangeDetectorRef } from "@angular/core";
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
 import { UsersService, AdminUser, CreateAdminRequest } from "../../services/users.service";
+import { StaffService, RoleDto } from "../../services/staff.service";
 import { AuthService } from "../../../core/services/auth.service";
 import { User as AuthUser } from "../../../core/models/entities";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
@@ -19,10 +20,14 @@ import { takeUntil } from "rxjs/operators";
 export class UserManagementComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private usersService = inject(UsersService);
+  private staffService = inject(StaffService);
   private fb = inject(FormBuilder);
   protected authService = inject(AuthService);
   private notification = inject(NotificationService);
   private cdr = inject(ChangeDetectorRef);
+
+  roles: RoleDto[] = [];
+  rolePermissionsMap: Record<string, string[]> = {};
 
   admins: AdminUser[] = [];
   isLoading = false;
@@ -42,7 +47,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     email: ["", [Validators.pattern(/^[^A-Z]+$/)]],
     userName: ["", [Validators.required, Validators.pattern(/^[a-z0-9]+$/)]],
     password: ["", [Validators.required, Validators.minLength(6)]],
-    role: ["Staff" as "Admin" | "SuperAdmin" | "Staff", [Validators.required]]
+    role: ["Staff", [Validators.required]]
   });
 
   availableMenus = [
@@ -72,7 +77,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     email: ["", [Validators.pattern(/^[^A-Z]+$/)]],
     userName: ["", [Validators.required, Validators.pattern(/^[a-z0-9]+$/)]],
     password: [""],
-    role: ["Staff" as "Admin" | "SuperAdmin" | "Staff", [Validators.required]]
+    role: ["Staff", [Validators.required]]
   });
 
   currentUserRole = "";
@@ -104,6 +109,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
         this.currentUserRole = user?.role || "";
     });
     this.loadAdmins();
+    this.loadRoles();
   }
 
   loadAdmins(): void {
@@ -116,6 +122,23 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.isLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  loadRoles(): void {
+    this.staffService.getRoles().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.roles = res;
+        this.roles.forEach(role => {
+          this.staffService.getRolePermissions(role.id).pipe(takeUntil(this.destroy$)).subscribe({
+            next: (permRes) => {
+              this.rolePermissionsMap[role.id] = permRes;
+              this.cdr.markForCheck();
+            }
+          });
+        });
         this.cdr.markForCheck();
       }
     });
@@ -187,9 +210,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     const request = this.createForm.getRawValue();
     const finalRequest: any = { ...request };
-    if (finalRequest.role === "Staff") {
-        finalRequest.allowedMenus = this.selectedMenus;
-    }
+    finalRequest.allowedMenus = this.rolePermissionsMap[request.role] || [];
     
     this.usersService.createAdmin(finalRequest as CreateAdminRequest).pipe(takeUntil(this.destroy$)).subscribe({
       next: (response: any) => {
@@ -256,9 +277,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     const data = this.editForm.getRawValue();
     const finalData: any = { ...data };
-    if (finalData.role === "Staff") {
-        finalData.allowedMenus = this.selectedMenus;
-    }
+    finalData.allowedMenus = this.rolePermissionsMap[data.role] || [];
     
     this.usersService.updateAdmin(this.editingAdmin.id, finalData).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
@@ -271,9 +290,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
                   this.editingAdmin.plainPassword = data.password;
                   this.revealedPasswords.delete(this.editingAdmin.id);
                 }
-                if (data.role === "Staff") {
-                    this.editingAdmin.allowedMenus = [...this.selectedMenus];
-                }
+                this.editingAdmin.allowedMenus = [...finalData.allowedMenus];
             }
             this.isSubmitting = false;
             this.isEditModalOpen = false;

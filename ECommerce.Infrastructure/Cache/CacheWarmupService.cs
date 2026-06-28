@@ -75,6 +75,8 @@ public class CacheWarmupService : IHostedService
             _cache.Products.Count,
             _cache.Categories.Count,
             _cache.Banners.Count);
+
+        _cache.LastWarmupTime = DateTime.UtcNow;
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
@@ -88,6 +90,7 @@ public class CacheWarmupService : IHostedService
             .Include(p => p.Category)
             .Include(p => p.SubCategory)
             .Include(p => p.Collection)
+            .AsSplitQuery()
             .ToListAsync(ct);
         foreach (var p in products)
         {

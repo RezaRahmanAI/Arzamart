@@ -57,7 +57,7 @@ public class SecurityMiddleware
             await using var scope = _scopeFactory.CreateAsyncScope();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var isBlocked = await unitOfWork.Repository<BlockedIp>().GetQueryable().AnyAsync(b => b.IpAddress == ipAddress);
-            _cache.SetSecurityFlag(cacheKey, isBlocked, TimeSpan.FromSeconds(60));
+            _cache.SetSecurityFlag(cacheKey, isBlocked, TimeSpan.FromMinutes(5));
             if (isBlocked)
             {
                 _logger.LogWarning("Blocked request from IP: {IpAddress}", ipAddress);

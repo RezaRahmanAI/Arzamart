@@ -1,7 +1,8 @@
+using ECommerce.API.Helpers;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
-using ECommerce.API.Services;
+using ECommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

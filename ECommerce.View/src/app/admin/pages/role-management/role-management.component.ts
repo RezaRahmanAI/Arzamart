@@ -48,14 +48,14 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
 
     this.staffService.getRoles().pipe(takeUntil(this.destroy$)).subscribe({
       next: (roleRes) => {
-        this.roles = roleRes.data;
+        this.roles = roleRes;
         if (this.roles.length > 0 && !this.selectedRole) {
           this.selectRole(this.roles[0]);
         }
         
         this.staffService.getModules().pipe(takeUntil(this.destroy$)).subscribe({
           next: (moduleRes) => {
-            this.modules = moduleRes.data;
+            this.modules = moduleRes;
             this.isLoading = false;
             this.cdr.markForCheck();
           },
@@ -81,7 +81,7 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
 
     this.staffService.getRolePermissions(role.id).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
-        res.data.forEach(id => this.selectedPermissionIds.add(id));
+        res.forEach(id => this.selectedPermissionIds.add(id));
         this.cdr.markForCheck();
       },
       error: () => {
@@ -92,6 +92,7 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
   }
 
   isPermissionChecked(permissionId: string): boolean {
+    if (this.selectedRole?.name === 'SuperAdmin') return true;
     return this.selectedPermissionIds.has(permissionId);
   }
 
@@ -105,6 +106,7 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
     } else {
       this.selectedPermissionIds.add(permissionId);
     }
+    this.cdr.markForCheck();
   }
 
   savePermissions(): void {
@@ -131,6 +133,7 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
   openCreateModal(): void {
     this.roleForm.reset();
     this.isRoleModalOpen = true;
+    this.cdr.markForCheck();
   }
 
   openEditModal(role: RoleDto): void {
@@ -140,6 +143,7 @@ export class RoleManagementComponent implements OnInit, OnDestroy {
       description: role.description || ""
     });
     this.isRoleModalOpen = true;
+    this.cdr.markForCheck();
   }
 
   onSubmitRole(): void {

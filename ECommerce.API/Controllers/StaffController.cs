@@ -9,7 +9,7 @@ namespace ECommerce.API.Controllers;
 
 [ApiController]
 [Route("api/staff")]
-[Authorize(Roles = "SuperAdmin")]
+[Authorize(Roles = "SuperAdmin,Admin")]
 public class StaffController : ControllerBase
 {
     private readonly IStaffService _staffService;
@@ -152,18 +152,4 @@ public class StaffController : ControllerBase
     {
         return Ok(await _staffService.GetAuditLogsAsync(actorId, action, startDate, endDate, page, pageSize));
     }
-}
-
-// Request DTOs specific to controller (not in Core to keep them API-layer)
-public class ToggleStatusDto
-{
-    public bool IsActive { get; set; }
-}
-
-public class ResetPasswordStaffDto
-{
-    [Required]
-    [MinLength(8)]
-    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, and one digit")]
-    public string Password { get; set; } = string.Empty;
 }

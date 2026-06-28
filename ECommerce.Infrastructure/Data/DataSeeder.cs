@@ -5,97 +5,112 @@ using ECommerce.Core.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerce.Infrastructure.Data;
 
 public static class DataSeeder
 {
-    public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
+    public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, ILoggerFactory? loggerFactory = null)
     {
-        // Migrate kids category to children category if it exists
-        var kidsCategory = await context.Categories.FirstOrDefaultAsync(c => c.Slug == "kids");
-        if (kidsCategory != null)
-        {
-            kidsCategory.Name = "Children";
-            kidsCategory.Slug = "children";
-            await context.SaveChangesAsync();
-        }
+        var logger = loggerFactory?.CreateLogger(nameof(DataSeeder));
 
-        // 0. Seed Initial Categories
-        if (!await context.Categories.AnyAsync())
+        try
         {
-            var categories = new List<Category>
+            // Migrate kids category to children category if it exists
+            var kidsCategory = await context.Categories.FirstOrDefaultAsync(c => c.Slug == "kids");
+            if (kidsCategory != null)
             {
-                new Category { Name = "Men", Slug = "men", DisplayOrder = 1, IsActive = true },
-                new Category { Name = "Women", Slug = "women", DisplayOrder = 2, IsActive = true },
-                new Category { Name = "Children", Slug = "children", DisplayOrder = 3, IsActive = true },
-                new Category { Name = "Accessories", Slug = "accessories", DisplayOrder = 4, IsActive = true }
-            };
-
-            context.Categories.AddRange(categories);
-            await context.SaveChangesAsync();
-        }
-
-        // 1. Ensure Roles Exist
-        if (!await roleManager.RoleExistsAsync("SuperAdmin"))
-        {
-            await roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
-        }
-
-        if (!await roleManager.RoleExistsAsync("Admin"))
-        {
-            await roleManager.CreateAsync(new IdentityRole("Admin"));
-        }
-
-        if (!await roleManager.RoleExistsAsync("Customer"))
-        {
-            await roleManager.CreateAsync(new IdentityRole("Customer"));
-        }
-
-        if (!await roleManager.RoleExistsAsync("Staff"))
-        {
-            await roleManager.CreateAsync(new IdentityRole("Staff"));
-        }
-
-        // 2. Ensure Super Admin User exists
-        var adminEmail = "admin@arzamart.com";
-        var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
-
-        if (existingAdmin == null)
-        {
-            var newPassword = Guid.NewGuid().ToString("N")[..12] + "!A1";
-            var newAdmin = new ApplicationUser
-            {
-                UserName = adminEmail,
-                Email = adminEmail,
-                FullName = "Arza Super Admin",
-                EmailConfirmed = true,
-                Role = "SuperAdmin",
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow,
-                ForceChangePassword = true
-            };
-
-            var result = await userManager.CreateAsync(newAdmin, newPassword);
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(newAdmin, "SuperAdmin");
+                kidsCategory.Name = "Children";
+                kidsCategory.Slug = "children";
+                await context.SaveChangesAsync();
             }
-        }
-        else 
-        {
-            // Update existing admin to SuperAdmin if needed
-            if (existingAdmin.Role != "SuperAdmin")
+
+            // 0. Seed Initial Categories
+            if (!await context.Categories.AnyAsync())
             {
-                existingAdmin.Role = "SuperAdmin";
-                await userManager.UpdateAsync(existingAdmin);
-                
-                // Add to identity role too
-                if (!await userManager.IsInRoleAsync(existingAdmin, "SuperAdmin"))
+                var categories = new List<Category>
                 {
-                    await userManager.AddToRoleAsync(existingAdmin, "SuperAdmin");
+                    new Category { Name = "Men", Slug = "men", DisplayOrder = 1, IsActive = true },
+                    new Category { Name = "Women", Slug = "women", DisplayOrder = 2, IsActive = true },
+                    new Category { Name = "Children", Slug = "children", DisplayOrder = 3, IsActive = true },
+                    new Category { Name = "Accessories", Slug = "accessories", DisplayOrder = 4, IsActive = true }
+                };
+
+                context.Categories.AddRange(categories);
+                await context.SaveChangesAsync();
+            }
+
+            // 1. Ensure Roles Exist
+            if (!await roleManager.RoleExistsAsync("SuperAdmin"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
+            }
+
+            if (!await roleManager.RoleExistsAsync("Admin"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+            }
+
+            if (!await roleManager.RoleExistsAsync("Customer"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Customer"));
+            }
+
+            if (!await roleManager.RoleExistsAsync("Staff"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Staff"));
+            }
+
+            // 2. Ensure Super Admin User exists
+            var adminEmail = "admin@arzamart.com";
+            var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
+
+            if (existingAdmin == null)
+            {
+                var newPassword = Guid.NewGuid().ToString("N")[..12] + "!A1";
+                var newAdmin = new ApplicationUser
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    FullName = "Arza Super Admin",
+                    EmailConfirmed = true,
+                    Role = "SuperAdmin",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    ForceChangePassword = true
+                };
+
+                var result = await userManager.CreateAsync(newAdmin, newPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newAdmin, "SuperAdmin");
+                    logger?.LogCritical("ADMIN ACCOUNT CREATED — Email: {Email} | Password: {Password} | CHANGE THIS PASSWORD IMMEDIATELY", adminEmail, newPassword);
+                }
+                else
+                {
+                    logger?.LogError("Failed to create admin account: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
             }
+            else
+            {
+                // Update existing admin to SuperAdmin if needed
+                if (existingAdmin.Role != "SuperAdmin")
+                {
+                    existingAdmin.Role = "SuperAdmin";
+                    await userManager.UpdateAsync(existingAdmin);
+
+                    // Add to identity role too
+                    if (!await userManager.IsInRoleAsync(existingAdmin, "SuperAdmin"))
+                    {
+                        await userManager.AddToRoleAsync(existingAdmin, "SuperAdmin");
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogError(ex, "An error occurred during database seeding");
         }
     }
 }

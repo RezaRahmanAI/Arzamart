@@ -76,11 +76,6 @@ public class OrderDto
     public List<OrderNoteDto> Notes { get; set; } = new();
 }
 
-public class AdminOrderDto : OrderDto
-{
-    public string? AdminNote { get; set; }
-}
-
 public class OrderLogDto
 {
     public int Id { get; set; }

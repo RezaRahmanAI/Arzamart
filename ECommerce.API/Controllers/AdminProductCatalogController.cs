@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Controllers;
 
 [ApiController]
-[Route("api/admin/products")]
+[Route("api/admin/products/catalog")]
 [Authorize(Roles = "Admin,SuperAdmin,Staff")]
 [ECommerce.API.Helpers.StaffMenuAccess("products")]
 public class AdminProductCatalogController : ControllerBase

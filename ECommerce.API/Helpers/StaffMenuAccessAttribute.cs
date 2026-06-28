@@ -38,7 +38,7 @@ public class StaffMenuAccessFilter : IAsyncAuthorizationFilter
         }
 
         // If the user is SuperAdmin or Admin, they have full access.
-        if (userPrincipal.IsInRole("SuperAdmin") || userPrincipal.IsInRole("Admin") || userPrincipal.IsInRole("Super Admin"))
+        if (userPrincipal.IsInRole("SuperAdmin") || userPrincipal.IsInRole("Admin"))
         {
             return;
         }

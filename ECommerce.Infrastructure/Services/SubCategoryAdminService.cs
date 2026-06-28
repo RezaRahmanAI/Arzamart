@@ -175,9 +175,7 @@ public class SubCategoryAdminService : ISubCategoryAdminService
 
         lock (_cache.RebuildLock)
         {
-            _cache.Categories.Clear();
-            foreach (var c in cats)
-                _cache.Categories[c.Id] = c;
+            AppCache.AtomicReplace(_cache.Categories, cats.ToDictionary(c => c.Id));
         }
 
         RebuildHomePageCache();
