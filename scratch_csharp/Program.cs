@@ -1,12 +1,6 @@
 using System;
-using System.Linq;
-using System.Text.Json;
-using AutoMapper;
-using ECommerce.Core.DTOs;
-using ECommerce.Core.Entities;
-using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using ECommerce.API.Helpers;
+using ECommerce.Infrastructure.Data;
 
 class Program
 {
@@ -19,25 +13,15 @@ class Program
         
         using (var db = new ApplicationDbContext(optionsBuilder.Options))
         {
-            var product = db.Products
-                .IgnoreQueryFilters()
-                .Include(p => p.Category)
-                .Include(p => p.SubCategory)
-                .Include(p => p.Images)
-                .Include(p => p.Variants)
-                .FirstOrDefault(p => p.Id == 108);
-                
-            if (product == null)
+            try
             {
-                Console.WriteLine("Product 108 not found.");
-                return;
+                Console.WriteLine("Adding column 'IsBundle' to dbo.Products...");
+                db.Database.ExecuteSqlRaw("ALTER TABLE dbo.Products ADD IsBundle bit NOT NULL DEFAULT 0");
+                Console.WriteLine("Column added successfully!");
             }
-            
-            Console.WriteLine($"Found Product: {product.Name} (ID: {product.Id})");
-            Console.WriteLine($"Variants count in Entity: {product.Variants.Count}");
-            foreach (var v in product.Variants)
+            catch (Exception ex)
             {
-                Console.WriteLine($" - Variant ID: {v.Id}, Size: '{v.Size}', Price: {v.Price}, CompareAtPrice: {v.CompareAtPrice}, PurchaseRate: {v.PurchaseRate}, StockQuantity: {v.StockQuantity}");
+                Console.WriteLine($"Result: {ex.Message}");
             }
         }
     }
