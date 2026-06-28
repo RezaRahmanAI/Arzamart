@@ -328,7 +328,7 @@
               </div>
             </td>
             <td class="px-ds-4 py-ds-4 text-right">
-              <div class="flex items-center justify-end gap-ds-2">
+              <div class="grid grid-cols-4 gap-1.5 w-fit ml-auto">
                 <button *ngIf="nextStatusLabel(order)" (click)="markNextStatus(order, $event)" class="size-8 rounded-sm bg-ds-bg border border-ds-text text-ds-text hover:bg-ds-text hover:text-ds-surface transition-all flex items-center justify-center animate-pulse" [title]="nextStatusLabel(order)">
                   <app-icon name="Check" size="14"></app-icon>
                 </button>
@@ -350,9 +350,6 @@
 
                 <button (click)="sendReminder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-amber-500 hover:border-amber-500 transition-colors flex items-center justify-center" title="SMS Reminder">
                   <app-icon name="Bell" size="14"></app-icon>
-                </button>
-                <button *ngIf="order.status !== 'Cancelled'" (click)="cancelOrder(order, $event)" class="size-8 rounded-sm bg-ds-surface border border-ds-border text-ds-text-muted hover:text-ds-danger hover:border-ds-danger transition-colors flex items-center justify-center" title="Cancel Order">
-                  <app-icon name="XCircle" size="14"></app-icon>
                 </button>
               </div>
             </td>

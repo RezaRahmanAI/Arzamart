@@ -107,6 +107,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
   // Variant Selection State
   selectedProduct = signal<AdminProduct | null>(null);
   selectedSize = signal<string | null>(null);
+  selectedQuantity = signal<number>(1);
   
   // Form
   orderForm = new FormGroup({
@@ -435,7 +436,15 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
     return product.price;
   }
 
-  addToCart(product: AdminProduct, size?: string) {
+  incrementSelectedQuantity() {
+    this.selectedQuantity.update(q => q + 1);
+  }
+
+  decrementSelectedQuantity() {
+    this.selectedQuantity.update(q => Math.max(1, q - 1));
+  }
+
+  addToCart(product: AdminProduct, size?: string, qty: number = 1) {
     if (product.variants?.length && product.variants.some(v => v.size) && !size) {
       this.notification.error("Please select a size first.");
       return;
@@ -458,11 +467,11 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
     );
 
     if (existing) {
-      this.updateQuantity(existing, 1);
+      this.updateQuantity(existing, qty);
     } else {
       const newItem: CartItem = {
         product,
-        quantity: 1,
+        quantity: qty,
         selectedSize: size,
         unitPrice: price,
       };
@@ -472,6 +481,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
     // Reset selection state
     this.selectedProduct.set(null);
     this.selectedSize.set(null);
+    this.selectedQuantity.set(1);
     this.notification.info(`${product.name} added to cart.`);
   }
 
