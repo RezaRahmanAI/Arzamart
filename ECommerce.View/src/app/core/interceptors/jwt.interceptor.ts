@@ -28,7 +28,8 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
         error instanceof HttpErrorResponse &&
         error.status === 401 &&
         !req.url.includes("auth/refresh") &&
-        !req.url.includes("auth/login")
+        !req.url.includes("auth/login") &&
+        !req.url.includes("auth/logout")
       ) {
         const authService = injector.get(AuthService);
         return authService.refreshToken().pipe(

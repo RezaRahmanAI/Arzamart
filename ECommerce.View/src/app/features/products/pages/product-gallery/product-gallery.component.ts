@@ -103,17 +103,17 @@ export class ProductGalleryComponent implements OnInit {
         this.title = "Search Products";
       }
     } else if (
-      categorySlug ||
-      (this.route.snapshot.url[0]?.path === "category" && slug)
-    ) {
-      filterParams.categorySlug = categorySlug || slug;
-      this.title = (categorySlug || slug).replace(/-/g, " ");
-    } else if (
       subCategorySlug ||
       (this.route.snapshot.url[0]?.path === "subcategory" && slug)
     ) {
       filterParams.subCategorySlug = subCategorySlug || slug;
       this.title = (subCategorySlug || slug).replace(/-/g, " ");
+    } else if (
+      categorySlug ||
+      (this.route.snapshot.url[0]?.path === "category" && slug)
+    ) {
+      filterParams.categorySlug = categorySlug || slug;
+      this.title = (categorySlug || slug).replace(/-/g, " ");
     } else if (this.route.snapshot.url[0]?.path === "offers") {
       filterParams.productType = 1; // Combo
       this.isOffersPage = true;
@@ -149,7 +149,7 @@ export class ProductGalleryComponent implements OnInit {
     const isSubCategoryRoute = subCategorySlug || (this.route.snapshot.url[0]?.path === "subcategory" && slug);
     const currentSlug = categorySlug || subCategorySlug || slug;
 
-    this.activeSubSlug = isSubCategoryRoute ? currentSlug : null;
+    this.activeSubSlug = isSubCategoryRoute ? (subCategorySlug || slug) : null;
 
     this.categoryService.getCategories().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(categories => {
       let currentCat: Category | undefined;

@@ -30,7 +30,9 @@ export class AdminLayoutComponent implements OnDestroy {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.sidebarService.close();
+        if (window.innerWidth < 1024) {
+          this.sidebarService.close();
+        }
       });
   }
 

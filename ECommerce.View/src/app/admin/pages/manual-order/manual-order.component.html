@@ -149,23 +149,21 @@
           </table>
         </div>
       </div>
-
       <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm p-ds-3 flex flex-col gap-ds-3">
-        <div class="space-y-ds-1.5">
-          <div class="grid grid-cols-2 gap-ds-2">
-            <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm h-8">
+        <div class="space-y-ds-2">
+          <div class="grid grid-cols-3 gap-ds-2">
+            <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-text/5 border border-ds-border rounded-sm h-10">
               <span class="text-ds-text-muted">Items</span>
               <span class="text-ds-text">{{ totalItemsCount }}</span>
             </div>
-            <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm h-8">
+            <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-text/5 border border-ds-border rounded-sm h-10">
               <span class="text-ds-text-muted">Subtotal</span>
               <span class="text-ds-text">৳{{ subtotal }}</span>
             </div>
-          </div>
-
-          <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm h-8">
-            <span class="text-ds-text-muted">Delivery</span>
-            <span class="text-ds-text">৳{{ shippingCost }}</span>
+            <div class="flex justify-between items-center px-ds-3 py-1 bg-ds-text/5 border border-ds-border rounded-sm h-10">
+              <span class="text-ds-text-muted">Delivery</span>
+              <span class="text-ds-text">৳{{ shippingCost }}</span>
+            </div>
           </div>
 
           <div class="grid grid-cols-3 gap-ds-2" [formGroup]="orderForm">
@@ -189,7 +187,7 @@
             </div>
           </div>
 
-          <div class="flex justify-between items-center px-ds-5 py-ds-2 bg-ds-text text-ds-hero-text rounded-sm shadow-xl mt-1">
+          <div class="flex justify-between items-center px-ds-5 py-ds-2 bg-ds-text text-ds-hero-text rounded-sm shadow-xl">
             <span >Total</span>
             <span >৳{{ total }}</span>
           </div>
@@ -197,14 +195,17 @@
 
         <div class="space-y-ds-2 pt-ds-3 border-t border-ds-border" [formGroup]="orderForm">
           <div class="flex flex-col gap-ds-2">
-            <label class="flex flex-col gap-0.5">
-              <span class="text-ds-text-muted ml-1">Phone *</span>
-              <input formControlName="phone" type="text" placeholder="Phone number" class="form-input !h-8">
-            </label>
-            <label class="flex flex-col gap-0.5">
-              <span class="text-ds-text-muted ml-1">Name *</span>
-              <input formControlName="name" type="text" placeholder="Full name" class="form-input !h-8">
-            </label>
+            <!-- Phone & Name Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-ds-2">
+              <label class="flex flex-col gap-0.5">
+                <span class="text-ds-text-muted ml-1">Phone *</span>
+                <input formControlName="phone" type="text" placeholder="Phone number" class="form-input !h-8">
+              </label>
+              <label class="flex flex-col gap-0.5">
+                <span class="text-ds-text-muted ml-1">Name *</span>
+                <input formControlName="name" type="text" placeholder="Full name" class="form-input !h-8">
+              </label>
+            </div>
             <label class="flex flex-col gap-0.5">
               <span class="text-ds-text-muted ml-1">Address *</span>
               <textarea formControlName="address" rows="1" placeholder="Delivery address" class="form-input !h-8 !py-1.5 !px-4 resize-none"></textarea>

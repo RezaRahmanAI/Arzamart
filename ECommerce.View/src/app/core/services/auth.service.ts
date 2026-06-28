@@ -56,9 +56,10 @@ export class AuthService {
   }
 
   logout(): void {
+    this.clearSession();
     this.api.post("/auth/logout", {}).subscribe({
-      next: () => this.clearSession(),
-      error: () => this.clearSession(),
+      next: () => {},
+      error: () => {},
     });
   }
 
@@ -94,6 +95,7 @@ export class AuthService {
     this.userSubject.next(null);
     localStorage.removeItem(StorageKeys.CURRENT_USER);
     localStorage.removeItem(StorageKeys.AUTH_TOKEN);
+    localStorage.removeItem(StorageKeys.REFRESH_TOKEN);
   }
 
   getAccessToken(): string | null {

@@ -69,10 +69,10 @@ export class AdminSidebarComponent implements OnInit, OnDestroy {
 
   bottomItems: AdminNavItem[] = [];
 
-  isProductsMenuOpen = false;
-  isOrdersMenuOpen = false;
-  isOrderViewMenuOpen = false;
-  isStaffMenuOpen = false;
+  isProductsMenuOpen = true;
+  isOrdersMenuOpen = true;
+  isOrderViewMenuOpen = true;
+  isStaffMenuOpen = true;
 
   currentUserRole = "";
   currentUserMenus: string[] = [];

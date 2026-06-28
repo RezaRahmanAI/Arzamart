@@ -86,6 +86,8 @@ public class CacheWarmupService : IHostedService
             .Include(p => p.Images)
             .Include(p => p.Variants)
             .Include(p => p.Category)
+            .Include(p => p.SubCategory)
+            .Include(p => p.Collection)
             .ToListAsync(ct);
         foreach (var p in products)
         {
