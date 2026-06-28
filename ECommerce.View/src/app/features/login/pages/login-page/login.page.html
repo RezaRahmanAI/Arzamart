@@ -58,7 +58,7 @@
               >Email or Username</span
             >
             <input
-              class="form-input w-full rounded-lg text-ds-text dark:text-white bg-ds-surface dark:bg-gray-800 border border-ds-surface dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 placeholder:text-ds-text-sec"
+              class="form-input h-14"
               placeholder="Enter your email or username"
               type="text"
               formControlName="emailOrUsername"
@@ -78,9 +78,9 @@
                 >Password</span
               >
             </div>
-            <div class="flex w-full items-stretch rounded-lg relative">
+            <div class="flex w-full items-stretch relative">
               <input
-                class="form-input w-full rounded-lg text-ds-text dark:text-white bg-ds-surface dark:bg-gray-800 border border-ds-surface dark:border-gray-700 focus:ring-2 focus:ring-accent focus:border-accent h-14 px-4 pr-12 placeholder:text-ds-text-sec"
+                class="form-input h-14 pr-12"
                 placeholder="Enter your password"
                 [type]="isPasswordVisible ? 'text' : 'password'"
                 formControlName="password"
@@ -118,7 +118,7 @@
           </div>
           <!-- Submit Button -->
           <button
-            class="mt-4 w-full h-14 bg-ds-accent hover:bg-ds-accent-hover text-white rounded-lg shadow-lg shadow-black/10 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
+            class="btn btn-accent w-full h-14 mt-4 shadow-lg shadow-black/10 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
             type="submit"
             [disabled]="loginForm.invalid || isLoading"
           >

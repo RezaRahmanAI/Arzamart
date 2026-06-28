@@ -9,7 +9,7 @@
         </span>
         <input
           class="form-input !h-10 !pl-ds-10 w-full"
-          placeholder="ORDER ID..."
+          placeholder="Order ID..."
           type="text"
           [formControl]="orderIdSearchControl"
         />
@@ -22,57 +22,143 @@
         </span>
         <input
           class="form-input !h-10 !pl-ds-10 w-full"
-          placeholder="PHONE..."
+          placeholder="Phone..."
           type="text"
           [formControl]="phoneSearchControl"
         />
       </div>
 
-      <!-- Status Filter -->
-      <div class="relative w-full sm:w-auto sm:flex-1 sm:min-w-[120px] sm:max-w-[160px]" (click)="$event.stopPropagation()">
+      <!-- Unified Filters Dropdown -->
+      <div class="relative w-full sm:w-auto sm:flex-1 sm:min-w-[145px] sm:max-w-[185px]" (click)="$event.stopPropagation()">
         <button
-          (click)="toggleStatusMenu($event)"
+          (click)="toggleFiltersMenu($event)"
           class="form-input !h-10 flex items-center justify-between px-ds-4 w-full"
+          [class.border-ds-accent]="activeFiltersCount > 0"
         >
           <div class="flex items-center gap-2">
-            <app-icon name="Filter" size="14" className="text-ds-text-muted"></app-icon>
-            <span class="truncate">{{ selectedStatus === 'All' ? 'Status' : selectedStatus }}</span>
+            <app-icon name="SlidersHorizontal" size="14" className="text-ds-text-muted"></app-icon>
+            <span class="truncate font-semibold">
+              {{ activeFiltersCount > 0 ? 'Filters (' + activeFiltersCount + ')' : 'More Filters' }}
+            </span>
           </div>
-          <app-icon name="ChevronDown" size="12" className="text-ds-text-muted" [className]="statusMenuOpen ? 'rotate-180' : ''"></app-icon>
+          <div class="flex items-center gap-1.5">
+            <span *ngIf="activeFiltersCount > 0" class="size-1.5 rounded-full bg-ds-accent shrink-0 animate-pulse"></span>
+            <app-icon name="ChevronDown" size="12" className="text-ds-text-muted" [className]="filtersMenuOpen ? 'rotate-180' : ''"></app-icon>
+          </div>
         </button>
         
-        <div *ngIf="statusMenuOpen" class="absolute left-0 right-0 mt-2 bg-ds-surface border border-ds-border rounded-sm shadow-2xl z-[100] p-1 animate-in fade-in slide-in-from-top-1 duration-base">
-          <p class="px-ds-3 py-2 text-ds-text-muted border-b border-ds-border mb-1">Filter by status</p>
-          <div class="max-h-64 overflow-y-auto">
-            <button *ngFor="let status of statusOptions; trackBy: trackByStatusOption" 
-                    (click)="setStatusFilter(status, $event)" 
-                    class="w-full px-ds-3 py-2.5 text-left rounded-sm transition-colors flex items-center justify-between"
-                    [class.bg-ds-text]="selectedStatus === status"
-                    [class.text-ds-surface]="selectedStatus === status"
-                    [class.text-ds-text-muted]="selectedStatus !== status"
-                    [class.hover:bg-ds-bg]="selectedStatus !== status">
-              <div class="flex items-center gap-3">
-                <div class="size-1.5 rounded-full" [ngStyle]="{ backgroundColor: getStatusColor(status) }"></div>
-                <span>{{ status }}</span>
+        <!-- Filters Popover Dropdown -->
+        <div *ngIf="filtersMenuOpen" class="absolute right-0 md:right-auto md:left-0 mt-2 w-full sm:w-[480px] md:w-[580px] bg-ds-surface border border-ds-border rounded-sm shadow-2xl z-[100] p-ds-4 flex flex-col gap-4 animate-in fade-in slide-in-from-top-1 duration-base">
+          <!-- Multi-column Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            
+            <!-- Column 1: Status -->
+            <div class="flex flex-col gap-2">
+              <span class="text-[11px] font-bold text-ds-text-muted uppercase tracking-wider border-b border-ds-border/40 pb-1.5">Status</span>
+              <div class="flex flex-col gap-1 max-h-56 overflow-y-auto pr-1">
+                <button (click)="setStatusFilter('All', $event)"
+                        class="w-full px-2 py-1.5 text-left rounded-sm text-xs transition-colors flex items-center justify-between"
+                        [class.bg-ds-text]="selectedStatus === 'All'"
+                        [class.text-ds-surface]="selectedStatus === 'All'"
+                        [class.text-ds-text-sec]="selectedStatus !== 'All'"
+                        [class.hover:bg-ds-bg]="selectedStatus !== 'All'">
+                  <span>All Statuses</span>
+                  <app-icon *ngIf="selectedStatus === 'All'" name="Check" size="10"></app-icon>
+                </button>
+                <button *ngFor="let status of statusOptions; trackBy: trackByStatusOption" 
+                        (click)="setStatusFilter(status, $event)" 
+                        class="w-full px-2 py-1.5 text-left rounded-sm text-xs transition-colors flex items-center justify-between"
+                        [class.bg-ds-text]="selectedStatus === status"
+                        [class.text-ds-surface]="selectedStatus === status"
+                        [class.text-ds-text-sec]="selectedStatus !== status"
+                        [class.hover:bg-ds-bg]="selectedStatus !== status">
+                  <div class="flex items-center gap-2 truncate">
+                    <div class="size-1.5 rounded-full shrink-0" [ngStyle]="{ backgroundColor: getStatusColor(status) }"></div>
+                    <span class="truncate">{{ status }}</span>
+                  </div>
+                  <app-icon *ngIf="selectedStatus === status" name="Check" size="10"></app-icon>
+                </button>
               </div>
-              <app-icon *ngIf="selectedStatus === status" name="Check" size="12"></app-icon>
+            </div>
+
+            <!-- Column 2: Order Type -->
+            <div class="flex flex-col gap-2">
+              <span class="text-[11px] font-bold text-ds-text-muted uppercase tracking-wider border-b border-ds-border/40 pb-1.5">Order Type</span>
+              <div class="flex flex-col gap-1 pr-1">
+                <button *ngFor="let type of ['All', 'PreOrder', 'Website', 'Manual']"
+                        (click)="setOrderTypeFilter($any(type))"
+                        class="w-full px-2 py-1.5 text-left rounded-sm text-xs transition-colors flex items-center justify-between"
+                        [class.bg-ds-text]="selectedOrderType === type"
+                        [class.text-ds-surface]="selectedOrderType === type"
+                        [class.text-ds-text-sec]="selectedOrderType !== type"
+                        [class.hover:bg-ds-bg]="selectedOrderType !== type">
+                  <span>{{ type === 'PreOrder' ? 'Pre-Order' : type }}</span>
+                  <app-icon *ngIf="selectedOrderType === type" name="Check" size="10"></app-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Column 3: Source -->
+            <div class="flex flex-col gap-2">
+              <span class="text-[11px] font-bold text-ds-text-muted uppercase tracking-wider border-b border-ds-border/40 pb-1.5">Source</span>
+              <div class="flex flex-col gap-1 max-h-56 overflow-y-auto pr-1">
+                <button (click)="setSourcePageFilter(null); sourceMenuOpen = false" 
+                        class="w-full px-2 py-1.5 text-left rounded-sm text-xs transition-colors flex items-center gap-2 justify-between"
+                        [class.bg-ds-text]="!selectedSourcePageId && !selectedSocialMediaSourceId"
+                        [class.text-ds-surface]="!selectedSourcePageId && !selectedSocialMediaSourceId"
+                        [class.text-ds-text-sec]="selectedSourcePageId || selectedSocialMediaSourceId"
+                        [class.hover:bg-ds-bg]="selectedSourcePageId || selectedSocialMediaSourceId">
+                  <div class="flex items-center gap-2">
+                    <app-icon name="Layers" size="10"></app-icon>
+                    <span>All Sources</span>
+                  </div>
+                  <app-icon *ngIf="!selectedSourcePageId && !selectedSocialMediaSourceId" name="Check" size="10"></app-icon>
+                </button>
+
+                <div class="px-2 py-1 text-[9px] text-ds-text-muted bg-ds-bg/30 rounded-sm font-semibold mt-1">Pages</div>
+                <button *ngFor="let page of sourcePages; trackBy: trackBySourcePage" 
+                        (click)="setSourcePageFilter(page.id)" 
+                        class="w-full px-2 py-1.5 text-left rounded-sm text-xs transition-colors flex items-center gap-2 justify-between"
+                        [class.bg-ds-text]="selectedSourcePageId === page.id"
+                        [class.text-ds-surface]="selectedSourcePageId === page.id"
+                        [class.text-ds-text-sec]="selectedSourcePageId !== page.id"
+                        [class.hover:bg-ds-bg]="selectedSourcePageId !== page.id">
+                  <div class="flex items-center gap-2 truncate">
+                    <app-icon name="Globe" size="10" className="text-ds-success shrink-0"></app-icon>
+                    <span class="truncate">{{ page.name }}</span>
+                  </div>
+                  <app-icon *ngIf="selectedSourcePageId === page.id" name="Check" size="10" className="shrink-0"></app-icon>
+                </button>
+
+                <div class="px-2 py-1 text-[9px] text-ds-text-muted bg-ds-bg/30 rounded-sm font-semibold mt-1">Social</div>
+                <button *ngFor="let source of socialMediaSources; trackBy: trackBySocialMediaSource" 
+                        (click)="setSocialMediaFilter(source.id)" 
+                        class="w-full px-2 py-1.5 text-left rounded-sm text-xs transition-colors flex items-center gap-2 justify-between"
+                        [class.bg-ds-text]="selectedSocialMediaSourceId === source.id"
+                        [class.text-ds-surface]="selectedSocialMediaSourceId === source.id"
+                        [class.text-ds-text-sec]="selectedSocialMediaSourceId !== source.id"
+                        [class.hover:bg-ds-bg]="selectedSocialMediaSourceId !== source.id">
+                  <div class="flex items-center gap-2 truncate">
+                    <app-icon name="Share2" size="10" className="text-ds-accent shrink-0"></app-icon>
+                    <span class="truncate">{{ source.name }}</span>
+                  </div>
+                  <app-icon *ngIf="selectedSocialMediaSourceId === source.id" name="Check" size="10" className="shrink-0"></app-icon>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Footer Actions -->
+          <div class="flex justify-between items-center pt-3 border-t border-ds-border/40 text-xs">
+            <button (click)="resetFilters($event)" class="text-ds-danger hover:underline font-semibold bg-transparent border-none p-0 cursor-pointer">
+              Reset All
+            </button>
+            <button (click)="filtersMenuOpen = false" class="btn btn-primary !h-8 px-4 text-xs font-semibold">
+              Apply
             </button>
           </div>
         </div>
-      </div>
-
-      <!-- Order Type Filter -->
-      <div class="relative w-full sm:w-auto sm:flex-1 sm:min-w-[120px] sm:max-w-[160px]">
-        <select
-          (change)="setOrderTypeFilter($any($event.target).value)"
-          class="form-input !h-10 !pl-ds-4 !pr-ds-8 appearance-none cursor-pointer w-full"
-        >
-          <option value="All" [selected]="selectedOrderType === 'All'">Types</option>
-          <option value="PreOrder" [selected]="selectedOrderType === 'PreOrder'">Pre-Order</option>
-          <option value="Website" [selected]="selectedOrderType === 'Website'">Website</option>
-          <option value="Manual" [selected]="selectedOrderType === 'Manual'">Manual</option>
-        </select>
-        <app-icon name="ChevronDown" size="12" className="absolute right-ds-4 top-1/2 -translate-y-1/2 text-ds-text-muted pointer-events-none"></app-icon>
       </div>
 
       <!-- Date Filter -->
@@ -109,67 +195,14 @@
         </div>
       </div>
 
-      <!-- Source Filter -->
-      <div class="relative w-full sm:w-auto sm:flex-1 sm:min-w-[130px] sm:max-w-[170px]" (click)="$event.stopPropagation()">
-        <button
-          (click)="sourceMenuOpen = !sourceMenuOpen; statusMenuOpen = false; dateMenuOpen = false"
-          class="form-input !h-10 flex items-center justify-between px-ds-4 w-full"
-        >
-          <div class="flex items-center gap-2">
-            <app-icon [name]="selectedSourcePageId ? 'Globe' : (selectedSocialMediaSourceId ? 'Share2' : 'Layers')" size="14" className="text-ds-text-muted"></app-icon>
-            <span class="truncate">
-              {{ selectedSourceLabel }}
-            </span>
-          </div>
-          <app-icon name="ChevronDown" size="12" className="text-ds-text-muted" [className]="sourceMenuOpen ? 'rotate-180' : ''"></app-icon>
-        </button>
-        
-        <div *ngIf="sourceMenuOpen" class="absolute right-0 mt-2 w-64 bg-ds-surface border border-ds-border rounded-sm shadow-2xl z-[100] p-1 animate-in fade-in slide-in-from-top-1 duration-base">
-          <div class="max-h-64 overflow-y-auto">
-            <button (click)="setSourcePageFilter(null); sourceMenuOpen = false" 
-                    class="w-full px-ds-3 py-2 text-left rounded-sm transition-colors flex items-center gap-3"
-                    [class.bg-ds-text]="!selectedSourcePageId && !selectedSocialMediaSourceId"
-                    [class.text-ds-surface]="!selectedSourcePageId && !selectedSocialMediaSourceId"
-                    [class.text-ds-text-muted]="selectedSourcePageId || selectedSocialMediaSourceId"
-                    [class.hover:bg-ds-bg]="selectedSourcePageId || selectedSocialMediaSourceId">
-              <app-icon name="Layers" size="12"></app-icon>
-              <span>All Sources</span>
-            </button>
 
-            <div class="px-ds-3 py-1.5 text-ds-text-muted bg-ds-bg/50 my-1">Pages</div>
-            <button *ngFor="let page of sourcePages; trackBy: trackBySourcePage" 
-                    (click)="setSourcePageFilter(page.id); sourceMenuOpen = false" 
-                    class="w-full px-ds-3 py-2 text-left rounded-sm transition-colors flex items-center gap-3"
-                    [class.bg-ds-text]="selectedSourcePageId === page.id"
-                    [class.text-ds-surface]="selectedSourcePageId === page.id"
-                    [class.text-ds-text-muted]="selectedSourcePageId !== page.id"
-                    [class.hover:bg-ds-bg]="selectedSourcePageId !== page.id">
-              <app-icon name="Globe" size="12" className="text-ds-success"></app-icon>
-              <span>{{ page.name }}</span>
-            </button>
-
-            <div class="px-ds-3 py-1.5 text-ds-text-muted bg-ds-bg/50 my-1">Social Media</div>
-            <button *ngFor="let source of socialMediaSources; trackBy: trackBySocialMediaSource" 
-                    (click)="setSocialMediaFilter(source.id); sourceMenuOpen = false" 
-                    class="w-full px-ds-3 py-2 text-left rounded-sm transition-colors flex items-center gap-3"
-                    [class.bg-ds-text]="selectedSocialMediaSourceId === source.id"
-                    [class.text-ds-surface]="selectedSocialMediaSourceId === source.id"
-                    [class.text-ds-text-muted]="selectedSocialMediaSourceId !== source.id"
-                    [class.hover:bg-ds-bg]="selectedSocialMediaSourceId !== source.id">
-              <app-icon name="Share2" size="12" className="text-ds-accent"></app-icon>
-              <span>{{ source.name }}</span>
-            </button>
-          </div>
-        </div>
-      </div>
 
       <!-- Action Buttons Group -->
-      <div class="flex items-center gap-2 h-10 w-full sm:w-auto flex-nowrap shrink-0">
+      <div class="flex items-center gap-3 h-10 w-full sm:w-auto flex-nowrap shrink-0">
         
-
         <a
           routerLink="/admin/orders/create"
-          class="btn btn-secondary !h-10 px-3 text-xs flex items-center gap-1.5 whitespace-nowrap shrink-0"
+          class="btn btn-secondary !h-10 flex items-center gap-1.5 whitespace-nowrap shrink-0"
         >
           <app-icon name="ShoppingCart" size="14"></app-icon>
           <span>New Order</span>
@@ -177,10 +210,10 @@
 
         <a
           routerLink="/admin/orders/pre-order"
-          class="btn btn-primary !h-10 px-3.5 text-xs flex items-center gap-1.5 whitespace-nowrap shrink-0"
+          class="btn btn-primary !h-10 flex items-center gap-1.5 whitespace-nowrap shrink-0"
         >
           <app-icon name="PackagePlus" size="14"></app-icon>
-          <span>Pre-order</span>
+          <span>New Pre-order</span>
         </a>
 
         <button

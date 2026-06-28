@@ -163,6 +163,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   statusMenuOpen = false;
   dateMenuOpen = false;
   sourceMenuOpen = false;
+  filtersMenuOpen = false;
   statusUpdateOrderId: number | null = null;
   actionMenuOpenId: number | null = null;
   isPreOrderMode = false;
@@ -266,6 +267,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     this.statusMenuOpen = false;
     this.dateMenuOpen = false;
     this.sourceMenuOpen = false;
+    this.filtersMenuOpen = false;
     this.statusUpdateOrderId = null;
     this.actionMenuOpenId = null;
   }
@@ -274,9 +276,36 @@ export class OrdersComponent implements OnInit, OnDestroy {
   handleEscape(): void {
     this.statusMenuOpen = false;
     this.dateMenuOpen = false;
+    this.filtersMenuOpen = false;
     this.actionMenuOpenId = null;
     this.isTrackingModalOpen = false;
     this.isNotesModalOpen = false;
+  }
+
+  toggleFiltersMenu(event: Event): void {
+    event.stopPropagation();
+    this.filtersMenuOpen = !this.filtersMenuOpen;
+    this.dateMenuOpen = false;
+    this.statusMenuOpen = false;
+    this.sourceMenuOpen = false;
+  }
+
+  resetFilters(event: Event): void {
+    event.stopPropagation();
+    this.selectedStatus = 'All';
+    this.selectedOrderType = 'All';
+    this.selectedSourcePageId = null;
+    this.selectedSocialMediaSourceId = null;
+    this.page = 1;
+    this.loadOrders();
+  }
+
+  get activeFiltersCount(): number {
+    let count = 0;
+    if (this.selectedStatus !== 'All') count++;
+    if (this.selectedOrderType !== 'All') count++;
+    if (this.selectedSourcePageId || this.selectedSocialMediaSourceId) count++;
+    return count;
   }
 
   toggleStatusMenu(event: Event): void {
@@ -294,7 +323,6 @@ export class OrdersComponent implements OnInit, OnDestroy {
   setStatusFilter(status: OrdersQueryParams["status"], event: Event): void {
     event.stopPropagation();
     this.selectedStatus = status;
-    this.statusMenuOpen = false;
     this.page = 1;
     this.loadOrders();
   }
