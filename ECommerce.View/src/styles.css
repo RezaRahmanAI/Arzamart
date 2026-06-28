@@ -721,7 +721,7 @@ select,
 .form-select {
   width: 100%;
   height: 40px !important;
-  padding: 0 14px !important;
+  padding: 0 14px;
   font-family: "Montserrat", sans-serif !important;
   font-size: 14px !important;
   font-weight: 400 !important;
