@@ -41,3 +41,4 @@ publish_api/appsettings.Production.json
 
 # Graphify
 graphify-out/
+/publish
