@@ -50,7 +50,8 @@ public static class ServiceExtensions
         // 3. Caching (AppCache singleton + warmup)
         services.AddMemoryCache(); // DashboardService (15s stats), CartController (per-user session), SecurityMiddleware (JWT revocation)
         services.AddSingleton<AppCache>();
-        services.AddHostedService<CacheWarmupService>();
+        services.AddSingleton<CacheWarmupService>();
+        services.AddHostedService(sp => sp.GetRequiredService<CacheWarmupService>());
         services.AddHostedService<CacheHealthCheckService>();
 
         services.AddSingleton<ECommerce.Infrastructure.Tracking.VisitorTrackingWorker>();
@@ -221,6 +222,22 @@ public static class ServiceExtensions
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.FromMinutes(AppConstants.JwtClockSkewMinutes)
+            };
+
+            // SignalR sends the JWT token via query string (?access_token=...)
+            // because WebSocket connections cannot use Authorization headers.
+            options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                    {
+                        context.Token = accessToken;
+                    }
+                    return System.Threading.Tasks.Task.CompletedTask;
+                }
             };
         });
 

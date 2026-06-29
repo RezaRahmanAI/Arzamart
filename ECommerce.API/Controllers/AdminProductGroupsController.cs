@@ -54,7 +54,7 @@ public class AdminProductGroupsController : ControllerBase
         return CreatedAtAction(nameof(GetGroup), new { id = created.Id }, MapToDto(created));
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public async Task<ActionResult> UpdateGroup(int id, [FromBody] CreateProductGroupDto dto)
     {
         var entity = new ECommerce.Core.Entities.ProductGroup
@@ -66,7 +66,7 @@ public class AdminProductGroupsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpPost("{id}/delete")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteGroup(int id)
     {
@@ -103,7 +103,7 @@ public class AdminProductGroupsController : ControllerBase
         }
     }
 
-    [HttpDelete("{groupId}/products/{productId}")]
+    [HttpPost("{groupId}/products/{productId}/delete")]
     public async Task<ActionResult> RemoveProductFromGroup(int groupId, int productId)
     {
         try

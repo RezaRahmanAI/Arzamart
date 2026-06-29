@@ -40,7 +40,7 @@ public class OrderStockService : IOrderStockService
 
         var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
         var products = await _unitOfWork.Repository<Product>().ListAsync(
-            new ProductsWithCategoriesSpecification(productIds), track: true);
+            new ProductsForStockSpecification(productIds), track: true);
         var productDict = products.ToDictionary(p => p.Id);
 
         foreach (var item in order.Items)
@@ -61,7 +61,7 @@ public class OrderStockService : IOrderStockService
                 var childProduct = comboItem.Product;
                 if (childProduct == null)
                 {
-                    var spec = new ProductsWithCategoriesSpecification(comboItem.ProductId);
+                    var spec = new ProductsForStockSpecification(comboItem.ProductId);
                     childProduct = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
                 }
 
@@ -98,7 +98,7 @@ public class OrderStockService : IOrderStockService
 
         var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
         var products = await _unitOfWork.Repository<Product>().ListAsync(
-            new ProductsWithCategoriesSpecification(productIds));
+            new ProductsForStockSpecification(productIds));
         var productDict = products.ToDictionary(p => p.Id);
 
         foreach (var itemDto in dto.Items)
@@ -118,7 +118,7 @@ public class OrderStockService : IOrderStockService
 
         var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
         var products = await _unitOfWork.Repository<Product>().ListAsync(
-            new ProductsWithCategoriesSpecification(productIds));
+            new ProductsForStockSpecification(productIds));
         var productDict = products.ToDictionary(p => p.Id);
 
         foreach (var item in order.Items)
@@ -146,7 +146,7 @@ public class OrderStockService : IOrderStockService
                 var childProduct = comboItem.Product;
                 if (childProduct == null)
                 {
-                    var spec = new ProductsWithCategoriesSpecification(comboItem.ProductId);
+                    var spec = new ProductsForStockSpecification(comboItem.ProductId);
                     childProduct = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec, track: true);
                 }
 
@@ -190,11 +190,8 @@ public class OrderStockService : IOrderStockService
                             throw new InvalidOperationException($"Insufficient stock for product {product.Name} (ID: {product.Id}), size {variant.Size}: requested {totalChange}, available {variant.StockQuantity}");
                         variant.StockQuantity -= totalChange;
                     }
-                    
-                    _unitOfWork.Repository<ProductVariant>().Update(variant);
                 }
             }
-            _unitOfWork.Repository<Product>().Update(product);
         }
     }
 }

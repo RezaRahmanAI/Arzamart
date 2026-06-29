@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 
 namespace ECommerce.API.Extensions;
@@ -22,6 +25,37 @@ public static class FileStorageExtensions
         {
             Directory.CreateDirectory(externalMediaPath);
             EnsureUploadDirectories(externalMediaPath);
+
+            // Intercept missing files in /uploads and serve the placeholder image
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/uploads"))
+                {
+                    var requestPath = context.Request.Path.Value ?? "";
+                    var ext = Path.GetExtension(requestPath).ToLowerInvariant();
+                    if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".gif" || ext == ".webp" || ext == ".jfif" || ext == ".svg" || ext == ".ico")
+                    {
+                        var relativePath = requestPath.Substring("/uploads".Length).TrimStart('/');
+                        var physicalPath = Path.Combine(externalMediaPath, relativePath);
+
+                        if (!File.Exists(physicalPath))
+                        {
+                            context.Response.ContentType = "image/png";
+                            context.Response.StatusCode = 200;
+                            var webRoot = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+                            var placeholderPath = Path.Combine(webRoot, "placeholder.png");
+
+                            if (File.Exists(placeholderPath))
+                            {
+                                await context.Response.SendFileAsync(placeholderPath);
+                                return; // Short-circuit, do not serve 404
+                            }
+                        }
+                    }
+                }
+
+                await next();
+            });
 
             app.UseStaticFiles(new StaticFileOptions
             {

@@ -25,7 +25,7 @@ public class AdminProductInventoryController : ControllerBase
         return Ok(inventory);
     }
 
-    [HttpPut("{variantId:int}")]
+    [HttpPost("{variantId:int}")]
     public async Task<ActionResult> UpdateStock(int variantId, UpdateInventoryDto dto)
     {
         try
@@ -40,7 +40,7 @@ public class AdminProductInventoryController : ControllerBase
         return Ok(new { message = "Stock updated successfully" });
     }
 
-    [HttpPut("product/{productId:int}")]
+    [HttpPost("product/{productId:int}")]
     public async Task<ActionResult> UpdateProductStock(int productId, UpdateInventoryDto dto)
     {
         try

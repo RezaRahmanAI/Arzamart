@@ -39,7 +39,7 @@ public class AdminPagesController : ControllerBase
         return CreatedAtAction(nameof(GetPageById), new { id = result.Id }, result);
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public async Task<ActionResult<PageDto>> UpdatePage(int id, [FromBody] PageCreateDto dto)
     {
         try
@@ -53,7 +53,7 @@ public class AdminPagesController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpPost("{id}/delete")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeletePage(int id)
     {

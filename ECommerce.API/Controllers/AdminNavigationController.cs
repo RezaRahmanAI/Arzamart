@@ -40,7 +40,7 @@ public class AdminNavigationController : ControllerBase
         return CreatedAtAction(nameof(GetMenuById), new { id = result.Id }, result);
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public async Task<ActionResult<NavigationMenuDto>> UpdateMenu(int id, [FromBody] NavigationMenuCreateDto dto)
     {
         try
@@ -54,7 +54,7 @@ public class AdminNavigationController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpPost("{id}/delete")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteMenu(int id)
     {

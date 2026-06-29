@@ -43,7 +43,7 @@ public class AdminBannersController : ControllerBase
         return CreatedAtAction(nameof(GetBannerById), new { id = result.Id }, result);
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public async Task<ActionResult<HeroBannerDto>> UpdateBanner(int id, [FromBody] CreateHeroBannerDto dto)
     {
         try
@@ -57,7 +57,7 @@ public class AdminBannersController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpPost("{id}/delete")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteBanner(int id)
     {

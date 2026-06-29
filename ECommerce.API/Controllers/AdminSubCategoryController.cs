@@ -54,7 +54,7 @@ public class AdminSubCategoryController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public async Task<ActionResult<SubCategoryDto>> UpdateSubCategory(int id, [FromBody] SubCategoryUpdateDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Name))
@@ -71,7 +71,7 @@ public class AdminSubCategoryController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpPost("{id}/delete")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteSubCategory(int id)
     {

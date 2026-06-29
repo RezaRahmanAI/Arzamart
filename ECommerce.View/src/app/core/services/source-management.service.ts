@@ -22,11 +22,11 @@ export class SourceManagementService {
   }
 
   updateSourcePage(id: number, data: SourcePageCreate): Observable<SourcePage> {
-    return this.api.put<SourcePage>(`/admin/source-pages/${id}`, data);
+    return this.api.post<SourcePage>(`/admin/source-pages/${id}`, data);
   }
 
   deleteSourcePage(id: number): Observable<void> {
-    return this.api.delete<void>(`/admin/source-pages/${id}`);
+    return this.api.post<void>(`/admin/source-pages/${id}/delete`, {});
   }
 
   getAllSocialMediaSources(): Observable<SocialMediaSource[]> {
@@ -42,10 +42,10 @@ export class SourceManagementService {
   }
 
   updateSocialMediaSource(id: number, data: SocialMediaSourceCreate): Observable<SocialMediaSource> {
-    return this.api.put<SocialMediaSource>(`/admin/social-media-sources/${id}`, data);
+    return this.api.post<SocialMediaSource>(`/admin/social-media-sources/${id}`, data);
   }
 
   deleteSocialMediaSource(id: number): Observable<void> {
-    return this.api.delete<void>(`/admin/social-media-sources/${id}`);
+    return this.api.post<void>(`/admin/social-media-sources/${id}/delete`, {});
   }
 }

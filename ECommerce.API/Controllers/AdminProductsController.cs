@@ -69,7 +69,7 @@ public class AdminProductsController : ControllerBase
         }
     }
 
-    [HttpPut("{id:int}")]
+    [HttpPost("{id:int}")]
     public async Task<ActionResult> UpdateProduct(int id, [FromBody] ProductUpdateDto dto)
     {
         try
@@ -93,7 +93,7 @@ public class AdminProductsController : ControllerBase
     }
 
     [Authorize(Roles = "SuperAdmin")]
-    [HttpDelete("{id:int}")]
+    [HttpPost("{id:int}/delete")]
     public async Task<ActionResult<bool>> DeleteProduct(int id)
     {
         var (success, mainImageUrl, imageUrls) = await _productService.DeleteProductAsync(id);

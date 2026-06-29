@@ -31,7 +31,7 @@ public class AdminSettingsController : ControllerBase
     }
 
     [Authorize(Roles = "SuperAdmin")]
-    [HttpPut]
+    [HttpPost]
     public async Task<ActionResult<SiteSettingsDto>> UpdateSettings([FromBody] SiteSettingsDto dto)
     {
         var result = await _settingsService.UpdateSettingsAsync(dto);
@@ -65,7 +65,7 @@ public class AdminSettingsController : ControllerBase
     }
 
     [Authorize(Roles = "SuperAdmin")]
-    [HttpPut("delivery-methods/{id}")]
+    [HttpPost("delivery-methods/{id}")]
     public async Task<IActionResult> UpdateDeliveryMethod(int id, [FromBody] DeliveryMethodDto dto)
     {
         try
@@ -80,7 +80,7 @@ public class AdminSettingsController : ControllerBase
     }
 
     [Authorize(Roles = "SuperAdmin")]
-    [HttpDelete("delivery-methods/{id}")]
+    [HttpPost("delivery-methods/{id}/delete")]
     public async Task<IActionResult> DeleteDeliveryMethod(int id)
     {
         try

@@ -30,11 +30,11 @@ export class ProductGroupsService {
   }
 
   update(id: number, group: Partial<ProductGroup>): Observable<void> {
-    return this.api.put<void>(`${this.baseUrl}/${id}`, group);
+    return this.api.post<void>(`${this.baseUrl}/${id}`, group);
   }
 
   delete(id: number): Observable<void> {
-    return this.api.delete<void>(`${this.baseUrl}/${id}`);
+    return this.api.post<void>(`${this.baseUrl}/${id}/delete`, {});
   }
 
   addProductToGroup(groupId: number, productId: number): Observable<void> {
@@ -42,6 +42,6 @@ export class ProductGroupsService {
   }
 
   removeProductFromGroup(groupId: number, productId: number): Observable<void> {
-    return this.api.delete<void>(`${this.baseUrl}/${groupId}/products/${productId}`);
+    return this.api.post<void>(`${this.baseUrl}/${groupId}/products/${productId}/delete`, {});
   }
 }

@@ -90,7 +90,7 @@ export class CartService {
             return of(null);
           }
           return this.api
-            .put<CartDto>(
+            .post<CartDto>(
               `${this.apiUrl}/items/${numericId}`,
               { quantity: update!.qty },
               this.options,
@@ -276,7 +276,7 @@ export class CartService {
     // ApiHttpClient.delete automatically converts to POST /delete
     this.lastMutation = Date.now();
     this.api
-      .delete<CartDto>(`${this.apiUrl}/items/${numericId}`, this.options)
+      .post<CartDto>(`${this.apiUrl}/items/${numericId}/delete`, {}, this.options)
       .subscribe({
         next: (dto) => this.updateLocalState(dto),
         error: (err) => {
@@ -313,7 +313,7 @@ export class CartService {
 
     // 2. Perform backend deletion
     this.lastMutation = Date.now();
-    return this.api.delete(this.apiUrl, this.options).pipe(
+    return this.api.post(`${this.apiUrl}/clear`, {}, this.options).pipe(
       catchError((err) => {
         console.error("Failed to clear cart on server", err);
         this.cartItemsSubject.next(previousItems); // Rollback on failure

@@ -31,7 +31,7 @@ public class AdminCustomLandingPageController : ControllerBase
         return Ok(config);
     }
 
-    [HttpPut]
+    [HttpPost]
     public async Task<ActionResult<CustomLandingPageConfigDto>> SaveConfig(CustomLandingPageConfigUpdateDto updateDto)
     {
         Serilog.Log.Information($"[SAVE CONFIG DEBUG] ProductId: {updateDto.ProductId}, Mins: {updateDto.RelativeTimerTotalMinutes}, SectionsJson: {updateDto.SectionsJson}");

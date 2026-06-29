@@ -56,7 +56,7 @@ public class AdminOrdersController : ControllerBase
         return Ok(order);
     }
 
-    [HttpPut("{id}/status")]
+    [HttpPost("{id}/status")]
     public async Task<ActionResult> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDto dto)
     {
         var adminName = GetCurrentAdminName();
@@ -90,7 +90,7 @@ public class AdminOrdersController : ControllerBase
                ?? "Unknown";
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public async Task<ActionResult<OrderDto>> UpdateOrder(int id, [FromBody] OrderCreateDto dto)
     {
         try 

@@ -4,6 +4,7 @@ import { Subject, Observable } from "rxjs";
 import { Order } from "../models/order";
 import { NotificationService } from "./notification.service";
 import { AuthService } from "./auth.service";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
   providedIn: "root",
@@ -28,8 +29,13 @@ export class SignalrService {
   }
 
   private buildConnection() {
+    const baseUrl = environment.apiBaseUrl.endsWith("/api")
+      ? environment.apiBaseUrl.substring(0, environment.apiBaseUrl.length - 4)
+      : environment.apiBaseUrl;
+    const hubUrl = `${baseUrl}/hubs/orders`;
+
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl("/hubs/orders", {
+      .withUrl(hubUrl, {
         accessTokenFactory: () => this.authService.getAccessToken() || ""
       })
       .withAutomaticReconnect([0, 2000, 10000, 30000])

@@ -21,7 +21,9 @@ public class AuditLoggingMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var method = context.Request.Method;
-        if (method is not ("POST" or "PUT" or "PATCH" or "DELETE"))
+
+        // Skip CORS preflight and non-mutating requests
+        if (method == "OPTIONS" || method is not ("POST" or "PUT" or "PATCH" or "DELETE"))
         {
             await _next(context);
             return;

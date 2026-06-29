@@ -61,7 +61,7 @@ public class AdminSecurityController : ControllerBase
     }
 
     [Authorize(Roles = "SuperAdmin")]
-    [HttpDelete("unblock-ip/{id}")]
+    [HttpPost("unblock-ip/{id}/delete")]
     public async Task<IActionResult> UnblockIp(int id)
     {
         try

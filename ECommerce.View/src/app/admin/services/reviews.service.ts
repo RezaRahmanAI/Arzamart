@@ -23,7 +23,7 @@ export class ReviewsService {
   }
 
   delete(id: number): Observable<void> {
-    return this.api.delete<void>(`${this.baseUrl}/${id}`);
+    return this.api.post<void>(`${this.baseUrl}/${id}/delete`, {});
   }
 
   create(payload: any): Observable<AdminReview> {
@@ -39,6 +39,6 @@ export class ReviewsService {
       isVerifiedPurchase: payload.isVerifiedPurchase,
       screenshotUrl: payload.screenshotUrl
     };
-    return this.api.put<AdminReview>(`${this.baseUrl}/${id}`, backendPayload);
+    return this.api.post<AdminReview>(`${this.baseUrl}/${id}`, backendPayload);
   }
 }

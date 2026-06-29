@@ -56,7 +56,7 @@ public class AdminCategoryController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public async Task<IActionResult> UpdateCategory(int id, CategoryUpdateDto dto)
     {
         try
@@ -70,7 +70,7 @@ public class AdminCategoryController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpPost("{id}/delete")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> DeleteCategory(int id)
     {

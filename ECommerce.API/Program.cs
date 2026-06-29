@@ -65,12 +65,6 @@ try
     // Security Headers (early in pipeline)
     app.UseMiddleware<ECommerce.API.Middleware.SecurityHeadersMiddleware>();
 
-    // Content-Type Validation (must run before body parsing)
-    app.UseMiddleware<ECommerce.API.Middleware.ContentTypeValidationMiddleware>();
-
-    // Audit Logging (after auth, before controllers)
-    app.UseMiddleware<ECommerce.API.Middleware.AuditLoggingMiddleware>();
-
     // Global Exception & Logging (Absolute Top)
     app.UseAppExceptionHandling();
 
@@ -106,9 +100,17 @@ try
     // Serve uploads from ExternalMediaPath (if configured) or wwwroot/uploads
     app.ConfigureExternalMedia(app.Configuration, app.Environment);
 
+
+
     app.UseRouting();
 
     app.UseCors("DefaultPolicy");
+
+    // Content-Type Validation (after CORS so preflight/error responses include CORS headers)
+    app.UseMiddleware<ECommerce.API.Middleware.ContentTypeValidationMiddleware>();
+
+    // Audit Logging (after CORS, uses auth info from later middleware)
+    app.UseMiddleware<ECommerce.API.Middleware.AuditLoggingMiddleware>();
 
     app.UseRateLimiter();
 

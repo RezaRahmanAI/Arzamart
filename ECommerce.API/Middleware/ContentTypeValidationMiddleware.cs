@@ -29,6 +29,13 @@ public class ContentTypeValidationMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
+        // Allow CORS preflight requests to pass through without validation
+        if (context.Request.Method == "OPTIONS")
+        {
+            await _next(context);
+            return;
+        }
+
         var method = context.Request.Method;
         if (method is "POST" or "PUT" or "PATCH")
         {

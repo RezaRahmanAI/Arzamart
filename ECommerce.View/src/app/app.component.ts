@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, Renderer2, DestroyRef } from "@angular/core";
-import { AsyncPipe, DOCUMENT } from "@angular/common";
+import { Component, inject, OnInit, Renderer2, DestroyRef, PLATFORM_ID } from "@angular/core";
+import { AsyncPipe, DOCUMENT, isPlatformBrowser } from "@angular/common";
 import { Title } from "@angular/platform-browser";
 import { SiteSettingsService } from "./core/services/site-settings.service";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
   private titleService = inject(Title);
   private analyticsService = inject(AnalyticsService);
   private destroyRef = inject(DestroyRef);
+  private platformId = inject(PLATFORM_ID);
 
   showPublicLayout$ = this.router.events.pipe(
     filter((event) => event instanceof NavigationEnd),
@@ -58,6 +59,22 @@ export class AppComponent implements OnInit {
   );
 
   ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener(
+        "error",
+        (event) => {
+          const target = event.target;
+          if (target instanceof HTMLImageElement) {
+            const placeholder = "assets/images/placeholder.png";
+            if (!target.src.includes(placeholder)) {
+              target.src = placeholder;
+            }
+          }
+        },
+        true // capture phase
+      );
+    }
+
     // Track PageViews and reset scroll positions on route changes
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))

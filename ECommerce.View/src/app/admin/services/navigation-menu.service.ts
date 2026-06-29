@@ -35,10 +35,10 @@ export class NavigationMenuService {
     id: number,
     menu: Partial<NavigationMenuItem>,
   ): Observable<NavigationMenuItem> {
-    return this.api.put<NavigationMenuItem>(`${this.baseUrl}/${id}`, menu);
+    return this.api.post<NavigationMenuItem>(`${this.baseUrl}/${id}`, menu);
   }
 
   delete(id: number): Observable<void> {
-    return this.api.delete<void>(`${this.baseUrl}/${id}`);
+    return this.api.post<void>(`${this.baseUrl}/${id}/delete`, {});
   }
 }

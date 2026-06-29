@@ -58,7 +58,7 @@ public class OrderService : IOrderService
         
         // 1. Bulk Fetch Products to fix N+1 query issue
         var productIds = orderDto.Items.Select(i => i.ProductId).Distinct().ToList();
-        var productSpec = new ProductsWithCategoriesSpecification(productIds);
+        var productSpec = new ProductsForStockSpecification(productIds);
         
         // Pass track: true so EF Core tracks changes for stock deductions
         var products = await _unitOfWork.Repository<Product>().ListAsync(productSpec, track: true);
@@ -262,7 +262,7 @@ public class OrderService : IOrderService
             // 3. Process New Items and Deduct Stock
             var newItems = new List<OrderItem>();
             var productIds = orderDto.Items.Select(i => i.ProductId).Distinct().ToList();
-            var products = await _unitOfWork.Repository<Product>().ListAsync(new ProductsWithCategoriesSpecification(productIds), track: true);
+            var products = await _unitOfWork.Repository<Product>().ListAsync(new ProductsForStockSpecification(productIds), track: true);
             var productDict = products.ToDictionary(p => p.Id);
 
             foreach (var itemDto in orderDto.Items)

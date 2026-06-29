@@ -30,7 +30,7 @@ export class ProfileService {
   }
 
   updateProfile(data: UpdateProfileRequest): Observable<any> {
-    return this.api.put("/profile", data);
+    return this.api.post("/profile", data);
   }
 
   changePassword(data: { currentPassword: string; newPassword: string }): Observable<any> {

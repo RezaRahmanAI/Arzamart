@@ -118,7 +118,7 @@ public class CartController : ControllerBase
         }
     }
 
-    [HttpPut("items/{id}")]
+    [HttpPost("items/{id}")]
     public async Task<ActionResult<CartDto>> UpdateItem(int id, [FromBody] UpdateCartItemDto dto)
     {
         try
@@ -143,7 +143,7 @@ public class CartController : ControllerBase
         }
     }
 
-    [HttpDelete("items/{id}")]
+    [HttpPost("items/{id}/delete")]
     public async Task<ActionResult<CartDto>> RemoveItem(int id)
     {
         _logger.LogInformation("Processing DELETE request for cart item {id}", id);
@@ -159,7 +159,7 @@ public class CartController : ControllerBase
         return Ok(cartDto);
     }
 
-    [HttpDelete]
+    [HttpPost("clear")]
     public async Task<ActionResult> ClearCart()
     {
         await _cartService.ClearCartAsync(GetUserId(), GetSessionId());

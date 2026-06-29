@@ -20,6 +20,6 @@ export class CustomLandingPageService {
   }
 
   saveConfig(config: CustomLandingPageConfig): Observable<CustomLandingPageConfig> {
-    return this.api.put<CustomLandingPageConfig>("/admin/custom-landing-page", config);
+    return this.api.post<CustomLandingPageConfig>("/admin/custom-landing-page", config);
   }
 }

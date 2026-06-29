@@ -11,6 +11,7 @@ import { ProductsService } from "../../services/products.service";
 import { AdminProduct } from "../../../core/models/product";
 import { environment } from "../../../../environments/environment";
 import { NotificationService } from "../../../core/services/notification.service";
+import { ImageUrlService } from "../../../core/services/image-url.service";
 
 @Component({
   selector: "app-admin-reviews",
@@ -28,6 +29,7 @@ export class ReviewsComponent implements OnInit, OnDestroy {
   private notification = inject(NotificationService);
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
+  private imageUrlService = inject(ImageUrlService);
   private destroy$ = new Subject<void>();
 
   reviews: AdminReview[] = [];
@@ -240,10 +242,7 @@ export class ReviewsComponent implements OnInit, OnDestroy {
   }
 
   getImageUrl(path: string | undefined | null): string {
-    if (!path) return "";
-    if (path.startsWith("http")) return path;
-    const baseUrl = environment.apiBaseUrl.replace("/api", "");
-    return `${baseUrl}${path.startsWith("/") ? "" : "/"}${path}`;
+    return this.imageUrlService.getImageUrl(path);
   }
 }
 

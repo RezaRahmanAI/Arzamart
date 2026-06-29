@@ -22,7 +22,9 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
     headers["Content-Type"] = "application/json";
   }
 
-  return next(req.clone({ setHeaders: headers })).pipe(
+  const requestToSend = req.clone({ setHeaders: headers });
+
+  return next(requestToSend).pipe(
     catchError((error) => {
       if (
         error instanceof HttpErrorResponse &&
@@ -40,7 +42,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
                 ...headers,
                 ...(newToken ? { Authorization: `Bearer ${newToken}` } : {}),
               };
-              return next(req.clone({ setHeaders: retryHeaders }));
+              return next(requestToSend.clone({ setHeaders: retryHeaders }));
             }
             authService.logout();
             return throwError(() => error);

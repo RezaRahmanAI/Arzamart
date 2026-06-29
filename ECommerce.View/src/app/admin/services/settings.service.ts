@@ -48,14 +48,14 @@ export class SettingsService {
     id: number,
     payload: Partial<DeliveryMethod>,
   ): Observable<void> {
-    return this.api.put<void>(
+    return this.api.post<void>(
       `/admin/settings/delivery-methods/${id}`,
       payload,
     );
   }
 
   deleteDeliveryMethod(id: number): Observable<void> {
-    return this.api.delete<void>(`/admin/settings/delivery-methods/${id}`);
+    return this.api.post<void>(`/admin/settings/delivery-methods/${id}/delete`, {});
   }
 
   uploadLogo(file: File): Observable<{ url: string }> {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, Input, NgZone, ChangeDetectionStrategy } from "@angular/core";
+import { Component, OnInit, OnDestroy, inject, Input, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
  
 import { RouterModule } from "@angular/router"; 
 import { trigger, transition, style, animate } from "@angular/animations";
@@ -42,6 +42,7 @@ interface Slide {
 export class HeroComponent implements OnInit, OnDestroy {
   public imageUrlService = inject(ImageUrlService);
   private readonly ngZone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   private _slides: Slide[] = [];
   @Input() 
@@ -74,6 +75,7 @@ export class HeroComponent implements OnInit, OnDestroy {
       this.stopTimer();
       this.startTimer();
     }
+    this.cdr.markForCheck();
   }
 
   ngOnDestroy() {
@@ -120,6 +122,7 @@ export class HeroComponent implements OnInit, OnDestroy {
     this.currentSlide = (this.currentSlide + 1) % this.mainSlides.length;
     this.slideProgress = 0;
     this.updateProgressBarDOM();
+    this.cdr.markForCheck();
   }
 
   prev() {
@@ -128,6 +131,7 @@ export class HeroComponent implements OnInit, OnDestroy {
       (this.currentSlide - 1 + this.mainSlides.length) % this.mainSlides.length;
     this.slideProgress = 0;
     this.updateProgressBarDOM();
+    this.cdr.markForCheck();
   }
 
   goTo(index: number) {
@@ -137,5 +141,6 @@ export class HeroComponent implements OnInit, OnDestroy {
     this.updateProgressBarDOM();
     this.stopTimer();
     this.startTimer();
+    this.cdr.markForCheck();
   }
 }

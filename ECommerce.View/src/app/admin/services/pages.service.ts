@@ -32,10 +32,10 @@ export class PagesService {
   }
 
   update(id: number, page: Partial<StaticPage>): Observable<StaticPage> {
-    return this.api.put<StaticPage>(`${this.baseUrl}/${id}`, page);
+    return this.api.post<StaticPage>(`${this.baseUrl}/${id}`, page);
   }
 
   delete(id: number): Observable<void> {
-    return this.api.delete<void>(`${this.baseUrl}/${id}`);
+    return this.api.post<void>(`${this.baseUrl}/${id}/delete`, {});
   }
 }

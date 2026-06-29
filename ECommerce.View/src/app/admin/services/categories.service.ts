@@ -27,11 +27,11 @@ export class CategoriesService {
   }
 
   update(id: number, payload: any): Observable<Category> {
-    return this.api.put<Category>(`/admin/categories/${id}`, payload);
+    return this.api.post<Category>(`/admin/categories/${id}`, payload);
   }
 
   delete(id: number): Observable<boolean> {
-    return this.api.delete<boolean>(`/admin/categories/${id}`);
+    return this.api.post<boolean>(`/admin/categories/${id}/delete`, {});
   }
 
   uploadImage(file: File): Observable<string> {

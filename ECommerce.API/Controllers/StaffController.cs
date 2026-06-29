@@ -53,7 +53,7 @@ public class StaffController : ControllerBase
         return Ok(new { message, data = user });
     }
 
-    [HttpPut("users/{id}")]
+    [HttpPost("users/{id}")]
     public async Task<ActionResult> UpdateStaff(string id, [FromBody] UpdateStaffDto dto)
     {
         var (success, message) = await _staffService.UpdateStaffAsync(id, dto, GetCurrentUserId()!, GetClientIp());
@@ -61,7 +61,7 @@ public class StaffController : ControllerBase
         return Ok(new { message });
     }
 
-    [HttpPatch("users/{id}/status")]
+    [HttpPost("users/{id}/status")]
     public async Task<ActionResult> ToggleStatus(string id, [FromBody] ToggleStatusDto dto)
     {
         var (success, message) = await _staffService.ToggleStaffStatusAsync(id, dto.IsActive, GetCurrentUserId()!);
@@ -69,7 +69,7 @@ public class StaffController : ControllerBase
         return Ok(new { message });
     }
 
-    [HttpDelete("users/{id}")]
+    [HttpPost("users/{id}/delete")]
     public async Task<ActionResult> DeleteStaff(string id)
     {
         var (success, message) = await _staffService.DeleteStaffAsync(id, GetCurrentUserId()!, GetClientIp());
@@ -101,7 +101,7 @@ public class StaffController : ControllerBase
         return Ok(new { message, data = new { id } });
     }
 
-    [HttpPut("roles/{id}")]
+    [HttpPost("roles/{id}")]
     public async Task<ActionResult> UpdateRole(string id, [FromBody] UpdateRoleDto dto)
     {
         var (success, message) = await _staffService.UpdateRoleAsync(id, dto);
@@ -109,7 +109,7 @@ public class StaffController : ControllerBase
         return Ok(new { message });
     }
 
-    [HttpDelete("roles/{id}")]
+    [HttpPost("roles/{id}/delete")]
     public async Task<ActionResult> DeleteRole(string id)
     {
         var (success, message) = await _staffService.DeleteRoleAsync(id);
@@ -123,7 +123,7 @@ public class StaffController : ControllerBase
         return Ok(await _staffService.GetRolePermissionsAsync(roleId));
     }
 
-    [HttpPut("roles/{roleId}/permissions")]
+    [HttpPost("roles/{roleId}/permissions")]
     public async Task<ActionResult> UpdateRolePermissions(string roleId, [FromBody] List<string> permissionIds)
     {
         var (success, message) = await _staffService.UpdateRolePermissionsAsync(roleId, permissionIds);

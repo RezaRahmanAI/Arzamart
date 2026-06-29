@@ -79,7 +79,7 @@ export class ProductsService {
   }
 
   deleteProduct(productId: number): Observable<boolean> {
-    return this.api.delete<boolean>(`/admin/products/${productId}`).pipe(
+    return this.api.post<boolean>(`/admin/products/${productId}/delete`, {}).pipe(
       map((success) => {
         if (success) {
           this.updateCatalogSnapshot((products) =>
@@ -108,7 +108,7 @@ export class ProductsService {
     productId: number,
     payload: ProductPayload,
   ): Observable<Product> {
-    return this.api.put<Product>(`/admin/products/${productId}`, payload).pipe(
+    return this.api.post<Product>(`/admin/products/${productId}`, payload).pipe(
       map((updated) => {
         this.updateCatalogSnapshot((products) => {
           const index = products.findIndex((item) => item.id === productId);

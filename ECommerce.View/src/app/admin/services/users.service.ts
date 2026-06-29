@@ -46,7 +46,7 @@ export class UsersService {
   }
 
   updateAdmin(userId: string, data: Partial<CreateAdminRequest>): Observable<any> {
-    return this.api.put(`/admin/users/${userId}`, data);
+    return this.api.post(`/admin/users/${userId}`, data);
   }
 
   resetPassword(userId: string, newPassword: string): Observable<any> {

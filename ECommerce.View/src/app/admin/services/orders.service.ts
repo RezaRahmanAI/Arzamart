@@ -68,7 +68,7 @@ export class OrdersService {
   }
   
   updateOrder(orderId: number, payload: any): Observable<Order> {
-    return this.api.put<Order>(`/admin/orders/${orderId}`, payload);
+    return this.api.post<Order>(`/admin/orders/${orderId}`, payload);
   }
 
   transferToMainOrder(orderId: number): Observable<any> {

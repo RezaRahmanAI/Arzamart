@@ -109,15 +109,15 @@ export class StaffService {
   }
 
   updateStaff(id: string, data: any): Observable<ApiResponse<any>> {
-    return this.api.put<ApiResponse<any>>(`/staff/users/${id}`, data);
+    return this.api.post<ApiResponse<any>>(`/staff/users/${id}`, data);
   }
 
   toggleStatus(id: string, isActive: boolean): Observable<ApiResponse<any>> {
-    return this.api.patch<ApiResponse<any>>(`/staff/users/${id}/status`, { isActive });
+    return this.api.post<ApiResponse<any>>(`/staff/users/${id}/status`, { isActive });
   }
 
   deleteStaff(id: string): Observable<ApiResponse<any>> {
-    return this.api.delete<ApiResponse<any>>(`/staff/users/${id}`);
+    return this.api.post<ApiResponse<any>>(`/staff/users/${id}/delete`, {});
   }
 
   viewPassword(id: string): Observable<ApiResponse<{ password: string }>> {
@@ -137,11 +137,11 @@ export class StaffService {
   }
 
   updateRole(id: string, data: { name: string; description?: string }): Observable<{ message: string }> {
-    return this.api.put<{ message: string }>((`/staff/roles/${id}`), data);
+    return this.api.post<{ message: string }>((`/staff/roles/${id}`), data);
   }
 
   deleteRole(id: string): Observable<{ message: string }> {
-    return this.api.delete<{ message: string }>(`/staff/roles/${id}`);
+    return this.api.post<{ message: string }>(`/staff/roles/${id}/delete`, {});
   }
 
   getRolePermissions(roleId: string): Observable<string[]> {
@@ -149,7 +149,7 @@ export class StaffService {
   }
 
   updateRolePermissions(roleId: string, permissionIds: string[]): Observable<{ message: string }> {
-    return this.api.put<{ message: string }>(`/staff/roles/${roleId}/permissions`, permissionIds);
+    return this.api.post<{ message: string }>(`/staff/roles/${roleId}/permissions`, permissionIds);
   }
 
   getModules(): Observable<ModuleDto[]> {

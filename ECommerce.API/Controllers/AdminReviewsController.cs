@@ -25,7 +25,7 @@ public class AdminReviewsController : ControllerBase
         return Ok(reviews);
     }
 
-    [HttpDelete("{id}")]
+    [HttpPost("{id}/delete")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> DeleteReview(int id)
     {
@@ -40,7 +40,7 @@ public class AdminReviewsController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public async Task<ActionResult<ReviewDto>> UpdateReview(int id, [FromBody] ReviewUpdateDto dto)
     {
         try

@@ -48,7 +48,7 @@ public class AdminSocialMediaSourcesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
-    [HttpPut("{id}")]
+    [HttpPost("{id}")]
     public async Task<ActionResult<SocialMediaSourceDto>> Update(int id, [FromBody] SocialMediaSourceCreateDto dto)
     {
         try
@@ -62,7 +62,7 @@ public class AdminSocialMediaSourcesController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpPost("{id}/delete")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult> Delete(int id)
     {
