@@ -1,0 +1,27 @@
+<div class="inline-flex items-center border border-ds-border rounded-sm overflow-hidden">
+  <button
+    (click)="decrement()"
+    [disabled]="!canDecrement"
+    [class]="sizeClasses + ' flex items-center justify-center bg-ds-bg text-ds-text hover:bg-ds-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors border-r border-ds-border'"
+    aria-label="Decrease quantity"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  
+  <span [class]="sizeClasses + ' flex items-center justify-center font-semibold text-ds-text bg-ds-surface border-x border-ds-border'">
+    {{ quantity }}
+  </span>
+  
+  <button
+    (click)="increment()"
+    [disabled]="!canIncrement"
+    [class]="sizeClasses + ' flex items-center justify-center bg-ds-bg text-ds-text hover:bg-ds-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors border-l border-ds-border'"
+    aria-label="Increase quantity"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+    </svg>
+  </button>
+</div>

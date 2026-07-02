@@ -26,7 +26,7 @@
                     [class.border-ds-text]="i === currentImageIndex"
                     [class.border-ds-border]="i !== currentImageIndex"
                   >
-                    <img loading="lazy" [src]="imageUrlService.getImageUrl(url)" class="w-full h-full object-cover" [class.opacity-60]="i !== currentImageIndex" />
+                    <img loading="lazy" [src]="imageUrlService.getImageUrl(url)" [alt]="vm.product.name + ' thumbnail'" class="w-full h-full object-cover" [class.opacity-60]="i !== currentImageIndex" />
                   </button>
                 }
               </div>
@@ -132,7 +132,7 @@
               <!-- Star Rating Summary -->
               @if (vm.totalReviews > 0) {
                 <div class="flex items-center gap-ds-2 cursor-pointer text-ds-text-sec hover:text-ds-accent transition-colors" (click)="scrollToReviews()">
-                  <div class="flex text-amber-400 gap-0.5">
+                  <div class="flex text-ds-warning gap-0.5">
                     @for (star of fullStars(vm.averageRating); track star) {
                       <app-icon name="Star" size="16" className="fill-current"></app-icon>
                     }
@@ -281,7 +281,7 @@
               <div class="text-ds-5xl font-semibold text-ds-text mb-ds-2">
                 {{ vm.averageRating || '0.0' }}
               </div>
-              <div class="flex justify-center text-amber-400 gap-1 mb-ds-3">
+              <div class="flex justify-center text-ds-warning gap-1 mb-ds-3">
                 @for (star of [1,2,3,4,5]; track star) {
                   <app-icon 
                     [name]="getStarIcon(vm.averageRating, star)" 
@@ -303,7 +303,7 @@
                 <div class="flex items-center gap-ds-3 text-ds-xs">
                   <span class="w-12 text-right text-ds-text-sec font-medium">{{ starsCount }} stars</span>
                   <div class="flex-1 h-2 bg-ds-bg rounded-full overflow-hidden border border-ds-border">
-                    <div class="h-full bg-amber-400" [style.width.%]="pct"></div>
+                    <div class="h-full bg-ds-warning" [style.width.%]="pct"></div>
                   </div>
                   <span class="w-8 text-ds-text-muted text-right">{{ count }}</span>
                 </div>
@@ -317,7 +317,7 @@
                   {{ isReviewFormOpen ? 'CANCEL REVIEW' : 'WRITE A REVIEW' }}
                 </button>
                 <div class="text-center pt-ds-1">
-                  <button (click)="logoutCustomer()" class="text-[11px] text-ds-text-sec hover:text-ds-danger transition-colors hover:underline">
+                  <button (click)="logoutCustomer()" class="text-ds-xs text-ds-text-sec hover:text-ds-danger transition-colors hover:underline">
                     Log out of this account
                   </button>
                 </div>
@@ -431,13 +431,13 @@
                 <!-- Rating Select -->
                 <div class="space-y-ds-2">
                   <label class="block text-ds-sm font-medium text-ds-text-sec">Rating</label>
-                  <div class="flex text-amber-400 gap-1.5">
+                  <div class="flex text-ds-warning gap-1.5">
                     @for (star of [1,2,3,4,5]; track star) {
                       <button type="button" (click)="setRating(star)" class="hover:scale-110 transition-transform">
                         <app-icon 
                           name="Star" 
                           size="28" 
-                          [className]="star <= reviewRating ? 'fill-current text-amber-400' : 'text-ds-text-muted fill-none'"
+                          [className]="star <= reviewRating ? 'fill-current text-ds-warning' : 'text-ds-text-muted fill-none'"
                         ></app-icon>
                       </button>
                     }
@@ -510,7 +510,7 @@
                     <div class="py-ds-6 first:pt-0 last:pb-0 space-y-ds-3">
                       <!-- Star Rating & Date -->
                       <div class="flex items-center justify-between">
-                        <div class="flex text-amber-400 gap-0.5">
+                        <div class="flex text-ds-warning gap-0.5">
                           @for (star of [1,2,3,4,5]; track star) {
                             <app-icon 
                               [name]="getStarIcon(review.rating, star)" 
@@ -526,7 +526,7 @@
                       <div class="flex items-center gap-ds-2">
                         <span class="font-medium text-ds-text text-ds-sm">{{ review.customerName }}</span>
                         @if (review.isVerifiedPurchase) {
-                          <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-ds-success bg-ds-success-bg px-2 py-0.5 rounded-full border border-ds-success/30">
+                          <span class="inline-flex items-center gap-1 text-ds-2xs font-semibold text-ds-success bg-ds-success-bg px-2 py-0.5 rounded-full border border-ds-success/30">
                             <app-icon name="Check" size="10"></app-icon> Verified Purchase
                           </span>
                         }
@@ -587,7 +587,7 @@
               class="flex-shrink-0 w-full aspect-[3/4] border transition-all duration-base overflow-hidden"
               [ngClass]="i === lightboxIndex ? 'border-ds-hero-text' : 'border-ds-hero-text/20'"
             >
-              <img loading="lazy" [src]="imageUrlService.getImageUrl(url)" class="w-full h-full object-cover" [class.opacity-60]="i !== lightboxIndex" />
+              <img loading="lazy" [src]="imageUrlService.getImageUrl(url)" [alt]="vm.product.name + ' lightbox thumbnail'" class="w-full h-full object-cover" [class.opacity-60]="i !== lightboxIndex" />
             </button>
             }
           </div>

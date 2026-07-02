@@ -8,7 +8,7 @@ import { LoadingService } from "../../../core/services/loading.service";
   imports: [AsyncPipe],
   template: `
     @if (loadingService.loading$ | async) {
-      <div class="loading-overlay">
+      <div class="loading-overlay" aria-live="polite" role="status">
         <div class="spinner-container">
           <div class="luxury-spinner"></div>
           <div class="loading-text">Loading...</div>

@@ -227,14 +227,14 @@
                             </div>
 
                             @if (p.compareAtPrice && p.compareAtPrice > p.price) {
-                              <div class="absolute top-3 right-3 z-10 bg-ds-danger text-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                              <div class="absolute top-3 right-3 z-10 bg-ds-danger text-white px-2 py-0.5 text-ds-2xs font-bold uppercase tracking-wider">
                                 ৳{{ (p.compareAtPrice - p.price) }} OFF
                               </div>
                             }
 
                             <div class="cursor-pointer mb-4 group relative" (click)="$event.stopPropagation(); openProductDetails(p)">
                               <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" 
-                                   class="w-full aspect-square object-contain rounded-sm bg-ds-surface">
+                                   [alt]="p.name" class="w-full aspect-square object-contain rounded-sm bg-ds-surface">
                               <div class="absolute inset-0 bg-ds-text/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <span class="bg-ds-bg/90 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">Details</span>
                               </div>
@@ -252,7 +252,7 @@
                             <!-- Size Selection for each product -->
                             @if (getUniqueSizes(p).length > 0) {
                               <div class="mb-4">
-                                <p class="text-ds-text-sec mb-2 text-[10px] uppercase font-bold tracking-widest">Select Size</p>
+                                <p class="text-ds-text-sec mb-2 text-ds-2xs uppercase font-bold tracking-widest">Select Size</p>
                                 <div class="flex flex-wrap gap-1.5">
                                   @for (size of getUniqueSizes(p); track size) {
                                     <button (click)="$event.stopPropagation(); selectProductSize(p, size)"
@@ -267,7 +267,7 @@
 
                             <!-- Quantity Selection for each product -->
                             <div class="flex items-center gap-3">
-                              <p class="text-ds-text-sec text-[10px] uppercase font-bold tracking-widest">Qty</p>
+                              <p class="text-ds-text-sec text-ds-2xs uppercase font-bold tracking-widest">Qty</p>
                               <div class="flex items-center border border-ds-border rounded-sm overflow-hidden">
                                 <button (click)="$event.stopPropagation(); updateProductQuantity(p, -1)" class="w-9 h-9 flex items-center justify-center hover:bg-ds-surface text-sm">-</button>
                                 <div class="w-9 h-9 flex items-center justify-center font-bold text-sm">{{ getProductQuantity(p) || 1 }}</div>
@@ -395,7 +395,7 @@
                               <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                   <div class="size-10 rounded-full bg-ds-surface-2 overflow-hidden border border-ds-border flex items-center justify-center text-ds-text-muted">
-                                    <img *ngIf="review.customerAvatar" loading="lazy" [src]="review.customerAvatar" class="w-full h-full object-cover">
+                                    <img *ngIf="review.customerAvatar" loading="lazy" [src]="review.customerAvatar" [alt]="review.customerName" class="w-full h-full object-cover">
                                     <app-icon *ngIf="!review.customerAvatar" name="User" size="18"></app-icon>
                                   </div>
                                   <div>
@@ -405,7 +405,7 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="bg-ds-success-bg text-ds-success px-2 py-1 rounded-sm text-[10px] font-bold border border-ds-success/30 flex items-center gap-1">
+                                <div class="bg-ds-success-bg text-ds-success px-2 py-1 rounded-sm text-ds-2xs font-bold border border-ds-success/30 flex items-center gap-1">
                                   <app-icon name="CheckCircle" size="10"></app-icon>
                                   VERIFIED
                                 </div>
@@ -416,7 +416,7 @@
                                   <img [src]="imageUrlService.getImageUrl(review.screenshotUrl)" class="max-h-32 w-auto object-contain" alt="Customer Attachment">
                                 </a>
                               </div>
-                              <p class="text-[10px] text-ds-text-muted uppercase tracking-widest">{{ review.date | date:'longDate' }}</p>
+                              <p class="text-ds-2xs text-ds-text-muted uppercase tracking-widest">{{ review.date | date:'longDate' }}</p>
                             </div>
                           }
                         </div>

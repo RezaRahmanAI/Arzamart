@@ -109,7 +109,7 @@
                   >
                     <div class="flex items-center gap-3">
                       <div class="size-9 bg-ds-bg rounded-sm overflow-hidden flex-shrink-0">
-                        <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl)" class="w-full h-full object-cover">
+                        <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl)" [alt]="p.name" class="w-full h-full object-cover">
                       </div>
                       <div class="flex flex-col">
                         <span class="text-ds-text text-xs group-hover/result:text-ds-accent transition-colors">{{ p.name }}</span>
@@ -178,9 +178,9 @@
                   <button 
                     type="button" 
                     (click)="removeComboItem(i)"
-                    class="text-ds-danger hover:text-ds-danger-hover p-1.5 transition-colors opacity-0 group-hover:opacity-100"
+                    class="size-10 flex items-center justify-center text-ds-danger hover:text-ds-danger-hover rounded-sm transition-colors opacity-0 group-hover:opacity-100 hover:bg-ds-danger/10"
                   >
-                    <app-icon name="Trash2" size="14"></app-icon>
+                    <app-icon name="Trash2" size="16"></app-icon>
                   </button>
                 </div>
               </div>
@@ -375,13 +375,13 @@
 
                 <!-- Delete -->
                 <td class="py-ds-2 px-ds-2 text-center">
-                  <button
-                    type="button"
+                  <button 
+                    type="button" 
                     (click)="removeSize(sizeIndex)"
-                    class="text-ds-danger hover:text-ds-danger-hover p-1 transition-colors"
+                    class="size-10 flex items-center justify-center text-ds-danger hover:text-ds-danger-hover rounded-sm transition-colors hover:bg-ds-danger/10"
                     title="Remove"
                   >
-                    <app-icon name="Trash2" size="12"></app-icon>
+                    <app-icon name="Trash2" size="16"></app-icon>
                   </button>
                 </td>
               </tr>
@@ -521,9 +521,9 @@
             </button>
           </div>
           <div *ngIf="form.get('meta.sizeChartUrl')?.value" class="mt-ds-3 relative group w-24 h-24 bg-ds-bg border border-ds-border p-ds-1.5 rounded-sm">
-            <img loading="lazy" [src]="imageUrlService.getImageUrl(form.get('meta.sizeChartUrl')?.value)" class="w-full h-full object-contain transition-all duration-base">
-            <button (click)="form.get('meta.sizeChartUrl')?.setValue('')" class="absolute -top-2 -right-2 size-5 bg-ds-danger text-white rounded-sm flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 transition-all hover:bg-ds-danger-hover">
-              <app-icon name="X" size="10"></app-icon>
+            <img loading="lazy" [src]="imageUrlService.getImageUrl(form.get('meta.sizeChartUrl')?.value)" alt="Size Chart" class="w-full h-full object-contain transition-all duration-base">
+            <button (click)="form.get('meta.sizeChartUrl')?.setValue('')" class="absolute -top-2 -right-2 size-10 bg-ds-danger text-white rounded-sm flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 transition-all hover:bg-ds-danger-hover">
+              <app-icon name="X" size="14"></app-icon>
             </button>
           </div>
         </label>

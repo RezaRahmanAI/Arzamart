@@ -59,6 +59,16 @@
   --color-whatsapp:       #25D366;
   --color-messenger:      #0084FF;
 
+  /* ── Gradient & Brand Accent Colors ── */
+  --color-gradient-purple:    #7B3FE4;
+  --color-gradient-purple-dark: #8B2FC9;
+  --color-gradient-pink:      #C2185B;
+  --color-gradient-magenta:   #E91E8C;
+  --color-gradient-teal:      #1B9B7A;
+  --color-gradient-amber:     #E8870A;
+  --color-gradient-red:       #FF3B3B;
+  --color-gradient-blue:      #2563EB;
+
   /* ── Spacing ── */
   --radius-sm:   6px;
   --radius-md:   10px;
@@ -742,27 +752,27 @@ select,
   width: 100%;
   height: 40px !important;
   padding: 0 14px;
-  font-family: "Montserrat", sans-serif !important;
+  font-family: "Montserrat", sans-serif;
   font-size: 14px !important;
-  font-weight: 400 !important;
-  line-height: normal !important;
-  letter-spacing: normal !important;
-  font-style: normal !important;
-  text-transform: none !important;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: normal;
+  font-style: normal;
+  text-transform: none;
   border-radius: var(--ds-input-radius-md) !important;
   background: var(--color-surface) !important;
   border: 1.5px solid var(--color-border-ds) !important;
   color: var(--color-text-primary) !important;
-  transition: border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base) !important;
-  outline: none !important;
+  transition: border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base);
+  outline: none;
 }
 
 /* Placeholders */
 input::placeholder,
 .form-input::placeholder,
 .input::placeholder {
-  color: var(--color-text-muted) !important;
-  opacity: 1 !important;
+  color: var(--color-text-muted);
+  opacity: 1;
 }
 
 /* Focus state */
@@ -779,7 +789,7 @@ select:focus,
 .form-select:focus {
   border-color: var(--color-accent-ds) !important;
   background: var(--color-bg) !important;
-  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.05) !important;
+  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.05);
 }
 
 /* Error state */
@@ -787,7 +797,7 @@ input.error,
 .form-input.error,
 select.error {
   border-color: var(--color-danger) !important;
-  background: var(--color-danger-bg, #FDF0F0) !important;
+  background: var(--color-danger-bg, #FDF0F0);
 }
 
 /* Disabled input state */
@@ -795,10 +805,10 @@ input:disabled,
 select:disabled,
 .form-input:disabled,
 .form-select:disabled {
-  background: var(--color-surface-2) !important;
-  color: var(--color-text-secondary) !important;
-  cursor: not-allowed !important;
-  opacity: 0.7 !important;
+  background: var(--color-surface-2);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 /* ── Textarea Reset ── */
@@ -806,18 +816,18 @@ textarea,
 .form-textarea {
   width: 100%;
   padding: 12px 14px !important;
-  font-family: "Montserrat", sans-serif !important;
+  font-family: "Montserrat", sans-serif;
   font-size: 14px !important;
-  font-weight: 400 !important;
-  line-height: 1.5 !important;
-  letter-spacing: normal !important;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: normal;
   border-radius: var(--ds-input-radius-md) !important;
   background: var(--color-surface) !important;
   border: 1.5px solid var(--color-border-ds) !important;
   color: var(--color-text-primary) !important;
-  transition: border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base) !important;
-  outline: none !important;
-  resize: vertical !important;
+  transition: border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base);
+  outline: none;
+  resize: vertical;
 }
 
 /* Restrict default min-height only to textareas that do not have specific height class overrides (like h-8/h-10) */
@@ -830,50 +840,50 @@ textarea:focus,
 .form-textarea:focus {
   border-color: var(--color-accent-ds) !important;
   background: var(--color-bg) !important;
-  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.05) !important;
+  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.05);
 }
 
 textarea::placeholder,
 .form-textarea::placeholder {
-  color: var(--color-text-muted) !important;
-  opacity: 1 !important;
+  color: var(--color-text-muted);
+  opacity: 1;
 }
 
 textarea:disabled,
 .form-textarea:disabled {
-  background: var(--color-surface-2) !important;
-  color: var(--color-text-secondary) !important;
-  cursor: not-allowed !important;
-  opacity: 0.7 !important;
+  background: var(--color-surface-2);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 /* ── Standard Button Reset (MD Size Base) ── */
 .btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   height: 40px !important;
   padding: 0 18px !important;
-  font-family: "Montserrat", sans-serif !important;
+  font-family: "Montserrat", sans-serif;
   font-size: 14px !important;
-  font-weight: 600 !important;
-  line-height: normal !important;
-  letter-spacing: normal !important;
-  font-style: normal !important;
-  text-transform: none !important;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: normal;
+  font-style: normal;
+  text-transform: none;
   border-radius: var(--ds-input-radius-md) !important;
-  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base) !important;
-  cursor: pointer !important;
-  white-space: nowrap !important;
+  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+  cursor: pointer;
+  white-space: nowrap;
   border: none !important;
   width: auto !important; /* Overriding full-width defaults on mobile to support auto layout */
 }
 
 /* Disabled button state */
 .btn:disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* ── Height & Size Variant Classes (Tailwind Height Class Mappings) ── */
@@ -1072,8 +1082,8 @@ input.paired.h-16,
   border: 1px solid var(--color-success) !important;
 }
 .btn-success:hover:not(:disabled) {
-  background: #2E7D5A !important;
-  border-color: #2E7D5A !important;
+  background: color-mix(in srgb, var(--color-success) 80%, black) !important;
+  border-color: color-mix(in srgb, var(--color-success) 80%, black) !important;
 }
 
 /* Warning Button */
@@ -1083,12 +1093,190 @@ input.paired.h-16,
   border: 1px solid var(--color-warning) !important;
 }
 .btn-warning:hover:not(:disabled) {
-  background: #B8920F !important;
-  border-color: #B8920F !important;
+  background: color-mix(in srgb, var(--color-warning) 80%, black) !important;
+  border-color: color-mix(in srgb, var(--color-warning) 80%, black) !important;
 }
 
 /* Keep layout classes like full-width working */
 .btn.w-full,
 button.w-full {
   width: 100% !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ACCESSIBILITY — FOCUS-VISIBLE
+   ═══════════════════════════════════════════════════════ */
+@layer base {
+  /* Default focus-visible ring for all interactive elements */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-ds);
+    outline-offset: 2px;
+  }
+
+  /* Remove default outline for mouse/touch users */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Inputs get a ring-style focus */
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.25);
+    border-color: var(--color-primary);
+  }
+
+  /* Buttons get a subtle focus ring */
+  button:focus-visible,
+  .btn:focus-visible {
+    outline: 2px solid var(--color-accent-ds);
+    outline-offset: 2px;
+  }
+
+  /* Links */
+  a:focus-visible {
+    outline: 2px solid var(--color-accent-ds);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ACCESSIBILITY — REDUCED MOTION
+   ═══════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-scroll-down,
+  .fade-up,
+  .fade-up.visible,
+  .marquee-content,
+  .pulse-red {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .stock-bar-fill {
+    transition: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   DARK MODE — CSS VARIABLE OVERRIDES
+   ═══════════════════════════════════════════════════════ */
+:root.dark,
+.dark {
+  /* ── Core Palette ── */
+  --color-bg:             #111111;
+  --color-surface:        #1A1A1A;
+  --color-surface-2:      #222222;
+  --color-border-ds:      #333333;
+  --color-text-primary:   #F0F0F0;
+  --color-text-secondary: #999999;
+  --color-text-muted:     #777777;
+  --color-accent-ds:      #FFFFFF;
+  --color-accent-hover:   #E0E0E0;
+
+  /* ── Hero ── */
+  --color-hero-bg:        #1A1A1A;
+  --color-hero-text:      #FFFFFF;
+
+  /* ── Status Colors (slightly brighter for dark bg) ── */
+  --status-pending:       #E0B830;
+  --status-confirmed:     #50C090;
+  --status-processing:    #E0B830;
+  --status-packed:        #9B6AFF;
+  --status-shipped:       #5B8DEF;
+  --status-delivered:     #20B2AA;
+  --status-cancelled:     #FF6B6B;
+  --status-hold:          #9CA3AF;
+  --status-preorder:      #9B6AFF;
+  --status-return:        #FF79C6;
+  --status-refund:        #FF4081;
+
+  /* ── Danger / Success / Warning (dark variants) ── */
+  --color-danger:         #FF6B6B;
+  --color-danger-bg:      #2D1B1B;
+  --color-danger-hover:   #FF5252;
+  --color-success:        #50C090;
+  --color-success-bg:     #1B2D22;
+  --color-warning:        #E0B830;
+  --color-warning-bg:     #2D2A1B;
+  --color-info:           #5B8DEF;
+  --color-info-bg:        #1B2233;
+
+  /* ── Gradient & Brand Accent Colors (same for dark mode) ── */
+  --color-gradient-purple:    #7B3FE4;
+  --color-gradient-purple-dark: #8B2FC9;
+  --color-gradient-pink:      #C2185B;
+  --color-gradient-magenta:   #E91E8C;
+  --color-gradient-teal:      #1B9B7A;
+  --color-gradient-amber:     #E8870A;
+  --color-gradient-red:       #FF3B3B;
+  --color-gradient-blue:      #2563EB;
+}
+
+/* ═══════════════════════════════════════════════════════
+   DARK MODE — OS PREFERENCE FALLBACK
+   ═══════════════════════════════════════════════════════ */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not([data-theme="light"]) {
+    --color-bg:             #111111;
+    --color-surface:        #1A1A1A;
+    --color-surface-2:      #222222;
+    --color-border-ds:      #333333;
+    --color-text-primary:   #F0F0F0;
+    --color-text-secondary: #999999;
+    --color-text-muted:     #777777;
+    --color-accent-ds:      #FFFFFF;
+    --color-accent-hover:   #E0E0E0;
+
+    --color-hero-bg:        #1A1A1A;
+    --color-hero-text:      #FFFFFF;
+
+    --status-pending:       #E0B830;
+    --status-confirmed:     #50C090;
+    --status-processing:    #E0B830;
+    --status-packed:        #9B6AFF;
+    --status-shipped:       #5B8DEF;
+    --status-delivered:     #20B2AA;
+    --status-cancelled:     #FF6B6B;
+    --status-hold:          #9CA3AF;
+    --status-preorder:      #9B6AFF;
+    --status-return:        #FF79C6;
+    --status-refund:        #FF4081;
+
+    --color-danger:         #FF6B6B;
+    --color-danger-bg:      #2D1B1B;
+    --color-danger-hover:   #FF5252;
+    --color-success:        #50C090;
+    --color-success-bg:     #1B2D22;
+    --color-warning:        #E0B830;
+    --color-warning-bg:     #2D2A1B;
+    --color-info:           #5B8DEF;
+    --color-info-bg:        #1B2233;
+
+    /* ── Gradient & Brand Accent Colors (same for dark mode) ── */
+    --color-gradient-purple:    #7B3FE4;
+    --color-gradient-purple-dark: #8B2FC9;
+    --color-gradient-pink:      #C2185B;
+    --color-gradient-magenta:   #E91E8C;
+    --color-gradient-teal:      #1B9B7A;
+    --color-gradient-amber:     #E8870A;
+    --color-gradient-red:       #FF3B3B;
+    --color-gradient-blue:      #2563EB;
+  }
 }

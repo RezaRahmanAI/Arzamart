@@ -46,8 +46,9 @@
             <a routerLink="/cart" (click)="openCartDrawer($event)" class="relative group p-ds-2 text-ds-text transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
               @if (vm.cartCount > 0) {
-                <span 
-                  class="absolute -top-0.5 -right-0.5 min-w-[1.125rem] h-[1.125rem] px-1 bg-ds-accent text-ds-hero-text rounded-full flex items-center justify-center text-[10px] font-bold leading-none ring-2 ring-ds-bg transition-transform duration-300 scale-100"
+                <span
+                  aria-live="polite"
+                  class="absolute -top-0.5 -right-0.5 min-w-[1.125rem] h-[1.125rem] px-1 bg-ds-accent text-ds-hero-text rounded-full flex items-center justify-center text-ds-2xs font-bold leading-none ring-2 ring-ds-bg transition-transform duration-300 scale-100"
                 >
                   {{ vm.cartCount }}
                 </span>
@@ -62,6 +63,7 @@
             <div class="hidden lg:flex items-center ml-ds-4">
               <button
                 (click)="toggleCategoriesMenu()"
+                [attr.aria-expanded]="isCategoriesMenuOpen"
                 class="flex items-center gap-ds-2 text-ds-text transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-500" [class.rotate-90]="isCategoriesMenuOpen"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
@@ -70,7 +72,7 @@
             </div>
 
             <!-- Mobile Toggle -->
-            <button (click)="toggleMenu()" class="lg:hidden p-ds-2 text-ds-text transition-colors">
+            <button (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen" class="lg:hidden p-ds-2 text-ds-text transition-colors">
               @if (isMenuOpen) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
               } @else {

@@ -46,8 +46,9 @@
                   </button>
 
                     <div class="relative aspect-[3/4] rounded-sm overflow-hidden mb-ds-3 bg-ds-bg border border-ds-border">
-                      <img 
+                       <img 
                         loading="lazy" [src]="imageUrlService.getImageUrl(product.imageUrl || '')" 
+                        [alt]="product.name"
                         class="w-full h-full object-cover transition-all duration-500"
                       >
                     </div>
@@ -118,9 +119,9 @@
                 </td>
                 <td class="px-ds-2 py-1.5">
                   <div class="flex items-center justify-center gap-2">
-                    <button (click)="updateQuantity(item, -1)" class="size-5 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-ds-danger">-</button>
-                    <span class="w-4 text-center">{{ item.quantity }}</span>
-                    <button (click)="updateQuantity(item, 1)" class="size-5 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-ds-accent">+</button>
+                    <button (click)="updateQuantity(item, -1)" class="size-10 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-ds-danger font-semibold">-</button>
+                    <span class="w-6 text-center text-sm">{{ item.quantity }}</span>
+                    <button (click)="updateQuantity(item, 1)" class="size-10 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text hover:text-ds-accent font-semibold">+</button>
                   </div>
                 </td>
                 <td class="px-ds-2 py-1.5 text-center">
@@ -140,8 +141,8 @@
                   <span class="text-ds-text">৳{{ item.unitPrice * item.quantity }}</span>
                 </td>
                 <td class="px-ds-2 py-1.5 text-center">
-                  <button (click)="removeFromCart(item)" class="size-6 flex items-center justify-center text-ds-text-muted hover:text-ds-danger transition-colors">
-                    <app-icon name="X" size="14"></app-icon>
+                  <button (click)="removeFromCart(item)" class="size-10 flex items-center justify-center text-ds-text-muted hover:text-ds-danger transition-colors rounded-sm hover:bg-ds-danger/10">
+                    <app-icon name="X" size="16"></app-icon>
                   </button>
                 </td>
               </tr>
@@ -299,7 +300,7 @@
         <div class="flex items-start justify-between mb-ds-10">
           <div class="flex gap-ds-6">
             <div class="size-32 rounded-sm overflow-hidden bg-ds-bg border border-ds-border shadow-inner">
-              <img loading="lazy" [src]="imageUrlService.getImageUrl(selectedProduct()?.imageUrl || '')" class="w-full h-full object-cover">
+              <img loading="lazy" [src]="imageUrlService.getImageUrl(selectedProduct()?.imageUrl || '')" [alt]="selectedProduct()?.name" class="w-full h-full object-cover">
             </div>
             <div class="flex-1">
               <h3 class="text-ds-text mb-2">{{ selectedProduct()?.name }}</h3>

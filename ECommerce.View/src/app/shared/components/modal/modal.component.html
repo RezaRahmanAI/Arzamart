@@ -1,0 +1,37 @@
+@if (isOpen) {
+  <div 
+    class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    (click)="onBackdropClick($event)"
+    (keydown.escape)="onEscapeKey($event)"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title"
+  >
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"></div>
+    
+    <!-- Modal panel -->
+    <div [class]="sizeClasses + ' relative w-full bg-ds-bg border border-ds-border rounded-lg shadow-xl animate-fade-in-up'">
+      <!-- Header -->
+      @if (title) {
+        <div class="flex items-center justify-between px-6 py-4 border-b border-ds-border">
+          <h2 class="text-lg font-semibold text-ds-text">{{ title }}</h2>
+          <button 
+            (click)="closeDialog()"
+            class="p-1 text-ds-text-muted hover:text-ds-text rounded-sm hover:bg-ds-surface transition-colors"
+            aria-label="Close modal"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      }
+      
+      <!-- Content -->
+      <div class="px-6 py-4">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+}

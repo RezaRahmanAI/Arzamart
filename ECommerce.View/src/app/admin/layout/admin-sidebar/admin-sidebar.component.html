@@ -121,6 +121,7 @@
               <button
                 type="button"
                 (click)="toggleOrdersMenu()"
+                [attr.aria-expanded]="isOrdersMenuOpen"
                 class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
                 [ngClass]="(isOrdersMenuOpen || isGroupActive(['/admin/orders/pre-order', '/admin/orders/create'])) ? 'bg-ds-hero-text/10 text-ds-hero-text' : 'text-ds-hero-text/60 hover:text-ds-hero-text hover:bg-ds-hero-text/10'"
               >
@@ -176,6 +177,7 @@
               <button
                 type="button"
                 (click)="toggleOrderViewMenu()"
+                [attr.aria-expanded]="isOrderViewMenuOpen"
                 class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
                 [ngClass]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website', '/admin/orders/incomplete'])) ? 'bg-ds-hero-text/10 text-ds-hero-text' : 'text-ds-hero-text/60 hover:text-ds-hero-text hover:bg-ds-hero-text/10'"
               >
@@ -259,6 +261,7 @@
               <button
                 type="button"
                 (click)="toggleProductsMenu()"
+                [attr.aria-expanded]="isProductsMenuOpen"
                 class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
                 [ngClass]="(isProductsMenuOpen || isGroupActive(['/admin/products', '/admin/inventory'])) ? 'bg-ds-hero-text/10 text-ds-hero-text' : 'text-ds-hero-text/60 hover:text-ds-hero-text hover:bg-ds-hero-text/10'"
               >
@@ -344,6 +347,7 @@
               <button
                 type="button"
                 (click)="toggleStaffMenu()"
+                [attr.aria-expanded]="isStaffMenuOpen"
                 class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
                 [ngClass]="(isStaffMenuOpen || isGroupActive(['/admin/staff', '/admin/roles', '/admin/staff/audit'])) ? 'bg-ds-hero-text/10 text-ds-hero-text' : 'text-ds-hero-text/60 hover:text-ds-hero-text hover:bg-ds-hero-text/10'"
               >

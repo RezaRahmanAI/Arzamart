@@ -51,6 +51,7 @@
                       <img 
                         *ngIf="product.imageUrl"
                         loading="lazy" [src]="imageUrlService.getImageUrl(product.imageUrl)" 
+                        [alt]="product.productName"
                         class="w-full h-full object-cover"
                       >
                     </div>
@@ -169,7 +170,7 @@
       <div class="p-ds-8" *ngIf="selectedProduct">
         <div class="flex items-center gap-ds-6 mb-ds-8 p-ds-4 bg-ds-bg/30 rounded-sm border border-ds-border">
           <div class="size-16 rounded-sm bg-ds-surface border border-ds-border overflow-hidden shrink-0">
-            <img loading="lazy" [src]="imageUrlService.getImageUrl(selectedProduct.imageUrl || '')" class="w-full h-full object-cover">
+            <img loading="lazy" [src]="imageUrlService.getImageUrl(selectedProduct.imageUrl || '')" [alt]="selectedProduct.productName" class="w-full h-full object-cover">
           </div>
           <div class="min-w-0">
             <h4 class="text-ds-text">{{ selectedProduct.productName }}</h4>

@@ -74,7 +74,7 @@
         <!-- 1. Today's Orders (Blue) -->
         <div class="bg-ds-info border border-ds-info p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-info/60 block font-semibold leading-none mb-1">Orders</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-info/60 block font-semibold leading-none mb-1">Orders</span>
             <div class="text-ds-xl font-bold leading-none">{{ stats.todayOrdersCount }}</div>
             <app-price-display [amount]="stats.todayOrdersRevenue" size="sm" class="text-ds-info/40 block"></app-price-display>
           </div>
@@ -86,7 +86,7 @@
         <!-- 2. Today's Pending -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Pending</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Pending</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayPendingCount }}</div>
             <app-price-display [amount]="stats.todayPendingRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -98,7 +98,7 @@
         <!-- 3. Today's Confirm -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Confirm</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Confirm</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayConfirmCount }}</div>
             <app-price-display [amount]="stats.todayConfirmRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -110,7 +110,7 @@
         <!-- 4. Today's Packaging -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Packaging</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Packaging</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayPackagingCount }}</div>
             <app-price-display [amount]="stats.todayPackagingRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -122,7 +122,7 @@
         <!-- 5. Wapa Shop -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Wapa Shop</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Wapa Shop</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.wapaShopCount }}</div>
             <app-price-display [amount]="stats.wapaShopRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -134,7 +134,7 @@
         <!-- 6. Mirpur Shop -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Mirpur Shop</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Mirpur Shop</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.mirpurShopCount }}</div>
             <app-price-display [amount]="stats.mirpurShopRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -146,11 +146,11 @@
         <!-- 7. Today's Shipped -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Shipped</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Shipped</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayShippedCount }}</div>
             <app-price-display [amount]="stats.todayShippedRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-indigo-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-info opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="Truck" size="16"></app-icon>
           </div>
         </div>
@@ -158,7 +158,7 @@
         <!-- 8. Pathao Return (Red) -->
         <div class="bg-ds-danger border border-ds-danger p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-danger/60 block font-semibold leading-none mb-1">Pathao Return</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-danger/60 block font-semibold leading-none mb-1">Pathao Return</span>
             <div class="text-ds-xl font-bold leading-none">{{ stats.pathaoReturnCount }}</div>
             <app-price-display [amount]="stats.pathaoReturnRevenue" size="sm" class="text-ds-danger/40 block"></app-price-display>
           </div>
@@ -170,7 +170,7 @@
         <!-- 9. Pathao Delivered (Green) -->
         <div class="bg-ds-success border border-ds-success p-ds-3 rounded-sm text-white flex justify-between items-center transition-all hover:shadow-md relative overflow-hidden">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-success/60 block font-semibold leading-none mb-1">Pathao Delivered</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-success/60 block font-semibold leading-none mb-1">Pathao Delivered</span>
             <div class="text-ds-xl font-bold leading-none">{{ stats.pathaoDeliveredCount }}</div>
             <app-price-display [amount]="stats.pathaoDeliveredRevenue" size="sm" class="text-ds-success/40 block"></app-price-display>
           </div>
@@ -182,7 +182,7 @@
         <!-- 10. Today's Pre Orders -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Pre Orders</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Pre Orders</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.todayPreOrdersCount }}</div>
             <app-price-display [amount]="stats.todayPreOrdersRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -206,7 +206,7 @@
         <!-- Total Pending -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Pending</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Pending</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalPendingCount }}</div>
             <app-price-display [amount]="stats.totalPendingRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -218,7 +218,7 @@
         <!-- Total Confirm -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Confirm</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Confirm</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalConfirmCount }}</div>
             <app-price-display [amount]="stats.totalConfirmRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -230,7 +230,7 @@
         <!-- Total Packaging -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Packaging</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Packaging</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalPackagingCount }}</div>
             <app-price-display [amount]="stats.totalPackagingRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -242,7 +242,7 @@
         <!-- Total Return Process -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Return Process</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Return Process</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalReturnProcessCount }}</div>
             <app-price-display [amount]="stats.totalReturnProcessRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -254,11 +254,11 @@
         <!-- Total Shipped -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Shipped</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Shipped</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalShippedCount }}</div>
             <app-price-display [amount]="stats.totalShippedRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
-          <div class="text-indigo-500 opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
+          <div class="text-ds-info opacity-80 size-8 bg-ds-bg border border-ds-border rounded-sm flex items-center justify-center shrink-0">
             <app-icon name="Truck" size="16"></app-icon>
           </div>
         </div>
@@ -266,7 +266,7 @@
         <!-- Total Pre Orders -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Pre Orders</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Total Pre Orders</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.totalPreOrdersCount }}</div>
             <app-price-display [amount]="stats.totalPreOrdersRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>
@@ -278,7 +278,7 @@
         <!-- Incomplete Order -->
         <div class="bg-ds-surface border border-ds-border p-ds-3 rounded-sm hover:border-ds-text transition-all flex justify-between items-center">
           <div class="space-y-1">
-            <span class="text-[11px] uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Incomplete Order</span>
+            <span class="text-ds-xs uppercase tracking-wider text-ds-text-muted block font-semibold leading-none mb-1">Incomplete Order</span>
             <div class="text-ds-xl font-bold text-ds-text leading-none">{{ stats.incompleteOrdersCount }}</div>
             <app-price-display [amount]="stats.incompleteOrdersRevenue" size="sm" class="text-ds-text block"></app-price-display>
           </div>

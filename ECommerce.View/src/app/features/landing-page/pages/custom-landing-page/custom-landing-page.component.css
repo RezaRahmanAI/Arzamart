@@ -47,19 +47,19 @@
 
 /* Gradient backgrounds for landing page sections */
 .gradient-purple {
-  background: linear-gradient(135deg, var(--color-info), #7B3FE4, #8B2FC9);
+  background: linear-gradient(135deg, var(--color-info), var(--color-gradient-purple), var(--color-gradient-purple-dark));
 }
 
 .gradient-pink {
-  background: linear-gradient(135deg, #8B2FC9, #C2185B, #E91E8C);
+  background: linear-gradient(135deg, var(--color-gradient-purple-dark), var(--color-gradient-pink), var(--color-gradient-magenta));
 }
 
 .gradient-green {
-  background: linear-gradient(135deg, var(--color-success), #1B9B7A);
+  background: linear-gradient(135deg, var(--color-success), var(--color-gradient-teal));
 }
 
 .gradient-orange {
-  background: linear-gradient(135deg, var(--color-warning), #E8870A);
+  background: linear-gradient(135deg, var(--color-warning), var(--color-gradient-amber));
 }
 
 /* Product card shadows */

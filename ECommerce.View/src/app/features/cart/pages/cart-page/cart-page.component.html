@@ -47,7 +47,7 @@
                           <div class="flex flex-col min-w-0">
                             <span class="cart-product-title truncate max-w-[220px] lg:max-w-[280px]" [title]="item.name">{{ item.name }}</span>
                             @if (item.size && item.size !== 'One Size') {
-                              <span class="text-[11px] text-ds-text-sec font-semibold uppercase tracking-wider mt-1">Size: {{ item.size }}</span>
+                              <span class="text-ds-xs text-ds-text-sec font-semibold uppercase tracking-wider mt-1">Size: {{ item.size }}</span>
                             }
                           </div>
                         </div>
@@ -147,7 +147,7 @@
 
           <!-- RIGHT SIDE: Cart Totals Sidebar (4 Cols) -->
           <div class="lg:col-span-4 sticky top-24">
-            <div class="cart-totals-card">
+            <div class="cart-totals-card" aria-live="polite">
               <!-- Sidebar Header with Quantity Badge -->
               <div class="cart-totals-header">
                 <span class="cart-totals-title">Cart totals</span>

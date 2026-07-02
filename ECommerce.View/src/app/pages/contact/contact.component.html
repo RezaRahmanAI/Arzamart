@@ -126,8 +126,9 @@
             <!-- Name & Email Row -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-ds-6">
               <div class="space-y-ds-2">
-                <label class="form-label">Full Name</label>
+                <label for="contactFullName" class="form-label">Full Name</label>
                 <input
+                  id="contactFullName"
                   class="form-input"
                   placeholder="Enter your name"
                   type="text"
@@ -139,8 +140,9 @@
                 </p>
               </div>
               <div class="space-y-ds-2">
-                <label class="form-label">Email Address</label>
+                <label for="contactEmail" class="form-label">Email Address</label>
                 <input
+                  id="contactEmail"
                   class="form-input"
                   placeholder="Enter your email"
                   type="email"
@@ -155,9 +157,9 @@
 
             <!-- Topic Select -->
             <div class="space-y-ds-2">
-              <label class="form-label">Inquiry Type</label>
+              <label for="contactInquiryType" class="form-label">Inquiry Type</label>
               <div class="relative">
-                <select class="form-select appearance-none cursor-pointer" formControlName="inquiryType" [class.error]="shouldShowError('inquiryType')">
+                <select id="contactInquiryType" class="form-select appearance-none cursor-pointer" formControlName="inquiryType" [class.error]="shouldShowError('inquiryType')">
                   <option disabled value="">Select a topic</option>
                   <option *ngFor="let topic of inquiryTopics" [value]="topic.value">
                     {{ topic.label }}
@@ -174,8 +176,9 @@
 
             <!-- Message -->
             <div class="space-y-ds-2">
-              <label class="form-label">Message</label>
+              <label for="contactMessage" class="form-label">Message</label>
               <textarea
+                id="contactMessage"
                 class="form-textarea resize-none"
                 placeholder="How can we help you?"
                 rows="5"

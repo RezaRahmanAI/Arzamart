@@ -120,6 +120,7 @@
                   <img 
                     *ngIf="product.imageUrl"
                     loading="lazy" [src]="imageUrlService.getImageUrl(product.imageUrl)" 
+                    [alt]="product.name"
                     class="w-full h-full object-cover transition-all duration-base"
                   >
                 </div>
@@ -128,8 +129,8 @@
                     {{ product.name }}
                   </span>
                   <div class="flex gap-1 mt-0.5">
-                    <span *ngIf="product.isFeatured" class="bg-ds-accent text-white px-1 py-0.5 rounded-sm text-[10px] leading-none">Featured</span>
-                    <span *ngIf="product.isNew" class="border border-ds-border text-ds-text-muted px-1 py-0.5 rounded-sm text-[10px] leading-none">New</span>
+                    <span *ngIf="product.isFeatured" class="bg-ds-accent text-white px-1 py-0.5 rounded-sm text-ds-2xs leading-none">Featured</span>
+                    <span *ngIf="product.isNew" class="border border-ds-border text-ds-text-muted px-1 py-0.5 rounded-sm text-ds-2xs leading-none">New</span>
                   </div>
                 </div>
               </div>

@@ -36,8 +36,9 @@
                   [class.border-ds-text]="i === currentImageIndex"
                   [class.border-transparent]="i !== currentImageIndex"
                 >
-                  <img
+                   <img
                     loading="lazy" [src]="imageUrlService.getImageUrl(url)"
+                    [alt]="product.name + ' thumbnail'"
                     class="w-full h-full object-contain p-1"
                     [class.opacity-60]="i !== currentImageIndex"
                   />
@@ -119,6 +120,7 @@
                   >
                     <img
                       loading="lazy" [src]="imageUrlService.getImageUrl(url)"
+                      [alt]="product.name + ' thumbnail'"
                       class="w-full h-full object-contain p-1"
                       [class.opacity-60]="i !== currentImageIndex"
                     />

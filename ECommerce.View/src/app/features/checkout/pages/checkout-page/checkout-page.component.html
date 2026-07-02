@@ -41,8 +41,9 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div class="space-y-1.5">
-                  <label class="text-ds-text text-sm">Phone Number</label>
+                  <label for="checkoutPhone" class="text-ds-text text-sm">Phone Number</label>
                   <input
+                    id="checkoutPhone"
                     formControlName="phone"
                     type="tel"
                     placeholder="017XXXXXXXX"
@@ -52,8 +53,9 @@
                 </div>
 
                 <div class="space-y-1.5">
-                  <label class="text-ds-text text-sm">Full Name</label>
+                  <label for="checkoutFullName" class="text-ds-text text-sm">Full Name</label>
                   <input
+                    id="checkoutFullName"
                     formControlName="fullName"
                     type="text"
                     placeholder="e.g. Rizve Rahman"
@@ -150,8 +152,8 @@
 
                 <!-- Detailed Address -->
                 <div class="md:col-span-2 space-y-1.5">
-                  <label class="text-ds-text text-sm">Detailed Address</label>
-                  <textarea formControlName="address" rows="2" placeholder="House #12, Road #4, Block B..."
+                  <label for="checkoutAddress" class="text-ds-text text-sm">Detailed Address</label>
+                  <textarea id="checkoutAddress" formControlName="address" rows="2" placeholder="House #12, Road #4, Block B..."
                             class="w-full p-4 bg-ds-surface border-none focus:ring-2 focus:ring-ds-danger transition-all outline-none resize-none text-sm"></textarea>
                 </div>
               </div>

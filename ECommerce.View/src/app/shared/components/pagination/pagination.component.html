@@ -1,0 +1,38 @@
+<div class="mt-ds-16 flex items-center justify-center border-t border-ds-border pt-ds-8">
+  <nav class="flex items-center gap-ds-2" aria-label="Pagination">
+    <button
+      (click)="previous()"
+      [disabled]="!hasPrevious"
+      class="h-10 w-10 flex items-center justify-center border border-ds-border bg-ds-bg text-ds-text-muted hover:text-ds-text hover:border-ds-border disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+      aria-label="Previous page"
+    >
+      <app-icon name="ChevronLeft" size="18"></app-icon>
+    </button>
+
+    @for (page of pages; track $index) {
+      @if (page === "...") {
+        <span class="px-ds-2 text-ds-text-muted">...</span>
+      } @else {
+        <button
+          (click)="goToPage(page)"
+          [class]="page === currentPage
+            ? 'h-10 w-10 flex items-center justify-center border border-ds-accent bg-ds-accent text-ds-hero-text transition-all'
+            : 'h-10 w-10 flex items-center justify-center border border-ds-border bg-ds-bg text-ds-text-sec hover:border-ds-text hover:text-ds-text transition-all'"
+          [attr.aria-current]="page === currentPage ? 'page' : null"
+          [attr.aria-label]="'Page ' + page"
+        >
+          {{ page }}
+        </button>
+      }
+    }
+
+    <button
+      (click)="next()"
+      [disabled]="!hasNext"
+      class="h-10 w-10 flex items-center justify-center border border-ds-border bg-ds-bg text-ds-text-muted hover:text-ds-text hover:border-ds-border disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+      aria-label="Next page"
+    >
+      <app-icon name="ChevronRight" size="18"></app-icon>
+    </button>
+  </nav>
+</div>

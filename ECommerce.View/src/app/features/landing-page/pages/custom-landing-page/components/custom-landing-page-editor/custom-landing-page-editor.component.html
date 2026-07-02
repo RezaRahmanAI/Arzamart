@@ -16,20 +16,20 @@
       <div class="p-4 space-y-4 border-t border-ds-border" [class.hidden]="activeEditorSection !== 'global'">
         <div class="grid grid-cols-2 gap-3">
           <div class="space-y-1.5">
-            <label class="text-[10px] uppercase text-ds-text-muted">Promo Price</label>
+            <label class="text-ds-2xs uppercase text-ds-text-muted">Promo Price</label>
             <input type="number" formControlName="promoPrice" class="editor-input">
           </div>
           <div class="space-y-1.5">
-            <label class="text-[10px] uppercase text-ds-text-muted">Original Price</label>
+            <label class="text-ds-2xs uppercase text-ds-text-muted">Original Price</label>
             <input type="number" formControlName="originalPrice" class="editor-input">
           </div>
         </div>
         <div class="space-y-1.5">
-          <label class="text-[10px] uppercase text-ds-text-muted">Featured Name</label>
+          <label class="text-ds-2xs uppercase text-ds-text-muted">Featured Name</label>
           <input type="text" formControlName="featuredProductName" class="editor-input">
         </div>
         <div class="space-y-1.5">
-          <label class="text-[10px] uppercase text-ds-text-muted">Free Shipping Min Qty</label>
+          <label class="text-ds-2xs uppercase text-ds-text-muted">Free Shipping Min Qty</label>
           <input type="number" formControlName="freeShippingThresholdQuantity" class="editor-input" placeholder="Empty = No free shipping">
         </div>
 
@@ -40,7 +40,7 @@
             <input type="checkbox" formControlName="isMarqueeVisible" class="toggle-sm">
           </div>
           @if (configForm.get('isMarqueeVisible')?.value) {
-            <textarea formControlName="marqueeText" rows="2" class="editor-textarea text-[11px]" placeholder="Marquee text..."></textarea>
+            <textarea formControlName="marqueeText" rows="2" class="editor-textarea text-ds-xs" placeholder="Marquee text..."></textarea>
           }
         </div>
       </div>
@@ -49,8 +49,8 @@
     <!-- Section: Layout & Components -->
     <div class="space-y-3">
       <div class="flex items-center justify-between px-2">
-        <p class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold">Layout Components</p>
-        <p class="text-[9px] text-ds-text-muted italic">Drag to reorder</p>
+        <p class="text-ds-2xs uppercase tracking-widest text-ds-text-muted font-bold">Layout Components</p>
+        <p class="text-ds-3xs text-ds-text-muted italic">Drag to reorder</p>
       </div>
       
       <div class="space-y-2" cdkDropList (cdkDropListDropped)="drop($event)">
@@ -93,11 +93,11 @@
                         <input type="checkbox" [(ngModel)]="section.settings.isTimerVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Bar Title</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Bar Title</label>
                         <input type="text" [(ngModel)]="section.settings.headerTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Reset Minutes</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Reset Minutes</label>
                         <input type="number" [(ngModel)]="section.settings.relativeTimerTotalMinutes" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                     </div>
@@ -105,15 +105,15 @@
                   @case ('hero') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Main Title</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Main Title</label>
                         <textarea [(ngModel)]="section.settings.heroTitle" [ngModelOptions]="{standalone: true}" rows="2" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Subtitle</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Subtitle</label>
                         <textarea [(ngModel)]="section.settings.heroSubtitle" [ngModelOptions]="{standalone: true}" rows="2" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Badge Text</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Badge Text</label>
                         <input type="text" [(ngModel)]="section.settings.heroBadge" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                     </div>
@@ -121,11 +121,11 @@
                   @case ('product-hero') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Section Title</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Section Title</label>
                         <input type="text" [(ngModel)]="section.settings.productHeroTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Description</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Description</label>
                         <textarea [(ngModel)]="section.settings.productHeroDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                     </div>
@@ -133,11 +133,11 @@
                   @case ('discount-cta') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">CTA Title</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">CTA Title</label>
                         <input type="text" [(ngModel)]="section.settings.discountCtaTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">CTA Description</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">CTA Description</label>
                         <textarea [(ngModel)]="section.settings.discountCtaDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                     </div>
@@ -145,11 +145,11 @@
                   @case ('info-banner') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Banner Title</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Banner Title</label>
                         <input type="text" [(ngModel)]="section.settings.infoBannerTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Banner Description</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Banner Description</label>
                         <textarea [(ngModel)]="section.settings.infoBannerDescription" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                     </div>
@@ -157,7 +157,7 @@
                   @case ('product-details') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Section Title</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Section Title</label>
                         <input type="text" [(ngModel)]="section.settings.productDetailsTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
                       </div>
                     </div>
@@ -169,7 +169,7 @@
                         <input type="checkbox" [(ngModel)]="section.settings.isTrustBannerVisible" [ngModelOptions]="{standalone: true}" class="toggle-sm">
                       </div>
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Trust Message</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Trust Message</label>
                         <textarea [(ngModel)]="section.settings.trustBannerText" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface"></textarea>
                       </div>
                     </div>
@@ -185,14 +185,14 @@
                   @case ('order-form') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-[10px] text-ds-text-muted uppercase">Offer/Promo Text</label>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Offer/Promo Text</label>
                         <textarea [(ngModel)]="section.settings.promoText" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface" placeholder="Shown in order summary..."></textarea>
                       </div>
                     </div>
                   }
                   @case ('product-select') {
                     <div class="space-y-4 pt-3">
-                      <p class="text-[10px] text-ds-text-muted uppercase font-bold tracking-widest">Custom Product Selection</p>
+                      <p class="text-ds-2xs text-ds-text-muted uppercase font-bold tracking-widest">Custom Product Selection</p>
                       
                       <div class="relative">
                         <input type="text" 
@@ -215,8 +215,8 @@
                                 <div class="flex items-center gap-3 overflow-hidden">
                                   <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" class="w-8 h-8 rounded object-cover flex-shrink-0">
                                   <div class="overflow-hidden">
-                                    <p class="text-[11px] font-bold truncate">{{ p.name }}</p>
-                                    <p class="text-[9px] text-ds-text-muted">{{ p.sku }}</p>
+                                    <p class="text-ds-xs font-bold truncate">{{ p.name }}</p>
+                                    <p class="text-ds-3xs text-ds-text-muted">{{ p.sku }}</p>
                                   </div>
                                 </div>
                                 <button (click)="toggleProductSelection(p.id)"
@@ -231,14 +231,14 @@
                       </div>
                       
                       <div class="p-3 bg-ds-info/5 rounded-lg border border-dashed border-ds-info/20">
-                        <p class="text-[10px] text-ds-text-muted text-center leading-relaxed font-bengali">
+                        <p class="text-ds-2xs text-ds-text-muted text-center leading-relaxed font-bengali">
                           এখান থেকে পণ্য সিলেক্ট করলে সেগুলো ল্যান্ডিং পেজে দেখাবে। সিলেক্ট না করলে অটোমেটিক রিলেটেড পণ্য দেখাবে।
                         </p>
                       </div>
                     </div>
                   }
                   @default {
-                    <p class="text-[10px] text-ds-text-muted py-4 text-center italic">No extra settings for this component</p>
+                    <p class="text-ds-2xs text-ds-text-muted py-4 text-center italic">No extra settings for this component</p>
                   }
                 }
               </div>

@@ -27,7 +27,7 @@
           <app-icon name="Bell" size="20"></app-icon>
           <span
             *ngIf="unreadCount > 0"
-            class="absolute top-1.5 right-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-ds-accent text-[9px] font-bold text-ds-surface border border-ds-surface animate-pulse px-1"
+            class="absolute top-1.5 right-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-ds-accent text-ds-3xs font-bold text-ds-surface border border-ds-surface animate-pulse px-1"
           >
             {{ unreadCount }}
           </span>
@@ -62,7 +62,7 @@
                     <span class="w-1.5 h-1.5 bg-ds-accent rounded-full animate-ping" *ngIf="!notif.read"></span>
                     Order Placed
                   </span>
-                  <span class="text-[10px] text-ds-text-muted">{{ notif.time | date:'shortTime' }}</span>
+                  <span class="text-ds-2xs text-ds-text-muted">{{ notif.time | date:'shortTime' }}</span>
                 </div>
                 <div class="text-xs text-ds-text-muted font-normal">
                   <span class="text-ds-text font-semibold">{{ notif.orderNumber }}</span> by {{ notif.customerName }}

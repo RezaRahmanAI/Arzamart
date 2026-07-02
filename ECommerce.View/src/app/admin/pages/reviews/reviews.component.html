@@ -33,6 +33,7 @@
             <img
               *ngIf="review.userAvatar"
               loading="lazy" [src]="getImageUrl(review.userAvatar)"
+              [alt]="review.userName"
               class="w-full h-full object-cover"
             />
             <app-icon
@@ -170,7 +171,7 @@
         <!-- Section: Identity -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
-            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Customer Name *</label>
+            <label class="text-ds-2xs uppercase tracking-widest text-ds-text-muted font-bold ml-1">Customer Name *</label>
             <input
               formControlName="userName"
               type="text"
@@ -179,13 +180,14 @@
             />
           </div>
           <div class="space-y-2">
-            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Avatar (URL or Upload)</label>
+            <label class="text-ds-2xs uppercase tracking-widest text-ds-text-muted font-bold ml-1">Avatar (URL or Upload)</label>
             <div class="flex items-center gap-4">
               <!-- Avatar Preview -->
               <div class="size-12 rounded-sm bg-ds-bg border border-ds-border flex-shrink-0 overflow-hidden flex items-center justify-center">
                 <img 
                   *ngIf="reviewForm.get('userAvatar')?.value" 
                   loading="lazy" [src]="getImageUrl(reviewForm.get('userAvatar')?.value)" 
+                  [alt]="reviewForm.get('userName')?.value || 'Customer Avatar'"
                   class="w-full h-full object-cover"
                 >
                 <app-icon 
@@ -228,7 +230,7 @@
 
         <!-- Section: Product Targeting (Searchable Dropdown) -->
         <div class="space-y-2 relative">
-          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Product *</label>
+          <label class="text-ds-2xs uppercase tracking-widest text-ds-text-muted font-bold ml-1">Product *</label>
           
           <!-- Dropdown Trigger -->
           <button 
@@ -271,11 +273,11 @@
                     class="w-full text-left px-4 py-3 hover:bg-ds-bg transition-colors flex items-center gap-4 group"
                   >
                     <div class="size-8 bg-ds-bg border border-ds-border rounded-sm overflow-hidden flex-shrink-0">
-                      <img *ngIf="product.imageUrl" loading="lazy" [src]="getImageUrl(product.imageUrl)" class="w-full h-full object-cover">
+                      <img *ngIf="product.imageUrl" loading="lazy" [src]="getImageUrl(product.imageUrl)" [alt]="product.name" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-grow min-w-0">
                       <p class="text-sm text-ds-text truncate group-hover:text-ds-primary transition-colors">{{ product.name }}</p>
-                      <p class="text-[10px] text-ds-text-muted uppercase tracking-tighter opacity-60">{{ product.sku }}</p>
+                      <p class="text-ds-2xs text-ds-text-muted uppercase tracking-tighter opacity-60">{{ product.sku }}</p>
                     </div>
                     <div *ngIf="reviewForm.get('productId')?.value === product.id" class="text-ds-success">
                       <app-icon name="Check" size="14"></app-icon>
@@ -295,7 +297,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
           <!-- Section: Rating -->
           <div class="space-y-4">
-            <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Rating</label>
+            <label class="text-ds-2xs uppercase tracking-widest text-ds-text-muted font-bold ml-1">Rating</label>
             <div class="flex gap-1.5">
               <button
                 type="button"
@@ -332,13 +334,14 @@
 
         <!-- Section: Screenshot Upload -->
         <div class="space-y-2">
-          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Screenshot (Optional)</label>
+          <label class="text-ds-2xs uppercase tracking-widest text-ds-text-muted font-bold ml-1">Screenshot (Optional)</label>
           <div class="flex items-center gap-4">
             <!-- Screenshot Preview -->
             <div class="size-16 rounded-sm bg-ds-bg border border-ds-border flex-shrink-0 overflow-hidden flex items-center justify-center">
               <img 
                 *ngIf="reviewForm.get('screenshotUrl')?.value" 
                 loading="lazy" [src]="getImageUrl(reviewForm.get('screenshotUrl')?.value)" 
+                [alt]="reviewForm.get('userName')?.value || 'Review Screenshot'"
                 class="w-full h-full object-cover"
               >
               <app-icon 
@@ -389,7 +392,7 @@
 
         <!-- Section: Narrative -->
         <div class="space-y-2">
-          <label class="text-[10px] uppercase tracking-widest text-ds-text-muted font-bold ml-1">Review Comment (Optional)</label>
+          <label class="text-ds-2xs uppercase tracking-widest text-ds-text-muted font-bold ml-1">Review Comment (Optional)</label>
           <textarea
             formControlName="comment"
             rows="4"

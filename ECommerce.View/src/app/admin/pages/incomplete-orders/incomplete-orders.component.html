@@ -89,7 +89,7 @@
     <div class="overflow-x-auto min-h-[400px]">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-ds-bg/50 border-b border-ds-border text-ds-text-muted text-[11px] font-bold uppercase tracking-wider">
+          <tr class="bg-ds-bg/50 border-b border-ds-border text-ds-text-muted text-ds-xs font-bold uppercase tracking-wider">
             <th class="px-ds-4 py-ds-4">Customer Info</th>
             <th class="px-ds-4 py-ds-4">Cart Details</th>
             <th class="px-ds-4 py-ds-4">Source & Campaign</th>
@@ -185,7 +185,7 @@
                   <span>{{ order.browser || 'Unknown Browser' }}</span>
                 </div>
                 <div class="flex items-center gap-1" *ngIf="order.fbclid">
-                  <span class="px-1 py-0.5 bg-ds-bg border border-ds-border text-ds-text text-[10px] font-bold rounded-sm">FBCLID</span>
+                  <span class="px-1 py-0.5 bg-ds-bg border border-ds-border text-ds-text text-ds-2xs font-bold rounded-sm">FBCLID</span>
                   <span class="truncate max-w-[100px]" [title]="order.fbclid">{{ order.fbclid }}</span>
                 </div>
               </div>
@@ -323,7 +323,7 @@
     <div class="p-6 space-y-6 max-h-[400px] overflow-y-auto">
       <!-- Notes History -->
       <div class="space-y-4">
-        <h4 class="text-[11px] font-bold uppercase tracking-wider text-ds-text-muted">Activity & Note Logs</h4>
+        <h4 class="text-ds-xs font-bold uppercase tracking-wider text-ds-text-muted">Activity & Note Logs</h4>
         
         <div 
           *ngIf="!selectedOrder.notes || selectedOrder.notes.length === 0" 
@@ -346,7 +346,7 @@
 
       <!-- Add New Note Form -->
       <div class="space-y-2">
-        <label class="text-[11px] font-bold uppercase tracking-wider text-ds-text-muted">Add Follow-up Note</label>
+        <label class="text-ds-xs font-bold uppercase tracking-wider text-ds-text-muted">Add Follow-up Note</label>
         <textarea 
           [(ngModel)]="newNoteContent"
           rows="3"

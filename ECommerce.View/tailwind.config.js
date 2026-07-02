@@ -55,15 +55,17 @@ module.exports = {
         display: ["Montserrat", "system-ui", "sans-serif"],
       },
       fontSize: {
-        "ds-xs":   ["0.8125rem",  { lineHeight: "1.5" }], // 13px
-        "ds-sm":   ["0.9375rem",  { lineHeight: "1.5" }], // 15px
-        "ds-base": ["1.0625rem",  { lineHeight: "1.6" }], // 17px
-        "ds-lg":   ["1.25rem",    { lineHeight: "1.6" }], // 20px
-        "ds-xl":   ["1.375rem",   { lineHeight: "1.4" }], // 22px
-        "ds-2xl":  ["1.625rem",   { lineHeight: "1.3" }], // 26px
-        "ds-3xl":  ["2rem",       { lineHeight: "1.2" }], // 32px
-        "ds-4xl":  ["2.5rem",      { lineHeight: "1.1" }], // 40px
-        "ds-5xl":  ["3.5rem",      { lineHeight: "1.1" }], // 56px
+        "ds-3xs":  ["0.5625rem",  { lineHeight: "1.5" }], // 9px
+        "ds-2xs":  ["0.625rem",   { lineHeight: "1.5" }], // 10px
+        "ds-xs":   ["0.6875rem",  { lineHeight: "1.5" }], // 11px
+        "ds-sm":   ["0.8125rem",  { lineHeight: "1.5" }], // 13px
+        "ds-base": ["0.9375rem",  { lineHeight: "1.6" }], // 15px
+        "ds-lg":   ["1.0625rem",  { lineHeight: "1.6" }], // 17px
+        "ds-xl":   ["1.25rem",    { lineHeight: "1.4" }], // 20px
+        "ds-2xl":  ["1.375rem",   { lineHeight: "1.3" }], // 22px
+        "ds-3xl":  ["1.625rem",   { lineHeight: "1.2" }], // 26px
+        "ds-4xl":  ["2rem",       { lineHeight: "1.1" }], // 32px
+        "ds-5xl":  ["2.5rem",     { lineHeight: "1.1" }], // 40px
       },
       spacing: {
         "ds-1":  "0.25rem",

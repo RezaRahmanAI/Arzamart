@@ -45,6 +45,7 @@ export interface ActiveToast {
   template: `
     <div
       class="fixed top-6 left-1/2 -translate-x-1/2 z-[300] flex flex-col gap-3 pointer-events-none w-[calc(100%-2rem)] sm:w-auto min-w-[320px] max-w-md"
+      aria-live="polite"
     >
       @for (toast of toasts; track toast.id) {
         <div
