@@ -398,14 +398,14 @@
   <!-- ═══════════════════════════════════════════
        STICKY BOTTOM BAR
   ═══════════════════════════════════════════ -->
-  <div class="fixed bottom-6 left-0 right-0 px-4 md:px-10 w-full flex justify-between gap-3 z-[90]">
+  <div class="fixed bottom-4 left-0 right-0 px-3 md:px-10 w-full flex justify-between gap-2 md:gap-3 z-[90]">
     <a (click)="whatsappUs()" 
-       class="btn bg-ds-whatsapp hover:opacity-90 active:scale-95 text-white flex items-center gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all cursor-pointer h-14 px-6 md:px-10 text-base font-bold">
-      <app-icon name="MessageCircle" size="20"></app-icon>
+       class="btn bg-ds-whatsapp hover:opacity-90 active:scale-95 text-white flex items-center gap-2 md:gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all cursor-pointer h-11 md:h-14 px-4 md:px-10 text-sm md:text-base font-bold">
+      <app-icon name="MessageCircle" size="18"></app-icon>
       <span class="hidden md:inline">WhatsApp</span>
     </a>
     <button (click)="scrollToOrder()"
-            class="btn btn-danger text-white flex items-center justify-center gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all h-14 px-8 md:px-12 text-base font-bold">
+            class="btn btn-danger text-white flex items-center justify-center gap-2 md:gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all h-11 md:h-14 px-5 md:px-12 text-sm md:text-base font-bold">
       অর্ডার করুন এখনই
     </button>
   </div>
