@@ -41,7 +41,11 @@ export class SiteSettingsService {
       const ssrData = this.transferState.get(this.SETTINGS_KEY, null);
       if (ssrData) {
         if (isPlatformBrowser(this.platformId)) {
-          this.transferState.remove(this.SETTINGS_KEY);
+          setTimeout(() => {
+            if (this.transferState.hasKey(this.SETTINGS_KEY)) {
+              this.transferState.remove(this.SETTINGS_KEY);
+            }
+          }, 1000);
         }
         return of(ssrData);
       }

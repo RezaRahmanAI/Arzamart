@@ -89,7 +89,11 @@ export class ProductService {
     
     if (ssrData) {
       if (isPlatformBrowser(this.platformId)) {
-        this.transferState.remove(key);
+        setTimeout(() => {
+          if (this.transferState.hasKey(key)) {
+            this.transferState.remove(key);
+          }
+        }, 1000);
       }
       return of(ssrData);
     }

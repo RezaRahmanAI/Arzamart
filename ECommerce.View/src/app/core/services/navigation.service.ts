@@ -43,7 +43,11 @@ export class NavigationService {
       const ssrData = this.transferState.get(this.MEGA_MENU_KEY, null);
       if (ssrData) {
         if (isPlatformBrowser(this.platformId)) {
-          this.transferState.remove(this.MEGA_MENU_KEY);
+          setTimeout(() => {
+            if (this.transferState.hasKey(this.MEGA_MENU_KEY)) {
+              this.transferState.remove(this.MEGA_MENU_KEY);
+            }
+          }, 1000);
         }
         return of(ssrData);
       }

@@ -25,7 +25,7 @@ const TTL = {
   DEFAULT: 60 * 1000,
 };
 
-const EXCLUDED = ["/cart", "/orders", "/auth", "/profile"];
+const EXCLUDED = ["/cart", "/orders", "/auth", "/profile", "/admin"];
 
 function shouldCache(url: string): boolean {
   if (!url.includes("/api/")) return false;
