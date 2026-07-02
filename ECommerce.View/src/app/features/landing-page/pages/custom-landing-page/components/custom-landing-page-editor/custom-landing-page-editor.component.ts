@@ -5,19 +5,18 @@ import { CdkDragDrop, moveItemInArray, DragDropModule } from "@angular/cdk/drag-
 import { Product } from "../../../../../../core/models/product";
 import { ImageUrlService } from "../../../../../../core/services/image-url.service";
 import { AppIconComponent } from "../../../../../../shared/components/app-icon/app-icon.component";
-
-interface LandingSection {
-  id: string;
-  type: string;
-  label: string;
-  visible: boolean;
-  settings?: any;
-}
+import { LandingSection } from "../../../../../../core/models/landing-page";
+import { AddComponentModalComponent } from "../add-component-modal/add-component-modal.component";
+import { CustomSectionEditorComponent } from "../custom-section-editor/custom-section-editor.component";
 
 @Component({
   selector: "app-custom-landing-page-editor",
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, DragDropModule, AppIconComponent, TitleCasePipe],
+  imports: [
+    CommonModule, FormsModule, ReactiveFormsModule, DragDropModule,
+    AppIconComponent, TitleCasePipe,
+    AddComponentModalComponent, CustomSectionEditorComponent
+  ],
   templateUrl: "./custom-landing-page-editor.component.html",
   styleUrl: "./custom-landing-page-editor.component.css"
 })
@@ -41,7 +40,7 @@ export class CustomLandingPageEditorComponent {
 
   activeEditorSection = "global";
   productSearchTerm = "";
-  isAddSectionMenuOpen = false;
+  isAddComponentModalOpen = false;
 
   toggleActiveSection(section: LandingSection): void {
     this.ensureSectionSettings(section);
@@ -82,27 +81,28 @@ export class CustomLandingPageEditorComponent {
     }
   }
 
-  addSection(type: string): void {
-    const labels: Record<string, string> = {
-      countdown: "⏱ Countdown Bar",
-      hero: "🎯 Hero / Offer",
-      "product-hero": "🛍 Product Hero",
-      "discount-cta": "💚 Discount CTA",
-      "info-banner": "🟡 Info Banner",
-      "product-details": "ℹ️ Product Details",
-      "trust-banner": "🛡️ Trust Banner",
-      "product-select": "📦 Product Selection",
-      marquee: "💬 Marquee Bar",
-      reviews: "💬 Customer Reviews",
-      "order-form": "📝 Order Form"
-    };
-    const settings: any = {};
-    if (type === "product-select") settings.customProductIds = [];
-    const section = { id: `${type}_${Date.now()}`, type, label: labels[type] || "New Section", visible: true, settings };
-    this.ensureSectionSettings(section);
+  onComponentCreated(section: LandingSection): void {
     this.sections.push(section);
     this.sections = [...this.sections];
     this.emitChange();
+    this.activeEditorSection = section.id;
+  }
+
+  getSectionIcon(section: LandingSection): string {
+    if (section.icon) return section.icon;
+    const iconMap: Record<string, string> = {
+      'marquee': 'Megaphone',
+      'countdown': 'Clock',
+      'hero': 'Rocket',
+      'product-hero': 'ShoppingBag',
+      'discount-cta': 'Gift',
+      'info-banner': 'Info',
+      'trust-banner': 'ShieldCheck',
+      'product-select': 'Package',
+      'reviews': 'Star',
+      'order-form': 'FileText',
+    };
+    return iconMap[section.type] || 'LayoutGrid';
   }
 
   get productsForSelectionPool(): Product[] {
@@ -156,11 +156,6 @@ export class CustomLandingPageEditorComponent {
     } else if (section.type === "info-banner") {
       if (s.infoBannerTitle === undefined) s.infoBannerTitle = form.infoBannerTitle || "প্রোডাক্ট ব্যবহারের নিয়মাবলী";
       if (s.infoBannerDescription === undefined) s.infoBannerDescription = form.infoBannerDescription || "প্রতিদিন সকালে ও রাতে পরিষ্কার ত্বকে অল্প পরিমাণে ক্রিম লাগিয়ে আলতোভাবে ম্যাসাজ করুন।";
-    } else if (section.type === "product-details") {
-      if (s.isProductDetailsVisible === undefined) s.isProductDetailsVisible = form.isProductDetailsVisible !== undefined ? form.isProductDetailsVisible : true;
-      if (s.productDetailsTitle === undefined) s.productDetailsTitle = form.productDetailsTitle || "🔥 প্রোডাক্ট ডিটেইলস";
-      if (s.isFabricVisible === undefined) s.isFabricVisible = form.isFabricVisible !== undefined ? form.isFabricVisible : true;
-      if (s.isDesignVisible === undefined) s.isDesignVisible = form.isDesignVisible !== undefined ? form.isDesignVisible : true;
     } else if (section.type === "trust-banner") {
       if (s.isTrustBannerVisible === undefined) s.isTrustBannerVisible = form.isTrustBannerVisible !== undefined ? form.isTrustBannerVisible : true;
       if (s.trustBannerText === undefined) s.trustBannerText = form.trustBannerText || "দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই";
@@ -168,8 +163,6 @@ export class CustomLandingPageEditorComponent {
       if (s.isReviewsVisible === undefined) s.isReviewsVisible = form.isReviewsVisible !== undefined ? form.isReviewsVisible : true;
     } else if (section.type === "marquee") {
       if (s.marqueeText === undefined) s.marqueeText = form.marqueeText || '';
-    } else if (section.type === "order-form") {
-      // promoText removed
     }
   }
 

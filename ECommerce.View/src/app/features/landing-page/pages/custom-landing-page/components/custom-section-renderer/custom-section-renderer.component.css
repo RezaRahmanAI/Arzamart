@@ -1,0 +1,9 @@
+.section-padding {
+  padding: 3rem 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding: 5rem 2.5rem;
+  }
+}

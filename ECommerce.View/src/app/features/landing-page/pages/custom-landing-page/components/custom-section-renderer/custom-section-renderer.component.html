@@ -1,0 +1,119 @@
+@if (section.customFields && section.customFields.length > 0) {
+  <section class="section-padding bg-ds-bg">
+
+    <!-- Layout A: Title + Subtitle + Image -->
+    @if (getField('title') || getField('subtitle') || getField('image')) {
+      <div class="max-w-[800px] mx-auto text-center space-y-6">
+        @if (getField('title')) {
+          <h2 class="whitespace-pre-line">{{ getFieldValue('title') }}</h2>
+        }
+        @if (getField('subtitle')) {
+          <p class="text-ds-text-sec whitespace-pre-line leading-relaxed">{{ getFieldValue('subtitle') }}</p>
+        }
+        @if (getField('image') && getFieldValue('image')) {
+          <div class="mt-8">
+            <img loading="lazy" [src]="getImageUrl(getFieldValue('image'))" 
+                 alt="Section image" class="w-full max-w-[600px] mx-auto rounded-xl shadow-lg">
+          </div>
+        }
+        @if (getField('button')) {
+          <div class="mt-8">
+            <button (click)="onButtonClick()" 
+                    class="btn bg-ds-info text-white hover:opacity-90 active:scale-95 rounded-full shadow-xl h-12 text-base font-bold px-8">
+              {{ getFieldValue('button') }}
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Layout B: Title + Rich Text + Button -->
+    @if (getField('richtext')) {
+      <div class="max-w-[800px] mx-auto space-y-6">
+        @if (getField('title')) {
+          <h2 class="text-center whitespace-pre-line">{{ getFieldValue('title') }}</h2>
+        }
+        @if (getField('richtext') && getFieldValue('richtext')) {
+          <div class="prose prose-lg max-w-none text-ds-text leading-relaxed"
+               [innerHTML]="getFieldValue('richtext') | safeHtml"></div>
+        }
+        @if (getField('button')) {
+          <div class="text-center mt-8">
+            <button (click)="onButtonClick()" 
+                    class="btn bg-ds-info text-white hover:opacity-90 active:scale-95 rounded-full shadow-xl h-12 text-base font-bold px-8">
+              {{ getFieldValue('button') }}
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Layout C: Title + Image Grid -->
+    @if (getField('images')) {
+      <div class="max-w-[1200px] mx-auto space-y-8">
+        @if (getField('title')) {
+          <h2 class="text-center whitespace-pre-line">{{ getFieldValue('title') }}</h2>
+        }
+        @if (getImagesList().length > 0) {
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            @for (img of getImagesList(); track $index) {
+              <div class="aspect-square rounded-xl overflow-hidden bg-ds-surface border border-ds-border">
+                <img loading="lazy" [src]="getImageUrl(img)" 
+                     alt="Gallery image" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Layout D: Title + Feature Cards -->
+    @if (getField('features') && !getField('image') && !getField('richtext')) {
+      <div class="max-w-[1200px] mx-auto space-y-8">
+        @if (getField('title')) {
+          <h2 class="text-center whitespace-pre-line">{{ getFieldValue('title') }}</h2>
+        }
+        @if (getFeatures().length > 0) {
+          <div class="grid md:grid-cols-3 gap-6">
+            @for (feature of getFeatures(); track $index) {
+              <div class="p-6 bg-ds-surface rounded-xl border border-ds-border hover:border-ds-info/30 transition-colors text-center">
+                <div class="size-12 bg-ds-info/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span class="text-ds-info text-lg font-bold">{{ $index + 1 }}</span>
+                </div>
+                <p class="text-ds-text font-medium leading-relaxed">{{ feature }}</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Layout E: Title + Text + Image + Button (or fallback) -->
+    @if (getField('description') && getField('image') && !getField('richtext')) {
+      <div class="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-8 items-center">
+        <div class="space-y-6">
+          @if (getField('title')) {
+            <h2 class="whitespace-pre-line">{{ getFieldValue('title') }}</h2>
+          }
+          @if (getField('description')) {
+            <p class="text-ds-text-sec whitespace-pre-line leading-relaxed">{{ getFieldValue('description') }}</p>
+          }
+          @if (getField('button')) {
+            <div>
+              <button (click)="onButtonClick()" 
+                      class="btn bg-ds-info text-white hover:opacity-90 active:scale-95 rounded-full shadow-xl h-12 text-base font-bold px-8">
+                {{ getFieldValue('button') }}
+              </button>
+            </div>
+          }
+        </div>
+        @if (getField('image') && getFieldValue('image')) {
+          <div class="rounded-xl overflow-hidden bg-ds-surface border border-ds-border">
+            <img loading="lazy" [src]="getImageUrl(getFieldValue('image'))" 
+                 alt="Section image" class="w-full h-auto object-cover">
+          </div>
+        }
+      </div>
+    }
+  </section>
+}

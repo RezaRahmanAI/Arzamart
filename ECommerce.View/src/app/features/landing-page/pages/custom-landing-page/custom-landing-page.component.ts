@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angu
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { Product, ProductVariant } from "../../../../core/models/product";
 import { CustomLandingPageService } from "../../../../admin/services/custom-landing-page.service";
-import { CustomLandingPageConfig, LandingPageData } from "../../../../core/models/landing-page";
+import { CustomLandingPageConfig, LandingPageData, LandingSection } from "../../../../core/models/landing-page";
 import { LandingPageDataService } from "../../../../core/services/landing-page-data.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
@@ -34,14 +34,7 @@ import { matchLocationFromAddress } from "../../../../core/utils/location-matche
 import { AuthService } from "../../../../core/services/auth.service";
 import { CustomLandingPageEditorComponent } from "./components/custom-landing-page-editor/custom-landing-page-editor.component";
 import { IncompleteOrderTrackerService } from "../../../../core/services/incomplete-order-tracker.service";
-
-interface LandingSection {
-  id: string;
-  type: string;
-  label: string;
-  visible: boolean;
-  settings?: any;
-}
+import { CustomSectionRendererComponent } from "./components/custom-section-renderer/custom-section-renderer.component";
 
 @Component({
   selector: "app-custom-landing-page",
@@ -60,7 +53,8 @@ interface LandingSection {
     QuickAddModalComponent,
     NgIf,
     TitleCasePipe,
-    CustomLandingPageEditorComponent
+    CustomLandingPageEditorComponent,
+    CustomSectionRendererComponent
   ],
   templateUrl: "./custom-landing-page.component.html",
   styleUrl: "./custom-landing-page.component.css"
@@ -92,9 +86,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   brandName$ = this.siteSettingsService.getSettings().pipe(map(s => s.websiteName));
   isAdmin$ = this.authService.currentUser.pipe(
-    map(user => 
-      user?.role === 'Admin' || 
-      user?.role === 'SuperAdmin' || 
+    map(user =>
+      user?.role === 'Admin' ||
+      user?.role === 'SuperAdmin' ||
       (user?.role === 'Staff' && user.allowedMenus?.includes('products'))
     )
   );
@@ -115,18 +109,16 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       });
     }
   }
-  
+
   sections: LandingSection[] = [
     { id: 'marquee',        type: 'marquee',        label: '💬 Marquee Bar',         visible: true },
     { id: 'countdown',      type: 'countdown',      label: '⏱ Countdown Bar',       visible: true },
     { id: 'hero',           type: 'hero',           label: '🎯 Hero / Offer',         visible: true },
     { id: 'product-hero',   type: 'product-hero',   label: '🛍 Product Hero',         visible: true },
-    { id: 'ad-banners',     type: 'ad-banners',     label: '🖼 Ad Banners',           visible: true },
     { id: 'discount-cta',   type: 'discount-cta',   label: '💚 Discount CTA',         visible: true },
     { id: 'info-banner',    type: 'info-banner',    label: '🟡 Info Banner',          visible: true },
-    { id: 'product-select', type: 'product-select', label: '📦 Product Selection',    visible: true },
-    { id: 'product-details',type: 'product-details', label: 'ℹ️ Product Details',     visible: true },
     { id: 'trust-banner',   type: 'trust-banner',   label: '🛡️ Trust Banner',        visible: true },
+    { id: 'product-select', type: 'product-select', label: '📦 Product Selection',    visible: true },
     { id: 'reviews',        type: 'reviews',        label: '💬 Customer Reviews',     visible: false },
     { id: 'order-form',     type: 'order-form',     label: '📝 Order Form',           visible: true },
   ];
@@ -169,11 +161,11 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         product: product
       };
     }
-    
+
     if (size !== undefined) {
       this.productSelections[product.id].selectedSize = size;
     }
-    
+
     this.productSelections[product.id].quantity = quantity;
   }
 
@@ -280,10 +272,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     relativeTimerTotalMinutes: [null as number | null],
     isTimerVisible: [true],
     headerTitle: ["অফারটি শেষ হতে মাত্র কিছুক্ষণ বাকি আছে!"],
-    isProductDetailsVisible: [true],
-    productDetailsTitle: ["🔥 প্রোডাক্ট ডিটেইলস"],
-    isFabricVisible: [true],
-    isDesignVisible: [true],
     isTrustBannerVisible: [true],
     trustBannerText: ["দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই"],
     featuredProductName: [""],
@@ -423,7 +411,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.intelligentLocationMatch(address);
       });
 
-    // autofill prompt removed - info auto-fills on phone input
     this.startWatchingFluctuation();
   }
 
@@ -443,8 +430,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       if (area && this.orderForm.get("area")?.value !== area) this.selectArea(area);
     }
   }
-
-
 
   ngOnDestroy(): void {
     if (this.timerInterval) clearInterval(this.timerInterval);
@@ -481,7 +466,25 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         if (res.config?.sectionsJson) {
           try {
             this.sections = JSON.parse(res.config.sectionsJson);
-            this.sections.forEach(s => this.ensureSectionSettings(s));
+
+            // Migration: remove legacy types
+            this.sections = this.sections.filter(s => s.type !== 'product-details' && s.type !== 'ad-banners');
+
+            // Ensure marquee is always visible and first (if exists)
+            const marquee = this.sections.find(s => s.type === 'marquee');
+            if (marquee) {
+              marquee.visible = true;
+              this.sections = this.sections.filter(s => s.type !== 'marquee');
+              this.sections.unshift(marquee);
+            }
+
+            // Ensure all sections have required fields
+            this.sections.forEach(s => {
+              if (!s.label) s.label = s.type;
+              if (s.visible === undefined) s.visible = true;
+              this.ensureSectionSettings(s);
+            });
+
             this.configForm.patchValue({ sectionsJson: res.config.sectionsJson });
 
             // Fallback for timer minutes from sections settings
@@ -581,7 +584,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       const storageKey = `clp_timer_${productId}`;
       const minutesKey = `clp_timer_mins_${productId}`;
-      
+
       let endTimeStr = localStorage.getItem(storageKey);
       let storedMins = localStorage.getItem(minutesKey);
       let endTime: number;
@@ -647,7 +650,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     const selections = this.selectedProductList;
-    
+
     const itemsMissingSize = selections.filter(s => (s.product.variants?.length ?? 0) > 0 && !s.selectedSize);
     if (itemsMissingSize.length > 0) {
       this.notification.warn(`"${itemsMissingSize[0].product.name}" - আগে সাইজ সিলেক্ট করুন`);
@@ -701,13 +704,13 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     };
 
     this.orderService.placeOrder({
-      state: { 
-        fullName: form.fullName, 
-        phone: form.phone, 
-        address: form.address, 
-        city: form.city, 
-        area: form.area, 
-        deliveryMethodId: form.deliveryMethodId 
+      state: {
+        fullName: form.fullName,
+        phone: form.phone,
+        address: form.address,
+        city: form.city,
+        area: form.area,
+        deliveryMethodId: form.deliveryMethodId
       },
       cartItems: cartItems,
       summary,
@@ -862,7 +865,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     if (!section.settings) section.settings = {};
     const s = section.settings;
     const form = this.configForm.value;
-    
+
     if (section.type === 'countdown') {
       if (s.isTimerVisible === undefined) s.isTimerVisible = form.isTimerVisible !== undefined ? form.isTimerVisible : true;
       if (s.headerTitle === undefined) s.headerTitle = form.headerTitle || 'অফারটি শেষ হতে মাত্র কিছুক্ষণ বাকি আছে!';
@@ -880,11 +883,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     } else if (section.type === 'info-banner') {
       if (s.infoBannerTitle === undefined) s.infoBannerTitle = form.infoBannerTitle || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী';
       if (s.infoBannerDescription === undefined) s.infoBannerDescription = form.infoBannerDescription || 'প্রতিদিন সকালে ও রাতে পরিষ্কার ত্বকে অল্প পরিমাণে ক্রিম লাগিয়ে আলতোভাবে ম্যাসাজ করুন।';
-    } else if (section.type === 'product-details') {
-      if (s.isProductDetailsVisible === undefined) s.isProductDetailsVisible = form.isProductDetailsVisible !== undefined ? form.isProductDetailsVisible : true;
-      if (s.productDetailsTitle === undefined) s.productDetailsTitle = form.productDetailsTitle || '🔥 প্রোডাক্ট ডিটেইলস';
-      if (s.isFabricVisible === undefined) s.isFabricVisible = form.isFabricVisible !== undefined ? form.isFabricVisible : true;
-      if (s.isDesignVisible === undefined) s.isDesignVisible = form.isDesignVisible !== undefined ? form.isDesignVisible : true;
     } else if (section.type === 'trust-banner') {
       if (s.isTrustBannerVisible === undefined) s.isTrustBannerVisible = form.isTrustBannerVisible !== undefined ? form.isTrustBannerVisible : true;
       if (s.trustBannerText === undefined) s.trustBannerText = form.trustBannerText || 'দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই';
@@ -892,8 +890,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       if (s.isReviewsVisible === undefined) s.isReviewsVisible = form.isReviewsVisible !== undefined ? form.isReviewsVisible : true;
     } else if (section.type === 'marquee') {
       if (s.marqueeText === undefined) s.marqueeText = form.marqueeText || '';
-    } else if (section.type === 'order-form') {
-      // promoText removed
     }
   }
 
@@ -920,35 +916,35 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   get productsForSelectionPool(): Product[] {
     const pool = [...this.defaultRelatedProducts];
-    
+
     if (this.productSearchTerm) {
       this.allProducts.forEach(p => {
         if (!pool.find(item => item.id === p.id)) {
-          if (p.name.toLowerCase().includes(this.productSearchTerm.toLowerCase()) || 
+          if (p.name.toLowerCase().includes(this.productSearchTerm.toLowerCase()) ||
               p.sku.toLowerCase().includes(this.productSearchTerm.toLowerCase())) {
             pool.push(p);
           }
         }
       });
     }
-    
+
     return pool;
   }
 
   toggleProductSelection(productId: number): void {
     const section = this.sections.find(s => s.type === "product-select");
     if (!section) return;
-    
+
     if (!section.settings) section.settings = {};
     if (!section.settings.customProductIds) section.settings.customProductIds = [];
-    
+
     const index = section.settings.customProductIds.indexOf(productId);
     if (index > -1) {
       section.settings.customProductIds.splice(index, 1);
     } else {
       section.settings.customProductIds.push(productId);
     }
-    
+
     this.refreshRelatedProducts();
     this.updateSections();
   }
@@ -978,11 +974,11 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private refreshRelatedProducts(): void {
     const section = this.sections.find(s => s.type === "product-select");
     const customIds = section?.settings?.customProductIds as number[] | undefined;
-    
+
     if (customIds && customIds.length > 0) {
       const combined = [...this.allProducts, ...this.defaultRelatedProducts];
       const selected = combined.filter(p => customIds.includes(p.id) && p.id !== this.data?.product.id);
-      
+
       if (selected.length < customIds.length && !this.isProductSelectionLoading) {
         this.productService.getProducts({ ids: customIds.join(","), pageSize: 100 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
           this.relatedProducts = res.data.filter(p => p.id !== this.data?.product.id);
@@ -1006,18 +1002,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       });
     }
 
-    // 2. Product Details Section
-    const details = this.sections.find(s => s.type === 'product-details');
-    if (details && details.settings) {
-      this.configForm.patchValue({
-        isProductDetailsVisible: details.settings.isProductDetailsVisible ?? true,
-        productDetailsTitle: details.settings.productDetailsTitle || '',
-        isFabricVisible: details.settings.isFabricVisible ?? true,
-        isDesignVisible: details.settings.isDesignVisible ?? true
-      });
-    }
-
-    // 3. Trust Banner Section
+    // 2. Trust Banner Section
     const trust = this.sections.find(s => s.type === 'trust-banner');
     if (trust && trust.settings) {
       this.configForm.patchValue({
@@ -1026,21 +1011,19 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       });
     }
 
-    // 4. Reviews Section
+    // 3. Reviews Section
     const reviews = this.sections.find(s => s.type === 'reviews');
     if (reviews && reviews.settings) {
       this.configForm.patchValue({
         isReviewsVisible: reviews.settings.isReviewsVisible ?? true
       });
     }
-
-    // 5. Order Form Section (promoText removed)
   }
 
   saveLayout(): void {
     if (!this.data) return;
     this.isSaving = true;
-    
+
     this.syncSectionSettingsToForm();
 
     const formValue = this.configForm.getRawValue();
@@ -1052,15 +1035,15 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     };
 
     this.customLandingPageService.saveConfig(config).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => { 
-        this.isSaving = false; 
-        this.notification.success('Landing Page Updated!'); 
+      next: () => {
+        this.isSaving = false;
+        this.notification.success('Landing Page Updated!');
         if (this.data) this.data.config = config;
         this.cdr.detectChanges();
       },
-      error: () => { 
-        this.isSaving = false; 
-        this.notification.error('Update failed.'); 
+      error: () => {
+        this.isSaving = false;
+        this.notification.error('Update failed.');
         this.cdr.detectChanges();
       }
     });

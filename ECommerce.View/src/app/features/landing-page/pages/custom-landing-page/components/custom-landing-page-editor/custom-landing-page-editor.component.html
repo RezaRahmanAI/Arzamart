@@ -1,23 +1,21 @@
 <div class="editor-panel w-[320px] h-full flex-shrink-0 bg-ds-bg border-r border-ds-border overflow-y-auto z-[100] transition-all"
      [class.hidden]="!isEditorOpen">
-  
-
 
   <div class="p-4 space-y-4" [formGroup]="configForm">
-    
+
     <!-- Section: Layout & Components -->
     <div class="space-y-3">
       <div class="flex items-center justify-between px-2">
         <p class="text-ds-2xs uppercase tracking-widest text-ds-text-muted font-bold">Layout Components</p>
         <p class="text-ds-3xs text-ds-text-muted italic">Drag to reorder</p>
       </div>
-      
+
       <div class="space-y-2" cdkDropList (cdkDropListDropped)="drop($event)">
         @for (section of sections; track section.id; let i = $index) {
           <div class="bg-ds-bg/5 rounded-lg border border-ds-border overflow-hidden transition-all"
                cdkDrag
                [class.active-section-border]="activeEditorSection === section.id">
-            
+
             <!-- Section Header -->
             <div class="flex items-center gap-1 p-1 hover:bg-ds-bg/5 group">
               <!-- Drag Handle -->
@@ -27,10 +25,11 @@
 
               <button (click)="toggleActiveSection(section)"
                       class="flex-1 flex items-center gap-1.5 text-left min-w-0 px-1 py-1.5">
-                <span class="text-ds-text text-sm font-medium leading-tight">{{ section.label }}</span>
+                <app-icon [name]="getSectionIcon(section)" size="14" class="text-ds-text-muted flex-shrink-0"></app-icon>
+                <span class="text-ds-text text-sm font-medium leading-tight truncate">{{ section.label }}</span>
                 <app-icon [name]="activeEditorSection === section.id ? 'ChevronUp' : 'ChevronDown'" size="10" class="text-ds-text-muted shrink-0"></app-icon>
               </button>
-              
+
               <div class="flex items-center gap-1 pr-1">
                 <button (click)="toggleVisibility(i); $event.stopPropagation()" class="p-1.5 hover:bg-ds-surface rounded-md transition-colors" [class.text-ds-info]="section.visible">
                   <app-icon [name]="section.visible ? 'Eye' : 'EyeOff'" size="14"></app-icon>
@@ -113,14 +112,6 @@
                       </div>
                     </div>
                   }
-                  @case ('product-details') {
-                    <div class="space-y-3 pt-3">
-                      <div class="space-y-1.5">
-                        <label class="text-ds-2xs text-ds-text-muted uppercase">Section Title</label>
-                        <input type="text" [(ngModel)]="section.settings.productDetailsTitle" [ngModelOptions]="{standalone: true}" class="editor-input bg-ds-surface">
-                      </div>
-                    </div>
-                  }
                   @case ('trust-banner') {
                     <div class="space-y-3 pt-3">
                       <div class="flex items-center justify-between">
@@ -152,10 +143,10 @@
                   @case ('product-select') {
                     <div class="space-y-4 pt-3">
                       <p class="text-ds-2xs text-ds-text-muted uppercase font-bold tracking-widest">Custom Product Selection</p>
-                      
+
                       <div class="relative">
-                        <input type="text" 
-                               [(ngModel)]="productSearchTerm" 
+                        <input type="text"
+                               [(ngModel)]="productSearchTerm"
                                [ngModelOptions]="{standalone: true}"
                                placeholder="Search products..."
                                class="editor-input bg-ds-surface pl-10">
@@ -188,13 +179,19 @@
                           }
                         }
                       </div>
-                      
+
                       <div class="p-3 bg-ds-info/5 rounded-lg border border-dashed border-ds-info/20">
                         <p class="text-ds-2xs text-ds-text-muted text-center leading-relaxed font-bengali">
                           এখান থেকে পণ্য সিলেক্ট করলে সেগুলো ল্যান্ডিং পেজে দেখাবে। সিলেক্ট না করলে অটোমেটিক রিলেটেড পণ্য দেখাবে।
                         </p>
                       </div>
                     </div>
+                  }
+                  @case ('custom') {
+                    <app-custom-section-editor
+                      [section]="section"
+                      (change)="emitChange()">
+                    </app-custom-section-editor>
                   }
                   @default {
                     <p class="text-ds-2xs text-ds-text-muted py-4 text-center italic">No extra settings for this component</p>
@@ -206,24 +203,13 @@
         }
       </div>
 
-      <!-- Add Section -->
-      <div class="relative mt-6">
-        <button (click)="isAddSectionMenuOpen = !isAddSectionMenuOpen" 
+      <!-- Add Component (opens modal) -->
+      <div class="mt-6">
+        <button (click)="isAddComponentModalOpen = true"
                 class="w-full h-11 border border-dashed border-ds-border hover:border-ds-info text-ds-text-muted hover:text-ds-info flex items-center justify-center gap-2 transition-all rounded-lg text-sm bg-ds-surface">
           <app-icon name="Plus" size="14"></app-icon>
           Add Component
         </button>
-        @if (isAddSectionMenuOpen) {
-          <div class="absolute bottom-full left-0 right-0 bg-ds-accent border border-ds-border shadow-2xl z-50 overflow-hidden rounded-lg mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
-            <div class="max-h-64 overflow-y-auto custom-scrollbar">
-              @for (type of ['countdown', 'hero', 'product-hero', 'discount-cta', 'info-banner', 'product-details', 'trust-banner', 'reviews', 'product-select', 'order-form', 'marquee']; track type) {
-                <button (click)="addSection(type); isAddSectionMenuOpen = false" class="w-full text-left px-4 py-2.5 text-ds-text-muted hover:bg-ds-info hover:text-white transition-all border-b border-ds-border last:border-0 text-sm">
-                  {{ type.replace('-', ' ') | titlecase }}
-                </button>
-              }
-            </div>
-          </div>
-        }
       </div>
     </div>
 
@@ -242,11 +228,18 @@
         Save & Publish Page
       }
     </button>
-    
-    <button (click)="share.emit()" 
+
+    <button (click)="share.emit()"
             class="w-full h-11 bg-ds-bg/5 border border-ds-border text-ds-text hover:bg-ds-surface transition-all flex items-center justify-center gap-2 rounded-lg text-sm">
       <app-icon name="Share2" size="16"></app-icon>
       Share Page Link
     </button>
   </div>
 </div>
+
+<!-- Add Component Modal -->
+<app-add-component-modal
+  [isOpen]="isAddComponentModalOpen"
+  (close)="isAddComponentModalOpen = false"
+  (componentCreated)="onComponentCreated($event)">
+</app-add-component-modal>

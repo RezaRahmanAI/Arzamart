@@ -7,19 +7,11 @@ import { Subject, combineLatest, of } from "rxjs";
 import { takeUntil, tap } from "rxjs/operators";
 import { ProductsService } from "../../services/products.service";
 import { CustomLandingPageService } from "../../services/custom-landing-page.service";
-import { CustomLandingPageConfig, LandingPageData } from "../../../core/models/landing-page";
+import { CustomLandingPageConfig, LandingPageData, LandingSection } from "../../../core/models/landing-page";
 import { Product } from "../../../core/models/product";
 import { NotificationService } from "../../../core/services/notification.service";
 import { CustomLandingPageEditorComponent } from "../../../features/landing-page/pages/custom-landing-page/components/custom-landing-page-editor/custom-landing-page-editor.component";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
-
-interface LandingSection {
-  id: string;
-  type: string;
-  label: string;
-  visible: boolean;
-  settings?: any;
-}
 
 @Component({
   selector: "app-landing-page-design",
@@ -47,15 +39,14 @@ export class LandingPageDesignComponent implements OnInit, OnDestroy {
   product: Product | null = null;
   config: CustomLandingPageConfig | null = null;
   sections: LandingSection[] = [
+    { id: 'marquee',        type: 'marquee',        label: '💬 Marquee Bar',         visible: true },
     { id: 'countdown',      type: 'countdown',      label: '⏱ Countdown Bar',       visible: true },
     { id: 'hero',           type: 'hero',           label: '🎯 Hero / Offer',         visible: true },
     { id: 'product-hero',   type: 'product-hero',   label: '🛍 Product Hero',         visible: true },
-    { id: 'ad-banners',     type: 'ad-banners',     label: '🖼 Ad Banners',           visible: true },
     { id: 'discount-cta',   type: 'discount-cta',   label: '💚 Discount CTA',         visible: true },
     { id: 'info-banner',    type: 'info-banner',    label: '🟡 Info Banner',          visible: true },
-    { id: 'product-select', type: 'product-select', label: '📦 Product Selection',    visible: true },
-    { id: 'product-details',type: 'product-details', label: 'ℹ️ Product Details',     visible: true },
     { id: 'trust-banner',   type: 'trust-banner',   label: '🛡️ Trust Banner',        visible: true },
+    { id: 'product-select', type: 'product-select', label: '📦 Product Selection',    visible: true },
     { id: 'reviews',        type: 'reviews',        label: '💬 Customer Reviews',     visible: false },
     { id: 'order-form',     type: 'order-form',     label: '📝 Order Form',           visible: true },
   ];
@@ -241,6 +232,23 @@ export class LandingPageDesignComponent implements OnInit, OnDestroy {
             if (config.sectionsJson) {
               try {
                 this.sections = JSON.parse(config.sectionsJson);
+
+                // Migration: remove legacy types
+                this.sections = this.sections.filter(s => s.type !== 'product-details' && s.type !== 'ad-banners');
+
+                // Ensure marquee is always visible and first (if exists)
+                const marquee = this.sections.find(s => s.type === 'marquee');
+                if (marquee) {
+                  marquee.visible = true;
+                  this.sections = this.sections.filter(s => s.type !== 'marquee');
+                  this.sections.unshift(marquee);
+                }
+
+                // Ensure all sections have required fields
+                this.sections.forEach(s => {
+                  if (!s.label) s.label = s.type;
+                  if (s.visible === undefined) s.visible = true;
+                });
               } catch (e) {
                 console.error("Invalid sections JSON", e);
               }
@@ -341,18 +349,7 @@ export class LandingPageDesignComponent implements OnInit, OnDestroy {
       });
     }
 
-    // 2. Product Details Section
-    const details = this.sections.find(s => s.type === 'product-details');
-    if (details && details.settings) {
-      this.configForm.patchValue({
-        isProductDetailsVisible: details.settings.isProductDetailsVisible ?? true,
-        productDetailsTitle: details.settings.productDetailsTitle || '',
-        isFabricVisible: details.settings.isFabricVisible ?? true,
-        isDesignVisible: details.settings.isDesignVisible ?? true
-      });
-    }
-
-    // 3. Trust Banner Section
+    // 2. Trust Banner Section
     const trust = this.sections.find(s => s.type === 'trust-banner');
     if (trust && trust.settings) {
       this.configForm.patchValue({
@@ -361,19 +358,11 @@ export class LandingPageDesignComponent implements OnInit, OnDestroy {
       });
     }
 
-    // 4. Reviews Section
+    // 3. Reviews Section
     const reviews = this.sections.find(s => s.type === 'reviews');
     if (reviews && reviews.settings) {
       this.configForm.patchValue({
         isReviewsVisible: reviews.settings.isReviewsVisible ?? true
-      });
-    }
-
-    // 5. Order Form Section
-    const orderForm = this.sections.find(s => s.type === 'order-form');
-    if (orderForm && orderForm.settings) {
-      this.configForm.patchValue({
-        promoText: orderForm.settings.promoText || ''
       });
     }
   }

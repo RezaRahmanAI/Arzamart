@@ -4,10 +4,10 @@ export interface CustomLandingPageConfig {
   relativeTimerTotalMinutes?: number | null;
   isTimerVisible: boolean;
   headerTitle?: string;
-  isProductDetailsVisible: boolean;
+  isProductDetailsVisible?: boolean;
   productDetailsTitle?: string;
-  isFabricVisible: boolean;
-  isDesignVisible: boolean;
+  isFabricVisible?: boolean;
+  isDesignVisible?: boolean;
   isTrustBannerVisible: boolean;
   trustBannerText?: string;
   featuredProductName?: string;
@@ -34,4 +34,36 @@ export interface LandingPageData {
   product: any;
   config: CustomLandingPageConfig | null;
   relatedProducts?: any[];
+}
+
+// ─── Dynamic Section System ───────────────────────────────────────────
+
+export interface LandingSection {
+  id: string;
+  type: string;
+  label: string;
+  visible: boolean;
+  icon?: string;
+  settings?: any;
+  customFields?: CustomField[];
+}
+
+export type CustomFieldType = 'text' | 'textarea' | 'richtext' | 'image' | 'images' | 'button';
+
+export interface CustomField {
+  key: string;
+  label: string;
+  type: CustomFieldType;
+  value: any;
+  enabled: boolean;
+}
+
+export type LayoutType = 'A' | 'B' | 'C' | 'D' | 'E';
+
+export interface LayoutTypeConfig {
+  type: LayoutType;
+  name: string;
+  description: string;
+  icon: string;
+  defaultFields: Omit<CustomField, 'value'>[];
 }

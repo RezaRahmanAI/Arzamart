@@ -1,6 +1,6 @@
 ﻿@if (data) {
   <div class="landing-builder-container flex h-screen overflow-hidden bg-ds-bg text-ds-text antialiased">
-    
+
     <!-- ═══════════════════════════════════════════
          EDITOR / ADMIN PANEL (LEFT SIDEBAR)
     ═══════════════════════════════════════════ -->
@@ -26,23 +26,15 @@
          MAIN CONTENT AREA (PREVIEW)
     ═══════════════════════════════════════════ -->
     <div class="flex-1 h-full overflow-y-auto relative scroll-smooth bg-ds-bg">
-      
-      <!-- Editor Toggle Button (Hidden in clean preview) -->
-      @if ((isAdmin$ | async) && !isEditorOpen && !isPreviewMode) {
-        <button (click)="isEditorOpen = true" 
-                class="fixed top-6 left-6 z-[200] w-14 h-14 bg-ds-info text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all border border-white/20">
-          <app-icon name="Settings" size="24"></app-icon>
-        </button>
-      }
 
       <main class="min-h-screen">
 
         @for (section of sections; track section.id) {
           @if (section.visible) {
-            
+
             <div [id]="section.id">
               @switch (section.type) {
-                
+
                 <!-- MODULE 1: Countdown Bar -->
                 <!-- Marquee Bar -->
                 @case ('marquee') {
@@ -99,7 +91,7 @@
                         {{ section.settings?.heroBadge !== undefined ? section.settings.heroBadge : (configForm.get('heroBadge')?.value || 'স্টক ফুরিয়ে যাওয়ার আগেই সংগ্রহ করুন') }}
                       </div>
                       <div>
-                        <button (click)="scrollToOrder()" 
+                        <button (click)="scrollToOrder()"
                                 class="btn bg-white hover:opacity-90 active:scale-95 text-ds-info rounded-full shadow-2xl h-12 text-base font-bold">
                           অর্ডার করুন এখনই
                         </button>
@@ -126,7 +118,7 @@
                       </div>
                       <!-- Image -->
                       <div class="order-1 lg:order-2 h-[400px] lg:h-auto overflow-hidden bg-ds-text/10">
-                        <img loading="lazy" [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')" 
+                        <img loading="lazy" [src]="imageUrlService.getImageUrl(data.product.imageUrl || '')"
                              alt="Product" class="w-full h-full object-contain grayscale-[20%]">
                       </div>
                     </div>
@@ -157,24 +149,10 @@
                       <div class="size-16 bg-ds-bg/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-black/10">
                         <app-icon name="Info" size="32" className="text-ds-text"></app-icon>
                       </div>
-                      <h2 class="mb-4 whitespace-pre-line">{{ section.settings?.infoBannerTitle !== undefined ? section.settings.infoBannerTitle : (configForm.get('infoBannerTitle')?.value || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী') }}</h2>
+                      <h2 class="mb-4 whitespace-pre-line">{{ section.settings?.infoBannerTitle !== undefined ? section.settings.infoBannerTitle : (configForm.get('infoBannerTitle')?.value || 'প্রোডাক্ট ব্যবহারের নিয়মাবলী') }}</h2>
                       <p class="text-white text-lg font-medium leading-relaxed whitespace-pre-line">
                         {{ section.settings?.infoBannerDescription !== undefined ? section.settings.infoBannerDescription : (configForm.get('infoBannerDescription')?.value || 'আমাদের পণ্যগুলি ১০০% প্রাকৃতিক উপাদান দিয়ে তৈরি।') }}
                       </p>
-                    </div>
-                  </section>
-                }
-
-                <!-- MODULE 7: Product Details -->
-                @case ('product-details') {
-                  <section class="section-padding bg-ds-bg">
-                    <div class="max-w-[800px] mx-auto">
-                      <h2 class="text-center mb-10">{{ section.settings?.productDetailsTitle !== undefined ? section.settings.productDetailsTitle : (configForm.get('productDetailsTitle')?.value || 'প্রোডাক্টের বিবরণ') }}</h2>
-                      <div class="p-6 bg-ds-surface rounded-lg">
-                        <div class="prose max-w-none text-sm text-ds-text whitespace-pre-wrap leading-relaxed">
-                          {{ data.product.description }}
-                        </div>
-                      </div>
                     </div>
                   </section>
                 }
@@ -215,7 +193,7 @@
                         @for (p of [data.product].concat(relatedProducts); track p.id) {
                           <div class="relative p-3 sm:p-4 transition-all duration-500 border-2"
                                [ngClass]="isProductSelected(p) ? 'product-card-selected' : 'product-card'">
-                            
+
                             <!-- Checkbox -->
                             <div class="absolute -top-2.5 -left-2.5 z-10" (click)="$event.stopPropagation(); toggleProductCheck(p)">
                               <div class="w-7 h-7 flex items-center justify-center rounded-sm border-2 transition-all duration-200 cursor-pointer"
@@ -233,15 +211,15 @@
                             }
 
                             <div class="cursor-pointer mb-4 group relative" (click)="$event.stopPropagation(); openProductDetails(p)">
-                              <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" 
+                              <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')"
                                    [alt]="p.name" class="w-full h-[180px] sm:h-[220px] object-contain rounded-sm bg-ds-surface">
                               <div class="absolute inset-0 bg-ds-text/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <span class="bg-ds-bg/90 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">Details</span>
                               </div>
                             </div>
-                            
+
                             <h4 class="mb-1 !text-sm !font-bold">{{ p.name }}</h4>
-                            
+
                             <div class="flex items-center flex-nowrap gap-2 mb-4">
                               <span class="text-ds-info font-bold whitespace-nowrap">৳ {{ getProductPrice(p) }}</span>
                               @if (p.compareAtPrice && p.compareAtPrice > p.price) {
@@ -281,11 +259,57 @@
                   </section>
                 }
 
+                <!-- MODULE 10: Customer Reviews -->
+                @case ('reviews') {
+                  @if (section.settings?.isReviewsVisible !== undefined ? section.settings.isReviewsVisible : true) {
+                    @if (productReviews.length > 0) {
+                      <section class="section-padding bg-ds-bg border-t border-ds-border">
+                        <div class="max-w-[1200px] mx-auto">
+                          <div class="text-center mb-10">
+                            <h2 class="mb-2">Customer Reviews</h2>
+                            <p class="text-ds-text-sec">আমাদের গ্রাহকরা কী বলছেন</p>
+                          </div>
+                          <div class="grid md:grid-cols-3 gap-6">
+                            @for (review of productReviews.slice(0, 6); track review.id) {
+                              <div class="p-6 bg-ds-surface rounded-xl border border-ds-border hover:border-ds-info/30 transition-colors">
+                                <div class="flex items-center gap-1 mb-3">
+                                  @for (star of [1,2,3,4,5]; track star) {
+                                    <app-icon [name]="star <= review.rating ? 'Star' : 'StarHalf'" size="16"
+                                              [className]="star <= review.rating ? 'text-ds-warning' : 'text-ds-border'"></app-icon>
+                                  }
+                                </div>
+                                <p class="text-ds-text font-medium mb-3 leading-relaxed">{{ review.comment }}</p>
+                                <div class="flex items-center justify-between">
+                                  <p class="text-ds-text-sec text-sm font-medium">{{ review.customerName }}</p>
+                                  @if (review.isVerifiedPurchase) {
+                                    <span class="inline-flex items-center gap-1 text-xs text-green-600 font-medium">
+                                      <app-icon name="CheckCircle" size="12"></app-icon>
+                                      Verified
+                                    </span>
+                                  }
+                                </div>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      </section>
+                    }
+                  }
+                }
+
+                <!-- CUSTOM SECTION RENDERER -->
+                @case ('custom') {
+                  <app-custom-section-renderer
+                    [section]="section"
+                    [scrollToOrder]="scrollToOrder.bind(this)">
+                  </app-custom-section-renderer>
+                }
+
                 @case ('order-form') {
                   <section id="order-form-section" class="section-padding bg-ds-bg border-t border-ds-border py-16 px-4">
                     <div class="w-full max-w-[550px] mx-auto bg-ds-bg shadow-xl border border-ds-border rounded-[24px] p-6 md:p-8">
                       <h2 class="text-2xl font-extrabold text-ds-text mb-2 text-center font-bengali">অর্ডার করুন</h2>
-                      <p class="text-sm text-ds-text-sec text-center mb-6 leading-relaxed">অর্ডার করতে নিচের ফর্মে আপনার নাম, পূর্ণ ঠিকানা ও মোবাইল নম্বর লিখে “অর্ডার সম্পন্ন করুন” বাটনে ক্লিক করুন</p>
+                      <p class="text-sm text-ds-text-sec text-center mb-6 leading-relaxed">অর্ডার করতে নিচের ফর্মে আপনার নাম, পূর্ণ ঠিকানা ও মোবাইল নম্বর লিখে "অর্ডার সম্পন্ন করুন" বাটনে ক্লিক করুন</p>
 
                       <!-- Product Cart -->
                       <div class="mb-6">
@@ -399,7 +423,7 @@
        STICKY BOTTOM BAR
   ═══════════════════════════════════════════ -->
   <div class="fixed bottom-4 left-0 right-0 px-3 md:px-10 w-full flex justify-between gap-2 md:gap-3 z-[90]">
-    <a (click)="whatsappUs()" 
+    <a (click)="whatsappUs()"
        class="btn bg-ds-whatsapp hover:opacity-90 active:scale-95 text-white flex items-center gap-2 md:gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all cursor-pointer h-11 md:h-14 px-4 md:px-10 text-sm md:text-base font-bold">
       <app-icon name="MessageCircle" size="18"></app-icon>
       <span class="hidden md:inline">WhatsApp</span>

@@ -1,0 +1,145 @@
+<div class="space-y-4 pt-3">
+
+  <!-- Section Label -->
+  <div class="space-y-1.5">
+    <label class="text-ds-2xs text-ds-text-muted uppercase font-bold tracking-widest">সেকশনের নাম</label>
+    <input type="text"
+           [ngModel]="section.label"
+           (ngModelChange)="updateLabel($event)"
+           [ngModelOptions]="{standalone: true}"
+           class="w-full h-9 px-3 bg-ds-surface border border-ds-border rounded-lg text-sm text-ds-text focus:outline-none focus:border-ds-info transition-colors">
+  </div>
+
+  <div class="border-t border-ds-border"></div>
+
+  <!-- Dynamic Fields -->
+  @for (field of section.customFields; track field.key; let i = $index) {
+    <div class="space-y-2 p-3 bg-ds-bg/50 rounded-lg border border-ds-border">
+
+      <!-- Field Header -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-ds-3xs px-2 py-0.5 rounded bg-ds-surface border border-ds-border text-ds-text-muted uppercase">
+            {{ field.type }}
+          </span>
+          <span class="text-xs font-bold text-ds-text">{{ field.label }}</span>
+        </div>
+        <button (click)="toggleField(field.key); $event.stopPropagation()"
+                class="w-8 h-5 rounded-full transition-colors relative"
+                [ngClass]="field.enabled ? 'bg-ds-info' : 'bg-ds-border'">
+          <div class="w-3.5 h-3.5 bg-white rounded-full absolute top-[3px] transition-all shadow-sm"
+               [ngClass]="field.enabled ? 'left-[18px]' : 'left-[3px]'"></div>
+        </button>
+      </div>
+
+      <!-- Field Label Editor -->
+      <div class="space-y-1">
+        <label class="text-ds-3xs text-ds-text-muted">লেবেল</label>
+        <input type="text"
+               [ngModel]="field.label"
+               (ngModelChange)="updateFieldLabel(field.key, $event)"
+               [ngModelOptions]="{standalone: true}"
+               class="w-full h-8 px-2 bg-ds-surface border border-ds-border rounded text-xs text-ds-text focus:outline-none focus:border-ds-info transition-colors">
+      </div>
+
+      <!-- Field Value Editor (based on type) -->
+      @if (field.enabled) {
+        @switch (field.type) {
+          @case ('text') {
+            <div class="space-y-1">
+              <label class="text-ds-3xs text-ds-text-muted">মান</label>
+              <input type="text"
+                     [ngModel]="field.value"
+                     (ngModelChange)="updateFieldValue(field.key, $event)"
+                     [ngModelOptions]="{standalone: true}"
+                     placeholder="টেক্সট লিখুন..."
+                     class="w-full h-9 px-3 bg-ds-surface border border-ds-border rounded-lg text-sm text-ds-text focus:outline-none focus:border-ds-info transition-colors">
+            </div>
+          }
+          @case ('textarea') {
+            <div class="space-y-1">
+              <label class="text-ds-3xs text-ds-text-muted">মান</label>
+              <textarea [ngModel]="field.value"
+                        (ngModelChange)="updateFieldValue(field.key, $event)"
+                        [ngModelOptions]="{standalone: true}"
+                        rows="3"
+                        placeholder="টেক্সট লিখুন..."
+                        class="w-full px-3 py-2 bg-ds-surface border border-ds-border rounded-lg text-sm text-ds-text resize-none focus:outline-none focus:border-ds-info transition-colors"></textarea>
+            </div>
+          }
+          @case ('richtext') {
+            <div class="space-y-1">
+              <label class="text-ds-3xs text-ds-text-muted">মান</label>
+              <app-rich-text-editor
+                [ngModel]="field.value"
+                (ngModelChange)="updateFieldValue(field.key, $event)"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="সমৃদ্ধ টেক্সট লিখুন...">
+              </app-rich-text-editor>
+            </div>
+          }
+          @case ('image') {
+            <div class="space-y-1">
+              <label class="text-ds-3xs text-ds-text-muted">ছবির URL</label>
+              <input type="url"
+                     [ngModel]="field.value"
+                     (ngModelChange)="updateFieldValue(field.key, $event)"
+                     [ngModelOptions]="{standalone: true}"
+                     placeholder="https://example.com/image.jpg"
+                     class="w-full h-9 px-3 bg-ds-surface border border-ds-border rounded-lg text-sm text-ds-text focus:outline-none focus:border-ds-info transition-colors">
+              @if (field.value) {
+                <div class="mt-2 rounded-lg overflow-hidden border border-ds-border bg-ds-surface">
+                  <img [src]="field.value" alt="Preview" class="w-full h-32 object-contain">
+                </div>
+              }
+            </div>
+          }
+          @case ('images') {
+            <div class="space-y-2">
+              <label class="text-ds-3xs text-ds-text-muted">ছবির URL লিস্ট</label>
+              @if (isImagesField(field)) {
+                @for (url of field.value; track $index) {
+                  <div class="flex items-center gap-2">
+                    <input type="url"
+                           [ngModel]="url"
+                           (ngModelChange)="updateImageAt($index, $event)"
+                           [ngModelOptions]="{standalone: true}"
+                           placeholder="https://example.com/image.jpg"
+                           class="flex-1 h-8 px-2 bg-ds-surface border border-ds-border rounded text-xs text-ds-text focus:outline-none focus:border-ds-info transition-colors">
+                    <button (click)="removeImageUrl($index); $event.stopPropagation()"
+                            class="w-7 h-7 flex items-center justify-center text-ds-danger hover:bg-ds-danger/10 rounded transition-colors">
+                      <app-icon name="X" size="12"></app-icon>
+                    </button>
+                  </div>
+                }
+              }
+              <div class="flex items-center gap-2">
+                <input type="url"
+                       [(ngModel)]="newImageUrl"
+                       [ngModelOptions]="{standalone: true}"
+                       placeholder="নতুন ছবির URL..."
+                       (keydown.enter)="addImageUrl(); $event.preventDefault()"
+                       class="flex-1 h-8 px-2 bg-ds-surface border border-ds-border rounded text-xs text-ds-text focus:outline-none focus:border-ds-info transition-colors">
+                <button (click)="addImageUrl(); $event.stopPropagation()"
+                        class="w-7 h-7 flex items-center justify-center text-ds-info hover:bg-ds-info/10 rounded transition-colors">
+                  <app-icon name="Plus" size="12"></app-icon>
+                </button>
+              </div>
+            </div>
+          }
+          @case ('button') {
+            <div class="space-y-1">
+              <label class="text-ds-3xs text-ds-text-muted">বাটন লেবেল</label>
+              <input type="text"
+                     [ngModel]="field.value"
+                     (ngModelChange)="updateFieldValue(field.key, $event)"
+                     [ngModelOptions]="{standalone: true}"
+                     placeholder="বাটনের টেক্সট..."
+                     class="w-full h-9 px-3 bg-ds-surface border border-ds-border rounded-lg text-sm text-ds-text focus:outline-none focus:border-ds-info transition-colors">
+            </div>
+          }
+        }
+      }
+    </div>
+  }
+</div>
