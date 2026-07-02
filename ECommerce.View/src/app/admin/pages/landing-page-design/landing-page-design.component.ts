@@ -236,12 +236,17 @@ export class LandingPageDesignComponent implements OnInit, OnDestroy {
                 // Migration: remove legacy types
                 this.sections = this.sections.filter(s => s.type !== 'product-details' && s.type !== 'ad-banners');
 
-                // Ensure marquee is always visible and first (if exists)
+                // Migration: ensure marquee is always first and visible
                 const marquee = this.sections.find(s => s.type === 'marquee');
                 if (marquee) {
                   marquee.visible = true;
                   this.sections = this.sections.filter(s => s.type !== 'marquee');
                   this.sections.unshift(marquee);
+                } else {
+                  this.sections.unshift({
+                    id: 'marquee', type: 'marquee', label: '💬 Marquee Bar', visible: true,
+                    settings: { marqueeText: '🔥 সীমিত স্টক — মাত্র ৩৪টি বাকি! 🚚 সারা বাংলাদেশে ফ্রি ডেলিভারি 💥' }
+                  });
                 }
 
                 // Ensure all sections have required fields
