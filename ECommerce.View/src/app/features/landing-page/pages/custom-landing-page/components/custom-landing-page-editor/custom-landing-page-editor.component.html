@@ -5,47 +5,6 @@
 
   <div class="p-4 space-y-4" [formGroup]="configForm">
     
-    <!-- Section: Global Settings -->
-    <div class="bg-ds-bg/5 rounded-lg overflow-hidden border border-ds-border">
-      <button class="w-full px-4 py-3 flex items-center justify-between hover:bg-ds-bg/5 transition-colors"
-              (click)="activeEditorSection = activeEditorSection === 'global' ? '' : 'global'">
-        <span class="text-xs font-bold uppercase tracking-widest text-ds-text-muted">💎 Global Settings</span>
-        <app-icon [name]="activeEditorSection === 'global' ? 'ChevronUp' : 'ChevronDown'" size="14"></app-icon>
-      </button>
-      
-      <div class="p-4 space-y-4 border-t border-ds-border" [class.hidden]="activeEditorSection !== 'global'">
-        <div class="grid grid-cols-2 gap-3">
-          <div class="space-y-1.5">
-            <label class="text-ds-2xs uppercase text-ds-text-muted">Promo Price</label>
-            <input type="number" formControlName="promoPrice" class="editor-input">
-          </div>
-          <div class="space-y-1.5">
-            <label class="text-ds-2xs uppercase text-ds-text-muted">Original Price</label>
-            <input type="number" formControlName="originalPrice" class="editor-input">
-          </div>
-        </div>
-        <div class="space-y-1.5">
-          <label class="text-ds-2xs uppercase text-ds-text-muted">Featured Name</label>
-          <input type="text" formControlName="featuredProductName" class="editor-input">
-        </div>
-        <div class="space-y-1.5">
-          <label class="text-ds-2xs uppercase text-ds-text-muted">Free Shipping Min Qty</label>
-          <input type="number" formControlName="freeShippingThresholdQuantity" class="editor-input" placeholder="Empty = No free shipping">
-        </div>
-
-        <!-- Marquee Settings -->
-        <div class="pt-2 border-t border-ds-border space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs text-ds-text">Marquee Bar</span>
-            <input type="checkbox" formControlName="isMarqueeVisible" class="toggle-sm">
-          </div>
-          @if (configForm.get('isMarqueeVisible')?.value) {
-            <textarea formControlName="marqueeText" rows="2" class="editor-textarea text-ds-xs" placeholder="Marquee text..."></textarea>
-          }
-        </div>
-      </div>
-    </div>
-
     <!-- Section: Layout & Components -->
     <div class="space-y-3">
       <div class="flex items-center justify-between px-2">
@@ -182,11 +141,11 @@
                       </div>
                     </div>
                   }
-                  @case ('order-form') {
+                  @case ('marquee') {
                     <div class="space-y-3 pt-3">
                       <div class="space-y-1.5">
-                        <label class="text-ds-2xs text-ds-text-muted uppercase">Offer/Promo Text</label>
-                        <textarea [(ngModel)]="section.settings.promoText" [ngModelOptions]="{standalone: true}" rows="3" class="editor-textarea bg-ds-surface" placeholder="Shown in order summary..."></textarea>
+                        <label class="text-ds-2xs text-ds-text-muted uppercase">Marquee Text</label>
+                        <textarea [(ngModel)]="section.settings.marqueeText" [ngModelOptions]="{standalone: true}" rows="2" class="editor-textarea bg-ds-surface" placeholder="Scrolling text..."></textarea>
                       </div>
                     </div>
                   }
@@ -257,7 +216,7 @@
         @if (isAddSectionMenuOpen) {
           <div class="absolute bottom-full left-0 right-0 bg-ds-accent border border-ds-border shadow-2xl z-50 overflow-hidden rounded-lg mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
             <div class="max-h-64 overflow-y-auto custom-scrollbar">
-              @for (type of ['countdown', 'hero', 'product-hero', 'discount-cta', 'info-banner', 'product-details', 'trust-banner', 'reviews', 'product-select', 'order-form']; track type) {
+              @for (type of ['countdown', 'hero', 'product-hero', 'discount-cta', 'info-banner', 'product-details', 'trust-banner', 'reviews', 'product-select', 'order-form', 'marquee']; track type) {
                 <button (click)="addSection(type); isAddSectionMenuOpen = false" class="w-full text-left px-4 py-2.5 text-ds-text-muted hover:bg-ds-info hover:text-white transition-all border-b border-ds-border last:border-0 text-sm">
                   {{ type.replace('-', ' ') | titlecase }}
                 </button>

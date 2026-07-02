@@ -92,6 +92,7 @@ export class CustomLandingPageEditorComponent {
       "product-details": "ℹ️ Product Details",
       "trust-banner": "🛡️ Trust Banner",
       "product-select": "📦 Product Selection",
+      marquee: "💬 Marquee Bar",
       reviews: "💬 Customer Reviews",
       "order-form": "📝 Order Form"
     };
@@ -165,8 +166,10 @@ export class CustomLandingPageEditorComponent {
       if (s.trustBannerText === undefined) s.trustBannerText = form.trustBannerText || "দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই";
     } else if (section.type === "reviews") {
       if (s.isReviewsVisible === undefined) s.isReviewsVisible = form.isReviewsVisible !== undefined ? form.isReviewsVisible : true;
+    } else if (section.type === "marquee") {
+      if (s.marqueeText === undefined) s.marqueeText = form.marqueeText || '';
     } else if (section.type === "order-form") {
-      if (s.promoText === undefined) s.promoText = form.promoText || "যেকোনো কালার যেকোনো সাইজ দুই পিস অর্ডার করলেই পাচ্ছেন মাত্র ১৪৫০ টাকা";
+      // promoText removed
     }
   }
 

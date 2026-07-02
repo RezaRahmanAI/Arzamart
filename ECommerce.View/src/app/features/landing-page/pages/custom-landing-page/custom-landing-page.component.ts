@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe, DatePipe, NgFor, TitleCasePipe } from "@angular/common";
+﻿import { AsyncPipe, NgClass, isPlatformBrowser, NgIf, DecimalPipe, DatePipe, NgFor, TitleCasePipe } from "@angular/common";
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID, NgZone, ChangeDetectorRef } from "@angular/core";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -15,7 +15,7 @@ import { SiteSettingsService } from "../../../../core/services/site-settings.ser
 import { DeliveryService } from "../../../../core/services/delivery.service";
 import { DeliveryMethod } from "../../../../core/models/delivery";
 import { ProductService } from "../../../../core/services/product.service";
-import { of, combineLatest, forkJoin } from "rxjs";
+import { of, combineLatest, forkJoin, timeout } from "rxjs";
 import { map, debounceTime, distinctUntilChanged, filter, tap } from "rxjs/operators";
 import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 import { CustomerLookupService } from "../../../../core/services/customer-lookup.service";
@@ -117,6 +117,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
   
   sections: LandingSection[] = [
+    { id: 'marquee',        type: 'marquee',        label: '💬 Marquee Bar',         visible: true },
     { id: 'countdown',      type: 'countdown',      label: '⏱ Countdown Bar',       visible: true },
     { id: 'hero',           type: 'hero',           label: '🎯 Hero / Offer',         visible: true },
     { id: 'product-hero',   type: 'product-hero',   label: '🛍 Product Hero',         visible: true },
@@ -144,6 +145,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   isProductSelectionLoading = false;
 
   productSelections: { [id: number]: { quantity: number; selectedSize: string; product: Product } } = {};
+  lastSelectedSizes: { [id: number]: string } = {};
   showDetailsModal = false;
   selectedProductForDetails: Product | null = null;
 
@@ -203,15 +205,20 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     const currentSize = this.productSelections[product.id]?.selectedSize ?? "";
 
     if (currentQty > 0) {
-      this.updateSelections(product, 0);
+      if (currentSize) {
+        this.lastSelectedSizes[product.id] = currentSize;
+      }
+      this.updateSelections(product, 0, "");
       return;
     }
 
-    const size = currentSize || (hasVariants ? this.getUniqueSizes(product)[0] || "" : "");
+    const rememberedSize = this.lastSelectedSizes[product.id] || "";
+    const size = rememberedSize || (hasVariants ? this.getUniqueSizes(product)[0] || "" : "");
     this.updateSelections(product, 1, size);
   }
 
   selectProductSize(product: Product, size: string): void {
+    this.lastSelectedSizes[product.id] = size;
     this.updateSelections(product, this.productSelections[product.id]?.quantity || 0, size);
     if ((this.productSelections[product.id]?.quantity ?? 0) === 0) {
       this.updateSelections(product, 1, size);
@@ -253,7 +260,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   slideProgress = 0;
   private autoSlideInterval: ReturnType<typeof setInterval> | undefined;
   private watchingInterval: ReturnType<typeof setInterval> | undefined;
-  showAutofillPrompt = false;
   userSelectedDeliveryMethod = false;
   selectedQuickProduct: Product | null = null;
   showQuickAdd = false;
@@ -285,7 +291,6 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     originalPrice: [0],
     isMarqueeVisible: [false],
     marqueeText: ["🔥 সীমিত স্টক — মাত্র ৩৪টি বাকি! 🚚 সারা বাংলাদেশে ফ্রি ডেলিভারি 💥 আজকের জন্য ৩০% ছাড় — মধ্যরাতে শেষ 💵 ক্যাশ অন ডেলিভারি আছে ⚡"],
-    promoText: ["যেকোনো কালার যেকোনো সাইজ দুই পিস অর্ডার করলেই পাচ্ছেন মাত্র ১৪৫০ টাকা"],
     freeShippingThresholdQuantity: [null as number | null],
     isReviewsVisible: [true],
     heroTitle: ["একচেটিয়া অফার! আজকের জন্যই সেরা সুযোগ"],
@@ -418,7 +423,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.intelligentLocationMatch(address);
       });
 
-    if (this.userPersistence.hasSavedDetails()) this.showAutofillPrompt = true;
+    // autofill prompt removed - info auto-fills on phone input
     this.startWatchingFluctuation();
   }
 
@@ -439,33 +444,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  applyAutofill(): void {
-    const details = this.userPersistence.getUserDetails();
-    if (details) {
-      if (details.city) {
-        this.areas = BANGLADESH_LOCATIONS[details.city] || [];
-        this.filteredAreas = [...this.areas];
-        this.citySearch = details.city;
-        if (!this.userSelectedDeliveryMethod) {
-          this.updateDeliveryMethod(details.city, details.area || "");
-        }
-      }
-      this.orderForm.patchValue({
-        fullName: details.fullName,
-        phone: details.phone,
-        address: details.address,
-        city: details.city,
-        area: details.area
-      });
-      if (details.area) this.areaSearch = details.area;
-      this.showAutofillPrompt = false;
-      this.notification.success("Information filled successfully!");
-    }
-  }
 
-  dismissAutofill(): void {
-    this.showAutofillPrompt = false;
-  }
 
   ngOnDestroy(): void {
     if (this.timerInterval) clearInterval(this.timerInterval);
@@ -486,7 +465,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
     combineLatest([
       mainData$,
-      this.deliveryService.getPublicDeliveryMethods()
+      this.deliveryService.getPublicDeliveryMethods().pipe(timeout(15_000))
     ]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ([res, methods]) => {
         this.data = res;
@@ -571,15 +550,15 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         const nameCode = (nameParts.length > 0 && nameParts[0].length >= 3) ? nameParts[0] : undefined;
 
         forkJoin({
-          reviews: res.product?.id ? this.reviewService.getReviewsByProductId(res.product.id) : of([]),
-          customProducts: customIds?.length ? this.productService.getProducts({ ids: customIds.join(","), pageSize: 100 }) : of({ data: [] as Product[] }),
+          reviews: res.product?.id ? this.reviewService.getReviewsByProductId(res.product.id).pipe(timeout(15_000)) : of([]),
+          customProducts: customIds?.length ? this.productService.getProducts({ ids: customIds.join(","), pageSize: 100 }).pipe(timeout(15_000)) : of({ data: [] as Product[] }),
           related: res.product ? this.productService.getRelatedProducts(
             undefined,
             nameCode ? undefined : res.product.categoryId,
             nameCode ? undefined : res.product.productGroupId,
             12,
             nameCode
-          ) : of({ data: [] as Product[] })
+          ).pipe(timeout(15_000)) : of({ data: [] as Product[] })
         }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (result) => {
             this.productReviews = result.reviews;
@@ -821,6 +800,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   startAutoSlide(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (this.autoSlideInterval) clearInterval(this.autoSlideInterval);
     if (!this.data?.product?.images || this.data.product.images.length <= 1) return;
     const step = 100 / (4000 / 50);
@@ -910,8 +890,10 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       if (s.trustBannerText === undefined) s.trustBannerText = form.trustBannerText || 'দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই';
     } else if (section.type === 'reviews') {
       if (s.isReviewsVisible === undefined) s.isReviewsVisible = form.isReviewsVisible !== undefined ? form.isReviewsVisible : true;
+    } else if (section.type === 'marquee') {
+      if (s.marqueeText === undefined) s.marqueeText = form.marqueeText || '';
     } else if (section.type === 'order-form') {
-      if (s.promoText === undefined) s.promoText = form.promoText || 'যেকোনো কালার যেকোনো সাইজ দুই পিস অর্ডার করলেই পাচ্ছেন মাত্র ১৪৫০ টাকা';
+      // promoText removed
     }
   }
 
@@ -1052,13 +1034,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       });
     }
 
-    // 5. Order Form Section
-    const orderForm = this.sections.find(s => s.type === 'order-form');
-    if (orderForm && orderForm.settings) {
-      this.configForm.patchValue({
-        promoText: orderForm.settings.promoText || ''
-      });
-    }
+    // 5. Order Form Section (promoText removed)
   }
 
   saveLayout(): void {

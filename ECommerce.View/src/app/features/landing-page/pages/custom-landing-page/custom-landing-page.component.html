@@ -1,4 +1,4 @@
-@if (data) {
+﻿@if (data) {
   <div class="landing-builder-container flex h-screen overflow-hidden bg-ds-bg text-ds-text antialiased">
     
     <!-- ═══════════════════════════════════════════
@@ -36,23 +36,6 @@
       }
 
       <main class="min-h-screen">
-        <!-- Global Marquee Bar -->
-        @if (configForm.get('isMarqueeVisible')?.value) {
-          <div class="marquee-container bg-ds-accent py-2.5 text-white text-xs border-b border-white/10 z-[70] relative">
-            <div class="marquee-content flex gap-8">
-              <div class="flex gap-8 shrink-0">
-                <span>{{ processedMarqueeText }}</span>
-                <span>{{ processedMarqueeText }}</span>
-                <span>{{ processedMarqueeText }}</span>
-              </div>
-              <div class="flex gap-8 shrink-0" aria-hidden="true">
-                <span>{{ processedMarqueeText }}</span>
-                <span>{{ processedMarqueeText }}</span>
-                <span>{{ processedMarqueeText }}</span>
-              </div>
-            </div>
-          </div>
-        }
 
         @for (section of sections; track section.id) {
           @if (section.visible) {
@@ -61,21 +44,38 @@
               @switch (section.type) {
                 
                 <!-- MODULE 1: Countdown Bar -->
+                <!-- Marquee Bar -->
+                @case ('marquee') {
+                    <div class="marquee-container bg-ds-accent py-2.5 text-white text-xs border-b border-white/10 z-[70] relative">
+                      <div class="marquee-content flex gap-8">
+                        <div class="flex gap-8 shrink-0">
+                          <span>{{ section.settings?.marqueeText || processedMarqueeText }}</span>
+                          <span>{{ section.settings?.marqueeText || processedMarqueeText }}</span>
+                          <span>{{ section.settings?.marqueeText || processedMarqueeText }}</span>
+                        </div>
+                        <div class="flex gap-8 shrink-0" aria-hidden="true">
+                          <span>{{ section.settings?.marqueeText || processedMarqueeText }}</span>
+                          <span>{{ section.settings?.marqueeText || processedMarqueeText }}</span>
+                          <span>{{ section.settings?.marqueeText || processedMarqueeText }}</span>
+                        </div>
+                      </div>
+                    </div>
+                }
                 @case ('countdown') {
                   @if (section.settings?.isTimerVisible !== undefined ? section.settings.isTimerVisible : configForm.get('isTimerVisible')?.value) {
-                    <div class="sticky top-0 z-[60] w-full bg-ds-danger text-white py-2 px-4 shadow-lg overflow-hidden">
-                      <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-center gap-4">
-                        <span class="font-bengali whitespace-pre-line">{{ section.settings?.headerTitle !== undefined ? section.settings.headerTitle : (configForm.get('headerTitle')?.value || 'অফার শেষ হতে বাকি:') }}</span>
-                        <div class="flex gap-2">
+                    <div class="sticky top-0 z-[60] w-full bg-ds-danger text-white py-3 md:py-4 px-4 shadow-lg overflow-hidden">
+                      <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4">
+                        <span class="font-bengali whitespace-pre-line text-base md:text-lg font-bold">{{ section.settings?.headerTitle !== undefined ? section.settings.headerTitle : (configForm.get('headerTitle')?.value || 'অফার শেষ হতে বাকি:') }}</span>
+                        <div class="flex justify-center gap-2 md:gap-3">
                           @for (unit of [
                             { val: timeLeft.days, label: 'দিন' },
                             { val: timeLeft.hours, label: 'ঘন্টা' },
                             { val: timeLeft.minutes, label: 'মিনিট' },
                             { val: timeLeft.seconds, label: 'সেকেন্ড' }
                           ]; track unit.label) {
-                            <div class="flex flex-col items-center justify-center w-14 h-12 bg-ds-bg/15 rounded-sm">
-                              <span >{{ unit.val | number: '2.0' }}</span>
-                              <span class="font-bengali mt-1 opacity-70">{{ unit.label }}</span>
+                            <div class="flex flex-col items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-white/20 rounded-md">
+                              <span class="text-xl md:text-2xl font-extrabold leading-none">{{ unit.val | number: '2.0' }}</span>
+                              <span class="font-bengali text-xs mt-1 opacity-80">{{ unit.label }}</span>
                             </div>
                           }
                         </div>
@@ -114,13 +114,13 @@
                     <div class="max-w-[1200px] mx-auto grid lg:grid-cols-2">
                       <!-- Text Content -->
                       <div class="p-8 md:p-16 flex flex-col justify-center text-white order-2 lg:order-1">
-                        <h2 class="mb-6 whitespace-pre-line">{{ section.settings?.productHeroTitle !== undefined ? section.settings.productHeroTitle : (configForm.get('productHeroTitle')?.value || 'আমাদের প্রিমিয়াম প্রসাধনী') }}</h2>
+                        <h2 class="mb-6 whitespace-pre-line">{{ data.product.name }}</h2>
                         <p class="text-white/90 mb-10 whitespace-pre-line">
-                          {{ section.settings?.productHeroDescription !== undefined ? section.settings.productHeroDescription : (configForm.get('productHeroDescription')?.value || 'সেরা উপাদান দিয়ে তৈরি যা আপনার ত্বকের যত্ন নেবে।') }}
+                          {{ data.product.description }}
                         </p>
                         <div>
                           <button (click)="scrollToOrder()" class="btn bg-white hover:opacity-90 active:scale-95 text-ds-danger rounded-full shadow-xl h-12 text-base font-bold">
-                            বিস্তারিত দেখুন
+                            অর্ডার করুন এখনই
                           </button>
                         </div>
                       </div>
@@ -208,7 +208,7 @@
                     <div class="max-w-[1200px] mx-auto">
                       <div class="text-center mb-12">
                         <h2 class="mb-2">পণ্য নির্বাচন করুন</h2>
-                        <p class="text-ds-text-sec font-bengali">পরিমাণ বাড়িয়ে পণ্য নির্বাচন করুন</p>
+                        <p class="text-ds-text font-bengali font-medium">চেকবক্সে ক্লিক করে পণ্য নির্বাচন করুন</p>
                       </div>
 
                       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -234,7 +234,7 @@
 
                             <div class="cursor-pointer mb-4 group relative" (click)="$event.stopPropagation(); openProductDetails(p)">
                               <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" 
-                                   [alt]="p.name" class="w-full aspect-square object-contain rounded-sm bg-ds-surface">
+                                   [alt]="p.name" class="w-full h-[180px] sm:h-[220px] object-contain rounded-sm bg-ds-surface">
                               <div class="absolute inset-0 bg-ds-text/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <span class="bg-ds-bg/90 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">Details</span>
                               </div>
@@ -281,31 +281,37 @@
                   </section>
                 }
 
-                <!-- MODULE 8: Order Form -->
                 @case ('order-form') {
                   <section id="order-form-section" class="section-padding bg-ds-bg border-t border-ds-border py-16 px-4">
                     <div class="w-full max-w-[550px] mx-auto bg-ds-bg shadow-xl border border-ds-border rounded-[24px] p-6 md:p-8">
                       <h2 class="text-2xl font-extrabold text-ds-text mb-2 text-center font-bengali">অর্ডার করুন</h2>
                       <p class="text-sm text-ds-text-sec text-center mb-6 leading-relaxed">অর্ডার করতে নিচের ফর্মে আপনার নাম, পূর্ণ ঠিকানা ও মোবাইল নম্বর লিখে “অর্ডার সম্পন্ন করুন” বাটনে ক্লিক করুন</p>
-                      
-                      <!-- Saved Info Prompt -->
-                      @if (showAutofillPrompt) {
-                        <div class="mb-6 p-5 bg-ds-surface border border-ds-border rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 animate-in slide-in-from-top duration-300">
-                          <div class="flex items-center gap-3 text-center sm:text-left">
-                            <div class="w-10 h-10 rounded-xl bg-ds-accent flex items-center justify-center shrink-0 shadow-lg text-white">
-                              <app-icon name="User" size="20"></app-icon>
+
+                      <!-- Product Cart -->
+                      <div class="mb-6">
+                        <h3 class="text-base font-bold text-ds-text mb-3 font-bengali">আপনার কার্ট:</h3>
+                        <div class="space-y-3">
+                          @for (s of selectedProductList; track s.product.id) {
+                            <div class="flex items-center gap-3 p-3 bg-ds-surface border border-ds-border rounded-xl">
+                              <img loading="lazy" [src]="imageUrlService.getImageUrl(s.product.imageUrl || '')" [alt]="s.product.name" class="w-14 h-14 object-contain rounded-lg bg-ds-bg flex-shrink-0">
+                              <div class="flex-1 min-w-0">
+                                <p class="text-sm font-bold text-ds-text truncate">{{ s.product.name }}</p>
+                                <p class="text-xs text-ds-text-sec">সাইজ: {{ s.selectedSize }} &times; {{ s.quantity }}</p>
+                                <p class="text-xs font-bold text-ds-info">৳{{ getProductPrice(s.product) | number }} × {{ s.quantity }}</p>
+                              </div>
+                              <div class="flex items-center gap-1.5 flex-shrink-0">
+                                <button type="button" (click)="updateProductQuantity(s.product, -1)" class="w-7 h-7 flex items-center justify-center rounded-full border border-ds-border hover:bg-ds-surface text-ds-text text-sm font-bold">-</button>
+                                <span class="w-6 text-center text-sm font-bold text-ds-text">{{ s.quantity }}</span>
+                                <button type="button" (click)="updateProductQuantity(s.product, 1)" class="w-7 h-7 flex items-center justify-center rounded-full border border-ds-border hover:bg-ds-surface text-ds-text text-sm font-bold">+</button>
+                                <button type="button" (click)="updateProductQuantity(s.product, 0)" class="w-7 h-7 flex items-center justify-center rounded-full text-ds-danger hover:bg-ds-danger/10 text-sm ml-1">×</button>
+                              </div>
                             </div>
-                            <div>
-                              <p class="text-sm font-semibold text-ds-text">Saved Information Found</p>
-                              <p class="text-xs text-ds-text-sec">Use last order details?</p>
-                            </div>
-                          </div>
-                          <div class="flex gap-2 w-full sm:w-auto">
-                            <button type="button" (click)="dismissAutofill()" class="flex-1 sm:flex-none px-4 py-2 text-sm text-ds-text-sec hover:text-ds-text transition-colors">No</button>
-                            <button type="button" (click)="applyAutofill()" class="flex-1 sm:flex-none px-5 py-2 bg-ds-accent text-white text-sm rounded-lg active:scale-95 transition-all">Yes, Use Info</button>
-                          </div>
+                          }
+                          @if (selectedProductList.length === 0) {
+                            <p class="text-sm text-ds-text-muted italic text-center py-4">কোনো পণ্য নির্বাচন করা হয়নি</p>
+                          }
                         </div>
-                      }
+                      </div>
 
                       <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="space-y-5">
                         <!-- Delivery Area select -->
@@ -374,59 +380,6 @@
                       </form>
                     </div>
                   </section>
-                }
-
-                <!-- MODULE 9: Customer Reviews -->
-                @case ('reviews') {
-                  @if (section.settings?.isReviewsVisible !== undefined ? section.settings.isReviewsVisible : configForm.get('isReviewsVisible')?.value) {
-                    <section class="section-padding bg-ds-bg/5">
-                      <div class="max-w-[1200px] mx-auto">
-                        <div class="text-center mb-12">
-                          <h2 class="mb-4">আমাদের সন্তুষ্ট কাস্টমারদের মতামত</h2>
-                          <div class="flex items-center justify-center gap-1">
-                            <app-icon *ngFor="let s of [1,2,3,4,5]" name="Star" size="20" className="text-ds-warning fill-ds-warning"></app-icon>
-                            <span class="ml-2 font-bold">(4.9/5)</span>
-                          </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          @for (review of productReviews; track review.id) {
-                            <div class="bg-ds-bg p-6 rounded-[12px] shadow-sm border border-ds-border flex flex-col gap-4">
-                              <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                  <div class="size-10 rounded-full bg-ds-surface-2 overflow-hidden border border-ds-border flex items-center justify-center text-ds-text-muted">
-                                    <img *ngIf="review.customerAvatar" loading="lazy" [src]="review.customerAvatar" [alt]="review.customerName" class="w-full h-full object-cover">
-                                    <app-icon *ngIf="!review.customerAvatar" name="User" size="18"></app-icon>
-                                  </div>
-                                  <div>
-                                    <p class="font-bold text-sm">{{ review.customerName }}</p>
-                                    <div class="flex items-center gap-1 text-ds-warning">
-                                      <app-icon *ngFor="let s of [].constructor(review.rating)" name="Star" size="12" className="fill-ds-warning"></app-icon>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="bg-ds-success-bg text-ds-success px-2 py-1 rounded-sm text-ds-2xs font-bold border border-ds-success/30 flex items-center gap-1">
-                                  <app-icon name="CheckCircle" size="10"></app-icon>
-                                  VERIFIED
-                                </div>
-                              </div>
-                              <p class="text-ds-text-secondary text-sm italic">"{{ review.comment }}"</p>
-                              <div *ngIf="review.screenshotUrl" class="mt-3">
-                                <a [href]="imageUrlService.getImageUrl(review.screenshotUrl)" target="_blank" class="inline-block border border-ds-border rounded-lg overflow-hidden bg-ds-surface max-w-full hover:border-ds-border transition-all">
-                                  <img [src]="imageUrlService.getImageUrl(review.screenshotUrl)" class="max-h-32 w-auto object-contain" alt="Customer Attachment">
-                                </a>
-                              </div>
-                              <p class="text-ds-2xs text-ds-text-muted uppercase tracking-widest">{{ review.date | date:'longDate' }}</p>
-                            </div>
-                          }
-                        </div>
-
-                        <div *ngIf="productReviews.length === 0" class="text-center py-12 text-ds-text-muted italic">
-                          No reviews found for this product yet.
-                        </div>
-                      </div>
-                    </section>
-                  }
                 }
               }
             </div>
