@@ -121,6 +121,7 @@ public static class ServiceExtensions
         services.AddScoped<IPublicSiteSettingsService, PublicSiteSettingsService>();
         services.AddScoped<IAnalyticsService, AnalyticsService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IIncompleteOrderService, IncompleteOrderService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         return services;

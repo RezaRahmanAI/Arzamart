@@ -15,13 +15,20 @@ public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
     private readonly ICustomerService _customerService;
+    private readonly IIncompleteOrderService _incompleteOrderService;
     private readonly ILogger<OrdersController> _logger;
     private readonly IHubContext<OrderHub> _hubContext;
 
-    public OrdersController(IOrderService orderService, ICustomerService customerService, ILogger<OrdersController> logger, IHubContext<OrderHub> hubContext)
+    public OrdersController(
+        IOrderService orderService, 
+        ICustomerService customerService, 
+        IIncompleteOrderService incompleteOrderService,
+        ILogger<OrdersController> logger, 
+        IHubContext<OrderHub> hubContext)
     {
         _orderService = orderService;
         _customerService = customerService;
+        _incompleteOrderService = incompleteOrderService;
         _logger = logger;
         _hubContext = hubContext;
     }
@@ -37,7 +44,8 @@ public class OrdersController : ControllerBase
 
         try
         {
-            var order = await _orderService.CreateOrderAsync(orderDto);
+            var sessionId = Request.Headers["X-Session-Id"].ToString();
+            var order = await _orderService.CreateOrderAsync(orderDto, sessionId);
 
             try
             {
@@ -50,7 +58,6 @@ public class OrdersController : ControllerBase
 
             try
             {
-                var sessionId = Request.Headers["X-Session-Id"].ToString();
                 var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                 await _orderService.ClearCartAsync(userId, sessionId);
             }
@@ -67,6 +74,29 @@ public class OrdersController : ControllerBase
         }
         catch (Exception ex)
         {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("incomplete-autosave")]
+    [EnableRateLimiting("fixed")]
+    public async Task<ActionResult<OrderDto>> AutosaveIncompleteOrder(IncompleteOrderAutosaveDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userAgent = Request.Headers["User-Agent"].ToString();
+            var result = await _incompleteOrderService.AutosaveIncompleteOrderAsync(dto, ipAddress, userAgent);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to autosave incomplete order for session {SessionId}", dto.SessionId);
             return BadRequest(new { message = ex.Message });
         }
     }

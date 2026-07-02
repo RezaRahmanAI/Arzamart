@@ -47,7 +47,10 @@ public class DashboardService : IDashboardService
             }
 
             // ── 1. TODAY STATUS AGGREGATIONS (single SQL query) ──────────
-            var todayQuery = _unitOfWork.Repository<Order>().GetQueryable();
+            var todayQuery = _unitOfWork.Repository<Order>().GetQueryable()
+                .Where(o => o.Status != OrderStatus.Incomplete && 
+                            o.Status != OrderStatus.IncompleteContacted && 
+                            o.Status != OrderStatus.IncompleteLost);
             if (todayRangeStart.HasValue)
                 todayQuery = todayQuery.Where(o => o.CreatedAt >= todayRangeStart.Value);
             if (todayRangeEnd.HasValue)
@@ -105,7 +108,10 @@ public class DashboardService : IDashboardService
             decimal pathaoDeliveredRevenue = pathaoOrders.Where(o => o.Status == OrderStatus.Delivered).Sum(o => o.Total);
 
             // ── 2. TOTAL/LIFETIME STATUS AGGREGATIONS (single SQL query) ──
-            var totalQuery = _unitOfWork.Repository<Order>().GetQueryable();
+            var totalQuery = _unitOfWork.Repository<Order>().GetQueryable()
+                .Where(o => o.Status != OrderStatus.Incomplete && 
+                            o.Status != OrderStatus.IncompleteContacted && 
+                            o.Status != OrderStatus.IncompleteLost);
             if (totalRangeStart.HasValue)
                 totalQuery = totalQuery.Where(o => o.CreatedAt >= totalRangeStart.Value);
             if (totalRangeEnd.HasValue)

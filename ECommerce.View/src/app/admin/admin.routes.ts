@@ -125,6 +125,14 @@ export const ADMIN_ROUTES: Routes = [
         data: { title: "Website Orders", websiteOnly: true, menuKey: "orders" }, canActivate: [staffGuard],
       },
       {
+        path: "orders/incomplete",
+        loadComponent: () =>
+          import("./pages/incomplete-orders/incomplete-orders.component").then(
+            (m) => m.IncompleteOrdersComponent,
+          ),
+        data: { title: "Incomplete Orders", menuKey: "orders" }, canActivate: [staffGuard],
+      },
+      {
         path: "orders/:id",
         loadComponent: () =>
           import("./pages/order-details/order-details.component").then(

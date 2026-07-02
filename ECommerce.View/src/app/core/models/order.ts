@@ -12,6 +12,9 @@ export enum OrderStatus {
   Exchange = "Exchange",
   ReturnProcess = "ReturnProcess",
   Refund = "Refund",
+  Incomplete = "Incomplete",
+  IncompleteContacted = "IncompleteContacted",
+  IncompleteLost = "IncompleteLost",
 }
 
 export interface OrderLog {
@@ -75,6 +78,15 @@ export interface Order {
   socialMediaSourceName?: string;
   logs?: OrderLog[];
   notes?: OrderNote[];
+  utmSource?: string;
+  utmCampaign?: string;
+  utmAdset?: string;
+  utmAd?: string;
+  fbclid?: string;
+  referrerUrl?: string;
+  deviceType?: string;
+  browser?: string;
+  sessionId?: string;
 }
 
 export interface OrdersQueryParams {

@@ -65,7 +65,7 @@ export class AdminSidebarComponent implements OnInit, OnDestroy {
     if (url.includes("/admin/orders/create") || url.includes("/admin/orders/pre-order")) {
       this.isOrdersMenuOpen = true;
     }
-    if (url === "/admin/orders" || url.includes("/admin/orders/pre-orders") || url.includes("/admin/orders/website")) {
+    if (url === "/admin/orders" || url.includes("/admin/orders/pre-orders") || url.includes("/admin/orders/website") || url.includes("/admin/orders/incomplete")) {
       this.isOrderViewMenuOpen = true;
     }
     if (url.includes("/admin/staff") || url.includes("/admin/roles")) {

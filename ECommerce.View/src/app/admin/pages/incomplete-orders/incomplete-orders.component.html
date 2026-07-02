@@ -1,0 +1,373 @@
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
+
+  <!-- Filters Section -->
+  <div class="bg-ds-surface border border-ds-border p-ds-4 rounded-sm">
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- Search Input -->
+      <div class="relative group w-full sm:w-auto sm:flex-1 sm:min-w-[200px] sm:max-w-[280px]">
+        <span class="absolute inset-y-0 left-ds-4 flex items-center text-ds-text-muted group-focus-within:text-ds-text">
+          <app-icon name="Search" size="14"></app-icon>
+        </span>
+        <input 
+          [formControl]="searchControl"
+          type="text" 
+          placeholder="Search name, phone..." 
+          class="form-input !h-10 !pl-ds-10 w-full" />
+      </div>
+
+      <!-- Status Filter -->
+      <div class="w-full sm:w-auto sm:flex-1 sm:min-w-[150px] sm:max-w-[200px]">
+        <select 
+          [(ngModel)]="statusFilter"
+          (change)="onFilterChange()"
+          class="form-input !h-10 px-ds-4 w-full cursor-pointer">
+          <option value="All">All Statuses</option>
+          <option value="Incomplete">Incomplete (Uncontacted)</option>
+          <option value="IncompleteContacted">Incomplete (Contacted)</option>
+          <option value="IncompleteLost">Incomplete (Lost)</option>
+        </select>
+      </div>
+
+      <!-- Date Range Filter -->
+      <div class="w-full sm:w-auto sm:flex-1 sm:min-w-[150px] sm:max-w-[200px]">
+        <select 
+          [(ngModel)]="dateRangeFilter"
+          (change)="onFilterChange()"
+          class="form-input !h-10 px-ds-4 w-full cursor-pointer">
+          <option value="Today">Today</option>
+          <option value="Yesterday">Yesterday</option>
+          <option value="Last 7 Days">Last 7 Days</option>
+          <option value="Last 30 Days">Last 30 Days</option>
+          <option value="All Time">All Time</option>
+          <option value="Custom">Custom Range</option>
+        </select>
+      </div>
+
+      <!-- Source Page Filter -->
+      <div class="w-full sm:w-auto sm:flex-1 sm:min-w-[180px] sm:max-w-[240px]">
+        <select 
+          [(ngModel)]="sourcePageFilter"
+          (change)="onFilterChange()"
+          class="form-input !h-10 px-ds-4 w-full cursor-pointer">
+          <option value="">All Pages / Ad Sources</option>
+          <option *ngFor="let page of sourcePages" [value]="page.id">{{ page.name }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Custom Date Range picker (Conditional) -->
+    <div *ngIf="dateRangeFilter === 'Custom'" class="flex flex-wrap items-center gap-4 pt-3 mt-3 border-t border-ds-border/40 animate-in fade-in duration-base">
+      <div class="flex items-center gap-2">
+        <label class="text-xs font-semibold text-ds-text-muted uppercase">From</label>
+        <input 
+          [(ngModel)]="customStartDate"
+          (change)="onFilterChange()"
+          type="date" 
+          class="form-input !h-10 px-ds-3" />
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-xs font-semibold text-ds-text-muted uppercase">To</label>
+        <input 
+          [(ngModel)]="customEndDate"
+          (change)="onFilterChange()"
+          type="date" 
+          class="form-input !h-10 px-ds-3" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Lead List Table -->
+  <div class="bg-ds-surface border border-ds-border rounded-sm shadow-sm relative overflow-hidden">
+    <!-- Local Loader Overlay -->
+    <div *ngIf="isLoading" class="absolute inset-0 bg-ds-bg/60 backdrop-blur-[2px] z-[50] flex items-center justify-center animate-in fade-in duration-300">
+      <div class="flex flex-col items-center gap-ds-4">
+        <div class="h-10 w-10 animate-spin rounded-sm border-2 border-ds-accent border-t-transparent"></div>
+        <p class="text-ds-text animate-pulse">Loading leads...</p>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto min-h-[400px]">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-ds-bg/50 border-b border-ds-border text-ds-text-muted text-[11px] font-bold uppercase tracking-wider">
+            <th class="px-ds-4 py-ds-4">Customer Info</th>
+            <th class="px-ds-4 py-ds-4">Cart Details</th>
+            <th class="px-ds-4 py-ds-4">Source & Campaign</th>
+            <th class="px-ds-4 py-ds-4">Meta Details</th>
+            <th class="px-ds-4 py-ds-4">Last Action</th>
+            <th class="px-ds-4 py-ds-4">Status</th>
+            <th class="px-ds-4 py-ds-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ds-border/60">
+          <tr *ngIf="!isLoading && orders.length === 0">
+            <td colspan="7" class="px-ds-4 py-16 text-center text-ds-text-muted">
+              <div class="flex flex-col items-center justify-center gap-3">
+                <app-icon name="ShoppingBag" size="48" className="text-ds-text-muted/40"></app-icon>
+                <span class="text-sm font-medium">No incomplete orders found. Great job!</span>
+              </div>
+            </td>
+          </tr>
+
+          <tr 
+            *ngFor="let order of orders" 
+            class="hover:bg-ds-bg/30 transition-all border-b border-ds-border/40 text-ds-text">
+            
+            <!-- Customer Info -->
+            <td class="px-ds-4 py-ds-4">
+              <div class="space-y-1">
+                <div class="font-semibold text-ds-text">
+                  {{ order.customerName || 'Anonymous / Unfilled' }}
+                </div>
+                <div class="flex items-center gap-1.5 text-sm font-medium text-ds-text-sec">
+                  <app-icon name="Phone" size="12" className="text-ds-text-muted"></app-icon>
+                  {{ order.customerPhone || 'Not Provided' }}
+                </div>
+                <div class="text-xs text-ds-text-muted truncate max-w-xs" [title]="order.shippingAddress">
+                  {{ order.shippingAddress || 'No Address' }}
+                  <span *ngIf="order.city">, {{ order.city }}</span>
+                  <span *ngIf="order.area">, {{ order.area }}</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Cart Details -->
+            <td class="px-ds-4 py-ds-4">
+              <div class="space-y-1.5" *ngIf="order.items && order.items.length > 0; else emptyCart">
+                <div *ngFor="let item of order.items" class="text-sm text-ds-text-sec">
+                  <div class="font-medium truncate max-w-[200px]" [title]="item.productName">
+                    {{ item.productName }}
+                  </div>
+                  <div class="flex gap-2 text-xs text-ds-text-muted mt-0.5">
+                    <span *ngIf="item.size" class="px-1.5 py-0.5 bg-ds-bg border border-ds-border rounded-sm">Size: {{ item.size }}</span>
+                    <span>Qty: {{ item.quantity }}</span>
+                  </div>
+                </div>
+                <div class="pt-1 text-sm font-bold text-ds-text flex items-center gap-1">
+                  <span>Total:</span>
+                  <app-price-display [amount]="order.total"></app-price-display>
+                </div>
+              </div>
+              <ng-template #emptyCart>
+                <span class="text-xs italic text-ds-text-muted">Cart Empty / Unfilled</span>
+              </ng-template>
+            </td>
+
+            <!-- Source & Campaign -->
+            <td class="px-ds-4 py-ds-4">
+              <div class="space-y-1 text-xs">
+                <!-- Source Page / Ad Source Name -->
+                <div class="font-semibold text-ds-text">
+                  {{ order.sourcePageName || order.socialMediaSourceName || 'Direct Visit' }}
+                </div>
+                <!-- UTM Source / Campaign -->
+                <div class="text-ds-text-muted" *ngIf="order.utmSource || order.utmCampaign">
+                  <span class="font-medium">Campaign:</span>
+                  <span class="text-ds-accent font-medium ml-1">{{ order.utmSource || 'N/A' }}</span> / <span>{{ order.utmCampaign || 'N/A' }}</span>
+                </div>
+                <!-- Referrer URL -->
+                <div class="text-ds-text-muted truncate max-w-[220px]" *ngIf="order.referrerUrl" [title]="order.referrerUrl">
+                  <span class="font-medium">Ref:</span>
+                  <a [href]="order.referrerUrl" target="_blank" class="hover:underline text-ds-accent ml-1">{{ order.referrerUrl }}</a>
+                </div>
+              </div>
+            </td>
+
+            <!-- Meta Details -->
+            <td class="px-ds-4 py-ds-4">
+              <div class="space-y-1 text-xs text-ds-text-muted">
+                <div class="flex items-center gap-1">
+                  <app-icon name="Monitor" size="12"></app-icon>
+                  <span>{{ order.deviceType || 'Desktop' }}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <app-icon name="Globe" size="12"></app-icon>
+                  <span>{{ order.browser || 'Unknown Browser' }}</span>
+                </div>
+                <div class="flex items-center gap-1" *ngIf="order.fbclid">
+                  <span class="px-1 py-0.5 bg-ds-bg border border-ds-border text-ds-text text-[10px] font-bold rounded-sm">FBCLID</span>
+                  <span class="truncate max-w-[100px]" [title]="order.fbclid">{{ order.fbclid }}</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Last Action / Notes -->
+            <td class="px-ds-4 py-ds-4">
+              <div class="space-y-1">
+                <div class="text-xs text-ds-text-muted">
+                  {{ order.updatedAt ? (order.updatedAt | date:'medium') : (order.createdAt | date:'medium') }}
+                </div>
+                <div 
+                  *ngIf="order.adminNote" 
+                  class="text-xs font-medium text-ds-text-sec italic max-w-[150px] truncate"
+                  [title]="order.adminNote">
+                  "{{ order.adminNote }}"
+                </div>
+              </div>
+            </td>
+
+            <!-- Status Badge -->
+            <td class="px-ds-4 py-ds-4">
+              <span 
+                [className]="'inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-semibold border ' + getStatusClass(order.status)">
+                <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                {{ order.status }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="px-ds-4 py-ds-4 text-right">
+              <div class="flex items-center justify-end gap-1">
+                <!-- Notes Button -->
+                <button 
+                  (click)="openNotesModal(order)"
+                  title="Add / View Notes"
+                  class="p-2 text-ds-text-muted hover:text-ds-text hover:bg-ds-bg rounded-sm transition-colors bg-transparent border-none cursor-pointer">
+                  <app-icon name="StickyNote" size="14"></app-icon>
+                </button>
+
+                <!-- Phone Call Button (Only if phone available) -->
+                <button 
+                  *ngIf="order.customerPhone"
+                  (click)="callFollowUp(order)"
+                  title="Call Customer"
+                  class="p-2 text-ds-accent hover:text-ds-accent/80 hover:bg-ds-bg rounded-sm transition-colors bg-transparent border-none cursor-pointer">
+                  <app-icon name="Phone" size="14"></app-icon>
+                </button>
+
+                <!-- WhatsApp Button (Only if phone available) -->
+                <button 
+                  *ngIf="order.customerPhone"
+                  (click)="whatsappFollowUp(order)"
+                  title="Send WhatsApp Follow-up"
+                  class="p-2 text-ds-success hover:text-ds-success/80 hover:bg-ds-bg rounded-sm transition-colors bg-transparent border-none cursor-pointer">
+                  <app-icon name="MessageCircle" size="14"></app-icon>
+                </button>
+
+                <!-- Convert Button (Only if status is not Lost and has items) -->
+                <button 
+                  *ngIf="order.status !== 'IncompleteLost' && order.items && order.items.length > 0"
+                  (click)="convertToRealOrder(order)"
+                  title="Convert to Confirmed Order"
+                  class="p-2 text-ds-accent hover:text-ds-accent/80 hover:bg-ds-bg rounded-sm transition-all active:scale-95 bg-transparent border-none cursor-pointer">
+                  <app-icon name="RefreshCw" size="14"></app-icon>
+                </button>
+
+                <!-- Mark Lost Button -->
+                <button 
+                  *ngIf="order.status !== 'IncompleteLost'"
+                  (click)="markAsLost(order)"
+                  title="Mark Lead as Lost"
+                  class="p-2 text-ds-danger hover:text-ds-danger/80 hover:bg-ds-bg rounded-sm transition-colors bg-transparent border-none cursor-pointer">
+                  <app-icon name="XCircle" size="14"></app-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="px-6 py-4 bg-ds-bg/30 border-t border-ds-border flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="text-xs text-ds-text-muted">
+        Showing <span class="text-ds-text font-semibold">{{ (page - 1) * pageSize + 1 }}</span> — <span class="text-ds-text font-semibold">{{ page * pageSize > totalResults ? totalResults : page * pageSize }}</span> of {{ totalResults }} results
+      </div>
+      <div class="flex items-center gap-ds-3" *ngIf="gettotalPages() > 1">
+        <!-- Prev Button -->
+        <button 
+          [disabled]="page === 1"
+          (click)="onPageChange(page - 1)"
+          class="size-10 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text-muted hover:text-ds-text hover:border-ds-text disabled:opacity-20 disabled:pointer-events-none transition-colors cursor-pointer">
+          <app-icon name="ChevronLeft" size="18"></app-icon>
+        </button>
+
+        <!-- Page Indicator -->
+        <div class="px-ds-4 py-ds-2 bg-ds-bg border border-ds-border rounded-sm text-xs text-ds-text font-medium">
+          Page {{ page }} <span class="mx-1 text-ds-text-muted">/</span> {{ gettotalPages() }}
+        </div>
+
+        <!-- Next Button -->
+        <button 
+          [disabled]="page === gettotalPages()"
+          (click)="onPageChange(page + 1)"
+          class="size-10 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center text-ds-text-muted hover:text-ds-text hover:border-ds-text disabled:opacity-20 disabled:pointer-events-none transition-colors cursor-pointer">
+          <app-icon name="ChevronRight" size="18"></app-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notes Modal Dialog -->
+<div 
+  *ngIf="isNotesModalOpen && selectedOrder" 
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ds-bg/60 backdrop-blur-sm animate-in fade-in duration-200">
+  
+  <div 
+    class="w-full max-w-lg bg-ds-surface border border-ds-border rounded-sm shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+    
+    <!-- Modal Header -->
+    <div class="px-6 py-4 bg-ds-bg/50 border-b border-ds-border flex items-center justify-between">
+      <h3 class="text-base font-bold text-ds-text">
+        Lead Notes - {{ selectedOrder.customerName || 'Anonymous' }}
+      </h3>
+      <button 
+        (click)="closeNotesModal()" 
+        class="p-1.5 text-ds-text-muted hover:text-ds-text hover:bg-ds-bg rounded-sm transition-colors bg-transparent border-none cursor-pointer">
+        <app-icon name="X" size="16"></app-icon>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6 space-y-6 max-h-[400px] overflow-y-auto">
+      <!-- Notes History -->
+      <div class="space-y-4">
+        <h4 class="text-[11px] font-bold uppercase tracking-wider text-ds-text-muted">Activity & Note Logs</h4>
+        
+        <div 
+          *ngIf="!selectedOrder.notes || selectedOrder.notes.length === 0" 
+          class="text-sm italic text-ds-text-muted py-4 text-center border border-dashed border-ds-border rounded-sm">
+          No notes added yet for this lead.
+        </div>
+
+        <div class="space-y-3" *ngIf="selectedOrder.notes && selectedOrder.notes.length > 0">
+          <div 
+            *ngFor="let note of selectedOrder.notes" 
+            class="p-3 bg-ds-bg border border-ds-border rounded-sm space-y-1">
+            <div class="flex items-center justify-between text-xs font-semibold text-ds-text-muted">
+              <span class="text-ds-accent">{{ note.adminName }}</span>
+              <span>{{ note.createdAt | date:'short' }}</span>
+            </div>
+            <p class="text-sm text-ds-text-sec whitespace-pre-wrap">{{ note.content }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add New Note Form -->
+      <div class="space-y-2">
+        <label class="text-[11px] font-bold uppercase tracking-wider text-ds-text-muted">Add Follow-up Note</label>
+        <textarea 
+          [(ngModel)]="newNoteContent"
+          rows="3"
+          placeholder="Type customer call updates or follow-up details..." 
+          class="w-full px-3 py-2.5 text-sm bg-ds-bg/30 hover:bg-ds-bg/50 focus:bg-ds-surface border border-ds-border rounded-sm focus:outline-none focus:ring-1 focus:ring-ds-accent/30 focus:border-ds-accent transition-all placeholder:text-ds-text-muted text-ds-text"></textarea>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="px-6 py-4 bg-ds-bg/50 border-t border-ds-border flex justify-end gap-3">
+      <button 
+        (click)="closeNotesModal()" 
+        class="btn btn-secondary px-4 py-2 text-sm">
+        Cancel
+      </button>
+      <button 
+        [disabled]="!newNoteContent.trim()"
+        (click)="saveNote()" 
+        class="btn btn-primary px-4 py-2 text-sm">
+        Save Note
+      </button>
+    </div>
+  </div>
+</div>

@@ -177,27 +177,27 @@
                 type="button"
                 (click)="toggleOrderViewMenu()"
                 class="flex items-center justify-between px-3 py-2.5 rounded-lg w-full text-left transition-colors group"
-                [ngClass]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'bg-ds-hero-text/10 text-ds-hero-text' : 'text-ds-hero-text/60 hover:text-ds-hero-text hover:bg-ds-hero-text/10'"
+                [ngClass]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website', '/admin/orders/incomplete'])) ? 'bg-ds-hero-text/10 text-ds-hero-text' : 'text-ds-hero-text/60 hover:text-ds-hero-text hover:bg-ds-hero-text/10'"
               >
                 <div class="flex items-center gap-3">
                   <app-icon
                     name="Eye"
                     size="20"
-                    [className]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-ds-hero-text' : 'text-ds-hero-text/50 group-hover:text-ds-hero-text/80'"
+                    [className]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website', '/admin/orders/incomplete'])) ? 'text-ds-hero-text' : 'text-ds-hero-text/50 group-hover:text-ds-hero-text/80'"
                   ></app-icon>
                   <span>Order View</span>
                 </div>
                 <app-icon
                   [name]="isOrderViewMenuOpen ? 'ChevronUp' : 'ChevronDown'"
                   size="14"
-                  [className]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website'])) ? 'text-ds-hero-text' : 'text-ds-hero-text/50 group-hover:text-ds-hero-text/80'"
+                  [className]="(isOrderViewMenuOpen || isGroupActive(['/admin/orders', '/admin/orders/pre-orders', '/admin/orders/website', '/admin/orders/incomplete'])) ? 'text-ds-hero-text' : 'text-ds-hero-text/50 group-hover:text-ds-hero-text/80'"
                 ></app-icon>
               </button>
               
               <!-- Sub-menu -->
               <div
-                class="overflow-hidden transition-all duration-300"
-                [style.max-height]="isOrderViewMenuOpen ? '200px' : '0px'"
+                class="overflow-hidden transition-all duration-300 ease-in-out"
+                [style.max-height]="isOrderViewMenuOpen ? '250px' : '0px'"
               >
                 <ul class="pl-11 pr-3 pb-2 space-y-1 text-sm text-ds-hero-text/60">
                   <li>
@@ -228,6 +228,16 @@
                       class="block py-1.5 hover:text-ds-hero-text transition-colors"
                     >
                       Website Orders
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      routerLink="/admin/orders/incomplete"
+                      routerLinkActive="text-ds-hero-text font-medium"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="block py-1.5 hover:text-ds-hero-text transition-colors"
+                    >
+                      Incomplete Orders
                     </a>
                   </li>
                 </ul>

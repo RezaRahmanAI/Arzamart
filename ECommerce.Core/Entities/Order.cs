@@ -40,6 +40,16 @@ public class Order : BaseEntity
     public int? SocialMediaSourceId { get; set; }
     public SocialMediaSource? SocialMediaSource { get; set; }
 
+    public string? SessionId { get; set; }
+    public string? ReferrerUrl { get; set; }
+    public string? UtmSource { get; set; }
+    public string? UtmCampaign { get; set; }
+    public string? UtmAdset { get; set; }
+    public string? UtmAd { get; set; }
+    public string? Fbclid { get; set; }
+    public string? DeviceType { get; set; }
+    public string? Browser { get; set; }
+
     public ICollection<OrderLog> Logs { get; set; } = new List<OrderLog>();
     public ICollection<OrderNote> Notes { get; set; } = new List<OrderNote>();
 }

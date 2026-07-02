@@ -4,7 +4,7 @@ namespace ECommerce.Core.Interfaces;
 
 public interface IOrderService
 {
-    Task<OrderDto> CreateOrderAsync(OrderCreateDto orderDto);
+    Task<OrderDto> CreateOrderAsync(OrderCreateDto orderDto, string? sessionId = null);
     Task ClearCartAsync(string? userId, string? sessionId);
     Task<PaginationDto<OrderDto>> GetOrdersAsync(string? userId = null, int page = 1, int pageSize = 10);
     Task<IReadOnlyList<OrderDto>> GetOrdersByPhoneAsync(string phone);

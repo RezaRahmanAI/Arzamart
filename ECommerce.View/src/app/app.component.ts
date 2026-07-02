@@ -11,6 +11,7 @@ import { FooterComponent } from "./layout/footer/footer.component";
 import { ToastComponent } from "./shared/components/toast/toast.component";
 import { ContactFabComponent } from "./shared/components/contact-fab/contact-fab.component";
 import { AnalyticsService } from "./core/services/analytics.service";
+import { AttributionService } from "./core/services/attribution.service";
 import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loading-spinner.component";
 import { CartDrawerComponent } from "./shared/components/cart-drawer/cart-drawer.component";
 
@@ -37,6 +38,7 @@ export class AppComponent implements OnInit {
   private document = inject(DOCUMENT);
   private titleService = inject(Title);
   private analyticsService = inject(AnalyticsService);
+  private attributionService = inject(AttributionService);
   private destroyRef = inject(DestroyRef);
   private platformId = inject(PLATFORM_ID);
 

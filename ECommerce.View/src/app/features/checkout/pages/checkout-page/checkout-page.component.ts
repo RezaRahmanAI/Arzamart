@@ -26,6 +26,7 @@ import { AuthService } from "../../../../core/services/auth.service";
 import { DeliveryService } from "../../../../core/services/delivery.service";
 import { SiteSettingsService, SiteSettings } from "../../../../core/services/site-settings.service";
 import { AnalyticsService } from "../../../../core/services/analytics.service";
+import { IncompleteOrderTrackerService } from "../../../../core/services/incomplete-order-tracker.service";
 import {
   DeliveryMethod,
 } from "../../../../core/models/delivery";
@@ -67,6 +68,7 @@ export class CheckoutPageComponent {
   private readonly siteSettingsService = inject(SiteSettingsService);
   private readonly userPersistence = inject(UserPersistenceService);
   private readonly notification = inject(NotificationService);
+  private readonly trackerService = inject(IncompleteOrderTrackerService);
 
   readonly checkoutForm = this.formBuilder.nonNullable.group({
     fullName: ["", [Validators.required, Validators.minLength(2)]],
@@ -184,6 +186,27 @@ export class CheckoutPageComponent {
           this.areaSearch = state.area;
         }
       });
+
+    // Incomplete order tracking setup
+    this.trackerService.trackForm(
+      this.checkoutForm,
+      () => {
+        const cartItems = this.cartService.getCartSnapshot();
+        const summary = this.cartService.getSummarySnapshot();
+        const firstItem = cartItems && cartItems.length > 0 ? cartItems[0] : null;
+        
+        return {
+          productId: firstItem?.productId || null,
+          productName: firstItem?.name || null,
+          quantity: firstItem?.quantity || 1,
+          totalPrice: summary.subtotal,
+          selectedSize: firstItem?.size || undefined
+        };
+      },
+      () => ({
+        landingPageName: "Standard Checkout Page"
+      })
+    );
 
     if (this.userPersistence.hasSavedDetails()) {
       this.showAutofillPrompt = true;

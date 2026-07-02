@@ -14,5 +14,8 @@ public enum OrderStatus
     Return = 9,
     ReturnProcess = 10,
     Refund = 11,
-    Exchange = 12
+    Exchange = 12,
+    Incomplete = 13,
+    IncompleteContacted = 14,
+    IncompleteLost = 15
 }

@@ -44,9 +44,9 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withFetch(),
       withInterceptors([
+        globalErrorInterceptor,
         jwtInterceptor,
         loadingInterceptor,
-        globalErrorInterceptor,
       ]),
     ),
     {

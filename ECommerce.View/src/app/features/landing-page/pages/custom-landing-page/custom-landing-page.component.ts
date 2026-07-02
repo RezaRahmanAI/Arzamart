@@ -33,6 +33,7 @@ import { QuickAddModalComponent } from "../../../../shared/components/quick-add-
 import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
 import { AuthService } from "../../../../core/services/auth.service";
 import { CustomLandingPageEditorComponent } from "./components/custom-landing-page-editor/custom-landing-page-editor.component";
+import { IncompleteOrderTrackerService } from "../../../../core/services/incomplete-order-tracker.service";
 
 interface LandingSection {
   id: string;
@@ -87,6 +88,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private readonly reviewService = inject(ReviewService);
   private readonly ngZone = inject(NgZone);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly trackerService = inject(IncompleteOrderTrackerService);
 
   brandName$ = this.siteSettingsService.getSettings().pipe(map(s => s.websiteName));
   isAdmin$ = this.authService.currentUser.pipe(
@@ -540,6 +542,26 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         }
 
         this.isLoading = false;
+
+        // Set up incomplete order tracking
+        this.trackerService.trackForm(
+          this.orderForm,
+          () => {
+            const promoPrice = this.data?.config?.promoPrice || this.data?.product?.price || 0;
+            const quantity = this.orderForm.controls.quantity.value || 1;
+            return {
+              productId: this.data?.product?.id || null,
+              productName: this.data?.product?.name || null,
+              quantity: quantity,
+              totalPrice: promoPrice * quantity,
+              selectedSize: this.orderForm.controls.selectedSize.value || undefined
+            };
+          },
+          () => ({
+            landingPageId: this.data?.config?.id || undefined,
+            landingPageName: `CLP: ${this.data?.product?.name || 'Custom'}`
+          })
+        );
 
         this.startAutoSlide();
 

@@ -19,10 +19,16 @@ public class OrdersWithFiltersForAdminSpecification : BaseSpecification<ECommerc
     private static Expression<Func<ECommerce.Core.Entities.Order, bool>> GenerateCriteria(string? searchTerm, string? status, string? dateRange, bool preOrderOnly, bool websiteOnly, bool manualOnly, DateTime? startDate, DateTime? endDate, int? sourcePageId, int? socialMediaSourceId, string? customerPhone, int? productId, string? orderNumber)
     {
         OrderStatus? statusEnum = null;
+        bool isIncompleteQuery = false;
         if (!string.IsNullOrEmpty(status) && status != "All")
         {
             if (Enum.TryParse<OrderStatus>(status, true, out var result))
+            {
                 statusEnum = result;
+                isIncompleteQuery = result == OrderStatus.Incomplete || 
+                                    result == OrderStatus.IncompleteContacted || 
+                                    result == OrderStatus.IncompleteLost;
+            }
         }
 
         var tz = TimeZoneInfo.FindSystemTimeZoneById("Asia/Dhaka");
@@ -47,6 +53,9 @@ public class OrdersWithFiltersForAdminSpecification : BaseSpecification<ECommerc
 
         return o => 
             (preOrderOnly ? o.IsPreOrder : (status == "All" || !string.IsNullOrEmpty(status) ? true : !o.IsPreOrder)) &&
+            (isIncompleteQuery 
+                ? (o.Status == OrderStatus.Incomplete || o.Status == OrderStatus.IncompleteContacted || o.Status == OrderStatus.IncompleteLost) 
+                : (o.Status != OrderStatus.Incomplete && o.Status != OrderStatus.IncompleteContacted && o.Status != OrderStatus.IncompleteLost)) &&
             (!websiteOnly || (!o.SourcePageId.HasValue && !o.SocialMediaSourceId.HasValue)) &&
             (!manualOnly || (o.SourcePageId.HasValue || o.SocialMediaSourceId.HasValue)) &&
             (string.IsNullOrEmpty(searchTerm) || o.OrderNumber.Contains(searchTerm) || o.CustomerName.Contains(searchTerm) || o.CustomerPhone.Contains(searchTerm)) &&

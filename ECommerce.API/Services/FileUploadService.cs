@@ -18,7 +18,7 @@ public class FileUploadService : IFileUploadService
 
     private static readonly HashSet<string> AllowedExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
-        ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".pdf"
+        ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".pdf", ".jfif", ".ico"
     };
 
     private const long MaxFileSize = 10 * 1024 * 1024; // 10 MB

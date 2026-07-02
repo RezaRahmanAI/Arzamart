@@ -39,7 +39,7 @@ public class OrderService : IOrderService
         _statusService = statusService;
     }
 
-    public async Task<OrderDto> CreateOrderAsync(OrderCreateDto orderDto)
+    public async Task<OrderDto> CreateOrderAsync(OrderCreateDto orderDto, string? sessionId = null)
     {
         // Business logic: normalize DeliveryMethodId
         if (orderDto.DeliveryMethodId == 0)
@@ -52,6 +52,36 @@ public class OrderService : IOrderService
         if (customer != null && customer.IsSuspicious)
         {
             throw new InvalidOperationException("Your account has been suspended. Please contact support.");
+        }
+
+        // Look up existing incomplete order
+        Order? existingOrder = null;
+        if (!string.IsNullOrEmpty(sessionId))
+        {
+            existingOrder = await _unitOfWork.Repository<Order>().GetQueryable()
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.SessionId == sessionId && 
+                                         (o.Status == OrderStatus.Incomplete || o.Status == OrderStatus.IncompleteContacted));
+        }
+
+        if (existingOrder == null)
+        {
+            existingOrder = await _unitOfWork.Repository<Order>().GetQueryable()
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.CustomerPhone == orderDto.Phone && 
+                                         (o.Status == OrderStatus.Incomplete || o.Status == OrderStatus.IncompleteContacted));
+        }
+
+        bool isNew = existingOrder == null;
+        if (!isNew && existingOrder != null)
+        {
+            // Clear existing items in DbContext so EF Core doesn't try to reuse/insert duplicate items or leave orphaned items
+            foreach (var item in existingOrder.Items.ToList())
+            {
+                _unitOfWork.Repository<OrderItem>().Delete(item);
+            }
+            existingOrder.Items.Clear();
+            await _unitOfWork.Complete();
         }
 
         var items = new List<OrderItem>();
@@ -177,30 +207,47 @@ public class OrderService : IOrderService
                  shippingCost = 0; 
             }
 
-            order = new Order
+            if (isNew)
             {
-                OrderNumber = "PENDING", // Will be set after first save if using ID, or generated simply
-                CustomerName = orderDto.Name,
-                CustomerPhone = orderDto.Phone,
-                ShippingAddress = orderDto.Address,
-                City = orderDto.City,
-                Area = orderDto.Area,
-                Items = items,
-                SubTotal = subtotal,
-                Tax = 0,
-                ShippingCost = shippingCost,
-                DeliveryMethodId = orderDto.DeliveryMethodId,
-                Status = finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending,
-                IsPreOrder = finalIsPreOrder,
-                SourcePageId = orderDto.SourcePageId,
-                SocialMediaSourceId = orderDto.SocialMediaSourceId,
-                AdminNote = orderDto.AdminNote,
-                CustomerNote = orderDto.CustomerNote,
-                Discount = orderDto.Discount,
-                AdvancePayment = orderDto.AdvancePayment,
-                CreatedAt = DateTime.UtcNow
-            };
-            
+                order = new Order();
+            }
+            else
+            {
+                order = existingOrder!;
+            }
+
+            order.CustomerName = orderDto.Name;
+            order.CustomerPhone = orderDto.Phone;
+            order.ShippingAddress = orderDto.Address;
+            order.City = orderDto.City;
+            order.Area = orderDto.Area;
+            order.Items = items;
+            order.SubTotal = subtotal;
+            order.Tax = 0;
+            order.ShippingCost = shippingCost;
+            order.DeliveryMethodId = orderDto.DeliveryMethodId;
+            order.Status = finalIsPreOrder ? OrderStatus.PreOrder : OrderStatus.Pending;
+            order.IsPreOrder = finalIsPreOrder;
+            if (orderDto.SourcePageId.HasValue)
+            {
+                var sourcePage = await _unitOfWork.Repository<SourcePage>().GetByIdAsync(orderDto.SourcePageId.Value);
+                order.SourcePageId = sourcePage != null ? orderDto.SourcePageId : null;
+            }
+            else
+            {
+                order.SourcePageId = null;
+            }
+            order.SocialMediaSourceId = orderDto.SocialMediaSourceId;
+            order.AdminNote = orderDto.AdminNote;
+            order.CustomerNote = orderDto.CustomerNote;
+            order.Discount = orderDto.Discount;
+            order.AdvancePayment = orderDto.AdvancePayment;
+            order.CreatedAt = DateTime.UtcNow; // Reset CreatedAt to actual placement time
+            if (!string.IsNullOrEmpty(sessionId))
+            {
+                order.SessionId = sessionId;
+            }
+
             // Server-side total calculation — never trust client-supplied Total
             order.Total = order.SubTotal + order.Tax + order.ShippingCost - order.Discount;
 
@@ -219,8 +266,16 @@ public class OrderService : IOrderService
             if (order.AdvancePayment > order.Total)
                 order.AdvancePayment = order.Total;
 
-            _unitOfWork.Repository<Order>().Add(order);
-            await _unitOfWork.Complete();
+            if (isNew)
+            {
+                _unitOfWork.Repository<Order>().Add(order);
+                await _unitOfWork.Complete();
+            }
+            else
+            {
+                _unitOfWork.Repository<Order>().Update(order);
+                await _unitOfWork.Complete();
+            }
 
             // 5. Update OrderNumber using generator and persist it
             order.OrderNumber = _orderNumberGenerator.Generate(order.Id);
@@ -295,7 +350,15 @@ public class OrderService : IOrderService
             foreach (var ni in newItems) order.Items.Add(ni);
             order.IsPreOrder = orderDto.IsPreOrder;
             order.DeliveryMethodId = orderDto.DeliveryMethodId;
-            order.SourcePageId = orderDto.SourcePageId;
+            if (orderDto.SourcePageId.HasValue)
+            {
+                var sourcePage = await _unitOfWork.Repository<SourcePage>().GetByIdAsync(orderDto.SourcePageId.Value);
+                order.SourcePageId = sourcePage != null ? orderDto.SourcePageId : null;
+            }
+            else
+            {
+                order.SourcePageId = null;
+            }
             order.SocialMediaSourceId = orderDto.SocialMediaSourceId;
             order.AdminNote = orderDto.AdminNote;
             order.CustomerNote = orderDto.CustomerNote;
@@ -336,7 +399,9 @@ public class OrderService : IOrderService
 
     public async Task<PaginationDto<OrderDto>> GetOrdersAsync(string? userId = null, int page = 1, int pageSize = 10)
     {
-        var spec = new BaseSpecification<Order>();
+        var spec = new BaseSpecification<Order>(o => o.Status != OrderStatus.Incomplete && 
+                                                     o.Status != OrderStatus.IncompleteContacted && 
+                                                     o.Status != OrderStatus.IncompleteLost);
         if (!string.IsNullOrEmpty(userId))
         {
             // Look up customer by userId to get their phone, then filter orders
@@ -344,7 +409,10 @@ public class OrderService : IOrderService
                 .FirstOrDefaultAsync(c => c.UserId == userId);
             if (customer != null)
             {
-                spec = new BaseSpecification<Order>(o => o.CustomerPhone == customer.Phone);
+                spec = new BaseSpecification<Order>(o => o.CustomerPhone == customer.Phone && 
+                                                         o.Status != OrderStatus.Incomplete && 
+                                                         o.Status != OrderStatus.IncompleteContacted && 
+                                                         o.Status != OrderStatus.IncompleteLost);
             }
             else
             {
@@ -363,7 +431,10 @@ public class OrderService : IOrderService
 
     public async Task<IReadOnlyList<OrderDto>> GetOrdersByPhoneAsync(string phone)
     {
-        var spec = new BaseSpecification<Order>(x => x.CustomerPhone == phone);
+        var spec = new BaseSpecification<Order>(x => x.CustomerPhone == phone && 
+                                                     x.Status != OrderStatus.Incomplete && 
+                                                     x.Status != OrderStatus.IncompleteContacted && 
+                                                     x.Status != OrderStatus.IncompleteLost);
         spec.AddInclude(x => x.Items);
         var orders = await _unitOfWork.Repository<Order>().ListAsync(spec);
 

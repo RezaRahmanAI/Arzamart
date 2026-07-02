@@ -33,6 +33,7 @@ import { UserPersistenceService } from "../../../../core/services/user-persisten
 import { NotificationService } from "../../../../core/services/notification.service";
 import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
 import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
+import { IncompleteOrderTrackerService } from "../../../../core/services/incomplete-order-tracker.service";
 
 
 @Component({
@@ -68,6 +69,7 @@ export class LandingPageComponent implements OnInit {
   private readonly orderService = inject(OrderService);
   private readonly userPersistence = inject(UserPersistenceService);
   private readonly notification = inject(NotificationService);
+  private readonly trackerService = inject(IncompleteOrderTrackerService);
 
   brandName$ = this.siteSettingsService.getSettings().pipe(map((s: SiteSettings) => s.websiteName));
 
@@ -111,6 +113,22 @@ export class LandingPageComponent implements OnInit {
     if (this.userPersistence.hasSavedDetails()) {
       this.showAutofillPrompt = true;
     }
+
+    // Set up incomplete order tracking
+    this.trackerService.trackForm(
+      this.checkoutForm,
+      () => ({
+        productId: this.product?.id || null,
+        productName: this.product?.name || null,
+        quantity: this.checkoutForm.controls.quantity.value || 1,
+        totalPrice: (this.product?.price || 0) * (this.checkoutForm.controls.quantity.value || 1),
+        selectedSize: this.checkoutForm.controls.selectedSize.value || undefined
+      }),
+      () => ({
+        landingPageId: this.product?.id || undefined,
+        landingPageName: `LP: ${this.product?.name || 'Standard'}`
+      })
+    );
   }
 
   applyAutofill(): void {

@@ -74,6 +74,16 @@ public class OrderDto
     public List<OrderItemDto> Items { get; set; } = new();
     public List<OrderLogDto> Logs { get; set; } = new();
     public List<OrderNoteDto> Notes { get; set; } = new();
+
+    public string? SessionId { get; set; }
+    public string? ReferrerUrl { get; set; }
+    public string? UtmSource { get; set; }
+    public string? UtmCampaign { get; set; }
+    public string? UtmAdset { get; set; }
+    public string? UtmAd { get; set; }
+    public string? Fbclid { get; set; }
+    public string? DeviceType { get; set; }
+    public string? Browser { get; set; }
 }
 
 public class OrderLogDto
