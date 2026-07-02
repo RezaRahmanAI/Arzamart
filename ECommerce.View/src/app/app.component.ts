@@ -85,8 +85,10 @@ export class AppComponent implements OnInit {
           this.analyticsService.trackPageView();
         }
         // Reset scroll position for standard viewport and custom scrollable content containers
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        this.document.querySelectorAll(".overflow-y-auto").forEach((el) => el.scrollTo({ top: 0, behavior: 'instant' }));
+        if (isPlatformBrowser(this.platformId)) {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+          this.document.querySelectorAll(".overflow-y-auto").forEach((el) => el.scrollTo({ top: 0, behavior: 'instant' }));
+        }
       });
 
     this.siteSettingsService.getSettings().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((settings) => {

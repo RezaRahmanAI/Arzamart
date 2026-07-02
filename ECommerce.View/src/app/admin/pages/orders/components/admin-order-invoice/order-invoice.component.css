@@ -1,7 +1,7 @@
-﻿/* ─── Custom scrollbar ─── */
+/* ─── Custom scrollbar ─── */
 .custom-scrollbar::-webkit-scrollbar { width: var(--space-1.5); }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-border-ds); border-radius: var(--radius-lg); }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-border-ds); border-radius: var(--radius-md); }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-text-muted); }
 
 /* ════════════════════════════════════════

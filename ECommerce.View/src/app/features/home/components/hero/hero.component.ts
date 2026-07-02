@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, inject, Input, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit, OnDestroy, inject, Input, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
  
 import { RouterModule } from "@angular/router"; 
 import { trigger, transition, style, animate } from "@angular/animations";
@@ -43,6 +44,7 @@ export class HeroComponent implements OnInit, OnDestroy {
   public imageUrlService = inject(ImageUrlService);
   private readonly ngZone = inject(NgZone);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private _slides: Slide[] = [];
   @Input() 
@@ -83,6 +85,7 @@ export class HeroComponent implements OnInit, OnDestroy {
   }
 
   private updateProgressBarDOM() {
+    if (!isPlatformBrowser(this.platformId)) return;
     const progressBar = document.getElementById("hero-progress-bar");
     if (progressBar) {
       progressBar.style.width = `${this.slideProgress}%`;
@@ -90,6 +93,7 @@ export class HeroComponent implements OnInit, OnDestroy {
   }
 
   startTimer() {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (this.mainSlides.length <= 1) return;
     this.stopTimer();
     
@@ -112,6 +116,7 @@ export class HeroComponent implements OnInit, OnDestroy {
   }
 
   stopTimer() {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (this.timer) {
       clearInterval(this.timer);
     }

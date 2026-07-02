@@ -1,4 +1,5 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable, inject, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
 import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
 import { Subject, Observable } from "rxjs";
 import { Order } from "../models/order";
@@ -14,6 +15,7 @@ export class SignalrService {
   private newOrdersSubject = new Subject<Order>();
   private notification = inject(NotificationService);
   private authService = inject(AuthService);
+  private platformId = inject(PLATFORM_ID);
 
   public newOrders$: Observable<Order> = this.newOrdersSubject.asObservable();
 
@@ -77,6 +79,7 @@ export class SignalrService {
   }
 
   private playNotificationSound() {
+    if (!isPlatformBrowser(this.platformId)) return;
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
       const playTone = (freq: number, start: number, duration: number) => {

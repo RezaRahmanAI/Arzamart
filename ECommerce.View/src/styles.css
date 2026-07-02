@@ -87,6 +87,26 @@
   --space-20: clamp(3.75rem, 5vw, 5rem);
   --space-24: clamp(4.5rem, 6vw, 6rem);
 
+  /* ── Missing Spacing Scale Variables ── */
+  --space-0\.5: 2px;
+  --space-1\.5: 6px;
+  --space-2\.5: 10px;
+  --space-3\.5: 14px;
+  --space-7\.5: 30px;
+  --space-9:   36px;
+
+  /* ── Typography Scale Variables ── */
+  --text-2xs:  11px;
+  --text-xs:   12px;
+  --text-sm:   13px;
+  --text-base: 14px;
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   22px;
+  --text-2xl:  28px;
+  --text-3xl:  36px;
+  --text-4xl:  48px;
+
   /* ── Transitions ── */
   --transition-fast: 0.15s ease;
   --transition-base: 0.2s ease;
