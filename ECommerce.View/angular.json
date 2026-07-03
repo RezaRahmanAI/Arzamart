@@ -27,9 +27,8 @@
               "src/styles.css"
             ],
             "scripts": [],
-            "server": "src/main.server.ts",
             "prerender": false,
-            "ssr": true
+            "ssr": false
           },
           "configurations": {
             "production": {

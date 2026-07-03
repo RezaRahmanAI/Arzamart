@@ -16,7 +16,8 @@ public class SecurityHeadersMiddleware
         var headers = context.Response.Headers;
 
         headers["X-Content-Type-Options"] = "nosniff";
-        headers["X-Frame-Options"] = "DENY";
+        headers["X-Frame-Options"] = "SAMEORIGIN";
+        headers["Content-Security-Policy"] = "frame-ancestors 'self'";
         headers["X-XSS-Protection"] = "1; mode=block";
         headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
         headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";

@@ -56,7 +56,13 @@ try
     builder.Services.AddAppServices(builder.Configuration);
     builder.Services.AddCustomCors(builder.Configuration, builder.Environment);
     builder.Services.AddSwaggerServices(builder.Environment);
-    builder.Services.AddSignalR();
+    builder.Services.AddSignalR(options =>
+    {
+        options.EnableDetailedErrors = false;
+        options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+        options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+        options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+    });
 
     var app = builder.Build();
 
@@ -126,7 +132,7 @@ try
     app.UseResponseCaching();
 
     app.MapControllers();
-    app.MapHub<ECommerce.API.Hubs.OrderHub>("/hubs/orders").RequireAuthorization();
+    app.MapHub<ECommerce.API.Hubs.OrderHub>("/hubs/orders").RequireAuthorization().RequireCors("DefaultPolicy");
 
     // ── 5. Smart One-Time Seeder ────────────────────────────────────
     using (var scope = app.Services.CreateScope())

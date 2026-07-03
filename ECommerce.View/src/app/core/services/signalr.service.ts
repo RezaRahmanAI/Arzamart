@@ -1,6 +1,6 @@
 import { Injectable, inject, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
-import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
+import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel, HttpTransportType } from "@microsoft/signalr";
 import { Subject, Observable } from "rxjs";
 import { Order } from "../models/order";
 import { NotificationService } from "./notification.service";
@@ -38,7 +38,8 @@ export class SignalrService {
 
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(hubUrl, {
-        accessTokenFactory: () => this.authService.getAccessToken() || ""
+        accessTokenFactory: () => this.authService.getAccessToken() || "",
+        transport: HttpTransportType.WebSockets | HttpTransportType.ServerSentEvents | HttpTransportType.LongPolling
       })
       .withAutomaticReconnect([0, 2000, 10000, 30000])
       .configureLogging(LogLevel.Information)
