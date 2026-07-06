@@ -92,14 +92,6 @@ export const appRoutes: Routes = [
         (m) => m.ProductDetailsPageComponent,
       ),
   },
-
-  {
-    path: "cart",
-    loadComponent: () =>
-      import("./features/cart/pages/cart-page/cart-page.component").then(
-        (m) => m.CartPageComponent,
-      ),
-  },
   {
     path: "checkout",
     loadComponent: () =>

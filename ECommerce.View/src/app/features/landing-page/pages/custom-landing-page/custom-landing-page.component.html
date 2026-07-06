@@ -316,8 +316,8 @@
                         <h3 class="text-base font-bold text-ds-text mb-3 font-bengali">আপনার কার্ট:</h3>
                         <div class="space-y-3">
                           @for (s of selectedProductList; track s.product.id) {
-                            <div class="flex items-center gap-3 p-3 bg-ds-surface border border-ds-border rounded-xl">
-                              <img loading="lazy" [src]="imageUrlService.getImageUrl(s.product.imageUrl || '')" [alt]="s.product.name" class="w-14 h-14 object-contain rounded-lg bg-ds-bg flex-shrink-0">
+                            <div class="flex items-center gap-3 p-3 bg-ds-surface border border-ds-border rounded-lg">
+                              <img loading="lazy" [src]="imageUrlService.getImageUrl(s.product.imageUrl || '')" [alt]="s.product.name" class="w-14 h-14 object-contain rounded-md bg-ds-bg flex-shrink-0">
                               <div class="flex-1 min-w-0">
                                 <p class="text-sm font-bold text-ds-text truncate">{{ s.product.name }}</p>
                                 <p class="text-xs text-ds-text-sec">সাইজ: {{ s.selectedSize }} &times; {{ s.quantity }}</p>
@@ -327,7 +327,7 @@
                                 <button type="button" (click)="updateProductQuantity(s.product, -1)" class="w-7 h-7 flex items-center justify-center rounded-full border border-ds-border hover:bg-ds-surface text-ds-text text-sm font-bold">-</button>
                                 <span class="w-6 text-center text-sm font-bold text-ds-text">{{ s.quantity }}</span>
                                 <button type="button" (click)="updateProductQuantity(s.product, 1)" class="w-7 h-7 flex items-center justify-center rounded-full border border-ds-border hover:bg-ds-surface text-ds-text text-sm font-bold">+</button>
-                                <button type="button" (click)="updateProductQuantity(s.product, 0)" class="w-7 h-7 flex items-center justify-center rounded-full text-ds-danger hover:bg-ds-danger/10 text-sm ml-1">×</button>
+                                <button type="button" (click)="updateSelections(s.product, 0)" class="w-7 h-7 flex items-center justify-center rounded-full text-ds-danger hover:bg-ds-danger/10 text-sm ml-1">×</button>
                               </div>
                             </div>
                           }

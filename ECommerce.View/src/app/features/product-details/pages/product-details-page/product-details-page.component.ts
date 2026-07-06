@@ -395,6 +395,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
         product,
         quantity,
         selectedSize ?? undefined,
+        false,
       )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
@@ -403,10 +404,24 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   buyNow(product: Product | null): void {
-    this.addToCart(product);
-    if (!this.selectionError) {
-      void this.router.navigateByUrl("/cart");
+    if (!product) return;
+    const selectedSize = this.selectedSizeSubject.getValue();
+
+    if (!selectedSize && product.variants?.length) {
+      this.notificationService.warn("Please select a size first");
+      this.selectionError = "Size required";
+      return;
     }
+
+    const quantity = this.quantitySubject.getValue();
+    this.selectionError = "";
+    this.cartService
+      .addItem(product, quantity, selectedSize ?? undefined, true)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => void this.router.navigate(["/checkout"]),
+        error: () => {},
+      });
   }
 
   getWhatsAppUrl(product: Product, whatsAppNumber: string | undefined): string {

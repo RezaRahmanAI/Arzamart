@@ -31,7 +31,7 @@
             <!-- Cart Items List -->
             <div class="cart-drawer-items">
               @for (item of vm.cartItems; track item.id) {
-                <div class="cart-drawer-item">
+                <div class="cart-drawer-item" [@slideOutLeft]="slidingOutIds.has(item.id) ? 'removing' : 'normal'">
                   <!-- Thumbnail Image -->
                   <div class="item-img-wrapper">
                     <img [src]="imageUrlService.getImageUrl(item.imageUrl)" [alt]="item.name">
@@ -41,8 +41,17 @@
                   <div class="item-details">
                     <div class="item-top-row">
                       <span class="item-name" [title]="item.name">{{ item.name }}</span>
-                      <button class="item-remove-btn" (click)="removeItem(item)">
-                        Remove
+                      <button
+                        class="item-remove-btn"
+                        [class.is-removing]="isRemoving(item.id)"
+                        [disabled]="isRemoving(item.id)"
+                        (click)="removeItem(item)"
+                      >
+                        @if (isRemoving(item.id)) {
+                          <span class="remove-spinner"></span>
+                        } @else {
+                          Remove
+                        }
                       </button>
                     </div>
 

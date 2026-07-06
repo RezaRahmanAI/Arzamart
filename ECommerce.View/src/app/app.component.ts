@@ -9,11 +9,13 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavbarComponent } from "./layout/navbar/navbar.component";
 import { FooterComponent } from "./layout/footer/footer.component";
 import { ToastComponent } from "./shared/components/toast/toast.component";
+import { UndoToastComponent } from "./shared/components/toast/undo-toast.component";
 import { ContactFabComponent } from "./shared/components/contact-fab/contact-fab.component";
 import { AnalyticsService } from "./core/services/analytics.service";
 import { AttributionService } from "./core/services/attribution.service";
 import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loading-spinner.component";
 import { CartDrawerComponent } from "./shared/components/cart-drawer/cart-drawer.component";
+import { CartService } from "./core/services/cart.service";
 
 @Component({
   selector: "app-root",
@@ -24,6 +26,7 @@ import { CartDrawerComponent } from "./shared/components/cart-drawer/cart-drawer
     NavbarComponent,
     FooterComponent,
     ToastComponent,
+    UndoToastComponent,
     ContactFabComponent,
     LoadingSpinnerComponent,
     CartDrawerComponent,
@@ -41,6 +44,7 @@ export class AppComponent implements OnInit {
   private attributionService = inject(AttributionService);
   private destroyRef = inject(DestroyRef);
   private platformId = inject(PLATFORM_ID);
+  private cartService = inject(CartService);
 
   showPublicLayout$ = this.router.events.pipe(
     filter((event) => event instanceof NavigationEnd),
@@ -81,6 +85,9 @@ export class AppComponent implements OnInit {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
+        // Close cart drawer on every navigation
+        this.cartService.closeDrawer();
+
         if (!this.router.url.startsWith("/admin")) {
           this.analyticsService.trackPageView();
         }

@@ -86,7 +86,7 @@ import { NotificationService } from "../../../core/services/notification.service
           (click)="confirm()"
           class="w-full h-12 bg-ds-accent hover:bg-ds-accent-hover text-white font-bold rounded-lg shadow-md transition-all active:scale-[0.98] flex items-center justify-center text-sm"
         >
-          {{ actionType === 'order' ? 'Order Now' : 'Add to Cart' }}
+          {{ actionType === 'order' ? 'Buy Now' : 'Add to Cart' }}
         </button>
       </div>
     </div>

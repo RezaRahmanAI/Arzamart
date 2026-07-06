@@ -1,4 +1,4 @@
-import { Injectable, PLATFORM_ID, inject } from "@angular/core";
+import { Injectable, PLATFORM_ID, inject, NgZone } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
 import { FormGroup } from "@angular/forms";
 import { Subscription, debounceTime, distinctUntilChanged } from "rxjs";
@@ -17,6 +17,7 @@ export class IncompleteOrderTrackerService {
   private readonly cartService = inject(CartService);
   private readonly attributionService = inject(AttributionService);
   private readonly apiService = inject(IncompleteOrderApiService);
+  private readonly ngZone = inject(NgZone);
 
   private formSubscription?: Subscription;
   private currentForm?: FormGroup;
@@ -31,6 +32,7 @@ export class IncompleteOrderTrackerService {
     landingPageId?: number;
     landingPageName?: string;
   };
+  private lastSavedPayload?: IncompleteOrderAutosave;
 
   constructor() {
     this.setupUnloadListeners();
@@ -77,6 +79,7 @@ export class IncompleteOrderTrackerService {
     const payload = this.buildPayload();
     if (!payload) return;
 
+    this.lastSavedPayload = payload;
     this.apiService.autosave(payload).subscribe({
       error: (err) => console.warn("Failed to autosave incomplete order: ", err),
     });
@@ -160,15 +163,18 @@ export class IncompleteOrderTrackerService {
     if (!isPlatformBrowser(this.platformId)) return;
 
     const flushUnload = () => {
-      if (!this.currentForm || !this.currentForm.dirty) return;
+      if (!this.currentForm) return;
 
+      // Always rebuild payload from current form state (not cached)
       const payload = this.buildPayload();
       if (!payload) return;
+
+      this.lastSavedPayload = payload;
 
       try {
         const url = `${environment.apiBaseUrl}/orders/incomplete-autosave`;
         const body = JSON.stringify(payload);
-        
+
         // Use fetch with keepalive: true to guarantee delivery on page close
         fetch(url, {
           method: "POST",
@@ -178,6 +184,9 @@ export class IncompleteOrderTrackerService {
           },
           body,
           keepalive: true,
+          credentials: "include",
+        }).catch((err) => {
+          console.warn("Fetch keepalive failed, will retry via HttpClient: ", err);
         });
       } catch (e) {
         console.warn("Failed to flush incomplete order during page unload: ", e);
@@ -188,7 +197,17 @@ export class IncompleteOrderTrackerService {
     window.addEventListener("pagehide", flushUnload);
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden") {
+        // Try fetch keepalive first
         flushUnload();
+
+        // Fallback: use Angular HttpClient if we have a payload (runs outside zone for speed)
+        if (this.lastSavedPayload) {
+          this.ngZone.runOutsideAngular(() => {
+            this.apiService.autosave(this.lastSavedPayload!).subscribe({
+              error: () => {},
+            });
+          });
+        }
       }
     });
   }

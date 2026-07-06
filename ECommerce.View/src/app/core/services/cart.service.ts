@@ -10,6 +10,8 @@ import {
   debounceTime,
   switchMap,
   filter,
+  Subscription,
+  finalize,
 } from "rxjs";
 import { HttpHeaders, HttpParams } from "@angular/common/http";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -27,6 +29,11 @@ import { NotificationService } from "./notification.service";
 import { ApiHttpClient } from "../http/http-client";
 import { AppConstants } from "../constants/app.constants";
 import { StorageKeys } from "../constants/storage-keys";
+
+export interface RemovedCartItem {
+  item: CartItem;
+  index: number;
+}
 
 @Injectable({
   providedIn: "root",
@@ -61,6 +68,30 @@ export class CartService {
 
   private readonly isDrawerOpenSubject = new BehaviorSubject<boolean>(false);
   readonly isDrawerOpen$ = this.isDrawerOpenSubject.asObservable();
+
+  // Undo support: emits when an item is removed (for undo toast)
+  private readonly removedItemSubject = new BehaviorSubject<RemovedCartItem | null>(null);
+  readonly removedItem$ = this.removedItemSubject.asObservable();
+
+  // Loading state: tracks which item IDs are currently being removed
+  private readonly removingIdsSubject = new BehaviorSubject<Set<string>>(new Set());
+  readonly removingIds$ = this.removingIdsSubject.asObservable();
+
+  // Sliding out state: tracks items mid-animation (before DOM removal)
+  private readonly slidingOutIdsSubject = new BehaviorSubject<Set<string>>(new Set());
+  readonly slidingOutIds$ = this.slidingOutIdsSubject.asObservable();
+
+  // Pending undo timers: itemId -> timeout ID
+  private readonly undoTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+  // Pending delete subscriptions: itemId -> subscription (to cancel if undone)
+  private readonly pendingDeletes = new Map<string, Subscription>();
+
+  // Animation duration (ms) for slide-out
+  private readonly SLIDE_OUT_MS = 300;
+
+  // Undo window duration (ms) before actual API delete fires
+  private readonly UNDO_WINDOW_MS = 8000;
 
   constructor() {
     // Subscribe to settings updates via public SiteSettingsService
@@ -109,7 +140,7 @@ export class CartService {
         takeUntilDestroyed(),
       )
       .subscribe((dto) => {
-        if (dto) this.updateLocalState(dto);
+        if (dto) this.reconcileState(dto);
       });
   }
 
@@ -195,6 +226,7 @@ export class CartService {
     product: Product,
     quantity = 1,
     size?: string,
+    suppressDrawer = false,
   ): Observable<CartDto> {
     const hasVariants = product.variants && product.variants.length > 0;
     const resolvedSize = 
@@ -251,8 +283,8 @@ export class CartService {
       .post<CartDto>(`${this.apiUrl}/items`, payload, this.options)
       .pipe(
         tap((dto) => {
-          this.updateLocalState(dto);
-          this.openDrawer();
+          this.reconcileState(dto);
+          if (!suppressDrawer) this.openDrawer();
         }),
         catchError((err) => {
           console.error("Failed to add item to cart", err);
@@ -267,23 +299,113 @@ export class CartService {
     const numericId = parseInt(cartItemId, 10);
     if (isNaN(numericId)) return;
 
-    // 1. Optimistic UI update
-    const currentItems = this.cartItemsSubject.getValue();
-    const updatedItems = currentItems.filter((i) => i.id !== cartItemId);
-    this.cartItemsSubject.next(updatedItems);
+    // Prevent double-remove
+    const currentRemoving = this.removingIdsSubject.getValue();
+    if (currentRemoving.has(cartItemId)) return;
 
-    // 2. Perform backend deletion
-    // ApiHttpClient.delete automatically converts to POST /delete
+    // 1. Find item and its index before removal (for undo)
+    const currentItems = this.cartItemsSubject.getValue();
+    const itemIndex = currentItems.findIndex((i) => i.id === cartItemId);
+    if (itemIndex === -1) return;
+    const removedItem = { ...currentItems[itemIndex] };
+
+    // 2. Phase 1: Mark as sliding out (triggers animation + shows spinner)
+    this.removingIdsSubject.next(new Set([...currentRemoving, cartItemId]));
+    const currentSliding = this.slidingOutIdsSubject.getValue();
+    this.slidingOutIdsSubject.next(new Set([...currentSliding, cartItemId]));
+
+    // 3. Phase 2: After animation completes, remove from array
+    setTimeout(() => {
+      // Remove from sliding state
+      const sliding = this.slidingOutIdsSubject.getValue();
+      const newSliding = new Set(sliding);
+      newSliding.delete(cartItemId);
+      this.slidingOutIdsSubject.next(newSliding);
+
+      // Remove from array
+      const items = this.cartItemsSubject.getValue();
+      this.cartItemsSubject.next(items.filter((i) => i.id !== cartItemId));
+
+      // 4. Show undo toast
+      this.notificationService.showUndo(
+        `${removedItem.name} removed from bag`,
+        () => this.restoreItem({ item: removedItem, index: itemIndex }),
+        this.UNDO_WINDOW_MS,
+      );
+
+      // 5. Schedule delayed delete (gives user time to undo)
+      const timer = setTimeout(() => {
+        this.undoTimers.delete(cartItemId);
+        this.performDelete(cartItemId, numericId);
+      }, this.UNDO_WINDOW_MS);
+      this.undoTimers.set(cartItemId, timer);
+    }, this.SLIDE_OUT_MS);
+  }
+
+  restoreItem(removedCartItem: RemovedCartItem): void {
+    const { item, index } = removedCartItem;
+    const currentItems = this.cartItemsSubject.getValue();
+
+    // Cancel pending delete
+    const timer = this.undoTimers.get(item.id);
+    if (timer) {
+      clearTimeout(timer);
+      this.undoTimers.delete(item.id);
+    }
+
+    const sub = this.pendingDeletes.get(item.id);
+    if (sub) {
+      sub.unsubscribe();
+      this.pendingDeletes.delete(item.id);
+    }
+
+    // Remove from removing state
+    const currentRemoving = this.removingIdsSubject.getValue();
+    const newRemoving = new Set(currentRemoving);
+    newRemoving.delete(item.id);
+    this.removingIdsSubject.next(newRemoving);
+
+    // Remove from sliding state
+    const currentSliding = this.slidingOutIdsSubject.getValue();
+    const newSliding = new Set(currentSliding);
+    newSliding.delete(item.id);
+    this.slidingOutIdsSubject.next(newSliding);
+
+    // Restore item at its original index (or end if index is out of bounds)
+    const restoredItems = [...currentItems];
+    const insertAt = Math.min(index, restoredItems.length);
+    restoredItems.splice(insertAt, 0, item);
+    this.cartItemsSubject.next(restoredItems);
+  }
+
+  isRemoving(cartItemId: string): boolean {
+    return this.removingIdsSubject.getValue().has(cartItemId);
+  }
+
+  private performDelete(cartItemId: string, numericId: number): void {
     this.lastMutation = Date.now();
-    this.api
+    const sub = this.api
       .post<CartDto>(`${this.apiUrl}/items/${numericId}/delete`, {}, this.options)
+      .pipe(
+        finalize(() => {
+          const currentRemoving = this.removingIdsSubject.getValue();
+          const newRemoving = new Set(currentRemoving);
+          newRemoving.delete(cartItemId);
+          this.removingIdsSubject.next(newRemoving);
+        }),
+      )
       .subscribe({
-        next: (dto) => this.updateLocalState(dto),
+        next: (dto) => {
+          this.pendingDeletes.delete(cartItemId);
+          this.reconcileState(dto);
+        },
         error: (err) => {
+          this.pendingDeletes.delete(cartItemId);
           console.error("Failed to remove item", err);
-          this.refreshCartFromServer(); // Re-sync to revert local state on failure
+          this.refreshCartFromServer();
         },
       });
+    this.pendingDeletes.set(cartItemId, sub);
   }
 
   updateQty(cartItemId: string, quantity: number): void {
@@ -336,7 +458,7 @@ export class CartService {
       .pipe(
         tap((dto) => {
           if (dto) {
-            this.updateLocalState(dto);
+            this.reconcileState(dto);
             // Don't remove the sessionId from localstorage here, because if they log out
             // they need a fresh guest cart, so keeping the session ID is fine as it will
             // just act as a new anonymous cart once logged out.
@@ -350,20 +472,39 @@ export class CartService {
   }
 
   private updateLocalState(dto: CartDto): void {
-    const mappedItems: CartItem[] = dto.items.map((i) => ({
-      id: i.id.toString(), // Map backend numeric ID to string ID used in frontend UI
+    const mappedItems = this.mapDtoToItems(dto);
+    this.cartItemsSubject.next(mappedItems);
+  }
+
+  private reconcileState(dto: CartDto): void {
+    const serverItems = this.mapDtoToItems(dto);
+    const localItems = this.cartItemsSubject.getValue();
+
+    // Server items are source of truth for confirmed items
+    const reconciled = [...serverItems];
+
+    // Preserve any local items with temp- IDs (optimistic adds not yet on server)
+    const tempItems = localItems.filter((i) => i.id.startsWith("temp-"));
+    reconciled.push(...tempItems);
+
+    this.cartItemsSubject.next(reconciled);
+  }
+
+  private mapDtoToItems(dto: CartDto): CartItem[] {
+    return dto.items.map((i) => ({
+      id: i.id.toString(),
       productId: i.productId,
       name: i.productName,
       price: i.price,
       quantity: i.quantity,
       size: i.size,
       imageUrl: i.imageUrl,
-      imageAlt: i.productName, // Basic fallback
-      discountPercentage: i.salePrice ? Math.round(((i.salePrice - i.price) / i.salePrice) * 100) : 0,
+      imageAlt: i.productName,
+      discountPercentage: i.salePrice
+        ? Math.round(((i.salePrice - i.price) / i.salePrice) * 100)
+        : 0,
       compareAtPrice: i.salePrice,
     }));
-
-    this.cartItemsSubject.next(mappedItems);
   }
 
   private calculateSummary(items: CartItem[]): CartSummary {

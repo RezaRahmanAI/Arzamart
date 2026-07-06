@@ -7,12 +7,24 @@ export interface ToastMessage {
   id: number;
 }
 
+export interface UndoToastMessage {
+  type: "UNDO";
+  message: string;
+  id: number;
+  duration: number;
+  undoCallback: () => void;
+}
+
 @Injectable({
   providedIn: "root",
 })
 export class NotificationService {
   private toastSubject = new BehaviorSubject<ToastMessage | null>(null);
   toast$ = this.toastSubject.asObservable();
+
+  private undoToastSubject = new BehaviorSubject<UndoToastMessage | null>(null);
+  undoToast$ = this.undoToastSubject.asObservable();
+
   private counter = 0;
 
   success(message: string): void {
@@ -31,14 +43,26 @@ export class NotificationService {
     this.show("WARNING", message);
   }
 
+  showUndo(message: string, undoCallback: () => void, duration = 8000): void {
+    console.log(`[UNDO] ${message}`);
+    this.undoToastSubject.next({
+      type: "UNDO",
+      message,
+      id: ++this.counter,
+      duration,
+      undoCallback,
+    });
+  }
+
+  dismissUndo(): void {
+    this.undoToastSubject.next(null);
+  }
+
   private show(
     type: "SUCCESS" | "ERROR" | "INFO" | "WARNING",
     message: string,
   ): void {
     console.log(`[${type}] ${message}`);
     this.toastSubject.next({ type, message, id: ++this.counter });
-
-    // Auto-dismiss logic can be handled here or in the component.
-    // For simplicity, we just emit the event.
   }
 }

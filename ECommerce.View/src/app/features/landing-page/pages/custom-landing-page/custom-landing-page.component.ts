@@ -153,7 +153,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     return this.productSelections[product.id]?.selectedSize ?? "";
   }
 
-  private updateSelections(product: Product, quantity: number, size?: string): void {
+  updateSelections(product: Product, quantity: number, size?: string): void {
     if (!this.productSelections[product.id]) {
       this.productSelections[product.id] = {
         quantity: 0,
@@ -534,6 +534,23 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         this.trackerService.trackForm(
           this.orderForm,
           () => {
+            // Use actual product selections from the multi-product cart
+            const selections = this.selectedProductList;
+            if (selections.length > 0) {
+              const first = selections[0];
+              const totalQty = selections.reduce((sum, s) => sum + s.quantity, 0);
+              const totalPrice = selections.reduce((sum, s) => sum + this.getProductPrice(s.product) * s.quantity, 0);
+              return {
+                productId: first.product.id || null,
+                productName: selections.length === 1
+                  ? first.product.name
+                  : `${first.product.name} +${selections.length - 1} more`,
+                quantity: totalQty,
+                totalPrice: totalPrice,
+                selectedSize: first.selectedSize || undefined
+              };
+            }
+            // Fallback to landing page main product
             const promoPrice = this.data?.config?.promoPrice || this.data?.product?.price || 0;
             const quantity = this.orderForm.controls.quantity.value || 1;
             return {
