@@ -29,6 +29,7 @@ import { NotificationService } from "./notification.service";
 import { ApiHttpClient } from "../http/http-client";
 import { AppConstants } from "../constants/app.constants";
 import { StorageKeys } from "../constants/storage-keys";
+import { API_CONFIG, ApiConfig } from "../config/api.config";
 
 export interface RemovedCartItem {
   item: CartItem;
@@ -51,6 +52,7 @@ export class CartService {
   private readonly api = inject(ApiHttpClient);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly apiConfig = inject<ApiConfig>(API_CONFIG);
 
   private readonly cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
   readonly cartItems$ = this.cartItemsSubject.asObservable();
@@ -91,7 +93,7 @@ export class CartService {
   private readonly SLIDE_OUT_MS = 300;
 
   // Undo window duration (ms) before actual API delete fires
-  private readonly UNDO_WINDOW_MS = 8000;
+  private readonly UNDO_WINDOW_MS = 2000;
 
   constructor() {
     // Subscribe to settings updates via public SiteSettingsService
@@ -108,6 +110,7 @@ export class CartService {
     // Initial load from server (only in browser — SSR has no session)
     if (isPlatformBrowser(this.platformId)) {
       this.refreshCartFromServer();
+      window.addEventListener("beforeunload", () => this.flushPendingDeletes());
     }
 
     // Setup debounced qty updates
@@ -484,7 +487,15 @@ export class CartService {
     const reconciled = [...serverItems];
 
     // Preserve any local items with temp- IDs (optimistic adds not yet on server)
-    const tempItems = localItems.filter((i) => i.id.startsWith("temp-"));
+    const tempItems = localItems.filter(
+      (localItem) =>
+        localItem.id.startsWith("temp-") &&
+        !serverItems.some(
+          (serverItem) =>
+            serverItem.productId === localItem.productId &&
+            (serverItem.size || "").trim().toLowerCase() === (localItem.size || "").trim().toLowerCase()
+        )
+    );
     reconciled.push(...tempItems);
 
     this.cartItemsSubject.next(reconciled);
@@ -541,6 +552,36 @@ export class CartService {
       freeShippingRemaining,
       freeShippingProgress,
     };
+  }
+
+  private buildUrl(path: string): string {
+    if (/^https?:\/\//i.test(path)) {
+      return path;
+    }
+    const baseUrl = this.apiConfig.baseUrl.replace(/\/$/, "");
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+    return `${baseUrl}${normalizedPath}`;
+  }
+
+  private flushPendingDeletes(): void {
+    for (const [cartItemId, timer] of this.undoTimers.entries()) {
+      clearTimeout(timer);
+      const numericId = parseInt(cartItemId, 10);
+      if (!isNaN(numericId)) {
+        const url = this.buildUrl(`${this.apiUrl}/items/${numericId}/delete`);
+        const headers = {
+          "X-Session-Id": this.getSessionId(),
+          "Content-Type": "application/json",
+        };
+        fetch(url, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({}),
+          keepalive: true,
+        });
+      }
+    }
+    this.undoTimers.clear();
   }
 
 }
