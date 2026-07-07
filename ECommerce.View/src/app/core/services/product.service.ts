@@ -1,7 +1,7 @@
 import { Injectable, inject, PLATFORM_ID, TransferState, makeStateKey } from "@angular/core";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { HttpContext } from "@angular/common/http";
-import { Observable, of, shareReplay, BehaviorSubject, switchMap, tap } from "rxjs";
+import { Observable, of, shareReplay, BehaviorSubject, switchMap, tap, map } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { HomeData } from "../models/home-data";
 
@@ -41,7 +41,7 @@ export class ProductService {
   }
 
   readonly homeData$ = this.refreshSubject.pipe(
-    switchMap(() => this.withTransfer("home_data", 
+    switchMap(() => this.withTransfer("home_data",
       this.api.get<HomeData>("/home").pipe(
         catchError(() => of(this.fallbackHomeData))
       )
@@ -49,23 +49,7 @@ export class ProductService {
     shareReplay(1)
   );
 
-  readonly heroData$ = this.refreshSubject.pipe(
-    switchMap(() => this.withTransfer("hero_data",
-      this.api.get<any[]>("/home/hero").pipe(
-        catchError(() => of([]))
-      )
-    )),
-    shareReplay(1)
-  );
 
-  readonly newArrivalsData$ = this.refreshSubject.pipe(
-    switchMap(() => this.withTransfer("new_arrivals_data",
-      this.api.get<Product[]>("/home/products").pipe(
-        catchError(() => of([]))
-      )
-    )),
-    shareReplay(1)
-  );
 
   readonly featuredProducts$ = this.refreshSubject.pipe(
     switchMap(() => this.api.get<Pagination<Product>>(this.baseUrl, {
@@ -86,7 +70,7 @@ export class ProductService {
   private withTransfer<T>(keyString: string, apiObs: Observable<T>): Observable<T> {
     const key = makeStateKey<T>(keyString);
     const ssrData = this.transferState.get(key, null);
-    
+
     if (ssrData) {
       if (isPlatformBrowser(this.platformId)) {
         setTimeout(() => {
@@ -117,11 +101,11 @@ export class ProductService {
   }
 
   getHeroData(context?: HttpContext): Observable<any[]> {
-    return this.heroData$;
+    return this.homeData$.pipe(map((data: HomeData) => data.banners || []));
   }
 
   getNewArrivalsData(context?: HttpContext): Observable<Product[]> {
-    return this.newArrivalsData$;
+    return this.homeData$.pipe(map((data: HomeData) => data.newArrivals || []));
   }
 
   getProducts(
@@ -178,7 +162,7 @@ export class ProductService {
     const cacheKey = `related_${JSON.stringify(params)}`;
     const cached = this.getCached<Pagination<Product>>(cacheKey);
     if (cached) return of(cached);
-    
+
     return this.api.get<Pagination<Product>>(this.baseUrl, { params, context }).pipe(
       tap(data => this.setCache(cacheKey, data))
     );
@@ -190,7 +174,7 @@ export class ProductService {
     const cached = this.getCached<Product>(cacheKey);
     if (cached) return of(cached);
 
-    return this.withTransfer(cacheKey, 
+    return this.withTransfer(cacheKey,
       this.api.get<Product>(`${this.baseUrl}/${slug}`, { context })
     ).pipe(
       tap(product => this.setCache(cacheKey, product))

@@ -11,6 +11,7 @@ public class CategoryDto
     public int DisplayOrder { get; set; }
     public int ProductCount { get; set; }
     public bool IsActive { get; set; }
+    public string Href => $"/category/{Slug}";
     public string? MetaTitle { get; set; }
     public string? MetaDescription { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -54,6 +55,7 @@ public class SubCategoryDto
     public string Slug { get; set; } = string.Empty;
     public int CategoryId { get; set; }
     public bool IsActive { get; set; }
+    public string Href => $"/subcategory/{Slug}";
     public string? ImageUrl { get; set; }
 
     public int DisplayOrder { get; set; }

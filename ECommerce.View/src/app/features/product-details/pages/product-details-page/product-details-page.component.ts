@@ -395,7 +395,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
         product,
         quantity,
         selectedSize ?? undefined,
-        false,
+        true,
       )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
@@ -416,7 +416,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
     const quantity = this.quantitySubject.getValue();
     this.selectionError = "";
     this.cartService
-      .addItem(product, quantity, selectedSize ?? undefined, false)
+      .addItem(product, quantity, selectedSize ?? undefined, true)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

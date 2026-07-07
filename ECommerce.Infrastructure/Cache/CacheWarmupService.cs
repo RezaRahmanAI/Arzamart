@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ECommerce.Infrastructure.Helpers;
 
 namespace ECommerce.Infrastructure.Cache;
 
@@ -107,6 +108,7 @@ public class CacheWarmupService : IHostedService
         var categories = await db.Categories
             .AsNoTracking()
             .Include(c => c.SubCategories)
+                .ThenInclude(sc => sc.Collections)
             .ToListAsync(ct);
         foreach (var c in categories) _cache.Categories[c.Id] = c;
     }
@@ -175,51 +177,7 @@ public class CacheWarmupService : IHostedService
 
     public void WarmUpHomePage()
     {
-        var homeDto = new HomePageDto
-        {
-            Banners = _cache.Banners.Values
-                .OrderBy(b => b.DisplayOrder)
-                .Select(b => new HeroBannerDto
-                {
-                    Id = b.Id,
-                    Title = b.Title ?? string.Empty,
-                    Subtitle = b.Subtitle ?? string.Empty,
-                    ImageUrl = b.ImageUrl,
-                    MobileImageUrl = b.MobileImageUrl ?? string.Empty,
-                    LinkUrl = b.LinkUrl ?? string.Empty,
-                    ButtonText = b.ButtonText ?? string.Empty,
-                    DisplayOrder = b.DisplayOrder,
-                    Type = b.Type
-                })
-                .ToList(),
-            Categories = _cache.Categories.Values
-                .OrderBy(c => c.DisplayOrder)
-                .Take(10)
-                .Select(c => new CategoryDto
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Slug = c.Slug,
-                    ImageUrl = c.ImageUrl,
-                    DisplayOrder = c.DisplayOrder,
-                    ProductCount = c.Products.Count,
-                    IsActive = c.IsActive
-                })
-                .ToList(),
-            FeaturedProducts = _cache.Products.Values
-                .Where(p => p.IsFeatured && p.IsActive)
-                .OrderBy(p => p.SortOrder)
-                .Take(12)
-                .Select(p => MapToProductListDto(p))
-                .ToList(),
-            NewArrivals = _cache.Products.Values
-                .Where(p => p.IsActive)
-                .OrderByDescending(p => p.CreatedAt)
-                .Take(12)
-                .Select(p => MapToProductListDto(p))
-                .ToList()
-        };
-        _cache.HomePageData["homepage"] = homeDto;
+        HomePageCacheRebuilder.Rebuild(_cache);
     }
 
     private static List<MegaMenuCategoryDto> BuildMegaMenuCategories(
@@ -256,54 +214,5 @@ public class CacheWarmupService : IHostedService
                     .ToList()
             })
             .ToList();
-    }
-
-    private static ProductListDto MapToProductListDto(Product p)
-    {
-        return new ProductListDto
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Slug = p.Slug,
-            Description = p.Description,
-            ShortDescription = p.ShortDescription,
-            Price = p.Variants.Any(v => v.Price > 0)
-                ? p.Variants.Where(v => v.Price > 0).Min(v => v.Price) ?? 0
-                : (p.Variants.FirstOrDefault()?.Price ?? 0),
-            CompareAtPrice = p.Variants.Any(v => v.Price > 0)
-                ? p.Variants.Where(v => v.Price > 0).Max(v => v.CompareAtPrice)
-                : p.Variants.FirstOrDefault()?.CompareAtPrice,
-            ImageUrl = p.ImageUrl ?? string.Empty,
-            CategoryName = p.Category?.Name ?? string.Empty,
-            IsNew = p.IsNew,
-            IsFeatured = p.IsFeatured,
-            IsActive = p.IsActive,
-            IsItemProduct = p.ProductType == ProductType.Simple,
-            Tier = p.Tier,
-            Tags = p.Tags,
-            SortOrder = p.SortOrder,
-            BundleSize = p.BundleSize,
-            CollectionName = p.Collection?.Name,
-            SubCategoryName = p.SubCategory?.Name,
-            ProductGroupId = p.ProductGroupId,
-            Variants = p.Variants.Select(v => new ProductVariantDto
-            {
-                Id = v.Id,
-                Sku = v.Sku,
-                Size = v.Size,
-                Price = v.Price,
-                CompareAtPrice = v.CompareAtPrice,
-                StockQuantity = v.StockQuantity
-            }).ToList(),
-            Images = p.Images.Select(i => new ProductImageDto
-            {
-                Id = i.Id,
-                ImageUrl = i.Url,
-                AltText = i.AltText,
-                Label = i.Label,
-                IsPrimary = i.IsMain,
-                Type = i.MediaType ?? "image"
-            })
-        };
     }
 }

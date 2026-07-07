@@ -231,7 +231,7 @@ export class CartService {
     product: Product,
     quantity = 1,
     size?: string,
-    suppressDrawer = false,
+    suppressDrawer = true,
   ): Observable<CartDto> {
     // Block if another mutation is in progress
     if (this._isCartUpdating) {

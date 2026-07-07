@@ -245,7 +245,7 @@ export class ProductCardComponent implements OnDestroy {
           this.product as Product,
           selection.quantity,
           selection.size ?? undefined,
-          this.isOrdering,
+          true,
         )
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
