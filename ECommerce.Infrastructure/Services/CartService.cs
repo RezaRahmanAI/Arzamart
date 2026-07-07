@@ -149,7 +149,7 @@ public class CartService : ICartService
         return MapToDto(cart);
     }
 
-    public async Task ClearCartAsync(string? userId, string? sessionId)
+    public async Task<CartDto> ClearCartAsync(string? userId, string? sessionId)
     {
         userId = SanitizeUserId(userId);
         var cart = await GetOrCreateCartAsync(userId, sessionId, track: true);
@@ -159,6 +159,10 @@ public class CartService : ICartService
             repo.Delete(item);
         }
         await _unitOfWork.Complete();
+
+        // Re-fetch to get the confirmed empty cart state from database
+        cart = await GetCartQuery(cart.Id).FirstAsync();
+        return MapToDto(cart);
     }
 
     public async Task<CartDto> MergeGuestCartAsync(string sessionId, string userId)

@@ -134,7 +134,7 @@ export class ToastComponent implements OnInit, OnDestroy {
       this.remove(oldest.id);
     }
 
-    const duration = 4000; // 4 seconds configurable duration
+    const duration = 1000; // 1 second duration
     const activeToast: ActiveToast = {
       id: toastMsg.id,
       type: toastMsg.type,

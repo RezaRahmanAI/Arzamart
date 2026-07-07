@@ -10,8 +10,8 @@ import {
   debounceTime,
   switchMap,
   filter,
-  Subscription,
   finalize,
+  EMPTY,
 } from "rxjs";
 import { HttpHeaders, HttpParams } from "@angular/common/http";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -30,11 +30,6 @@ import { ApiHttpClient } from "../http/http-client";
 import { AppConstants } from "../constants/app.constants";
 import { StorageKeys } from "../constants/storage-keys";
 import { API_CONFIG, ApiConfig } from "../config/api.config";
-
-export interface RemovedCartItem {
-  item: CartItem;
-  index: number;
-}
 
 @Injectable({
   providedIn: "root",
@@ -61,7 +56,14 @@ export class CartService {
     map((items) => this.calculateSummary(items)),
   );
 
-  private lastMutation = 0;
+  /**
+   * Global mutation lock prevents concurrent cart operations.
+   * While true, all mutation methods (add/remove/update/clear) are blocked.
+   */
+  private _isCartUpdating = false;
+  get isCartUpdating(): boolean {
+    return this._isCartUpdating;
+  }
 
   private readonly qtyUpdateSubject = new BehaviorSubject<{
     id: string;
@@ -71,10 +73,6 @@ export class CartService {
   private readonly isDrawerOpenSubject = new BehaviorSubject<boolean>(false);
   readonly isDrawerOpen$ = this.isDrawerOpenSubject.asObservable();
 
-  // Undo support: emits when an item is removed (for undo toast)
-  private readonly removedItemSubject = new BehaviorSubject<RemovedCartItem | null>(null);
-  readonly removedItem$ = this.removedItemSubject.asObservable();
-
   // Loading state: tracks which item IDs are currently being removed
   private readonly removingIdsSubject = new BehaviorSubject<Set<string>>(new Set());
   readonly removingIds$ = this.removingIdsSubject.asObservable();
@@ -83,17 +81,11 @@ export class CartService {
   private readonly slidingOutIdsSubject = new BehaviorSubject<Set<string>>(new Set());
   readonly slidingOutIds$ = this.slidingOutIdsSubject.asObservable();
 
-  // Pending undo timers: itemId -> timeout ID
-  private readonly undoTimers = new Map<string, ReturnType<typeof setTimeout>>();
-
-  // Pending delete subscriptions: itemId -> subscription (to cancel if undone)
-  private readonly pendingDeletes = new Map<string, Subscription>();
-
   // Animation duration (ms) for slide-out
   private readonly SLIDE_OUT_MS = 300;
 
-  // Undo window duration (ms) before actual API delete fires
-  private readonly UNDO_WINDOW_MS = 2000;
+  // Tracks whether the initial server load has completed
+  private initialLoadComplete = false;
 
   constructor() {
     // Subscribe to settings updates via public SiteSettingsService
@@ -110,7 +102,6 @@ export class CartService {
     // Initial load from server (only in browser — SSR has no session)
     if (isPlatformBrowser(this.platformId)) {
       this.refreshCartFromServer();
-      window.addEventListener("beforeunload", () => this.flushPendingDeletes());
     }
 
     // Setup debounced qty updates
@@ -123,6 +114,7 @@ export class CartService {
           if (isNaN(numericId)) {
             return of(null);
           }
+          this._isCartUpdating = true;
           return this.api
             .post<CartDto>(
               `${this.apiUrl}/items/${numericId}`,
@@ -138,12 +130,15 @@ export class CartService {
                 this.refreshCartFromServer(); // Re-sync if failed
                 return of(null);
               }),
+              finalize(() => {
+                this._isCartUpdating = false;
+              }),
             );
         }),
         takeUntilDestroyed(),
       )
       .subscribe((dto) => {
-        if (dto) this.reconcileState(dto);
+        if (dto) this.applyServerState(dto);
       });
   }
 
@@ -198,17 +193,24 @@ export class CartService {
     };
   }
 
+  /**
+   * Fetches the cart from the server and REPLACES all local state.
+   * Server is the single source of truth.
+   * This is the ONLY method that should be used on app init / refresh.
+   */
   refreshCartFromServer(): void {
     const sessionId = this.getSessionId();
-    const params = new HttpParams().set("sid", sessionId); // Add sid to URL to bypass potential CDN/Proxy shared caching
-    const requestTime = Date.now();
+    const params = new HttpParams().set("sid", sessionId); // Bust CDN/proxy cache
 
     this.api
       .get<CartDto>(this.apiUrl, { ...this.options, params })
       .pipe(catchError(() => of(null)))
       .subscribe((dto) => {
-        if (dto && requestTime > this.lastMutation) {
-          this.updateLocalState(dto);
+        if (dto) {
+          // On initial load or refresh: unconditionally replace local state
+          // with server state. Server is the single source of truth.
+          this.applyServerState(dto);
+          this.initialLoadComplete = true;
         }
       });
   }
@@ -231,8 +233,14 @@ export class CartService {
     size?: string,
     suppressDrawer = false,
   ): Observable<CartDto> {
+    // Block if another mutation is in progress
+    if (this._isCartUpdating) {
+      this.notificationService.info("Please wait...");
+      return EMPTY;
+    }
+
     const hasVariants = product.variants && product.variants.length > 0;
-    const resolvedSize = 
+    const resolvedSize =
       size && size.trim() !== ""
         ? size
         : (hasVariants ? undefined : "One Size");
@@ -268,25 +276,25 @@ export class CartService {
       discountPercentage: product.compareAtPrice ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100) : 0,
       compareAtPrice: product.compareAtPrice,
     };
-    
+
     const updatedItems = [...currentItems, tempItem];
     this.cartItemsSubject.next(updatedItems);
     this.notificationService.success(`${product.name} added to Bag`);
 
-    // 3. Perform background sync
+    // 3. Lock and perform server sync
+    this._isCartUpdating = true;
     const payload: AddToCartDto = {
       productId: product.id,
       quantity,
       size: targetSize,
     };
 
-    this.lastMutation = Date.now();
-
     return this.api
       .post<CartDto>(`${this.apiUrl}/items`, payload, this.options)
       .pipe(
         tap((dto) => {
-          this.reconcileState(dto);
+          // Replace entire local state with server response
+          this.applyServerState(dto);
           if (!suppressDrawer) this.openDrawer();
         }),
         catchError((err) => {
@@ -294,10 +302,16 @@ export class CartService {
           this.refreshCartFromServer(); // Re-sync to revert local state on failure
           throw err;
         }),
+        finalize(() => {
+          this._isCartUpdating = false;
+        }),
       );
   }
 
   removeItem(cartItemId: string): void {
+    // Block if another mutation is in progress
+    if (this._isCartUpdating) return;
+
     // Backend uses numeric ID for cart items
     const numericId = parseInt(cartItemId, 10);
     if (isNaN(numericId)) return;
@@ -306,18 +320,12 @@ export class CartService {
     const currentRemoving = this.removingIdsSubject.getValue();
     if (currentRemoving.has(cartItemId)) return;
 
-    // 1. Find item and its index before removal (for undo)
-    const currentItems = this.cartItemsSubject.getValue();
-    const itemIndex = currentItems.findIndex((i) => i.id === cartItemId);
-    if (itemIndex === -1) return;
-    const removedItem = { ...currentItems[itemIndex] };
-
-    // 2. Phase 1: Mark as sliding out (triggers animation + shows spinner)
+    // 1. Mark as sliding out (triggers animation + shows spinner)
     this.removingIdsSubject.next(new Set([...currentRemoving, cartItemId]));
     const currentSliding = this.slidingOutIdsSubject.getValue();
     this.slidingOutIdsSubject.next(new Set([...currentSliding, cartItemId]));
 
-    // 3. Phase 2: After animation completes, remove from array
+    // 2. After animation completes, remove from array and call API
     setTimeout(() => {
       // Remove from sliding state
       const sliding = this.slidingOutIdsSubject.getValue();
@@ -325,93 +333,48 @@ export class CartService {
       newSliding.delete(cartItemId);
       this.slidingOutIdsSubject.next(newSliding);
 
-      // Remove from array
+      // Remove from array (optimistic)
       const items = this.cartItemsSubject.getValue();
+      const removedItem = items.find((i) => i.id === cartItemId);
       this.cartItemsSubject.next(items.filter((i) => i.id !== cartItemId));
 
-      // 4. Show undo toast
-      this.notificationService.showUndo(
-        `${removedItem.name} removed from bag`,
-        () => this.restoreItem({ item: removedItem, index: itemIndex }),
-        this.UNDO_WINDOW_MS,
-      );
-
-      // 5. Schedule delayed delete (gives user time to undo)
-      const timer = setTimeout(() => {
-        this.undoTimers.delete(cartItemId);
-        this.performDelete(cartItemId, numericId);
-      }, this.UNDO_WINDOW_MS);
-      this.undoTimers.set(cartItemId, timer);
+      // 3. Immediately call API to delete
+      this._isCartUpdating = true;
+      this.api
+        .post<CartDto>(`${this.apiUrl}/items/${numericId}/delete`, {}, this.options)
+        .pipe(
+          finalize(() => {
+            this._isCartUpdating = false;
+            const removing = this.removingIdsSubject.getValue();
+            const newRemoving = new Set(removing);
+            newRemoving.delete(cartItemId);
+            this.removingIdsSubject.next(newRemoving);
+          }),
+        )
+        .subscribe({
+          next: (dto) => {
+            // Replace state with server-confirmed cart
+            this.applyServerState(dto);
+            if (removedItem) {
+              this.notificationService.success(`${removedItem.name} removed from bag`);
+            }
+          },
+          error: (err) => {
+            console.error("Failed to remove item", err);
+            this.refreshCartFromServer();
+          },
+        });
     }, this.SLIDE_OUT_MS);
-  }
-
-  restoreItem(removedCartItem: RemovedCartItem): void {
-    const { item, index } = removedCartItem;
-    const currentItems = this.cartItemsSubject.getValue();
-
-    // Cancel pending delete
-    const timer = this.undoTimers.get(item.id);
-    if (timer) {
-      clearTimeout(timer);
-      this.undoTimers.delete(item.id);
-    }
-
-    const sub = this.pendingDeletes.get(item.id);
-    if (sub) {
-      sub.unsubscribe();
-      this.pendingDeletes.delete(item.id);
-    }
-
-    // Remove from removing state
-    const currentRemoving = this.removingIdsSubject.getValue();
-    const newRemoving = new Set(currentRemoving);
-    newRemoving.delete(item.id);
-    this.removingIdsSubject.next(newRemoving);
-
-    // Remove from sliding state
-    const currentSliding = this.slidingOutIdsSubject.getValue();
-    const newSliding = new Set(currentSliding);
-    newSliding.delete(item.id);
-    this.slidingOutIdsSubject.next(newSliding);
-
-    // Restore item at its original index (or end if index is out of bounds)
-    const restoredItems = [...currentItems];
-    const insertAt = Math.min(index, restoredItems.length);
-    restoredItems.splice(insertAt, 0, item);
-    this.cartItemsSubject.next(restoredItems);
   }
 
   isRemoving(cartItemId: string): boolean {
     return this.removingIdsSubject.getValue().has(cartItemId);
   }
 
-  private performDelete(cartItemId: string, numericId: number): void {
-    this.lastMutation = Date.now();
-    const sub = this.api
-      .post<CartDto>(`${this.apiUrl}/items/${numericId}/delete`, {}, this.options)
-      .pipe(
-        finalize(() => {
-          const currentRemoving = this.removingIdsSubject.getValue();
-          const newRemoving = new Set(currentRemoving);
-          newRemoving.delete(cartItemId);
-          this.removingIdsSubject.next(newRemoving);
-        }),
-      )
-      .subscribe({
-        next: (dto) => {
-          this.pendingDeletes.delete(cartItemId);
-          this.reconcileState(dto);
-        },
-        error: (err) => {
-          this.pendingDeletes.delete(cartItemId);
-          console.error("Failed to remove item", err);
-          this.refreshCartFromServer();
-        },
-      });
-    this.pendingDeletes.set(cartItemId, sub);
-  }
-
   updateQty(cartItemId: string, quantity: number): void {
+    // Block if another mutation is in progress
+    if (this._isCartUpdating) return;
+
     const sanitizedQty = Math.max(1, quantity);
     const currentItems = this.cartItemsSubject.getValue();
     const itemIndex = currentItems.findIndex((i) => i.id === cartItemId);
@@ -425,24 +388,35 @@ export class CartService {
       };
       this.cartItemsSubject.next(updatedItems);
 
-      // 2. Schedule server sync
-      this.lastMutation = Date.now();
+      // 2. Schedule server sync (debounced)
       this.qtyUpdateSubject.next({ id: cartItemId, qty: sanitizedQty });
     }
   }
 
-  clearCart(): Observable<any> {
+  clearCart(): Observable<CartDto> {
+    // Block if another mutation is in progress
+    if (this._isCartUpdating) {
+      return EMPTY;
+    }
+
     // 1. Optimistic UI update
     const previousItems = this.cartItemsSubject.getValue();
     this.cartItemsSubject.next([]);
 
-    // 2. Perform backend deletion
-    this.lastMutation = Date.now();
-    return this.api.post(`${this.apiUrl}/clear`, {}, this.options).pipe(
+    // 2. Lock and perform backend deletion
+    this._isCartUpdating = true;
+    return this.api.post<CartDto>(`${this.apiUrl}/clear`, {}, this.options).pipe(
+      tap((dto) => {
+        // Replace state with server-confirmed empty cart
+        this.applyServerState(dto);
+      }),
       catchError((err) => {
         console.error("Failed to clear cart on server", err);
         this.cartItemsSubject.next(previousItems); // Rollback on failure
         throw err;
+      }),
+      finalize(() => {
+        this._isCartUpdating = false;
       }),
     );
   }
@@ -450,6 +424,8 @@ export class CartService {
   mergeGuestCart(): Observable<CartDto | null> {
     const sessionId = localStorage.getItem(StorageKeys.CART_SESSION_ID);
     if (!sessionId) return of(null);
+
+    this._isCartUpdating = true;
 
     // Auth token is handled by the auth interceptor automatically
     return this.api
@@ -461,44 +437,50 @@ export class CartService {
       .pipe(
         tap((dto) => {
           if (dto) {
-            this.reconcileState(dto);
-            // Don't remove the sessionId from localstorage here, because if they log out
-            // they need a fresh guest cart, so keeping the session ID is fine as it will
-            // just act as a new anonymous cart once logged out.
+            // Replace state with server-confirmed merged cart
+            this.applyServerState(dto);
           }
         }),
         catchError((err) => {
           console.error("Failed to merge guest cart", err);
           return of(null);
         }),
+        finalize(() => {
+          this._isCartUpdating = false;
+        }),
       );
   }
 
-  private updateLocalState(dto: CartDto): void {
-    const mappedItems = this.mapDtoToItems(dto);
-    this.cartItemsSubject.next(mappedItems);
-  }
-
-  private reconcileState(dto: CartDto): void {
+  /**
+   * Applies the server response as the single source of truth.
+   * Completely replaces local state — no merging, no preserving temp items
+   * unless they are genuinely pending (addItem in flight).
+   */
+  private applyServerState(dto: CartDto): void {
     const serverItems = this.mapDtoToItems(dto);
     const localItems = this.cartItemsSubject.getValue();
 
-    // Server items are source of truth for confirmed items
-    const reconciled = [...serverItems];
+    // Server items are the authoritative source of truth.
+    const result = [...serverItems];
 
-    // Preserve any local items with temp- IDs (optimistic adds not yet on server)
-    const tempItems = localItems.filter(
-      (localItem) =>
-        localItem.id.startsWith("temp-") &&
-        !serverItems.some(
-          (serverItem) =>
-            serverItem.productId === localItem.productId &&
-            (serverItem.size || "").trim().toLowerCase() === (localItem.size || "").trim().toLowerCase()
-        )
-    );
-    reconciled.push(...tempItems);
+    // Only preserve temp items if an addItem request is currently in flight
+    // (indicated by _isCartUpdating being true AND temp items existing).
+    // Once the addItem completes, applyServerState is called again with the
+    // server response that includes the newly added item — so temps are dropped.
+    if (this._isCartUpdating) {
+      const tempItems = localItems.filter(
+        (localItem) =>
+          localItem.id.startsWith("temp-") &&
+          !serverItems.some(
+            (serverItem) =>
+              serverItem.productId === localItem.productId &&
+              (serverItem.size || "").trim().toLowerCase() === (localItem.size || "").trim().toLowerCase()
+          )
+      );
+      result.push(...tempItems);
+    }
 
-    this.cartItemsSubject.next(reconciled);
+    this.cartItemsSubject.next(result);
   }
 
   private mapDtoToItems(dto: CartDto): CartItem[] {
@@ -553,35 +535,4 @@ export class CartService {
       freeShippingProgress,
     };
   }
-
-  private buildUrl(path: string): string {
-    if (/^https?:\/\//i.test(path)) {
-      return path;
-    }
-    const baseUrl = this.apiConfig.baseUrl.replace(/\/$/, "");
-    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-    return `${baseUrl}${normalizedPath}`;
-  }
-
-  private flushPendingDeletes(): void {
-    for (const [cartItemId, timer] of this.undoTimers.entries()) {
-      clearTimeout(timer);
-      const numericId = parseInt(cartItemId, 10);
-      if (!isNaN(numericId)) {
-        const url = this.buildUrl(`${this.apiUrl}/items/${numericId}/delete`);
-        const headers = {
-          "X-Session-Id": this.getSessionId(),
-          "Content-Type": "application/json",
-        };
-        fetch(url, {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify({}),
-          keepalive: true,
-        });
-      }
-    }
-    this.undoTimers.clear();
-  }
-
 }

@@ -1,38 +1,34 @@
 <div
-  class="relative flex min-h-screen w-full flex-col group/design-root bg-background-light dark:bg-background-dark text-ds-text dark:text-gray-100 overflow-x-hidden"
->
+  class="relative flex min-h-screen w-full flex-col group/design-root bg-background-light dark:bg-background-dark text-ds-text dark:text-gray-100 overflow-x-hidden">
   <!-- Skip to main content (accessibility) -->
-  <a
-    href="#main-content"
-    class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-ds-accent focus:text-ds-hero-text focus:rounded-md focus:shadow-lg focus:text-sm focus:font-semibold"
-  >
+  <a href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-ds-accent focus:text-ds-hero-text focus:rounded-md focus:shadow-lg focus:text-sm focus:font-semibold">
     Skip to main content
   </a>
 
   @if (showPublicLayout$ | async) {
-    @if (showNavbar$ | async) {
-      <app-navbar></app-navbar>
-    }
-    <div id="main-content" class="animate-fade-in" tabindex="-1">
-      <router-outlet></router-outlet>
-    </div>
-    
-    @defer (on idle) {
-      @if (showNavbar$ | async) {
-        <app-footer></app-footer>
-      }
-    }
-    <app-cart-drawer></app-cart-drawer>
+  @if (showNavbar$ | async) {
+  <app-navbar></app-navbar>
+  }
+  <div id="main-content" class="animate-fade-in" tabindex="-1">
+    <router-outlet></router-outlet>
+  </div>
+
+  @defer (on idle) {
+  @if (showNavbar$ | async) {
+  <app-footer></app-footer>
+  }
+  }
+  <app-cart-drawer></app-cart-drawer>
   } @else {
-    <div id="main-content" class="animate-fade-in" tabindex="-1">
-      <router-outlet></router-outlet>
-    </div>
+  <div id="main-content" class="animate-fade-in" tabindex="-1">
+    <router-outlet></router-outlet>
+  </div>
   }
 
   <app-toast></app-toast>
-  <app-undo-toast></app-undo-toast>
   @if (showNavbar$ | async) {
-    <app-contact-fab></app-contact-fab>
+  <app-contact-fab></app-contact-fab>
   }
 </div>
 
