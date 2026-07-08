@@ -18,17 +18,32 @@ export const AppConstants = {
 } as const;
 
 export const CacheDurations = {
-  /** Short cache duration - 5 minutes */
+  /** 30 minutes - Product Reviews */
+  Review: 30 * 60 * 1000,
+
+  /** 5 minutes - Short cache */
   Short: 5 * 60 * 1000,
 
-  /** Medium cache duration - 10 minutes */
+  /** 10 minutes - Medium cache */
   Medium: 10 * 60 * 1000,
 
-  /** Long cache duration - 30 minutes */
+  /** 30 minutes - Long cache */
   Long: 30 * 60 * 1000,
 
-  /** Extended cache duration - 60 minutes */
+  /** 60 minutes - Extended cache */
   Extended: 60 * 60 * 1000,
+
+  /** 6 hours - Homepage, Featured, Trending, Popular */
+  HalfDay: 6 * 60 * 60 * 1000,
+
+  /** 12 hours - Banners */
+  TwelveHours: 12 * 60 * 60 * 1000,
+
+  /** 24 hours - Product Details, Search Suggestions */
+  OneDay: 24 * 60 * 60 * 1000,
+
+  /** 30 days - Navigation, Categories, Site Settings, Footer, Static Pages */
+  ThirtyDays: 30 * 24 * 60 * 60 * 1000,
 } as const;
 
 export const RateLimits = {

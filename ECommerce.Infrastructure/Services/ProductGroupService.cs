@@ -30,6 +30,7 @@ public class ProductGroupService : IProductGroupService
 
     private Task InvalidateCacheAsync()
     {
+        _cache.IncrementVersion("productgroups");
         lock (_cache.RebuildLock)
         {
             HomePageCacheRebuilder.Rebuild(_cache);

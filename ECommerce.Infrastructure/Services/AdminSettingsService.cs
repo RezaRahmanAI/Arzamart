@@ -212,6 +212,7 @@ public class AdminSettingsService : IAdminSettingsService
                     SizeGuideImageUrl = settings.SizeGuideImageUrl,
                     DeliveryMethods = deliveryMethodDtos
                 };
+                _cache.IncrementVersion("settings");
             }
         }
     }

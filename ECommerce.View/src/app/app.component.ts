@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Renderer2, DestroyRef, PLATFORM_ID } from "@angular/core";
+import { Component, inject, OnInit, Renderer2, DestroyRef, PLATFORM_ID, signal } from "@angular/core";
 import { AsyncPipe, DOCUMENT, isPlatformBrowser } from "@angular/common";
 import { Title } from "@angular/platform-browser";
 import { SiteSettingsService } from "./core/services/site-settings.service";
@@ -16,6 +16,8 @@ import { AttributionService } from "./core/services/attribution.service";
 import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loading-spinner.component";
 import { CartDrawerComponent } from "./shared/components/cart-drawer/cart-drawer.component";
 import { CartService } from "./core/services/cart.service";
+import { OfflineIndicatorService } from "./core/services/offline-indicator.service";
+import { PrefetchService } from "./core/cache/prefetch.service";
 
 @Component({
   selector: "app-root",
@@ -45,6 +47,10 @@ export class AppComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private platformId = inject(PLATFORM_ID);
   private cartService = inject(CartService);
+  private offlineIndicator = inject(OfflineIndicatorService);
+  private prefetch = inject(PrefetchService);
+
+  isOffline = signal(false);
 
   showPublicLayout$ = this.router.events.pipe(
     filter((event) => event instanceof NavigationEnd),
@@ -107,6 +113,19 @@ export class AppComponent implements OnInit {
       }
       if (settings.googleTagId) {
         this.injectGoogleTag(settings.googleTagId);
+      }
+    });
+
+    this.offlineIndicator.isOnline$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(online => {
+      this.isOffline.set(!online);
+    });
+
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe((e) => {
+      if (isPlatformBrowser(this.platformId)) {
+        this.prefetch.prefetchRouteData((e as NavigationEnd).urlAfterRedirects);
       }
     });
   }

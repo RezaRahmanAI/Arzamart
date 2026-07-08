@@ -153,6 +153,7 @@ public class AdminNavigationService : IAdminNavigationService
         {
             _cache.NavigationMenus["main"] = megaMenuItems;
         }
+        _cache.IncrementVersion("navigation");
     }
 
     private NavigationMenuDto MapToDto(NavigationMenu menu)

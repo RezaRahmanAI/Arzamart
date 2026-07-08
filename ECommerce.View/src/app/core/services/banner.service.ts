@@ -1,6 +1,7 @@
 import { Injectable, inject } from "@angular/core";
-import { Observable, shareReplay, BehaviorSubject, switchMap, map } from "rxjs";
+import { Observable, shareReplay, map } from "rxjs";
 import { ApiHttpClient } from "../http/http-client";
+import { CacheService } from "../cache/cache.service";
 
 export interface Banner {
   id: number;
@@ -20,26 +21,23 @@ export interface Banner {
 })
 export class BannerService {
   private readonly api = inject(ApiHttpClient);
+  private readonly cache = inject(CacheService);
   private readonly baseUrl = "/banners";
   private readonly adminBaseUrl = "/admin/banners";
 
-  private readonly refreshSubject = new BehaviorSubject<void>(void 0);
-
-  // Cache banners — they refresh when refreshSubject emits
-  private banners$ = this.refreshSubject.pipe(
-    switchMap(() => this.api.get<Banner[]>(this.baseUrl)),
-    shareReplay(1)
-  );
-
   getActiveBanners(): Observable<Banner[]> {
-    return this.banners$;
+    return this.cache.getOrFetch<Banner[]>('banners', 'active', () =>
+      this.api.get<Banner[]>(this.baseUrl)
+    ).pipe(
+      map(result => result.data),
+      shareReplay(1)
+    );
   }
 
   refresh(): void {
-    this.refreshSubject.next();
+    this.cache.remove('banners', 'active');
   }
 
-  // Admin methods
   getAllAdmin(): Observable<Banner[]> {
     return this.api.get<Banner[]>(this.adminBaseUrl);
   }

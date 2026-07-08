@@ -37,3 +37,10 @@
 </div>
 
 <app-loading-spinner></app-loading-spinner>
+
+@if (isOffline()) {
+  <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2 rounded-full bg-yellow-400 px-4 py-2 text-sm font-semibold text-black shadow-lg">
+    <span class="h-2 w-2 rounded-full bg-yellow-800"></span>
+    You are offline
+  </div>
+}

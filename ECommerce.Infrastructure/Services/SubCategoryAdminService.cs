@@ -178,6 +178,8 @@ public class SubCategoryAdminService : ISubCategoryAdminService
             AppCache.AtomicReplace(_cache.Categories, cats.ToDictionary(c => c.Id));
         }
 
+        _cache.IncrementVersion("categories");
+        _cache.IncrementVersion("subcategories");
         RebuildHomePageCache();
     }
 

@@ -1,7 +1,9 @@
 import {
   provideZoneChangeDetection,
   ApplicationConfig,
+  APP_INITIALIZER,
 } from "@angular/core";
+import { provideClientHydration } from "@angular/platform-browser";
 import {
   provideRouter,
   withInMemoryScrolling,
@@ -25,6 +27,11 @@ import { jwtInterceptor } from "./core/interceptors/jwt.interceptor";
 import { loadingInterceptor } from "./core/interceptors/loading.interceptor";
 import { httpCacheInterceptor } from "./core/interceptors/http-cache.interceptor";
 import { adminCacheInterceptor } from "./core/interceptors/admin-cache.interceptor";
+import { PrefetchService } from "./core/cache/prefetch.service";
+
+function initializePrefetch(prefetch: PrefetchService): () => void {
+  return () => prefetch.prefetchAll();
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,6 +46,7 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding(),
     ),
     provideAnimationsAsync(),
+    provideClientHydration(),
     provideServiceWorker("ngsw-worker.js", {
       enabled: environment.production,
       registrationStrategy: "registerWhenStable:30000",
@@ -62,6 +70,12 @@ export const appConfig: ApplicationConfig = {
     {
       provide: DATE_PIPE_DEFAULT_OPTIONS,
       useValue: { timezone: "+0600" },
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializePrefetch,
+      deps: [PrefetchService],
+      multi: true,
     },
   ],
 };

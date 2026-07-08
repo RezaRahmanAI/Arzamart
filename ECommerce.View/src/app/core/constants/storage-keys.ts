@@ -10,4 +10,12 @@ export const StorageKeys = {
   USER_PROFILES: 'user_profiles',
   USER_DETAILS: 'arza_user_details',
   CUSTOMER_PHONE: 'customer_phone',
+  CACHE_VERSION: 'arza_cache_version',
+  CACHE_ETAG: 'arza_cache_etag',
+  CACHE_TIMESTAMP: 'arza_cache_ts',
+  LANGUAGE: 'arza_language',
+  THEME: 'arza_theme',
+  USER_PREFS: 'arza_user_prefs',
+  RECENTLY_VIEWED: 'arza_recently_viewed',
+  WISHLIST: 'arza_wishlist',
 } as const;

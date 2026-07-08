@@ -1,15 +1,14 @@
-import { Injectable, inject, PLATFORM_ID, TransferState, makeStateKey } from "@angular/core";
-import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { Observable, shareReplay, map, catchError, of, switchMap, BehaviorSubject, tap, startWith } from "rxjs";
+import { Injectable, inject } from "@angular/core";
+import { Observable, shareReplay, map, of, tap } from "rxjs";
 import { ApiHttpClient } from "../http/http-client";
+import { CacheService } from "../cache/cache.service";
 
-// Interfaces...
 export interface MegaMenuItem {
   id: number;
   name: string;
   slug: string;
   subCategories: MegaMenuSubCategory[];
-  isOpen?: boolean; // For mobile toggle
+  isOpen?: boolean;
 }
 
 export interface MegaMenuSubCategory {
@@ -30,48 +29,25 @@ export interface MegaMenuCollection {
 })
 export class NavigationService {
   private readonly api = inject(ApiHttpClient);
+  private readonly cache = inject(CacheService);
   private readonly baseUrl = "/categories";
-  private readonly platformId = inject(PLATFORM_ID);
-  private readonly transferState = inject(TransferState);
 
-  private readonly MEGA_MENU_KEY = makeStateKey<any[]>("mega_menu_data");
-
-  private readonly refreshSubject = new BehaviorSubject<void>(void 0);
-
-  readonly megaMenu$ = this.refreshSubject.pipe(
-    switchMap(() => {
-      const ssrData = this.transferState.get(this.MEGA_MENU_KEY, null);
-      if (ssrData) {
-        if (isPlatformBrowser(this.platformId)) {
-          setTimeout(() => {
-            if (this.transferState.hasKey(this.MEGA_MENU_KEY)) {
-              this.transferState.remove(this.MEGA_MENU_KEY);
-            }
-          }, 1000);
-        }
-        return of(ssrData);
-      }
+  getMegaMenu(refresh = false): Observable<MegaMenuItem[]> {
+    if (refresh) {
       return this.api.get<any[]>(this.baseUrl).pipe(
-        tap((data) => {
-          if (isPlatformServer(this.platformId)) {
-            this.transferState.set(this.MEGA_MENU_KEY, data);
-          }
-        }),
-        catchError((err) => {
-          console.error("Mega menu failed to load:", err);
-          return of([]);
-        })
+        tap(data => this.cache.set('navigation', 'main', data)),
+        shareReplay(1)
       );
-    }),
-    startWith([]),
-    shareReplay(1)
-  );
-
-  getMegaMenu(): Observable<MegaMenuItem[]> {
-    return this.megaMenu$;
+    }
+    return this.cache.getOrFetch<MegaMenuItem[]>('navigation', 'main', () =>
+      this.api.get<any[]>(this.baseUrl)
+    ).pipe(
+      map(result => result.data || []),
+      shareReplay(1)
+    );
   }
 
   refreshMegaMenu(): void {
-    this.refreshSubject.next();
+    this.cache.remove('navigation', 'main');
   }
 }

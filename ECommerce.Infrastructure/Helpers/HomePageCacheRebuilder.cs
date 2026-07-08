@@ -97,5 +97,6 @@ public static class HomePageCacheRebuilder
             FeaturedProducts = featuredProducts,
             NewArrivals = newArrivals
         };
+        cache.IncrementVersion("homepage");
     }
 }

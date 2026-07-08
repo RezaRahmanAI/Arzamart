@@ -2,8 +2,13 @@ import {
   HttpInterceptorFn,
   HttpResponse,
   HttpHeaders,
+  HttpRequest,
+  HttpHandlerFn,
+  HttpEvent,
 } from "@angular/common/http";
-import { of, tap } from "rxjs";
+import { inject } from "@angular/core";
+import { of, tap, Observable } from "rxjs";
+import { CacheService } from "../cache/cache.service";
 
 interface CacheEntry {
   body: any;
@@ -14,7 +19,7 @@ interface CacheEntry {
   timestamp: number;
 }
 
-const cache = new Map<string, CacheEntry>();
+const memoryCache = new Map<string, CacheEntry>();
 
 const TTL = {
   NAVIGATION: 15 * 60 * 1000,
@@ -51,7 +56,7 @@ export const httpCacheInterceptor: HttpInterceptorFn = (req, next) => {
   const forceRefresh = req.headers.has("X-Refresh");
 
   if (!forceRefresh) {
-    const entry = cache.get(key);
+    const entry = memoryCache.get(key);
     if (entry && Date.now() - entry.timestamp < getTTL(key)) {
       return of(
         new HttpResponse({
@@ -74,7 +79,7 @@ export const httpCacheInterceptor: HttpInterceptorFn = (req, next) => {
         event.headers.keys().forEach((k) => {
           headers[k] = event.headers.getAll(k) || [];
         });
-        cache.set(key, {
+        memoryCache.set(key, {
           body: event.body,
           status: event.status,
           statusText: event.statusText,
@@ -88,11 +93,11 @@ export const httpCacheInterceptor: HttpInterceptorFn = (req, next) => {
 };
 
 export function invalidateHttpCache(pattern: string): void {
-  for (const key of cache.keys()) {
-    if (key.includes(pattern)) cache.delete(key);
+  for (const key of memoryCache.keys()) {
+    if (key.includes(pattern)) memoryCache.delete(key);
   }
 }
 
 export function clearHttpCache(): void {
-  cache.clear();
+  memoryCache.clear();
 }

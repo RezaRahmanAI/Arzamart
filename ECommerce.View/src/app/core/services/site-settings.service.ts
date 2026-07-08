@@ -1,7 +1,7 @@
-import { Injectable, inject, PLATFORM_ID, TransferState, makeStateKey } from "@angular/core";
-import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { Observable, shareReplay, startWith, BehaviorSubject, switchMap, tap, of } from "rxjs";
+import { Injectable, inject } from "@angular/core";
+import { Observable, shareReplay, map, of } from "rxjs";
 import { ApiHttpClient } from "../http/http-client";
+import { CacheService } from "../cache/cache.service";
 
 export interface SiteSettings {
   websiteName: string;
@@ -23,56 +23,30 @@ export interface SiteSettings {
   sizeGuideImageUrl?: string;
 }
 
+const DEFAULT_SETTINGS: SiteSettings = {
+  websiteName: "Arza Mart",
+  currency: "BDT",
+  freeShippingThreshold: 5000,
+  shippingCharge: 0,
+};
+
 @Injectable({
   providedIn: "root",
 })
 export class SiteSettingsService {
   private api = inject(ApiHttpClient);
-  private readonly platformId = inject(PLATFORM_ID);
-  private readonly transferState = inject(TransferState);
-  private readonly SETTINGS_KEY = makeStateKey<SiteSettings>("site_settings_data");
-
-  private readonly refreshSubject = new BehaviorSubject<void>(void 0);
-
-  // Cache settings to avoid multiple calls, but allow refresh
-  private settings$ = this.refreshSubject.pipe(
-    switchMap(() => {
-      // 1. SSR Check
-      const ssrData = this.transferState.get(this.SETTINGS_KEY, null);
-      if (ssrData) {
-        if (isPlatformBrowser(this.platformId)) {
-          setTimeout(() => {
-            if (this.transferState.hasKey(this.SETTINGS_KEY)) {
-              this.transferState.remove(this.SETTINGS_KEY);
-            }
-          }, 1000);
-        }
-        return of(ssrData);
-      }
-
-      // 2. API Fetch
-      return this.api.get<SiteSettings>("/sitesettings").pipe(
-        tap(settings => {
-          if (isPlatformServer(this.platformId)) {
-            this.transferState.set(this.SETTINGS_KEY, settings);
-          }
-        }),
-        startWith({
-          websiteName: "Arza Mart",
-          currency: "BDT",
-          freeShippingThreshold: 5000,
-          shippingCharge: 0,
-        } as SiteSettings)
-      );
-    }),
-    shareReplay(1)
-  );
+  private cache = inject(CacheService);
 
   getSettings(): Observable<SiteSettings> {
-    return this.settings$;
+    return this.cache.getOrFetch<SiteSettings>('siteSettings', 'settings', () =>
+      this.api.get<SiteSettings>("/sitesettings")
+    ).pipe(
+      map(result => result.data || DEFAULT_SETTINGS),
+      shareReplay(1)
+    );
   }
 
   refreshSettings(): void {
-    this.refreshSubject.next();
+    this.cache.remove('siteSettings', 'settings');
   }
 }

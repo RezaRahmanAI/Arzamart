@@ -131,6 +131,10 @@ try
 
     app.UseResponseCaching();
 
+    // Adds Cache-Version, ETag, and Last-Modified headers to public GET responses.
+    // Enables 304 Not Modified responses when the client sends If-None-Match.
+    app.UseMiddleware<ECommerce.API.Middleware.CacheVersionMiddleware>();
+
     app.MapControllers();
     app.MapHub<ECommerce.API.Hubs.OrderHub>("/hubs/orders").RequireAuthorization().RequireCors("DefaultPolicy");
 

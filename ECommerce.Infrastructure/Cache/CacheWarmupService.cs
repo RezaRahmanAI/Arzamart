@@ -76,6 +76,16 @@ public class CacheWarmupService : IHostedService
             _cache.Categories.Count,
             _cache.Banners.Count);
 
+        // Seed initial cache versions
+        _cache.CacheVersions["products"] = 1;
+        _cache.CacheVersions["categories"] = 1;
+        _cache.CacheVersions["banners"] = 1;
+        _cache.CacheVersions["navigation"] = 1;
+        _cache.CacheVersions["settings"] = 1;
+        _cache.CacheVersions["homepage"] = 1;
+        _cache.CacheVersions["subcategories"] = 1;
+        _cache.CacheVersions["productgroups"] = 1;
+
         _cache.LastWarmupTime = DateTime.UtcNow;
     }
 

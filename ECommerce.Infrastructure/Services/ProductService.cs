@@ -147,6 +147,7 @@ public class ProductService : IProductService
             _cache.Products.TryRemove(id, out var removedProduct);
             if (removedProduct != null && !string.IsNullOrEmpty(removedProduct.Slug))
                 _cache.ProductSlugIndex.TryRemove(removedProduct.Slug, out _);
+            _cache.IncrementVersion("products");
             RebuildHomePageCache();
             return (true, mainImageUrl, imageUrls);
         }
@@ -177,6 +178,7 @@ public class ProductService : IProductService
 
         var full = await LoadProductFullAsync(product.Id);
         UpdateCache(full);
+        _cache.IncrementVersion("products");
         RebuildHomePageCache();
 
         return _mapper.Map<ProductDto>(full);
@@ -210,6 +212,7 @@ public class ProductService : IProductService
 
         var full = await LoadProductFullAsync(product.Id);
         UpdateCache(full);
+        _cache.IncrementVersion("products");
         RebuildHomePageCache();
 
         return _mapper.Map<ProductDto>(full);

@@ -242,6 +242,7 @@ public class CategoryAdminService : ICategoryAdminService
             AppCache.AtomicReplace(_cache.Categories, cats.ToDictionary(c => c.Id));
         }
 
+        _cache.IncrementVersion("categories");
         RebuildHomePageCache();
     }
 

@@ -81,6 +81,47 @@ public class AppCache
     /// Key: "homepage" — prebuilt HomePageDto, rebuilt on any dependency change
     public ConcurrentDictionary<string, HomePageDto> HomePageData { get; } = new();
 
+    // ─── Cache Versioning ──────────────────────────────────────────
+    /// <summary>
+    /// Monotonically incrementing version counter per dataset.
+    /// Incremented on every admin mutation. Emitted as Cache-Version header.
+    /// </summary>
+    public ConcurrentDictionary<string, long> CacheVersions { get; } = new();
+
+    /// <summary>
+    /// Last modified timestamp per dataset. Emitted as Last-Modified header.
+    /// </summary>
+    public ConcurrentDictionary<string, DateTime> CacheLastModified { get; } = new();
+
+    /// <summary>
+    /// Increments the version counter for a given dataset and updates its LastModified time.
+    /// </summary>
+    public void IncrementVersion(string dataset)
+    {
+        CacheVersions.AddOrUpdate(dataset, 1, (_, v) => v + 1);
+        CacheLastModified[dataset] = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Returns the current version string for a dataset (e.g. "categories:3").
+    /// </summary>
+    public string? GetVersionString(string dataset)
+    {
+        if (CacheVersions.TryGetValue(dataset, out var version))
+            return $"{dataset}:{version}";
+        return null;
+    }
+
+    /// <summary>
+    /// Returns a composite ETag from all relevant datasets.
+    /// Used by CacheVersionMiddleware to generate a strong ETag for the response.
+    /// </summary>
+    public string GetCompositeEtag(params string[] datasets)
+    {
+        var parts = datasets.Select(d => GetVersionString(d)).Where(v => v != null);
+        return string.Join("|", parts);
+    }
+
     // ─── Security Flags (TTL-based) ──────────────────────────────
     public ConcurrentDictionary<string, bool> SecurityFlags { get; } = new();
     private readonly ConcurrentDictionary<string, DateTime> _securityExpiry = new();

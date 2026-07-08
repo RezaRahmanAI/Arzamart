@@ -86,6 +86,7 @@ public class AdminBannerService : IAdminBannerService
         await _unitOfWork.Complete();
 
         _cache.Banners[banner.Id] = banner;
+        _cache.IncrementVersion("banners");
         RebuildHomePageCache();
 
         return new HeroBannerDto
@@ -125,6 +126,7 @@ public class AdminBannerService : IAdminBannerService
         await _unitOfWork.Complete();
 
         _cache.Banners[id] = banner;
+        _cache.IncrementVersion("banners");
         RebuildHomePageCache();
 
         return new HeroBannerDto
@@ -154,6 +156,7 @@ public class AdminBannerService : IAdminBannerService
         await _unitOfWork.Complete();
 
         _cache.Banners.TryRemove(id, out _);
+        _cache.IncrementVersion("banners");
         RebuildHomePageCache();
     }
 

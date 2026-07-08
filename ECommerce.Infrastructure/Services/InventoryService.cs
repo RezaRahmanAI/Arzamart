@@ -88,6 +88,7 @@ public class InventoryService : IInventoryService
 
         // Update cache
         _cache.Products[product.Id] = product;
+        _cache.IncrementVersion("products");
         lock (_cache.RebuildLock)
         {
             HomePageCacheRebuilder.Rebuild(_cache);
@@ -132,6 +133,7 @@ public class InventoryService : IInventoryService
 
         // Update cache
         _cache.Products[product.Id] = product;
+        _cache.IncrementVersion("products");
         lock (_cache.RebuildLock)
         {
             HomePageCacheRebuilder.Rebuild(_cache);
@@ -166,6 +168,7 @@ public class InventoryService : IInventoryService
         {
             _cache.Products[product.Id] = product;
         }
+        _cache.IncrementVersion("products");
         lock (_cache.RebuildLock)
         {
             HomePageCacheRebuilder.Rebuild(_cache);
