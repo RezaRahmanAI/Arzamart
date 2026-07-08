@@ -44,7 +44,7 @@ export class ProductCardComponent implements OnDestroy {
     private readonly notificationService: NotificationService,
     private readonly router: Router,
     private readonly destroyRef: DestroyRef,
-  ) {}
+  ) { }
 
   ngOnInit() {
     // No size selected by default as per user request
@@ -245,14 +245,14 @@ export class ProductCardComponent implements OnDestroy {
           this.product as Product,
           selection.quantity,
           selection.size ?? undefined,
-          this.isOrdering,
+          true,
         )
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             this.resetTimeout = setTimeout(() => (this.isAdding = false), 1000);
             if (this.isOrdering) {
-              this.router.navigate(["/checkout"]);
+              this.cartService.openDrawer();
             }
           },
           error: () => (this.isAdding = false),

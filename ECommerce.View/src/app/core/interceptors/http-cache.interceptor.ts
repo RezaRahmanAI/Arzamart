@@ -44,6 +44,7 @@ function getTTL(url: string): number {
   if (url.includes("/sitesettings")) return TTL.SETTINGS;
   if (url.includes("/banners")) return TTL.BANNERS;
   if (url.includes("/products")) return TTL.PRODUCTS;
+  if (url.includes("/home")) return 5 * 60 * 1000; // 5 minutes cache TTL for consolidated homepage data
   return TTL.DEFAULT;
 }
 

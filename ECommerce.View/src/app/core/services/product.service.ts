@@ -1,21 +1,64 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable, inject, PLATFORM_ID, TransferState, makeStateKey } from "@angular/core";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { HttpContext } from "@angular/common/http";
-import { Observable, shareReplay, map, of, tap } from "rxjs";
+import { Observable, of, shareReplay, BehaviorSubject, switchMap, tap, map } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { HomeData } from "../models/home-data";
+
 import { ApiHttpClient } from "../http/http-client";
-import { Product } from "../models/product";
+import {
+  Product,
+} from "../models/product";
 import { Pagination } from "../models/pagination";
 import { Review } from "../models/review";
-import { CacheService } from "../cache/cache.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class ProductService {
   private readonly api = inject(ApiHttpClient);
-  private readonly cache = inject(CacheService);
+  private readonly transferState = inject(TransferState);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly baseUrl = "/products";
+
+  private readonly refreshSubject = new BehaviorSubject<void>(void 0);
+  private readonly cache = new Map<string, { data: any; expires: number }>();
+  private readonly CACHE_TTL = 60 * 60 * 1000;
+
+  private getCached<T>(key: string): T | null {
+    const entry = this.cache.get(key);
+    if (entry && Date.now() < entry.expires) return entry.data as T;
+    this.cache.delete(key);
+    return null;
+  }
+
+  private setCache<T>(key: string, data: T): void {
+    if (this.cache.size > 50) {
+      const first = this.cache.keys().next().value;
+      if (first) this.cache.delete(first);
+    }
+    this.cache.set(key, { data, expires: Date.now() + this.CACHE_TTL });
+  }
+
+  readonly homeData$ = this.refreshSubject.pipe(
+    switchMap(() => this.withTransfer("home_data",
+      this.api.get<HomeData>("/home").pipe(
+        catchError(() => of(this.fallbackHomeData))
+      )
+    )),
+    shareReplay(1)
+  );
+
+
+
+  readonly featuredProducts$ = this.refreshSubject.pipe(
+    switchMap(() => this.api.get<Pagination<Product>>(this.baseUrl, {
+      params: { isFeatured: true, pageSize: 12 }
+    }).pipe(
+      catchError(() => of({ data: [], count: 0 } as any))
+    )),
+    shareReplay(1)
+  );
 
   private readonly fallbackHomeData: HomeData = {
     banners: [],
@@ -24,72 +67,73 @@ export class ProductService {
     featuredProducts: []
   };
 
-  getHomeData(context?: HttpContext): Observable<HomeData> {
-    return this.cache.getOrFetch<HomeData>('homepage', 'home', () =>
-      this.api.get<HomeData>("/home", { context }).pipe(
-        catchError(() => of(this.fallbackHomeData))
-      )
-    ).pipe(
-      map(result => result.data),
-      shareReplay(1)
+  private withTransfer<T>(keyString: string, apiObs: Observable<T>): Observable<T> {
+    const key = makeStateKey<T>(keyString);
+    const ssrData = this.transferState.get(key, null);
+
+    if (ssrData) {
+      if (isPlatformBrowser(this.platformId)) {
+        setTimeout(() => {
+          if (this.transferState.hasKey(key)) {
+            this.transferState.remove(key);
+          }
+        }, 1000);
+      }
+      return of(ssrData);
+    }
+
+    return apiObs.pipe(
+      tap(data => {
+        if (isPlatformServer(this.platformId)) {
+          this.transferState.set(key, data);
+        }
+      })
     );
+  }
+
+  refreshData(): void {
+    this.cache.clear();
+    this.refreshSubject.next();
+  }
+
+  getHomeData(context?: HttpContext): Observable<HomeData> {
+    return this.homeData$;
   }
 
   getHeroData(context?: HttpContext): Observable<any[]> {
-    return this.cache.getOrFetch<any[]>('banners', 'hero', () =>
-      this.api.get<any[]>("/home/hero", { context }).pipe(
-        catchError(() => of([]))
-      )
-    ).pipe(
-      map(result => result.data),
-      shareReplay(1)
-    );
+    return this.homeData$.pipe(map((data: HomeData) => data.banners || []));
   }
 
   getNewArrivalsData(context?: HttpContext): Observable<Product[]> {
-    return this.cache.getOrFetch<Product[]>('homepage', 'new-arrivals', () =>
-      this.api.get<Product[]>("/home/products", { context }).pipe(
-        catchError(() => of([]))
-      )
-    ).pipe(
-      map(result => result.data),
-      shareReplay(1)
-    );
+    return this.homeData$.pipe(map((data: HomeData) => data.newArrivals || []));
   }
 
-  getProducts(params?: any, context?: HttpContext): Observable<Pagination<Product>> {
+  getProducts(
+    params?: any,
+    context?: HttpContext,
+  ): Observable<Pagination<Product>> {
     const paramKey = JSON.stringify(params || {});
-    return this.cache.getOrFetch<Pagination<Product>>('productDetails', `list_${paramKey}`, () =>
+    return this.withTransfer(`products_${paramKey}`,
       this.api.get<Pagination<Product>>(this.baseUrl, { params, context })
-    ).pipe(
-      map(result => result.data)
     );
   }
 
-  getFeaturedProducts(limit = 10, context?: HttpContext): Observable<Pagination<Product>> {
-    return this.cache.getOrFetch<Pagination<Product>>('featuredProducts', 'all', () =>
-      this.api.get<Pagination<Product>>(this.baseUrl, {
-        params: { isFeatured: true, pageSize: limit },
-        context,
-      }).pipe(
-        catchError(() => of({ data: [], count: 0 } as any))
-      )
-    ).pipe(
-      map(result => result.data),
-      shareReplay(1)
-    );
+  getFeaturedProducts(
+    limit = 10,
+    context?: HttpContext,
+  ): Observable<Pagination<Product>> {
+    return this.featuredProducts$;
   }
 
-  getNewArrivals(limit = 10, context?: HttpContext): Observable<Pagination<Product>> {
-    return this.cache.getOrFetch<Pagination<Product>>('homepage', `newArrivals_${limit}`, () =>
-      this.api.get<Pagination<Product>>(this.baseUrl, {
-        params: { orderBy: "id", order: "desc", pageSize: limit },
-        context,
-      }).pipe(
-        catchError(() => of({ data: [], count: 0 } as any))
-      )
-    ).pipe(
-      map(result => result.data),
+  getNewArrivals(
+    limit = 10,
+    context?: HttpContext,
+  ): Observable<Pagination<Product>> {
+    return this.api.get<Pagination<Product>>(this.baseUrl, {
+      params: { orderBy: "id", order: "desc", pageSize: limit },
+      context,
+    }).pipe(
+      catchError(() => of({ data: [], count: 0 } as any)),
       shareReplay(1)
     );
   }
@@ -110,42 +154,40 @@ export class ProductService {
     } else if (categoryId) {
       params.categoryId = categoryId;
     }
+
     if (searchTerm) {
       params.searchTerm = searchTerm;
     }
 
     const cacheKey = `related_${JSON.stringify(params)}`;
-    return this.cache.getOrFetch<Pagination<Product>>('productDetails', cacheKey, () =>
-      this.api.get<Pagination<Product>>(this.baseUrl, { params, context })
-    ).pipe(
-      map(result => result.data)
+    const cached = this.getCached<Pagination<Product>>(cacheKey);
+    if (cached) return of(cached);
+
+    return this.api.get<Pagination<Product>>(this.baseUrl, { params, context }).pipe(
+      tap(data => this.setCache(cacheKey, data))
     );
   }
 
+
   getBySlug(slug: string, context?: HttpContext): Observable<Product> {
-    const cacheKey = `slug_${slug}`;
-    return this.cache.getOrFetch<Product>('productDetails', cacheKey, () =>
+    const cacheKey = `product_slug_${slug}`;
+    const cached = this.getCached<Product>(cacheKey);
+    if (cached) return of(cached);
+
+    return this.withTransfer(cacheKey,
       this.api.get<Product>(`${this.baseUrl}/${slug}`, { context })
     ).pipe(
-      map(result => result.data)
+      tap(product => this.setCache(cacheKey, product))
     );
   }
 
   getReviewsByProductId(productId: number): Observable<Review[]> {
-    const cacheKey = `product_${productId}`;
-    return this.cache.getOrFetch<Review[]>('productReviews', cacheKey, () =>
-      this.api.get<Review[]>(`/reviews/products/${productId}`)
-    ).pipe(
-      map(result => result.data)
-    );
-  }
+    const cacheKey = `reviews_product_${productId}`;
+    const cached = this.getCached<Review[]>(cacheKey);
+    if (cached) return of(cached);
 
-  refreshData(): void {
-    this.cache.clearStore('homepage');
-    this.cache.clearStore('featuredProducts');
-    this.cache.clearStore('trendingProducts');
-    this.cache.clearStore('popularProducts');
-    this.cache.clearStore('productDetails');
-    this.cache.clearStore('productReviews');
+    return this.api.get<Review[]>(`/reviews/products/${productId}`).pipe(
+      tap(reviews => this.setCache(cacheKey, reviews))
+    );
   }
 }

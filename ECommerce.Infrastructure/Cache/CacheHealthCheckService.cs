@@ -31,29 +31,36 @@ public class CacheHealthCheckService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            await Task.Delay(CheckInterval, stoppingToken);
-
-            if (!_cache.IsStale)
-                continue;
-
-            _logger.LogWarning(
-                "[CacheHealth] Cache is stale (last warmup: {LastWarmup}). Triggering rebuild...",
-                _cache.LastWarmupTime?.ToString("o") ?? "never");
-
-            try
+            while (!stoppingToken.IsCancellationRequested)
             {
-                using var scope = _scopeFactory.CreateScope();
-                var warmup = scope.ServiceProvider
-                    .GetRequiredService<CacheWarmupService>();
-                await warmup.StartAsync(stoppingToken);
-                _logger.LogInformation("[CacheHealth] Cache rebuild complete.");
+                await Task.Delay(CheckInterval, stoppingToken);
+
+                if (!_cache.IsStale)
+                    continue;
+
+                _logger.LogWarning(
+                    "[CacheHealth] Cache is stale (last warmup: {LastWarmup}). Triggering rebuild...",
+                    _cache.LastWarmupTime?.ToString("o") ?? "never");
+
+                try
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var warmup = scope.ServiceProvider
+                        .GetRequiredService<CacheWarmupService>();
+                    await warmup.StartAsync(stoppingToken);
+                    _logger.LogInformation("[CacheHealth] Cache rebuild complete.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "[CacheHealth] Cache rebuild failed.");
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "[CacheHealth] Cache rebuild failed.");
-            }
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogInformation("[CacheHealth] Stopping cache health check service.");
         }
     }
 }

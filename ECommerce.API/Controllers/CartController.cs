@@ -76,22 +76,41 @@ public class CartController : ControllerBase
         return string.Empty;
     }
 
-    [HttpGet]
-    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-    public async Task<ActionResult<CartDto>> GetCart()
+    /// <summary>
+    /// Invalidates the cart cache and sets it to the latest cart state.
+    /// Must be called BEFORE returning the response for any mutation.
+    /// </summary>
+    private void SetCache(string cacheKey, CartDto dto)
     {
-        var cacheKey = GetCacheKey();
-        if (!string.IsNullOrEmpty(cacheKey) && _cache.TryGetValue(cacheKey, out CartDto? cachedCart))
-        {
-            return Ok(cachedCart);
-        }
-
-        var dto = await _cartService.GetCartAsync(GetUserId(), GetSessionId());
-
         if (!string.IsNullOrEmpty(cacheKey))
         {
             _cache.Set(cacheKey, dto, AppConstants.CacheDurations.Medium);
         }
+    }
+
+    /// <summary>
+    /// Invalidates (removes) the cart cache entirely.
+    /// </summary>
+    private void InvalidateCache(string cacheKey)
+    {
+        if (!string.IsNullOrEmpty(cacheKey))
+        {
+            _cache.Remove(cacheKey);
+        }
+    }
+
+    [HttpGet]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public async Task<ActionResult<CartDto>> GetCart()
+    {
+        // ALWAYS fetch from the database to guarantee consistency.
+        // The database is the single source of truth.
+        // AppCache is only used for mutation responses (write-through).
+        var cacheKey = GetCacheKey();
+        var dto = await _cartService.GetCartAsync(GetUserId(), GetSessionId());
+
+        // Update cache with the fresh database state
+        SetCache(cacheKey, dto);
 
         return Ok(dto);
     }
@@ -104,11 +123,8 @@ public class CartController : ControllerBase
             var sessionId = EnsureSessionId();
             var cartDto = await _cartService.AddItemAsync(GetUserId(), sessionId, dto);
 
-            var cacheKey = GetCacheKey(sessionId);
-            if (!string.IsNullOrEmpty(cacheKey))
-            {
-                _cache.Set(cacheKey, cartDto, AppConstants.CacheDurations.Medium);
-            }
+            // Cache updated BEFORE response is returned
+            SetCache(GetCacheKey(sessionId), cartDto);
 
             return Ok(cartDto);
         }
@@ -125,11 +141,8 @@ public class CartController : ControllerBase
         {
             var cartDto = await _cartService.UpdateItemAsync(id, GetUserId(), GetSessionId(), dto.Quantity);
 
-            var cacheKey = GetCacheKey();
-            if (!string.IsNullOrEmpty(cacheKey))
-            {
-                _cache.Set(cacheKey, cartDto, AppConstants.CacheDurations.Medium);
-            }
+            // Cache updated BEFORE response is returned
+            SetCache(GetCacheKey(), cartDto);
 
             return Ok(cartDto);
         }
@@ -150,24 +163,25 @@ public class CartController : ControllerBase
 
         var cartDto = await _cartService.RemoveItemAsync(id, GetUserId(), GetSessionId());
 
-        var cacheKey = GetCacheKey();
-        if (!string.IsNullOrEmpty(cacheKey))
-        {
-            _cache.Set(cacheKey, cartDto, AppConstants.CacheDurations.Medium);
-        }
+        // Cache updated BEFORE response is returned
+        SetCache(GetCacheKey(), cartDto);
 
         return Ok(cartDto);
     }
 
     [HttpPost("clear")]
-    public async Task<ActionResult> ClearCart()
+    public async Task<ActionResult<CartDto>> ClearCart()
     {
-        await _cartService.ClearCartAsync(GetUserId(), GetSessionId());
-
         var cacheKey = GetCacheKey();
-        if (!string.IsNullOrEmpty(cacheKey)) _cache.Remove(cacheKey);
 
-        return NoContent();
+        // ClearCartAsync now returns the empty cart DTO
+        var cartDto = await _cartService.ClearCartAsync(GetUserId(), GetSessionId());
+
+        // Update cache with the empty cart (not just remove — prevents stale re-creation)
+        SetCache(cacheKey, cartDto);
+
+        // Return the empty cart DTO so the frontend can reconcile
+        return Ok(cartDto);
     }
 
     [Authorize]
@@ -181,11 +195,10 @@ public class CartController : ControllerBase
 
         var cartDto = await _cartService.MergeGuestCartAsync(sessionId, userId);
 
-        var cacheKey = GetCacheKey();
-        if (!string.IsNullOrEmpty(cacheKey))
-        {
-            _cache.Set(cacheKey, cartDto, AppConstants.CacheDurations.Medium);
-        }
+        // Invalidate both the guest cache key and set the user cache key
+        var guestCacheKey = $"cart_{sessionId}";
+        InvalidateCache(guestCacheKey);
+        SetCache(GetCacheKey(), cartDto);
 
         return Ok(cartDto);
     }

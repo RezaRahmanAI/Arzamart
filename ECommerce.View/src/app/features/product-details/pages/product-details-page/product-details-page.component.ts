@@ -181,7 +181,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
             map((res) => res.data.filter((p) => p.id !== product.id))
           );
       }
-      
+
       // 2. Fallback to Product Group (manual link)
       if (product.productGroupId) {
         return this.productService
@@ -189,15 +189,15 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
           .pipe(
             map((res) => res.data.filter((p) => p.id !== product.id))
           );
-      } 
-      
+      }
+
       // 3. Fallback to Collection
       if (product.collectionId) {
         return this.productService
           .getRelatedProducts(product.collectionId, undefined, undefined, 4)
           .pipe(map((res) => res.data));
-      } 
-      
+      }
+
       // 4. Fallback to Category
       if (product.categoryId) {
         return this.productService
@@ -395,7 +395,7 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
         product,
         quantity,
         selectedSize ?? undefined,
-        false,
+        true,
       )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
@@ -419,8 +419,10 @@ export class ProductDetailsPageComponent implements OnInit, OnDestroy {
       .addItem(product, quantity, selectedSize ?? undefined, true)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => void this.router.navigate(["/checkout"]),
-        error: () => {},
+        next: () => {
+          this.cartService.openDrawer();
+        },
+        error: () => { },
       });
   }
 

@@ -9,7 +9,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavbarComponent } from "./layout/navbar/navbar.component";
 import { FooterComponent } from "./layout/footer/footer.component";
 import { ToastComponent } from "./shared/components/toast/toast.component";
-import { UndoToastComponent } from "./shared/components/toast/undo-toast.component";
 import { ContactFabComponent } from "./shared/components/contact-fab/contact-fab.component";
 import { AnalyticsService } from "./core/services/analytics.service";
 import { AttributionService } from "./core/services/attribution.service";
@@ -28,7 +27,6 @@ import { PrefetchService } from "./core/cache/prefetch.service";
     NavbarComponent,
     FooterComponent,
     ToastComponent,
-    UndoToastComponent,
     ContactFabComponent,
     LoadingSpinnerComponent,
     CartDrawerComponent,
