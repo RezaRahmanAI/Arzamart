@@ -12,8 +12,9 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
 
+import { LocationService } from "../../../../core/services/location.service";
+import { DivisionDto, DistrictDto, UpazilaDto } from "../../../../core/models/location";
 import { ProductService } from "../../../../core/services/product.service";
 import { Product } from "../../../../core/models/product";
 import { CartService } from "../../../../core/services/cart.service";
@@ -32,7 +33,6 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
 import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
-import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
 import { IncompleteOrderTrackerService } from "../../../../core/services/incomplete-order-tracker.service";
 
 
@@ -95,17 +95,21 @@ export class LandingPageComponent implements OnInit {
     quantity: [1, [Validators.required, Validators.min(1)]],
   });
 
-  cities = Object.keys(BANGLADESH_LOCATIONS).sort();
-  filteredCities: string[] = [];
-  citySearch = "";
-  isCityDropdownOpen = false;
+  private locationService = inject(LocationService);
+  locations$ = this.locationService.getDivisions();
+  private allDivisions: DivisionDto[] = [];
 
   areas: string[] = [];
   filteredAreas: string[] = [];
   areaSearch = "";
   isAreaDropdownOpen = false;
 
+  isCityDropdownOpen = false;
+  citySearch = "";
+  filteredCities: string[] = [];
+
   ngOnInit(): void {
+    this.locations$.subscribe(d => this.allDivisions = d);
     this.loadProductAndSettings();
     this.setupFormWatchers();
     
@@ -135,9 +139,8 @@ export class LandingPageComponent implements OnInit {
     const details = this.userPersistence.getUserDetails();
     if (details) {
       if (details.city) {
-        this.areas = BANGLADESH_LOCATIONS[details.city] || [];
+        this.areas = [];
         this.filteredAreas = [...this.areas];
-        this.citySearch = details.city;
         if (!this.userSelectedDeliveryMethod) {
           this.updateDeliveryMethod(details.city, details.area || "");
         }
@@ -203,7 +206,7 @@ export class LandingPageComponent implements OnInit {
             this.selectedMethod = defaultMethod;
             
             const initialCity = this.checkoutForm.controls.city.value;
-            this.areas = BANGLADESH_LOCATIONS[initialCity] || [];
+            this.areas = [];
             this.filteredAreas = [...this.areas];
             this.updateDeliveryMethod(initialCity, "");
           }
@@ -224,9 +227,8 @@ export class LandingPageComponent implements OnInit {
           this.didAutofill = true;
           
           if (customer.city) {
-            this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
+            this.areas = [];
             this.filteredAreas = [...this.areas];
-            this.citySearch = customer.city;
             if (!this.userSelectedDeliveryMethod) {
               this.updateDeliveryMethod(customer.city, customer.area || "");
             }
@@ -258,11 +260,10 @@ export class LandingPageComponent implements OnInit {
     this.checkoutForm.controls.city.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((city) => {
-        this.areas = BANGLADESH_LOCATIONS[city] || [];
+        this.areas = [];
         this.filteredAreas = [...this.areas];
         this.checkoutForm.patchValue({ area: "" });
         this.areaSearch = "";
-        this.citySearch = city;
         this.updateDeliveryMethod(city, "");
       });
 
@@ -286,16 +287,12 @@ export class LandingPageComponent implements OnInit {
   }
 
   intelligentLocationMatch(address: string): void {
-    const { city, area } = matchLocationFromAddress(address, this.cities);
-    
-    if (city) {
-      if (this.checkoutForm.controls.city.value !== city) {
-        this.selectCity(city);
-      }
-      
-      if (area && this.checkoutForm.controls.area.value !== area) {
-        this.selectArea(area);
-      }
+    const addr = address.toLowerCase();
+    const matched = this.allDivisions.find((d) =>
+      addr.includes(d.nameEn.toLowerCase())
+    );
+    if (matched && this.checkoutForm.controls.city.value !== matched.nameEn) {
+      this.selectCity(matched.nameEn);
     }
   }
 
@@ -320,27 +317,26 @@ export class LandingPageComponent implements OnInit {
     }
   }
 
-  filterCities(event: Event): void {
-    const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.citySearch = query;
-    this.filteredCities = this.cities.filter((c) =>
-      c.toLowerCase().includes(query),
-    );
-  }
-
   selectCity(city: string): void {
     this.checkoutForm.patchValue({ city });
-    this.citySearch = city;
     this.isCityDropdownOpen = false;
+    this.citySearch = "";
   }
 
   toggleCityDropdown(): void {
     this.isCityDropdownOpen = !this.isCityDropdownOpen;
     if (this.isCityDropdownOpen) {
-      this.isAreaDropdownOpen = false;
-      this.filteredCities = [...this.cities];
+      this.filteredCities = this.allDivisions.map(d => d.nameEn);
       this.citySearch = this.checkoutForm.controls.city.value || "";
     }
+  }
+
+  filterCities(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.citySearch = value;
+    this.filteredCities = this.allDivisions
+      .filter(d => d.nameEn.toLowerCase().includes(value.toLowerCase()))
+      .map(d => d.nameEn);
   }
 
   filterAreas(event: Event): void {
@@ -361,7 +357,6 @@ export class LandingPageComponent implements OnInit {
     if (!this.checkoutForm.controls.city.value) return;
     this.isAreaDropdownOpen = !this.isAreaDropdownOpen;
     if (this.isAreaDropdownOpen) {
-      this.isCityDropdownOpen = false;
       this.filteredAreas = [...this.areas];
       this.areaSearch = this.checkoutForm.controls.area.value || "";
     }

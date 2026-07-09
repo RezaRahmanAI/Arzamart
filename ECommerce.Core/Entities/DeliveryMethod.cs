@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ECommerce.Core.Entities.Shop;
 
 namespace ECommerce.Core.Entities;
 
@@ -15,4 +16,7 @@ public class DeliveryMethod : BaseEntity
     public string? EstimatedDays { get; set; }
 
     public bool IsActive { get; set; } = true;
+
+    public int? DeliveryZoneId { get; set; }
+    public DeliveryZone? DeliveryZone { get; set; }
 }

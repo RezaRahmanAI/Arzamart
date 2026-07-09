@@ -1,0 +1,342 @@
+<div class="site-container-admin mx-auto flex flex-col gap-ds-8">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-start justify-between gap-ds-6">
+    <div>
+      <h1 class="text-ds-text">Location Management</h1>
+      <p class="text-ds-text-muted mt-1.5">
+        Manage divisions, districts, upazilas, and delivery zones
+      </p>
+    </div>
+    <button
+      (click)="activeTab === 'delivery-zones' ? openAddZoneModal() : openAddModal('division')"
+      class="btn btn-primary h-11 px-ds-8"
+      *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
+      <app-icon [name]="activeTab === 'delivery-zones' ? 'Plus' : 'Plus'" size="14"></app-icon>
+      <span>{{ activeTab === 'delivery-zones' ? 'Add Zone' : 'Add Division' }}</span>
+    </button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex p-1 bg-ds-bg border border-ds-border rounded-sm w-fit">
+    <button
+      (click)="switchTab('divisions')"
+      [class.bg-ds-surface]="activeTab === 'divisions'"
+      [class.text-ds-text]="activeTab === 'divisions'"
+      [class.border-ds-border]="activeTab === 'divisions'"
+      [class.shadow-sm]="activeTab === 'divisions'"
+      class="flex items-center gap-ds-3 px-ds-6 py-2 rounded-sm border border-transparent transition-all"
+      [class.text-ds-text-muted]="activeTab !== 'divisions'"
+    >
+      <app-icon name="Map" size="14"></app-icon>
+      Divisions
+    </button>
+    <button
+      (click)="switchTab('delivery-zones')"
+      [class.bg-ds-surface]="activeTab === 'delivery-zones'"
+      [class.text-ds-text]="activeTab === 'delivery-zones'"
+      [class.border-ds-border]="activeTab === 'delivery-zones'"
+      [class.shadow-sm]="activeTab === 'delivery-zones'"
+      class="flex items-center gap-ds-3 px-ds-6 py-2 rounded-sm border border-transparent transition-all"
+      [class.text-ds-text-muted]="activeTab !== 'delivery-zones'"
+    >
+      <app-icon name="Truck" size="14"></app-icon>
+      Delivery Zones
+    </button>
+  </div>
+
+  <!-- Divisions Content -->
+  @if (activeTab === 'divisions') {
+    <div class="bg-ds-surface rounded-sm border border-ds-border overflow-hidden shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-ds-bg/50 border-b border-ds-border">
+              <th class="px-ds-6 py-ds-4 text-ds-text-muted">Name (EN)</th>
+              <th class="px-ds-6 py-ds-4 text-ds-text-muted">Name (BN)</th>
+              <th class="px-ds-6 py-ds-4 text-ds-text-muted">Order</th>
+              <th class="px-ds-6 py-ds-4 text-ds-text-muted">Status</th>
+              <th class="px-ds-6 py-ds-4 text-ds-text-muted text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-ds-border/50">
+            @if (isLoading) {
+              <tr>
+                <td colspan="5" class="px-ds-6 py-ds-24 text-center">
+                  <app-icon name="Loader2" size="32" className="animate-spin text-ds-text-muted mx-auto"></app-icon>
+                  <p class="text-ds-text-muted mt-ds-4 animate-pulse">Loading...</p>
+                </td>
+              </tr>
+            } @else {
+              @for (division of divisions; track division.id) {
+                <tr class="hover:bg-ds-bg transition-colors group">
+                  <td class="px-ds-6 py-ds-4">
+                    <button (click)="toggleDivision(division.id)" class="flex items-center gap-2 text-ds-text hover:text-ds-accent transition-colors">
+                      <app-icon
+                        [name]="expandedDivisionId === division.id ? 'ChevronDown' : 'ChevronRight'"
+                        size="14"
+                        className="text-ds-text-muted"
+                      ></app-icon>
+                      <span>{{ division.nameEn }}</span>
+                    </button>
+                  </td>
+                  <td class="px-ds-6 py-ds-4 text-ds-text">{{ division.nameBn }}</td>
+                  <td class="px-ds-6 py-ds-4 text-ds-text-muted">{{ division.displayOrder }}</td>
+                  <td class="px-ds-6 py-ds-4">
+                    <span
+                      class="px-ds-3 py-1 rounded-sm border text-xs"
+                      [ngClass]="division.isActive ? 'bg-ds-success/10 text-ds-success border-ds-success/20' : 'bg-ds-bg text-ds-text-muted border-ds-border'"
+                    >
+                      {{ division.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </td>
+                  <td class="px-ds-6 py-ds-4 text-right">
+                    <div class="flex items-center justify-end gap-ds-2">
+                      <button (click)="openAddModal('district', division.id)" class="size-8 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors" title="Add District">
+                        <app-icon name="Plus" size="12"></app-icon>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                @if (expandedDivisionId === division.id) {
+                  <tr>
+                    <td colspan="5" class="px-ds-6 py-0">
+                      <div class="pl-10 pb-4">
+                        @for (district of districtCache.get(division.id) || []; track district.id) {
+                          <div class="border-l-2 border-ds-border/30 pl-4 py-1">
+                            <div class="flex items-center justify-between py-1">
+                              <div class="flex items-center gap-2">
+                                <button
+                                  (click)="toggleDistrict(district.id)"
+                                  class="flex items-center gap-1 text-ds-text text-sm hover:text-ds-accent transition-colors"
+                                >
+                                  <app-icon
+                                    [name]="expandedDistrictId === district.id ? 'ChevronDown' : 'ChevronRight'"
+                                    size="12"
+                                    className="text-ds-text-muted"
+                                  ></app-icon>
+                                  {{ district.nameEn }}
+                                </button>
+                                <span class="text-xs text-ds-text-muted">({{ district.nameBn }})</span>
+                              </div>
+                              <div class="flex items-center gap-2">
+                                <span class="text-xs px-2 py-0.5 rounded-sm"
+                                  [class.text-ds-success]="district.isActive"
+                                  [class.text-ds-text-muted]="!district.isActive"
+                                >
+                                  {{ district.isActive ? 'Active' : 'Inactive' }}
+                                </span>
+                                <button (click)="openAddModal('upazila', division.id, district.id)" class="size-6 flex items-center justify-center text-ds-text-muted hover:text-ds-text" title="Add Upazila">
+                                  <app-icon name="Plus" size="10"></app-icon>
+                                </button>
+                              </div>
+                            </div>
+                            @if (expandedDistrictId === district.id) {
+                              <div class="pl-6 py-1">
+                                @for (upazila of upazilaCache.get(district.id) || []; track upazila.id) {
+                                  <div class="flex items-center justify-between py-0.5 text-sm">
+                                    <span class="text-ds-text-muted">{{ upazila.nameEn }}</span>
+                                    <span class="text-xs px-2 py-0.5 rounded-sm"
+                                      [class.text-ds-success]="upazila.isActive"
+                                      [class.text-ds-text-muted]="!upazila.isActive"
+                                    >
+                                      {{ upazila.isActive ? 'Active' : 'Inactive' }}
+                                    </span>
+                                  </div>
+                                }
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                }
+              }
+              @if (divisions.length === 0) {
+                <tr>
+                  <td colspan="5" class="px-ds-6 py-ds-24 text-center">
+                    <div class="flex flex-col items-center gap-ds-4">
+                      <app-icon name="Map" size="48" className="text-ds-text-muted opacity-10"></app-icon>
+                      <p class="text-ds-text-muted">No divisions found</p>
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- Delivery Zones Content -->
+  @if (activeTab === 'delivery-zones') {
+    <div class="flex flex-col gap-ds-6">
+      @if (isLoading) {
+        <div class="flex items-center justify-center py-ds-24">
+          <app-icon name="Loader2" size="32" className="animate-spin text-ds-text-muted"></app-icon>
+        </div>
+      } @else {
+        <!-- Zone List -->
+        <div class="grid gap-ds-4">
+          @for (zone of deliveryZones; track zone.id) {
+            <div class="bg-ds-surface rounded-sm border border-ds-border shadow-sm hover:shadow-md transition-shadow">
+              <div class="p-ds-6 flex items-center justify-between">
+                <div class="flex items-center gap-ds-6 flex-1">
+                  <div class="flex flex-col">
+                    <span class="text-ds-text font-medium">{{ zone.name }}</span>
+                    @if (zone.description) {
+                      <span class="text-ds-text-muted text-sm mt-0.5">{{ zone.description }}</span>
+                    }
+                  </div>
+                  <div class="flex items-center gap-ds-4 text-sm text-ds-text-muted">
+                    <span class="flex items-center gap-1">
+                      <app-icon name="MapPin" size="12"></app-icon>
+                      {{ zone.upazilaCount }} upazilas
+                    </span>
+                    <span class="px-ds-2 py-0.5 rounded-sm border text-xs"
+                      [ngClass]="zone.isActive
+                        ? 'bg-ds-success/10 text-ds-success border-ds-success/20'
+                        : 'bg-ds-bg text-ds-text-muted border-ds-border'"
+                    >
+                      {{ zone.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-ds-2">
+                  <button (click)="openEditZoneModal(zone.id)" class="size-9 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors" title="Edit Zone">
+                    <app-icon name="Pencil" size="14"></app-icon>
+                  </button>
+                  <button (click)="deleteDeliveryZone(zone.id)" class="size-9 flex items-center justify-center rounded-sm border border-ds-border text-ds-text-muted hover:text-red-500 hover:border-red-500 transition-colors" title="Delete Zone" *ngIf="authService.currentUserSnapshot()?.role !== 'Staff'">
+                    <app-icon name="Trash2" size="14"></app-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+          @if (deliveryZones.length === 0) {
+            <div class="bg-ds-surface rounded-sm border border-ds-border p-ds-16 text-center shadow-sm">
+              <div class="flex flex-col items-center gap-ds-4">
+                <app-icon name="Truck" size="48" className="text-ds-text-muted opacity-10"></app-icon>
+                <p class="text-ds-text-muted">No delivery zones configured</p>
+                <button (click)="openAddZoneModal()" class="btn btn-primary">
+                  <app-icon name="Plus" size="14"></app-icon>
+                  <span>Create Zone</span>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Delivery Zone Modal -->
+<div *ngIf="isModalOpen && modalMode === 'delivery-zone'" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ds-bg/80 backdrop-blur-md animate-in fade-in duration-300">
+  <div class="bg-ds-surface rounded-sm border border-ds-border w-full max-w-2xl shadow-2xl relative overflow-hidden animate-in zoom-in duration-base max-h-[90vh] flex flex-col">
+    <div class="px-ds-8 py-ds-4 border-b border-ds-border flex items-center justify-between bg-ds-bg/50 shrink-0">
+      <div>
+        <h2 class="text-ds-text">{{ isEditing ? 'Edit' : 'Create' }} Delivery Zone</h2>
+        <p class="text-ds-text-muted mt-0.5">Define zone details and assign upazilas</p>
+      </div>
+      <button (click)="closeModal()" class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm text-ds-text-muted hover:text-ds-text">
+        <app-icon name="X" size="18"></app-icon>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+      <form [formGroup]="zoneForm" class="p-ds-8 flex flex-col gap-ds-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-ds-6">
+          <div class="space-y-2">
+            <label class="block text-ds-text ml-1 mb-1.5">Zone Name</label>
+            <input type="text" formControlName="name" placeholder="e.g. Inside Dhaka" class="form-input !h-11 !px-ds-4" />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-ds-text ml-1 mb-1.5">Display Order</label>
+            <input type="number" formControlName="displayOrder" class="form-input !h-11 !px-ds-4" />
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-ds-text ml-1 mb-1.5">Description</label>
+          <textarea formControlName="description" placeholder="Optional description" rows="2" class="form-input !px-ds-4 !py-ds-3"></textarea>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" formControlName="isActive" class="sr-only peer" />
+            <div class="w-11 h-6 bg-ds-border peer-focus:outline-none rounded-sm peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ds-surface after:border-ds-border after:border after:rounded-sm after:h-5 after:w-5 after:transition-all peer-checked:bg-ds-text"></div>
+          </label>
+          <span class="text-ds-text">Active</span>
+          <span class="text-ds-text-muted text-sm ml-auto">{{ selectedZoneUpazilas.size }} upazila(s) selected</span>
+        </div>
+
+        <!-- Upazila Assignment Tree -->
+        <div class="border border-ds-border rounded-sm bg-ds-bg/30">
+          <div class="px-ds-6 py-ds-3 border-b border-ds-border bg-ds-bg/50">
+            <span class="text-ds-text font-medium text-sm">Assign Upazilas</span>
+            <span class="text-ds-text-muted text-xs ml-2">Select upazilas belonging to this zone</span>
+          </div>
+          <div class="p-ds-6 max-h-64 overflow-y-auto">
+            @if (hierarchyData) {
+              @for (div of hierarchyData.divisions; track div.id) {
+                <div class="mb-2">
+                  <button type="button" (click)="toggleZDivision(div.id)" class="flex items-center gap-2 text-ds-text text-sm hover:text-ds-accent transition-colors w-full text-left">
+                    <app-icon [name]="zoneExpandedDivisions.has(div.id) ? 'ChevronDown' : 'ChevronRight'" size="12" className="text-ds-text-muted shrink-0"></app-icon>
+                    <span>{{ div.nameEn }}</span>
+                    <span class="text-xs text-ds-text-muted">({{ div.nameBn }})</span>
+                  </button>
+                  @if (zoneExpandedDivisions.has(div.id)) {
+                    <div class="pl-5 mt-1 space-y-1">
+                      @for (dist of div.districts; track dist.id) {
+                        <div>
+                          <button type="button" (click)="toggleZDistrict(dist.id)" class="flex items-center gap-2 text-ds-text text-sm hover:text-ds-accent transition-colors w-full text-left py-0.5">
+                            <app-icon [name]="zoneExpandedDistricts.has(dist.id) ? 'ChevronDown' : 'ChevronRight'" size="10" className="text-ds-text-muted shrink-0"></app-icon>
+                            <span>{{ dist.nameEn }}</span>
+                            <span class="text-xs text-ds-text-muted">({{ dist.nameBn }})</span>
+                          </button>
+                          @if (zoneExpandedDistricts.has(dist.id)) {
+                            <div class="pl-5 mt-0.5 space-y-0.5">
+                              <button type="button" (click)="selectUpazilasInDistrict(dist.id, dist.upazilas)" class="text-xs text-ds-accent hover:underline mb-1">
+                                {{ areAllUpazilasSelected(dist.upazilas) ? 'Deselect all' : 'Select all' }}
+                              </button>
+                              @for (upa of dist.upazilas; track upa.id) {
+                                <label class="flex items-center gap-2 cursor-pointer hover:bg-ds-bg rounded-sm px-1 py-0.5">
+                                  <input
+                                    type="checkbox"
+                                    [checked]="selectedZoneUpazilas.has(upa.id)"
+                                    (change)="toggleUpazilaSelection(upa.id)"
+                                    class="rounded-sm border-ds-border"
+                                  />
+                                  <span class="text-sm text-ds-text">{{ upa.nameEn }}</span>
+                                  <span class="text-xs text-ds-text-muted">({{ upa.nameBn }})</span>
+                                </label>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            } @else {
+              <div class="flex items-center justify-center py-ds-8">
+                <app-icon name="Loader2" size="20" className="animate-spin text-ds-text-muted"></app-icon>
+              </div>
+            }
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="px-ds-8 py-ds-4 border-t border-ds-border bg-ds-bg/50 flex items-center justify-end gap-ds-4 shrink-0">
+      <button type="button" (click)="closeModal()" class="btn btn-secondary !h-12">Cancel</button>
+      <button type="button" (click)="onSubmitZone()" [disabled]="isSubmitting || zoneForm.invalid" class="btn btn-primary !h-12 flex items-center gap-ds-2">
+        <app-icon *ngIf="isSubmitting" name="Loader2" size="16" className="animate-spin"></app-icon>
+        <span>{{ isSubmitting ? 'Saving...' : (isEditing ? 'Save Changes' : 'Create Zone') }}</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -4,6 +4,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260709045009_AddLocationManagement")]
+    partial class AddLocationManagement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1011,9 +1014,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("UpazilaId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -1046,8 +1046,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("SourcePageId");
 
                     b.HasIndex("Status");
-
-                    b.HasIndex("UpazilaId");
 
                     b.HasIndex("Status", "CreatedAt")
                         .HasDatabaseName("IX_Orders_Status_CreatedAt");
@@ -2054,18 +2052,11 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasForeignKey("SourcePageId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("ECommerce.Core.Entities.Location.Upazila", "Upazila")
-                        .WithMany()
-                        .HasForeignKey("UpazilaId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.Navigation("DeliveryMethod");
 
                     b.Navigation("SocialMediaSource");
 
                     b.Navigation("SourcePage");
-
-                    b.Navigation("Upazila");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Entities.OrderItem", b =>

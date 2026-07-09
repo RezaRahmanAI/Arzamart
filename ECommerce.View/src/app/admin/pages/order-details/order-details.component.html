@@ -163,8 +163,8 @@
             <span *ngIf="order.city" class="px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm text-ds-text text-xs font-semibold">
               Jela: {{ order.city }}
             </span>
-            <span *ngIf="getDivision(order.city)" class="px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm text-ds-text text-xs font-semibold">
-              Bibag: {{ getDivision(order.city) }}
+            <span *ngIf="order.city && getDivision(order.city!)" class="px-ds-3 py-1 bg-ds-bg border border-ds-border rounded-sm text-ds-text text-xs font-semibold">
+              Bibag: {{ getDivision(order.city!) }}
             </span>
           </div>
           <span *ngIf="order.area" class="text-xs text-ds-text-muted">

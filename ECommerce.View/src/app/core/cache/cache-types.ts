@@ -11,7 +11,8 @@ export type CacheStore =
   | 'staticPages'
   | 'landingPages'
   | 'productDetails'
-  | 'productReviews';
+  | 'productReviews'
+  | 'locations';
 
 export interface CacheEntry<T = unknown> {
   key: string;
@@ -36,10 +37,11 @@ export const CACHE_TTL: Record<CacheStore, number> = {
   landingPages: 30 * 24 * 60 * 60 * 1000,
   productDetails: 24 * 60 * 60 * 1000,
   productReviews: 30 * 60 * 1000,
+  locations: 30 * 24 * 60 * 60 * 1000,
 };
 
 export const DB_NAME = 'arzamart_cache';
-export const DB_VERSION = 1;
+export const DB_VERSION = 2;
 export const METADATA_KEY_PREFIX = 'arza_cache_';
 export const CACHE_STORES: CacheStore[] = [
   'navigation',
@@ -55,4 +57,5 @@ export const CACHE_STORES: CacheStore[] = [
   'landingPages',
   'productDetails',
   'productReviews',
+  'locations',
 ];

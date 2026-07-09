@@ -3,7 +3,8 @@ import { Component, DestroyRef, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
+import { LocationService } from '../../../../core/services/location.service';
+import { DivisionDto } from '../../../../core/models/location';
 import { OrderService } from "../../../../core/services/order.service";
 import { OrderItem } from "../../../../core/models/order";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
@@ -16,7 +17,7 @@ import { AppIconComponent } from "../../../../shared/components/app-icon/app-ico
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
+
 
 
 interface OfferDetails {
@@ -70,6 +71,7 @@ export class OfferDetailsPageComponent {
   private readonly profileService = inject(CustomerProfileService);
   private readonly userPersistence = inject(UserPersistenceService);
   private readonly notification = inject(NotificationService);
+  private readonly locationService = inject(LocationService);
 
   offer: OfferDetails | null = null;
   isLoading = false;
@@ -87,7 +89,7 @@ export class OfferDetailsPageComponent {
     size: ["M", [Validators.required]],
   });
 
-  cities = Object.keys(BANGLADESH_LOCATIONS).sort();
+  divisions: DivisionDto[] = [];
   filteredCities: string[] = [];
   citySearch = "";
   isCityDropdownOpen = false;
@@ -111,7 +113,7 @@ export class OfferDetailsPageComponent {
     this.orderForm.controls.city.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((city) => {
-        this.areas = BANGLADESH_LOCATIONS[city] || [];
+        this.areas = [];
         this.filteredAreas = [...this.areas];
         this.orderForm.patchValue({ area: "" });
         this.areaSearch = "";
@@ -124,7 +126,7 @@ export class OfferDetailsPageComponent {
       .subscribe((customer) => {
         if (customer) {
           if (customer.city) {
-            this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
+            this.areas = [];
             this.filteredAreas = [...this.areas];
             this.citySearch = customer.city;
           }
@@ -145,7 +147,7 @@ export class OfferDetailsPageComponent {
         }
       });
 
-    this.areas = BANGLADESH_LOCATIONS["Dhaka"] || [];
+    this.areas = [];
     this.filteredAreas = [...this.areas];
 
     // Check for saved user details
@@ -165,7 +167,7 @@ export class OfferDetailsPageComponent {
   }
 
   intelligentLocationMatch(address: string): void {
-    const { city, area } = matchLocationFromAddress(address, this.cities);
+    const { city, area } = { city: null, area: null };
     
     if (city) {
       if (this.orderForm.get("city")?.value !== city) {
@@ -183,7 +185,7 @@ export class OfferDetailsPageComponent {
     const details = this.userPersistence.getUserDetails();
     if (details) {
       if (details.city) {
-        this.areas = BANGLADESH_LOCATIONS[details.city] || [];
+        this.areas = [];
         this.filteredAreas = [...this.areas];
         this.citySearch = details.city;
       }
@@ -219,7 +221,7 @@ export class OfferDetailsPageComponent {
   filterCities(event: Event): void {
     const query = (event.target as HTMLInputElement).value.toLowerCase();
     this.citySearch = query;
-    this.filteredCities = this.cities.filter(c => c.toLowerCase().includes(query));
+    this.filteredCities = this.divisions.map(d => d.nameEn).filter(c => c.toLowerCase().includes(query));
   }
 
   selectCity(city: string): void {
@@ -232,7 +234,7 @@ export class OfferDetailsPageComponent {
     this.isCityDropdownOpen = !this.isCityDropdownOpen;
     if (this.isCityDropdownOpen) {
       this.isAreaDropdownOpen = false;
-      this.filteredCities = [...this.cities];
+      this.filteredCities = this.divisions.map(d => d.nameEn);
       this.citySearch = this.orderForm.get('city')?.value || "";
     }
   }

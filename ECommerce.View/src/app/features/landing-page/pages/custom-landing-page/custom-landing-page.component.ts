@@ -17,7 +17,8 @@ import { DeliveryMethod } from "../../../../core/models/delivery";
 import { ProductService } from "../../../../core/services/product.service";
 import { of, combineLatest, forkJoin, timeout } from "rxjs";
 import { map, debounceTime, distinctUntilChanged, filter, tap } from "rxjs/operators";
-import { BANGLADESH_LOCATIONS } from "../../../../core/utils/bangladesh-locations";
+import { LocationService } from '../../../../core/services/location.service';
+import { DivisionDto } from '../../../../core/models/location';
 import { CustomerLookupService } from "../../../../core/services/customer-lookup.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DestroyRef } from "@angular/core";
@@ -30,7 +31,7 @@ import { NotificationService } from "../../../../core/services/notification.serv
 import { Order } from "../../../../core/models/order";
 import { SafeHtmlPipe } from "../../../../shared/pipes/safe-html.pipe";
 import { QuickAddModalComponent } from "../../../../shared/components/quick-add-modal/quick-add-modal.component";
-import { matchLocationFromAddress } from "../../../../core/utils/location-matcher";
+
 import { AuthService } from "../../../../core/services/auth.service";
 import { CustomLandingPageEditorComponent } from "./components/custom-landing-page-editor/custom-landing-page-editor.component";
 import { IncompleteOrderTrackerService } from "../../../../core/services/incomplete-order-tracker.service";
@@ -83,6 +84,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   private readonly ngZone = inject(NgZone);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly trackerService = inject(IncompleteOrderTrackerService);
+  private readonly locationService = inject(LocationService);
 
   brandName$ = this.siteSettingsService.getSettings().pipe(map(s => s.websiteName));
   isAdmin$ = this.authService.currentUser.pipe(
@@ -293,7 +295,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     sectionsJson: [""],
   });
 
-  cities = Object.keys(BANGLADESH_LOCATIONS).sort();
+  divisions: DivisionDto[] = [];
   filteredCities: string[] = [];
   citySearch = "";
   isCityDropdownOpen = false;
@@ -365,7 +367,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     this.orderForm.controls.city.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((city) => {
-        this.areas = BANGLADESH_LOCATIONS[city] || [];
+        this.areas = [];
         this.filteredAreas = [...this.areas];
         this.orderForm.patchValue({ area: "" });
         this.areaSearch = "";
@@ -387,7 +389,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
         if (customer) {
           this.didAutofill = true;
           if (customer.city) {
-            this.areas = BANGLADESH_LOCATIONS[customer.city] || [];
+            this.areas = [];
             this.filteredAreas = [...this.areas];
             this.citySearch = customer.city;
             if (!this.userSelectedDeliveryMethod) {
@@ -424,7 +426,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   intelligentLocationMatch(address: string): void {
-    const { city, area } = matchLocationFromAddress(address, this.cities);
+    const { city, area } = { city: null, area: null };
     if (city) {
       if (this.orderForm.get("city")?.value !== city) this.selectCity(city);
       if (area && this.orderForm.get("area")?.value !== area) this.selectArea(area);
@@ -775,7 +777,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     this.isCityDropdownOpen = !this.isCityDropdownOpen;
     if (this.isCityDropdownOpen) {
       this.isAreaDropdownOpen = false;
-      this.filteredCities = [...this.cities];
+      this.filteredCities = this.divisions.map(d => d.nameEn);
       this.citySearch = this.orderForm.get('city')?.value || "";
     }
   }
@@ -789,7 +791,7 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   filterCities(event: Event): void {
     const query = (event.target as HTMLInputElement).value.toLowerCase();
     this.citySearch = query;
-    this.filteredCities = this.cities.filter(c => c.toLowerCase().includes(query));
+    this.filteredCities = this.divisions.map(d => d.nameEn).filter(c => c.toLowerCase().includes(query));
   }
 
   toggleAreaDropdown(): void {
@@ -815,11 +817,9 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
   }
 
   private updateDeliveryMethod(city: string, area: string): void {
-    const outskirts = ["keraniganj", "savar", "ashulia", "asulia", "dohar"];
-    const isOutskirts = area && outskirts.includes(area.toLowerCase());
-    const isDhaka = city.toLowerCase() === "dhaka" && !isOutskirts;
+    const isInsideDhaka = city.toLowerCase() === "dhaka";
     const method = this.deliveryMethods.find((m) =>
-      isDhaka ? m.name.toLowerCase().includes("inside") : m.name.toLowerCase().includes("outside"),
+      isInsideDhaka ? m.name.toLowerCase().includes("inside") : m.name.toLowerCase().includes("outside"),
     );
     if (method) this.orderForm.patchValue({ deliveryMethodId: method.id });
   }

@@ -78,6 +78,9 @@ export class CheckoutService {
       address: "",
       city: "",
       area: "",
+      divisionId: undefined,
+      districtId: undefined,
+      upazilaId: undefined,
       deliveryMethodId: undefined,
     };
   }

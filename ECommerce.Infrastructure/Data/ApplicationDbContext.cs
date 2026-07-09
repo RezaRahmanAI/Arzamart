@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Core.Entities;
+using ECommerce.Core.Entities.Location;
+using ECommerce.Core.Entities.Shop;
 using ECommerce.Core.Enums;
 
 namespace ECommerce.Infrastructure.Data;
@@ -44,6 +46,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ProductGroup> ProductGroups { get; set; }
     public DbSet<AdminActivityLog> AdminActivityLogs { get; set; }
     public DbSet<OrderLog> OrderLogs { get; set; }
+    public DbSet<Division> Divisions { get; set; }
+    public DbSet<District> Districts { get; set; }
+    public DbSet<Upazila> Upazilas { get; set; }
+    public DbSet<DeliveryZone> DeliveryZones { get; set; }
+    public DbSet<DeliveryZoneUpazila> DeliveryZoneUpazilas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -85,6 +92,66 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<DeliveryMethod>(entity =>
         {
             entity.Property(d => d.Cost).HasColumnType("decimal(18,2)");
+
+            entity.HasOne(d => d.DeliveryZone)
+                  .WithMany()
+                  .HasForeignKey(d => d.DeliveryZoneId)
+                  .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // Location Configuration
+        builder.Entity<Division>(entity =>
+        {
+            entity.HasIndex(d => d.NameEn).IsUnique();
+            entity.HasIndex(d => d.DisplayOrder);
+            entity.HasQueryFilter(d => d.IsActive);
+        });
+
+        builder.Entity<District>(entity =>
+        {
+            entity.HasIndex(d => d.NameEn).IsUnique();
+            entity.HasIndex(d => d.DisplayOrder);
+            entity.HasIndex(d => d.DivisionId);
+            entity.HasQueryFilter(d => d.IsActive);
+
+            entity.HasOne(d => d.Division)
+                  .WithMany(dv => dv.Districts)
+                  .HasForeignKey(d => d.DivisionId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<Upazila>(entity =>
+        {
+            entity.HasIndex(u => u.NameEn);
+            entity.HasIndex(u => u.DisplayOrder);
+            entity.HasIndex(u => u.DistrictId);
+            entity.HasQueryFilter(u => u.IsActive);
+
+            entity.HasOne(u => u.District)
+                  .WithMany(d => d.Upazilas)
+                  .HasForeignKey(u => u.DistrictId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<DeliveryZone>(entity =>
+        {
+            entity.HasIndex(z => z.Name).IsUnique();
+            entity.HasQueryFilter(z => z.IsActive);
+        });
+
+        builder.Entity<DeliveryZoneUpazila>(entity =>
+        {
+            entity.HasIndex(z => new { z.DeliveryZoneId, z.UpazilaId }).IsUnique();
+
+            entity.HasOne(z => z.DeliveryZone)
+                  .WithMany(dz => dz.DeliveryZoneUpazilas)
+                  .HasForeignKey(z => z.DeliveryZoneId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(z => z.Upazila)
+                  .WithMany()
+                  .HasForeignKey(z => z.UpazilaId)
+                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Product Configuration
@@ -211,6 +278,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(o => o.Discount).HasColumnType("decimal(18,2)");
             entity.Property(o => o.AdvancePayment).HasColumnType("decimal(18,2)");
             entity.Property(o => o.Total).HasColumnType("decimal(18,2)");
+
+            entity.HasOne(o => o.Upazila)
+                  .WithMany()
+                  .HasForeignKey(o => o.UpazilaId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(o => o.Division)
+                  .WithMany()
+                  .HasForeignKey(o => o.DivisionId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(o => o.District)
+                  .WithMany()
+                  .HasForeignKey(o => o.DistrictId)
+                  .OnDelete(DeleteBehavior.SetNull);
             
             entity.HasMany(o => o.Items)
                   .WithOne()
@@ -260,6 +342,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         {
             entity.HasIndex(c => c.Phone).IsUnique();
             entity.HasIndex(c => c.CreatedAt);
+
+            entity.HasOne(c => c.Division)
+                  .WithMany()
+                  .HasForeignKey(c => c.DivisionId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(c => c.District)
+                  .WithMany()
+                  .HasForeignKey(c => c.DistrictId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(c => c.Upazila)
+                  .WithMany()
+                  .HasForeignKey(c => c.UpazilaId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Cart Configuration

@@ -4,6 +4,7 @@ export interface DeliveryMethod {
   cost: number;
   estimatedDays?: string;
   isActive: boolean;
+  deliveryZoneId?: number;
 }
 
 export interface ShippingZone {

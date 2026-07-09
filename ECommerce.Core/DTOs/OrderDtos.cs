@@ -16,6 +16,9 @@ public class OrderCreateDto
     public string Address { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Area { get; set; } = string.Empty;
+    public int? DivisionId { get; set; }
+    public int? DistrictId { get; set; }
+    public int? UpazilaId { get; set; }
     public int ItemsCount { get; set; }
     public decimal Total { get; set; }
     public decimal Discount { get; set; }
@@ -54,6 +57,9 @@ public class OrderDto
     public string ShippingAddress { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Area { get; set; } = string.Empty;
+    public int? DivisionId { get; set; }
+    public int? DistrictId { get; set; }
+    public int? UpazilaId { get; set; }
     public decimal SubTotal { get; set; }
     public decimal Tax { get; set; }
     public decimal ShippingCost { get; set; }

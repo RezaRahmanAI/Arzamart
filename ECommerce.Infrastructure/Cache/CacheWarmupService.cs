@@ -155,6 +155,7 @@ public class CacheWarmupService : IHostedService
             Name = dm.Name,
             Cost = dm.Cost,
             EstimatedDays = dm.EstimatedDays,
+            DeliveryZoneId = dm.DeliveryZoneId,
             IsActive = dm.IsActive
         }).ToList();
 

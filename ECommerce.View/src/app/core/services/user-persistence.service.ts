@@ -8,6 +8,9 @@ export interface UserDetails {
   address: string;
   city: string;
   area: string;
+  divisionId?: number;
+  districtId?: number;
+  upazilaId?: number;
 }
 
 @Injectable({

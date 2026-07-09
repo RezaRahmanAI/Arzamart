@@ -66,6 +66,7 @@ export interface Order {
   advancePayment?: number;
   updatedAt?: string;
   paymentStatus?: string;
+  upazilaId?: number;
   city?: string;
   area?: string;
   isPreOrder?: boolean;

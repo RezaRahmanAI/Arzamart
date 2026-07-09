@@ -123,25 +123,28 @@ export class OrderDetailsComponent implements OnInit {
     });
   }
 
-  getDivision(city: string | null | undefined): string {
-    if (!city) return "";
-    const lookupCity = city.trim();
-    const divisions: Record<string, string[]> = {
-      "Dhaka": ["Dhaka", "Gazipur", "Narayanganj", "Tangail", "Faridpur", "Gopalganj", "Kishoreganj", "Madaripur", "Manikganj", "Munshiganj", "Narsingdi", "Rajbari", "Shariatpur"],
-      "Chittagong": ["Chittagong", "Cox's Bazar", "Bandarban", "Khagrachhari", "Rangamati", "Comilla", "Chandpur", "Feni", "Lakshmipur", "Noakhali", "Brahmanbaria"],
-      "Mymensingh": ["Mymensingh", "Netrokona", "Sherpur", "Jamalpur"],
-      "Sylhet": ["Sylhet", "Habiganj", "Moulvibazar", "Sunamganj"],
-      "Barisal": ["Barisal", "Patuakhali", "Bhola", "Pirojpur", "Jhalokati", "Barguna"],
-      "Khulna": ["Khulna", "Bagerhat", "Satkhira", "Jessore", "Kushtia", "Chuadanga", "Meherpur", "Magura", "Narail", "Jhenaidah"],
-      "Rajshahi": ["Rajshahi", "Bogura", "Joypurhat", "Naogaon", "Natore", "Chapainawabganj", "Pabna", "Sirajganj"],
-      "Rangpur": ["Rangpur", "Dinajpur", "Kurigram", "Lalmonirhat", "Gaibandha", "Nilphamari", "Thakurgaon", "Panchagarh"]
+  getDivision(districtName: string): string {
+    const divisionMap: Record<string, string> = {
+      "Dhaka": "Dhaka", "Gazipur": "Dhaka", "Narayanganj": "Dhaka", "Tangail": "Dhaka",
+      "Faridpur": "Dhaka", "Gopalganj": "Dhaka", "Kishoreganj": "Dhaka", "Madaripur": "Dhaka",
+      "Manikganj": "Dhaka", "Munshiganj": "Dhaka", "Narsingdi": "Dhaka", "Rajbari": "Dhaka",
+      "Shariatpur": "Dhaka",
+      "Chittagong": "Chittagong", "Cox's Bazar": "Chittagong", "Bandarban": "Chittagong",
+      "Khagrachhari": "Chittagong", "Rangamati": "Chittagong", "Comilla": "Chittagong",
+      "Chandpur": "Chittagong", "Feni": "Chittagong", "Lakshmipur": "Chittagong",
+      "Noakhali": "Chittagong", "Brahmanbaria": "Chittagong",
+      "Mymensingh": "Mymensingh", "Netrokona": "Mymensingh", "Sherpur": "Mymensingh", "Jamalpur": "Mymensingh",
+      "Sylhet": "Sylhet", "Habiganj": "Sylhet", "Moulvibazar": "Sylhet", "Sunamganj": "Sylhet",
+      "Barisal": "Barisal", "Patuakhali": "Barisal", "Bhola": "Barisal", "Pirojpur": "Barisal",
+      "Jhalokati": "Barisal", "Barguna": "Barisal",
+      "Khulna": "Khulna", "Bagerhat": "Khulna", "Satkhira": "Khulna", "Jessore": "Khulna",
+      "Kushtia": "Khulna", "Chuadanga": "Khulna", "Meherpur": "Khulna", "Magura": "Khulna",
+      "Narail": "Khulna", "Jhenaidah": "Khulna",
+      "Rajshahi": "Rajshahi", "Bogura": "Rajshahi", "Joypurhat": "Rajshahi", "Naogaon": "Rajshahi",
+      "Natore": "Rajshahi", "Chapainawabganj": "Rajshahi", "Pabna": "Rajshahi", "Sirajganj": "Rajshahi",
+      "Rangpur": "Rangpur", "Dinajpur": "Rangpur", "Kurigram": "Rangpur", "Lalmonirhat": "Rangpur",
+      "Gaibandha": "Rangpur", "Nilphamari": "Rangpur", "Thakurgaon": "Rangpur", "Panchagarh": "Rangpur"
     };
-
-    for (const [division, cities] of Object.entries(divisions)) {
-      if (cities.some(c => c.toLowerCase() === lookupCity.toLowerCase())) {
-        return division;
-      }
-    }
-    return "";
+    return divisionMap[districtName] || "Dhaka";
   }
 }

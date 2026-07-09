@@ -11,6 +11,12 @@ export interface CustomerLookupResponse {
   address: string;
   city?: string;
   area?: string;
+  divisionId?: number;
+  districtId?: number;
+  upazilaId?: number;
+  divisionName?: string;
+  districtName?: string;
+  upazilaName?: string;
 }
 
 export interface OrderItemRequest {
@@ -26,6 +32,9 @@ export interface CustomerOrderRequest {
   address: string;
   city: string;
   area: string;
+  divisionId?: number;
+  districtId?: number;
+  upazilaId?: number;
   deliveryMethodId?: number;
   itemsCount: number;
   total: number;

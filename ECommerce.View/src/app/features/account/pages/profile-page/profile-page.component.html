@@ -106,12 +106,123 @@
                 />
               </div>
 
+              <!-- Division -->
               <div class="space-y-ds-2">
-                <label class="form-label">Address</label>
+                <label class="form-label">Division</label>
+                <div class="flex flex-wrap gap-2">
+                  @for (div of divisions(); track div.id) {
+                    <button
+                      type="button"
+                      (click)="selectDivision(div)"
+                      class="px-3 py-1.5 text-xs border"
+                      [class.bg-ds-accent]="profileForm.get('divisionId')?.value === div.id"
+                      [class.text-ds-hero-text]="profileForm.get('divisionId')?.value === div.id"
+                      [class.border-ds-accent]="profileForm.get('divisionId')?.value === div.id"
+                      [class.bg-ds-surface]="profileForm.get('divisionId')?.value !== div.id"
+                      [class.border-ds-border]="profileForm.get('divisionId')?.value !== div.id"
+                    >
+                      {{ div.nameEn }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <!-- District -->
+              <div class="space-y-ds-2 relative" (click)="$event.stopPropagation()">
+                <label class="form-label">District</label>
+                <button
+                  type="button"
+                  (click)="toggleDistrictDropdown()"
+                  [disabled]="!profileForm.get('divisionId')?.value"
+                  class="w-full h-11 px-4 bg-ds-bg border border-ds-border text-left flex items-center justify-between text-sm disabled:opacity-50"
+                >
+                  <span [class.text-ds-text-muted]="!selectedDistrictName" class="truncate">
+                    {{ districtSearch || 'Select District' }}
+                  </span>
+                  <app-icon name="ChevronDown" size="14"></app-icon>
+                </button>
+
+                @if (isDistrictDropdownOpen) {
+                  <div class="absolute z-50 left-0 right-0 mt-1 bg-ds-bg border border-ds-border shadow-2xl overflow-hidden">
+                    <div class="p-2 border-b border-ds-border">
+                      <input
+                        type="text"
+                        placeholder="Search districts..."
+                        [value]="districtSearch"
+                        (input)="filterDistricts($event)"
+                        class="w-full px-3 py-2 bg-ds-surface border-none outline-none text-sm"
+                        autofocus
+                      />
+                    </div>
+                    <ul class="max-h-40 overflow-y-auto">
+                      @for (district of filteredDistricts; track district.id) {
+                        <li>
+                          <button
+                            type="button"
+                            (click)="onDistrictSelected(district)"
+                            class="w-full text-left px-4 py-2.5 text-sm hover:bg-ds-surface"
+                          >
+                            {{ district.nameEn }}
+                          </button>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </div>
+
+              <!-- Upazila / Area -->
+              <div class="space-y-ds-2 relative" (click)="$event.stopPropagation()">
+                <label class="form-label">Area / Upazila</label>
+                <button
+                  type="button"
+                  (click)="toggleUpazilaDropdown()"
+                  [disabled]="!profileForm.get('districtId')?.value"
+                  class="w-full h-11 px-4 bg-ds-bg border border-ds-border text-left flex items-center justify-between text-sm disabled:opacity-50"
+                >
+                  <span [class.text-ds-text-muted]="!selectedUpazilaName" class="truncate">
+                    {{ upazilaSearch || 'Select Area' }}
+                  </span>
+                  <app-icon name="ChevronDown" size="14"></app-icon>
+                </button>
+
+                @if (isUpazilaDropdownOpen) {
+                  <div class="absolute z-50 left-0 right-0 mt-1 bg-ds-bg border border-ds-border shadow-2xl overflow-hidden">
+                    <div class="p-2 border-b border-ds-border">
+                      <input
+                        type="text"
+                        placeholder="Search areas..."
+                        [value]="upazilaSearch"
+                        (input)="filterUpazilas($event)"
+                        class="w-full px-3 py-2 bg-ds-surface border-none outline-none text-sm"
+                        autofocus
+                      />
+                    </div>
+                    <ul class="max-h-40 overflow-y-auto">
+                      @for (upazila of filteredUpazilas; track upazila.id) {
+                        <li>
+                          <button
+                            type="button"
+                            (click)="onUpazilaSelected(upazila)"
+                            class="w-full text-left px-4 py-2.5 text-sm hover:bg-ds-surface"
+                          >
+                            {{ upazila.nameEn }}
+                          </button>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </div>
+
+              <!-- Detailed Address -->
+              <div class="space-y-ds-2">
+                <label class="form-label">Detailed Address</label>
                 <textarea
                   formControlName="address"
-                  rows="4"
+                  rows="3"
                   class="form-textarea resize-none"
+                  placeholder="House #12, Road #4, Block B..."
                 ></textarea>
               </div>
 
@@ -136,6 +247,33 @@
               </p>
             </form>
           </div>
+
+          <!-- Read-only Location Summary -->
+          @if (selectedDivisionName || selectedDistrictName || selectedUpazilaName) {
+            <div class="bg-ds-surface border border-ds-border p-ds-8 lg:p-ds-10">
+              <h3 class="text-ds-text mb-ds-6">Saved Location</h3>
+              <div class="space-y-ds-2">
+                @if (selectedDivisionName) {
+                  <div class="flex items-center gap-ds-2">
+                    <app-icon name="MapPin" size="14" className="text-ds-text-muted"></app-icon>
+                    <span class="text-ds-text-sec text-sm">{{ selectedDivisionName }}</span>
+                  </div>
+                }
+                @if (selectedDistrictName) {
+                  <div class="flex items-center gap-ds-2">
+                    <app-icon name="MapPin" size="14" className="text-ds-text-muted"></app-icon>
+                    <span class="text-ds-text-sec text-sm">{{ selectedDistrictName }}</span>
+                  </div>
+                }
+                @if (selectedUpazilaName) {
+                  <div class="flex items-center gap-ds-2">
+                    <app-icon name="MapPin" size="14" className="text-ds-text-muted"></app-icon>
+                    <span class="text-ds-text-sec text-sm">{{ selectedUpazilaName }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
         </div>
 
         <!-- Main Content / Stats & Orders -->

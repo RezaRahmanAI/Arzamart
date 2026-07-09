@@ -12,12 +12,21 @@ export interface CustomerProfile {
   name: string;
   address: string;
   createdAt: string;
+  divisionId?: number;
+  districtId?: number;
+  upazilaId?: number;
+  divisionName?: string;
+  districtName?: string;
+  upazilaName?: string;
 }
 
 export interface CustomerProfileRequest {
   phone: string;
   name: string;
   address: string;
+  divisionId?: number;
+  districtId?: number;
+  upazilaId?: number;
 }
 
 @Injectable({

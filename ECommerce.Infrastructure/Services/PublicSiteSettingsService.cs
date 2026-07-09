@@ -53,6 +53,7 @@ public class PublicSiteSettingsService : IPublicSiteSettingsService
                 Name = dm.Name ?? string.Empty,
                 Cost = dm.Cost,
                 EstimatedDays = dm.EstimatedDays,
+                DeliveryZoneId = dm.DeliveryZoneId,
                 IsActive = dm.IsActive
             })
             .ToList() ?? new List<DeliveryMethodDto>();

@@ -73,7 +73,13 @@ public class CustomersController : ControllerBase
             Address = customer.Address,
             City = customer.City,
             Area = customer.Area,
-            CreatedAt = customer.CreatedAt
+            CreatedAt = customer.CreatedAt,
+            DivisionId = customer.DivisionId,
+            DivisionName = customer.Division?.NameEn,
+            DistrictId = customer.DistrictId,
+            DistrictName = customer.District?.NameEn,
+            UpazilaId = customer.UpazilaId,
+            UpazilaName = customer.Upazila?.NameEn
         });
     }
 
@@ -99,7 +105,10 @@ public class CustomersController : ControllerBase
             request.Address,
             request.City,
             request.Area,
-            userId
+            userId,
+            request.DivisionId,
+            request.DistrictId,
+            request.UpazilaId
         );
 
         if (updatedCustomer == null)
@@ -115,7 +124,13 @@ public class CustomersController : ControllerBase
             Address = updatedCustomer.Address,
             City = updatedCustomer.City,
             Area = updatedCustomer.Area,
-            CreatedAt = updatedCustomer.CreatedAt
+            CreatedAt = updatedCustomer.CreatedAt,
+            DivisionId = updatedCustomer.DivisionId,
+            DivisionName = updatedCustomer.Division?.NameEn,
+            DistrictId = updatedCustomer.DistrictId,
+            DistrictName = updatedCustomer.District?.NameEn,
+            UpazilaId = updatedCustomer.UpazilaId,
+            UpazilaName = updatedCustomer.Upazila?.NameEn
         });
     }
 

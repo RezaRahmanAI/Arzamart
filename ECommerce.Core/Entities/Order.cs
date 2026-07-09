@@ -23,6 +23,15 @@ public class Order : BaseEntity
     public decimal AdvancePayment { get; set; }
     public decimal Total { get; set; }
 
+    public int? UpazilaId { get; set; }
+    public Location.Upazila? Upazila { get; set; }
+
+    public int? DivisionId { get; set; }
+    public Location.Division? Division { get; set; }
+
+    public int? DistrictId { get; set; }
+    public Location.District? District { get; set; }
+
     public int? DeliveryMethodId { get; set; }
     public DeliveryMethod? DeliveryMethod { get; set; }
 

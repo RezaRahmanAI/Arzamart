@@ -17,4 +17,5 @@ public class DeliveryMethodDto
     public string? EstimatedDays { get; set; }
 
     public bool IsActive { get; set; }
+    public int? DeliveryZoneId { get; set; }
 }

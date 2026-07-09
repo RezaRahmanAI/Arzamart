@@ -30,10 +30,10 @@ import { NotificationService } from "../../../core/services/notification.service
 import { DeliveryMethod } from "../../models/settings.models";
 import { SettingsService } from "../../services/settings.service";
 import { PriceDisplayComponent } from "../../../shared/components/price-display/price-display.component";
-import { BANGLADESH_LOCATIONS } from "../../../core/utils/bangladesh-locations";
 import { SourceManagementService } from "../../../core/services/source-management.service";
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
-import { matchLocationFromAddress } from "../../../core/utils/location-matcher";
+import { LocationService } from "../../../core/services/location.service";
+import { DivisionDto, DistrictDto, UpazilaDto } from "../../../core/models/location";
 import { Order, OrderItem } from "../../models/orders.models";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
@@ -44,6 +44,7 @@ interface OrderPayload {
   address: string;
   city: string;
   area: string;
+  upazilaId?: number;
   deliveryMethodId: number;
   itemsCount: number;
   total: number;
@@ -81,6 +82,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
   private settingsService = inject(SettingsService);
   public imageUrlService = inject(ImageUrlService);
   private sourceService = inject(SourceManagementService);
+  private locationService = inject(LocationService);
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
 
@@ -129,20 +131,29 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
   sourcePages: SourcePage[] = [];
   socialMediaSources: SocialMediaSource[] = [];
 
-  // City/Area dropdown
+  // Division/Area dropdown
   isCityDropdownOpen = false;
   isAreaDropdownOpen = false;
   citySearch = "";
   areaSearch = "";
-  cities = Object.keys(BANGLADESH_LOCATIONS);
+  divisions: DivisionDto[] = [];
   areas: string[] = [];
   filteredCities: string[] = [];
   filteredAreas: string[] = [];
 
   ngOnInit(): void {
     window.scrollTo({ top: 0, behavior: 'instant' });
-    this.filteredCities = this.cities;
+    this.filteredCities = this.divisions.map(d => d.nameEn);
     this.filteredAreas = this.areas;
+
+    // Load divisions
+    this.locationService.getDivisions().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (divisions) => {
+        this.divisions = divisions;
+        this.filteredCities = divisions.map(d => d.nameEn);
+        this.cdr.markForCheck();
+      }
+    });
     
     // Detect mode and edit
     this.isPreOrderMode = this.router.url.includes("pre-order");
@@ -259,17 +270,15 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
   }
 
   intelligentLocationMatch(address: string) {
-    const { city, area } = matchLocationFromAddress(address, this.cities);
-    
-    if (city) {
+    const matchedDivision = this.divisions.find(d =>
+      address.toLowerCase().includes(d.nameEn.toLowerCase())
+    );
+
+    if (matchedDivision) {
+      const city = matchedDivision.nameEn;
       if (this.orderForm.get("city")?.value !== city) {
         this.selectCity(city);
         this.notification.info(`City automatically set to ${city} based on address.`);
-      }
-      
-      if (area && this.orderForm.get("area")?.value !== area) {
-        this.selectArea(area);
-        this.notification.info(`Area automatically set to ${area} based on address.`);
       }
     }
   }
@@ -347,7 +356,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
   toggleCityDropdown() {
     this.isCityDropdownOpen = !this.isCityDropdownOpen;
     if (this.isCityDropdownOpen) {
-      this.filteredCities = this.cities;
+      this.filteredCities = this.divisions.map(d => d.nameEn);
       this.citySearch = "";
     }
   }
@@ -363,9 +372,9 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
   filterCities(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.citySearch = value;
-    this.filteredCities = this.cities.filter(city => 
-      city.toLowerCase().includes(value.toLowerCase())
-    );
+    this.filteredCities = this.divisions
+      .filter(d => d.nameEn.toLowerCase().includes(value.toLowerCase()))
+      .map(d => d.nameEn);
   }
 
   filterAreas(event: Event) {
@@ -378,9 +387,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
 
   private updateDeliveryMethod(city: string, area: string): void {
     if (this.deliveryMethods.length >= 2) {
-      const outskirts = ["keraniganj", "savar", "ashulia", "asulia", "dohar"];
-      const isOutskirts = area && outskirts.includes(area.toLowerCase());
-      const isInsideDhaka = city.toLowerCase() === "dhaka" && !isOutskirts;
+      const isInsideDhaka = city.toLowerCase() === "dhaka";
       this.orderForm.patchValue({ 
         deliveryMethodId: isInsideDhaka ? this.deliveryMethods[0].id : this.deliveryMethods[1].id 
       });
@@ -395,7 +402,7 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
     // Auto-select delivery method
     this.updateDeliveryMethod(city, "");
 
-    this.areas = BANGLADESH_LOCATIONS[city] || [];
+    this.areas = [];
     this.filteredAreas = this.areas;
   }
 
@@ -676,9 +683,9 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
 
         if (order.city) {
             const cleanCity = order.city.trim();
-            const cityKey = Object.keys(BANGLADESH_LOCATIONS).find(k => k.toLowerCase() === cleanCity.toLowerCase()) as keyof typeof BANGLADESH_LOCATIONS | undefined;
-            if (cityKey) {
-              this.areas = BANGLADESH_LOCATIONS[cityKey] || [];
+            const matched = this.divisions.find(d => d.nameEn.toLowerCase() === cleanCity.toLowerCase());
+            if (matched) {
+              this.areas = [];
               this.filteredAreas = this.areas;
             }
         }

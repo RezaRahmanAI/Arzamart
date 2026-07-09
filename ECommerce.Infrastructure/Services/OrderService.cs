@@ -6,6 +6,8 @@ using AutoMapper;
 using ECommerce.Core.Constants;
 using ECommerce.Core.DTOs;
 using ECommerce.Core.Entities;
+using ECommerce.Core.Entities.Location;
+using ECommerce.Core.Entities.Shop;
 using ECommerce.Core.Interfaces;
 using ECommerce.Infrastructure.Specifications;
 using ECommerce.Infrastructure.Data;
@@ -184,12 +186,46 @@ public class OrderService : IOrderService
             var settings = siteSettings.FirstOrDefault();
             var freeShippingThreshold = settings?.FreeShippingThreshold ?? 0;
 
+            // Resolve delivery zone from UpazilaId if provided
+            int? resolvedZoneId = null;
+            if (orderDto.UpazilaId.HasValue)
+            {
+                var zoneUpazila = await _unitOfWork.Repository<DeliveryZoneUpazila>()
+                    .GetQueryable()
+                    .FirstOrDefaultAsync(zu => zu.UpazilaId == orderDto.UpazilaId.Value);
+                resolvedZoneId = zoneUpazila?.DeliveryZoneId;
+            }
+
             // Lookup delivery method if provided
             if (orderDto.DeliveryMethodId.HasValue)
             {
-                var method = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(orderDto.DeliveryMethodId.Value);
+                var method = await _unitOfWork.Repository<DeliveryMethod>()
+                    .GetQueryable()
+                    .Include(m => m.DeliveryZone)
+                    .FirstOrDefaultAsync(m => m.Id == orderDto.DeliveryMethodId.Value);
+
                 if (method != null)
                 {
+                    // Validate delivery zone compatibility
+                    if (resolvedZoneId.HasValue && method.DeliveryZoneId.HasValue)
+                    {
+                        if (method.DeliveryZoneId != resolvedZoneId.Value)
+                        {
+                            // Auto-fallback to first method matching the resolved zone
+                            var fallback = await _unitOfWork.Repository<DeliveryMethod>()
+                                .GetQueryable()
+                                .Where(m => m.DeliveryZoneId == resolvedZoneId.Value && m.IsActive)
+                                .OrderBy(m => m.Cost)
+                                .FirstOrDefaultAsync();
+
+                            if (fallback != null)
+                            {
+                                orderDto.DeliveryMethodId = fallback.Id;
+                                method = fallback;
+                            }
+                        }
+                    }
+
                     if (freeShippingThreshold > 0 && subtotal >= freeShippingThreshold)
                     {
                         shippingCost = 0;
@@ -202,9 +238,21 @@ public class OrderService : IOrderService
             }
             else
             {
-                 // If no delivery method is selected, we should strictly require it or default to 0/handling
-                 // ideally the frontend forces a selection.
-                 shippingCost = 0; 
+                 // If no delivery method is selected, try to auto-select from zone
+                 if (resolvedZoneId.HasValue)
+                 {
+                     var zoneMethod = await _unitOfWork.Repository<DeliveryMethod>()
+                         .GetQueryable()
+                         .Where(m => m.DeliveryZoneId == resolvedZoneId.Value && m.IsActive)
+                         .OrderBy(m => m.Cost)
+                         .FirstOrDefaultAsync();
+
+                     if (zoneMethod != null)
+                     {
+                         orderDto.DeliveryMethodId = zoneMethod.Id;
+                         shippingCost = freeShippingThreshold > 0 && subtotal >= freeShippingThreshold ? 0 : zoneMethod.Cost;
+                     }
+                 }
             }
 
             if (isNew)
@@ -221,6 +269,9 @@ public class OrderService : IOrderService
             order.ShippingAddress = orderDto.Address;
             order.City = orderDto.City;
             order.Area = orderDto.Area;
+            order.UpazilaId = orderDto.UpazilaId;
+            order.DivisionId = orderDto.DivisionId;
+            order.DistrictId = orderDto.DistrictId;
             order.Items = items;
             order.SubTotal = subtotal;
             order.Tax = 0;
@@ -287,7 +338,11 @@ public class OrderService : IOrderService
             orderDto.Name,
             orderDto.Address,
             orderDto.City,
-            orderDto.Area
+            orderDto.Area,
+            null,
+            orderDto.DivisionId,
+            orderDto.DistrictId,
+            orderDto.UpazilaId
         );
         return _mapper.Map<Order, OrderDto>(order);
     }
@@ -391,7 +446,11 @@ public class OrderService : IOrderService
             orderDto.Name,
             orderDto.Address,
             orderDto.City,
-            orderDto.Area
+            orderDto.Area,
+            null,
+            orderDto.DivisionId,
+            orderDto.DistrictId,
+            orderDto.UpazilaId
         );
 
         return _mapper.Map<Order, OrderDto>(order);

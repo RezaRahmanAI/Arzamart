@@ -20,10 +20,13 @@ public class CustomerService : ICustomerService
     public async Task<Customer?> GetCustomerByPhoneAsync(string phone)
     {
         return await _unitOfWork.Repository<Customer>().GetQueryable()
+            .Include(c => c.Division)
+            .Include(c => c.District)
+            .Include(c => c.Upazila)
             .FirstOrDefaultAsync(c => c.Phone == phone);
     }
 
-    public async Task<Customer> CreateOrUpdateCustomerAsync(string phone, string name, string address, string? city = null, string? area = null, string? userId = null)
+    public async Task<Customer> CreateOrUpdateCustomerAsync(string phone, string name, string address, string? city = null, string? area = null, string? userId = null, int? divisionId = null, int? districtId = null, int? upazilaId = null)
     {
         var customer = await GetCustomerByPhoneAsync(phone);
 
@@ -36,7 +39,10 @@ public class CustomerService : ICustomerService
                 Address = address,
                 City = city,
                 Area = area,
-                UserId = userId
+                UserId = userId,
+                DivisionId = divisionId,
+                DistrictId = districtId,
+                UpazilaId = upazilaId
             };
             _unitOfWork.Repository<Customer>().Add(customer);
         }
@@ -46,6 +52,9 @@ public class CustomerService : ICustomerService
             customer.Address = address;
             customer.City = city ?? customer.City;
             customer.Area = area ?? customer.Area;
+            customer.DivisionId = divisionId ?? customer.DivisionId;
+            customer.DistrictId = districtId ?? customer.DistrictId;
+            customer.UpazilaId = upazilaId ?? customer.UpazilaId;
             customer.UpdatedAt = DateTime.UtcNow;
             if (userId != null)
                 customer.UserId = userId;

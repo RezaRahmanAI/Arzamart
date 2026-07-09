@@ -221,6 +221,14 @@ export const ADMIN_ROUTES: Routes = [
         data: { title: "Order Source Management", menuKey: "order-sources" }, canActivate: [staffGuard],
       },
       {
+        path: "locations",
+        loadComponent: () =>
+          import("./pages/location-management/location-management.component").then(
+            (m) => m.LocationManagementComponent,
+          ),
+        data: { title: "Location Management", menuKey: "settings" }, canActivate: [staffGuard],
+      },
+      {
         path: "security",
         loadComponent: () =>
           import("./pages/blocked-ips/blocked-ips.component").then(

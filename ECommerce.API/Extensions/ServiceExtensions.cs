@@ -123,6 +123,7 @@ public static class ServiceExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IIncompleteOrderService, IncompleteOrderService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<ILocationService, LocationService>();
 
         return services;
     }
