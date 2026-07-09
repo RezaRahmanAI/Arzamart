@@ -10,6 +10,7 @@ import { NewArrivalsComponent } from "../../components/new-arrivals/new-arrivals
 import { WhyChooseUsComponent } from "../../components/why-choose-us/why-choose-us.component";
 import { CategorySectionComponent } from "../../components/category-section/category-section.component";
 import { PromoBannerComponent } from "../../components/promo-banner/promo-banner.component";
+import { TopCategoriesComponent } from "../../components/top-categories/top-categories.component";
 
 @Component({
   selector: "app-home-page",
@@ -21,7 +22,8 @@ import { PromoBannerComponent } from "../../components/promo-banner/promo-banner
     NewArrivalsComponent,
     WhyChooseUsComponent,
     CategorySectionComponent,
-    PromoBannerComponent
+    PromoBannerComponent,
+    TopCategoriesComponent
 ],
   templateUrl: "./home-page.component.html",
   styleUrl: "./home-page.component.css",
@@ -46,6 +48,11 @@ export class HomePageComponent {
 
   newArrivals$ = this.productService.getNewArrivalsData();
   categories$ = this.productService.getHomeData().pipe(map((data) => data.categories));
+  topCategories$ = this.categories$.pipe(
+    map((categories) =>
+      categories.flatMap((c) => c.subCategories || [])
+    )
+  );
 
   getCategory(categories: any[], slug: string) {
     return categories.find((c) => c.slug === slug)?.subCategories || [];

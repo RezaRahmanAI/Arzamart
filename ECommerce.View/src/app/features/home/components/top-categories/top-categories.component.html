@@ -1,0 +1,55 @@
+<section class="py-ds-8 md:py-ds-12 bg-ds-bg">
+  <div class="site-container">
+    <!-- Section Header with Lines -->
+    <div class="flex items-center gap-ds-6 mb-ds-8 md:mb-ds-10">
+      <div class="flex-1 h-px bg-ds-border"></div>
+      <h2 class="text-ds-xl md:text-ds-2xl font-bold text-ds-text uppercase tracking-widest whitespace-nowrap">
+        Top Categories
+      </h2>
+      <div class="flex-1 h-px bg-ds-border"></div>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-9 gap-ds-3 md:gap-ds-4">
+      @for (category of categories; track category.id) {
+        <a
+          [routerLink]="category.href"
+          class="group relative aspect-[4/5] overflow-hidden rounded-lg bg-ds-surface"
+        >
+          <!-- Image -->
+          <div
+            class="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+            [style.backgroundImage]="'url(' + imageUrlService.getImageUrl(category.imageUrl) + ')'"
+          ></div>
+
+          <!-- Category Name Badge -->
+          <div class="absolute top-0 left-0 right-0 flex justify-center pt-ds-2 md:pt-ds-3 z-10">
+            <span class="px-ds-2 md:px-ds-3 py-ds-1 bg-white/90 backdrop-blur-sm rounded-sm text-ds-2xs md:text-ds-xs font-bold uppercase tracking-wider text-ds-text shadow-sm">
+              {{ category.name }}
+            </span>
+          </div>
+        </a>
+      }
+
+      <!-- Flash Sale Card -->
+      <a
+        routerLink="/shop"
+        class="group relative aspect-[4/5] overflow-hidden rounded-lg bg-white flex items-center justify-center"
+      >
+        <!-- Starburst Background -->
+        <div class="absolute inset-0 flash-sale-bg"></div>
+
+        <!-- Content -->
+        <div class="relative z-10 flex flex-col items-center text-center">
+          <span class="text-ds-3xl md:text-ds-4xl leading-none">&#9889;</span>
+          <span class="text-ds-lg md:text-ds-xl font-black text-ds-text uppercase tracking-tight leading-tight mt-1">
+            Flash
+          </span>
+          <span class="text-ds-lg md:text-ds-xl font-black text-ds-text uppercase tracking-tight leading-tight">
+            Sale
+          </span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>

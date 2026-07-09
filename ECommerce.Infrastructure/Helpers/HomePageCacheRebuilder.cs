@@ -31,7 +31,6 @@ public static class HomePageCacheRebuilder
         var categories = cache.Categories.Values
             .Where(c => c.IsActive)
             .OrderBy(c => c.DisplayOrder)
-            .Take(10)
             .Select(c => new CategoryDto
             {
                 Id = c.Id,
@@ -41,6 +40,8 @@ public static class HomePageCacheRebuilder
                 DisplayOrder = c.DisplayOrder,
                 ProductCount = c.Products.Count,
                 IsActive = c.IsActive,
+                ParentId = c.ParentId,
+                CreatedAt = c.CreatedAt,
                 SubCategories = c.SubCategories?
                     .Where(sc => sc.IsActive)
                     .OrderBy(sc => sc.DisplayOrder)

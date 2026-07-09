@@ -1,6 +1,17 @@
 <main class="flex-1 bg-ds-bg">
   <app-hero [slides]="(heroSlides$ | async) ?? []"></app-hero>
 
+  <!-- Top Categories Section -->
+  @defer (on viewport) {
+    <app-top-categories
+      [categories]="(topCategories$ | async) ?? []"
+    ></app-top-categories>
+  } @placeholder {
+    <div class="site-container py-ds-8 md:py-ds-10">
+      <div class="h-[280px] md:h-[340px] animate-pulse bg-ds-surface rounded-xl"></div>
+    </div>
+  }
+
   <div class="space-y-ds-12 md:space-y-ds-20 pb-ds-24 md:pb-ds-32">
     <!-- New Arrivals Section -->
     <app-new-arrivals [products]="(newArrivals$ | async) ?? []"></app-new-arrivals>

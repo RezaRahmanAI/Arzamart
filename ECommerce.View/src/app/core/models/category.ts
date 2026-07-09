@@ -17,6 +17,7 @@ export interface SubCategory {
   id: number;
   name: string;
   slug: string;
+  href?: string;
   categoryId: number;
   isActive: boolean;
   imageUrl?: string;
