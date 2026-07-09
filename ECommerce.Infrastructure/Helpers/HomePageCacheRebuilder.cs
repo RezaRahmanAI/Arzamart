@@ -28,6 +28,13 @@ public static class HomePageCacheRebuilder
             })
             .ToList();
 
+        var activeProductSubCategoryIds = cache.Products.Values
+            .Where(p => p.IsActive)
+            .Select(p => p.SubCategoryId)
+            .Where(id => id.HasValue)
+            .Select(id => id.Value)
+            .ToHashSet();
+
         var categories = cache.Categories.Values
             .Where(c => c.IsActive)
             .OrderBy(c => c.DisplayOrder)
@@ -43,7 +50,7 @@ public static class HomePageCacheRebuilder
                 ParentId = c.ParentId,
                 CreatedAt = c.CreatedAt,
                 SubCategories = c.SubCategories?
-                    .Where(sc => sc.IsActive)
+                    .Where(sc => sc.IsActive && activeProductSubCategoryIds.Contains(sc.Id))
                     .OrderBy(sc => sc.DisplayOrder)
                     .Select(sc => new SubCategoryDto
                     {

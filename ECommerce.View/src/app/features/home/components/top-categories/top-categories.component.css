@@ -2,19 +2,4 @@
   display: block;
 }
 
-/* Flash Sale starburst pattern */
-.flash-sale-bg {
-  background:
-    repeating-conic-gradient(
-      from 0deg,
-      #f5f0e8 0deg 10deg,
-      #ece5d8 10deg 20deg
-    );
-}
 
-.flash-sale-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle, transparent 30%, rgba(255,255,255,0.6) 100%);
-}
