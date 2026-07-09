@@ -91,16 +91,10 @@ public class CacheVersionMiddleware
         }
         if (path.Contains("/products", StringComparison.OrdinalIgnoreCase))
             datasets.Add("products");
-        if (path.Contains("/product-groups", StringComparison.OrdinalIgnoreCase))
-            datasets.Add("productgroups");
-        if (path.Contains("/footer", StringComparison.OrdinalIgnoreCase))
-            datasets.Add("navigation");
         if (path.Contains("/reviews", StringComparison.OrdinalIgnoreCase))
             datasets.Add("products");
         if (path.Contains("/custom-landing-page", StringComparison.OrdinalIgnoreCase))
             datasets.Add("homepage");
-        if (path.Contains("/search-suggestions", StringComparison.OrdinalIgnoreCase))
-            datasets.Add("products");
 
         return datasets;
     }

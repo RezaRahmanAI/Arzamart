@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { Observable, shareReplay, map } from "rxjs";
+import { Observable, shareReplay, map, tap } from "rxjs";
 import { ApiHttpClient } from "../http/http-client";
 import { CacheService } from "../cache/cache.service";
 
@@ -26,8 +26,8 @@ export class BannerService {
   private readonly adminBaseUrl = "/admin/banners";
 
   getActiveBanners(): Observable<Banner[]> {
-    return this.cache.getOrFetch<Banner[]>('banners', 'active', () =>
-      this.api.get<Banner[]>(this.baseUrl)
+    return this.cache.getOrFetch<Banner[]>('banners', 'active',
+      (ifNoneMatch) => this.api.getWithHeaders<Banner[]>(this.baseUrl, { ifNoneMatch })
     ).pipe(
       map(result => result.data),
       shareReplay(1)

@@ -4,7 +4,7 @@ import { CacheService } from './cache.service';
 import { CacheStore } from './cache-types';
 import { ApiHttpClient } from '../http/http-client';
 import { of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 interface PrefetchItem {
   store: CacheStore;
@@ -40,10 +40,13 @@ export class PrefetchService {
       setTimeout(() => {
         this.cache.get(item.store, item.key).subscribe(cached => {
           if (cached && !cached.stale) return;
-          this.api.get(item.url).pipe(
-            tap(data => this.cache.set(item.store, item.key, data)),
+          this.api.getWithHeaders(item.url).pipe(
             catchError(() => of(null))
-          ).subscribe();
+          ).subscribe(result => {
+            if (result && result.data) {
+              this.cache.set(item.store, item.key, result.data, result.etag ?? undefined, result.cacheVersion ?? undefined);
+            }
+          });
         });
       }, delay);
       delay += 500;
@@ -68,11 +71,44 @@ export class PrefetchService {
     for (const item of prefetchMap[match]) {
       this.cache.get(item.store, item.key).subscribe(cached => {
         if (cached && !cached.stale) return;
-        this.api.get(item.url).pipe(
-          tap(data => this.cache.set(item.store, item.key, data)),
+        this.api.getWithHeaders(item.url).pipe(
           catchError(() => of(null))
-        ).subscribe();
+        ).subscribe(result => {
+          if (result && result.data) {
+            this.cache.set(item.store, item.key, result.data, result.etag ?? undefined, result.cacheVersion ?? undefined);
+          }
+        });
       });
     }
+  }
+
+  prefetchOnHover(url: string): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const routePrefetchMap: Record<string, () => void> = {
+      '/men': () => this.prefetchCategories(),
+      '/women': () => this.prefetchCategories(),
+      '/children': () => this.prefetchCategories(),
+      '/accessories': () => this.prefetchCategories(),
+      '/offers': () => this.prefetchCategories(),
+    };
+
+    const matched = Object.keys(routePrefetchMap).find(pattern => url.startsWith(pattern));
+    if (matched) {
+      routePrefetchMap[matched]();
+    }
+  }
+
+  private prefetchCategories(): void {
+    this.cache.get('categories', 'all').subscribe(cached => {
+      if (cached && !cached.stale) return;
+      this.api.getWithHeaders('/categories').pipe(
+        catchError(() => of(null))
+      ).subscribe(result => {
+        if (result?.data) {
+          this.cache.set('categories', 'all', result.data, result.etag ?? undefined, result.cacheVersion ?? undefined);
+        }
+      });
+    });
   }
 }

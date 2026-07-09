@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { Observable, shareReplay, map, of, tap } from "rxjs";
+import { Observable, shareReplay, map, tap } from "rxjs";
 import { ApiHttpClient } from "../http/http-client";
 import { CacheService } from "../cache/cache.service";
 
@@ -34,13 +34,18 @@ export class NavigationService {
 
   getMegaMenu(refresh = false): Observable<MegaMenuItem[]> {
     if (refresh) {
-      return this.api.get<any[]>(this.baseUrl).pipe(
-        tap(data => this.cache.set('navigation', 'main', data)),
+      return this.api.getWithHeaders<any[]>(this.baseUrl).pipe(
+        tap(result => {
+          if (result.data) {
+            this.cache.set('navigation', 'main', result.data, result.etag ?? undefined, result.cacheVersion ?? undefined);
+          }
+        }),
+        map(result => result.data || []),
         shareReplay(1)
       );
     }
-    return this.cache.getOrFetch<MegaMenuItem[]>('navigation', 'main', () =>
-      this.api.get<any[]>(this.baseUrl)
+    return this.cache.getOrFetch<MegaMenuItem[]>('navigation', 'main',
+      (ifNoneMatch) => this.api.getWithHeaders<any[]>(this.baseUrl, { ifNoneMatch })
     ).pipe(
       map(result => result.data || []),
       shareReplay(1)

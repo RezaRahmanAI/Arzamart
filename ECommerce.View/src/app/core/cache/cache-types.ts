@@ -2,18 +2,15 @@ export type CacheStore =
   | 'navigation'
   | 'categories'
   | 'subcategories'
-  | 'productGroups'
   | 'homepage'
   | 'featuredProducts'
   | 'trendingProducts'
   | 'popularProducts'
   | 'siteSettings'
   | 'banners'
-  | 'footer'
   | 'staticPages'
   | 'landingPages'
   | 'productDetails'
-  | 'searchSuggestions'
   | 'productReviews';
 
 export interface CacheEntry<T = unknown> {
@@ -29,18 +26,15 @@ export const CACHE_TTL: Record<CacheStore, number> = {
   navigation: 30 * 24 * 60 * 60 * 1000,
   categories: 30 * 24 * 60 * 60 * 1000,
   subcategories: 30 * 24 * 60 * 60 * 1000,
-  productGroups: 30 * 24 * 60 * 60 * 1000,
   homepage: 6 * 60 * 60 * 1000,
   featuredProducts: 6 * 60 * 60 * 1000,
   trendingProducts: 6 * 60 * 60 * 1000,
   popularProducts: 6 * 60 * 60 * 1000,
   siteSettings: 30 * 24 * 60 * 60 * 1000,
   banners: 12 * 60 * 60 * 1000,
-  footer: 30 * 24 * 60 * 60 * 1000,
   staticPages: 30 * 24 * 60 * 60 * 1000,
   landingPages: 30 * 24 * 60 * 60 * 1000,
   productDetails: 24 * 60 * 60 * 1000,
-  searchSuggestions: 24 * 60 * 60 * 1000,
   productReviews: 30 * 60 * 1000,
 };
 
@@ -51,17 +45,14 @@ export const CACHE_STORES: CacheStore[] = [
   'navigation',
   'categories',
   'subcategories',
-  'productGroups',
   'homepage',
   'featuredProducts',
   'trendingProducts',
   'popularProducts',
   'siteSettings',
   'banners',
-  'footer',
   'staticPages',
   'landingPages',
   'productDetails',
-  'searchSuggestions',
   'productReviews',
 ];

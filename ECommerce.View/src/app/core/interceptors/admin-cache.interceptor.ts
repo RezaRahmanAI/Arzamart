@@ -52,9 +52,6 @@ export const adminCacheInterceptor: HttpInterceptorFn = (req, next) => {
       } else if (req.url.includes("/reviews")) {
         invalidateHttpCache("/reviews");
         cacheService.clearStore('productReviews');
-      } else if (req.url.includes("/product-groups")) {
-        invalidateHttpCache("/product-groups");
-        cacheService.clearStore('productGroups');
       } else if (req.url.includes("/profile")) {
         invalidateHttpCache("/profile");
       } else if (req.url.includes("/custom-landing-page")) {

@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { Observable, shareReplay, map, of, tap } from "rxjs";
+import { Observable, shareReplay, map, tap } from "rxjs";
 import { Category } from "../models/category";
 import { ApiHttpClient } from "../http/http-client";
 import { CacheService } from "../cache/cache.service";
@@ -15,13 +15,18 @@ export class CategoryService {
 
   getCategories(refresh = false): Observable<Category[]> {
     if (refresh) {
-      return this.api.get<Category[]>("/categories").pipe(
-        tap(data => this.cache.set('categories', this.cacheKey, data)),
+      return this.api.getWithHeaders<Category[]>("/categories").pipe(
+        tap(result => {
+          if (result.data) {
+            this.cache.set('categories', this.cacheKey, result.data, result.etag ?? undefined, result.cacheVersion ?? undefined);
+          }
+        }),
+        map(result => result.data),
         shareReplay(1)
       );
     }
-    return this.cache.getOrFetch('categories', this.cacheKey, () =>
-      this.api.get<Category[]>("/categories")
+    return this.cache.getOrFetch('categories', this.cacheKey,
+      (ifNoneMatch) => this.api.getWithHeaders<Category[]>("/categories", { ifNoneMatch })
     ).pipe(
       map(result => result.data),
       shareReplay(1)

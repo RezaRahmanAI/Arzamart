@@ -5,6 +5,7 @@ import { IndexedDbService } from './indexeddb.service';
 import { CacheMetadataService } from './cache-metadata.service';
 import { RequestDedupService } from './request-dedup.service';
 import { CacheVersionService } from './cache-version.service';
+import { ApiResponse } from '../http/http-client';
 
 export interface CacheResult<T> {
   data: T;
@@ -42,61 +43,76 @@ export class CacheService {
   getOrFetch<T>(
     store: CacheStore,
     key: string,
-    fetchFn: () => Observable<T>,
-    options?: {
-      ttl?: number;
-      version?: string;
-      etag?: string;
-    }
+    fetchFn: (ifNoneMatch: string | null) => Observable<ApiResponse<T>>,
+    ttl?: number,
   ): Observable<CacheResult<T>> {
     const dedupKey = `${store}:${key}`;
     const updateSubject = this.getUpdateSubject<T>(dedupKey);
+    const resolvedTtl = ttl ?? CACHE_TTL[store];
 
     const cache$ = from(this.indexedDb.get<T>(store, key)).pipe(
       map(entry => {
         if (!entry) return null;
         const expired = Date.now() > entry.expiresAt;
-        return { data: entry.data, stale: expired, source: 'cache' } as CacheResult<T>;
+        return {
+          data: entry.data,
+          stale: expired,
+          source: 'cache',
+          etag: entry.etag,
+        } as CacheResult<T> & { etag: string | null };
       })
     );
 
-    const fetch$ = this.dedup.getOrMake(dedupKey, () => fetchFn().pipe(
-      tap(data => {
-        const entry: CacheEntry<T> = {
-          key,
-          data,
-          version: options?.version ?? null,
-          etag: options?.etag ?? null,
-          cachedAt: Date.now(),
-          expiresAt: Date.now() + (options?.ttl ?? CACHE_TTL[store]),
-        };
-        this.indexedDb.set(store, entry);
-        this.metadata.updateMetadata(store, options?.version ?? null, options?.etag ?? null);
-        updateSubject.next(data);
-      }),
-      catchError(err => {
-        return from(this.indexedDb.get<T>(store, key)).pipe(
-          map(entry => {
-            if (entry) return entry.data;
-            throw err;
-          })
-        );
-      })
-    ));
+    const fetch$ = this.dedup.getOrMake(dedupKey, () =>
+      from(this.indexedDb.get<T>(store, key)).pipe(
+        switchMap(entry => {
+          const ifNoneMatch = entry?.etag ?? null;
+          return fetchFn(ifNoneMatch).pipe(
+            tap(result => {
+              if (result.status === 304 && entry) {
+                entry.expiresAt = Date.now() + resolvedTtl;
+                this.indexedDb.set(store, entry);
+                return;
+              }
+              if (result.data !== null) {
+                const newEntry: CacheEntry<T> = {
+                  key,
+                  data: result.data,
+                  version: result.cacheVersion,
+                  etag: result.etag,
+                  cachedAt: Date.now(),
+                  expiresAt: Date.now() + resolvedTtl,
+                };
+                this.indexedDb.set(store, newEntry).catch(() => {});
+                this.metadata.updateMetadata(store, result.cacheVersion, result.etag);
+                updateSubject.next(result.data);
+              }
+            }),
+            map(result => {
+              if (result.status === 304 && entry) {
+                return { data: entry.data, stale: false, source: 'cache' } as CacheResult<T>;
+              }
+              if (result.data === null) {
+                throw new Error('Empty response');
+              }
+              return { data: result.data, stale: false, source: 'api' } as CacheResult<T>;
+            })
+          );
+        })
+      )
+    );
 
     return cache$.pipe(
       switchMap(cached => {
-        if (cached && !cached.stale) {
-          return of(cached);
+        if (!cached) {
+          return fetch$;
         }
-        if (cached && cached.stale) {
-          const update$ = fetch$.pipe(
-            map(data => ({ data, stale: false, source: 'api' as const }))
-          );
-          return merge(of(cached), update$);
+        if (!cached.stale) {
+          return of({ data: cached.data, stale: false, source: 'cache' as const });
         }
-        return fetch$.pipe(
-          map(data => ({ data, stale: false, source: 'api' as const }))
+        return merge(
+          of({ data: cached.data, stale: true, source: 'cache' as const }),
+          fetch$
         );
       })
     );
@@ -105,64 +121,81 @@ export class CacheService {
   revalidate<T>(
     store: CacheStore,
     key: string,
-    fetchFn: () => Observable<T>,
-    options?: { version?: string; etag?: string; ttl?: number }
+    fetchFn: (ifNoneMatch: string | null) => Observable<ApiResponse<T>>,
+    ttl?: number,
   ): Observable<CacheResult<T>> {
     const dedupKey = `${store}:${key}:revalidate`;
+    const resolvedTtl = ttl ?? CACHE_TTL[store];
 
-    return this.dedup.getOrMake(dedupKey, () => fetchFn().pipe(
-      switchMap(data => {
-        const entry: CacheEntry<T> = {
-          key,
-          data,
-          version: options?.version ?? null,
-          etag: options?.etag ?? null,
-          cachedAt: Date.now(),
-          expiresAt: Date.now() + (options?.ttl ?? CACHE_TTL[store]),
-        };
-        return from(this.indexedDb.set(store, entry)).pipe(
-          tap(() => {
-            this.metadata.updateMetadata(store, options?.version ?? null, options?.etag ?? null);
-            const updateKey = `${store}:${key}`;
-            const subject = this.updates.get(updateKey);
-            if (subject) subject.next(data);
-          }),
-          map(() => ({ data, stale: false, source: 'api' as const }))
-        );
-      })
-    ));
+    return this.dedup.getOrMake(dedupKey, () =>
+      from(this.indexedDb.get<T>(store, key)).pipe(
+        switchMap(entry => {
+          const ifNoneMatch = entry?.etag ?? null;
+          return fetchFn(ifNoneMatch).pipe(
+            switchMap(result => {
+              if (result.status === 304 && entry) {
+                entry.expiresAt = Date.now() + resolvedTtl;
+                return from(this.indexedDb.set(store, entry)).pipe(
+                  map(() => ({ data: entry.data, stale: false, source: 'cache' as const }))
+                );
+              }
+              const newEntry: CacheEntry<T> = {
+                key,
+                data: result.data,
+                version: result.cacheVersion,
+                etag: result.etag,
+                cachedAt: Date.now(),
+                expiresAt: Date.now() + resolvedTtl,
+              };
+              return from(this.indexedDb.set(store, newEntry)).pipe(
+                tap(() => {
+                  this.metadata.updateMetadata(store, result.cacheVersion, result.etag);
+                  const subject = this.updates.get(dedupKey);
+                  if (subject) subject.next(result.data);
+                }),
+                map(() => ({ data: result.data, stale: false, source: 'api' as const }))
+              );
+            })
+          );
+        })
+      )
+    );
   }
 
-  set<T>(store: CacheStore, key: string, data: T, options?: { ttl?: number; version?: string; etag?: string }): void {
+  async set<T>(store: CacheStore, key: string, data: T, etag?: string, cacheVersion?: string, ttl?: number): Promise<void> {
     const entry: CacheEntry<T> = {
       key,
       data,
-      version: options?.version ?? null,
-      etag: options?.etag ?? null,
+      version: cacheVersion ?? null,
+      etag: etag ?? null,
       cachedAt: Date.now(),
-      expiresAt: Date.now() + (options?.ttl ?? CACHE_TTL[store]),
+      expiresAt: Date.now() + (ttl ?? CACHE_TTL[store]),
     };
-    this.indexedDb.set(store, entry);
-    this.metadata.updateMetadata(store, options?.version ?? null, options?.etag ?? null);
+    try {
+      await this.indexedDb.set(store, entry);
+      this.metadata.updateMetadata(store, cacheVersion ?? null, etag ?? null);
+    } catch {
+      // silently fail
+    }
   }
 
   remove(store: CacheStore, key: string): void {
-    this.indexedDb.delete(store, key);
+    this.indexedDb.delete(store, key).catch(() => {});
     this.metadata.removeMetadata(store);
   }
 
   clearStore(store: CacheStore): void {
-    this.indexedDb.clearStore(store);
+    this.indexedDb.clearStore(store).catch(() => {});
     this.metadata.removeMetadata(store);
   }
 
   clearAll(): void {
-    this.indexedDb.clearAll();
+    this.indexedDb.clearAll().catch(() => {});
     this.metadata.clearAll();
     this.dedup.cancelAll();
   }
 
   invalidateByPattern(store: CacheStore, pattern: string): void {
-    this.indexedDb.deleteByPattern(store, pattern);
+    this.indexedDb.deleteByPattern(store, pattern).catch(() => {});
   }
 }

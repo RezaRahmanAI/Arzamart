@@ -10,8 +10,8 @@ export class LandingPageDataService {
   private readonly cache = inject(CacheService);
 
   getBySlug(slug: string): Observable<LandingPageData> {
-    return this.cache.getOrFetch<LandingPageData>('landingPages', slug, () =>
-      this.api.get<LandingPageData>(`/custom-landing-page/${slug}`).pipe(
+    return this.cache.getOrFetch<LandingPageData>('landingPages', slug,
+      (ifNoneMatch) => this.api.getWithHeaders<LandingPageData>(`/custom-landing-page/${slug}`, { ifNoneMatch }).pipe(
         timeout(15_000)
       )
     ).pipe(

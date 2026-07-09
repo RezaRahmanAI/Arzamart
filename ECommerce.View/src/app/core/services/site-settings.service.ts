@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { Observable, shareReplay, map, of } from "rxjs";
+import { Observable, shareReplay, map, tap } from "rxjs";
 import { ApiHttpClient } from "../http/http-client";
 import { CacheService } from "../cache/cache.service";
 
@@ -38,8 +38,8 @@ export class SiteSettingsService {
   private cache = inject(CacheService);
 
   getSettings(): Observable<SiteSettings> {
-    return this.cache.getOrFetch<SiteSettings>('siteSettings', 'settings', () =>
-      this.api.get<SiteSettings>("/sitesettings")
+    return this.cache.getOrFetch<SiteSettings>('siteSettings', 'settings',
+      (ifNoneMatch) => this.api.getWithHeaders<SiteSettings>("/sitesettings", { ifNoneMatch })
     ).pipe(
       map(result => result.data || DEFAULT_SETTINGS),
       shareReplay(1)

@@ -27,7 +27,10 @@ export class IndexedDbService {
     });
   }
 
-  getDb(): Promise<IDBDatabase> {
+  private getDb(): Promise<IDBDatabase> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return Promise.reject(new Error('Not in browser'));
+    }
     if (this.db) return Promise.resolve(this.db);
     if (!this.initPromise) {
       this.initPromise = this.openDb().then(db => {
@@ -38,71 +41,105 @@ export class IndexedDbService {
   }
 
   async get<T>(store: CacheStore, key: string): Promise<CacheEntry<T> | null> {
-    const db = await this.getDb();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(store, 'readonly');
-      const req = tx.objectStore(store).get(key);
-      req.onsuccess = () => resolve(req.result ?? null);
-      req.onerror = () => reject(req.error);
-    });
+    if (!isPlatformBrowser(this.platformId)) return null;
+    try {
+      const db = await this.getDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readonly');
+        const req = tx.objectStore(store).get(key);
+        req.onsuccess = () => resolve(req.result ?? null);
+        req.onerror = () => reject(req.error);
+      });
+    } catch {
+      return null;
+    }
   }
 
   async set<T>(store: CacheStore, entry: CacheEntry<T>): Promise<void> {
-    const db = await this.getDb();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(store, 'readwrite');
-      tx.objectStore(store).put(entry);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      const db = await this.getDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readwrite');
+        tx.objectStore(store).put(entry);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch {
+      // silently fail on server
+    }
   }
 
   async delete(store: CacheStore, key: string): Promise<void> {
-    const db = await this.getDb();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(store, 'readwrite');
-      tx.objectStore(store).delete(key);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      const db = await this.getDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readwrite');
+        tx.objectStore(store).delete(key);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch {
+      // silently fail on server
+    }
   }
 
   async clearStore(store: CacheStore): Promise<void> {
-    const db = await this.getDb();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(store, 'readwrite');
-      tx.objectStore(store).clear();
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      const db = await this.getDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readwrite');
+        tx.objectStore(store).clear();
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch {
+      // silently fail on server
+    }
   }
 
   async clearAll(): Promise<void> {
-    const db = await this.getDb();
-    return new Promise((resolve, reject) => {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      const db = await this.getDb();
       for (const store of CACHE_STORES) {
-        const tx = db.transaction(store, 'readwrite');
-        tx.objectStore(store).clear();
-        tx.oncomplete = () => {};
-        tx.onerror = () => reject(tx.error);
+        try {
+          const tx = db.transaction(store, 'readwrite');
+          tx.objectStore(store).clear();
+        } catch {
+          // skip stores that fail
+        }
       }
-      resolve();
-    });
+    } catch {
+      // silently fail on server
+    }
   }
 
   async getAllKeys(store: CacheStore): Promise<string[]> {
-    const db = await this.getDb();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(store, 'readonly');
-      const req = tx.objectStore(store).getAllKeys();
-      req.onsuccess = () => resolve(req.result as string[]);
-      req.onerror = () => reject(req.error);
-    });
+    if (!isPlatformBrowser(this.platformId)) return [];
+    try {
+      const db = await this.getDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, 'readonly');
+        const req = tx.objectStore(store).getAllKeys();
+        req.onsuccess = () => resolve(req.result as string[]);
+        req.onerror = () => reject(req.error);
+      });
+    } catch {
+      return [];
+    }
   }
 
   async deleteByPattern(store: CacheStore, pattern: string): Promise<void> {
-    const keys = await this.getAllKeys(store);
-    const matching = keys.filter(k => k.includes(pattern));
-    await Promise.all(matching.map(k => this.delete(store, k)));
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      const keys = await this.getAllKeys(store);
+      const matching = keys.filter(k => k.includes(pattern));
+      await Promise.all(matching.map(k => this.delete(store, k)));
+    } catch {
+      // silently fail on server
+    }
   }
 }
