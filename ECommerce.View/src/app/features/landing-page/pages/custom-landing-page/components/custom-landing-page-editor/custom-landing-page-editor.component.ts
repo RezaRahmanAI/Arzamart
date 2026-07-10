@@ -5,9 +5,10 @@ import { CdkDragDrop, moveItemInArray, DragDropModule } from "@angular/cdk/drag-
 import { Product } from "../../../../../../core/models/product";
 import { ImageUrlService } from "../../../../../../core/services/image-url.service";
 import { AppIconComponent } from "../../../../../../shared/components/app-icon/app-icon.component";
-import { LandingSection } from "../../../../../../core/models/landing-page";
+import { LandingSection, PreOrderConfig } from "../../../../../../core/models/landing-page";
 import { AddComponentModalComponent } from "../add-component-modal/add-component-modal.component";
 import { CustomSectionEditorComponent } from "../custom-section-editor/custom-section-editor.component";
+import { sortProductSizes } from "../../../../../../core/constants/product.constants";
 
 @Component({
   selector: "app-custom-landing-page-editor",
@@ -163,10 +164,67 @@ export class CustomLandingPageEditorComponent {
       if (s.isReviewsVisible === undefined) s.isReviewsVisible = form.isReviewsVisible !== undefined ? form.isReviewsVisible : true;
     } else if (section.type === "marquee") {
       if (s.marqueeText === undefined) s.marqueeText = form.marqueeText || '';
+    } else if (section.type === 'product-select') {
+      if (s.preOrderConfig === undefined) s.preOrderConfig = {};
     }
   }
 
   emitChange(): void {
     this.sectionsChange.emit(this.sections);
+  }
+
+  private get preOrderSection(): LandingSection | undefined {
+    return this.sections.find(s => s.type === 'product-select');
+  }
+
+  private get preOrderConfig(): PreOrderConfig {
+    return this.preOrderSection?.settings?.preOrderConfig || {};
+  }
+
+  isPreOrderEnabled(productId: number): boolean {
+    return this.preOrderConfig[productId]?.enabled || false;
+  }
+
+  togglePreOrder(productId: number): void {
+    const section = this.preOrderSection;
+    if (!section) return;
+    if (!section.settings) section.settings = {};
+    if (!section.settings.preOrderConfig) section.settings.preOrderConfig = {};
+
+    const config = section.settings.preOrderConfig[productId];
+    if (config) {
+      config.enabled = !config.enabled;
+    } else {
+      section.settings.preOrderConfig[productId] = { enabled: true, allowedSizes: [] };
+    }
+    this.emitChange();
+  }
+
+  togglePreOrderSize(productId: number, size: string): void {
+    const section = this.preOrderSection;
+    if (!section?.settings?.preOrderConfig?.[productId]) return;
+
+    const config = section.settings.preOrderConfig[productId];
+    const index = config.allowedSizes.indexOf(size);
+    if (index > -1) {
+      config.allowedSizes.splice(index, 1);
+    } else {
+      config.allowedSizes.push(size);
+    }
+    this.emitChange();
+  }
+
+  isPreOrderSizeSelected(productId: number, size: string): boolean {
+    return this.preOrderConfig[productId]?.allowedSizes?.includes(size) || false;
+  }
+
+  getPreOrderAllowedSizes(productId: number): string[] {
+    return this.preOrderConfig[productId]?.allowedSizes || [];
+  }
+
+  getProductSizes(product: Product): string[] {
+    if (!product.variants) return [];
+    const sizes = Array.from(new Set(product.variants.map(v => v.size).filter(Boolean))) as string[];
+    return sortProductSizes(sizes);
   }
 }

@@ -16,10 +16,11 @@ export const adminCacheInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
+  const cacheService = inject(CacheService);
+
   return next(req).pipe(
     filter((event) => event instanceof HttpResponse && event.status >= 200 && event.status < 300),
     tap(() => {
-      const cacheService = inject(CacheService);
 
       if (req.url.includes("/products") || req.url.includes("/categories") || req.url.includes("/subcategories")) {
         invalidateHttpCache("/products");

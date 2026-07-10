@@ -1,310 +1,305 @@
-<div class="min-h-screen bg-ds-bg py-6 lg:py-10">
-  <div class="site-container">
-    @if (vm$ | async; as vm) {
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-        <!-- Main Content -->
-        <div class="lg:col-span-7 xl:col-span-8">
-          <div class="flex items-center gap-4 mb-4">
-            <a routerLink="/" class="btn-icon !bg-ds-bg border border-ds-border text-ds-text-sec hover:text-ds-text hover:border-ds-text transition-colors">
-              <app-icon name="ChevronLeft" size="18"></app-icon>
-            </a>
-            <h1 class="text-ds-text text-lg font-bold">Checkout</h1>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <header class="text-center mb-10">
+    <h1 class="text-3xl font-bold">Checkout</h1>
+  </header>
+
+  @if (vm$ | async; as vm) {
+    <div class="lg:grid lg:grid-cols-2 lg:gap-8 flex flex-col gap-6 items-start">
+      <!-- BEGIN: BillingDetailsSection -->
+      <section aria-labelledby="billing-details-heading" class="bg-white p-6 rounded-lg shadow-sm w-full">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800" id="billing-details-heading">বিলিং ডিটেইল</h2>
+
+        <form [formGroup]="checkoutForm" class="space-y-6" method="POST" (click)="closeDropdowns()">
+          <!-- Name Field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="checkoutFullName">
+              আপনার নাম লিখুন <span class="text-red-500">*</span>
+            </label>
+            <input
+              class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border text-gray-500"
+              id="checkoutFullName"
+              formControlName="fullName"
+              placeholder="সম্পূর্ণ নামটি লিখুন"
+              required
+              type="text"
+            />
           </div>
 
-          <!-- Autofill Prompt -->
-          @if (showAutofillPrompt) {
-            <div class="p-4 bg-ds-surface border border-ds-border flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in mb-6">
-              <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-ds-accent text-ds-hero-text flex items-center justify-center shrink-0">
-                  <app-icon name="User" size="20"></app-icon>
-                </div>
-                <div>
-                  <h3 class="text-ds-text text-sm font-semibold">Welcome back</h3>
-                  <p class="text-ds-text-sec text-xs">We found your information from a previous order. Apply it now?</p>
-                </div>
-              </div>
-              <div class="flex gap-3 w-full sm:w-auto">
-                <button (click)="dismissAutofill()" class="btn btn-secondary h-9 px-4 text-sm border-ds-border hover:border-ds-text">
-                  No, thanks
-                </button>
-                <button (click)="applyAutofill()" class="btn btn-primary h-9 px-5 text-sm">
-                  Yes, apply
-                </button>
-              </div>
-            </div>
-          }
+          <!-- Mobile Number Field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="checkoutPhone">
+              আপনার মোবাইল নাম্বারটি লিখুন <span class="text-red-500">*</span>
+            </label>
+            <input
+              class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border text-gray-500"
+              id="checkoutPhone"
+              formControlName="phone"
+              placeholder="১১ ডিজিটের মোবাইল নাম্বারটি লিখুন"
+              required
+              type="tel"
+            />
+          </div>
 
-          <form [formGroup]="checkoutForm" class="space-y-6">
-            <!-- Contact Information -->
-            <section class="space-y-3">
-              <h2 class="text-ds-text font-bold">Contact Information</h2>
+          <!-- District Select Field -->
+          <div class="relative" (click)="$event.stopPropagation()">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              জেলা সিলেক্ট করুন <span class="text-red-500">*</span>
+            </label>
+            <button
+              type="button"
+              (click)="toggleDistrictDropdown()"
+              class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border text-left flex items-center justify-between bg-white"
+              [class.text-gray-400]="!selectedDistrictId()"
+            >
+              <span class="truncate">{{ districtSearch || 'জেলা সিলেক্ট করুন' }}</span>
+              <svg class="h-4 w-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+              </svg>
+            </button>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="space-y-1.5">
-                  <label for="checkoutPhone" class="text-ds-text text-sm">Phone Number</label>
+            @if (isDistrictDropdownOpen) {
+              <div class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg overflow-hidden">
+                <div class="p-2 border-b border-gray-200">
                   <input
-                    id="checkoutPhone"
-                    formControlName="phone"
-                    type="tel"
-                    placeholder="017XXXXXXXX"
-                    autocomplete="tel"
-                    class="w-full h-11 px-4 bg-ds-surface border-none focus:ring-2 focus:ring-ds-danger transition-all outline-none text-sm"
-                  />
-                </div>
-
-                <div class="space-y-1.5">
-                  <label for="checkoutFullName" class="text-ds-text text-sm">Full Name</label>
-                  <input
-                    id="checkoutFullName"
-                    formControlName="fullName"
                     type="text"
-                    placeholder="e.g. Rizve Rahman"
-                    autocomplete="name"
-                    class="w-full h-11 px-4 bg-ds-surface border-none focus:ring-2 focus:ring-ds-danger transition-all outline-none text-sm"
+                    placeholder="জেলা খুঁজুন..."
+                    [value]="districtSearch"
+                    (input)="filterDistricts($event)"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500"
+                    autofocus
                   />
                 </div>
-              </div>
-            </section>
-
-            <!-- Shipping Address -->
-            <section class="space-y-3">
-              <h2 class="text-ds-text font-bold">Shipping Address</h2>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <!-- Division / City Selection (top-level) -->
-                <div class="space-y-1.5 relative" (click)="$event.stopPropagation()">
-                  <label class="text-ds-text text-sm">Division</label>
-                  <div class="flex flex-wrap gap-2">
-                    @for (div of divisions(); track div.id) {
+                <ul class="max-h-60 overflow-y-auto">
+                  @for (district of filteredDistricts; track district.id) {
+                    <li>
                       <button
                         type="button"
-                        (click)="selectCity(div.nameEn)"
-                        class="px-3 py-1.5 text-xs border"
-                        [class.bg-ds-accent]="checkoutForm.get('city')?.value === div.nameEn"
-                        [class.text-ds-hero-text]="checkoutForm.get('city')?.value === div.nameEn"
-                        [class.border-ds-accent]="checkoutForm.get('city')?.value === div.nameEn"
-                        [class.bg-ds-surface]="checkoutForm.get('city')?.value !== div.nameEn"
-                        [class.border-ds-border]="checkoutForm.get('city')?.value !== div.nameEn"
+                        (click)="onDistrictSelected(district)"
+                        class="w-full text-left px-4 py-3 text-sm hover:bg-blue-50 flex items-center justify-between"
+                        [class.bg-blue-50]="selectedDistrictId() === district.id"
                       >
-                        {{ div.nameEn }}
+                        <span>{{ district.nameBn }}</span>
+                        @if (selectedDistrictId() === district.id) {
+                          <svg class="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                          </svg>
+                        }
                       </button>
-                    }
-                  </div>
-                </div>
-
-                <!-- District Selection -->
-                <div class="space-y-1.5 relative" (click)="$event.stopPropagation()">
-                  <label class="text-ds-text text-sm">District</label>
-                  <button
-                    type="button"
-                    (click)="toggleDistrictDropdown()"
-                    [disabled]="!checkoutForm.get('city')?.value"
-                    class="w-full h-11 px-4 bg-ds-surface text-left flex items-center justify-between text-sm disabled:opacity-50"
-                  >
-                    <span [class.text-ds-text-muted]="!checkoutForm.get('city')?.value" class="truncate">
-                      {{ districtSearch || 'Select District' }}
-                    </span>
-                    <app-icon name="ChevronDown" size="14"></app-icon>
-                  </button>
-
-                  @if (isDistrictDropdownOpen) {
-                    <div class="absolute z-50 left-0 right-0 mt-1 bg-ds-bg border border-ds-border shadow-2xl overflow-hidden animate-dropdown">
-                      <div class="p-2 border-b border-ds-border">
-                        <input
-                          type="text"
-                          placeholder="Search districts..."
-                          [value]="districtSearch"
-                          (input)="filterDistricts($event)"
-                          class="w-full px-3 py-2 bg-ds-surface border-none outline-none text-sm"
-                          autofocus
-                        />
-                      </div>
-                      <ul class="max-h-40 overflow-y-auto">
-                        @for (district of filteredDistricts; track district.id) {
-                          <li>
-                            <button
-                              type="button"
-                              (click)="onDistrictSelected(district)"
-                              class="w-full text-left px-4 py-2.5 text-sm hover:bg-ds-surface"
-                            >
-                              {{ district.nameEn }}
-                            </button>
-                          </li>
-                        }
-                      </ul>
-                    </div>
+                    </li>
                   }
-                </div>
-
-                <!-- Upazila / Area Selection -->
-                <div class="space-y-1.5 relative" (click)="$event.stopPropagation()">
-                  <label class="text-ds-text text-sm">Area / Upazila</label>
-                  <button
-                    type="button"
-                    (click)="toggleUpazilaDropdown()"
-                    [disabled]="!checkoutForm.get('city')?.value"
-                    class="w-full h-11 px-4 bg-ds-surface text-left flex items-center justify-between text-sm disabled:opacity-50"
-                  >
-                    <span [class.text-ds-text-muted]="!checkoutForm.get('area')?.value" class="truncate">
-                      {{ checkoutForm.get('area')?.value || 'Select Area' }}
-                    </span>
-                    <app-icon name="ChevronDown" size="14"></app-icon>
-                  </button>
-
-                  @if (isUpazilaDropdownOpen) {
-                    <div class="absolute z-50 left-0 right-0 mt-1 bg-ds-bg border border-ds-border shadow-2xl overflow-hidden animate-dropdown">
-                      <div class="p-2 border-b border-ds-border">
-                        <input
-                          type="text"
-                          placeholder="Search areas..."
-                          [value]="upazilaSearch"
-                          (input)="filterUpazilas($event)"
-                          class="w-full px-3 py-2 bg-ds-surface border-none outline-none text-sm"
-                          autofocus
-                        />
-                      </div>
-                      <ul class="max-h-40 overflow-y-auto">
-                        @for (upazila of filteredUpazilas; track upazila.id) {
-                          <li>
-                            <button
-                              type="button"
-                              (click)="onUpazilaSelected(upazila)"
-                              class="w-full text-left px-4 py-2.5 text-sm hover:bg-ds-surface"
-                            >
-                              {{ upazila.nameEn }}
-                            </button>
-                          </li>
-                        }
-                      </ul>
-                    </div>
+                  @if (filteredDistricts.length === 0) {
+                    <li class="px-4 py-3 text-sm text-gray-500 text-center">কোনো জেলা পাওয়া যায়নি</li>
                   }
-                </div>
-
-                <!-- Detailed Address -->
-                <div class="md:col-span-2 space-y-1.5">
-                  <label for="checkoutAddress" class="text-ds-text text-sm">Detailed Address</label>
-                  <textarea id="checkoutAddress" formControlName="address" rows="2" placeholder="House #12, Road #4, Block B..."
-                            class="w-full p-4 bg-ds-surface border-none focus:ring-2 focus:ring-ds-danger transition-all outline-none resize-none text-sm"></textarea>
-                </div>
+                </ul>
               </div>
-            </section>
+            }
+          </div>
 
-            <!-- Delivery Method (read-only) -->
-            <section class="space-y-3">
-              <h2 class="text-ds-text font-bold">Delivery Method</h2>
-              @let selectedMethod = getSelectedMethod(vm.deliveryMethods);
-              @if (selectedMethod) {
-                <div class="flex items-center justify-between p-4 bg-ds-surface">
-                  <div class="flex items-center gap-3">
-                    <app-icon name="Truck" size="18"></app-icon>
-                    <div>
-                      <p class="text-ds-text text-sm font-medium">{{ selectedMethod.name }}</p>
-                      <p class="text-ds-text-sec text-xs">{{ selectedMethod.estimatedDays }} ESTIMATED DELIVERY</p>
-                    </div>
-                  </div>
-                  <span class="text-ds-text text-sm font-bold">
-                    {{ selectedMethod.cost === 0 ? 'FREE' : (selectedMethod.cost | number: '1.0-0') + ' ৳' }}
-                  </span>
+          <!-- Upazila/Sub-district Select Field -->
+          <div class="relative" (click)="$event.stopPropagation()">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              উপজেলা/থানা সিলেক্ট করুন <span class="text-red-500">*</span>
+            </label>
+            <button
+              type="button"
+              (click)="toggleUpazilaDropdown()"
+              [disabled]="!selectedDistrictId()"
+              class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border text-left flex items-center justify-between bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
+              [class.text-gray-400]="!selectedUpazilaId()"
+            >
+              <span class="truncate">{{ upazilaSearch || 'উপজেলা/থানা সিলেক্ট করুন' }}</span>
+              <svg class="h-4 w-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+              </svg>
+            </button>
+
+            @if (isUpazilaDropdownOpen) {
+              <div class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg overflow-hidden">
+                <div class="p-2 border-b border-gray-200">
+                  <input
+                    type="text"
+                    placeholder="উপজেলা/থানা খুঁজুন..."
+                    [value]="upazilaSearch"
+                    (input)="filterUpazilas($event)"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500"
+                    autofocus
+                  />
                 </div>
-              }
-            </section>
-          </form>
+                <ul class="max-h-60 overflow-y-auto">
+                  @for (upazila of filteredUpazilas; track upazila.id) {
+                    <li>
+                      <button
+                        type="button"
+                        (click)="onUpazilaSelected(upazila)"
+                        class="w-full text-left px-4 py-3 text-sm hover:bg-blue-50 flex items-center justify-between"
+                        [class.bg-blue-50]="selectedUpazilaId() === upazila.id"
+                      >
+                        <span>{{ upazila.nameBn }}</span>
+                        @if (selectedUpazilaId() === upazila.id) {
+                          <svg class="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                          </svg>
+                        }
+                      </button>
+                    </li>
+                  }
+                  @if (filteredUpazilas.length === 0) {
+                    <li class="px-4 py-3 text-sm text-gray-500 text-center">কোনো উপজেলা/থানা পাওয়া যায়নি</li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+
+          <!-- Address Field -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="checkoutAddress">
+              সম্পূর্ণ ঠিকানা <span class="text-red-500">*</span>
+            </label>
+            <input
+              class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border text-gray-500"
+              id="checkoutAddress"
+              formControlName="address"
+              placeholder="রোড নাম/নাম্বার, বাড়ি নাম/নাম্বার, ফ্লাট নাম্বার"
+              required
+              type="text"
+            />
+          </div>
+        </form>
+      </section>
+      <!-- END: BillingDetailsSection -->
+
+      <!-- BEGIN: ProductDetailsSection -->
+      <section aria-labelledby="product-details-heading" class="bg-white p-6 rounded-lg shadow-sm w-full">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800" id="product-details-heading">প্রোডাক্ট ডিটেইল</h2>
+
+        <!-- Table Header -->
+        <div class="flex justify-between pb-3 border-b border-gray-200 mb-4 text-sm font-bold text-gray-800">
+          <span class="">প্রোডাক্ট নাম</span>
+          <span class="">বিক্রয় মূল্য</span>
         </div>
 
-        <!-- Sidebar Summary -->
-        <div class="lg:col-span-5 xl:col-span-4">
-          <div class="sticky top-24 space-y-4">
-            <div class="bg-ds-surface p-5 lg:p-6 border border-ds-border relative">
-              <div class="absolute top-0 left-0 w-full h-1 bg-ds-accent"></div>
-
-              <h2 class="text-ds-text font-bold mb-5">Order Summary</h2>
-
-              <!-- Items List -->
-              <div class="space-y-3 max-h-[300px] overflow-y-auto pr-3 custom-scrollbar-thin mb-5">
-                @for (item of vm.cartItems; track trackCartItem($index, item)) {
-                  <div class="flex gap-3">
-                    <div class="flex-1 min-w-0">
-                      <p class="text-ds-text text-sm font-medium truncate">{{ item.name }}</p>
-                      <p class="text-ds-text-sec text-xs">QTY: {{ item.quantity }} @if (item.size) { • SIZE: {{ item.size }} }</p>
-                      <app-price-display [amount]="item.price * item.quantity" size="sm" className="mt-1 text-ds-text"></app-price-display>
-                    </div>
-                  </div>
-                }
-              </div>
-
-              <!-- Price Breakdown -->
-              <div class="space-y-2 pt-4 border-t border-ds-border text-sm">
-                <div class="flex justify-between text-ds-text-sec">
-                  <span>Subtotal</span>
-                  <app-price-display [amount]="vm.summary.subtotal"></app-price-display>
-                </div>
-                <div class="flex justify-between text-ds-text-sec">
-                  <span>Shipping</span>
-                  @if (vm.summary.shipping === 0) {
-                    <span class="text-ds-success">FREE</span>
-                  } @else {
-                    <app-price-display [amount]="vm.summary.shipping"></app-price-display>
-                  }
-                </div>
-                @if (vm.summary.tax > 0) {
-                  <div class="flex justify-between text-ds-text-sec">
-                    <span>Tax</span>
-                    <app-price-display [amount]="vm.summary.tax"></app-price-display>
-                  </div>
-                }
-
-                <div class="pt-4 mt-2 border-t border-ds-text/10">
-                  <div class="flex justify-between items-end">
-                    <div>
-                      <p class="text-ds-text-muted text-xs">Total Amount</p>
-                      <app-price-display [amount]="vm.summary.total" size="md" className="text-ds-text font-bold"></app-price-display>
-                    </div>
-                    <div class="bg-ds-accent/10 px-3 py-1.5 border border-ds-accent/20 text-xs">
-                      <p class="text-ds-accent">Cash on Delivery</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              @if (errorMessage) {
-                <div class="mt-5 p-3 bg-ds-danger/10 border border-ds-danger/20 text-ds-danger text-sm rounded-lg">
-                  {{ errorMessage }}
-                </div>
-              }
-
-              <button
-                (click)="placeOrder()"
-                [disabled]="isLoading || checkoutForm.invalid"
-                class="btn btn-primary w-full h-12 mt-5 disabled:opacity-30 flex items-center justify-center gap-3"
-              >
-                @if (isLoading) {
-                  <app-icon name="Loader2" size="18" className="animate-spin"></app-icon>
-                  <span>Processing...</span>
+        <!-- Product Items -->
+        @for (item of vm.cartItems; track trackCartItem($index, item)) {
+          <div class="flex justify-between items-start mb-6">
+            <div class="flex gap-4">
+              <!-- Product Image -->
+              <div class="w-20 h-24 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
+                @if (item.imageUrl) {
+                  <img
+                    [alt]="item.imageAlt || item.name"
+                    [src]="imageUrlService.getImageUrl(item.imageUrl)"
+                    class="w-full h-full object-cover"
+                  />
                 } @else {
-                  <app-icon name="ShoppingBag" size="18"></app-icon>
-                  <span>Complete Order</span>
+                  <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
                 }
-              </button>
-
-              <p class="mt-4 text-ds-text-muted text-center text-xs">
-                By completing your order, you agree to our Terms of Service and Privacy Policy.
-              </p>
+              </div>
+              <!-- Product Info -->
+              <div class="flex flex-col">
+                <span class="text-sm text-gray-800 font-medium">{{ item.name }}</span>
+                @if (item.size) {
+                  <span class="text-xs text-gray-500 mb-2">Size: {{ item.size }}</span>
+                }
+                <!-- Quantity Controls -->
+                <div class="flex items-center border border-gray-300 rounded-full w-24 px-2 py-1">
+                  <button
+                    (click)="updateQuantity(item, -1)"
+                    [disabled]="item.quantity <= 1"
+                    aria-label="Decrease quantity"
+                    class="text-gray-500 hover:text-gray-700 w-6 h-6 flex items-center justify-center disabled:opacity-30"
+                    type="button"
+                  >
+                    −
+                  </button>
+                  <span class="w-8 text-center text-sm text-gray-800">{{ item.quantity }}</span>
+                  <button
+                    (click)="updateQuantity(item, 1)"
+                    aria-label="Increase quantity"
+                    class="text-gray-500 hover:text-gray-700 w-6 h-6 flex items-center justify-center"
+                    type="button"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
             </div>
-
-            <!-- Trust Badges -->
-            <div class="grid grid-cols-2 gap-3">
-              <div class="p-4 bg-ds-surface border border-ds-border flex items-center gap-3 group">
-                <app-icon name="ShieldCheck" size="16" className="text-ds-text-muted group-hover:text-ds-text transition-colors"></app-icon>
-                <span class="text-ds-text-muted group-hover:text-ds-text transition-colors text-xs">Secure Payment</span>
-              </div>
-              <div class="p-4 bg-ds-surface border border-ds-border flex items-center gap-3 group">
-                <app-icon name="RotateCcw" size="16" className="text-ds-text-muted group-hover:text-ds-text transition-colors"></app-icon>
-                <span class="text-ds-text-muted group-hover:text-ds-text transition-colors text-xs">Easy Returns</span>
-              </div>
+            <!-- Price and Remove -->
+            <div class="flex flex-col items-end gap-2">
+              <span class="text-sm font-bold text-gray-800">TK.{{ item.price * item.quantity | number: '1.0-0' }}</span>
+              <button
+                (click)="removeItem(item)"
+                aria-label="Remove item"
+                class="text-red-500 hover:text-red-700"
+                type="button"
+              >
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                </svg>
+              </button>
             </div>
           </div>
+        }
+
+        <!-- Order Summary -->
+        <div class="space-y-4 border-t border-gray-200 pt-4">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-700">সাব-টোটাল</span>
+            <span class="text-sm font-medium text-blue-500">TK.{{ vm.summary.subtotal | number: '1.0-0' }}</span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              @let selectedMethod = getSelectedMethod(vm.deliveryMethods);
+              <span class="text-sm text-gray-700">{{ selectedMethod?.name || 'Inside Dhaka' }}</span>
+              <span class="text-xs text-gray-500 uppercase tracking-wider">({{ selectedMethod?.estimatedDays || '3' }} Days Delivery)</span>
+            </div>
+            <span class="text-sm font-medium text-gray-900">{{ vm.summary.shipping === 0 ? 'FREE' : (vm.summary.shipping | number: '1.0-0') + ' ৳' }}</span>
+          </div>
+
+          <div class="flex justify-between items-center py-2">
+            <span class="text-base font-bold text-gray-800">টোটাল</span>
+            <span class="text-base font-bold text-gray-900">TK.{{ vm.summary.total | number: '1.0-0' }}</span>
+          </div>
         </div>
-      </div>
-    }
-  </div>
-</div>
+
+        <!-- Payment Method -->
+        <div class="mt-6 mb-4">
+          <label class="inline-flex items-center cursor-pointer">
+            <input
+              checked
+              class="form-radio text-blue-600 h-4 w-4"
+              formControlName="paymentMethod"
+              name="payment_method"
+              type="radio"
+              value="cod"
+            />
+            <span class="ml-2 text-sm text-gray-800 font-medium">Cash On Delivery</span>
+          </label>
+        </div>
+
+        <!-- Error Message -->
+        @if (errorMessage) {
+          <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <!-- Confirm Button -->
+        <button
+          (click)="placeOrder()"
+          [disabled]="isLoading || checkoutForm.invalid"
+          class="w-full bg-[#0a1128] text-white py-4 px-4 rounded-md hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 font-bold text-base transition-colors shadow-sm text-center flex justify-center items-center disabled:opacity-50"
+          type="button"
+        >
+          @if (isLoading) {
+            <span>Processing...</span>
+          } @else {
+            <span>Confirm Order TK. {{ vm.summary.total | number: '1.0-0' }}</span>
+          }
+        </button>
+      </section>
+      <!-- END: ProductDetailsSection -->
+    </div>
+  }
+</main>

@@ -153,7 +153,7 @@
                         <app-icon name="Search" size="14" class="absolute left-3 top-1/2 -translate-y-1/2 text-ds-text-muted"></app-icon>
                       </div>
 
-                      <div class="space-y-2 max-h-64 overflow-y-auto custom-scrollbar pr-2">
+                      <div class="space-y-2 max-h-[420px] overflow-y-auto custom-scrollbar pr-2">
                         @if (isProductSelectionLoading) {
                           <div class="flex items-center justify-center py-8">
                             <app-icon name="Loader2" size="20" class="animate-spin text-ds-text-muted"></app-icon>
@@ -161,19 +161,51 @@
                         } @else {
                           @for (p of productsForSelectionPool; track p.id) {
                             @if (p.id !== primaryProductId) {
-                              <div class="flex items-center justify-between p-3 rounded-lg bg-ds-text/20 border border-ds-border hover:border-ds-border transition-colors">
-                                <div class="flex items-center gap-3 overflow-hidden">
-                                  <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" class="w-8 h-8 rounded object-cover flex-shrink-0">
-                                  <div class="overflow-hidden">
-                                    <p class="text-ds-xs font-bold truncate">{{ p.name }}</p>
-                                    <p class="text-ds-3xs text-ds-text-muted">{{ p.sku }}</p>
+                              <div class="rounded-lg bg-ds-text/20 border border-ds-border hover:border-ds-border transition-colors overflow-hidden">
+                                <div class="flex items-center justify-between p-3">
+                                  <div class="flex items-center gap-3 overflow-hidden">
+                                    <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')" class="w-8 h-8 rounded object-cover flex-shrink-0">
+                                    <div class="overflow-hidden">
+                                      <p class="text-ds-xs font-bold truncate">{{ p.name }}</p>
+                                      <p class="text-ds-3xs text-ds-text-muted">{{ p.sku }}</p>
+                                    </div>
                                   </div>
+                                  <button (click)="toggleProductSelection(p.id)"
+                                          class="w-6 h-6 rounded-full flex items-center justify-center transition-all border border-ds-border"
+                                          [ngClass]="isProductInCustomSelection(p.id) ? 'bg-ds-info border-ds-info' : 'bg-transparent border-ds-border'">
+                                    <app-icon [name]="isProductInCustomSelection(p.id) ? 'Check' : 'Plus'" size="10"></app-icon>
+                                  </button>
                                 </div>
-                                <button (click)="toggleProductSelection(p.id)"
-                                        class="w-6 h-6 rounded-full flex items-center justify-center transition-all border border-ds-border"
-                                        [ngClass]="isProductInCustomSelection(p.id) ? 'bg-ds-info border-ds-info' : 'bg-transparent border-ds-border'">
-                                  <app-icon [name]="isProductInCustomSelection(p.id) ? 'Check' : 'Plus'" size="10"></app-icon>
-                                </button>
+
+                                <!-- Pre-Order Config (only when product is selected) -->
+                                @if (isProductInCustomSelection(p.id)) {
+                                  <div class="px-3 pb-3 border-t border-ds-border/50">
+                                    <div class="flex items-center justify-between pt-2">
+                                      <span class="text-ds-2xs text-ds-text-muted font-bold uppercase">Pre-Order</span>
+                                      <input type="checkbox"
+                                             [checked]="isPreOrderEnabled(p.id)"
+                                             (change)="togglePreOrder(p.id)"
+                                             class="toggle-sm">
+                                    </div>
+                                    @if (isPreOrderEnabled(p.id)) {
+                                      <div class="mt-2 space-y-1">
+                                        <p class="text-ds-3xs text-ds-text-muted">Select sizes for pre-order:</p>
+                                        <div class="flex flex-wrap gap-1">
+                                          @for (size of getProductSizes(p); track size) {
+                                            <button (click)="togglePreOrderSize(p.id, size)"
+                                                    class="px-2 py-1 text-ds-3xs rounded border transition-all"
+                                                    [ngClass]="isPreOrderSizeSelected(p.id, size) ? 'bg-ds-warning border-ds-warning text-ds-text' : 'bg-transparent border-ds-border text-ds-text-muted hover:border-ds-text-muted'">
+                                              {{ size }}
+                                            </button>
+                                          }
+                                        </div>
+                                        @if (getPreOrderAllowedSizes(p.id).length === 0) {
+                                          <p class="text-ds-3xs text-ds-warning mt-1">No sizes selected — all sizes will be pre-order</p>
+                                        }
+                                      </div>
+                                    }
+                                  </div>
+                                }
                               </div>
                             }
                           }

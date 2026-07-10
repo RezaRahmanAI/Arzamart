@@ -1,31 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
 /* ═══════════════════════════════════════════════════════
    CHECKOUT PAGE STYLES
    ═══════════════════════════════════════════════════════ */
 
+main {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
 input:focus, select:focus, textarea:focus {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+body, input, select, textarea, label, button, span, h1, h2, h3, p {
+  font-family: 'Hind Siliguri', 'Inter', sans-serif;
 }
 
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: var(--radius-md); }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
 
 /* Form Styles */
 label .text-red-500 { margin-right: 2px; }
 
-/* Payment Method Overrides */
-input[type="radio"]:checked + div {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in-down {
-  animation: fadeIn var(--transition-base) forwards;
-}
-
-main {
-  animation: fadeIn var(--transition-base);
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
 }

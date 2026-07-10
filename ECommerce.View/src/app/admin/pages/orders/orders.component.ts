@@ -30,6 +30,7 @@ import { SourceManagementService } from "../../../core/services/source-managemen
 import { SocialMediaSource, SourcePage } from "../../../core/models/order-source";
 import { AppIconComponent } from "../../../shared/components/app-icon/app-icon.component";
 import { NotificationService } from "../../../core/services/notification.service";
+import { ProductsService } from "../../services/products.service";
 
 @Component({
   selector: "app-admin-orders",
@@ -44,6 +45,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private sourceService = inject(SourceManagementService);
   private notification = inject(NotificationService);
+  private productsService = inject(ProductsService);
   private destroy$ = new Subject<void>();
   private destroyRef = inject(DestroyRef);
   private cdr = inject(ChangeDetectorRef);
@@ -183,6 +185,14 @@ export class OrdersComponent implements OnInit, OnDestroy {
   notesOrder: Order | null = null;
   isTrackingModalOpen = false;
   isNotesModalOpen = false;
+  isTrackingLoading = false;
+  isNotesLoading = false;
+  private notesCache = new Map<number, Order>();
+
+  showStockWarning = false;
+  outOfStockItems: { name: string; size?: string; needed: number; available: number }[] = [];
+  pendingConfirmOrder: Order | null = null;
+  isStockChecking = false;
 
   customStartDate: string | null = null;
   customEndDate: string | null = null;
@@ -338,10 +348,18 @@ export class OrdersComponent implements OnInit, OnDestroy {
   updateOrderStatus(orderId: number, newStatus: OrderStatus, event: Event): void {
     event.stopPropagation();
     this.statusUpdateOrderId = null;
-    
+
+    const order = this.orders.find(o => o.id === orderId);
+    const oldStatus = order?.status;
+    if (order) {
+      order.status = newStatus;
+      this.cdr.markForCheck();
+    }
+
     this.ordersService.updateStatus(orderId, newStatus, `Status updated to ${newStatus}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: () => this.loadOrders(false),
+        next: () => this.silentRefresh(),
         error: () => {
+            if (order && oldStatus) order.status = oldStatus;
             this.notification.error("Failed to update status");
             this.cdr.markForCheck();
         }
@@ -430,25 +448,148 @@ export class OrdersComponent implements OnInit, OnDestroy {
   markNextStatus(order: Order, event: Event): void {
     event.stopPropagation();
     const nextStatus = this.getNextStatus(order.status);
-    if (nextStatus) {
-      this.ordersService.updateStatus(order.id, nextStatus, `Moved to ${nextStatus}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: () => this.loadOrders(false),
-        error: () => {
-          this.notification.error("Failed to update status");
-          this.cdr.markForCheck();
-        }
-      });
+    if (!nextStatus) { this.actionMenuOpenId = null; return; }
+
+    if (order.status === 'Pending' && nextStatus === 'Confirmed') {
+      this.checkStockBeforeConfirm(order);
+      return;
     }
+
+    const oldStatus = order.status;
+    order.status = nextStatus;
     this.actionMenuOpenId = null;
+    this.cdr.markForCheck();
+
+    this.ordersService.updateStatus(order.id, nextStatus, `Moved to ${nextStatus}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => this.silentRefresh(),
+      error: () => {
+        order.status = oldStatus;
+        this.notification.error("Failed to update status");
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  private checkStockBeforeConfirm(order: Order): void {
+    this.isStockChecking = true;
+    this.cdr.markForCheck();
+
+    this.ordersService.getOrderById(order.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (details) => {
+        const productIds = [...new Set((details.items || []).map(i => i.productId))];
+        if (productIds.length === 0) {
+          this.proceedWithConfirm(order);
+          return;
+        }
+
+        const productCalls = productIds.map(id => this.productsService.getProductById(id));
+        let completed = 0;
+        const productMap = new Map<number, any>();
+
+        productCalls.forEach(obs => obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+          next: (product) => {
+            productMap.set(product.id, product);
+            completed++;
+            if (completed === productIds.length) {
+              this.evaluateStock(order, details.items, productMap);
+            }
+          },
+          error: () => {
+            completed++;
+            if (completed === productIds.length) {
+              this.proceedWithConfirm(order);
+            }
+          }
+        }));
+      },
+      error: () => {
+        this.proceedWithConfirm(order);
+      }
+    });
+  }
+
+  private evaluateStock(order: Order, items: OrderItem[], productMap: Map<number, any>): void {
+    const outOfStock: { name: string; size?: string; needed: number; available: number }[] = [];
+
+    items.forEach(item => {
+      const product = productMap.get(item.productId);
+      if (!product) return;
+
+      let stock = product.stockQuantity || 0;
+      if (item.size && product.variants?.length) {
+        const variant = product.variants.find((v: any) =>
+          v.size?.toString().trim().toLowerCase() === item.size?.toString().trim().toLowerCase()
+        );
+        stock = variant ? variant.stockQuantity : 0;
+      }
+
+      if (stock < item.quantity) {
+        outOfStock.push({
+          name: item.productName,
+          size: item.size,
+          needed: item.quantity,
+          available: Math.max(0, stock)
+        });
+      }
+    });
+
+    this.isStockChecking = false;
+
+    if (outOfStock.length > 0) {
+      this.outOfStockItems = outOfStock;
+      this.pendingConfirmOrder = order;
+      this.showStockWarning = true;
+      this.cdr.markForCheck();
+    } else {
+      this.proceedWithConfirm(order);
+    }
+  }
+
+  private proceedWithConfirm(order: Order): void {
+    this.isStockChecking = false;
+    const oldStatus = order.status;
+    order.status = OrderStatus.Confirmed;
+    this.actionMenuOpenId = null;
+    this.cdr.markForCheck();
+
+    this.ordersService.updateStatus(order.id, OrderStatus.Confirmed, 'Confirmed').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => this.silentRefresh(),
+      error: () => {
+        order.status = oldStatus;
+        this.notification.error("Failed to confirm order");
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  confirmWithStockIssue(): void {
+    this.showStockWarning = false;
+    if (this.pendingConfirmOrder) {
+      this.proceedWithConfirm(this.pendingConfirmOrder);
+      this.pendingConfirmOrder = null;
+    }
+  }
+
+  cancelStockWarning(): void {
+    this.showStockWarning = false;
+    this.pendingConfirmOrder = null;
+    this.outOfStockItems = [];
+    this.cdr.markForCheck();
   }
 
   cancelOrder(order: Order, event: Event): void {
     event.stopPropagation();
     const shouldCancel = window.confirm("Cancel this order?");
     if (shouldCancel) {
+      const oldStatus = order.status;
+      order.status = OrderStatus.Cancelled;
+      this.actionMenuOpenId = null;
+      this.cdr.markForCheck();
+
       this.ordersService.updateStatus(order.id, OrderStatus.Cancelled, "Cancelled from index").pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: () => this.loadOrders(false),
+        next: () => this.silentRefresh(),
         error: () => {
+          order.status = oldStatus;
           this.notification.error("Failed to cancel order");
           this.cdr.markForCheck();
         }
@@ -467,17 +608,56 @@ export class OrdersComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.trackingOrder = order;
     this.isTrackingModalOpen = true;
+    this.isTrackingLoading = true;
     this.cdr.markForCheck();
+
+    this.ordersService.getOrderById(order.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (details) => {
+        this.trackingOrder = details;
+        this.isTrackingLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isTrackingLoading = false;
+        this.notification.error("Failed to load order history logs");
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   openNotes(order: Order, event: Event): void {
     event.stopPropagation();
+
+    const cached = this.notesCache.get(order.id);
+    if (cached) {
+      this.notesOrder = cached;
+      this.isNotesModalOpen = true;
+      this.cdr.markForCheck();
+      return;
+    }
+
     this.notesOrder = order;
     this.isNotesModalOpen = true;
+    this.isNotesLoading = true;
     this.cdr.markForCheck();
+
+    this.ordersService.getOrderById(order.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (details) => {
+        this.notesOrder = details;
+        this.notesCache.set(order.id, details);
+        this.isNotesLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isNotesLoading = false;
+        this.notification.error("Failed to load order notes");
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   onNoteAdded(updatedOrder: Order): void {
+    this.notesCache.set(updatedOrder.id, updatedOrder);
     const index = this.orders.findIndex(o => o.id === updatedOrder.id);
     if (index !== -1) {
       this.orders[index] = updatedOrder;
@@ -514,9 +694,14 @@ export class OrdersComponent implements OnInit, OnDestroy {
   moveToPreOrder(order: Order, event: Event): void {
     event.stopPropagation();
     if (window.confirm("Move this order to Pre-Order?")) {
+      const oldStatus = order.status;
+      order.status = OrderStatus.PreOrder;
+      this.cdr.markForCheck();
+
       this.ordersService.updateStatus(order.id, OrderStatus.PreOrder, "Moved to Pre-Order").pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: () => this.loadOrders(false),
+        next: () => this.silentRefresh(),
         error: () => {
+          order.status = oldStatus;
           this.notification.error("Failed to move to pre-order");
           this.cdr.markForCheck();
         }
@@ -530,7 +715,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
       this.ordersService.transferToMainOrder(order.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
             this.notification.success("Order transferred to main pool");
-            this.loadOrders(false);
+            this.silentRefresh();
         },
         error: () => {
             this.notification.error("Failed to transfer order");
@@ -655,6 +840,29 @@ export class OrdersComponent implements OnInit, OnDestroy {
   refreshOrders(): void {
     this.isRefreshing = true;
     this.loadOrders(false, true);
+  }
+
+  private silentRefresh(): void {
+    const params = this.buildParams();
+    this.ordersService
+      .getOrders(params, true)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.orders = data.items;
+          this.totalResults = data.total;
+          this.cdr.markForCheck();
+        },
+        error: () => {}
+      });
+
+    this.ordersService
+      .getOrderStats(params)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((stats) => {
+        this.stats = stats;
+        this.cdr.markForCheck();
+      });
   }
 
   loadOrders(resetSelection = true, forceRefresh = false): void {

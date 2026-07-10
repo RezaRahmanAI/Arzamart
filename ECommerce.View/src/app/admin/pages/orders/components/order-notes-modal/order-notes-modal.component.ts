@@ -11,63 +11,73 @@ import { NotificationService } from "../../../../../core/services/notification.s
   standalone: true,
   imports: [NgIf, NgFor, DatePipe, FormsModule, AppIconComponent],
   template: `
-    <div *ngIf="isOpen && order" class="fixed inset-0 z-[200] flex items-center justify-center p-ds-4 bg-ds-bg/80 backdrop-blur-md animate-in fade-in duration-300" (click)="close.emit()">
-      <div class="bg-ds-surface border border-ds-border rounded-sm w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in duration-base" (click)="$event.stopPropagation()">
-        <div class="bg-ds-text p-ds-6 flex items-center justify-between text-ds-surface">
-          <div>
-            <p class="opacity-60 mb-1">Notes</p>
-            <h3>Order Notes — {{ order.orderNumber }}</h3>
-          </div>
-          <button (click)="close.emit()" class="size-10 flex items-center justify-center hover:bg-ds-text/10 transition-colors rounded-sm">
-            <app-icon name="X" size="20"></app-icon>
-          </button>
-        </div>
+    <div *ngIf="isOpen && order" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-300" (click)="close.emit()">
+      <div class="bg-white shadow-[0px_4px_20px_rgba(0,0,0,0.08)] overflow-hidden border border-gray-200 flex flex-col w-full max-w-[400px] max-h-[90vh]" style="border-radius: var(--radius-lg)" (click)="$event.stopPropagation()">
 
-        <div class="p-ds-8 flex flex-col gap-ds-6">
-          <div class="space-y-3">
-            <label class="text-ds-text ml-1">Add Note</label>
-            <div class="relative">
-              <textarea
-                [(ngModel)]="newNoteText"
-                rows="3"
-                class="form-textarea !p-ds-4 bg-ds-bg/30"
-                placeholder="Write a note..."></textarea>
+        <!-- Header -->
+        <header class="flex items-center justify-between px-4 h-10 bg-white border-b border-gray-200 shrink-0" style="border-radius: var(--radius-lg) var(--radius-lg) 0 0">
+          <button (click)="close.emit()" class="hover:bg-gray-100 transition-colors active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center text-gray-500">
+            <app-icon name="X" size="18"></app-icon>
+          </button>
+          <h1 class="text-base font-semibold text-gray-900">Order Notes</h1>
+          <div class="w-10"></div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="overflow-y-auto p-2 space-y-2">
+
+          <!-- Add Note Section -->
+          <section class="space-y-1">
+            <textarea
+              [(ngModel)]="newNoteText"
+              rows="2"
+              class="w-full bg-white border border-gray-200 p-2 text-[13px] text-gray-900 placeholder:text-gray-400 focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-all resize-none outline-none"
+              style="border-radius: var(--radius-sm)"
+              placeholder="Add a note..."></textarea>
+            <div class="flex justify-end">
               <button
                 (click)="addNote()"
                 [disabled]="isSaving || !newNoteText.trim()"
-                class="absolute bottom-3 right-3 btn btn-primary !h-8 px-ds-4">
+                class="bg-gray-900 hover:bg-gray-700 text-white font-medium px-3 h-7 flex items-center justify-center transition-colors active:scale-95 duration-150 shadow-sm text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+                style="border-radius: var(--radius-sm)">
                 <app-icon *ngIf="isSaving" name="Loader2" size="12" className="animate-spin mr-1.5"></app-icon>
-                <span>Add Note</span>
+                Add Note
               </button>
             </div>
-          </div>
+          </section>
 
-          <div class="space-y-4">
-            <p class="text-ds-text-muted border-b border-ds-border pb-2">All Notes</p>
-            <div class="max-h-[300px] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
-              <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-ds-8 gap-ds-2">
-                <app-icon name="Loader2" size="20" className="animate-spin text-ds-text-muted"></app-icon>
-                <p class="text-xs text-ds-text-muted">Loading notes...</p>
-              </div>
-              <ng-container *ngIf="!isLoading">
-                <div *ngFor="let note of order?.notes; trackBy: trackByNoteId" class="p-ds-4 bg-ds-bg/50 border border-ds-border rounded-sm relative group">
-                  <p class="text-ds-text">{{ note.content }}</p>
-                  <div class="mt-2 flex items-center justify-between">
-                    <span class="text-ds-text-muted">{{ note.createdAt | date: 'MMM d, h:mm a' }}</span>
-                    <span class="text-ds-accent">{{ note.adminName }}</span>
-                  </div>
-                </div>
+          <!-- Divider -->
+          <div class="h-px bg-gray-200 w-full"></div>
 
-                <div *ngIf="!order?.notes || order?.notes?.length === 0" class="py-ds-8 text-center">
-                  <p class="text-ds-text-muted opacity-40">No notes yet.</p>
-                </div>
-              </ng-container>
+          <!-- All Notes Section -->
+          <section class="space-y-1">
+            <h2 class="text-xs font-medium text-gray-900">All Notes</h2>
+
+            <!-- Loading -->
+            <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-8 gap-2">
+              <app-icon name="Loader2" size="20" className="animate-spin text-gray-400"></app-icon>
+              <p class="text-xs text-gray-400">Loading notes...</p>
             </div>
-          </div>
-        </div>
 
-        <div class="p-ds-6 bg-ds-bg border-t border-ds-border flex justify-end">
-          <button (click)="close.emit()" class="btn btn-secondary !h-10 !px-ds-8">Close</button>
+            <!-- Notes List -->
+            <div *ngIf="!isLoading" class="space-y-1">
+              <article *ngFor="let note of order?.notes; trackBy: trackByNoteId"
+                class="bg-white border border-gray-200 p-2 hover:bg-gray-50 transition-colors"
+                style="border-radius: var(--radius-sm)">
+                <p class="text-[13px] text-gray-900">{{ note.content }}</p>
+                <div class="flex items-center justify-between mt-1 text-gray-500">
+                  <span class="text-[11px] font-medium text-gray-900">{{ note.adminName }}</span>
+                  <span class="text-[10px]">{{ note.createdAt | date: 'MMM d, h:mm a' }}</span>
+                </div>
+              </article>
+
+              <!-- Empty State -->
+              <div *ngIf="!order?.notes || order?.notes?.length === 0" class="py-8 text-center">
+                <p class="text-gray-400 text-sm">No notes yet.</p>
+              </div>
+            </div>
+          </section>
+
         </div>
       </div>
     </div>

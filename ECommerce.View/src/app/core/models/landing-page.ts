@@ -58,6 +58,17 @@ export interface CustomField {
   enabled: boolean;
 }
 
+// ─── Pre-Order Config ────────────────────────────────────────────────
+
+export interface PreOrderProductConfig {
+  enabled: boolean;
+  allowedSizes: string[];
+}
+
+export type PreOrderConfig = Record<number, PreOrderProductConfig>;
+
+// ─── Layout Types ────────────────────────────────────────────────────
+
 export type LayoutType = 'A' | 'B' | 'C' | 'D' | 'E';
 
 export interface LayoutTypeConfig {

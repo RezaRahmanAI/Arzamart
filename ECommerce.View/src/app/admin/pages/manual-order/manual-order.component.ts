@@ -667,6 +667,14 @@ export class ManualOrderComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
     this.ordersService.getOrderById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (order) => {
+        if (order.status !== 'Pending') {
+          this.notification.error("Only Pending orders can be edited");
+          this.isLoading = false;
+          this.cdr.markForCheck();
+          this.router.navigate(["/admin/orders"]);
+          return;
+        }
+
         this.orderForm.patchValue({
           phone: order.customerPhone,
           name: order.customerName,

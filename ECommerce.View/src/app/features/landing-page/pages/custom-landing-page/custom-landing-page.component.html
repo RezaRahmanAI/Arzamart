@@ -210,6 +210,16 @@
                               </div>
                             }
 
+                            @if (isProductPreOrder(p)) {
+                              <div class="absolute top-3 z-10 px-2 py-0.5 text-ds-2xs font-bold uppercase tracking-wider rounded-sm"
+                                   [class.left-3]="!(p.compareAtPrice && p.compareAtPrice > p.price)"
+                                   [class.right-3]="p.compareAtPrice && p.compareAtPrice > p.price"
+                                   [style.top]="p.compareAtPrice && p.compareAtPrice > p.price ? '2rem' : '0.75rem'"
+                                   style="background-color: var(--status-preorder); color: white;">
+                                PRE-ORDER
+                              </div>
+                            }
+
                             <div class="cursor-pointer mb-4 group relative" (click)="$event.stopPropagation(); openProductDetails(p)">
                               <img loading="lazy" [src]="imageUrlService.getImageUrl(p.imageUrl || '')"
                                    [alt]="p.name" class="w-full h-[180px] sm:h-[220px] object-contain rounded-sm bg-ds-surface">
@@ -311,15 +321,36 @@
                       <h2 class="text-2xl font-extrabold text-ds-text mb-2 text-center font-bengali">অর্ডার করুন</h2>
                       <p class="text-sm text-ds-text-sec text-center mb-6 leading-relaxed">অর্ডার করতে নিচের ফর্মে আপনার নাম, পূর্ণ ঠিকানা ও মোবাইল নম্বর লিখে "অর্ডার সম্পন্ন করুন" বাটনে ক্লিক করুন</p>
 
-                      <!-- Product Cart -->
+                       <!-- Product Cart -->
                       <div class="mb-6">
                         <h3 class="text-base font-bold text-ds-text mb-3 font-bengali">আপনার কার্ট:</h3>
+
+                        @if (isAnyProductPreOrder()) {
+                          <div class="mb-3 p-3 rounded-lg border text-sm flex items-start gap-2"
+                               style="background-color: color-mix(in srgb, var(--status-preorder) 8%, transparent); border-color: color-mix(in srgb, var(--status-preorder) 30%, transparent); color: var(--status-preorder);">
+                            <app-icon name="Info" size="16" className="shrink-0 mt-0.5"></app-icon>
+                            <div>
+                              <p class="font-bold font-bengali">প্রি-অর্ডার আইটেম সিলেক্ট করা হয়েছে</p>
+                              <p class="opacity-80 text-xs mt-1 font-bengali">প্রি-অর্ডার পণ্য ৭-১৫ কার্যদিবসের মধ্যে ডেলিভারি হবে।</p>
+                            </div>
+                          </div>
+                        }
+
                         <div class="space-y-3">
                           @for (s of selectedProductList; track s.product.id) {
-                            <div class="flex items-center gap-3 p-3 bg-ds-surface border border-ds-border rounded-lg">
+                            <div class="flex items-center gap-3 p-3 bg-ds-surface border rounded-lg"
+                                 [ngClass]="isProductPreOrder(s.product) ? 'border-[color:color-mix(in_srgb,var(--status-preorder)_30%,transparent)]' : 'border-ds-border'">
                               <img loading="lazy" [src]="imageUrlService.getImageUrl(s.product.imageUrl || '')" [alt]="s.product.name" class="w-14 h-14 object-contain rounded-md bg-ds-bg flex-shrink-0">
                               <div class="flex-1 min-w-0">
-                                <p class="text-sm font-bold text-ds-text truncate">{{ s.product.name }}</p>
+                                <div class="flex items-center gap-2">
+                                  <p class="text-sm font-bold text-ds-text truncate">{{ s.product.name }}</p>
+                                  @if (isProductPreOrder(s.product)) {
+                                    <span class="shrink-0 px-1.5 py-0.5 text-ds-3xs font-bold uppercase rounded-sm"
+                                          style="background-color: var(--status-preorder); color: white;">
+                                      PRE-ORDER
+                                    </span>
+                                  }
+                                </div>
                                 <p class="text-xs text-ds-text-sec">সাইজ: {{ s.selectedSize }} &times; {{ s.quantity }}</p>
                                 <p class="text-xs font-bold text-ds-info">৳{{ getProductPrice(s.product) | number }} × {{ s.quantity }}</p>
                               </div>
@@ -393,10 +424,13 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" [disabled]="isOrdering" class="btn btn-danger w-full h-12 mt-4 text-base font-bold">
+                        <button type="submit" [disabled]="isOrdering" class="btn w-full h-12 mt-4 text-base font-bold"
+                                [ngClass]="isAnyProductPreOrder() ? 'btn-warning' : 'btn-danger'">
                           @if (isOrdering) {
                             <app-icon name="Loader2" size="20" className="animate-spin"></app-icon>
                             <span>অর্ডার প্রক্রিয়াকরণ...</span>
+                          } @else if (isAnyProductPreOrder()) {
+                            <span>প্রি-অর্ডার সম্পন্ন করুন</span>
                           } @else {
                             <span>অর্ডার সম্পন্ন করুন</span>
                           }
@@ -429,8 +463,9 @@
       <span class="hidden md:inline">WhatsApp</span>
     </a>
     <button (click)="scrollToOrder()"
-            class="btn btn-danger text-white flex items-center justify-center gap-2 md:gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all h-11 md:h-14 px-5 md:px-12 text-sm md:text-base font-bold">
-      অর্ডার করুন এখনই
+            class="btn text-white flex items-center justify-center gap-2 md:gap-3 rounded-full shadow-2xl hover:-translate-y-1 transition-all h-11 md:h-14 px-5 md:px-12 text-sm md:text-base font-bold"
+            [ngClass]="isAnyProductPreOrder() ? 'bg-[color:var(--status-preorder)]' : 'btn-danger'">
+      {{ isAnyProductPreOrder() ? 'প্রি-অর্ডার করুন এখনই' : 'অর্ডার করুন এখনই' }}
     </button>
   </div>
 }

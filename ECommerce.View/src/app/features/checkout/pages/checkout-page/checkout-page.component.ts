@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, DestroyRef, inject, signal } from "@angular/core";
-import { AsyncPipe, NgClass, DecimalPipe, NgIf } from "@angular/common";
+import { AsyncPipe, DecimalPipe } from "@angular/common";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
 import {
@@ -19,7 +19,6 @@ import { CartService } from "../../../../core/services/cart.service";
 import { CheckoutService } from "../../../../core/services/checkout.service";
 import { CartItem } from "../../../../core/models/cart";
 import { CustomerLookupService } from "../../../../core/services/customer-lookup.service";
-import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { AuthService } from "../../../../core/services/auth.service";
 import { DeliveryService } from "../../../../core/services/delivery.service";
@@ -28,11 +27,9 @@ import { AnalyticsService } from "../../../../core/services/analytics.service";
 import { IncompleteOrderTrackerService } from "../../../../core/services/incomplete-order-tracker.service";
 import { DeliveryMethod } from "../../../../core/models/delivery";
 import { LocationService } from "../../../../core/services/location.service";
-import { AppIconComponent } from "../../../../shared/components/app-icon/app-icon.component";
 import { UserPersistenceService } from "../../../../core/services/user-persistence.service";
 import { NotificationService } from "../../../../core/services/notification.service";
 import {
-  DivisionDto,
   DistrictDto,
   UpazilaDto,
 } from "../../../../core/models/location";
@@ -46,10 +43,6 @@ import {
     DecimalPipe,
     ReactiveFormsModule,
     RouterModule,
-    PriceDisplayComponent,
-    AppIconComponent,
-    NgClass,
-    NgIf,
   ],
   templateUrl: "./checkout-page.component.html",
   styleUrl: "./checkout-page.component.css",
@@ -81,16 +74,18 @@ export class CheckoutPageComponent {
     paymentMethod: ["cod", Validators.required],
   });
 
-  divisions = signal<DivisionDto[]>([]);
-  districts = signal<DistrictDto[]>([]);
+  allDistricts = signal<DistrictDto[]>([]);
   upazilas = signal<UpazilaDto[]>([]);
-
   filteredDistricts: DistrictDto[] = [];
   filteredUpazilas: UpazilaDto[] = [];
-  districtSearch = "";
-  upazilaSearch = "";
+
+  selectedDistrictId = signal<number | undefined>(undefined);
+  selectedUpazilaId = signal<number | undefined>(undefined);
+
   isDistrictDropdownOpen = false;
   isUpazilaDropdownOpen = false;
+  districtSearch = "";
+  upazilaSearch = "";
 
   isLoading = false;
   errorMessage = "";
@@ -168,17 +163,7 @@ export class CheckoutPageComponent {
   );
 
   constructor() {
-    this.locationService
-      .getDivisions()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (divisions) => {
-          this.divisions.set(divisions);
-        },
-        error: (err) => {
-          console.error("Failed to load divisions", err);
-        },
-      });
+    this.loadAllDistricts();
 
     this.checkoutService.state$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -190,16 +175,15 @@ export class CheckoutPageComponent {
           city: state.city,
           area: state.area,
         });
-        if (state.city) {
-          this.loadDistrictsByCity(state.city);
-          if (state.area) {
-            this.upazilaSearch = state.area;
-          }
-          this.districtSearch = state.city;
-          this.updateDeliveryMethod(state.city, state.area || "");
+        if (state.districtId) {
+          this.selectedDistrictId.set(state.districtId);
+          this.loadUpazilasByDistrictId(state.districtId);
         }
-        if (state.area) {
-          this.upazilaSearch = state.area;
+        if (state.upazilaId) {
+          this.selectedUpazilaId.set(state.upazilaId);
+        }
+        if (state.city) {
+          this.updateDeliveryMethod(state.city, state.area || "");
         }
       });
 
@@ -226,23 +210,6 @@ export class CheckoutPageComponent {
       this.showAutofillPrompt = true;
     }
 
-    this.checkoutForm.controls.city.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((city) => {
-        this.loadDistrictsByCity(city);
-        this.checkoutForm.patchValue({ area: "" });
-        this.upazilaSearch = "";
-        this.districtSearch = city;
-        this.updateDeliveryMethod(city, "");
-      });
-
-    this.checkoutForm.controls.area.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((area) => {
-        const city = this.checkoutForm.controls.city.value;
-        this.updateDeliveryMethod(city, area);
-      });
-
     this.customerLookup
       .bindTo(this.checkoutForm.controls.phone.valueChanges)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -250,45 +217,23 @@ export class CheckoutPageComponent {
         if (customer) {
           this.didAutofill = true;
 
-          if (customer.divisionId) {
-            const div = this.divisions().find((d) => d.id === customer.divisionId);
-            if (div) {
-              this.checkoutForm.patchValue({ city: div.nameEn }, { emitEvent: false });
-              this.districtSearch = div.nameEn;
-              this.locationService.getDistrictsByDivision(div.id).subscribe((districts) => {
-                this.districts.set(districts);
-                this.filteredDistricts = [...districts];
+          if (customer.districtId) {
+            const dist = this.allDistricts().find((d) => d.id === customer.districtId);
+            if (dist) {
+              this.selectedDistrictId.set(dist.id);
+              this.checkoutForm.patchValue({ city: dist.nameEn }, { emitEvent: false });
+              this.loadUpazilasByDistrictId(dist.id);
 
-                if (customer.districtId) {
-                  const dist = districts.find((d) => d.id === customer.districtId);
-                  if (dist) {
-                    this.checkoutForm.patchValue({ city: dist.nameEn }, { emitEvent: false });
-                    this.districtSearch = dist.nameEn;
-                    this.loadUpazilasByDistrict(dist.nameEn, customer.area || "");
-
-                    if (customer.upazilaId) {
-                      this.locationService.getUpazilasByDistrict(dist.id).subscribe((upazilas) => {
-                        const upazila = upazilas.find((u) => u.id === customer.upazilaId);
-                        if (upazila) {
-                          this.checkoutForm.patchValue({ area: upazila.nameEn }, { emitEvent: false });
-                          this.upazilaSearch = upazila.nameEn;
-                          this.selectedUpazilaId.set(upazila.id);
-                        }
-                      });
-                    }
+              if (customer.upazilaId) {
+                this.locationService.getUpazilasByDistrict(dist.id).subscribe((upazilas) => {
+                  const upazila = upazilas.find((u) => u.id === customer.upazilaId);
+                  if (upazila) {
+                    this.checkoutForm.patchValue({ area: upazila.id.toString() }, { emitEvent: false });
+                    this.selectedUpazilaId.set(upazila.id);
                   }
-                }
-                this.updateDeliveryMethod(this.checkoutForm.controls.city.value, customer.area || "");
-              });
+                });
+              }
             }
-          } else if (customer.city) {
-            this.loadDistrictsByCity(customer.city);
-            this.districtSearch = customer.city;
-            if (customer.area) {
-              this.upazilaSearch = customer.area;
-              this.loadUpazilasByDistrict(customer.city, customer.area);
-            }
-            this.updateDeliveryMethod(customer.city, customer.area || "");
           }
 
           this.checkoutForm.patchValue(
@@ -302,71 +247,173 @@ export class CheckoutPageComponent {
         }
         this.didAutofill = false;
       });
+  }
 
-    this.checkoutForm.controls.address.valueChanges
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((address) => {
-        if (!address || address.length < 3) return;
-        this.intelligentLocationMatch(address);
+  private loadAllDistricts(): void {
+    this.locationService.getAllLocations()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (hierarchy) => {
+          const districts: DistrictDto[] = [];
+          for (const div of hierarchy.divisions) {
+            for (const dist of div.districts) {
+              districts.push({
+                id: dist.id,
+                nameEn: dist.nameEn,
+                nameBn: dist.nameBn,
+                divisionId: div.id,
+                displayOrder: dist.displayOrder,
+                isActive: true,
+              });
+            }
+          }
+          this.allDistricts.set(districts);
+          this.filteredDistricts = [...districts];
+        },
+        error: (err) => {
+          console.error("Failed to load districts", err);
+        },
       });
   }
 
-  private loadDistrictsByCity(city: string): void {
-    if (!city) {
-      this.districts.set([]);
-      this.filteredDistricts = [];
-      return;
-    }
-    const div = this.divisions().find(
-      (d) => d.nameEn.toLowerCase() === city.toLowerCase(),
-    );
-    if (div) {
-      this.locationService.getDistrictsByDivision(div.id).subscribe((districts) => {
-        this.districts.set(districts);
-        this.filteredDistricts = [...districts];
-      });
-    } else {
-      this.districts.set([]);
-      this.filteredDistricts = [];
+  toggleDistrictDropdown(): void {
+    this.isDistrictDropdownOpen = !this.isDistrictDropdownOpen;
+    if (this.isDistrictDropdownOpen) {
+      this.isUpazilaDropdownOpen = false;
+      this.filteredDistricts = [...this.allDistricts()];
+      this.districtSearch = "";
     }
   }
 
-  private loadUpazilasByDistrict(districtName: string, _city: string): void {
-    const dist = this.districts().find(
-      (d) => d.nameEn.toLowerCase() === districtName.toLowerCase(),
+  filterDistricts(event: Event): void {
+    const query = (event.target as HTMLInputElement).value.toLowerCase();
+    this.districtSearch = query;
+    this.filteredDistricts = this.allDistricts().filter(
+      (d) => d.nameBn.toLowerCase().includes(query) || d.nameEn.toLowerCase().includes(query)
     );
-    if (dist) {
-      this.locationService.getUpazilasByDistrict(dist.id).subscribe((upazilas) => {
+  }
+
+  onDistrictSelected(district: DistrictDto): void {
+    this.selectedDistrictId.set(district.id);
+    this.selectedUpazilaId.set(undefined);
+    this.checkoutForm.patchValue({ city: district.nameEn, area: "" });
+    this.districtSearch = district.nameBn;
+    this.isDistrictDropdownOpen = false;
+    this.upazilas.set([]);
+    this.filteredUpazilas = [];
+    this.upazilaSearch = "";
+    this.loadUpazilasByDistrictId(district.id);
+    this.updateDeliveryMethod(district.nameEn, "");
+  }
+
+  toggleUpazilaDropdown(): void {
+    if (!this.selectedDistrictId()) return;
+    this.isUpazilaDropdownOpen = !this.isUpazilaDropdownOpen;
+    if (this.isUpazilaDropdownOpen) {
+      this.isDistrictDropdownOpen = false;
+      this.filteredUpazilas = [...this.upazilas()];
+      this.upazilaSearch = "";
+    }
+  }
+
+  filterUpazilas(event: Event): void {
+    const query = (event.target as HTMLInputElement).value.toLowerCase();
+    this.upazilaSearch = query;
+    this.filteredUpazilas = this.upazilas().filter(
+      (u) => u.nameBn.toLowerCase().includes(query) || u.nameEn.toLowerCase().includes(query)
+    );
+  }
+
+  onUpazilaSelected(upazila: UpazilaDto): void {
+    this.selectedUpazilaId.set(upazila.id);
+    this.checkoutForm.patchValue({ area: upazila.nameEn });
+    this.upazilaSearch = upazila.nameBn;
+    this.isUpazilaDropdownOpen = false;
+    const city = this.checkoutForm.controls.city.value;
+    this.updateDeliveryMethod(city, upazila.nameEn);
+  }
+
+  closeDropdowns(): void {
+    this.isDistrictDropdownOpen = false;
+    this.isUpazilaDropdownOpen = false;
+  }
+
+  onDistrictChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const districtId = parseInt(select.value, 10);
+    if (isNaN(districtId)) return;
+
+    const district = this.allDistricts().find((d) => d.id === districtId);
+    if (!district) return;
+
+    this.selectedDistrictId.set(districtId);
+    this.selectedUpazilaId.set(undefined);
+    this.checkoutForm.patchValue({ city: district.nameEn, area: "" });
+    this.loadUpazilasByDistrictId(districtId);
+    this.updateDeliveryMethod(district.nameEn, "");
+  }
+
+  onUpazilaChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const upazilaId = parseInt(select.value, 10);
+    if (isNaN(upazilaId)) return;
+
+    const upazila = this.upazilas().find((u) => u.id === upazilaId);
+    if (!upazila) return;
+
+    this.selectedUpazilaId.set(upazilaId);
+    this.checkoutForm.patchValue({ area: upazila.nameEn });
+    const city = this.checkoutForm.controls.city.value;
+    this.updateDeliveryMethod(city, upazila.nameEn);
+  }
+
+  private loadUpazilasByDistrictId(districtId: number): void {
+    this.locationService.getUpazilasByDistrict(districtId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((upazilas) => {
         this.upazilas.set(upazilas);
-        this.filteredUpazilas = [...upazilas];
       });
-    }
   }
 
-  intelligentLocationMatch(address: string): void {
-    const allDivisions = this.divisions();
-    for (const div of allDivisions) {
-      if (address.toLowerCase().includes(div.nameEn.toLowerCase())) {
-        if (this.checkoutForm.get("city")?.value !== div.nameEn) {
-          this.selectCity(div.nameEn);
-        }
-        break;
+  private updateDeliveryMethod(city: string, _area: string): void {
+    this.deliveryMethods$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((methods) => {
+      const district = this.allDistricts().find(
+        (d) => d.nameEn.toLowerCase() === city.toLowerCase(),
+      );
+      const isInsideDhaka = district
+        ? district.nameEn.toLowerCase() === "dhaka"
+        : city.toLowerCase() === "dhaka";
+      const method = methods.find((m) =>
+        isInsideDhaka
+          ? m.name.toLowerCase().includes("inside")
+          : m.name.toLowerCase().includes("outside"),
+      );
+      if (method) {
+        this.checkoutForm.patchValue({ deliveryMethodId: method.id });
       }
-    }
+    });
+  }
+
+  updateQuantity(item: CartItem, delta: number): void {
+    const newQuantity = item.quantity + delta;
+    if (newQuantity < 1) return;
+    this.cartService.updateQty(item.id, newQuantity);
+  }
+
+  removeItem(item: CartItem): void {
+    this.cartService.removeItem(item.id);
   }
 
   applyAutofill(): void {
     const details = this.userPersistence.getUserDetails();
     if (details) {
       const city = details.city || "Dhaka";
-      this.loadDistrictsByCity(city);
-      this.districtSearch = city;
+      if (details.districtId) {
+        this.selectedDistrictId.set(details.districtId);
+        this.loadUpazilasByDistrictId(details.districtId);
+      }
       if (details.area) {
-        this.upazilaSearch = details.area;
+        this.checkoutForm.patchValue({ area: details.area });
       }
       this.updateDeliveryMethod(city, details.area || "");
       this.checkoutForm.patchValue({
@@ -421,112 +468,6 @@ export class CheckoutPageComponent {
       });
   }
 
-  private updateDeliveryMethod(city: string, _area: string): void {
-    this.deliveryMethods$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((methods) => {
-      const district = this.districts().find(
-        (d) => d.nameEn.toLowerCase() === city.toLowerCase(),
-      );
-      const isInsideDhaka = district
-        ? district.nameEn.toLowerCase() === "dhaka"
-        : city.toLowerCase() === "dhaka";
-      const method = methods.find((m) =>
-        isInsideDhaka
-          ? m.name.toLowerCase().includes("inside")
-          : m.name.toLowerCase().includes("outside"),
-      );
-      if (method) {
-        this.checkoutForm.patchValue({ deliveryMethodId: method.id });
-      }
-    });
-  }
-
-  filterDistricts(event: Event): void {
-    const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.districtSearch = query;
-    this.filteredDistricts = this.districts().filter((d) =>
-      d.nameEn.toLowerCase().includes(query),
-    );
-  }
-
-  selectCity(city: string): void {
-    this.checkoutForm.patchValue({ city });
-    this.districtSearch = city;
-    this.isDistrictDropdownOpen = false;
-    const div = this.divisions().find((d) => d.nameEn === city);
-    this.selectedDivisionId.set(div?.id);
-    this.selectedDistrictId.set(undefined);
-    this.selectedUpazilaId.set(undefined);
-    this.loadDistrictsByCity(city);
-  }
-
-  toggleDistrictDropdown(): void {
-    this.isDistrictDropdownOpen = !this.isDistrictDropdownOpen;
-    if (this.isDistrictDropdownOpen) {
-      this.isUpazilaDropdownOpen = false;
-      this.filteredDistricts = [...this.districts()];
-      this.districtSearch = this.checkoutForm.get("city")?.value || "";
-    }
-  }
-
-  filterUpazilas(event: Event): void {
-    const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.upazilaSearch = query;
-    this.filteredUpazilas = this.upazilas().filter((u) =>
-      u.nameEn.toLowerCase().includes(query),
-    );
-  }
-
-  selectArea(area: string, districtId: number): void {
-    this.checkoutForm.patchValue({ area });
-    this.upazilaSearch = area;
-    this.isUpazilaDropdownOpen = false;
-    const dist = this.districts().find((d) => d.id === districtId);
-    if (dist) {
-      this.districtSearch = dist.nameEn;
-    }
-  }
-
-  toggleUpazilaDropdown(): void {
-    if (!this.checkoutForm.get("city")?.value) return;
-    this.isUpazilaDropdownOpen = !this.isUpazilaDropdownOpen;
-    if (this.isUpazilaDropdownOpen) {
-      this.isDistrictDropdownOpen = false;
-      this.filteredUpazilas = [...this.upazilas()];
-      this.upazilaSearch = this.checkoutForm.get("area")?.value || "";
-    }
-  }
-
-  onDistrictSelected(district: DistrictDto): void {
-    this.checkoutForm.patchValue({ city: district.nameEn, area: "" });
-    this.districtSearch = district.nameEn;
-    this.isDistrictDropdownOpen = false;
-    this.upazilaSearch = "";
-    this.upazilas.set([]);
-    this.filteredUpazilas = [];
-    this.selectedDistrictId.set(district.id);
-    this.selectedUpazilaId.set(undefined);
-    this.locationService
-      .getUpazilasByDistrict(district.id)
-      .subscribe((upazilas) => {
-        this.upazilas.set(upazilas);
-        this.filteredUpazilas = [...upazilas];
-      });
-    this.updateDeliveryMethod(district.nameEn, "");
-  }
-
-  selectedDivisionId = signal<number | undefined>(undefined);
-  selectedDistrictId = signal<number | undefined>(undefined);
-  selectedUpazilaId = signal<number | undefined>(undefined);
-
-  onUpazilaSelected(upazila: UpazilaDto): void {
-    this.checkoutForm.patchValue({ area: upazila.nameEn });
-    this.upazilaSearch = upazila.nameEn;
-    this.isUpazilaDropdownOpen = false;
-    this.selectedUpazilaId.set(upazila.id);
-    const city = this.checkoutForm.controls.city.value;
-    this.updateDeliveryMethod(city, upazila.nameEn);
-  }
-
   getSelectedMethod(methods: DeliveryMethod[]): DeliveryMethod | undefined {
     const id = this.checkoutForm.get("deliveryMethodId")?.value;
     return methods.find((m) => m.id === id);
@@ -543,7 +484,6 @@ export class CheckoutPageComponent {
       address: this.checkoutForm.controls.address.value ?? "",
       city: this.checkoutForm.controls.city.value ?? "",
       area: this.checkoutForm.controls.area.value ?? "",
-      divisionId: this.selectedDivisionId(),
       districtId: this.selectedDistrictId(),
       upazilaId: this.selectedUpazilaId(),
       deliveryMethodId: this.checkoutForm.controls.deliveryMethodId.value ?? undefined,

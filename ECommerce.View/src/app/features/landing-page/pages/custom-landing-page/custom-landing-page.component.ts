@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angu
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { Product, ProductVariant } from "../../../../core/models/product";
 import { CustomLandingPageService } from "../../../../admin/services/custom-landing-page.service";
-import { CustomLandingPageConfig, LandingPageData, LandingSection } from "../../../../core/models/landing-page";
+import { CustomLandingPageConfig, LandingPageData, LandingSection, PreOrderConfig } from "../../../../core/models/landing-page";
 import { LandingPageDataService } from "../../../../core/services/landing-page-data.service";
 import { ImageUrlService } from "../../../../core/services/image-url.service";
 import { PriceDisplayComponent } from "../../../../shared/components/price-display/price-display.component";
@@ -668,7 +668,11 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
 
   getUniqueSizes(product: Product): string[] {
     if (!product.variants) return [];
-    const sizes = Array.from(new Set(product.variants.map((v) => v.size).filter(Boolean))) as string[];
+    let sizes = Array.from(new Set(product.variants.map((v) => v.size).filter(Boolean))) as string[];
+    const allowedSizes = this.getPreOrderAllowedSizes(product.id);
+    if (allowedSizes.length > 0) {
+      sizes = sizes.filter(s => allowedSizes.includes(s));
+    }
     return sortProductSizes(sizes);
   }
 
@@ -738,7 +742,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
       },
       cartItems: cartItems,
       summary,
-      deliveryMethodId: form.deliveryMethodId
+      deliveryMethodId: form.deliveryMethodId,
+      isPreOrder: this.isAnyProductPreOrder()
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (order: Order) => {
         this.isOrdering = false;
@@ -868,6 +873,29 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     return Array.from(new Set(variants.map(v => v.size).filter(Boolean))).join(", ");
   }
 
+  private get currentPreOrderConfig(): PreOrderConfig {
+    const section = this.sections.find(s => s.type === 'product-select');
+    return section?.settings?.preOrderConfig || {};
+  }
+
+  isProductPreOrder(product: Product): boolean {
+    return this.currentPreOrderConfig[product.id]?.enabled || false;
+  }
+
+  getPreOrderAllowedSizes(productId: number): string[] {
+    return this.currentPreOrderConfig[productId]?.allowedSizes || [];
+  }
+
+  isAnyProductPreOrder(): boolean {
+    return this.selectedProductList.some(s => this.isProductPreOrder(s.product));
+  }
+
+  getPreOrderProductsList(): string[] {
+    return this.selectedProductList
+      .filter(s => this.isProductPreOrder(s.product))
+      .map(s => s.product.name);
+  }
+
   openQuickAdd(product: Product, event: Event): void {
     event.preventDefault(); event.stopPropagation();
     this.selectedQuickProduct = product; this.showQuickAdd = true;
@@ -908,6 +936,8 @@ export class CustomLandingPageComponent implements OnInit, OnDestroy {
     } else if (section.type === 'trust-banner') {
       if (s.isTrustBannerVisible === undefined) s.isTrustBannerVisible = form.isTrustBannerVisible !== undefined ? form.isTrustBannerVisible : true;
       if (s.trustBannerText === undefined) s.trustBannerText = form.trustBannerText || 'দেখে চেক করে রিসিভ করতে পারবেন। পছন্দ না হলে ডেলিভারি চার্জ দিয়ে রিটার্ন করে দিতে পারবেন সহজেই';
+    } else if (section.type === 'product-select') {
+      if (section.settings.preOrderConfig === undefined) section.settings.preOrderConfig = {};
     } else if (section.type === 'reviews') {
       if (s.isReviewsVisible === undefined) s.isReviewsVisible = form.isReviewsVisible !== undefined ? form.isReviewsVisible : true;
     } else if (section.type === 'marquee') {

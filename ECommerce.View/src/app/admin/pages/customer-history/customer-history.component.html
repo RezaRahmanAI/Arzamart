@@ -205,7 +205,7 @@
                 <button (click)="openNotes(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">Notes</button>
                 <button (click)="printInvoice(order, $event)" class="px-2 py-1 bg-ds-bg border border-ds-border text-ds-text-muted hover:text-ds-text hover:border-ds-text transition-colors">PDF</button>
                 <button (click)="sendWhatsApp(order, $event)" class="px-2 py-1 bg-ds-success/10 border border-ds-success/20 text-ds-success hover:bg-ds-success/20 transition-colors">WA</button>
-                <button (click)="editOrder(order, $event)" class="px-2 py-1 bg-ds-text text-ds-surface hover:opacity-80 transition-colors">Modify</button>
+                <button *ngIf="order.status === 'Pending'" (click)="editOrder(order, $event)" class="px-2 py-1 bg-ds-text text-ds-surface hover:opacity-80 transition-colors">Modify</button>
               </div>
             </td>
           </tr>
