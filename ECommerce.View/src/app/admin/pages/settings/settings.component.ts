@@ -85,6 +85,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   logoError = "";
   sizeGuidePreviewUrl: string | null = null;
   sizeGuideError = "";
+  faviconPreviewUrl: string | null = null;
+  faviconError = "";
   saveMessage = "";
   saveError = "";
   isSaving = false;
@@ -129,6 +131,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
         if (settings.sizeGuideImageUrl) {
           this.sizeGuidePreviewUrl = this.imageUrlService.getImageUrl(
             settings.sizeGuideImageUrl,
+          );
+        }
+
+        if (settings.faviconUrl) {
+          this.faviconPreviewUrl = this.imageUrlService.getImageUrl(
+            settings.faviconUrl,
           );
         }
 
@@ -194,6 +202,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       websiteName: formValue.websiteName,
       logoUrl: this.lastSettings?.logoUrl,
       sizeGuideImageUrl: this.lastSettings?.sizeGuideImageUrl,
+      faviconUrl: this.lastSettings?.faviconUrl,
       contactEmail: formValue.contactEmail,
       contactPhone: formValue.contactPhone,
       address: formValue.address,
@@ -351,6 +360,48 @@ export class SettingsComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error("Size Guide upload failed", err);
         this.sizeGuideError = "Failed to upload Size Guide.";
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  onFaviconSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    const isValidType = [
+      "image/png",
+      "image/jpeg",
+      "image/gif",
+      "image/x-icon",
+      "image/svg+xml",
+    ].includes(file.type);
+    const isValidSize = file.size <= 1 * 1024 * 1024;
+
+    if (!isValidType || !isValidSize) {
+      this.faviconError = "Please upload an ICO, PNG, JPG, GIF, or SVG file up to 1MB.";
+      this.faviconPreviewUrl = null;
+      input.value = "";
+      return;
+    }
+
+    this.faviconError = "";
+
+    this.settingsService.uploadLogo(file).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        if (this.lastSettings) {
+          this.lastSettings.faviconUrl = res.url;
+        }
+        this.faviconPreviewUrl = this.imageUrlService.getImageUrl(res.url);
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error("Favicon upload failed", err);
+        this.faviconError = "Failed to upload favicon.";
         this.cdr.markForCheck();
       },
     });

@@ -192,6 +192,59 @@
                 </div>
               </div>
               <hr class="border-ds-border" />
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-ds-8">
+                <div class="col-span-1">
+                  <label class="block text-ds-text mb-1.5">Favicon</label>
+                  <p class="text-ds-text-muted">Browser tab icon (.ico, .png, .svg)</p>
+                </div>
+                <div class="col-span-2">
+                  <div class="flex items-center gap-ds-6">
+                    <div
+                      class="size-16 rounded-sm bg-ds-bg border border-ds-border flex items-center justify-center overflow-hidden relative group"
+                      role="button"
+                      tabindex="0"
+                      (click)="faviconUpload.click()"
+                    >
+                      <ng-container *ngIf="faviconPreviewUrl; else faviconPlaceholder">
+                        <img
+                          loading="lazy" [src]="faviconPreviewUrl"
+                          class="w-full h-full object-contain transition-all"
+                          alt="Favicon"
+                        />
+                      </ng-container>
+                      <ng-template #faviconPlaceholder>
+                        <app-icon
+                          name="Image"
+                          size="20"
+                          className="text-ds-text-muted opacity-30"
+                        ></app-icon>
+                      </ng-template>
+                      <div class="absolute inset-0 bg-ds-text/60 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity">
+                        <app-icon name="Edit" size="14" className="text-ds-surface"></app-icon>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <input
+                        #faviconUpload
+                        class="hidden"
+                        type="file"
+                        accept="image/png,image/jpeg,image/gif,image/x-icon,image/svg+xml"
+                        (change)="onFaviconSelected($event)"
+                      />
+                      <button
+                        type="button"
+                        (click)="faviconUpload.click()"
+                        class="btn btn-secondary !h-10 !px-ds-6"
+                      >
+                        <app-icon name="Upload" size="14"></app-icon>
+                        <span>Replace</span>
+                      </button>
+                      <p *ngIf="faviconError" class="mt-2 text-ds-danger">{{ faviconError }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr class="border-ds-border" />
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-ds-6">
                 <div class="space-y-2">
                   <label class="block text-ds-text ml-1">Store Name</label>

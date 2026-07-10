@@ -19,6 +19,7 @@ export interface AdminSettings {
   deliveryMethods: DeliveryMethod[];
   shippingZones: ShippingZone[];
   sizeGuideImageUrl?: string;
+  faviconUrl?: string;
   // Deprecated/Legacy fields mapped if necessary or removed
   stripeEnabled?: boolean;
   paypalEnabled?: boolean;

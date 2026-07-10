@@ -17,6 +17,7 @@ import { CartDrawerComponent } from "./shared/components/cart-drawer/cart-drawer
 import { CartService } from "./core/services/cart.service";
 import { OfflineIndicatorService } from "./core/services/offline-indicator.service";
 import { PrefetchService } from "./core/cache/prefetch.service";
+import { ImageUrlService } from "./core/services/image-url.service";
 
 @Component({
   selector: "app-root",
@@ -47,6 +48,7 @@ export class AppComponent implements OnInit {
   private cartService = inject(CartService);
   private offlineIndicator = inject(OfflineIndicatorService);
   private prefetch = inject(PrefetchService);
+  private imageUrlService = inject(ImageUrlService);
 
   isOffline = signal(false);
 
@@ -106,6 +108,9 @@ export class AppComponent implements OnInit {
       if (settings.websiteName) {
         this.titleService.setTitle(settings.websiteName);
       }
+      if (settings.faviconUrl && isPlatformBrowser(this.platformId)) {
+        this.updateFavicon(settings.faviconUrl);
+      }
       if (settings.facebookPixelId) {
         this.injectFacebookPixel(settings.facebookPixelId);
       }
@@ -126,6 +131,34 @@ export class AppComponent implements OnInit {
         this.prefetch.prefetchRouteData((e as NavigationEnd).urlAfterRedirects);
       }
     });
+  }
+
+  private updateFavicon(faviconUrl: string) {
+    const fullUrl = this.imageUrlService.getImageUrl(faviconUrl);
+    let link = this.document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+    if (!link) {
+      link = this.renderer.createElement("link");
+      link.rel = "icon";
+      this.renderer.appendChild(this.document.head, link);
+    }
+    link.href = fullUrl;
+
+    // Also update og:image and twitter:image meta tags
+    let ogImage = this.document.querySelector("meta[property='og:image']") as HTMLMetaElement;
+    if (!ogImage) {
+      ogImage = this.renderer.createElement("meta");
+      ogImage.setAttribute("property", "og:image");
+      this.renderer.appendChild(this.document.head, ogImage);
+    }
+    ogImage.setAttribute("content", fullUrl);
+
+    let twitterImage = this.document.querySelector("meta[name='twitter:image']") as HTMLMetaElement;
+    if (!twitterImage) {
+      twitterImage = this.renderer.createElement("meta");
+      twitterImage.setAttribute("name", "twitter:image");
+      this.renderer.appendChild(this.document.head, twitterImage);
+    }
+    twitterImage.setAttribute("content", fullUrl);
   }
 
   private injectFacebookPixel(pixelId: string) {

@@ -28,5 +28,6 @@ public class SiteSettingsDto
     public string? GoogleTagId { get; set; }
 
     public string? SizeGuideImageUrl { get; set; }
+    public string? FaviconUrl { get; set; }
     public IEnumerable<DeliveryMethodDto>? DeliveryMethods { get; set; }
 }

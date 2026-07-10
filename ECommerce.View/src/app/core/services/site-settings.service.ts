@@ -21,6 +21,7 @@ export interface SiteSettings {
   facebookPixelId?: string;
   googleTagId?: string;
   sizeGuideImageUrl?: string;
+  faviconUrl?: string;
 }
 
 const DEFAULT_SETTINGS: SiteSettings = {

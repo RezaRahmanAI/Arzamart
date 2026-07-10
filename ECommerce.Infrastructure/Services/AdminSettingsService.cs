@@ -64,6 +64,7 @@ public class AdminSettingsService : IAdminSettingsService
             FacebookPixelId = settings?.FacebookPixelId,
             GoogleTagId = settings?.GoogleTagId,
             SizeGuideImageUrl = settings?.SizeGuideImageUrl,
+            FaviconUrl = settings?.FaviconUrl,
             DeliveryMethods = deliveryMethodDtos
         };
     }
@@ -96,6 +97,7 @@ public class AdminSettingsService : IAdminSettingsService
         settings.FacebookPixelId = dto.FacebookPixelId;
         settings.GoogleTagId = dto.GoogleTagId;
         settings.SizeGuideImageUrl = dto.SizeGuideImageUrl;
+        settings.FaviconUrl = dto.FaviconUrl;
         settings.UpdatedAt = DateTime.UtcNow;
 
         await _unitOfWork.Complete();
@@ -210,6 +212,7 @@ public class AdminSettingsService : IAdminSettingsService
                     FacebookPixelId = settings.FacebookPixelId,
                     GoogleTagId = settings.GoogleTagId,
                     SizeGuideImageUrl = settings.SizeGuideImageUrl,
+                    FaviconUrl = settings.FaviconUrl,
                     DeliveryMethods = deliveryMethodDtos
                 };
                 _cache.IncrementVersion("settings");
