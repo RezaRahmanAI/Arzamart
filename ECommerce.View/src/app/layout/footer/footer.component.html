@@ -3,17 +3,19 @@
     <div class="site-container">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-ds-12 lg:gap-ds-16 mb-ds-24">
         <!-- Brand Info -->
-        <div class="md:col-span-4 space-y-ds-10">
-          <a routerLink="/" class="inline-block">
-            <img
-              loading="lazy" [src]="settings.logoUrl ? imageUrlService.getImageUrl(settings.logoUrl) : 'assets/logo.svg'"
-              alt="Arza Mart Logo"
-              class="h-12 lg:h-16 w-auto brightness-0 invert opacity-90 transition-transform duration-base hover:scale-105"
-            />
-          </a>
-          <p class="text-ds-hero-text/60 max-w-sm">
-            {{ settings.description || "Curated collection of premium fashion and lifestyle essentials." }}
-          </p>
+        <div class="md:col-span-4">
+          <div class="flex items-start gap-ds-6">
+            <a routerLink="/" class="shrink-0 -ml-7 lg:-ml-10">
+              <img
+                loading="lazy" [src]="settings.logoUrl ? imageUrlService.getImageUrl(settings.logoUrl) : 'assets/logo.svg'"
+                alt="Arza Mart Logo"
+                class="h-12 lg:h-16 w-auto brightness-0 invert opacity-90 transition-transform duration-base hover:scale-105"
+              />
+            </a>
+            <p class="text-ds-hero-text/60 max-w-sm">
+              {{ settings.description || "Curated collection of premium fashion and lifestyle essentials." }}
+            </p>
+          </div>
           
           <!-- Socials -->
           <div class="flex gap-ds-10 pt-ds-4">
