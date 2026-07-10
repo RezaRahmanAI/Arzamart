@@ -179,6 +179,7 @@ public class CacheWarmupService : IHostedService
                 FacebookPixelId = settings.FacebookPixelId,
                 GoogleTagId = settings.GoogleTagId,
                 SizeGuideImageUrl = settings.SizeGuideImageUrl,
+                FaviconUrl = settings.FaviconUrl,
                 DeliveryMethods = deliveryMethodDtos
             };
         }

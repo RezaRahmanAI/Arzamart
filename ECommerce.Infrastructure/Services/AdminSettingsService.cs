@@ -100,6 +100,8 @@ public class AdminSettingsService : IAdminSettingsService
         settings.FaviconUrl = dto.FaviconUrl;
         settings.UpdatedAt = DateTime.UtcNow;
 
+        _unitOfWork.Repository<SiteSetting>().Update(settings);
+
         await _unitOfWork.Complete();
 
         RebuildSettingsCache();
@@ -147,6 +149,8 @@ public class AdminSettingsService : IAdminSettingsService
         method.EstimatedDays = dto.EstimatedDays;
         method.IsActive = dto.IsActive;
         method.UpdatedAt = DateTime.UtcNow;
+
+        _unitOfWork.Repository<DeliveryMethod>().Update(method);
 
         await _unitOfWork.Complete();
 

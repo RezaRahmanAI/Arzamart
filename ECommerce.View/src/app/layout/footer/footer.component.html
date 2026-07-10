@@ -8,7 +8,7 @@
             <img
               loading="lazy" [src]="settings.logoUrl ? imageUrlService.getImageUrl(settings.logoUrl) : 'assets/logo.svg'"
               alt="Arza Mart Logo"
-              class="h-8 lg:h-9 w-auto brightness-0 invert opacity-90 transition-transform duration-base hover:scale-105"
+              class="h-12 lg:h-16 w-auto brightness-0 invert opacity-90 transition-transform duration-base hover:scale-105"
             />
           </a>
           <p class="text-ds-hero-text/60 max-w-sm">
@@ -102,17 +102,6 @@
         </div>
       </div>
   
-      <!-- Payment Methods -->
-      <div class="mb-ds-20 pb-ds-12 border-b border-ds-border">
-        <h4 class="text-ds-hero-text opacity-40 mb-ds-10">Accepted Payments</h4>
-        <div class="flex flex-wrap items-center gap-ds-6">
-          @for (method of ['Visa', 'Mastercard', 'bKash', 'Nagad', 'COD']; track method) {
-            <div class="px-ds-8 py-ds-4 bg-ds-bg/5 border border-ds-border text-ds-hero-text/40 hover:text-ds-hero-text hover:bg-ds-bg/10 transition-all duration-base">
-              {{ method }}
-            </div>
-          }
-        </div>
-      </div>
   
       <!-- Bottom Bar -->
       <div class="flex flex-col md:flex-row justify-between items-center gap-ds-8">
